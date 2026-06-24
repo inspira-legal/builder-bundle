@@ -1,7 +1,7 @@
 {
   "name": "ofc",
   "description": "Oficina (OFC) agent skills as one plugin: shape & ship code, run work across time (never-merge enforced by cloud capability scoping), and standalone helpers. Skills are invoked as /ofc:<skill> (e.g. /ofc:shape). Ships a SessionStart operating-context hook.",
-  "version": "1.13.1",
+  "version": "1.14.0",
   "author": {
     "name": "Athena Briana",
     "email": "me@athenabriana.com"

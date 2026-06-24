@@ -1,13 +1,13 @@
 ---
-name: improve-code
-description: Improve the quality of the code this branch changed — reuse, simplification, dead weight, efficiency, altitude, consistency — and apply the cleanups, quality only and strictly behavior-preserving, with a hard regression guard (verify behavior, re-run checks after every edit). Use when the user says "improve this code", "clean this up", "simplify the diff", "tidy this code", "reduce complexity", or "refactor for clarity". Do NOT use to find or fix bugs (that is correctness review — use /ofc:ship), to open a PR (use /ofc:ship), or to touch code this branch did not change.
+name: tidy
+description: Tidy the code this branch changed — a behavior-preserving quality pass (reuse, simplification, dead weight, efficiency, altitude, consistency) that applies the cleanups, with a hard regression guard (verify behavior, re-run checks after every edit). Quality only, never bug-finding. Use when the user says "tidy this code", "clean this up", "improve this code", "simplify the diff", "reduce complexity", or "refactor for clarity". Do NOT use to find or fix bugs (that is correctness review — use /ofc:ship), to open a PR (use /ofc:ship), or to touch code this branch did not change.
 license: Apache-2.0
 metadata:
   author: adapted from Claude Code's /simplify (Anthropic, Apache-2.0), with stricter regression guards, by Athena Briana - github.com/athenabriana
-  version: 1.2.0
+  version: 1.3.0
 ---
 
-# Improve Code
+# Tidy
 
 A focused quality pass over the current change: make it simpler, leaner, and more
 consistent **without changing behavior**. The standalone version of `ofc:ship`'s

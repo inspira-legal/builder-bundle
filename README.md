@@ -30,7 +30,7 @@ um plugin, `ofc`; as skills são organizadas por uso.
 | `/ofc:ship`                  | leve a branch ao fim do seu jeito — revisa + deixa os checks verdes, então push numa branch, prepara push pra main, ou abre um PR e cuida dele (comentários, CI, fica de olho) |
 | `/ofc:address-comments`      | responde comentários de review em PRs do github                                                                                                                                |
 | `/ofc:gather-branch-context` | resume todas as mudanças da branch vs main                                                                                                                                     |
-| `/ofc:improve-code`          | melhora a qualidade de um diff com guarda dura contra regressão (sem bugs)                                                                                                     |
+| `/ofc:tidy`                  | passada de qualidade behavior-preserving num diff, com guarda dura contra regressão (sem caça a bug)                                                                           |
 | `/ofc:write-readme`          | gera um README mínimo de cabeçalho centralizado a partir dos fatos do repo                                                                                                     |
 
 ### think & research — entender & decidir, antes de construir
@@ -58,4 +58,4 @@ git clone git@github.com:inspira-legal/ofc-skills.git
 claude --plugin-dir ./ofc-skills/plugins/ofc    # carrega o plugin do disco pra testar
 ```
 
-<sub>`/ofc:improve-code` é adaptada do `/simplify` do Claude Code (Anthropic, Apache-2.0). componentes individuais mantêm suas licenças originais.</sub>
+<sub>`/ofc:tidy` é adaptada do `/simplify` do Claude Code (Anthropic, Apache-2.0). componentes individuais mantêm suas licenças originais.</sub>

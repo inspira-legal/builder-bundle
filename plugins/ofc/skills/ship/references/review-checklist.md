@@ -19,6 +19,6 @@ For each finding: file:line, what breaks, a concrete input/scenario that trigger
 
 ## Pass 2 — Quality (simplify; no behavior changes)
 
-Apply the shared **quality checklist** — `references/quality-checklist.md` at the plugin root, the single source of truth used here and by the standalone `/ofc:improve-code` skill, so a diff is judged identically wherever it's reviewed. It covers the six criteria (reuse, simplification, dead weight, efficiency, altitude, consistency), the scope/behavior/clarity rules, and the over-simplification guard.
+Apply the shared **quality checklist** — `references/quality-checklist.md` at the plugin root, the single source of truth used here and by the standalone `/ofc:tidy` skill, so a diff is judged identically wherever it's reviewed. It covers the six criteria (reuse, simplification, dead weight, efficiency, altitude, consistency), the scope/behavior/clarity rules, and the over-simplification guard.
 
 Only touch code already changed by this branch. After each quality edit, re-run the relevant local check (lint/typecheck/tests for the touched area) — a simplification that breaks behavior is a regression, not a cleanup.

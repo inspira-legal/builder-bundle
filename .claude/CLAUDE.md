@@ -19,7 +19,7 @@ plugins/ofc/
 │   ├── routines.md                     # Cloud Routine guide — the unattended trio path
 │   └── scripts/scaffold_routine.py     # emit a routine prompt + setup for a brief slug
 └── skills/                             # all skills flat; verb-led names, grouped by use in docs only
-    ├── shape, implement, ship, address-comments, gather-branch-context, improve-code
+    ├── shape, implement, ship, address-comments, gather-branch-context, tidy
     ├── maintain-repo
     └── code-deep-research, write-readme, answer-yourself
 ```
