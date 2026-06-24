@@ -20,8 +20,8 @@ plugins/ofc/
 │   └── scripts/scaffold_routine.py     # emit a routine prompt + setup for a brief slug
 └── skills/                             # all skills flat; verb-led names, grouped by use in docs only
     ├── shape, implement, ship, address-comments, gather-branch-context, improve-code
-    ├── maintain-repo, digest-research
-    └── research-topic, research-code, write-readme, answer-yourself
+    ├── maintain-repo
+    └── code-deep-research, write-readme, answer-yourself
 ```
 
 ### Naming Conventions

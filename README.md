@@ -36,19 +36,17 @@ one plugin, `ofc`; the skills are organized by use.
 
 there's no dedicated overnight skill — the unattended path **is** the trio: a [Cloud Routine](plugins/ofc/references/routines.md) sets `OFC_UNATTENDED` and runs `/ofc:implement` → `/ofc:ship` against a committed brief, building the whole backlog and leaving a draft PR. for that path, never-merge is enforced by **capability scoping** — the routine runs with a token that has no merge/branch-push permission and no merge-capable connector — backed by GitHub branch protection. server-side controls, not a local hook.
 
-| skill                  | description                                                              |
-| ---------------------- | ------------------------------------------------------------------------ |
-| `/ofc:maintain-repo`   | triage PRs + dependabot/outdated, report what's mergeable (never merges) |
-| `/ofc:digest-research` | scheduled, read-only research/monitoring digest to slack or a branch     |
+| skill                | description                                                              |
+| -------------------- | ------------------------------------------------------------------------ |
+| `/ofc:maintain-repo` | triage PRs + dependabot/outdated, report what's mergeable (never merges) |
 
 ### helpers — standalone
 
-| skill                  | description                                                                      |
-| ---------------------- | -------------------------------------------------------------------------------- |
-| `/ofc:research-topic`  | deep research using parallel agents                                              |
-| `/ofc:research-code`   | find, clone, and explore relevant repos                                          |
-| `/ofc:write-readme`    | generate a minimal centered-header README from repo facts                        |
-| `/ofc:answer-yourself` | honest, decisive recommendation — commit, name the unseen tension, no sycophancy |
+| skill                     | description                                                                        |
+| ------------------------- | ---------------------------------------------------------------------------------- |
+| `/ofc:code-deep-research` | find, clone & explore repos, then adversarially verify findings against the source |
+| `/ofc:write-readme`       | generate a minimal centered-header README from repo facts                          |
+| `/ofc:answer-yourself`    | honest, decisive recommendation — commit, name the unseen tension, no sycophancy   |
 
 develop locally:
 
