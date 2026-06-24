@@ -4,58 +4,58 @@
 
 [![github](https://img.shields.io/badge/github-inspira--legal%2Fofc--skills-111111?style=flat-square&logo=github)](https://github.com/inspira-legal/ofc-skills)
 
-_Oficina (`ofc`) — a claude code plugin of agent skills grouped by use, with an operating-context hook shipped alongside them._
+_Oficina (`ofc`) — um plugin do claude code com skills de agente agrupadas por uso, e um hook de contexto operacional junto._
 
 </div>
 
-add the marketplace, then install the one plugin:
+adicione o marketplace e instale o plugin único:
 
 ```bash
 claude plugin marketplace add inspira-legal/ofc-skills
 claude plugin install ofc@inspira-legal
 ```
 
-it ships a `SessionStart` operating-context hook, auto-active on install. skills are invoked as `/ofc:<skill>` — e.g. `/ofc:shape`, `/ofc:ship`, `/ofc:answer-yourself`.
+traz um hook `SessionStart` de contexto operacional, auto-ativo na instalação. as skills são invocadas como `/ofc:<skill>` — ex. `/ofc:shape`, `/ofc:ship`, `/ofc:answer-yourself`.
 
-## what's inside
+## o que tem dentro
 
-one plugin, `ofc`; the skills are organized by use.
+um plugin, `ofc`; as skills são organizadas por uso.
 
-### shape & ship — write & ship code, you-driven
+### shape & ship — escrever & entregar código, conduzido por você
 
-| skill                        | description                                                                                                                                                              |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `/ofc:shape`                 | align on the idea before building — develop, loop on gray areas via questions, validate                                                                                  |
-| `/ofc:implement`             | implement a validated shape brief — build the slices, run the gate, then offer to ship (or chain straight to it)                                                         |
-| `/ofc:ship`                  | land the branch your way — review + green the checks, then push to a branch, prep a push to main, or open a PR & auto-tend it (handle comments, green CI, keep watching) |
-| `/ofc:address-comments`      | address review comments on github PRs                                                                                                                                    |
-| `/ofc:gather-branch-context` | summarize all changes on the branch vs main                                                                                                                              |
-| `/ofc:improve-code`          | improve a diff's quality with a hard regression guard (no bugs)                                                                                                          |
-| `/ofc:write-readme`          | generate a minimal centered-header README from repo facts                                                                                                                |
+| skill                        | descrição                                                                                                                                                                      |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/ofc:shape`                 | alinhe a ideia antes de construir — desenvolve, itera nas zonas cinzentas via perguntas, valida                                                                                |
+| `/ofc:implement`             | implementa um brief de shape validado — constrói as fatias, roda o gate, depois oferece entregar (ou emenda direto)                                                            |
+| `/ofc:ship`                  | leve a branch ao fim do seu jeito — revisa + deixa os checks verdes, então push numa branch, prepara push pra main, ou abre um PR e cuida dele (comentários, CI, fica de olho) |
+| `/ofc:address-comments`      | responde comentários de review em PRs do github                                                                                                                                |
+| `/ofc:gather-branch-context` | resume todas as mudanças da branch vs main                                                                                                                                     |
+| `/ofc:improve-code`          | melhora a qualidade de um diff com guarda dura contra regressão (sem bugs)                                                                                                     |
+| `/ofc:write-readme`          | gera um README mínimo de cabeçalho centralizado a partir dos fatos do repo                                                                                                     |
 
-### think & research — understand & decide, before you build
+### think & research — entender & decidir, antes de construir
 
-| skill                     | description                                                                                                        |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `/ofc:frame-problem`      | frame the problem before any solution — the bet, who hurts, the success signal & appetite                          |
-| `/ofc:assess-fit`         | pressure-test a framed problem — worth building? what to cut, in what order, the one testable bet                  |
-| `/ofc:code-deep-research` | find, clone & explore repos, then adversarially verify findings against the source                                 |
-| `/ofc:legal-lens`         | a juridical pass over an idea, flow, or doc — legal & compliance risk, grounded in cited norms (brazil by default) |
-| `/ofc:answer-yourself`    | honest, decisive recommendation — commit, name the unseen tension, no sycophancy                                   |
+| skill                     | descrição                                                                                                                                  |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/ofc:frame-problem`      | enquadra o problema antes de qualquer solução — a aposta, quem sente a dor, o sinal de sucesso & o apetite                                 |
+| `/ofc:assess-fit`         | pressiona um problema enquadrado — vale construir? o que cortar, em que ordem, a única hipótese testável                                   |
+| `/ofc:code-deep-research` | acha, clona & explora repos, depois verifica adversarialmente os achados contra o código-fonte                                             |
+| `/ofc:legal-lens`         | uma passada jurídica sobre uma ideia, fluxo ou documento — risco legal & de compliance, fundamentado em normas citadas (brasil por padrão) |
+| `/ofc:answer-yourself`    | recomendação honesta e decisiva — se posiciona, nomeia a tensão não vista, sem bajulação                                                   |
 
-### loops — run across time (scheduled / event-driven)
+### loops — rodar ao longo do tempo (agendado / orientado a evento)
 
-there's no dedicated overnight skill — the unattended path **is** the trio: a [Cloud Routine](plugins/ofc/references/routines.md) sets `OFC_UNATTENDED` and runs `/ofc:implement` → `/ofc:ship` against a committed brief, building the whole backlog and leaving a draft PR. for that path, never-merge is enforced by **capability scoping** — the routine runs with a token that has no merge/branch-push permission and no merge-capable connector — backed by GitHub branch protection. server-side controls, not a local hook.
+não há skill dedicada de madrugada — o caminho não-supervisionado **é** a tríade: uma [Cloud Routine](plugins/ofc/references/routines.md) define `OFC_UNATTENDED` e roda `/ofc:implement` → `/ofc:ship` contra um brief commitado, construindo todo o backlog e deixando um PR em rascunho. nesse caminho, o never-merge é garantido por **capability scoping** — a routine roda com um token sem permissão de merge/push em branch e sem connector capaz de merge — apoiado pela branch protection do GitHub. controles do lado do servidor, não um hook local.
 
-| skill                | description                                                              |
-| -------------------- | ------------------------------------------------------------------------ |
-| `/ofc:maintain-repo` | triage PRs + dependabot/outdated, report what's mergeable (never merges) |
+| skill                | descrição                                                                            |
+| -------------------- | ------------------------------------------------------------------------------------ |
+| `/ofc:maintain-repo` | tria PRs + dependabot/desatualizados, reporta o que dá pra mergear (nunca faz merge) |
 
-develop locally:
+desenvolva localmente:
 
 ```bash
 git clone git@github.com:inspira-legal/ofc-skills.git
-claude --plugin-dir ./ofc-skills/plugins/ofc    # load the plugin from disk to test
+claude --plugin-dir ./ofc-skills/plugins/ofc    # carrega o plugin do disco pra testar
 ```
 
-<sub>`/ofc:improve-code` is adapted from Claude Code's `/simplify` (Anthropic, Apache-2.0). individual components retain their original licenses.</sub>
+<sub>`/ofc:improve-code` é adaptada do `/simplify` do Claude Code (Anthropic, Apache-2.0). componentes individuais mantêm suas licenças originais.</sub>
