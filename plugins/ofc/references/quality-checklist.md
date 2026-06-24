@@ -1,7 +1,13 @@
-# Simplification Checklist
+# Quality Checklist
 
-Quality pass over the code this branch changed. Read every hunk with its
-surrounding context (open the file, not just the diff) before judging it.
+The canonical quality pass over the code a branch changed — the single source of
+truth shared by `ofc:improve-code` (standalone) and `ofc:ship`'s Pass 2, so a diff
+is judged identically wherever it is reviewed. **Quality only, strictly
+behavior-preserving** — finding or fixing bugs is correctness review (ship's Pass
+1), not this.
+
+Read every hunk with its surrounding context (open the file, not just the diff)
+before judging it.
 
 **Scope rule:** only touch code already changed by this branch — do not refactor
 untouched code "while at it".
@@ -14,8 +20,7 @@ compact code — never trade legibility for fewer lines (no nested ternaries, no
 dense one-liners). Prefer a `switch` or an `if`/`else` chain over stacked
 ternaries for multiple conditions.
 
-These six criteria mirror `ofc:ship`'s Pass 2 so the standalone simplify pass and
-the PR-finalization pass judge a diff identically.
+## The six criteria
 
 - **Reuse** — logic duplicated within the diff, or re-implementing a helper that
   already exists in the codebase (search before concluding it doesn't).

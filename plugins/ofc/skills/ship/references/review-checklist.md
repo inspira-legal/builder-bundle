@@ -19,15 +19,6 @@ For each finding: file:line, what breaks, a concrete input/scenario that trigger
 
 ## Pass 2 — Quality (simplify; no behavior changes)
 
-These criteria are shared with the standalone `/ofc:improve-code` skill — keep the two in sync so a diff is judged identically here and there.
+Apply the shared **quality checklist** — `references/quality-checklist.md` at the plugin root, the single source of truth used here and by the standalone `/ofc:improve-code` skill, so a diff is judged identically wherever it's reviewed. It covers the six criteria (reuse, simplification, dead weight, efficiency, altitude, consistency), the scope/behavior/clarity rules, and the over-simplification guard.
 
-Only touch code already changed by this branch — do not refactor untouched code "while at it".
-
-- **Reuse** — logic duplicated within the diff, or re-implementing a helper that already exists in the codebase (search before concluding it doesn't)
-- **Simplification** — collapse needless indirection, flatten over-nested conditionals, remove flags/params with a single caller
-- **Dead weight** — unused imports/variables/branches introduced by the branch, leftover debug code, commented-out code
-- **Efficiency** — obvious O(n²) over collections that can be O(n), repeated I/O or queries inside loops, recomputing invariants per iteration
-- **Altitude** — code placed at the wrong layer (e.g. project-specific logic in shared, or reusable logic buried in a feature folder), respecting the project's stated architecture conventions
-- **Consistency** — naming, error envelopes, and patterns matching what neighboring code does
-
-After each quality edit, re-run the relevant local check (lint/typecheck/tests for the touched area) — a simplification that breaks behavior is a regression, not a cleanup.
+Only touch code already changed by this branch. After each quality edit, re-run the relevant local check (lint/typecheck/tests for the touched area) — a simplification that breaks behavior is a regression, not a cleanup.

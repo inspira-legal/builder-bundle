@@ -4,14 +4,16 @@ description: Improve the quality of the code this branch changed — reuse, simp
 license: Apache-2.0
 metadata:
   author: adapted from Claude Code's /simplify (Anthropic, Apache-2.0), with stricter regression guards, by Athena Briana - github.com/athenabriana
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 # Improve Code
 
 A focused quality pass over the current change: make it simpler, leaner, and more
 consistent **without changing behavior**. The standalone version of `ofc:ship`'s
-Pass 2 — reach for it any time, not just when finalizing a PR.
+Pass 2 — reach for it any time, not just when finalizing a PR. Both apply the same
+shared **quality checklist** (`references/quality-checklist.md` at the plugin
+root), so a diff is judged identically here and at ship.
 
 **Quality only.** It does not hunt for or fix bugs. If you want correctness
 review, that is Pass 1 of `/ofc:ship` — use that skill. Mixing the two makes
@@ -40,26 +42,16 @@ a defect, not an improvement. So:
 - **When in doubt, leave it and flag it.** A missed cleanup costs nothing; a
   regression costs trust.
 
-## Scope (read before editing)
-
-- **Only touch code this branch already changed.** Never refactor untouched code
-  "while at it" — that turns a clean diff into an unreviewable one.
-- **Zero behavior change.** Every edit must be behavior-preserving. A
-  "simplification" that changes what the code does is a regression, not a cleanup.
-- **Clarity over brevity.** Explicit, readable code beats clever or compact code.
-  Do not trade "fewer lines" for legibility — collapsing logic into a dense
-  one-liner or a nested ternary is not a simplification.
-
 ## Workflow
 
 1. **Get the change scope.** Resolve the base (default branch) and read the diff —
    `git diff <base>...HEAD` plus any uncommitted changes (`git diff`). Read each
    hunk **with its surrounding file context** (open the file, not just the diff)
    before judging it.
-2. **Review against the checklist** in `references/quality-checklist.md` (reuse,
-   simplification, dead weight, efficiency, altitude, consistency). Before
-   concluding a helper doesn't exist, **search the codebase** — duplication you
-   can't see isn't reuse you can claim.
+2. **Review against the shared quality checklist** (`references/quality-checklist.md`
+   at the plugin root) — the six criteria plus the scope, behavior, clarity, and
+   over-simplification rules. Before concluding a helper doesn't exist, **search
+   the codebase** — duplication you can't see isn't reuse you can claim.
 3. **Apply the cleanups incrementally**, scoped to changed code only, matching the
    surrounding naming/error-envelope/patterns. Apply one logical change, re-run
    the relevant check, then the next (regression guard). For a large diff, fan out
@@ -71,19 +63,8 @@ a defect, not an improvement. So:
 5. **Summarize** what changed and why, grouped by checklist area, and flag any
    cleanup you held back as too risky to do silently.
 
-## Maintain balance — do NOT over-simplify
-
-Stop short of changes that hurt the code even if they shrink it:
-
-- Don't fold separate concerns into one function/component to save a definition.
-- Don't strip a helpful abstraction that genuinely organizes the code.
-- Don't make the code harder to debug, extend, or read in pursuit of "elegance".
-- When an edit's value is marginal and its risk to clarity is real, leave it.
-
 ## Bundled Resources
 
-### references/quality-checklist.md
-
-The six quality criteria applied here — the canonical checklist, kept consistent
-with `ofc:ship` Pass 2 so the standalone and PR-finalization flows judge a diff
-the same way.
+The quality criteria live in the plugin-root `references/quality-checklist.md`
+(shared with `ofc:ship`'s Pass 2), not in this skill — one source of truth so the
+standalone and PR-finalization flows judge a diff the same way.
