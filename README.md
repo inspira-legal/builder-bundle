@@ -31,6 +31,17 @@ one plugin, `ofc`; the skills are organized by use.
 | `/ofc:address-comments`      | address review comments on github PRs                                                                                                                                    |
 | `/ofc:gather-branch-context` | summarize all changes on the branch vs main                                                                                                                              |
 | `/ofc:improve-code`          | improve a diff's quality with a hard regression guard (no bugs)                                                                                                          |
+| `/ofc:write-readme`          | generate a minimal centered-header README from repo facts                                                                                                                |
+
+### think & research — understand & decide, before you build
+
+| skill                     | description                                                                                                        |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `/ofc:frame-problem`      | frame the problem before any solution — the bet, who hurts, the success signal & appetite                          |
+| `/ofc:assess-fit`         | pressure-test a framed problem — worth building? what to cut, in what order, the one testable bet                  |
+| `/ofc:code-deep-research` | find, clone & explore repos, then adversarially verify findings against the source                                 |
+| `/ofc:legal-lens`         | a juridical pass over an idea, flow, or doc — legal & compliance risk, grounded in cited norms (brazil by default) |
+| `/ofc:answer-yourself`    | honest, decisive recommendation — commit, name the unseen tension, no sycophancy                                   |
 
 ### loops — run across time (scheduled / event-driven)
 
@@ -39,14 +50,6 @@ there's no dedicated overnight skill — the unattended path **is** the trio: a 
 | skill                | description                                                              |
 | -------------------- | ------------------------------------------------------------------------ |
 | `/ofc:maintain-repo` | triage PRs + dependabot/outdated, report what's mergeable (never merges) |
-
-### helpers — standalone
-
-| skill                     | description                                                                        |
-| ------------------------- | ---------------------------------------------------------------------------------- |
-| `/ofc:code-deep-research` | find, clone & explore repos, then adversarially verify findings against the source |
-| `/ofc:write-readme`       | generate a minimal centered-header README from repo facts                          |
-| `/ofc:answer-yourself`    | honest, decisive recommendation — commit, name the unseen tension, no sycophancy   |
 
 develop locally:
 
