@@ -1,0 +1,24 @@
+name: Validate
+
+on:
+  pull_request:
+    paths:
+      - "**/SKILL.md"
+      - "skills/**"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Validate frontmatter
+        run: bun .github/scripts/validate-frontmatter.ts
+
+      - name: Check formatting
+        run: bun run fmt:check

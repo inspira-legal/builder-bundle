@@ -1,0 +1,14 @@
+{
+  "name": "ofc-skills",
+  "private": true,
+  "scripts": {
+    "fmt": "oxfmt --write .",
+    "fmt:check": "oxfmt --check .",
+    "validate": "bun .github/scripts/validate-frontmatter.ts"
+  },
+  "devDependencies": {
+    "lefthook": "latest",
+    "oxfmt": "0.43.0",
+    "yaml": "^2.8.3"
+  }
+}

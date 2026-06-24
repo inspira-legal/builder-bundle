@@ -1,0 +1,15 @@
+{
+  "name": "inspira-legal",
+  "owner": {
+    "name": "Athena Briana",
+    "email": "me@athenabriana.com"
+  },
+  "description": "Oficina (OFC) agent skills as a single installable plugin.",
+  "plugins": [
+    {
+      "name": "ofc",
+      "source": "./plugins/ofc",
+      "description": "shape & ship code, run loops across time (never-merge enforced by cloud capability scoping), and helpers — invoked as /ofc:<skill>"
+    }
+  ]
+}
