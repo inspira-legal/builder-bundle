@@ -16,14 +16,14 @@ import argparse
 import sys
 
 PROMPT = """\
-Set OFC_UNATTENDED=1. Run /ofc:implement against `.ofc/tasks/{slug}/shape.md` in \
-{repo}: build every unchecked task in the brief, keeping the local gate green \
-(cap retries at 3 on known-flake signatures only). Commit per slice to a \
-`claude/{slug}` branch. When the build is clean, chain into /ofc:ship — open a \
-DRAFT PR against `{base}` and watch it to resolution (green CI + handled \
-review-bot threads), bounded by the run budget. Do not merge, do not push to a \
-protected branch. If a task or the gate blocks unrecoverably, write the blocker \
-into the PR description and exit."""
+Set OFC_UNATTENDED=1. Run /ofc:delegate {slug} against `.ofc/tasks/{slug}/shape.md` \
+in {repo}: it builds every unchecked task in the brief, keeping the local gate green \
+(cap retries at 3 on known-flake signatures only), commits per slice to a \
+`claude/{slug}` branch, then chains into /ofc:ship — open a DRAFT PR against \
+`{base}` and watch it to resolution (green CI + handled review-bot threads), \
+bounded by the run budget. Do not merge, do not push to a protected branch. If a \
+task or the gate blocks unrecoverably, flip the brief's status to blocked, write \
+the blocker into the PR description, and exit."""
 
 CHECKLIST = """\
 Do this once per repo:
@@ -62,6 +62,7 @@ def self_test() -> int:
     assert "=== Routine prompt ===" in out
     assert "=== Setup checklist ===" in out
     assert "OFC_UNATTENDED=1" in out
+    assert "/ofc:delegate skill-flow-tightening" in out
     assert "claude/skill-flow-tightening" in out
     assert "inspira-legal/ofc-skills" in out
     assert "DRAFT PR against `trunk`" in out
