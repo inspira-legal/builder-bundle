@@ -68,6 +68,25 @@ Examples of what should be a script:
 - Scripts write to stdout (JSON or plain text) for the LLM to consume
 - New scripts should use Python, stdlib only (no third-party imports)
 
+## Task briefs
+
+A shaped task lives at `.ofc/tasks/<slug>/shape.md` (written by `/ofc:shape`, consumed by `/ofc:implement`, `/ofc:ship`, and `/ofc:delegate`). Every brief opens with a YAML frontmatter block so both a manual `/ofc:delegate` and an unattended Cloud Routine select and track work the same way, without parsing prose:
+
+```yaml
+---
+status: pending # pending | in-progress | done | blocked
+created: 2026-06-25 # YYYY-MM-DD, set when the brief is first written
+slug: <kebab-slug> # matches the dir name
+---
+```
+
+- `pending` — no slice done yet.
+- `in-progress` — some slices done, not landed (resumable).
+- `done` — the implement→ship chain completed its landing.
+- `blocked` — implement's safety-valve or ship hit an unrecoverable stop; needs a human.
+
+**`/ofc:delegate` owns the status lifecycle** — it flips the value as it selects, runs, and lands a task. `shape` only writes the initial block (`status: pending`) on finalize, and backfills it on legacy briefs that predate the convention. The slice-level `## tasks` checkboxes stay `implement`'s concern; `status` is the coarse, selectable task-level state on top. Legacy briefs without the block are treated as `pending` with an unknown `created` (sorted last in bare selection).
+
 ## Commits
 
 - No AI attribution in commits, PRs, or code comments
