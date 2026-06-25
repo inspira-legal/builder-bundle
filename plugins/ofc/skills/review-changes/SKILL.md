@@ -56,14 +56,14 @@ the local diff, not a PR.
 
 ## Edge cases
 
-| WHEN | THEN |
-| --- | --- |
-| diff vs base is empty | report "no changes to review", stop |
-| no findings | report "clean", suggest `/ofc:ship` |
-| only quality smells | report them, suggest `/ofc:tidy` |
-| correctness bugs found | report them, offer to fix or hand to `/ofc:ship` |
-| uncommitted changes present | include them in scope, flag them separately in the report |
-| not a git repo / no base resolvable | report the error, stop |
+| WHEN                                | THEN                                                      |
+| ----------------------------------- | --------------------------------------------------------- |
+| diff vs base is empty               | report "no changes to review", stop                       |
+| no findings                         | report "clean", suggest `/ofc:ship`                       |
+| only quality smells                 | report them, suggest `/ofc:tidy`                          |
+| correctness bugs found              | report them, offer to fix or hand to `/ofc:ship`          |
+| uncommitted changes present         | include them in scope, flag them separately in the report |
+| not a git repo / no base resolvable | report the error, stop                                    |
 
 ## Bundled Resources
 

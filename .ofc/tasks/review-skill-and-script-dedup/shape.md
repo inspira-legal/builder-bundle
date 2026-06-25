@@ -83,7 +83,7 @@ Skill bodies:
 - `review-changes/SKILL.md` — inline `git diff`; fan out per shared `review-checklist.md`;
   report-only; suggest next step. Points at `quality-checklist.md` for Pass 2 criteria.
 - `tidy-pr/SKILL.md` (was `address-comments`) — `${CLAUDE_PLUGIN_ROOT}/scripts/fetch_comments.py`
-  + `reply_resolve_thread.py`; curate → handle → reply/resolve; optional title/body polish.
+  - `reply_resolve_thread.py`; curate → handle → reply/resolve; optional title/body polish.
 - `ship/SKILL.md` — point Pass 1/2 at plugin-root `review-checklist.md`; point shared
   script refs at `${CLAUDE_PLUGIN_ROOT}/scripts/`; keep `inspect_pr_checks.py` local.
 - `gather-branch-context/SKILL.md` — point at unified `${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py`.
@@ -100,14 +100,14 @@ uncommitted → fan out one read-only agent per `review-checklist.md` area (smal
 inline) → dedupe findings → print grouped report (correctness / quality), **no edits** →
 suggest next step from the findings.
 
-| WHEN | THEN |
-| --- | --- |
-| diff vs base is empty | report "no changes to review", stop |
-| no findings | report "clean", suggest `/ofc:ship` |
-| only quality smells | report them, suggest `/ofc:tidy` |
-| correctness bugs found | report them, offer to fix or hand to `/ofc:ship` |
-| uncommitted changes present | include in scope, flag them separately |
-| not a git repo / no base resolvable | report the error, stop |
+| WHEN                                | THEN                                             |
+| ----------------------------------- | ------------------------------------------------ |
+| diff vs base is empty               | report "no changes to review", stop              |
+| no findings                         | report "clean", suggest `/ofc:ship`              |
+| only quality smells                 | report them, suggest `/ofc:tidy`                 |
+| correctness bugs found              | report them, offer to fix or hand to `/ofc:ship` |
+| uncommitted changes present         | include in scope, flag them separately           |
+| not a git repo / no base resolvable | report the error, stop                           |
 
 ### tidy-pr (curated, lightweight)
 
@@ -116,44 +116,44 @@ unresolved threads with one-line summaries → **user picks** which → for each
 fix (code) or compose answer, then reply + resolve → optionally offer title/body polish
 → report what was handled. No CI watch, no quality pass, no merge.
 
-| WHEN | THEN |
-| --- | --- |
-| no open PR for the branch | tell user, suggest `/ofc:ship` to create one, stop |
-| `gh` not authenticated | prompt `gh auth login`, stop |
-| no unresolved threads | report "nothing to address", offer title/body polish |
-| user selects no threads | do nothing, stop |
+| WHEN                        | THEN                                                             |
+| --------------------------- | ---------------------------------------------------------------- |
+| no open PR for the branch   | tell user, suggest `/ofc:ship` to create one, stop               |
+| `gh` not authenticated      | prompt `gh auth login`, stop                                     |
+| no unresolved threads       | report "nothing to address", offer title/body polish             |
+| user selects no threads     | do nothing, stop                                                 |
 | fix-thread code change made | reply with what changed + commit sha, resolve; push to PR branch |
-| answer-thread | reply, do NOT resolve (reviewer closes) |
+| answer-thread               | reply, do NOT resolve (reviewer closes)                          |
 
 ### scripts / convention
 
-| WHEN | THEN |
-| --- | --- |
-| skill body needs a shared script | references `${CLAUDE_PLUGIN_ROOT}/scripts/<x>.py` (per amended convention) |
-| skill needs its own (non-shared) script | stays relative `scripts/<x>.py` (rule unchanged) |
-| gather script called without PR context | returns branch/base/diff/uncommitted; PR-template fields empty/omitted |
+| WHEN                                    | THEN                                                                       |
+| --------------------------------------- | -------------------------------------------------------------------------- |
+| skill body needs a shared script        | references `${CLAUDE_PLUGIN_ROOT}/scripts/<x>.py` (per amended convention) |
+| skill needs its own (non-shared) script | stays relative `scripts/<x>.py` (rule unchanged)                           |
+| gather script called without PR context | returns branch/base/diff/uncommitted; PR-template fields empty/omitted     |
 
 ## tasks
 
 - [ ] **Amend the script-reference convention** in `.claude/CLAUDE.md` — allow
-  `${CLAUDE_PLUGIN_ROOT}/scripts/` in skill bodies for shared plugin-root scripts; keep
-  the relative rule for skill-owned scripts. (delivers: scripts/convention behavior)
+      `${CLAUDE_PLUGIN_ROOT}/scripts/` in skill bodies for shared plugin-root scripts; keep
+      the relative rule for skill-owned scripts. (delivers: scripts/convention behavior)
 - [ ] **Centralize shared scripts** → `plugins/ofc/scripts/`: move `fetch_comments.py` +
-  `reply_resolve_thread.py`; unify the two gather scripts into `gather_context.py`;
-  repoint `ship` + `gather-branch-context`; keep `inspect_pr_checks.py` in ship.
-  (delivers: gather-without-PR behavior, dedup)
+      `reply_resolve_thread.py`; unify the two gather scripts into `gather_context.py`;
+      repoint `ship` + `gather-branch-context`; keep `inspect_pr_checks.py` in ship.
+      (delivers: gather-without-PR behavior, dedup)
 - [ ] **Move `review-checklist.md`** → `plugins/ofc/references/`; repoint ship's Pass 1/2.
-  (delivers: shared review engine)
+      (delivers: shared review engine)
 - [ ] **Create `/ofc:review-changes`** — report-only correctness + quality review,
-  inline diff, fan-out per shared checklist, suggest next step. (delivers: all
-  review-changes behaviors)
+      inline diff, fan-out per shared checklist, suggest next step. (delivers: all
+      review-changes behaviors)
 - [ ] **Reframe `address-comments` → `/ofc:tidy-pr`** — rename dir/name/cross-refs;
-  curated threads + reply/resolve via centralized scripts; optional title/body polish.
-  (delivers: all tidy-pr behaviors)
+      curated threads + reply/resolve via centralized scripts; optional title/body polish.
+      (delivers: all tidy-pr behaviors)
 - [ ] **Docs + release** — README (add `review-changes`, rename `address-comments`→
-  `tidy-pr`, refresh descriptions), `.claude/CLAUDE.md` structure tree, bump
-  `plugin.json` 1.14.0 → 1.15.0, run `bun run fmt` + `fmt:check` + `validate`.
-  (delivers: discoverability, release)
+      `tidy-pr`, refresh descriptions), `.claude/CLAUDE.md` structure tree, bump
+      `plugin.json` 1.14.0 → 1.15.0, run `bun run fmt` + `fmt:check` + `validate`.
+      (delivers: discoverability, release)
 
 ## out of scope
 

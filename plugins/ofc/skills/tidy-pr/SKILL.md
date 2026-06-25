@@ -51,15 +51,15 @@ a few threads cleared, not the full ship treatment.
 
 ## Edge cases
 
-| WHEN | THEN |
-| --- | --- |
-| no open PR for the branch | tell the user, suggest `/ofc:ship` to create one, stop |
-| `gh` not authenticated | prompt `gh auth login`, stop |
-| no unresolved threads | report "nothing to address", offer the title/body polish |
-| user selects no threads | do nothing, stop (optionally offer the polish) |
-| fix-thread code change made | reply with what changed + commit sha, resolve, push to the PR branch |
-| answer-thread | reply, do NOT resolve (the reviewer closes it) |
-| `gh` hits auth/rate issues mid-run | prompt `gh auth login`, then retry |
+| WHEN                               | THEN                                                                 |
+| ---------------------------------- | -------------------------------------------------------------------- |
+| no open PR for the branch          | tell the user, suggest `/ofc:ship` to create one, stop               |
+| `gh` not authenticated             | prompt `gh auth login`, stop                                         |
+| no unresolved threads              | report "nothing to address", offer the title/body polish             |
+| user selects no threads            | do nothing, stop (optionally offer the polish)                       |
+| fix-thread code change made        | reply with what changed + commit sha, resolve, push to the PR branch |
+| answer-thread                      | reply, do NOT resolve (the reviewer closes it)                       |
+| `gh` hits auth/rate issues mid-run | prompt `gh auth login`, then retry                                   |
 
 Pushing fixes to the PR branch is reversible, so this runs without pausing; merge,
 approve, and force-push stay yours — tidy-pr never runs them.

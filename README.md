@@ -28,7 +28,8 @@ um plugin, `ofc`; as skills são organizadas por uso.
 | `/ofc:shape`                 | alinhe a ideia antes de construir — desenvolve, itera nas zonas cinzentas via perguntas, valida                                                                                |
 | `/ofc:implement`             | implementa um brief de shape validado — constrói as fatias, roda o gate, depois oferece entregar (ou emenda direto)                                                            |
 | `/ofc:ship`                  | leve a branch ao fim do seu jeito — revisa + deixa os checks verdes, então push numa branch, prepara push pra main, ou abre um PR e cuida dele (comentários, CI, fica de olho) |
-| `/ofc:address-comments`      | responde comentários de review em PRs do github                                                                                                                                |
+| `/ofc:review-changes`        | revisa o diff da branch — bugs de correção + qualidade — só reporta e sugere o próximo passo, nunca edita                                                                      |
+| `/ofc:tidy-pr`               | passada leve e curada nos threads de review do PR aberto — você escolhe quais tratar; corrige/responde, resolve, e pode ajustar título/corpo                                   |
 | `/ofc:gather-branch-context` | resume todas as mudanças da branch vs main                                                                                                                                     |
 | `/ofc:tidy`                  | passada de qualidade behavior-preserving num diff, com guarda dura contra regressão (sem caça a bug)                                                                           |
 | `/ofc:write-readme`          | gera um README mínimo de cabeçalho centralizado a partir dos fatos do repo                                                                                                     |

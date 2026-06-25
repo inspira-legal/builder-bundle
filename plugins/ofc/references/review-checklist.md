@@ -21,4 +21,4 @@ Report each finding as `file:line | what breaks | a concrete triggering input/sc
 
 Apply the shared **quality checklist** — `references/quality-checklist.md` at the plugin root, the single source of truth used here and by the standalone `/ofc:tidy` skill, so a diff is judged identically wherever it's reviewed. It covers the six criteria (reuse, simplification, dead weight, efficiency, altitude, consistency), the scope/behavior/clarity rules, and the over-simplification guard.
 
-Scope is code this branch already changed. A consumer that *applies* Pass 2 (`/ofc:ship`, `/ofc:tidy`) re-runs the relevant local check after each quality edit — a simplification that breaks behavior is a regression, not a cleanup. A report-only consumer (`/ofc:review-changes`) just lists the smells and suggests `/ofc:tidy`.
+Scope is code this branch already changed. A consumer that _applies_ Pass 2 (`/ofc:ship`, `/ofc:tidy`) re-runs the relevant local check after each quality edit — a simplification that breaks behavior is a regression, not a cleanup. A report-only consumer (`/ofc:review-changes`) just lists the smells and suggests `/ofc:tidy`.
