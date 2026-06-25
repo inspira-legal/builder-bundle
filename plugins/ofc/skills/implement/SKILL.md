@@ -4,7 +4,7 @@ description: Implement a validated `.ofc/tasks/<slug>/shape.md` brief in the wor
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 # Implement
@@ -24,6 +24,6 @@ A validated `.ofc/tasks/<slug>/shape.md` (brief + a `## tasks` checklist). If th
 5. **Commit per slice, check the box.** Commit in logical units (conventional style; no AI attribution), and tick that slice's `- [ ]` → `- [x]` in the `## tasks` section as it lands — so progress is visible and a partial run is resumable. **Unattended:** put the commits on a `claude/<slug>` branch (create it before the first commit; the routine clones on the default branch) so ship opens the draft PR from it.
 6. **Safety valve.** If a slice reveals the idea was underspecified — surprises pile up, scope wants to grow, a decision the brief skipped now bites — STOP and hand back to `/ofc:shape` to re-shape. Don't improvise past the brief; that's the signal alignment was incomplete.
 7. **Hand off — offer to ship, or chain.** Summarize what landed against the task list (done / skipped / blocked). Then branch on how the run went:
-   - **Clean and supervised** (every slice landed, gate green): if shipping was already authorized this session — the user picked "Build and ship" at the shape gate — skip the question and invoke `/ofc:ship` directly. Otherwise offer it via `AskUserQuestion`: lead **"Ship it now"** (invoke `/ofc:ship`) against **"Stop here"** (print the command and stop). Either path, ship loads this same brief as the intent.
+   - **Clean and supervised** (every slice landed, gate green): offer ship via `AskUserQuestion` — lead **"Ship it now"** (invoke `/ofc:ship`) against **"Stop here"** (print the command and stop). Either path, ship loads this same brief as the intent. (When the whole run is wanted up front without this stop, that's `/ofc:delegate` — it drives this build loop and chains into ship itself; implement reached directly is the build-without-ship hatch.)
    - **Clean and unattended:** no question to ask — invoke `/ofc:ship` directly. It opens the draft PR on the `claude/<slug>` branch and watches it to resolution.
    - **Not clean** (a slice blocked, or the safety valve fired): report done/skipped/blocked and point back to `/ofc:shape` to re-shape — **don't** offer ship. A partial build shouldn't become a PR that claims to satisfy the brief.

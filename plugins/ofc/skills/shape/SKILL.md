@@ -1,10 +1,10 @@
 ---
 name: shape
-description: Align on the idea before building — Claude develops a draft, loops with you through the question tool on the gray areas (the load-bearing technical decisions AND a meticulous behavior map — happy path + edge cases with expected outcomes), runs an adversarial completeness pass (generators + an independent reviewer subagent + behavior↔task traceability), and gates on a three-way build / build-and-ship / stop pick, blocking while any load-bearing decision or behavior is still open. Auto-sizes by complexity. Reads upstream `## problem` / `## hypothesis` / `## fit` from /ofc:frame-problem and /ofc:assess-fit when present, building the design on the framed intent. Use when the user says "shape this", "let's plan", "think this through", "what should we build", "discuss before building", or starts a non-trivial feature or project. Do NOT use for tiny mechanical changes (just do them), for code-quality cleanups (use /ofc:tidy), or to find bugs (use /ofc:ship).
+description: Align on the idea before building — Claude develops a draft, loops with you through the question tool on the gray areas (the load-bearing technical decisions AND a meticulous behavior map — happy path + edge cases with expected outcomes), runs an adversarial completeness pass (generators + an independent reviewer subagent + behavior↔task traceability), and gates on a two-way delegate / stop pick, blocking while any load-bearing decision or behavior is still open. Auto-sizes by complexity. Reads upstream `## problem` / `## hypothesis` / `## fit` from /ofc:frame-problem and /ofc:assess-fit when present, building the design on the framed intent. Use when the user says "shape this", "let's plan", "think this through", "what should we build", "discuss before building", or starts a non-trivial feature or project. Do NOT use for tiny mechanical changes (just do them), for code-quality cleanups (use /ofc:tidy), or to find bugs (use /ofc:ship).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 1.13.0
+  version: 1.14.0
 ---
 
 # Shape
@@ -46,7 +46,7 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
 
 6. **The exit gate — blocks on open load-bearing decisions.** Don't gate blind: first **show the artifact the user is signing off on** — a tight recap of the happy path, the full edge→outcome table, the **coverage table** (behavior → slice → test) with `⚠️` on any unmapped row plus a one-line counter (`N behaviors, M mapped, K open`), and (Medium+) the **independent reviewer's verdict** in one line (clean, or what it flagged and how it was resolved) — so "is this complete?" is answerable at a glance instead of forcing them to reopen the file. Rendering the coverage and the verdict is what turns the completeness pass from a claim into something the user can verify. Then list what's **still open** (unresolved load-bearing decisions + parked questions). Then ask one `AskUserQuestion`:
    - **If any load-bearing decision is still open:** do NOT offer a clean "build". The only options are **resolve it now** or **defer explicitly** ("decide at build time" — recorded as such in the brief). Never a silent "build anyway".
-   - **If nothing load-bearing is open:** finalize `.ofc/tasks/<slug>/shape.md`, then offer three paths — **Build** (invoke `/ofc:implement` now), **Build and ship** (invoke `/ofc:implement`, and pre-authorize ship for this session so implement chains into `/ofc:ship` once the build is clean — see "Hand off"), or **Stop here** (leave the brief; the user picks up later). Choosing to adjust instead is always available — that loops back into the question tool; a Build pick is the affirmative start, not a silent roll-through.
+   - **If nothing load-bearing is open:** finalize `.ofc/tasks/<slug>/shape.md` (with its frontmatter block — see "Capture the alignment"), then offer two paths — **Delegate** (invoke `/ofc:delegate <slug>` now: it builds every slice and lands it, the full `implement → ship` run) or **Stop here** (leave the brief; the user picks up later). Choosing to adjust instead is always available — that loops back into the question tool; Delegate is the affirmative start, not a silent roll-through. (Build-without-ship is still one command away — `/ofc:implement` — it's just not a gate option.)
 
 Size the ask to the stakes: cheap-to-reverse decisions lead with your pick (the user vetoes if wrong); expensive-to-undo ones lay the options out and let them choose. Full playbook in `references/draft-first.md`.
 
@@ -78,6 +78,18 @@ Write a single `.ofc/tasks/<slug>/shape.md` — the converged draft itself: **wh
 
 `<slug>` is a short kebab name for the idea. If `.ofc/tasks/<slug>/shape.md` already exists for a _different_ idea, suffix it (`-2`) or ask — never silently overwrite another brief.
 
+On finalize, open the brief with the **frontmatter block** that `/ofc:delegate` and a Cloud Routine select and track on (schema in `.claude/CLAUDE.md`):
+
+```yaml
+---
+status: pending
+created: <today, YYYY-MM-DD>
+slug: <slug>
+---
+```
+
+Always `status: pending` (no slice built yet); `created` is today; `slug` matches the dir. If an upstream skill (`/ofc:frame-problem`, `/ofc:assess-fit`) wrote the file first without the block, backfill it on finalize. Leave the lifecycle after this to delegate — shape only seeds `pending`.
+
 For **Large** work, capture the closed technical decisions in a `## design` section — components and their boundaries, the data model, key data flows, and the decisions that bite — so the architecture is reviewable as one block and the build side (`/ofc:implement`, then `/ofc:ship`) reads it as the intent. **Medium** work keeps these inline in the decisions above; no `## design` block (that would be ceremony for a small feature).
 
 For Large work, also capture the **behavior map** in a `## behavior` section — the happy path step by step plus an edge→outcome table whose rows are phrased `WHEN … THEN …` (each row a test). It's the acceptance contract the build and review check against (Medium keeps it inline).
@@ -90,11 +102,10 @@ Before asserting how something works: check the codebase, then its docs, then th
 
 ## Hand off — the gate decides whether to roll on
 
-shape always ends at a validated `.ofc/tasks/<slug>/shape.md`; the brief is the durable asset either way. What changes is what happens next, and the gate's 3-way pick (above) decides it — the seam between shaping and building is a checkpoint the user crosses on purpose, not a wall.
+shape always ends at a validated `.ofc/tasks/<slug>/shape.md`; the brief is the durable asset either way. What changes is what happens next, and the gate's 2-way pick (above) decides it — the seam between shaping and building is a checkpoint the user crosses on purpose, not a wall.
 
-- **Build:** invoke `/ofc:implement` now — it loads this brief as the intent and stops ready to ship, where it offers `/ofc:ship`.
-- **Build and ship:** invoke `/ofc:implement` and pre-authorize ship for this session (a conversational hand-off — no env var). Implement builds, and on a clean run chains straight into `/ofc:ship` without re-asking. This is the natural daytime flow.
-- **Stop here:** leave the brief and say the next step plainly — "Brief saved at `.ofc/tasks/<slug>/shape.md`. To build it later: `/ofc:implement`, then `/ofc:ship`." For an unattended overnight run, point to the routine guide (`references/routines.md` at the plugin root): commit the brief, then schedule `implement → ship` under `OFC_UNATTENDED`.
+- **Delegate:** invoke `/ofc:delegate <slug>` now — it loads this brief as the intent, builds every slice, and lands it (the full `/ofc:implement` → `/ofc:ship` run, the same verb the overnight routine uses). The natural "I'm happy, run it" path.
+- **Stop here:** leave the brief and say the next step plainly — "Brief saved at `.ofc/tasks/<slug>/shape.md`. To run it later: `/ofc:delegate <slug>` (build + ship), or just `/ofc:implement` to build without shipping." For an unattended overnight run, point to the routine guide (`references/routines.md` at the plugin root): commit the brief, then schedule `/ofc:delegate <slug>` under `OFC_UNATTENDED`.
 
 **Safety valve:** if building later reveals the idea was underspecified (surprises pile up), STOP and re-shape — that's the signal alignment was incomplete, not a license to improvise.
 
