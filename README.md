@@ -23,16 +23,17 @@ um plugin, `ofc`; as skills são organizadas por uso.
 
 ### shape & ship — escrever & entregar código, conduzido por você
 
-| skill                        | descrição                                                                                                                                                                      |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `/ofc:shape`                 | alinhe a ideia antes de construir — desenvolve, itera nas zonas cinzentas via perguntas, valida                                                                                |
-| `/ofc:implement`             | implementa um brief de shape validado — constrói as fatias, roda o gate, depois oferece entregar (ou emenda direto)                                                            |
-| `/ofc:ship`                  | leve a branch ao fim do seu jeito — revisa + deixa os checks verdes, então push numa branch, prepara push pra main, ou abre um PR e cuida dele (comentários, CI, fica de olho) |
-| `/ofc:review-changes`        | revisa o diff da branch — bugs de correção + qualidade — só reporta e sugere o próximo passo, nunca edita                                                                      |
-| `/ofc:tidy-pr`               | passada leve e curada nos threads de review do PR aberto — você escolhe quais tratar; corrige/responde, resolve, e pode ajustar título/corpo                                   |
-| `/ofc:gather-branch-context` | resume todas as mudanças da branch vs main                                                                                                                                     |
-| `/ofc:tidy`                  | passada de qualidade behavior-preserving num diff, com guarda dura contra regressão (sem caça a bug)                                                                           |
-| `/ofc:write-readme`          | gera um README mínimo de cabeçalho centralizado a partir dos fatos do repo                                                                                                     |
+| skill                        | descrição                                                                                                                                                                                                                                                |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/ofc:shape`                 | alinhe a ideia antes de construir — desenvolve, itera nas zonas cinzentas via perguntas, valida                                                                                                                                                          |
+| `/ofc:implement`             | implementa um brief de shape validado — constrói as fatias, roda o gate, depois oferece entregar (ou emenda direto)                                                                                                                                      |
+| `/ofc:ship`                  | leve a branch ao fim do seu jeito — revisa + deixa os checks verdes, então push numa branch, prepara push pra main, ou abre um PR e cuida dele (comentários, CI, fica de olho)                                                                           |
+| `/ofc:delegate`              | roda uma task shapeada de ponta a ponta — escolhe o brief, constrói as fatias e entrega (implement → ship), trilhando o `status`; `/ofc:delegate <slug>` mira uma task, sem nome pega a mais antiga pendente. o mesmo verbo no desk e na routine noturna |
+| `/ofc:review-changes`        | revisa o diff da branch — bugs de correção + qualidade — só reporta e sugere o próximo passo, nunca edita                                                                                                                                                |
+| `/ofc:tidy-pr`               | passada leve e curada nos threads de review do PR aberto — você escolhe quais tratar; corrige/responde, resolve, e pode ajustar título/corpo                                                                                                             |
+| `/ofc:gather-branch-context` | resume todas as mudanças da branch vs main                                                                                                                                                                                                               |
+| `/ofc:tidy`                  | passada de qualidade behavior-preserving num diff, com guarda dura contra regressão (sem caça a bug)                                                                                                                                                     |
+| `/ofc:write-readme`          | gera um README mínimo de cabeçalho centralizado a partir dos fatos do repo                                                                                                                                                                               |
 
 ### think & research — entender & decidir, antes de construir
 
@@ -46,7 +47,7 @@ um plugin, `ofc`; as skills são organizadas por uso.
 
 ### loops — rodar ao longo do tempo (agendado / orientado a evento)
 
-não há skill dedicada de madrugada — o caminho não-supervisionado **é** a tríade: uma [Cloud Routine](plugins/ofc/references/routines.md) define `OFC_UNATTENDED` e roda `/ofc:implement` → `/ofc:ship` contra um brief commitado, construindo todo o backlog e deixando um PR em rascunho. nesse caminho, o never-merge é garantido por **capability scoping** — a routine roda com um token sem permissão de merge/push em branch e sem connector capaz de merge — apoiado pela branch protection do GitHub. controles do lado do servidor, não um hook local.
+não há skill dedicada de madrugada — o caminho não-supervisionado **é** a tríade: uma [Cloud Routine](plugins/ofc/references/routines.md) define `OFC_UNATTENDED` e roda `/ofc:delegate <slug>` contra um brief commitado, que encadeia `/ofc:implement` → `/ofc:ship`, construindo todo o backlog e deixando um PR em rascunho. nesse caminho, o never-merge é garantido por **capability scoping** — a routine roda com um token sem permissão de merge/push em branch e sem connector capaz de merge — apoiado pela branch protection do GitHub. controles do lado do servidor, não um hook local.
 
 | skill                | descrição                                                                            |
 | -------------------- | ------------------------------------------------------------------------------------ |

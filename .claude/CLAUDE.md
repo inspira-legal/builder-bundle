@@ -25,7 +25,7 @@ plugins/ofc/
 │   ├── reply_resolve_thread.py         # ship, tidy-pr
 │   └── gather_context.py               # ship, gather-branch-context
 └── skills/                             # all skills flat; verb-led names, grouped by use in docs only
-    ├── shape, implement, ship, review-changes, tidy-pr, gather-branch-context, tidy
+    ├── shape, implement, ship, delegate, review-changes, tidy-pr, gather-branch-context, tidy
     ├── maintain-repo
     └── code-deep-research, write-readme, answer-yourself
 ```

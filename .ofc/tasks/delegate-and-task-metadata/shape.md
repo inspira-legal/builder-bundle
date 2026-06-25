@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 created: 2026-06-25
 slug: delegate-and-task-metadata
 ---
@@ -28,7 +28,7 @@ path used identically at the desk and overnight:
 
 Today "run everything" lives in three places that drifted apart: `shape`'s gate has
 a "Build and ship" option, `implement` soft-chains into `ship`, and the routine
-prompt hardcodes `implement → ship`. The user's ask is one verb — *delegate* — that
+prompt hardcodes `implement → ship`. The user's ask is one verb — _delegate_ — that
 both the daytime and the unattended moment route through, so the chain is defined
 once. The metadata is what makes selection possible without a human in the loop
 (the routine can't answer a "which task?" prompt) and gives a standard place to read
@@ -44,9 +44,9 @@ it without heuristics, and it stays out of the brief's narrative.
 - **Frontmatter schema** at the top of `shape.md`:
   ```yaml
   ---
-  status: pending        # pending | in-progress | done | blocked
-  created: 2026-06-25    # YYYY-MM-DD, set when the brief is first written
-  slug: <kebab-slug>     # matches the dir name
+  status: pending # pending | in-progress | done | blocked
+  created: 2026-06-25 # YYYY-MM-DD, set when the brief is first written
+  slug: <kebab-slug> # matches the dir name
   ---
   ```
   `pending` = no slice done. `in-progress` = some slices done, not landed (resumable).
@@ -57,16 +57,16 @@ it without heuristics, and it stays out of the brief's narrative.
   when the chain bails. The `## tasks` checkboxes stay slice-level and are ticked by
   `implement` as today — status is the coarse, selectable task-level state on top.
 - **Bare `/delegate` selects the oldest pending.** Filter `status ∈ {pending,
-  in-progress}` (in-progress is resumable), pick smallest `created`; tie-break by
+in-progress}` (in-progress is resumable), pick smallest `created`; tie-break by
   slug alpha. `done`/`blocked` are skipped (blocked is reported, not silently
   dropped). `/delegate <slug>` overrides selection entirely.
 - **Gate becomes 2-way: Stop / Delegate.** When nothing load-bearing is open, shape
   offers **Stop here** (just save) or **Delegate** (run everything via `/ofc:delegate
-  <slug>` on the brief it just wrote). Drops the separate "Build only" gate option —
+<slug>` on the brief it just wrote). Drops the separate "Build only" gate option —
   running `/ofc:implement` directly stays the manual escape hatch for build-without-ship.
   The open-decision branch is unchanged (resolve-now / defer; never a clean run).
 - **shape writes the frontmatter.** On finalize, shape emits the block (`status:
-  pending`, `created: <today>`, `slug`). If an upstream skill (frame-problem /
+pending`, `created: <today>`, `slug`). If an upstream skill (frame-problem /
   assess-fit) created the file first without frontmatter, shape backfills it.
 - **delegate inherits ship's landing logic** — daytime: ship settles the destination
   (asks only on doubt). Unattended (`OFC_UNATTENDED`): ship opens a draft PR. delegate
@@ -121,56 +121,56 @@ pick oldest `pending`/`in-progress` → flip `status: in-progress` (commit) → 
 `/ofc:ship` (settle destination / draft PR under `OFC_UNATTENDED`) → flip `status:
 done` (commit) → report the slug, what landed, and the destination.
 
-| WHEN | THEN |
-| --- | --- |
-| `/delegate <slug>` and slug exists, not done | run it end to end |
-| `/delegate <slug>` and slug not found | report the error, list available pending slugs, stop |
-| `/delegate <slug>` and status is `done` | report already done; ask to re-run (supervised) / stop (unattended) |
-| bare `/delegate`, one+ pending | pick oldest `created`; tie-break slug alpha; run it |
-| bare `/delegate`, none pending | report "no pending tasks", stop |
-| selected task already `in-progress` | resume — implement skips checked slices; status stays `in-progress` until landing |
-| brief has no frontmatter (legacy) | treat as `pending`, unknown `created` (sorts last); run; shape backfills later |
-| implement safety-valve fires (underspecified) | stop, flip `status: blocked`, report to re-shape; do not improvise |
-| ship hits unrecoverable stop / unattended blocker | flip `status: blocked`, write blocker into PR description (unattended) / report (daytime), exit |
-| `OFC_UNATTENDED` set | no questions; ship opens a DRAFT PR; never merge/protected-push; `done` flip commits to `claude/<slug>` (reaches main only on human merge) |
-| not in a git repo / `.ofc/tasks/` missing | report the error, stop |
+| WHEN                                              | THEN                                                                                                                                       |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/delegate <slug>` and slug exists, not done      | run it end to end                                                                                                                          |
+| `/delegate <slug>` and slug not found             | report the error, list available pending slugs, stop                                                                                       |
+| `/delegate <slug>` and status is `done`           | report already done; ask to re-run (supervised) / stop (unattended)                                                                        |
+| bare `/delegate`, one+ pending                    | pick oldest `created`; tie-break slug alpha; run it                                                                                        |
+| bare `/delegate`, none pending                    | report "no pending tasks", stop                                                                                                            |
+| selected task already `in-progress`               | resume — implement skips checked slices; status stays `in-progress` until landing                                                          |
+| brief has no frontmatter (legacy)                 | treat as `pending`, unknown `created` (sorts last); run; shape backfills later                                                             |
+| implement safety-valve fires (underspecified)     | stop, flip `status: blocked`, report to re-shape; do not improvise                                                                         |
+| ship hits unrecoverable stop / unattended blocker | flip `status: blocked`, write blocker into PR description (unattended) / report (daytime), exit                                            |
+| `OFC_UNATTENDED` set                              | no questions; ship opens a DRAFT PR; never merge/protected-push; `done` flip commits to `claude/<slug>` (reaches main only on human merge) |
+| not in a git repo / `.ofc/tasks/` missing         | report the error, stop                                                                                                                     |
 
 ### shape gate + frontmatter
 
-| WHEN | THEN |
-| --- | --- |
-| brief finalized, nothing load-bearing open | gate offers **Stop here** / **Delegate**; Delegate → `/ofc:delegate <slug>` on the new brief |
-| load-bearing decision still open | unchanged: resolve-now / defer-explicitly; no clean Delegate offered |
-| shape writes a new brief | emit frontmatter (`status: pending`, `created: <today>`, `slug`) at top |
-| upstream skill created the file w/o frontmatter | shape backfills the block on finalize |
-| user picks Stop | save brief; hand-off names `/ofc:implement` (build) and `/ofc:delegate` (run everything) as next steps |
+| WHEN                                            | THEN                                                                                                   |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| brief finalized, nothing load-bearing open      | gate offers **Stop here** / **Delegate**; Delegate → `/ofc:delegate <slug>` on the new brief           |
+| load-bearing decision still open                | unchanged: resolve-now / defer-explicitly; no clean Delegate offered                                   |
+| shape writes a new brief                        | emit frontmatter (`status: pending`, `created: <today>`, `slug`) at top                                |
+| upstream skill created the file w/o frontmatter | shape backfills the block on finalize                                                                  |
+| user picks Stop                                 | save brief; hand-off names `/ofc:implement` (build) and `/ofc:delegate` (run everything) as next steps |
 
 ### routine (unattended)
 
-| WHEN | THEN |
-| --- | --- |
-| routine fires | prompt sets `OFC_UNATTENDED=1`, runs `/ofc:delegate <slug>` (chains implement→ship → draft PR) |
-| every slice already checked + status done | delegate/implement find nothing to build, ship nothing to open → report no-op, exit |
-| scaffold_routine.py emits a prompt | wording uses `/ofc:delegate <slug>`, keeps never-merge + capped-retry clauses |
+| WHEN                                      | THEN                                                                                           |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| routine fires                             | prompt sets `OFC_UNATTENDED=1`, runs `/ofc:delegate <slug>` (chains implement→ship → draft PR) |
+| every slice already checked + status done | delegate/implement find nothing to build, ship nothing to open → report no-op, exit            |
+| scaffold_routine.py emits a prompt        | wording uses `/ofc:delegate <slug>`, keeps never-merge + capped-retry clauses                  |
 
 ## tasks
 
-- [ ] **Document the task-brief frontmatter schema** in `.claude/CLAUDE.md` — the
-  `status`/`created`/`slug` block, the four status values and their meaning, and that
-  delegate owns the lifecycle. (delivers: standardized metadata convention)
-- [ ] **Create `/ofc:delegate`** — `skills/delegate/SKILL.md`: named/bare selection,
-  status lifecycle (`in-progress`→`done`/`blocked`), chain `implement`→`ship`,
-  report. Honors `OFC_UNATTENDED`. (delivers: all delegate behaviors)
-- [ ] **Update `shape`** — write frontmatter on finalize (+ backfill legacy);
-  nothing-open gate → 2-way Stop/Delegate; hand-off text → `/ofc:delegate`.
-  (delivers: shape emits metadata, gate, hand-off)
-- [ ] **Unify the unattended path** — `routines.md` prompt + `scaffold_routine.py`
-  emit `/ofc:delegate <slug>`; keep never-merge/retry wording. (delivers: unified
-  daytime+unattended orchestration)
-- [ ] **Docs + release** — README (add `/ofc:delegate` to the shape & ship group),
-  `.claude/CLAUDE.md` structure tree (add `delegate`), bump `plugin.json` minor
-  version, run `bun run fmt` + `fmt:check` + `validate`. (delivers: discoverability,
-  release)
+- [x] **Document the task-brief frontmatter schema** in `.claude/CLAUDE.md` — the
+      `status`/`created`/`slug` block, the four status values and their meaning, and that
+      delegate owns the lifecycle. (delivers: standardized metadata convention)
+- [x] **Create `/ofc:delegate`** — `skills/delegate/SKILL.md`: named/bare selection,
+      status lifecycle (`in-progress`→`done`/`blocked`), chain `implement`→`ship`,
+      report. Honors `OFC_UNATTENDED`. (delivers: all delegate behaviors)
+- [x] **Update `shape`** — write frontmatter on finalize (+ backfill legacy);
+      nothing-open gate → 2-way Stop/Delegate; hand-off text → `/ofc:delegate`.
+      (delivers: shape emits metadata, gate, hand-off)
+- [x] **Unify the unattended path** — `routines.md` prompt + `scaffold_routine.py`
+      emit `/ofc:delegate <slug>`; keep never-merge/retry wording. (delivers: unified
+      daytime+unattended orchestration)
+- [x] **Docs + release** — README (add `/ofc:delegate` to the shape & ship group),
+      `.claude/CLAUDE.md` structure tree (add `delegate`), bump `plugin.json` minor
+      version, run `bun run fmt` + `fmt:check` + `validate`. (delivers: discoverability,
+      release)
 
 ## out of scope
 
