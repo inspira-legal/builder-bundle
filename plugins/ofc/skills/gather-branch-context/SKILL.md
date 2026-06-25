@@ -15,10 +15,10 @@ Gather all changes on the current branch relative to the base branch (main/maste
 
 ### 1. Gather Context
 
-Run the bundled script (path relative to this skill's directory):
+Run the shared plugin-root script:
 
 ```
-python3 scripts/gather_branch_context.py
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py
 ```
 
 Optional flags:
@@ -26,7 +26,7 @@ Optional flags:
 - `--base <branch>` to compare against a specific branch (default: repo's default branch)
 - `--repo <path>` to target a specific repo
 
-Returns JSON with: `branch`, `base_branch`, `commit_log`, `commit_count`, `diff_stat`, `files_changed`, `full_diff`, `uncommitted_changes`.
+Returns JSON with: `branch`, `base_branch`, `merge_base`, `commit_log`, `commit_count`, `diff_stat`, `files_changed`, `full_diff`, `uncommitted_changes` (plus `upstream` and `pr_template` when available, used by `/ofc:ship`).
 
 If the script returns an `error` field, report it and stop.
 

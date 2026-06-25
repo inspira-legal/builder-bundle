@@ -80,7 +80,7 @@ Everything is committed and the gate is green. Ship stops here and hands off —
 
 ### Create the PR (only if none exists)
 
-1. Gather context: `python scripts/gather_pr_context.py` → JSON with `branch`, `upstream`, `base_branch`, `commit_log`, `diff_stat`, `uncommitted_changes`, `pr_template`.
+1. Gather context: `python ${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py` → JSON with `branch`, `upstream`, `base_branch`, `commit_log`, `diff_stat`, `uncommitted_changes`, `pr_template`.
 2. If the branch has no upstream, note that `gh pr create` pushes automatically.
 3. Draft from the commits + diff (and a matching `.ofc/tasks/*/shape.md` brief if present — it's the intended scope):
    - **Title**: conventional commit style `<type>(<scope>): <description>` (≤70 chars).
@@ -97,11 +97,11 @@ Everything is committed and the gate is green. Ship stops here and hands off —
 
 ### Triage comments → fix → push → reply (automatic, no gate)
 
-1. **Fetch comments** (background): `python scripts/fetch_comments.py` — conversation comments, reviews, and review threads (with `id` and `isResolved`) as JSON.
+1. **Fetch comments** (background): `python ${CLAUDE_PLUGIN_ROOT}/scripts/fetch_comments.py` — conversation comments, reviews, and review threads (with `id` and `isResolved`) as JSON.
 2. **Triage** each **unresolved** thread into **fix** (implement the change), **answer** (a short reply, no code), or **unclear** (genuinely needs your call — can't be resolved by guessing).
 3. **Handle fix + answer threads automatically.** No approval gate: apply fix-thread code changes in the main context, re-run the gate, commit in logical units, and push to the PR branch. Then reply + resolve per thread:
-   - **fix** threads: reply with what was done + the commit sha and resolve — `python scripts/reply_resolve_thread.py --thread-id <id> --body "Fixed in <sha>: <one-liner>"`
-   - **answer** threads: reply but do NOT resolve (the reviewer closes it) — `python scripts/reply_resolve_thread.py --thread-id <id> --body "..." --no-resolve`
+   - **fix** threads: reply with what was done + the commit sha and resolve — `python ${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py --thread-id <id> --body "Fixed in <sha>: <one-liner>"`
+   - **answer** threads: reply but do NOT resolve (the reviewer closes it) — `python ${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py --thread-id <id> --body "..." --no-resolve`
 4. **Unclear threads are the only pause** — surface each with the question it raises and wait for your call; never auto-resolve one by guessing. **Unattended:** there's no one to pause for — pick the documented lean, reply noting the assumption, and leave the thread unresolved for the morning rather than blocking.
 5. Report what was handled as a table: `# | file:line | comment summary | verdict | action taken`.
 
@@ -121,7 +121,7 @@ Once the PR is green, ship **stays resident and watches it** while you work — 
 
 Track a **high-water mark**: the timestamp of the latest comment/review you've already handled. Each tick:
 
-1. Re-fetch (`scripts/fetch_comments.py`) and compare against the high-water mark — a comment newer than it (**including a bot or reviewer re-opening or re-commenting on a thread you'd resolved**), a CI check flipping red, or a merge conflict / out-of-date base all count as new.
+1. Re-fetch (`${CLAUDE_PLUGIN_ROOT}/scripts/fetch_comments.py`) and compare against the high-water mark — a comment newer than it (**including a bot or reviewer re-opening or re-commenting on a thread you'd resolved**), a CI check flipping red, or a merge conflict / out-of-date base all count as new.
 2. Nothing new → report one line, **stretch the interval**, and wait.
 3. Something new → re-run the matching flow automatically — triage→fix→push→reply for comments, diagnose→fix→push for red CI — advance the high-water mark, then resume watching.
 
@@ -150,17 +150,19 @@ Two-pass diff review checklist for the quality pass: correctness (bug-finding) a
 
 A drop-in `.claude/loop.md` that makes a bare `/loop` route the PR-tending triad (review comments / failed CI / merge conflicts) through ship's PR flow while keeping merge a human action. Copy it into the target repo or `~/.claude`.
 
-### scripts/gather_pr_context.py
+Shared scripts live at the plugin root (`${CLAUDE_PLUGIN_ROOT}/scripts/`); `inspect_pr_checks.py` is ship-owned and stays relative.
 
-Collect branch, upstream, base, commit log, diff stat, uncommitted changes, and PR template in one call (PR creation). Prints JSON.
+### ${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py
 
-### scripts/fetch_comments.py
+Collect branch, upstream, base + merge-base, commit log, diff stat, changed files, full diff, uncommitted changes, and PR template in one call. Shared with `/ofc:gather-branch-context`. Prints JSON.
 
-Fetch all PR conversation comments, reviews, and review threads (with thread IDs and resolved state) via `gh api graphql`. Prints JSON.
+### ${CLAUDE_PLUGIN_ROOT}/scripts/fetch_comments.py
 
-### scripts/reply_resolve_thread.py
+Fetch all PR conversation comments, reviews, and review threads (with thread IDs and resolved state) via `gh api graphql`. Shared with `/ofc:tidy-pr`. Prints JSON.
 
-Reply to a review thread and/or resolve it. `--thread-id` from fetch_comments.py; `--body` for the reply; `--no-resolve` to reply without resolving.
+### ${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py
+
+Reply to a review thread and/or resolve it. `--thread-id` from fetch_comments.py; `--body` for the reply; `--no-resolve` to reply without resolving. Shared with `/ofc:tidy-pr`.
 
 ### scripts/inspect_pr_checks.py
 
