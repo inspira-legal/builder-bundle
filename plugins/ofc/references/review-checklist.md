@@ -15,10 +15,10 @@ Report only findings you can defend with the code in front of you; verify each o
 - **Security** — injection (SQL/shell/path), unvalidated input crossing a trust boundary, secrets in code or logs
 - **Type safety** — casts that hide real mismatches, `any`/`type: ignore` covering an actual error
 
-For each finding: file:line, what breaks, a concrete input/scenario that triggers it, and the fix. Apply high-confidence fixes directly; flag uncertain ones for the user in the approval-gate summary.
+Report each finding as `file:line | what breaks | a concrete triggering input/scenario | suggested fix | confidence`. What happens next is the calling skill's call: `/ofc:ship` applies high-confidence fixes and flags uncertain ones at its approval gate; `/ofc:review-changes` only reports and suggests the next step.
 
 ## Pass 2 — Quality (simplify; no behavior changes)
 
 Apply the shared **quality checklist** — `references/quality-checklist.md` at the plugin root, the single source of truth used here and by the standalone `/ofc:tidy` skill, so a diff is judged identically wherever it's reviewed. It covers the six criteria (reuse, simplification, dead weight, efficiency, altitude, consistency), the scope/behavior/clarity rules, and the over-simplification guard.
 
-Only touch code already changed by this branch. After each quality edit, re-run the relevant local check (lint/typecheck/tests for the touched area) — a simplification that breaks behavior is a regression, not a cleanup.
+Scope is code this branch already changed. A consumer that *applies* Pass 2 (`/ofc:ship`, `/ofc:tidy`) re-runs the relevant local check after each quality edit — a simplification that breaks behavior is a regression, not a cleanup. A report-only consumer (`/ofc:review-changes`) just lists the smells and suggests `/ofc:tidy`.

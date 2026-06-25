@@ -38,11 +38,11 @@ When the user confirms or corrects a destination that wasn't obvious, it's worth
 
 ## Step 2 — Quality pass + green the gate (always, every destination)
 
-This runs identically whatever the destination — it's the substance of shipping. Self-contained; do not invoke other skills. Review criteria live in `references/review-checklist.md`.
+This runs identically whatever the destination — it's the substance of shipping. Self-contained; do not invoke other skills. Review criteria live in `references/review-checklist.md` at the plugin root — the single source of truth shared with `/ofc:review-changes`.
 
 Launch the read-only work concurrently — review agents in one message, scripts/checks as background Bash:
 
-1. **Review agents** (Agent tool, read-only — they report, never edit). Each gets the diff scope (`git diff <base>...HEAD`), the path to `references/review-checklist.md`, and ONE lens:
+1. **Review agents** (Agent tool, read-only — they report, never edit). Each gets the diff scope (`git diff <base>...HEAD`), the path to the plugin-root `references/review-checklist.md`, and ONE lens:
    - `logic-edges` — logic errors, edge cases, error handling
    - `async-state` — async/concurrency, state & lifecycle
    - `contracts-security` — contract breaks, security, type safety
@@ -142,9 +142,9 @@ Read the actual failure logs before touching any source file (multiple failures 
 
 ## Bundled Resources
 
-### references/review-checklist.md
+### references/review-checklist.md (plugin root)
 
-Two-pass diff review checklist for the quality pass: correctness (bug-finding) and quality (simplification) criteria.
+Two-pass diff review checklist for the quality pass: correctness (bug-finding) and quality (simplification) criteria. Lives at the plugin root, shared with `/ofc:review-changes`.
 
 ### references/loop.md
 
