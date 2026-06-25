@@ -16,10 +16,16 @@ plugins/ofc/
 │   ├── operating-context.md            # the injected operating frame (edit to tune)
 │   └── unattended-context.md           # addendum appended when OFC_UNATTENDED is truthy
 ├── references/                        # plugin-level docs (not skill-scoped)
+│   ├── quality-checklist.md            # shared by tidy + ship Pass 2
+│   ├── review-checklist.md             # shared by review-changes + ship
 │   ├── routines.md                     # Cloud Routine guide — the unattended trio path
 │   └── scripts/scaffold_routine.py     # emit a routine prompt + setup for a brief slug
+├── scripts/                           # shared executables (2+ skills) — ref via ${CLAUDE_PLUGIN_ROOT}/scripts/
+│   ├── fetch_comments.py               # ship, tidy-pr
+│   ├── reply_resolve_thread.py         # ship, tidy-pr
+│   └── gather_context.py               # ship, gather-branch-context
 └── skills/                             # all skills flat; verb-led names, grouped by use in docs only
-    ├── shape, implement, ship, address-comments, gather-branch-context, tidy
+    ├── shape, implement, ship, review-changes, tidy-pr, gather-branch-context, tidy
     ├── maintain-repo
     └── code-deep-research, write-readme, answer-yourself
 ```
@@ -53,7 +59,7 @@ Examples of what should be a script:
 - Keep guidance positive and lean by default — enforce irreversible hazards with capability scoping (the unattended routine runs without merge/push permission), not prose. Don't write catalogs of anti-patterns / "DO NOT" lists; they're context noise and a weaker signal. A single sharp caution is allowed where negation is genuinely the clearest signal (e.g. a skill warning about its own failure mode) — the ban is on lists and reflexive negation, not on ever saying "don't".
 - Use `references/` for static context the LLM needs (coding principles, validation checklists)
 - Trigger descriptions should be specific — list exact phrases the user might say
-- Skill workflows reference their own scripts relatively (e.g. `scripts/foo.py`). Only **hooks** use `${CLAUDE_PLUGIN_ROOT}` (the plugin's absolute install path) — skill bodies should not.
+- Skill workflows reference their **own** scripts relatively (e.g. `scripts/foo.py`). Scripts shared by 2+ skills live at the plugin root in `plugins/ofc/scripts/` and are referenced with `${CLAUDE_PLUGIN_ROOT}/scripts/<x>.py` — the only case where a skill body uses `${CLAUDE_PLUGIN_ROOT}` (hooks use it for their own files too). A skill's own, non-shared script stays relative.
 
 ## Scripts
 
