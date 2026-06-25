@@ -1,6 +1,6 @@
 ---
 name: gather-branch-context
-description: Gather and summarize all changes on the current branch compared to main. Use when user says "compare against main", "branch context", "what changed on this branch", "summarize my branch", "diff against main", "review my changes", or "what did I do on this branch". Do NOT use to fix or green a PR (use /ofc:ship), open a PR (use /ofc:ship), or improve the diff's quality (use /ofc:tidy) — this only summarizes, it never edits.
+description: Gather and summarize all changes on the current branch compared to main. Use when user says "compare against main", "branch context", "what changed on this branch", "summarize my branch", "diff against main", or "what did I do on this branch". Do NOT use to judge the diff for bugs or quality (use /ofc:review-changes), fix or green a PR (use /ofc:ship), open a PR (use /ofc:ship), or improve the diff's quality (use /ofc:tidy) — this only summarizes, it never edits.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
