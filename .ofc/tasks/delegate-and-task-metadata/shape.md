@@ -18,8 +18,8 @@ path used identically at the desk and overnight:
 2. **Standardized task-brief metadata** — a YAML frontmatter block at the top of
    every `.ofc/tasks/<slug>/shape.md` (`status`, `created`, `slug`), so both the
    manual `/delegate` and a Cloud Routine select and track work the same way.
-3. **Unify the hand-offs onto delegate** — `shape`'s exit gate becomes 2-way
-   (**Stop** / **Delegate**); the Cloud Routine prompt (`routines.md` +
+3. **Unify the hand-offs onto delegate** — `shape`'s exit gate becomes 3-way
+   (**Implement** / **Delegate** / **Stop**); the Cloud Routine prompt (`routines.md` +
    `scaffold_routine.py`) calls `/ofc:delegate <slug>` instead of spelling out
    `implement → ship`. One orchestration, two moments (daytime supervised /
    unattended).
@@ -60,11 +60,11 @@ it without heuristics, and it stays out of the brief's narrative.
 in-progress}` (in-progress is resumable), pick smallest `created`; tie-break by
   slug alpha. `done`/`blocked` are skipped (blocked is reported, not silently
   dropped). `/delegate <slug>` overrides selection entirely.
-- **Gate becomes 2-way: Stop / Delegate.** When nothing load-bearing is open, shape
-  offers **Stop here** (just save) or **Delegate** (run everything via `/ofc:delegate
-<slug>` on the brief it just wrote). Drops the separate "Build only" gate option —
-  running `/ofc:implement` directly stays the manual escape hatch for build-without-ship.
-  The open-decision branch is unchanged (resolve-now / defer; never a clean run).
+- **Gate becomes 3-way: Implement / Delegate / Stop.** When nothing load-bearing is
+  open, shape offers **Implement** (build only, via `/ofc:implement` — stops ready to
+  ship), **Delegate** (run everything via `/ofc:delegate <slug>` on the brief it just
+  wrote), or **Stop here** (just save). The open-decision branch is unchanged
+  (resolve-now / defer; never a clean run).
 - **shape writes the frontmatter.** On finalize, shape emits the block (`status:
 pending`, `created: <today>`, `slug`). If an upstream skill (frame-problem /
   assess-fit) created the file first without frontmatter, shape backfills it.
@@ -88,7 +88,7 @@ pending`, `created: <today>`, `slug`). If an upstream skill (frame-problem /
 plugins/ofc/
 ├── skills/
 │   ├── delegate/SKILL.md          # (NEW) select task → implement → ship; owns status
-│   ├── shape/SKILL.md             # gate → 2-way (Stop/Delegate); writes frontmatter
+│   ├── shape/SKILL.md             # gate → 3-way (Implement/Delegate/Stop); writes frontmatter
 │   ├── implement/SKILL.md         # unchanged behavior; (optional) note status is delegate's
 │   └── ship/SKILL.md              # unchanged
 └── references/
@@ -106,7 +106,7 @@ plugins/ofc/
   no new scripts (frontmatter parse is a few lines of inline reading, or a tiny stdlib
   helper if cleaner).
 - **shape/SKILL.md** — finalize writes the frontmatter block; gate's nothing-open
-  branch → Stop / Delegate; hand-off text points to `/ofc:delegate`.
+  branch → Implement / Delegate / Stop; hand-off text points to `/ofc:delegate`.
 - **routines.md + scaffold_routine.py** — the prompt sets `OFC_UNATTENDED=1` and runs
   `/ofc:delegate <slug>` (which chains implement→ship and opens the draft PR), keeping
   the never-merge / capped-retry wording.
@@ -137,13 +137,13 @@ done` (commit) → report the slug, what landed, and the destination.
 
 ### shape gate + frontmatter
 
-| WHEN                                            | THEN                                                                                                   |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| brief finalized, nothing load-bearing open      | gate offers **Stop here** / **Delegate**; Delegate → `/ofc:delegate <slug>` on the new brief           |
-| load-bearing decision still open                | unchanged: resolve-now / defer-explicitly; no clean Delegate offered                                   |
-| shape writes a new brief                        | emit frontmatter (`status: pending`, `created: <today>`, `slug`) at top                                |
-| upstream skill created the file w/o frontmatter | shape backfills the block on finalize                                                                  |
-| user picks Stop                                 | save brief; hand-off names `/ofc:implement` (build) and `/ofc:delegate` (run everything) as next steps |
+| WHEN                                            | THEN                                                                                                         |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| brief finalized, nothing load-bearing open      | gate offers **Implement** / **Delegate** / **Stop here**; Delegate → `/ofc:delegate <slug>` on the new brief |
+| load-bearing decision still open                | unchanged: resolve-now / defer-explicitly; no clean Implement/Delegate offered                               |
+| shape writes a new brief                        | emit frontmatter (`status: pending`, `created: <today>`, `slug`) at top                                      |
+| upstream skill created the file w/o frontmatter | shape backfills the block on finalize                                                                        |
+| user picks Stop                                 | save brief; hand-off names `/ofc:implement` (build) and `/ofc:delegate` (run everything) as next steps       |
 
 ### routine (unattended)
 
@@ -162,7 +162,7 @@ done` (commit) → report the slug, what landed, and the destination.
       status lifecycle (`in-progress`→`done`/`blocked`), chain `implement`→`ship`,
       report. Honors `OFC_UNATTENDED`. (delivers: all delegate behaviors)
 - [x] **Update `shape`** — write frontmatter on finalize (+ backfill legacy);
-      nothing-open gate → 2-way Stop/Delegate; hand-off text → `/ofc:delegate`.
+      nothing-open gate → 3-way Implement/Delegate/Stop; hand-off text → `/ofc:delegate`.
       (delivers: shape emits metadata, gate, hand-off)
 - [x] **Unify the unattended path** — `routines.md` prompt + `scaffold_routine.py`
       emit `/ofc:delegate <slug>`; keep never-merge/retry wording. (delivers: unified
