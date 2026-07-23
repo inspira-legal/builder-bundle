@@ -94,7 +94,7 @@ Edges (WHEN → THEN):
 
 - [x] 1. Scaffold: `plugins/ofc`→`plugins/bb`, plugin.json (name bb, 2.0.0, descrição PT-BR), marketplace.json só com `bb`, README raiz, hooks com textos atualizados, env var `BB_UNATTENDED` (fallback `OFC_UNATTENDED`) — comportamentos: instalação/listagem (1); edges de migração (coexistência, update)
 - [x] 2. Convenções compartilhadas: `references/handoff-gate.md`, reference do contrato de estado `.bb/`+fallback, reference consult-manifesto, guideline de progressive disclosure no CONTRIBUTING — comportamentos: gates (2, 7); edges: encerrar-aqui, legado, slug-duplicado, manifesto-inacessível, disclosure
-- [ ] 3. Trilha Desenhar: `spec` (shape renomeado + `references/export-spec.md` + escrita em `.bb/`) — comportamento 3
+- [x] 3. Trilha Desenhar: `spec` (shape renomeado + `references/export-spec.md` + escrita em `.bb/`) — comportamento 3
 - [ ] 4. Trilha Construir: `implement`, `delegate` (fallback legado), `ship`, `gather-branch-context` com paths/identidade/manifesto/gates — comportamentos 4, 5, 8; edges: legado, slug-duplicado, unattended
 - [ ] 5. Trilha Revisar: `review` (fusão, 3 fontes, interativo), `review-setup` (fusão, guia-only), `maintain-repo`; motor compartilhado extraído pra references/scripts — comportamentos 5, 6; edges: review-sem-PR, guia-ausente, skill-customizada-antiga
 - [ ] 6. Trilha Pensar: `discover` (fusão 4 fontes), `challenge` (desafio importado + renomeado), `think` (fusão answer-yourself), `legal-lens` — comportamento 2
