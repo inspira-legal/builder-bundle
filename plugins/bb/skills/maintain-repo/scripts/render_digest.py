@@ -14,7 +14,7 @@ JSON object to stdout:
     "unchanged_count": 7,
     "new_state": {"142": "ab12…", …},   # persist this for the next run
     "comments": [                       # one sticky body per Dependabot PR (edit in place)
-      {"number": 142, "marker": "<!-- ofc:maintain-repo:pr-142 -->", "body": "…"}
+      {"number": 142, "marker": "<!-- bb:maintain-repo:pr-142 -->", "body": "…"}
     ]
   }
 
@@ -36,7 +36,7 @@ import json
 import sys
 from typing import Any
 
-MARKER = "<!-- ofc:maintain-repo:pr-{n} -->"
+MARKER = "<!-- bb:maintain-repo:pr-{n} -->"
 
 SAFE = "yes"
 NO = "no"

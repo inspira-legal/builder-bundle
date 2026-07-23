@@ -15,10 +15,10 @@ Report only findings you can defend with the code in front of you; verify each o
 - **Security** — injection (SQL/shell/path), unvalidated input crossing a trust boundary, secrets in code or logs
 - **Type safety** — casts that hide real mismatches, `any`/`type: ignore` covering an actual error
 
-Report each finding as `file:line | what breaks | a concrete triggering input/scenario | suggested fix | confidence`. What happens next is the calling skill's call: `/ofc:ship` applies high-confidence fixes and flags uncertain ones at its approval gate; `/ofc:review-changes` only reports and suggests the next step.
+Report each finding as `file:line | what breaks | a concrete triggering input/scenario | suggested fix | confidence`. What happens next is the calling skill's call: `/bb:ship` applies high-confidence fixes and flags uncertain ones at its approval gate; `/bb:review` reports first and applies only what the user picks at its curation step.
 
 ## Pass 2 — Quality (simplify; no behavior changes)
 
-Apply the shared **quality checklist** — `references/quality-checklist.md` at the plugin root, the single source of truth used here and by the standalone `/ofc:tidy` skill, so a diff is judged identically wherever it's reviewed. It covers the six criteria (reuse, simplification, dead weight, efficiency, altitude, consistency), the scope/behavior/clarity rules, and the over-simplification guard.
+Apply the shared **quality checklist** — `references/quality-checklist.md` at the plugin root, the single source of truth used by `/bb:ship` and `/bb:review`, so a diff is judged identically wherever it's reviewed. It covers the six criteria (reuse, simplification, dead weight, efficiency, altitude, consistency), the scope/behavior/clarity rules, and the over-simplification guard.
 
-Scope is code this branch already changed. A consumer that _applies_ Pass 2 (`/ofc:ship`, `/ofc:tidy`) re-runs the relevant local check after each quality edit — a simplification that breaks behavior is a regression, not a cleanup. A report-only consumer (`/ofc:review-changes`) just lists the smells and suggests `/ofc:tidy`.
+Scope is code this branch already changed. A consumer that _applies_ Pass 2 (`/bb:ship`; `/bb:review` after its curation step) re-runs the relevant local check after each quality edit — a simplification that breaks behavior is a regression, not a cleanup. In report mode the smells are just listed for the user to pick from.

@@ -1,10 +1,10 @@
 # Quality Checklist
 
 The canonical quality pass over the code a branch changed — the single source of
-truth shared by `ofc:tidy` (standalone) and `ofc:ship`'s Pass 2, so a diff
-is judged identically wherever it is reviewed. **Quality only, strictly
-behavior-preserving** — finding or fixing bugs is correctness review (ship's Pass
-1), not this.
+truth shared by `/bb:review` (its quality lens + apply step) and `/bb:ship`'s
+Pass 2, so a diff is judged identically wherever it is reviewed. **Quality only,
+strictly behavior-preserving** — finding or fixing bugs is correctness review
+(Pass 1), not this.
 
 Read every hunk with its surrounding context (open the file, not just the diff)
 before judging it.

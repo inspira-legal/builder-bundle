@@ -1,4 +1,4 @@
-# Unattended setup — running ofc:maintain-repo as Cloud Routines
+# Unattended setup — running bb:maintain-repo as Cloud Routines
 
 This wires the skill to run **without your laptop**: an event-driven routine that
 comments on Dependabot PRs the moment they open/update, and a daily routine that
@@ -57,7 +57,7 @@ dependency code (it doesn't: the skill reports CI, it never `bun install`s).
 - **Trigger:** GitHub `pull_request` (actions: `opened`, `synchronize`,
   `reopened`), **Author filter: `dependabot[bot]`**. Requires the Claude GitHub
   App installed on the repo.
-- **Prompt (self-contained):** run `ofc:maintain-repo` Phase 1→3 for the triggering
+- **Prompt (self-contained):** run `bb:maintain-repo` Phase 1→3 for the triggering
   PR; for each `comments[]` entry, upsert the sticky comment (find marker → PATCH,
   else create). Mark the comment **provisional** if CI is still pending /
   `mergeable` is `UNKNOWN`.
@@ -71,7 +71,7 @@ dependency code (it doesn't: the skill reports CI, it never `bun install`s).
 
 - **Trigger:** schedule, daily (e.g. a weekday morning slot; 1-hour minimum
   interval is easily satisfied). Pick an off-the-hour minute.
-- **Prompt:** run `ofc:maintain-repo` Phase 1→4 across **all** open PRs + alerts +
+- **Prompt:** run `bb:maintain-repo` Phase 1→4 across **all** open PRs + alerts +
   outdated; post the grouped Slack digest (changed-only); and correct any sticky
   comment Routine A left at "provisional" now that CI has settled.
 - **Why required:** it catches events the hourly webhook cap dropped, and the
