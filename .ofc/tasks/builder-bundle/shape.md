@@ -98,7 +98,7 @@ Edges (WHEN → THEN):
 - [x] 4. Trilha Construir: `implement`, `delegate` (fallback legado), `ship`, `gather-branch-context` com paths/identidade/manifesto/gates — comportamentos 4, 5, 8; edges: legado, slug-duplicado, unattended
 - [x] 5. Trilha Revisar: `review` (fusão, 3 fontes, interativo), `review-setup` (fusão, guia-only), `maintain-repo`; motor compartilhado extraído pra references/scripts — comportamentos 5, 6; edges: review-sem-PR, guia-ausente, skill-customizada-antiga
 - [x] 6. Trilha Pensar: `discover` (fusão 4 fontes), `challenge` (desafio importado + renomeado), `think` (fusão answer-yourself), `legal-lens` — comportamento 2
-- [ ] 7. Trilha Design: `brisar` (tarsila/clarisse como fases em references, mantém `references/ds/`), `ui-accessibility` importada — comportamento 7
+- [x] 7. Trilha Design: `brisar` (tarsila/clarisse como fases em references, mantém `references/ds/`), `ui-accessibility` importada — comportamento 7
 - [ ] 8. Pesquisar/Doc + docs finais: `code-deep-research`, `write-readme` (identidade bb); CHANGELOG + nota de migração ofc→bb com de-para das 28→16, aviso de coexistência ofc+bb e quebra do `plugin update` — comportamento 1, edges de migração (de-para, coexistência, update)
 - [ ] 9. PR única (branch → PR → CI verde via `gh pr checks --watch`); validação de conteúdo das fusões contra `analise-skills-ofc-brisar.md` e `mapa-casos-de-uso-skills.md` como checklist
 

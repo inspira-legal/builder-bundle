@@ -1,0 +1,110 @@
+---
+# Product registry — Inspira products that brisar recognizes
+#
+# brisar uses this file to:
+# 1. Detect whether the cwd matches a known product (stateful mode)
+# 2. Know the repo URL to clone (stateless mode: builder is in a new folder but chooses product X)
+# 3. Decide mode_default (embed vs scaffold vs framer-handoff)
+# 4. Map the correct DS source
+# 5. Know requirements (MCPs, tools) per product
+#
+# Principles:
+# - Brand ≠ product. Inspira (SaaS) and Client Portal share the Inspira brand but are distinct products.
+# - Detection is always by filesystem marker (not by folder name — the folder can have any name in the builder's clone).
+# - There is always a fallback_path for builders without permission/git/account.
+#
+# ===== BETA NOTE =====
+# This is a BETA build for internal Inspira testers. Inspira-product entries
+# (inspira-saas, portal-cliente, stillare, lexflow, site-institucional, ds-inspira)
+# were removed for this build because their repo_url fields were still TODO at
+# the time the bundle was packaged. Only greenfield paths are active in the beta.
+# Re-add product entries when canonical repo_urls are finalized.
+
+version: 1
+last_updated: "2026-05-12"
+
+products:
+
+  # === Greenfield path (no existing product) ===
+
+  - id: greenfield-vite
+    name: "New project (Vite scaffold)"
+    type: scaffold
+    audience: any
+    detection: []          # never detected — only chosen explicitly
+    brand: any             # builder chooses in Phase 1
+    ds_source: "brisa-ds:any"
+    mode_default: scaffold
+    fallback_path: prototype-hosted
+    requires_mcp: []
+    notes: "Default when the builder is going to create a new product. Phase 3 of brisar."
+
+  - id: greenfield-prototype
+    name: "Hosted prototype (no local code)"
+    type: prototype-only
+    audience: any
+    detection: []
+    brand: any
+    ds_source: "brisa-ds:any"
+    mode_default: prototype-hosted
+    fallback_path: framer-handoff-no-mcp
+    requires_mcp: []
+    notes: |
+      For builders without git/npm (executive persona). Output: clickable prototype + markdown handoff
+      for the eng team to pick up later. brisar does not try to teach git on this path.
+
+# === Detection: how brisar identifies a product by cwd ===
+
+detection_logic: |
+  Step 0.5 of SKILL.md:
+  1. For each product in products[], evaluate `detection[]` against cwd.
+  2. Match = ALL markers of the product matching (AND, not OR).
+  3. First match wins — registry order is priority.
+  4. If no match: log `product: unknown` and proceed to profile calibration.
+  5. If unlikely multiple matches: warn in silent log, use the first.
+
+  When detected:
+  - Skip brand question in Phase 1 (already known from product.brand)
+  - Skip hosting question (already known: embed)
+  - Default mode = product.mode_default
+
+  BETA NOTE: greenfield products have empty detection[], so the registry effectively
+  never matches and brisar always proceeds to manual profile/brand/artifact intake.
+
+# === Embed mode: requirements ===
+
+embed_requirements:
+  prerequisites:
+    - git_installed: true
+    - gh_authed: true   # for private repos
+  on_missing:
+    - offer to install/authenticate via preflight-tooling
+    - if builder refuses/fails: fall back to the product's fallback_path
+
+# === Hosted prototype mode ===
+
+prototype_hosted:
+  what_it_does: |
+    For builders with persona=executive or content without technical background.
+    brisar generates a scaffolded Vite prototype BUT runs it in sandbox/hosted (does not try local npm install).
+    Output: link to the prototype + handoff .md written for a dev to take over later.
+  output_artifacts:
+    - "<slug>/ — scaffolded folder"
+    - "<slug>/HANDOFF-DEV.md — instructions for the dev to pick up"
+    - "<slug>/design/<surface>.md — visual direction"
+  caveats: |
+    The builder won't be able to run `pnpm install && pnpm dev` locally.
+    brisar should say this explicitly: "this prototype is for the dev to pick up — you pass the link
+    + HANDOFF-DEV.md."
+
+# === Adding a new product ===
+
+how_to_add_product: |
+  1. Create a new entry in products[] with a unique id (kebab-case).
+  2. Define detection[] with stable markers (not folder name).
+  3. Point to canonical repo_url.
+  4. Decide mode_default + fallback_path.
+  5. List requires_mcp if any.
+  6. Update last_updated.
+
+  brisar reads the registry at every Step 0 — no restart needed.
