@@ -1,4 +1,4 @@
-# Unattended addendum (OFC_UNATTENDED)
+# Unattended addendum (BB_UNATTENDED)
 
 This run is **unattended** — no human is watching, and a prompt that waits for an
 answer hangs the run forever. The frame below is added on top of the operating

@@ -7,10 +7,10 @@ Deliberately light and principle-level (not a procedure): it loads on EVERY
 session in every repo where the plugin is enabled, so it nudges the way of
 working, it does not force a mode. Edit operating-context.md to change the frame.
 
-On an unattended run (OFC_UNATTENDED truthy) it appends unattended-context.md —
-the no-questions / draft-PR / capped-retries addendum. That addendum is UX and
-loop discipline only; never-merge is enforced server-side by capability scoping,
-not by this frame.
+On an unattended run (BB_UNATTENDED truthy; OFC_UNATTENDED kept as a legacy
+fallback) it appends unattended-context.md — the no-questions / draft-PR /
+capped-retries addendum. That addendum is UX and loop discipline only;
+never-merge is enforced server-side by capability scoping, not by this frame.
 """
 
 from __future__ import annotations
@@ -19,13 +19,14 @@ import json
 import os
 import sys
 
-# Truthy values for OFC_UNATTENDED (case-insensitive). Anything else — including
-# unset, "0", "false", "" — is supervised.
+# Truthy values for BB_UNATTENDED / legacy OFC_UNATTENDED (case-insensitive).
+# Anything else — including unset, "0", "false", "" — is supervised.
 UNATTENDED_TRUTHY = {"1", "true", "yes"}
 
 
 def is_unattended() -> bool:
-    return os.environ.get("OFC_UNATTENDED", "").strip().lower() in UNATTENDED_TRUTHY
+    raw = os.environ.get("BB_UNATTENDED") or os.environ.get("OFC_UNATTENDED", "")
+    return raw.strip().lower() in UNATTENDED_TRUTHY
 
 
 def read_frame(here: str, filename: str) -> str:

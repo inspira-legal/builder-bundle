@@ -1,5 +1,5 @@
 {
-  "name": "ofc-skills",
+  "name": "builder-bundle",
   "private": true,
   "scripts": {
     "fmt": "oxfmt --write .",
