@@ -1,5 +1,5 @@
 ---
-status: in-progress
+status: done
 created: 2026-07-23
 slug: builder-bundle
 ---
@@ -42,7 +42,7 @@ Hoje há 4 lugares com skills sobrepostas (ofc, brisar, loja, inspira-code-revie
   - **Handoff-gate**: toda skill com próximo passo natural termina com `AskUserQuestion` oferecendo a próxima; "encerrar aqui" sempre é opção; **sugere, nunca auto-invoca** (exceção única: `delegate`, e o auto-chain implement→ship quando o ship já foi autorizado). Formato único em `references/handoff-gate.md`. Sem gate: legal-lens, maintain-repo, review-setup, write-readme, code-deep-research, gather-branch-context, ui-accessibility.
   - **Motor de review compartilhado** entre `ship` e `review` em `references/` + `scripts/` (2 passadas, régua de severidade, CI/threads) — papéis distintos (ship automático landa; review interativo reporta), motor único pra evitar drift. Scripts existentes (`fetch_comments.py`, `reply_resolve_thread.py`, `gather_context.py`) reutilizados.
 - **Reuso**: skills do ofc que seguem quase intactas — implement, ship, delegate, gather-branch-context, legal-lens, maintain-repo, code-deep-research, write-readme (ajustes: paths `.bb/`, referências shape→spec, manifesto, gates, identidade bb). Hooks do ofc (SessionStart operating-context etc.) mantidos com textos atualizados.
-- **Fontes de importação**: repo `inspira-skills` local em `C:\Users\PC\development\inspira-skills` (skills/brisar/_, skills/desafio, skills/think, skills/spec, skills/pr-review, skills/ui-accessibility, skills/inspira-code-review/_, skills/github-management/fix-ci).
+- **Fontes de importação**: repo `inspira-skills` local em `C:\Users\PC\development\inspira-skills` (`skills/brisar/*`, skills/desafio, skills/think, skills/spec, skills/pr-review, skills/ui-accessibility, `skills/inspira-code-review/*`, skills/github-management/fix-ci).
 - **Validação só via CI/PR** (`gh pr checks --watch`) — nunca rodar checks localmente. Lefthook/bun existentes mantidos.
 - **Migração documentada**: README + CHANGELOG com nota ofc→bb (desinstalar `ofc@inspira-legal`, instalar `bb@inspira-legal`; GitHub redireciona o nome antigo do repo).
 
@@ -100,7 +100,7 @@ Edges (WHEN → THEN):
 - [x] 6. Trilha Pensar: `discover` (fusão 4 fontes), `challenge` (desafio importado + renomeado), `think` (fusão answer-yourself), `legal-lens` — comportamento 2
 - [x] 7. Trilha Design: `brisar` (tarsila/clarisse como fases em references, mantém `references/ds/`), `ui-accessibility` importada — comportamento 7
 - [x] 8. Pesquisar/Doc + docs finais: `code-deep-research`, `write-readme` (identidade bb); CHANGELOG + nota de migração ofc→bb com de-para das 28→16, aviso de coexistência ofc+bb e quebra do `plugin update` — comportamento 1, edges de migração (de-para, coexistência, update)
-- [ ] 9. PR única (branch → PR → CI verde via `gh pr checks --watch`); validação de conteúdo das fusões contra `analise-skills-ofc-brisar.md` e `mapa-casos-de-uso-skills.md` como checklist
+- [x] 9. PR única (branch → PR → CI verde via `gh pr checks --watch`); validação de conteúdo das fusões contra `analise-skills-ofc-brisar.md` e `mapa-casos-de-uso-skills.md` como checklist
 
 ## open
 
