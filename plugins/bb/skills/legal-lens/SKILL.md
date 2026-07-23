@@ -1,10 +1,10 @@
 ---
 name: legal-lens
-description: Pass a juridical lens over any artifact — an idea, feature, flow, or document — to surface legal and regulatory implications, compliance gaps, risk, and what a lawyer would require before it ships. Defaults to Brazilian law (LGPD, CDC, Marco Civil…), overridable to any jurisdiction. Grounded — cites the norm when it can, flags uncertainty instead of inventing statutes, and triages for human legal review rather than giving legal advice. Reports significant issues only, each paired with a fix; appends `## legal` to a shape brief when run against one. Use when the user says "legal review", "is this legal", "legal implications", "compliance check", "LGPD", "regulatory risk", or "what would a lawyer object to". Do NOT use as a substitute for a qualified lawyer.
+description: Passa uma lente jurídica sobre qualquer artefato — ideia, feature, fluxo ou documento — pra levantar implicações legais e regulatórias, gaps de compliance, risco e o que um advogado exigiria antes do lançamento. Default direito brasileiro (LGPD, CDC, Marco Civil…), sobrescrevível pra qualquer jurisdição. Grounded — cita a norma quando conhece, sinaliza incerteza em vez de inventar lei, e faz triagem pra revisão jurídica humana em vez de dar parecer. Reporta só o significativo, cada issue com mitigação; anexa `## legal` ao brief quando roda sobre um. Use quando o usuário disser "revisão jurídica", "isso é legal?", "implicações legais", "checa compliance", "LGPD", "risco regulatório", ou "o que um advogado objetaria". NÃO use como substituto de um advogado qualificado.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 # Legal lens
@@ -13,14 +13,17 @@ A juridical pass over whatever you point it at — surfacing where it touches th
 law, the risk that carries, and what a lawyer would require before it ships. It
 **triages for human legal review; it is not legal advice** and does not replace
 counsel. Default jurisdiction is **Brazilian law**; pass another to override.
+All user-facing text — findings, the report, the `## legal` section — is PT-BR.
 
 ## Input
 
 Invoke on one of:
 
-- a **slug** → reads `.ofc/tasks/<slug>/shape.md` and reviews the framed work;
-- a **file path** → reviews that document (a contract, policy, ToS, spec);
-- a **free description** → reviews the idea as stated.
+- a **slug** → resolve the brief per the task-state contract (plugin-level
+  `references/task-state.md`: `.bb/tasks/<slug>/spec.md`, legacy
+  `.ofc/tasks/<slug>/shape.md` fallback) and review the framed work;
+- a **file path** → review that document (a contract, policy, ToS, spec);
+- a **free description** → review the idea as stated.
 
 Resolve the jurisdiction first: use what the user passed, else default to Brazil
 and say so. Then read the artifact in full before judging.
@@ -67,9 +70,10 @@ fix is half a finding. Rank by severity:
 ## Output
 
 Always report the findings in the conversation, grouped by severity. **If the
-artifact is a shape** (`.ofc/tasks/<slug>/shape.md`), also append or update a
-`## legal` section so the brief carries the legal context downstream; for an
-arbitrary document outside `.ofc/`, report only — don't write into it.
+artifact is a task brief** (resolved via the task-state contract), also append
+or update a `## legal` section so the brief carries the legal context
+downstream; for an arbitrary document outside the task dirs, report only —
+don't write into it.
 
 ```
 ## legal
@@ -80,4 +84,5 @@ jurisdiction: Brazil (default)
 ```
 
 Close by naming what needs a real lawyer's sign-off before launch — the lens
-narrows where counsel is needed; it doesn't stand in for it.
+narrows where counsel is needed; it doesn't stand in for it. No handoff gate:
+report and stop.

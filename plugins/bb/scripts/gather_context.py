@@ -2,8 +2,8 @@
 """
 Gather branch context relative to its base: branch/upstream, base + merge-base,
 commit log, diff stat, changed files, full diff, uncommitted changes, and (for PR
-creation) the repo's PR template. Superset consumed by both /ofc:ship (PR creation)
-and /ofc:gather-branch-context (branch summary).
+creation) the repo's PR template. Superset consumed by /bb:ship (PR creation),
+/bb:review, and /bb:gather-branch-context (branch summary).
 
 Requires:
   - inside a git repository
