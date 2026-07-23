@@ -119,6 +119,7 @@ Reads `references/product-registry.yaml` and evaluates each product's
 `detection[]` against the cwd. First match wins (registry order is priority).
 
 When detected:
+
 - Skip the brand question in Phase 1 (already known by `product.brand`)
 - Skip the hosting question (already known: `mode_default: embed`)
 - Load `repo_url`, `ds_source`, `requires_mcp` for the later flow
@@ -137,37 +138,37 @@ never by folder name.
 Each phase lives in a separate file under `references/`. **Don't load all files
 in Step 0** — open only what the current phase needs.
 
-| Phase | When to load | File |
-|---|---|---|
-| Pre-flight tooling | Step 0.4 | `references/preflight-tooling.md` |
-| Product registry | Step 0.5 + Phase 1 | `references/product-registry.yaml` |
-| **Phase 0 — Profile calibration** | After Step 0, BEFORE Phase 1. Skip if session already has profile. | `references/phase-0-calibration.md` |
-| Phase 1 — Lightning intake | After Phase 0. Depth adapts to persona_id. | `references/phase-1-intake.md` |
-| Phase 2 — Maturity gate | After Phase 1, EXCEPT: persona = executive/content, OR `brand.workflow == framer-harpa` | `references/phase-2-gate.md` |
-| Phase 3 — Scaffold (real files) | After Phase 2. Variant by persona: senior/junior = normal scaffold; executive = `prototype-hosted` | `references/phase-3-scaffold.md` |
-| Phase 4 — Design direction | After Phase 3 | `references/phase-4-design-direction.md` |
-| **Phase Framer-handoff** (replaces Phase 2+3+4 on the Framer/content path) | When `brand.workflow == framer-harpa` OR `persona_id == content` | `references/phase-framer-handoff.md` |
-| Phase 5 — Terminal report | Always, last phase of the direction stage. | `references/phase-5-handoff.md` |
-| **Develop** — hi-fi surface construction | Builder asks to build, a shortcut routes here, or the Phase 5 gate chose it | `references/phase-develop.md` (+ `references/develop-modes.md` per mode) |
-| **Deliver** — review, accessibility, handoff | Builder asks to review/hand off, a shortcut routes here, or the Develop gate chose it | `references/phase-deliver.md` (+ `references/deliver-modes.md` per mode) |
-| Schemas (`.brisar/session.yaml`, `.brisar/config.yaml`) | When you need to read/write state | `references/persistence.md` |
+| Phase                                                                      | When to load                                                                                       | File                                                                     |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Pre-flight tooling                                                         | Step 0.4                                                                                           | `references/preflight-tooling.md`                                        |
+| Product registry                                                           | Step 0.5 + Phase 1                                                                                 | `references/product-registry.yaml`                                       |
+| **Phase 0 — Profile calibration**                                          | After Step 0, BEFORE Phase 1. Skip if session already has profile.                                 | `references/phase-0-calibration.md`                                      |
+| Phase 1 — Lightning intake                                                 | After Phase 0. Depth adapts to persona_id.                                                         | `references/phase-1-intake.md`                                           |
+| Phase 2 — Maturity gate                                                    | After Phase 1, EXCEPT: persona = executive/content, OR `brand.workflow == framer-harpa`            | `references/phase-2-gate.md`                                             |
+| Phase 3 — Scaffold (real files)                                            | After Phase 2. Variant by persona: senior/junior = normal scaffold; executive = `prototype-hosted` | `references/phase-3-scaffold.md`                                         |
+| Phase 4 — Design direction                                                 | After Phase 3                                                                                      | `references/phase-4-design-direction.md`                                 |
+| **Phase Framer-handoff** (replaces Phase 2+3+4 on the Framer/content path) | When `brand.workflow == framer-harpa` OR `persona_id == content`                                   | `references/phase-framer-handoff.md`                                     |
+| Phase 5 — Terminal report                                                  | Always, last phase of the direction stage.                                                         | `references/phase-5-handoff.md`                                          |
+| **Develop** — hi-fi surface construction                                   | Builder asks to build, a shortcut routes here, or the Phase 5 gate chose it                        | `references/phase-develop.md` (+ `references/develop-modes.md` per mode) |
+| **Deliver** — review, accessibility, handoff                               | Builder asks to review/hand off, a shortcut routes here, or the Develop gate chose it              | `references/phase-deliver.md` (+ `references/deliver-modes.md` per mode) |
+| Schemas (`.brisar/session.yaml`, `.brisar/config.yaml`)                    | When you need to read/write state                                                                  | `references/persistence.md`                                              |
 
 ---
 
 ## Cooperation contract — who produces, who consumes
 
-| Artifact | Produced by | Consumed by |
-|---|---|---|
-| `.brisar/session.yaml` | direction phases (0-5), Develop, Deliver — each writes its own section | all phases (each reads the whole YAML in its Step 0), re-runs |
-| `.brisar/config.yaml` | Phase 3 | Develop (tokens.md/components.md path), future invocations |
-| `<slug>/design-context/tokens.md` + `components.md` | Phase 3 | Develop (Step 0) |
-| `<slug>/design/<surface>.md` | Phase 4 | builder, Develop |
-| `<slug>/...` (vite, package.json, src/) | Phase 3 | builder (`pnpm install && pnpm dev`), Develop |
-| `<slug>/HANDOFF-DEV.md` | Phase 3 (persona = executive) | dev who picks up the prototype later |
-| `.brisar/tarsila/notes.md` | Develop (optional decisions log) | Deliver, builder |
-| `.brisar/clarisse/*.md` (design-review, accessibility-checklist, handoff) | Deliver | builder, implementing dev |
-| `.bb/tasks/<slug>/spec.md` | /bb:discover, /bb:spec (outside this skill) | Step 0.1 (bootstrap return), Phase 3 |
-| `harpa-handoff-<slug>-<date>.md` (in cwd) | Framer/content path | builder inside `harpa-lpbuilder/` |
+| Artifact                                                                  | Produced by                                                            | Consumed by                                                   |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `.brisar/session.yaml`                                                    | direction phases (0-5), Develop, Deliver — each writes its own section | all phases (each reads the whole YAML in its Step 0), re-runs |
+| `.brisar/config.yaml`                                                     | Phase 3                                                                | Develop (tokens.md/components.md path), future invocations    |
+| `<slug>/design-context/tokens.md` + `components.md`                       | Phase 3                                                                | Develop (Step 0)                                              |
+| `<slug>/design/<surface>.md`                                              | Phase 4                                                                | builder, Develop                                              |
+| `<slug>/...` (vite, package.json, src/)                                   | Phase 3                                                                | builder (`pnpm install && pnpm dev`), Develop                 |
+| `<slug>/HANDOFF-DEV.md`                                                   | Phase 3 (persona = executive)                                          | dev who picks up the prototype later                          |
+| `.brisar/tarsila/notes.md`                                                | Develop (optional decisions log)                                       | Deliver, builder                                              |
+| `.brisar/clarisse/*.md` (design-review, accessibility-checklist, handoff) | Deliver                                                                | builder, implementing dev                                     |
+| `.bb/tasks/<slug>/spec.md`                                                | /bb:discover, /bb:spec (outside this skill)                            | Step 0.1 (bootstrap return), Phase 3                          |
+| `harpa-handoff-<slug>-<date>.md` (in cwd)                                 | Framer/content path                                                    | builder inside `harpa-lpbuilder/`                             |
 
 Each phase reads the whole session.yaml in Step 0 and writes **only its
 section** at the end — cross-awareness without coupling.
@@ -189,6 +190,7 @@ is not used on this path. Details in `references/phase-framer-handoff.md`.
 
 When the maturity gate fires and the builder accepts shaping first, brisar
 writes `.brisar/session.yaml` with:
+
 - `status: bootstrapped-to-discover`
 - `intent`, `brand`, `artifact` already filled from the lightning intake
 - `gate.resolution: bootstrap-to-discover`

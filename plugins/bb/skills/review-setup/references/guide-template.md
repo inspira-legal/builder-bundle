@@ -39,11 +39,11 @@ está documentada aqui com evidência.
 
 ## Severidades
 
-| Nível      | Significado                                                          | Impacto no review                                  |
-| ---------- | -------------------------------------------------------------------- | --------------------------------------------------- |
-| **HIGH**   | Não negociável — quebra de contrato, teste ausente, vulnerabilidade  | Veredito: CHANGES REQUESTED                         |
-| **MEDIUM** | Requer julgamento; 3+ num PR indica degradação                       | 1–2: NEEDS DISCUSSION / 3+: CHANGES REQUESTED       |
-| **LOW**    | Informativo, nit                                                     | Nunca afeta o veredito                              |
+| Nível      | Significado                                                         | Impacto no review                             |
+| ---------- | ------------------------------------------------------------------- | --------------------------------------------- |
+| **HIGH**   | Não negociável — quebra de contrato, teste ausente, vulnerabilidade | Veredito: CHANGES REQUESTED                   |
+| **MEDIUM** | Requer julgamento; 3+ num PR indica degradação                      | 1–2: NEEDS DISCUSSION / 3+: CHANGES REQUESTED |
+| **LOW**    | Informativo, nit                                                    | Nunca afeta o veredito                        |
 
 ## Pre-PR Checklist
 
@@ -53,8 +53,9 @@ está documentada aqui com evidência.
 
 ### HIGH
 
-| ID | Título | Lens |
-| -- | ------ | ---- |
+| ID  | Título | Lens |
+| --- | ------ | ---- |
+
 {{HIGH_RULES_TABLE}}
 
 {{HIGH_RULES_DETAIL}}
@@ -71,6 +72,7 @@ está documentada aqui com evidência.
 
 | Categoria | Patterns | Exemplos |
 | --------- | -------- | -------- |
+
 {{FILE_CATEGORIES_TABLE}}
 
 ## Padrões do Repositório
@@ -81,18 +83,19 @@ está documentada aqui com evidência.
 
 | Padrão | Arquivo | Descrição |
 | ------ | ------- | --------- |
+
 {{REFERENCE_FILES_TABLE}}
 
 ## Histórico de Alterações
 
-| Data     | Tipo    | Descrição                          |
-| -------- | ------- | ----------------------------------- |
-| {{DATE}} | Criação | Guia gerado pelo /bb:review-setup   |
+| Data     | Tipo    | Descrição                         |
+| -------- | ------- | --------------------------------- |
+| {{DATE}} | Criação | Guia gerado pelo /bb:review-setup |
 ```
 
 Rule detail block, one per rule:
 
-```markdown
+````markdown
 #### {{ID}} — {{TITLE}}
 
 - **Lens**: logic-edges | async-state | contracts-security | quality
@@ -103,10 +106,13 @@ Rule detail block, one per rule:
   ```{{lang}}
   {{good example from the repo}}
   ```
+````
+
 - **Evite**:
   ```{{lang}}
   {{bad example}}
   ```
+
 ```
 
 ## Generation rules
@@ -118,3 +124,4 @@ Rule detail block, one per rule:
   rule; a rule without a real example gets evidence paths only.
 - Only rules the maintainer accepted in the interview enter the guide.
 - Sections with nothing discovered are omitted, not filled with boilerplate.
+```

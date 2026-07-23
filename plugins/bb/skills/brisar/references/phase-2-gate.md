@@ -25,16 +25,27 @@ Then `AskUserQuestion`:
 
 ```json
 {
-  "questions": [{
-    "question": "Maturar problema antes de scaffoldar?",
-    "header": "Gate",
-    "options": [
-      {"label": "Sim — rodar /bb:discover primeiro", "description": "Gravo bootstrap; você roda /bb:discover, depois volta pro /bb:brisar e o scaffold continua com o enquadramento pronto"},
-      {"label": "Não — sigo direto", "description": "Registro override + razão, scaffolda agora; risco fica documentado"},
-      {"label": "Não tenho certeza", "description": "Me dá mais contexto sobre o que /bb:discover faria que o brisar sozinho não faz"}
-    ],
-    "multiSelect": false
-  }]
+  "questions": [
+    {
+      "question": "Maturar problema antes de scaffoldar?",
+      "header": "Gate",
+      "options": [
+        {
+          "label": "Sim — rodar /bb:discover primeiro",
+          "description": "Gravo bootstrap; você roda /bb:discover, depois volta pro /bb:brisar e o scaffold continua com o enquadramento pronto"
+        },
+        {
+          "label": "Não — sigo direto",
+          "description": "Registro override + razão, scaffolda agora; risco fica documentado"
+        },
+        {
+          "label": "Não tenho certeza",
+          "description": "Me dá mais contexto sobre o que /bb:discover faria que o brisar sozinho não faz"
+        }
+      ],
+      "multiSelect": false
+    }
+  ]
 }
 ```
 
@@ -65,17 +76,28 @@ Ask ONE extra question to record the reason:
 
 ```json
 {
-  "questions": [{
-    "question": "Razão do override (registro no session.yaml para você revisar depois):",
-    "header": "Override",
-    "options": [
-      {"label": "Já fiz shaping antes em outro contexto", "description": "Trio existe na cabeça/Notion/Linear, não preciso re-fazer aqui"},
-      {"label": "É baixo risco — tipo 'vai escalar' mas é experimento", "description": "Marquei 'vai escalar' por intuição, mas na real é exploratório"},
-      {"label": "Tenho prazo apertado, vou shapear no caminho", "description": "Aceito o risco; rodo /bb:discover mais tarde se virar dor"},
-      {"label": "Outro motivo", "description": "Texto livre"}
-    ],
-    "multiSelect": false
-  }]
+  "questions": [
+    {
+      "question": "Razão do override (registro no session.yaml para você revisar depois):",
+      "header": "Override",
+      "options": [
+        {
+          "label": "Já fiz shaping antes em outro contexto",
+          "description": "Trio existe na cabeça/Notion/Linear, não preciso re-fazer aqui"
+        },
+        {
+          "label": "É baixo risco — tipo 'vai escalar' mas é experimento",
+          "description": "Marquei 'vai escalar' por intuição, mas na real é exploratório"
+        },
+        {
+          "label": "Tenho prazo apertado, vou shapear no caminho",
+          "description": "Aceito o risco; rodo /bb:discover mais tarde se virar dor"
+        },
+        { "label": "Outro motivo", "description": "Texto livre" }
+      ],
+      "multiSelect": false
+    }
+  ]
 }
 ```
 
@@ -113,7 +135,7 @@ gate:
 current_phase: phase-3
 ```
 
-Print short echo: *"Apetite exploratório, scale=exploration — pulando o gate. Indo para scaffold."* Continue to Phase 3.
+Print short echo: _"Apetite exploratório, scale=exploration — pulando o gate. Indo para scaffold."_ Continue to Phase 3.
 
 ## State at the end
 
@@ -124,6 +146,6 @@ gate:
   fired: true | false
   resolution: bootstrap-to-discover | override | not-applicable
   override_reason: <string or null>
-  discover_brief: <path or null>   # filled on the bootstrap return (Step 0.1)
-current_phase: phase-3   # (unless it bootstrapped, which stops here)
+  discover_brief: <path or null> # filled on the bootstrap return (Step 0.1)
+current_phase: phase-3 # (unless it bootstrapped, which stops here)
 ```

@@ -10,16 +10,24 @@ Phase 1 inferred provisional surfaces from the initial prompt (e.g.: `[busca, re
 
 ```json
 {
-  "questions": [{
-    "question": "Identifiquei estas surfaces a partir da sua descrição: [<surfaces_provisional>]. Confirma essa lista, quer ajustar, ou tem outras?",
-    "header": "Surfaces",
-    "options": [
-      {"label": "Confirma a lista", "description": "Vou gerar design/<surface>.md para cada uma"},
-      {"label": "Ajustar / adicionar", "description": "Texto livre — separe por vírgula"},
-      {"label": "Só uma surface principal", "description": "Texto livre — só a que importa agora"}
-    ],
-    "multiSelect": false
-  }]
+  "questions": [
+    {
+      "question": "Identifiquei estas surfaces a partir da sua descrição: [<surfaces_provisional>]. Confirma essa lista, quer ajustar, ou tem outras?",
+      "header": "Surfaces",
+      "options": [
+        {
+          "label": "Confirma a lista",
+          "description": "Vou gerar design/<surface>.md para cada uma"
+        },
+        { "label": "Ajustar / adicionar", "description": "Texto livre — separe por vírgula" },
+        {
+          "label": "Só uma surface principal",
+          "description": "Texto livre — só a que importa agora"
+        }
+      ],
+      "multiSelect": false
+    }
+  ]
 }
 ```
 
@@ -45,6 +53,7 @@ Surfaces nesta sessão (ordem sugerida — desenhe de cima para baixo):
 ## Por que essa ordem
 
 A regra geral:
+
 1. **Começo pelas surfaces de "default state"** — telas que o usuário vê na maior parte do tempo.
 2. **Depois empty/loading** — estados frequentes mas não-default.
 3. **Depois error/edge** — críticos mas raros.
@@ -70,11 +79,13 @@ Template:
 ## Hierarquia visual
 
 [Infer from the surface name + context of the original prompt. Always name:
+
 - The anchor element (what dominates the frame visually)
 - The secondary element (what supports the anchor)
 - The tertiary (metadata, secondary actions)
 
 Examples:
+
 - "busca" → anchor: search input · secondary: filters · tertiary: recent history
 - "vazio" → anchor: illustration + heading · secondary: primary CTA · tertiary: docs link
 - "resultados" → anchor: results list · secondary: side filters · tertiary: pagination
@@ -86,6 +97,7 @@ Each bullet in one sentence. Do not write more than 5 bullets — if you need to
 [List 3-7 components from `design-context/components.md` that fit here. For each, say "for X" or "for Y" — do not blindly copy the list.
 
 Examples:
+
 - `Text Input` — for the main search field
 - `Button (Primary)` — "Search" CTA
 - `Tag / Pill` — for the recent searches history
@@ -109,6 +121,7 @@ For critical surfaces, also consider: focused, hover, disabled, selected.]
 [Three concrete sentences that the builder can start drawing WITHOUT needing to think more. Don't be vague. Don't philosophize.
 
 Examples:
+
 - Place the search input centered, taking 60% of the width, with a pt-BR placeholder.
 - Below the input, 3 chips with recent searches (use Tag / Pill), max-width 320px.
 - When focusing the input, expand height by 8px and show a tip line ("Try searching for...").
@@ -124,6 +137,7 @@ These 3 bullets are enough to break the blank page. The Develop phase and the bu
 ### Decisões a tomar antes de desenhar
 
 [Things you need to decide but brisar cannot decide for you. E.g.:
+
 - How many results per page?
 - Are filters single-select or multi-select?
 - Does the empty state have an illustration or only text?

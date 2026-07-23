@@ -72,21 +72,21 @@ see the fallback below). If neither holds, report it and stop.
 
 ## Edge cases
 
-| WHEN                                            | THEN                                                                                                            |
-| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `/bb:delegate <slug>`, slug exists, not done    | run it end to end                                                                                               |
-| `/bb:delegate <slug>`, slug not found           | report the error, list available pending slugs (both roots), stop                                               |
-| `/bb:delegate <slug>`, status `done`            | report it's done; supervised ask to re-run, unattended stop                                                     |
-| bare `/bb:delegate`, one+ pending               | pick smallest `created` (tie-break slug alpha), run it                                                          |
-| bare `/bb:delegate`, none pending               | report "no pending tasks", stop                                                                                 |
-| slug only in legacy `.ofc/tasks/`               | run it; update the legacy brief in place (status, checkboxes) — never move it                                   |
-| slug in both `.bb/` and `.ofc/`                 | `.bb/` wins; mention the ignored legacy file in the report                                                      |
-| selected task already `in-progress`             | resume — implement skips checked slices; status stays `in-progress` until landing                               |
-| brief has no frontmatter (legacy)               | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time            |
-| implement safety valve fires (underspecified)   | flip `status: blocked`, point back to `/bb:spec`, stop — do not improvise                                       |
-| ship hits an unrecoverable stop / blocker       | flip `status: blocked`; write the blocker into the PR description (unattended) or report it (supervised); exit  |
-| `BB_UNATTENDED` set                             | no questions; ship opens a DRAFT PR on `claude/<slug>`; never merge / never push a protected branch             |
-| not in a git repo / no tasks dir in either root | report the error, stop                                                                                          |
+| WHEN                                            | THEN                                                                                                           |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `/bb:delegate <slug>`, slug exists, not done    | run it end to end                                                                                              |
+| `/bb:delegate <slug>`, slug not found           | report the error, list available pending slugs (both roots), stop                                              |
+| `/bb:delegate <slug>`, status `done`            | report it's done; supervised ask to re-run, unattended stop                                                    |
+| bare `/bb:delegate`, one+ pending               | pick smallest `created` (tie-break slug alpha), run it                                                         |
+| bare `/bb:delegate`, none pending               | report "no pending tasks", stop                                                                                |
+| slug only in legacy `.ofc/tasks/`               | run it; update the legacy brief in place (status, checkboxes) — never move it                                  |
+| slug in both `.bb/` and `.ofc/`                 | `.bb/` wins; mention the ignored legacy file in the report                                                     |
+| selected task already `in-progress`             | resume — implement skips checked slices; status stays `in-progress` until landing                              |
+| brief has no frontmatter (legacy)               | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time           |
+| implement safety valve fires (underspecified)   | flip `status: blocked`, point back to `/bb:spec`, stop — do not improvise                                      |
+| ship hits an unrecoverable stop / blocker       | flip `status: blocked`; write the blocker into the PR description (unattended) or report it (supervised); exit |
+| `BB_UNATTENDED` set                             | no questions; ship opens a DRAFT PR on `claude/<slug>`; never merge / never push a protected branch            |
+| not in a git repo / no tasks dir in either root | report the error, stop                                                                                         |
 
 The hard line holds throughout: delegate never merges, never approves, never
 force-pushes — landing on a protected branch stays a human action, enforced by

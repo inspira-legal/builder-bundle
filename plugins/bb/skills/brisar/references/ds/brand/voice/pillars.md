@@ -38,14 +38,14 @@ Authority without arrogance. Expertise that invites, not excludes.
 
 Any Inspira touchpoint should scan in at least one pillar. The strongest copy scans in two or three.
 
-| Pillar(s) | Good for |
-|---|---|
-| Visionária alone | Marketing moments, new feature announcements, vision statements |
-| Colaborativa alone | Empty states, invitations, friendly confirmations |
-| Expert alone | Error messages, tooltips, field hints, documentation |
-| Visionária + Expert | Product launches, capability intros ("O que está pronto, e para onde vamos") |
-| Colaborativa + Expert | Onboarding flows, guided experiences, help content |
-| All three | Flagship moments: homepage hero, launch posts, brand film |
+| Pillar(s)             | Good for                                                                     |
+| --------------------- | ---------------------------------------------------------------------------- |
+| Visionária alone      | Marketing moments, new feature announcements, vision statements              |
+| Colaborativa alone    | Empty states, invitations, friendly confirmations                            |
+| Expert alone          | Error messages, tooltips, field hints, documentation                         |
+| Visionária + Expert   | Product launches, capability intros ("O que está pronto, e para onde vamos") |
+| Colaborativa + Expert | Onboarding flows, guided experiences, help content                           |
+| All three             | Flagship moments: homepage hero, launch posts, brand film                    |
 
 ## What Inspira is NOT
 

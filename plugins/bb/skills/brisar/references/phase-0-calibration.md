@@ -22,28 +22,42 @@ Then `AskUserQuestion`:
 
 ```json
 {
-  "questions": [{
-    "question": "Como você vai trabalhar nesse projeto?",
-    "header": "Perfil",
-    "options": [
-      {"label": "Não tenho repertório técnico — quero protótipo", "description": "Não conheço git/npm. Quero algo clicável pra validar com stakeholders. Outro time pega o código depois."},
-      {"label": "Sei mexer em código — vou direto", "description": "Tenho git, ambiente configurado, conheço o stack. Quero o mínimo de fricção."},
-      {"label": "Tenho noção, mas vou precisar de instruções", "description": "Tenho git + ambiente, mas siga me explicando cada passo."},
-      {"label": "Vou mexer em conteúdo/site (Framer)", "description": "Site institucional, copy, design — não código. Não importa se tenho git ou não."}
-    ],
-    "multiSelect": false
-  }]
+  "questions": [
+    {
+      "question": "Como você vai trabalhar nesse projeto?",
+      "header": "Perfil",
+      "options": [
+        {
+          "label": "Não tenho repertório técnico — quero protótipo",
+          "description": "Não conheço git/npm. Quero algo clicável pra validar com stakeholders. Outro time pega o código depois."
+        },
+        {
+          "label": "Sei mexer em código — vou direto",
+          "description": "Tenho git, ambiente configurado, conheço o stack. Quero o mínimo de fricção."
+        },
+        {
+          "label": "Tenho noção, mas vou precisar de instruções",
+          "description": "Tenho git + ambiente, mas siga me explicando cada passo."
+        },
+        {
+          "label": "Vou mexer em conteúdo/site (Framer)",
+          "description": "Site institucional, copy, design — não código. Não importa se tenho git ou não."
+        }
+      ],
+      "multiSelect": false
+    }
+  ]
 }
 ```
 
 ## Mapping
 
-| Answer | persona_id | needs_instructions | can_clone_repo | Default path |
-|---|---|---|---|---|
-| Não tenho repertório técnico | `executive` | true | false | `prototype-hosted` |
-| Sei mexer em código | `builder-senior` | false | true | `embed` if product detected, else `scaffold` |
-| Tenho noção, vou precisar de instruções | `builder-junior` | true | true | `embed` with narration, else `scaffold` with narration |
-| Vou mexer em conteúdo/site | `content` | true | false (doesn't matter) | `framer-handoff` |
+| Answer                                  | persona_id       | needs_instructions | can_clone_repo         | Default path                                           |
+| --------------------------------------- | ---------------- | ------------------ | ---------------------- | ------------------------------------------------------ |
+| Não tenho repertório técnico            | `executive`      | true               | false                  | `prototype-hosted`                                     |
+| Sei mexer em código                     | `builder-senior` | false              | true                   | `embed` if product detected, else `scaffold`           |
+| Tenho noção, vou precisar de instruções | `builder-junior` | true               | true                   | `embed` with narration, else `scaffold` with narration |
+| Vou mexer em conteúdo/site              | `content`        | true               | false (doesn't matter) | `framer-handoff`                                       |
 
 ## Persistence
 
@@ -103,12 +117,12 @@ profile:
 
 After the answer, brisar cross-references with what `preflight-tooling.md` detected silently:
 
-| Answer | Detected tooling | What brisar does |
-|---|---|---|
-| `builder-senior` | git missing | "Você marcou que sabe mexer em código mas git não tá instalado aqui. Quer que eu instale, ou prefere outro caminho?" |
-| `builder-senior` | gh without auth | "Repos da Inspira são privados — você precisa de `gh auth login`. Faço junto?" |
-| `content` | unframer MCP missing | Notes it silently; the Framer phase uses the markdown fallback and tells the builder how to add the MCP for next time. |
-| `executive` | (any state) | Doesn't check anything git/MCP — path doesn't require it. |
+| Answer           | Detected tooling     | What brisar does                                                                                                       |
+| ---------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `builder-senior` | git missing          | "Você marcou que sabe mexer em código mas git não tá instalado aqui. Quer que eu instale, ou prefere outro caminho?"   |
+| `builder-senior` | gh without auth      | "Repos da Inspira são privados — você precisa de `gh auth login`. Faço junto?"                                         |
+| `content`        | unframer MCP missing | Notes it silently; the Framer phase uses the markdown fallback and tells the builder how to add the MCP for next time. |
+| `executive`      | (any state)          | Doesn't check anything git/MCP — path doesn't require it.                                                              |
 
 ## Fallback
 

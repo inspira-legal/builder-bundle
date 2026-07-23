@@ -1,4 +1,5 @@
 # Lexflow — Style Reference
+
 > Chat-first dev tool, dark studio. Sub-brand of Inspira.
 
 **Theme:** dark
@@ -35,17 +36,17 @@ This is the sub-brand contract.
 
 ### Overrides Inspira
 
-| Concern | Inspira | Lexflow |
-|---|---|---|
-| Theme | Light (`#ffffff` page) | Dark (`#0e1117` page) |
-| Primary CTA fill | Rich Black `#070c21` | Accent `#6a96ea` |
-| CTA dual hierarchy | Primary (Rich Black) + Secondary (Cornflower Blue) | **Single accent** for primary action; neutrals for everything else |
-| Neutrals | Cool Gray (blue-tinted, light scale) | Slate (GitHub-Primer-style dark scale) |
-| Border radius scale | 4 / 8 / 12 / 16 / 24 | 4 / 6 / 8 / 10 / 14 (tighter) |
-| Status colors | Madder / Saffron / Keppel / Cornflower | GitHub Primer red / yellow / green / blue (`#f85149` / `#d29922` / `#3fb950` / `#6a96ea`) |
-| Surface elevation | Background shifts + borders, no shadows | Real shadows (dark mode demands them) |
-| Tropical Indigo (AI accent) | First-class, gradient endpoints | Not used. Lexflow's dev-tool idiom doesn't need the AI accent — every Lexflow surface is already AI. |
-| Spectrum gradients | First-class | Replaced by `DarkGradientCard` (chat hero only) |
+| Concern                     | Inspira                                            | Lexflow                                                                                              |
+| --------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Theme                       | Light (`#ffffff` page)                             | Dark (`#0e1117` page)                                                                                |
+| Primary CTA fill            | Rich Black `#070c21`                               | Accent `#6a96ea`                                                                                     |
+| CTA dual hierarchy          | Primary (Rich Black) + Secondary (Cornflower Blue) | **Single accent** for primary action; neutrals for everything else                                   |
+| Neutrals                    | Cool Gray (blue-tinted, light scale)               | Slate (GitHub-Primer-style dark scale)                                                               |
+| Border radius scale         | 4 / 8 / 12 / 16 / 24                               | 4 / 6 / 8 / 10 / 14 (tighter)                                                                        |
+| Status colors               | Madder / Saffron / Keppel / Cornflower             | GitHub Primer red / yellow / green / blue (`#f85149` / `#d29922` / `#3fb950` / `#6a96ea`)            |
+| Surface elevation           | Background shifts + borders, no shadows            | Real shadows (dark mode demands them)                                                                |
+| Tropical Indigo (AI accent) | First-class, gradient endpoints                    | Not used. Lexflow's dev-tool idiom doesn't need the AI accent — every Lexflow surface is already AI. |
+| Spectrum gradients          | First-class                                        | Replaced by `DarkGradientCard` (chat hero only)                                                      |
 
 ### Adds (gaps Inspira has, Lexflow fills)
 
@@ -62,40 +63,40 @@ Dark-first semantic palette. Component code references the semantic tokens (`--b
 
 ### Semantic — Background
 
-| Token | Value | Role |
-|---|---|---|
-| `--color-bg-base` | `#0e1117` | Page background |
-| `--color-bg-surface` | `#161b22` | Cards, panels |
+| Token                 | Value     | Role                        |
+| --------------------- | --------- | --------------------------- |
+| `--color-bg-base`     | `#0e1117` | Page background             |
+| `--color-bg-surface`  | `#161b22` | Cards, panels               |
 | `--color-bg-elevated` | `#1c2129` | Dropdowns, modals, popovers |
-| `--color-bg-input` | `#21262d` | Form controls, code blocks |
+| `--color-bg-input`    | `#21262d` | Form controls, code blocks  |
 
 Semantic aliases also defined: `--bg-page`, `--bg-card`, `--bg-modal`, `--bg-code`.
 
 ### Semantic — Accent
 
-| Token | Value | Role |
-|---|---|---|
-| `--color-accent` | `#6a96ea` | Primary interactive — links, CTAs, focus ring |
-| `--color-accent-muted` | `#1f3a5f` | Accent backgrounds, badge fills |
-| `--color-accent-subtle` | `#131d2f` | Soft accent backgrounds, hover surfaces |
+| Token                   | Value     | Role                                          |
+| ----------------------- | --------- | --------------------------------------------- |
+| `--color-accent`        | `#6a96ea` | Primary interactive — links, CTAs, focus ring |
+| `--color-accent-muted`  | `#1f3a5f` | Accent backgrounds, badge fills               |
+| `--color-accent-subtle` | `#131d2f` | Soft accent backgrounds, hover surfaces       |
 
 The accent is intentionally close to Inspira's Cornflower Blue 400 (`#6a97eb`) — a 1-pixel divergence (`ea` vs `eb`). This is the single most important token in the sub-brand: it preserves family resemblance while everything else inverts.
 
 ### Semantic — Text
 
-| Token | Value | Role |
-|---|---|---|
-| `--color-text-primary` | `#e6edf3` | Body, primary content |
-| `--color-text-secondary` | `#8b949e` | Secondary text, descriptions |
-| `--color-text-muted` | `#6e7681` | Tertiary text, placeholders, metadata |
+| Token                    | Value     | Role                                  |
+| ------------------------ | --------- | ------------------------------------- |
+| `--color-text-primary`   | `#e6edf3` | Body, primary content                 |
+| `--color-text-secondary` | `#8b949e` | Secondary text, descriptions          |
+| `--color-text-muted`     | `#6e7681` | Tertiary text, placeholders, metadata |
 
 ### Semantic — Border
 
-| Token | Value | Role |
-|---|---|---|
-| `--color-border` | `#30363d` | Default borders, dividers |
-| `--color-border-emphasis` | `#484f58` | Stronger borders for emphasis |
-| `--border-subtle` | `color-mix(... 60% transparent)` | Faint separators |
+| Token                     | Value                            | Role                          |
+| ------------------------- | -------------------------------- | ----------------------------- |
+| `--color-border`          | `#30363d`                        | Default borders, dividers     |
+| `--color-border-emphasis` | `#484f58`                        | Stronger borders for emphasis |
+| `--border-subtle`         | `color-mix(... 60% transparent)` | Faint separators              |
 
 Focus ring is `--color-focus-ring: var(--color-accent)`.
 
@@ -103,34 +104,35 @@ Focus ring is `--color-focus-ring: var(--color-accent)`.
 
 GitHub Primer pairs: each status has a foreground (saturated) and a background (muted, derived via `color-mix`).
 
-| Status | FG | BG | Use |
-|---|---|---|---|
-| OK | `--color-success` `#3fb950` | `--status-ok-bg` `#1a2d1a` | Success states, healthy badges |
-| Warning | `--color-warning` `#d29922` | `color-mix(warning 15%, bg-base)` | Caution, non-blocking alerts |
-| Danger | `--color-danger` `#f85149` | `color-mix(danger 15%, bg-base)` | Errors, destructive states |
-| Neutral | `--color-text-secondary` | `--color-bg-input` | Default badge, no-state |
+| Status  | FG                          | BG                                | Use                            |
+| ------- | --------------------------- | --------------------------------- | ------------------------------ |
+| OK      | `--color-success` `#3fb950` | `--status-ok-bg` `#1a2d1a`        | Success states, healthy badges |
+| Warning | `--color-warning` `#d29922` | `color-mix(warning 15%, bg-base)` | Caution, non-blocking alerts   |
+| Danger  | `--color-danger` `#f85149`  | `color-mix(danger 15%, bg-base)`  | Errors, destructive states     |
+| Neutral | `--color-text-secondary`    | `--color-bg-input`                | Default badge, no-state        |
 
 ### Semantic — CTA
 
-| Token | Value | Role |
-|---|---|---|
-| `--cta-primary-bg` | `var(--color-accent)` | Primary action fill |
-| `--cta-primary-fg` | `#ffffff` | Primary action text |
+| Token                 | Value                          | Role                              |
+| --------------------- | ------------------------------ | --------------------------------- |
+| `--cta-primary-bg`    | `var(--color-accent)`          | Primary action fill               |
+| `--cta-primary-fg`    | `#ffffff`                      | Primary action text               |
 | `--cta-primary-hover` | `color-mix(accent 85%, white)` | Primary hover (lightens slightly) |
-| `--cta-neutral-bg` | `var(--color-bg-input)` | Neutral action fill |
-| `--cta-neutral-fg` | `var(--color-text-primary)` | Neutral text |
-| `--cta-neutral-hover` | `var(--color-bg-elevated)` | Neutral hover |
-| `--cta-ghost-fg` | `var(--color-text-secondary)` | Ghost text |
-| `--cta-ghost-hover` | `var(--color-bg-input)` | Ghost hover bg |
-| `--cta-danger-bg` | `var(--color-danger)` | Destructive action fill |
-| `--cta-danger-fg` | `#ffffff` | Destructive text |
+| `--cta-neutral-bg`    | `var(--color-bg-input)`        | Neutral action fill               |
+| `--cta-neutral-fg`    | `var(--color-text-primary)`    | Neutral text                      |
+| `--cta-neutral-hover` | `var(--color-bg-elevated)`     | Neutral hover                     |
+| `--cta-ghost-fg`      | `var(--color-text-secondary)`  | Ghost text                        |
+| `--cta-ghost-hover`   | `var(--color-bg-input)`        | Ghost hover bg                    |
+| `--cta-danger-bg`     | `var(--color-danger)`          | Destructive action fill           |
+| `--cta-danger-fg`     | `#ffffff`                      | Destructive text                  |
 
 ## Tokens — Typography
 
 ### Families
 
 ```css
---font-sans: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+--font-sans:
+  "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 ```
 
@@ -140,27 +142,27 @@ Lexflow adds JetBrains Mono on top of Poppins. Mono is reserved for: code blocks
 
 Same three as Inspira. No deviation.
 
-| Weight | CSS | Use |
-|---|---|---|
-| Regular | `400` | Body, descriptions |
-| Medium | `500` | Labels, button text |
-| Semibold | `600` | Titles, headings |
+| Weight   | CSS   | Use                 |
+| -------- | ----- | ------------------- |
+| Regular  | `400` | Body, descriptions  |
+| Medium   | `500` | Labels, button text |
+| Semibold | `600` | Titles, headings    |
 
 ### Size Scale
 
 Lexflow uses a flatter, denser scale than Inspira (more sizes between 10–17px, fewer huge display sizes). This reflects the dev-tool density.
 
-| Token | Size | Use |
-|---|---|---|
-| `--fs-10` | 10.5px | Micro labels, badge text |
-| `--fs-11` | 11px | Caption-sm, dense metadata |
-| `--fs-12` | 12px | Caption, mono code, table cells |
-| `--fs-13` | 13px | Default button, dense body |
-| `--fs-14` | 14px | **Default body.** Most UI. |
-| `--fs-15` | 15px | Slightly emphasized body |
-| `--fs-17` | 17px | Subheadings, section titles |
-| `--fs-22` | 22px | Page titles, modal headings |
-| `--fs-28` | 28px | Hero titles (chat empty state, onboarding) |
+| Token     | Size   | Use                                        |
+| --------- | ------ | ------------------------------------------ |
+| `--fs-10` | 10.5px | Micro labels, badge text                   |
+| `--fs-11` | 11px   | Caption-sm, dense metadata                 |
+| `--fs-12` | 12px   | Caption, mono code, table cells            |
+| `--fs-13` | 13px   | Default button, dense body                 |
+| `--fs-14` | 14px   | **Default body.** Most UI.                 |
+| `--fs-15` | 15px   | Slightly emphasized body                   |
+| `--fs-17` | 17px   | Subheadings, section titles                |
+| `--fs-22` | 22px   | Page titles, modal headings                |
+| `--fs-28` | 28px   | Hero titles (chat empty state, onboarding) |
 
 Line heights: `--lh-tight: 1.25`, `--lh-normal: 1.5`, `--lh-relaxed: 1.6`.
 Letter spacing: `--tracking-tight: -0.02em` (display sizes), `--tracking-mono: 0` (mono).
@@ -173,17 +175,17 @@ Chat empty state and onboarding use a **two-line accent-split heading** ("Transf
 
 ### Spacing — 4pt base, 8pt grid
 
-| Token | Value |
-|---|---|
-| `--space-1` | 4px |
-| `--space-2` | 8px |
-| `--space-3` | 12px |
-| `--space-4` | 16px |
-| `--space-5` | 20px |
-| `--space-6` | 24px |
-| `--space-8` | 32px |
-| `--space-10` | 40px |
-| `--space-12` | 48px |
+| Token        | Value |
+| ------------ | ----- |
+| `--space-1`  | 4px   |
+| `--space-2`  | 8px   |
+| `--space-3`  | 12px  |
+| `--space-4`  | 16px  |
+| `--space-5`  | 20px  |
+| `--space-6`  | 24px  |
+| `--space-8`  | 32px  |
+| `--space-10` | 40px  |
+| `--space-12` | 48px  |
 
 Same philosophy as Inspira (4pt base) but with a tighter ladder up to `--space-12` (Inspira goes to `--space-24` / 96px). Lexflow's higher density doesn't need huge spaces.
 
@@ -191,67 +193,67 @@ Same philosophy as Inspira (4pt base) but with a tighter ladder up to `--space-1
 
 Tighter than Inspira's scale.
 
-| Token | Value | Use |
-|---|---|---|
-| `--radius-xs` | 4px | Tight badges, code blocks |
-| `--radius-sm` | 6px | Inputs, chips, dense controls |
-| `--radius-md` | 8px | Default buttons, cards |
-| `--radius-lg` | 10px | Elevated cards, modals |
-| `--radius-xl` | 14px | Hero cards, prominent surfaces |
-| `--radius-pill` | 9999px | Pills, avatar |
+| Token           | Value  | Use                            |
+| --------------- | ------ | ------------------------------ |
+| `--radius-xs`   | 4px    | Tight badges, code blocks      |
+| `--radius-sm`   | 6px    | Inputs, chips, dense controls  |
+| `--radius-md`   | 8px    | Default buttons, cards         |
+| `--radius-lg`   | 10px   | Elevated cards, modals         |
+| `--radius-xl`   | 14px   | Hero cards, prominent surfaces |
+| `--radius-pill` | 9999px | Pills, avatar                  |
 
 ### Shadows (real, dark-mode-tuned)
 
 Dark UIs need real shadows for elevation — surface shifts alone don't read on a dark page.
 
-| Token | Value |
-|---|---|
-| `--shadow-sm` | `0 1px 2px rgba(0,0,0,0.3)` |
-| `--shadow-md` | `0 4px 12px rgba(0,0,0,0.4)` |
+| Token         | Value                         |
+| ------------- | ----------------------------- |
+| `--shadow-sm` | `0 1px 2px rgba(0,0,0,0.3)`   |
+| `--shadow-md` | `0 4px 12px rgba(0,0,0,0.4)`  |
 | `--shadow-lg` | `0 12px 32px rgba(0,0,0,0.5)` |
 | `--shadow-xl` | `0 20px 48px rgba(0,0,0,0.6)` |
 
 ## Motion (Lexflow-defined, candidate for Inspira adoption)
 
-| Token | Value |
-|---|---|
-| `--duration-fast` | 140ms |
-| `--duration-normal` | 220ms |
-| `--duration-slow` | 320ms |
-| `--ease-out` | `cubic-bezier(0.2, 0.8, 0.2, 1)` |
-| `--ease-in-out` | `cubic-bezier(0.4, 0, 0.2, 1)` |
+| Token               | Value                            |
+| ------------------- | -------------------------------- |
+| `--duration-fast`   | 140ms                            |
+| `--duration-normal` | 220ms                            |
+| `--duration-slow`   | 320ms                            |
+| `--ease-out`        | `cubic-bezier(0.2, 0.8, 0.2, 1)` |
+| `--ease-in-out`     | `cubic-bezier(0.4, 0, 0.2, 1)`   |
 
 These satisfy Brisa's Ritmo principle ("100–300ms, never >500ms"). They should migrate up to Inspira's `utilities.css` (in `tokens/tokens-css.md`) so all sub-brands inherit them — see Open Questions.
 
 ## Layout
 
-| Token | Value | Use |
-|---|---|---|
-| `--sidebar-width` | 248px | Persistent left nav |
-| `--topbar-height` | 56px | Top app bar |
-| `--content-max-width` | 1200px | Main content column max |
-| `--drawer-width` | 480px | Side drawers (Context, Settings) |
-| `--modal-width` | 560px | Modal default width |
+| Token                 | Value  | Use                              |
+| --------------------- | ------ | -------------------------------- |
+| `--sidebar-width`     | 248px  | Persistent left nav              |
+| `--topbar-height`     | 56px   | Top app bar                      |
+| `--content-max-width` | 1200px | Main content column max          |
+| `--drawer-width`      | 480px  | Side drawers (Context, Settings) |
+| `--modal-width`       | 560px  | Modal default width              |
 
 These are Lexflow-specific because Lexflow is a single-app shell (sidebar + topbar + content). Other Inspira products may have different shell needs and can opt out.
 
 ## Surfaces
 
-| Level | Token | Value | Purpose |
-|---|---|---|---|
-| 0 | `--color-bg-base` | `#0e1117` | Page background |
-| 1 | `--color-bg-surface` | `#161b22` | Cards, panels |
-| 2 | `--color-bg-elevated` | `#1c2129` | Dropdowns, modals, popovers (with `--shadow-md`) |
-| 3 | `--color-bg-input` | `#21262d` | Form controls, code surfaces |
+| Level | Token                 | Value     | Purpose                                          |
+| ----- | --------------------- | --------- | ------------------------------------------------ |
+| 0     | `--color-bg-base`     | `#0e1117` | Page background                                  |
+| 1     | `--color-bg-surface`  | `#161b22` | Cards, panels                                    |
+| 2     | `--color-bg-elevated` | `#1c2129` | Dropdowns, modals, popovers (with `--shadow-md`) |
+| 3     | `--color-bg-input`    | `#21262d` | Form controls, code surfaces                     |
 
-Surface progression goes *up* in luminance as elevation increases — opposite of the light-mode intuition where elevated surfaces are usually whiter. On dark, elevated = lighter slate.
+Surface progression goes _up_ in luminance as elevation increases — opposite of the light-mode intuition where elevated surfaces are usually whiter. On dark, elevated = lighter slate.
 
 ### Special Surface — DarkGradientCard
 
 The chat hero/composer uses a multi-stop dark gradient that is **not part of the standard surface ladder**. It's a single, unique brand surface for chat moments only.
 
 ```css
-background: linear-gradient(163deg, #1C264F 0%, #0E1634 50%, #070C20 100%);
+background: linear-gradient(163deg, #1c264f 0%, #0e1634 50%, #070c20 100%);
 ```
 
 Use only in: chat empty state hero, composer card on Início, and the `chat-kit.html` showcase. Do not use as a generic card background — it earns its impact by scarcity.
@@ -261,56 +263,67 @@ Use only in: chat empty state hero, composer card on Início, and the `chat-kit.
 Components reference semantic tokens. The component descriptions below mirror the prototype's primitives in `lexflow-merged/primitives.jsx` and `chat-primitives.jsx`.
 
 ### Button — Primary
+
 **Role:** Default action, anywhere in product.
 
 `--cta-primary-bg` (accent) fill, white text, `--radius-md` corners, `--space-2` × `--space-4` padding, `--fs-13` Medium, focus ring `--color-accent` 2px offset. Hover lightens via `color-mix(accent 85%, white)`.
 
 ### Button — Neutral
+
 **Role:** Secondary actions, cancel, dismiss.
 
 `--cta-neutral-bg` (input gray), `--cta-neutral-fg` (primary text), same radius/padding as primary. Hover → `--cta-neutral-hover`.
 
 ### Button — Ghost
+
 **Role:** Lowest-emphasis, table-row actions, header utility.
 
 Transparent, `--cta-ghost-fg` (text-secondary). Hover reveals `--cta-ghost-hover` background.
 
 ### Button — Danger
+
 **Role:** Destructive, after confirmation only.
 
 `--cta-danger-bg`, white text. Same shape as primary.
 
 ### Card (Default)
+
 **Role:** Content container.
 
 `--bg-card` (`#161b22`), `--color-border` 1px, `--radius-md`, padding `--space-4` to `--space-6`. Optional `--shadow-sm` for slight lift; default is borderless-flat.
 
 ### Modal / Dialog
+
 **Role:** Focused interruption.
 
 `--bg-modal` (`#1c2129`), `--color-border` 1px, `--radius-lg`, `--shadow-xl`, width `--modal-width` (560px). Backdrop `rgba(0,0,0,0.6)`.
 
 ### HealthBadge / StatusBadge
+
 **Role:** Workflow execution status, system health.
 
 Each variant pairs `--status-{state}-fg` with `--status-{state}-bg`, `--radius-pill`, `--fs-11` Medium. Tiny dot prefix optional.
 
 ### Text Input / Textarea
+
 **Role:** Form data entry, chat composer.
 
 `--bg-input` (`#21262d`), `--color-border` 1px, `--text-primary` text, `--text-muted` placeholder, `--radius-sm`. Focus → `--color-accent` border, no glow.
 
 ### Sidebar Nav
+
 **Role:** Persistent left rail.
 
 Width `--sidebar-width` (248px), `--bg-surface` background, items use ghost styling, active item gets `--color-accent-subtle` background + `--color-accent` left border accent.
 
 ### Topbar
+
 **Role:** Persistent top app bar.
 
 Height `--topbar-height` (56px), `--bg-base` background, `--color-border` bottom 1px. Hosts breadcrumb, search, user menu.
 
 ### Composer (Chat)
+
 **Role:** Message input + starter chips inline.
 
 `DarkGradientCard` surface, large rounded textarea (`--radius-xl`), three `<ComposerChip>` starters in the same row, send button on the right.
@@ -319,19 +332,20 @@ Height `--topbar-height` (56px), `--bg-base` background, `--color-border` bottom
 
 Ported from Inspira's Chat UI Kit ("Fonte da verdade · Chat Agêntico"), adapted to LexFlow vocabulary.
 
-| Component | Role | Notes |
-|---|---|---|
-| `<UserBubble>` | User message | Right-aligned, `--bg-input` fill |
-| `<AgentBubble>` | Agent message wrapper | Left-aligned, contains `<AgentHeader>` + body + `<ResumoBlock>` + chips |
-| `<AgentHeader kind="...">` | Classifies the response | `kind`: `workflow` (proposing/explaining), `debug` (diagnosing execution) |
-| `<ResumoBlock>` | Key takeaway, prominent | One-line distillation of the response |
-| `<ReferenceTag variant="...">` | Inline reference | `workflow` (gitBranch icon), `execution` (zap icon), `app` (layers icon), `external` (link icon) |
-| `<ResourceCard>` | Related resource block | Polymorphic — workflow / execution / app variants |
-| `<ContextSidebar>` | "Contexto usado (N)" overlay | Drawer with all sources consulted |
-| `<FileChip>` | File reference inline | Small pill with file icon + name |
-| `<HoverCard>` | Reference preview on hover | Lightweight popover |
+| Component                      | Role                         | Notes                                                                                            |
+| ------------------------------ | ---------------------------- | ------------------------------------------------------------------------------------------------ |
+| `<UserBubble>`                 | User message                 | Right-aligned, `--bg-input` fill                                                                 |
+| `<AgentBubble>`                | Agent message wrapper        | Left-aligned, contains `<AgentHeader>` + body + `<ResumoBlock>` + chips                          |
+| `<AgentHeader kind="...">`     | Classifies the response      | `kind`: `workflow` (proposing/explaining), `debug` (diagnosing execution)                        |
+| `<ResumoBlock>`                | Key takeaway, prominent      | One-line distillation of the response                                                            |
+| `<ReferenceTag variant="...">` | Inline reference             | `workflow` (gitBranch icon), `execution` (zap icon), `app` (layers icon), `external` (link icon) |
+| `<ResourceCard>`               | Related resource block       | Polymorphic — workflow / execution / app variants                                                |
+| `<ContextSidebar>`             | "Contexto usado (N)" overlay | Drawer with all sources consulted                                                                |
+| `<FileChip>`                   | File reference inline        | Small pill with file icon + name                                                                 |
+| `<HoverCard>`                  | Reference preview on hover   | Lightweight popover                                                                              |
 
 ### Hero Title (chat empty / onboarding)
+
 **Role:** Two-line accent-split heading.
 
 ```jsx
@@ -344,6 +358,7 @@ Ported from Inspira's Chat UI Kit ("Fonte da verdade · Chat Agêntico"), adapte
 `--fs-28` Semibold, line 1 in `--text-primary`, line 2 in `--color-accent`. Reserved for hero moments — not a generic heading style.
 
 ### Prompt Starter Card (chat empty state)
+
 **Role:** Suggestion below the composer.
 
 `--bg-surface`, `--radius-md`, `--space-4` padding, hover lifts via `--shadow-sm`. Title in `--text-primary` Medium, body in `--text-secondary`. Click pre-fills the textarea.
@@ -351,6 +366,7 @@ Ported from Inspira's Chat UI Kit ("Fonte da verdade · Chat Agêntico"), adapte
 ## Do's and Don'ts
 
 ### Do
+
 - Use the **single accent** (`--color-accent`) for all primary actions. Lexflow does not have a Rich Black equivalent — accent is the CTA.
 - Stack surfaces upward in luminance: `--bg-base` → `--bg-surface` → `--bg-elevated` → `--bg-input`.
 - Use real shadows (`--shadow-sm` through `--shadow-xl`) on elevated surfaces — dark mode requires them.
@@ -363,6 +379,7 @@ Ported from Inspira's Chat UI Kit ("Fonte da verdade · Chat Agêntico"), adapte
 - Inherit Inspira's typography rules. Same Poppins, same three weights, same no-italics/no-allcaps.
 
 ### Don't
+
 - Don't use Rich Black (`#070c21`) as a CTA fill. That's Inspira's primary, not Lexflow's. Lexflow CTAs are accent-filled.
 - Don't introduce Tropical Indigo or Inspira-style gradient accents. Lexflow's idiom is single-accent + status pairs, not the Cornflower→Indigo gradient family.
 - Don't use Inspira's radius scale (12 / 16 / 24). Lexflow's is tighter (8 / 10 / 14) — denser surfaces.
@@ -444,130 +461,132 @@ If a Lexflow-derived project needs these, the Setup Skill logs the gap.
 ```css
 :root {
   /* Color — Canonical (Lexflow primitives) */
-  --color-accent:          #6a96ea;
-  --color-accent-muted:    #1f3a5f;
-  --color-accent-subtle:   #131d2f;
+  --color-accent: #6a96ea;
+  --color-accent-muted: #1f3a5f;
+  --color-accent-subtle: #131d2f;
 
-  --color-bg-base:         #0e1117;
-  --color-bg-surface:      #161b22;
-  --color-bg-elevated:     #1c2129;
-  --color-bg-input:        #21262d;
+  --color-bg-base: #0e1117;
+  --color-bg-surface: #161b22;
+  --color-bg-elevated: #1c2129;
+  --color-bg-input: #21262d;
 
-  --color-border:           #30363d;
-  --color-border-emphasis:  #484f58;
+  --color-border: #30363d;
+  --color-border-emphasis: #484f58;
 
-  --color-text-primary:    #e6edf3;
-  --color-text-secondary:  #8b949e;
-  --color-text-muted:      #6e7681;
+  --color-text-primary: #e6edf3;
+  --color-text-secondary: #8b949e;
+  --color-text-muted: #6e7681;
 
-  --color-success:         #3fb950;
-  --color-success-muted:   #1a2d1a;
-  --color-warning:         #d29922;
-  --color-danger:          #f85149;
+  --color-success: #3fb950;
+  --color-success-muted: #1a2d1a;
+  --color-warning: #d29922;
+  --color-danger: #f85149;
 
   /* Color — Semantic aliases */
-  --color-link:            var(--color-accent);
-  --color-focus-ring:      var(--color-accent);
-  --bg-page:               var(--color-bg-base);
-  --bg-card:               var(--color-bg-surface);
-  --bg-modal:              var(--color-bg-elevated);
-  --bg-code:               var(--color-bg-input);
-  --text-primary:          var(--color-text-primary);
-  --text-secondary:        var(--color-text-secondary);
-  --text-tertiary:         var(--color-text-muted);
-  --text-link:             var(--color-accent);
-  --border-default:        var(--color-border);
-  --border-subtle:         color-mix(in srgb, var(--color-border) 60%, transparent);
-  --border-strong:         var(--color-border-emphasis);
+  --color-link: var(--color-accent);
+  --color-focus-ring: var(--color-accent);
+  --bg-page: var(--color-bg-base);
+  --bg-card: var(--color-bg-surface);
+  --bg-modal: var(--color-bg-elevated);
+  --bg-code: var(--color-bg-input);
+  --text-primary: var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --text-tertiary: var(--color-text-muted);
+  --text-link: var(--color-accent);
+  --border-default: var(--color-border);
+  --border-subtle: color-mix(in srgb, var(--color-border) 60%, transparent);
+  --border-strong: var(--color-border-emphasis);
 
   /* Status pairs */
-  --status-ok-fg:          var(--color-success);
-  --status-ok-bg:          var(--color-success-muted);
-  --status-warning-fg:     var(--color-warning);
-  --status-warning-bg:     color-mix(in srgb, var(--color-warning) 15%, var(--color-bg-base));
-  --status-danger-fg:      var(--color-danger);
-  --status-danger-bg:      color-mix(in srgb, var(--color-danger) 15%, var(--color-bg-base));
-  --status-neutral-fg:     var(--color-text-secondary);
-  --status-neutral-bg:     var(--color-bg-input);
+  --status-ok-fg: var(--color-success);
+  --status-ok-bg: var(--color-success-muted);
+  --status-warning-fg: var(--color-warning);
+  --status-warning-bg: color-mix(in srgb, var(--color-warning) 15%, var(--color-bg-base));
+  --status-danger-fg: var(--color-danger);
+  --status-danger-bg: color-mix(in srgb, var(--color-danger) 15%, var(--color-bg-base));
+  --status-neutral-fg: var(--color-text-secondary);
+  --status-neutral-bg: var(--color-bg-input);
 
   /* CTA */
-  --cta-primary-bg:        var(--color-accent);
-  --cta-primary-fg:        #ffffff;
-  --cta-primary-hover:     color-mix(in srgb, var(--color-accent) 85%, white);
-  --cta-neutral-bg:        var(--color-bg-input);
-  --cta-neutral-fg:        var(--color-text-primary);
-  --cta-neutral-hover:     var(--color-bg-elevated);
-  --cta-ghost-fg:          var(--color-text-secondary);
-  --cta-ghost-hover:       var(--color-bg-input);
-  --cta-danger-bg:         var(--color-danger);
-  --cta-danger-fg:         #ffffff;
+  --cta-primary-bg: var(--color-accent);
+  --cta-primary-fg: #ffffff;
+  --cta-primary-hover: color-mix(in srgb, var(--color-accent) 85%, white);
+  --cta-neutral-bg: var(--color-bg-input);
+  --cta-neutral-fg: var(--color-text-primary);
+  --cta-neutral-hover: var(--color-bg-elevated);
+  --cta-ghost-fg: var(--color-text-secondary);
+  --cta-ghost-hover: var(--color-bg-input);
+  --cta-danger-bg: var(--color-danger);
+  --cta-danger-fg: #ffffff;
 
   /* Typography */
-  --font-sans: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-sans:
+    "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
-  --fs-10:  10.5px;
-  --fs-11:  11px;
-  --fs-12:  12px;
-  --fs-13:  13px;
-  --fs-14:  14px;
-  --fs-15:  15px;
-  --fs-17:  17px;
-  --fs-22:  22px;
-  --fs-28:  28px;
+  --fs-10: 10.5px;
+  --fs-11: 11px;
+  --fs-12: 12px;
+  --fs-13: 13px;
+  --fs-14: 14px;
+  --fs-15: 15px;
+  --fs-17: 17px;
+  --fs-22: 22px;
+  --fs-28: 28px;
 
-  --fw-regular:    400;
-  --fw-medium:     500;
-  --fw-semibold:   600;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
 
-  --lh-tight:      1.25;
-  --lh-normal:     1.5;
-  --lh-relaxed:    1.6;
+  --lh-tight: 1.25;
+  --lh-normal: 1.5;
+  --lh-relaxed: 1.6;
 
   --tracking-tight: -0.02em;
-  --tracking-mono:  0;
+  --tracking-mono: 0;
 
   /* Spacing */
-  --space-1:  4px;
-  --space-2:  8px;
-  --space-3:  12px;
-  --space-4:  16px;
-  --space-5:  20px;
-  --space-6:  24px;
-  --space-8:  32px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
   --space-10: 40px;
   --space-12: 48px;
 
   /* Radius */
-  --radius-xs:   4px;
-  --radius-sm:   6px;
-  --radius-md:   8px;
-  --radius-lg:   10px;
-  --radius-xl:   14px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
   --radius-pill: 999px;
 
   /* Shadow (dark-mode tuned) */
-  --shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md:  0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg:  0 12px 32px rgba(0, 0, 0, 0.5);
-  --shadow-xl:  0 20px 48px rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.6);
 
   /* Motion */
-  --duration-fast:   140ms;
+  --duration-fast: 140ms;
   --duration-normal: 220ms;
-  --duration-slow:   320ms;
-  --ease-out:        cubic-bezier(0.2, 0.8, 0.2, 1);
-  --ease-in-out:     cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-slow: 320ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Layout */
-  --sidebar-width:        248px;
-  --topbar-height:        56px;
-  --content-max-width:    1200px;
-  --drawer-width:         480px;
-  --modal-width:          560px;
+  --sidebar-width: 248px;
+  --topbar-height: 56px;
+  --content-max-width: 1200px;
+  --drawer-width: 480px;
+  --modal-width: 560px;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   font-family: var(--font-sans);

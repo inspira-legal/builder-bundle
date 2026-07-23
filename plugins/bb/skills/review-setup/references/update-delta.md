@@ -31,7 +31,7 @@ evidence: []}`.
 > code (naming changed, import pattern changed); (2) HIGH rules now followed
 > inconsistently; (3) new test patterns; (4) new error-handling approaches. For
 > each: `{rule_id, current_description, actual_state, evidence,
-> recommendation: update|remove|keep}` with concrete example files.
+recommendation: update|remove|keep}` with concrete example files.
 
 ### Subagent 3 — Git history since the guide
 

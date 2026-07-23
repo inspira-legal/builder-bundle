@@ -126,11 +126,11 @@ Old sessions may carry `nise:`/`esperanca:` sections, a `shaping:` block, and st
 
 ### Status states — who can set
 
-| Status | Set by | Meaning |
-|---|---|---|
-| `in-progress` | any phase | Session started, not finished. Step 0.1 offers to resume. |
-| `bootstrapped-to-discover` | Phase 2 (gate accepted) | Partial intake written; waiting for the builder to run `/bb:discover` and come back. Step 0.1 detects it, locates the brief, records `gate.discover_brief`, and resumes at Phase 3. |
-| `completed` | last phase run (usually Deliver) | Journey finished. Re-runs enter the re-entry contract. |
+| Status                     | Set by                           | Meaning                                                                                                                                                                             |
+| -------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `in-progress`              | any phase                        | Session started, not finished. Step 0.1 offers to resume.                                                                                                                           |
+| `bootstrapped-to-discover` | Phase 2 (gate accepted)          | Partial intake written; waiting for the builder to run `/bb:discover` and come back. Step 0.1 detects it, locates the brief, records `gate.discover_brief`, and resumes at Phase 3. |
+| `completed`                | last phase run (usually Deliver) | Journey finished. Re-runs enter the re-entry contract.                                                                                                                              |
 
 ### Where session.yaml lives
 

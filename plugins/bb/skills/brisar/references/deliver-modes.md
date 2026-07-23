@@ -6,7 +6,7 @@ Lazy load: read only the section of the mode chosen in Step 1 of `phase-deliver.
 
 ## Mode 1: Design review (`design-review`)
 
-**Why it exists:** confronts the prototype with the *intent* (hypothesis + cuts from the discover brief). Without this confrontation, design becomes opinion.
+**Why it exists:** confronts the prototype with the _intent_ (hypothesis + cuts from the discover brief). Without this confrontation, design becomes opinion.
 
 ### Inputs
 
@@ -19,21 +19,25 @@ Lazy load: read only the section of the mode chosen in Step 1 of `phase-deliver.
 For each surface in `tarsila.surfaces[]`:
 
 **1. Hypothesis fit** (the key question)
+
 - Read the hypothesis from the discover brief.
 - Mental question: "If a user enters this screen, does their path lead to the behavior this hypothesis predicts?"
 - Flag if: primary CTA is below the fold, the primary action isn't visually dominant, there's unnecessary friction in the critical path.
 
 **2. Visual hierarchy + CTA**
+
 - Where does the eye land? (mental F-pattern / Z-pattern)
 - Is the primary CTA the most salient element?
 - Are there more than 1 "primary" CTA competing? (frequency: high)
 
 **3. Consistency with design system**
+
 - Do the tokens used match `tokens.md`? (colors, spacing, type-scale)
 - Do the components used exist in `components.md`?
 - If there's inline custom, is the why documented?
 
 **4. Obvious edge cases**
+
 - Does a loading state exist?
 - Does an empty state exist?
 - Does an error state exist?
@@ -42,13 +46,14 @@ For each surface in `tarsila.surfaces[]`:
 ### Severity
 
 Each issue receives **one** severity:
+
 - `blocker` — blocks merge. E.g.: violates WCAG AA, contradicts hypothesis, breaks DS.
 - `significant` — doesn't block, but worth resolving before PR. E.g.: missing state, ambiguous CTA.
 - `minor` — goes in "neighborhood". **Don't use for nitpicking** — only for real things worth noting.
 
 ### At least 1 specific piece of praise
 
-Not cheerleading. Information. Identify 1 decision that worked and say *why* — so the builder maintains that pattern.
+Not cheerleading. Information. Identify 1 decision that worked and say _why_ — so the builder maintains that pattern.
 
 ### Output: `.brisar/clarisse/design-review.md`
 
@@ -72,25 +77,30 @@ Not cheerleading. Information. Identify 1 decision that worked and say *why* —
 ### <surface_name>
 
 #### Hypothesis fit
+
 <frase: aligned/partial/misaligned + razão em 1 linha>
 
 #### Issues
 
 ##### [blocker] <título curto>
+
 - **Onde:** <componente/seção/arquivo:linha se aplicável>
 - **Problema:** <1-2 frases>
 - **Por que importa:** <impacto observável>
 - **Sugestão:** <ação concreta>
 
 ##### [significant] <título curto>
+
 - **Onde:** ...
 - **Problema:** ...
 - **Sugestão:** ...
 
 ##### [minor] <título curto>
+
 - <breve, em 1 linha>
 
 #### O que ficou bem
+
 - <decisão específica> — por que: <razão de manter esse padrão>
 
 ## Neighborhood (issues minor agrupados — não bloqueantes)
@@ -111,43 +121,48 @@ Not cheerleading. Information. Identify 1 decision that worked and say *why* —
 
 ### Decision: inline or delegate?
 
-| Signal | Action |
-|---|---|
+| Signal                                                     | Action                                                                                                                                        |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | Builder asked for "deep audit" or "before merging to prod" | **Suggest `/bb:ui-accessibility`** (specialized skill). Flag in handoff: "Rode `/bb:ui-accessibility` na pasta `<projeto>` antes de mergear." |
-| Quick sanity check during design review | **Inline** (5 checks below) |
-| Small appetite + hosted prototype | **Inline** is sufficient |
+| Quick sanity check during design review                    | **Inline** (5 checks below)                                                                                                                   |
+| Small appetite + hosted prototype                          | **Inline** is sufficient                                                                                                                      |
 
 ### Inline checks (only if decision = inline)
 
 **1. Color contrast (WCAG AA = 4.5:1 for normal text, 3:1 for large text)**
+
 - For each foreground/background pair used in the prototype, validate.
 - If in doubt, suggest /bb:ui-accessibility — don't guess values.
 
 **2. Keyboard navigation (mental walkthrough)**
+
 - Does Tab traverse all interactive elements?
 - Does the tab order make sense (top-to-bottom, left-to-right)?
 - Is focus visible (not removed with `outline: none` without replacement)?
 - Does Esc close modals? Does Enter submit forms?
 
 **3. ARIA + semantics**
+
 - Do buttons use `<button>`, not `<div onClick>`?
 - Do icon-only buttons have `aria-label`?
 - Do form fields have `<label>` or `aria-labelledby`?
 - Are headings in order (h1 → h2 → h3, without skipping)?
 
 **4. Screen reader (mental)**
+
 - Does what's announced in DOM order make sense?
 - Do informative images have `alt`? Do decorative ones have `alt=""`?
 - Do dynamic states (loading, error) use `aria-live`?
 
 **5. Motion and timing**
+
 - Is there no autoplay of video/animation causing distraction?
 - Is `prefers-reduced-motion` respected?
 - Are timeouts extensible (if any)?
 
 ### Output: `.brisar/clarisse/accessibility-checklist.md`
 
-```markdown
+````markdown
 # Accessibility checklist — <projeto>
 
 > Gerado pela fase Deliver do /bb:brisar em <ISO date>
@@ -162,25 +177,30 @@ Not cheerleading. Information. Identify 1 decision that worked and say *why* —
 ## Resultados
 
 ### Contraste
+
 - [pass | fail | not-assessed] <par cor X sobre Y> — ratio: <N:1> — target: <N:1>
 
 ### Teclado
+
 - [pass | fail | not-assessed] Tab order coerente
 - [pass | fail | not-assessed] Foco visível
 - [pass | fail | not-assessed] Esc/Enter funcionam
 
 ### ARIA + semântica
+
 - [pass | fail | not-assessed] Botões são `<button>`
 - [pass | fail | not-assessed] Ícones-only têm aria-label
 - [pass | fail | not-assessed] Form fields têm label
 - [pass | fail | not-assessed] Headings em ordem
 
 ### Leitor de tela
+
 - [pass | fail | not-assessed] Ordem do DOM coerente
 - [pass | fail | not-assessed] Alt texts presentes
 - [pass | fail | not-assessed] aria-live em estados dinâmicos
 
 ### Movimento
+
 - [pass | fail | not-assessed] Sem autoplay disruptivo
 - [pass | fail | not-assessed] prefers-reduced-motion respeitado
 
@@ -198,7 +218,9 @@ clarisse:
     mode: inline | delegated
     blockers: [<id1>, <id2>]
 ```
-```
+````
+
+````
 
 ---
 
@@ -301,7 +323,8 @@ clarisse:
     completeness: <high|med|low>
     surfaces_documented: <N>
     ci_code_review_present: <bool>
-```
+````
+
 ```
 
 ---
@@ -310,3 +333,4 @@ clarisse:
 - Each mode generated its artifact.
 - session.yaml has `clarisse:` complete with `status`, `ran_modes`, `next_action`.
 - End at the Step 3 gate of `phase-deliver.md` (ui-accessibility / spec / encerrar) — suggest, never invoke.
+```

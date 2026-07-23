@@ -60,14 +60,14 @@ No handoff gate — report and stop:
 
 ## Edge cases
 
-| WHEN                                              | THEN                                                                    |
-| ------------------------------------------------- | ------------------------------------------------------------------------ |
-| update mode, no changes detected by any subagent  | report "sem mudanças significativas desde a última atualização", stop    |
-| repo > 1000 files                                 | sample representative files per directory instead of exhaustive scans    |
-| maintainer rejects every candidate                | guide ships with confirmed rules only — thin is fine, invented is not    |
-| legacy `.claude/skills/code-review/` present      | flag as superseded; never regenerate it                                  |
-| not a git repo                                    | report the error, stop                                                   |
-| `BB_UNATTENDED` set                               | stop — the interview is the point; this skill has no unattended mode     |
+| WHEN                                             | THEN                                                                  |
+| ------------------------------------------------ | --------------------------------------------------------------------- |
+| update mode, no changes detected by any subagent | report "sem mudanças significativas desde a última atualização", stop |
+| repo > 1000 files                                | sample representative files per directory instead of exhaustive scans |
+| maintainer rejects every candidate               | guide ships with confirmed rules only — thin is fine, invented is not |
+| legacy `.claude/skills/code-review/` present     | flag as superseded; never regenerate it                               |
+| not a git repo                                   | report the error, stop                                                |
+| `BB_UNATTENDED` set                              | stop — the interview is the point; this skill has no unattended mode  |
 
 ## Bundled Resources
 

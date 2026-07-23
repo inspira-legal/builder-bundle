@@ -64,13 +64,13 @@ These rules apply to every Inspira surface: product UI, marketing, documentation
 
 ## Capitalization
 
-| Term | Form |
-|---|---|
-| Direito (the field) | Uppercase **D** |
-| jurídico / jurídica | Lowercase |
-| inteligência artificial | Lowercase |
-| IA | Uppercase |
-| Inspira | Initial cap always |
+| Term                    | Form               |
+| ----------------------- | ------------------ |
+| Direito (the field)     | Uppercase **D**    |
+| jurídico / jurídica     | Lowercase          |
+| inteligência artificial | Lowercase          |
+| IA                      | Uppercase          |
+| Inspira                 | Initial cap always |
 
 ## Key brand terms
 

@@ -44,7 +44,7 @@ PR/CI-related; diff-only review needs no `gh`.
   (the other sources don't apply). Read-only over that PR; posting the review
   requires explicit confirmation.
 - **Current branch with an open PR** (`gh pr view`): full scope — diff + threads
-  + CI, all three sources.
+  - CI, all three sources.
 - **No open PR**: diff-only scope. Threads and CI are skipped, not failed.
 
 ## Step 2 — Gather findings per source in scope
@@ -97,17 +97,17 @@ stays saved: the report; how to resume: `/bb:review`).
 
 ## Edge cases
 
-| WHEN                                          | THEN                                                                 |
-| --------------------------------------------- | -------------------------------------------------------------------- |
-| diff vs base empty and no PR                  | report "nada pra revisar", stop                                       |
-| no open PR (review-sem-PR)                    | diff-only scope; gate offers `/bb:ship` to open one                   |
-| `CODE_REVIEW_GUIDE.md` absent                 | bundle checklists only; one-line pointer to `/bb:review-setup`        |
-| legacy `.claude/skills/code-review/` present  | flag as superseded; the user deletes it                               |
-| uncommitted changes present                   | include in diff scope, flagged separately                             |
-| user picks nothing at curation                | no edits; go to the gate                                              |
-| CI still red after 3 diagnose→fix cycles      | stop editing, report the remaining failure and the evidence           |
-| `gh` unauthenticated with PR/CI in scope      | prompt `gh auth login`; continue diff-only meanwhile                  |
-| `BB_UNATTENDED` set                           | report-only: no curation, no edits, no gate                           |
+| WHEN                                         | THEN                                                           |
+| -------------------------------------------- | -------------------------------------------------------------- |
+| diff vs base empty and no PR                 | report "nada pra revisar", stop                                |
+| no open PR (review-sem-PR)                   | diff-only scope; gate offers `/bb:ship` to open one            |
+| `CODE_REVIEW_GUIDE.md` absent                | bundle checklists only; one-line pointer to `/bb:review-setup` |
+| legacy `.claude/skills/code-review/` present | flag as superseded; the user deletes it                        |
+| uncommitted changes present                  | include in diff scope, flagged separately                      |
+| user picks nothing at curation               | no edits; go to the gate                                       |
+| CI still red after 3 diagnose→fix cycles     | stop editing, report the remaining failure and the evidence    |
+| `gh` unauthenticated with PR/CI in scope     | prompt `gh auth login`; continue diff-only meanwhile           |
+| `BB_UNATTENDED` set                          | report-only: no curation, no edits, no gate                    |
 
 ## Bundled Resources
 

@@ -317,7 +317,7 @@ Pra usar num projeto: escreva cada bloco abaixo como arquivo `.css` no projeto d
 
 @theme {
   /* — Font — */
-  --font-sans: 'Poppins', sans-serif;
+  --font-sans: "Poppins", sans-serif;
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;

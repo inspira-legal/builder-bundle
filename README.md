@@ -23,49 +23,49 @@ um plugin, `bb`; 16 skills organizadas em 6 trilhas.
 
 ### pensar — enquadrar & decidir antes de construir
 
-| skill            | descrição                                                                                                                              |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:discover`   | do incômodo à aposta shapeável — enquadra o problema, pressiona o fit (vale construir? o que cortar?) e fecha hipótese + apetite       |
-| `/bb:challenge`  | pre-mortem adversarial de uma tese — tenta derrubar antes que a realidade derrube                                                      |
-| `/bb:think`      | pensa junto e se posiciona — recomendação honesta e decisiva, nomeia a tensão não vista, sem bajulação                                 |
-| `/bb:legal-lens` | passada jurídica sobre ideia, fluxo ou documento — risco legal & compliance, fundamentado em normas citadas (brasil por padrão)        |
+| skill            | descrição                                                                                                                        |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:discover`   | do incômodo à aposta shapeável — enquadra o problema, pressiona o fit (vale construir? o que cortar?) e fecha hipótese + apetite |
+| `/bb:challenge`  | pre-mortem adversarial de uma tese — tenta derrubar antes que a realidade derrube                                                |
+| `/bb:think`      | pensa junto e se posiciona — recomendação honesta e decisiva, nomeia a tensão não vista, sem bajulação                           |
+| `/bb:legal-lens` | passada jurídica sobre ideia, fluxo ou documento — risco legal & compliance, fundamentado em normas citadas (brasil por padrão)  |
 
 ### desenhar — alinhar a forma do que vai ser construído
 
-| skill      | descrição                                                                                                             |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
+| skill      | descrição                                                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/bb:spec` | alinhe a ideia antes do código — desenvolve o draft, itera nas zonas cinzentas via perguntas, valida um brief em `.bb/tasks/<slug>/spec.md` |
 
 ### construir — escrever & entregar código
 
-| skill                       | descrição                                                                                                                                                                        |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:implement`             | implementa um brief validado — constrói as fatias, roda o gate, depois oferece entregar                                                                                          |
-| `/bb:ship`                  | leva a branch ao fim do seu jeito — revisa + deixa os checks verdes, então push, prepara pra main, ou abre um PR e cuida dele                                                    |
-| `/bb:delegate`              | roda uma task shapeada de ponta a ponta — escolhe o brief, constrói e entrega (implement → ship), trilhando o `status`. o mesmo verbo no desk e na routine noturna               |
-| `/bb:gather-branch-context` | resume todas as mudanças da branch vs main                                                                                                                                       |
+| skill                       | descrição                                                                                                                                                          |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/bb:implement`             | implementa um brief validado — constrói as fatias, roda o gate, depois oferece entregar                                                                            |
+| `/bb:ship`                  | leva a branch ao fim do seu jeito — revisa + deixa os checks verdes, então push, prepara pra main, ou abre um PR e cuida dele                                      |
+| `/bb:delegate`              | roda uma task shapeada de ponta a ponta — escolhe o brief, constrói e entrega (implement → ship), trilhando o `status`. o mesmo verbo no desk e na routine noturna |
+| `/bb:gather-branch-context` | resume todas as mudanças da branch vs main                                                                                                                         |
 
 ### revisar — qualidade & manutenção
 
 | skill               | descrição                                                                                                                                |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `/bb:review`        | revisa contra 3 fontes — diff da branch, threads do PR e CI — com gate interativo pra escolher o que tratar; corrige, responde e resolve  |
-| `/bb:maintain-repo` | tria PRs + dependabot/desatualizados, reporta o que dá pra mergear (nunca faz merge)                                                      |
-| `/bb:review-setup`  | configura o workflow de code-review da Inspira no repo e escreve o `CODE_REVIEW_GUIDE.md`                                                 |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:review`        | revisa contra 3 fontes — diff da branch, threads do PR e CI — com gate interativo pra escolher o que tratar; corrige, responde e resolve |
+| `/bb:maintain-repo` | tria PRs + dependabot/desatualizados, reporta o que dá pra mergear (nunca faz merge)                                                     |
+| `/bb:review-setup`  | configura o workflow de code-review da Inspira no repo e escreve o `CODE_REVIEW_GUIDE.md`                                                |
 
 ### design — da ideia à surface em alta fidelidade
 
-| skill                  | descrição                                                                                                                                          |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| skill                  | descrição                                                                                                                                                                                   |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/bb:brisar`           | jornada de design de ponta a ponta — calibra o perfil, scaffolda com o DS da marca, escreve direção visual por surface, e constrói (Develop) e revisa/entrega (Deliver) como fases internas |
-| `/bb:ui-accessibility` | audita interfaces web pra WCAG AA — contraste, teclado, leitor de tela — com relatório priorizado por impacto                                       |
+| `/bb:ui-accessibility` | audita interfaces web pra WCAG AA — contraste, teclado, leitor de tela — com relatório priorizado por impacto                                                                               |
 
 ### pesquisar & documentar
 
-| skill                    | descrição                                                                                        |
-| ------------------------ | -------------------------------------------------------------------------------------------------- |
-| `/bb:code-deep-research` | acha, clona & explora repos, depois verifica adversarialmente os achados contra o código-fonte    |
-| `/bb:write-readme`       | gera um README mínimo de cabeçalho centralizado a partir dos fatos do repo                        |
+| skill                    | descrição                                                                                      |
+| ------------------------ | ---------------------------------------------------------------------------------------------- |
+| `/bb:code-deep-research` | acha, clona & explora repos, depois verifica adversarialmente os achados contra o código-fonte |
+| `/bb:write-readme`       | gera um README mínimo de cabeçalho centralizado a partir dos fatos do repo                     |
 
 ## rodar sem supervisão
 

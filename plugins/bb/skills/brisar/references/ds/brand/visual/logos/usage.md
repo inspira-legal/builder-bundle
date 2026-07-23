@@ -12,25 +12,25 @@ The Inspira logo centers on a **wave** — not decorative, but symbolic. It repr
 
 ## Variants in this folder
 
-| File | When to use |
-|---|---|
-| `inspira-horizontal-dark.svg` | **Primary logo, on light backgrounds.** Default lockup for most surfaces. |
-| `inspira-horizontal-light.svg` | Primary logo, on dark backgrounds (Rich Black surfaces, dark modes). |
-| `inspira-vertical-dark.svg` | Vertical lockup, on light backgrounds. Use when vertical space is generous and horizontal space is tight. |
-| `inspira-vertical-light.svg` | Vertical lockup, on dark backgrounds. |
-| `inspira-iso-dark.svg` | **Isotype only** (wave icon, no wordmark), on light backgrounds. Use for favicons, app icons, small-scale marks. |
-| `inspira-iso-light.svg` | Isotype only, on dark backgrounds. |
+| File                           | When to use                                                                                                      |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `inspira-horizontal-dark.svg`  | **Primary logo, on light backgrounds.** Default lockup for most surfaces.                                        |
+| `inspira-horizontal-light.svg` | Primary logo, on dark backgrounds (Rich Black surfaces, dark modes).                                             |
+| `inspira-vertical-dark.svg`    | Vertical lockup, on light backgrounds. Use when vertical space is generous and horizontal space is tight.        |
+| `inspira-vertical-light.svg`   | Vertical lockup, on dark backgrounds.                                                                            |
+| `inspira-iso-dark.svg`         | **Isotype only** (wave icon, no wordmark), on light backgrounds. Use for favicons, app icons, small-scale marks. |
+| `inspira-iso-light.svg`        | Isotype only, on dark backgrounds.                                                                               |
 
 ## Choosing a variant
 
-| Context | Variant |
-|---|---|
-| App header, marketing hero, email header | `horizontal-dark` (on light) or `horizontal-light` (on dark) |
-| Footer, signature, credits | `horizontal-dark/light` |
-| Narrow banners, side columns | `vertical-dark/light` |
-| Favicon, app icon, avatars, loading indicators | `iso-dark/light` |
-| Social media profile picture | `iso-dark/light` |
-| Social media post graphics | `horizontal-dark/light` |
+| Context                                        | Variant                                                      |
+| ---------------------------------------------- | ------------------------------------------------------------ |
+| App header, marketing hero, email header       | `horizontal-dark` (on light) or `horizontal-light` (on dark) |
+| Footer, signature, credits                     | `horizontal-dark/light`                                      |
+| Narrow banners, side columns                   | `vertical-dark/light`                                        |
+| Favicon, app icon, avatars, loading indicators | `iso-dark/light`                                             |
+| Social media profile picture                   | `iso-dark/light`                                             |
+| Social media post graphics                     | `horizontal-dark/light`                                      |
 
 ## Color treatments
 
@@ -41,6 +41,7 @@ The primary treatment is **Rich Black wave on Cornflower Blue surface**. Other a
 - White wave on Cornflower Blue 400 (brand moments)
 
 **Avoid:**
+
 - Applying the logo over busy images or photos without a solid overlay
 - Using non-brand colors for the wave (no custom tints)
 - Rotating, stretching, or distorting the lockup
@@ -48,11 +49,11 @@ The primary treatment is **Rich Black wave on Cornflower Blue surface**. Other a
 
 ## Minimum sizes
 
-| Variant | Minimum width |
-|---|---|
-| Horizontal lockup | 80px |
-| Vertical lockup | 48px |
-| Isotype | 24px |
+| Variant           | Minimum width |
+| ----------------- | ------------- |
+| Horizontal lockup | 80px          |
+| Vertical lockup   | 48px          |
+| Isotype           | 24px          |
 
 Below these sizes, the wave becomes illegible. For very small contexts (16px favicons), use a simplified version from the brand guidelines — not the full SVGs in this folder.
 
@@ -63,6 +64,7 @@ A secondary typographic lockup exists — "Inspira" with a gradient on the "In."
 ## What's in the brand guidelines PDF
 
 The full brand guidelines (at `Brand guidelines/guia_identidade-visual-inspira.pdf`) contain:
+
 - CMYK print versions (not included here — this folder is digital-only)
 - Monochromatic variants for specific contexts
 - Extended usage examples and application mockups
@@ -76,7 +78,7 @@ Os SVGs abaixo estão inline porque a Loja de Skills não aceita `.svg`. Pra usa
 
 ### inspira-vertical-light.svg
 
-```svg
+````svg
 <?xml version="1.0" encoding="UTF-8"?>
 <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 2834.65 2243.98">
   <!-- Generator: Adobe Illustrator 29.6.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 9)  -->
@@ -261,3 +263,4 @@ Os SVGs abaixo estão inline porque a Loja de Skills não aceita `.svg`. Pra usa
     <circle class="st1" cx="256.7" cy="351.57" r="35.28"/>
   </g>
 </svg>```
+````

@@ -80,15 +80,15 @@ Every subagent returns the same structure:
 
 Consolidate the findings into candidate rules. Each rule gets:
 
-| Field        | Meaning                                                                                   |
-| ------------ | ------------------------------------------------------------------------------------------ |
+| Field        | Meaning                                                                                                                                                           |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **ID**       | `{DOMAIN}-{NUMBER}` — `CMT` commits, `PAT` patterns, `TST` tests, `SEC` security, `DEP` dependencies, `ERR` errors, `API` contracts, plus detected custom domains |
-| **Title**    | short descriptive name, English                                                             |
-| **Severity** | suggested `HIGH` / `MEDIUM` / `LOW`                                                         |
-| **Lens**     | which `/bb:review` lens enforces it: `logic-edges`, `async-state`, `contracts-security`, or `quality` |
-| **Evidence** | file paths / snippets supporting the rule                                                   |
-| **Status**   | `Confirmed` (80%+ of relevant files) or `Candidate` (needs validation)                      |
-| **Do/Don't** | real examples from the repo, correct and incorrect                                          |
+| **Title**    | short descriptive name, English                                                                                                                                   |
+| **Severity** | suggested `HIGH` / `MEDIUM` / `LOW`                                                                                                                               |
+| **Lens**     | which `/bb:review` lens enforces it: `logic-edges`, `async-state`, `contracts-security`, or `quality`                                                             |
+| **Evidence** | file paths / snippets supporting the rule                                                                                                                         |
+| **Status**   | `Confirmed` (80%+ of relevant files) or `Candidate` (needs validation)                                                                                            |
+| **Do/Don't** | real examples from the repo, correct and incorrect                                                                                                                |
 
 Group by domain, order by severity (HIGH first). Cap candidates at ~15–20 —
 merge near-duplicates rather than flooding the interview.

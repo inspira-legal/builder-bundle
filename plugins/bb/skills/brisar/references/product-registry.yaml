@@ -24,15 +24,14 @@ version: 1
 last_updated: "2026-05-12"
 
 products:
-
   # === Greenfield path (no existing product) ===
 
   - id: greenfield-vite
     name: "New project (Vite scaffold)"
     type: scaffold
     audience: any
-    detection: []          # never detected — only chosen explicitly
-    brand: any             # builder chooses in Phase 1
+    detection: [] # never detected — only chosen explicitly
+    brand: any # builder chooses in Phase 1
     ds_source: "brisa-ds:any"
     mode_default: scaffold
     fallback_path: prototype-hosted
@@ -76,7 +75,7 @@ detection_logic: |
 embed_requirements:
   prerequisites:
     - git_installed: true
-    - gh_authed: true   # for private repos
+    - gh_authed: true # for private repos
   on_missing:
     - offer to install/authenticate via preflight-tooling
     - if builder refuses/fails: fall back to the product's fallback_path

@@ -25,9 +25,9 @@ not at all.
 
 | Scope      | Signals                                                            | Documents                             |
 | ---------- | ------------------------------------------------------------------ | ------------------------------------- |
-| **Small**  | Single flow, no UI content, scope clear in 1 sentence              | `spec.md`                              |
-| **Medium** | Feature with screens, UI content, 1–2 flows                        | `spec.md` + `content.md`               |
-| **Large**  | Multiple flows, technical dependencies, non-trivial implementation | `spec.md` + `content.md` + `tasks.md`  |
+| **Small**  | Single flow, no UI content, scope clear in 1 sentence              | `spec.md`                             |
+| **Medium** | Feature with screens, UI content, 1–2 flows                        | `spec.md` + `content.md`              |
+| **Large**  | Multiple flows, technical dependencies, non-trivial implementation | `spec.md` + `content.md` + `tasks.md` |
 
 When in doubt, export the smallest set and expand on request. Name the files
 `spec-<feature>.md`, `content-<feature>.md`, `tasks-<feature>.md` and write them
@@ -136,10 +136,10 @@ verification criteria.
 
 ## Tasks
 
-| #   | Task          | Dependency | Verification criterion   | Status  |
-| --- | ------------- | ---------- | ------------------------ | ------- |
-| 1   | [atomic task] | —          | [how to know it's done]  | pending |
-| 2   | [atomic task] | 1          | [how to know it's done]  | pending |
+| #   | Task          | Dependency | Verification criterion  | Status  |
+| --- | ------------- | ---------- | ----------------------- | ------- |
+| 1   | [atomic task] | —          | [how to know it's done] | pending |
+| 2   | [atomic task] | 1          | [how to know it's done] | pending |
 
 ## Technical decisions to confirm
 

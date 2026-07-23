@@ -20,43 +20,49 @@ Load lazily: only read the section of the mode chosen in Step 1 of `phase-develo
 
 Read `artifact.hosting` from session.yaml:
 
-| Hosting | Target |
-|---|---|
-| `standalone` | React + Tailwind in `src/<surface>.tsx` |
-| `embedded` | React + Tailwind in `src/pages/<surface>.tsx` (or convention of the embedded repo) |
-| `prototype-hosted` | Plain static HTML in `<surface>.html` (no Vite, no build) |
-| `storybook-only` | Story in `src/stories/<Component>.stories.tsx` |
+| Hosting            | Target                                                                             |
+| ------------------ | ---------------------------------------------------------------------------------- |
+| `standalone`       | React + Tailwind in `src/<surface>.tsx`                                            |
+| `embedded`         | React + Tailwind in `src/pages/<surface>.tsx` (or convention of the embedded repo) |
+| `prototype-hosted` | Plain static HTML in `<surface>.html` (no Vite, no build)                          |
+| `storybook-only`   | Story in `src/stories/<Component>.stories.tsx`                                     |
 
 ### Per-surface checklist
 
 For each surface chosen in Step 1:
 
 **1. Screen header**
+
 - Read visual direction: top-to-bottom hierarchy
 - Identify the primary CTA (the most salient element)
 - Identify navigation/breadcrumb if applicable
 
 **2. Main content**
+
 - A DS component for each block (Card, List, Form, Dialog, ...)
 - Custom only if justifiable + record in `notes.md`
 - Tokens applied to every element (color, spacing, type)
 
 **3. CTA / primary action**
+
 - Visually dominant
 - Clear destination (route, modal, action)
 - Disabled state if there is a pre-condition
 
 **4. States (always)**
+
 - `default` — the happy state
 - `loading` — skeleton or spinner aligned with the DS
 - `empty` — when there is no data to show, with a CTA to fill in
 - `error` — recoverable (message + retry) and non-recoverable (message + support)
 
 **5. Responsiveness (if hosting != storybook)**
+
 - DS breakpoints (mobile/tablet/desktop)
 - Tabs/menus collapse correctly on mobile
 
 **6. Basic accessibility (does not replace the Deliver phase)**
+
 - Buttons are `<button>`, links are `<a>`
 - Form fields have `<label>`
 - Headings in order
@@ -97,18 +103,18 @@ export default function <SurfaceName>() {
 <!-- <surface>.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><Brand> — <surface></title>
-  <link rel="stylesheet" href="design-context/tokens.css">
-  <link rel="stylesheet" href="design-context/components.css">
-</head>
-<body>
-  <main>
-    <!-- structure applying tokens via the DS CSS classes -->
-  </main>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><Brand> — <surface></title>
+    <link rel="stylesheet" href="design-context/tokens.css" />
+    <link rel="stylesheet" href="design-context/components.css" />
+  </head>
+  <body>
+    <main>
+      <!-- structure applying tokens via the DS CSS classes -->
+    </main>
+  </body>
 </html>
 ```
 
@@ -159,16 +165,27 @@ tarsila:
 
 ```json
 {
-  "questions": [{
-    "question": "Como esse componente se encaixa?",
-    "header": "Encaixe",
-    "options": [
-      {"label": "Adicionar ao DS", "description": "Vai virar parte do Brisa DS — output em <DS_path>/components/. Sugere PR ao DS."},
-      {"label": "Custom local", "description": "Vive no projeto, fora do DS. Output em src/components/."},
-      {"label": "Variant de existente", "description": "Variação de um componente do DS (ex: Button variant=destructive). Atualiza no DS."}
-    ],
-    "multiSelect": false
-  }]
+  "questions": [
+    {
+      "question": "Como esse componente se encaixa?",
+      "header": "Encaixe",
+      "options": [
+        {
+          "label": "Adicionar ao DS",
+          "description": "Vai virar parte do Brisa DS — output em <DS_path>/components/. Sugere PR ao DS."
+        },
+        {
+          "label": "Custom local",
+          "description": "Vive no projeto, fora do DS. Output em src/components/."
+        },
+        {
+          "label": "Variant de existente",
+          "description": "Variação de um componente do DS (ex: Button variant=destructive). Atualiza no DS."
+        }
+      ],
+      "multiSelect": false
+    }
+  ]
 }
 ```
 
@@ -205,17 +222,22 @@ Ask:
 
 ```json
 {
-  "questions": [{
-    "question": "O que precisa mudar?",
-    "header": "Mudança",
-    "options": [
-      {"label": "Hierarquia visual", "description": "CTA, ordem, prominência"},
-      {"label": "Aplicar tokens corretos", "description": "Trocar hex hardcoded por tokens do DS"},
-      {"label": "Adicionar estado", "description": "Falta loading/empty/error"},
-      {"label": "Outro", "description": "Descreve em texto livre"}
-    ],
-    "multiSelect": true
-  }]
+  "questions": [
+    {
+      "question": "O que precisa mudar?",
+      "header": "Mudança",
+      "options": [
+        { "label": "Hierarquia visual", "description": "CTA, ordem, prominência" },
+        {
+          "label": "Aplicar tokens corretos",
+          "description": "Trocar hex hardcoded por tokens do DS"
+        },
+        { "label": "Adicionar estado", "description": "Falta loading/empty/error" },
+        { "label": "Outro", "description": "Descreve em texto livre" }
+      ],
+      "multiSelect": true
+    }
+  ]
 }
 ```
 
@@ -234,7 +256,7 @@ tarsila:
   surfaces:
     - name: <surface>
       file: <path>
-      status: iterated   # changed from "built" to "iterated"
+      status: iterated # changed from "built" to "iterated"
       last_iteration: <ISO date>
       iteration_reason: <short summary>
 ```
@@ -244,6 +266,7 @@ One sharp caution for iteration: touching `tokens.md`/`components.md` "in passin
 ---
 
 **Mental recap before closing any mode:**
+
 - Always update `session.yaml` `tarsila:` section.
 - If there were custom or missing_tokens, write `.brisar/tarsila/notes.md`.
 - End at the Step 3 gate of `phase-develop.md` (Deliver / another surface / stop) — suggest, never invoke.

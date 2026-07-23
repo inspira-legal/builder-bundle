@@ -32,16 +32,27 @@ Then the gate:
 
 ```json
 {
-  "questions": [{
-    "question": "Scaffold pronto. Próximo passo?",
-    "header": "Próximo",
-    "options": [
-      {"label": "Construir as surfaces agora (fase Develop)", "description": "Continuo nesta sessão: leio design-context/ + design/<surface>.md e construo tela a tela"},
-      {"label": "Rodar /bb:discover antes", "description": "Aprofundar o enquadramento (problema, fit, hipótese, apetite) antes de desenhar"},
-      {"label": "Parar por aqui", "description": "Projeto fica pronto; rode /bb:brisar de novo nesta pasta quando quiser construir"}
-    ],
-    "multiSelect": false
-  }]
+  "questions": [
+    {
+      "question": "Scaffold pronto. Próximo passo?",
+      "header": "Próximo",
+      "options": [
+        {
+          "label": "Construir as surfaces agora (fase Develop)",
+          "description": "Continuo nesta sessão: leio design-context/ + design/<surface>.md e construo tela a tela"
+        },
+        {
+          "label": "Rodar /bb:discover antes",
+          "description": "Aprofundar o enquadramento (problema, fit, hipótese, apetite) antes de desenhar"
+        },
+        {
+          "label": "Parar por aqui",
+          "description": "Projeto fica pronto; rode /bb:brisar de novo nesta pasta quando quiser construir"
+        }
+      ],
+      "multiSelect": false
+    }
+  ]
 }
 ```
 

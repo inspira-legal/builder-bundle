@@ -15,14 +15,14 @@ All user-facing text is PT-BR.
 
 ## Modes
 
-| Mode         | Input signals                                                          | Shape of the output                                    |
-| ------------ | ---------------------------------------------------------------------- | ------------------------------------------------------ |
-| **Decision** | "devo…", "vale a pena", "qual caminho", "escolhendo entre"             | criteria + tradeoffs → explicit recommendation          |
-| **Problem**  | "não tá funcionando", "travado", "não entendo por quê"                 | diagnosis → root-cause hypotheses → next steps          |
-| **Idea**     | "e se…", "tava pensando", "seria legal", "uma ideia"                   | expansion → viability → what validates or invalidates   |
-| **Strategy** | "como consolidar", "próximos meses", "longo prazo", "carreira"         | time framework + levers + risks + review criterion      |
-| **Study**    | book/article title, author name, course, technical concept             | synthesis → connection to current work → relevance      |
-| **Take**     | "o que você acha?", "sua opinião", "qual é melhor", "gut check"        | verdict first → load-bearing reasons → calibration      |
+| Mode         | Input signals                                                   | Shape of the output                                   |
+| ------------ | --------------------------------------------------------------- | ----------------------------------------------------- |
+| **Decision** | "devo…", "vale a pena", "qual caminho", "escolhendo entre"      | criteria + tradeoffs → explicit recommendation        |
+| **Problem**  | "não tá funcionando", "travado", "não entendo por quê"          | diagnosis → root-cause hypotheses → next steps        |
+| **Idea**     | "e se…", "tava pensando", "seria legal", "uma ideia"            | expansion → viability → what validates or invalidates |
+| **Strategy** | "como consolidar", "próximos meses", "longo prazo", "carreira"  | time framework + levers + risks + review criterion    |
+| **Study**    | book/article title, author name, course, technical concept      | synthesis → connection to current work → relevance    |
+| **Take**     | "o que você acha?", "sua opinião", "qual é melhor", "gut check" | verdict first → load-bearing reasons → calibration    |
 
 Read the classified mode's section in `references/modes.md` — only that section
 — and follow it.

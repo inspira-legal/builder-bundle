@@ -13,16 +13,24 @@ Phase 1 derived a slug (e.g. `lexflow-busca-semantica`). Before creating files, 
 
 ```json
 {
-  "questions": [{
-    "question": "Slug do projeto: '<slug>'. Vou criar a pasta `./<slug>/` aqui (`pwd`). OK?",
-    "header": "Slug",
-    "options": [
-      {"label": "OK, criar aqui", "description": "Pasta vai ser ./<slug>/ no diretório atual"},
-      {"label": "Quero ajustar o slug", "description": "Texto livre — me dá o nome que prefere"},
-      {"label": "Quero criar em outra pasta", "description": "Texto livre — caminho relativo ou absoluto"}
-    ],
-    "multiSelect": false
-  }]
+  "questions": [
+    {
+      "question": "Slug do projeto: '<slug>'. Vou criar a pasta `./<slug>/` aqui (`pwd`). OK?",
+      "header": "Slug",
+      "options": [
+        { "label": "OK, criar aqui", "description": "Pasta vai ser ./<slug>/ no diretório atual" },
+        {
+          "label": "Quero ajustar o slug",
+          "description": "Texto livre — me dá o nome que prefere"
+        },
+        {
+          "label": "Quero criar em outra pasta",
+          "description": "Texto livre — caminho relativo ou absoluto"
+        }
+      ],
+      "multiSelect": false
+    }
+  ]
 }
 ```
 
@@ -158,7 +166,7 @@ import "./index.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 ```
 
@@ -173,8 +181,8 @@ export default function App() {
       <main className="mx-auto max-w-3xl px-6 py-12">
         <h1 className="text-3xl font-semibold mb-4">{`<slug>`}</h1>
         <p className="text-text-secondary">
-          Scaffolded by /bb:brisar. Tokens da marca <strong>Inspira</strong> ativos.
-          Próximo: a fase Develop constrói cada surface de <code>design/</code>.
+          Scaffolded by /bb:brisar. Tokens da marca <strong>Inspira</strong> ativos. Próximo: a fase
+          Develop constrói cada surface de <code>design/</code>.
         </p>
       </main>
     </div>
@@ -187,11 +195,15 @@ For Lexflow (dark theme), swap to:
 ```tsx
 export default function App() {
   return (
-    <div className="min-h-screen" style={{ background: "var(--color-bg-base)", color: "var(--color-text-primary)" }}>
+    <div
+      className="min-h-screen"
+      style={{ background: "var(--color-bg-base)", color: "var(--color-text-primary)" }}
+    >
       <main className="mx-auto max-w-3xl px-6 py-12">
         <h1 className="text-2xl font-semibold mb-4">{`<slug>`}</h1>
         <p style={{ color: "var(--color-text-secondary)" }}>
-          Scaffolded by /bb:brisar. Tokens da marca <strong>Lexflow</strong> ativos (dark, GitHub Primer-inspired).
+          Scaffolded by /bb:brisar. Tokens da marca <strong>Lexflow</strong> ativos (dark, GitHub
+          Primer-inspired).
         </p>
       </main>
     </div>
@@ -231,12 +243,13 @@ dist
 
 ### README.md
 
-```markdown
+````markdown
 # <slug>
 
 Scaffolded by /bb:brisar — <data>.
 
 ## Stack
+
 - Vite + React 18 + TypeScript
 - Tailwind v4 (com tokens da marca <brand>)
 
@@ -246,6 +259,7 @@ Scaffolded by /bb:brisar — <data>.
 pnpm install
 pnpm dev
 ```
+````
 
 ## O que está aqui
 
@@ -260,7 +274,8 @@ Rode `/bb:brisar` de novo nesta pasta — ele detecta o projeto e oferece a fase
 
 Para shaping mais profundo: `/bb:discover`.
 Para spec formal: `/bb:spec`.
-```
+
+````
 
 ## Step 4 — design-context/ (contract with the Develop phase)
 
@@ -307,7 +322,7 @@ Short synthesis extracted from `<DS_PATH>/<brand.design_md_path>`. Don't copy th
 - Use semantic tokens, not primitives.
 - Never the secondary brand color as primary CTA fill (Inspira: Cornflower Blue is secondary; Rich Black is primary).
 - (extraídas do "Don't" do DESIGN.md)
-```
+````
 
 For Lexflow, adapt the tokens to the dark equivalents.
 For custom, copy from the base but add `> ⚠ Custom — ajuste valores conforme a identidade evolui.` at the top.
@@ -373,6 +388,7 @@ Move from `current_phase: phase-3` to `current_phase: phase-4` (which will gener
 ### Storybook only
 
 Instead of Vite + App.tsx, use:
+
 - `package.json` with `@storybook/react-vite` and `storybook` scripts
 - `.storybook/main.ts` and `.storybook/preview.ts`
 - `src/components/Button.stories.tsx` as starter
@@ -380,6 +396,7 @@ Instead of Vite + App.tsx, use:
 ### Embedded (inside existing app)
 
 Don't create a new folder. Instead:
+
 - Ask which folder of the app is the entry point.
 - Create only `design-context/`, `design/`, `.brisar/` at the root of the existing app.
 - Create `src/components/<slug>/` for the feature's components.
@@ -521,7 +538,11 @@ Brand tokens in `:root` (extracted from DESIGN.md, same as the standard scaffold
 }
 
 /* Minimal reset */
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 body {
   margin: 0;
   font-family: var(--font-sans);
@@ -529,10 +550,13 @@ body {
   color: var(--color-text-primary);
   line-height: 1.5;
 }
-a { color: var(--color-interactive-primary); }
+a {
+  color: var(--color-interactive-primary);
+}
 
 /* Layout primitives */
-.landing, .surface {
+.landing,
+.surface {
   max-width: 768px;
   margin: 0 auto;
   padding: var(--space-12) var(--space-6);
@@ -610,8 +634,8 @@ a { color: var(--color-interactive-primary); }
 
 ## Telas / surfaces
 
-| Tela | Arquivo | Direção visual |
-|---|---|---|
+| Tela        | Arquivo                              | Direção visual                                 |
+| ----------- | ------------------------------------ | ---------------------------------------------- |
 | <surface-1> | [<surface-1>.html](<surface-1>.html) | [design/<surface-1>.md](design/<surface-1>.md) |
 | <surface-2> | [<surface-2>.html](<surface-2>.html) | [design/<surface-2>.md](design/<surface-2>.md) |
 
@@ -683,7 +707,7 @@ version: 1
 brisar_version: "2.0.0"
 slug: "<slug>"
 created_at: <ISO>
-mode: prototype-hosted              # <-- differentiates from the normal variant
+mode: prototype-hosted # <-- differentiates from the normal variant
 
 ds_path: "<absolute path of the DS, or null>"
 brand:

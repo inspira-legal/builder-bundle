@@ -17,6 +17,7 @@ Principle:
 > Only comment on **significant** issues or **major** improvements. Don't fill the review with nitpicking.
 
 Concretely:
+
 - "Submit button has no `aria-label`" → **flag** (accessibility).
 - "Visual hierarchy contradicts the hypothesis (primary CTA is below the fold)" → **flag** (impacts success).
 - Micro adjustments with no observable impact (a 2px margin, a marginally darker button) → leave out.
@@ -39,6 +40,7 @@ test -d .github/workflows && grep -l "inspira-legal/code-review" .github/workflo
 ```
 
 Record:
+
 - `session_exists`: bool
 - `tarsila_done`: bool (Develop phase state present)
 - `discover_brief`: path or null
@@ -54,17 +56,31 @@ Call `AskUserQuestion`:
 
 ```json
 {
-  "questions": [{
-    "question": "Que parte do Deliver você precisa agora?",
-    "header": "Modo Deliver",
-    "options": [
-      {"label": "Pipeline completo", "description": "Roda os 3 modos em ordem (design review → accessibility → handoff doc). Recomendado se veio da fase Develop."},
-      {"label": "Design review", "description": "Confronta as surfaces com hipótese/cortes do brief. Output: design-review.md com issues significativos."},
-      {"label": "Accessibility audit", "description": "WCAG AA — contraste, teclado, leitor de tela, ARIA. Sugere /bb:ui-accessibility se profundidade exige."},
-      {"label": "Handoff doc", "description": "Gera handoff.md pra developer/agente: componentes, states, edge cases, decisões."}
-    ],
-    "multiSelect": false
-  }]
+  "questions": [
+    {
+      "question": "Que parte do Deliver você precisa agora?",
+      "header": "Modo Deliver",
+      "options": [
+        {
+          "label": "Pipeline completo",
+          "description": "Roda os 3 modos em ordem (design review → accessibility → handoff doc). Recomendado se veio da fase Develop."
+        },
+        {
+          "label": "Design review",
+          "description": "Confronta as surfaces com hipótese/cortes do brief. Output: design-review.md com issues significativos."
+        },
+        {
+          "label": "Accessibility audit",
+          "description": "WCAG AA — contraste, teclado, leitor de tela, ARIA. Sugere /bb:ui-accessibility se profundidade exige."
+        },
+        {
+          "label": "Handoff doc",
+          "description": "Gera handoff.md pra developer/agente: componentes, states, edge cases, decisões."
+        }
+      ],
+      "multiSelect": false
+    }
+  ]
 }
 ```
 
@@ -76,11 +92,11 @@ If `ci_code_review_present: false` and the chosen mode includes the handoff doc,
 
 Lazy-load `references/deliver-modes.md`. Do not load all modes in Step 0.
 
-| Mode | Loads | Output |
-|---|---|---|
-| Design review | when chosen | `.brisar/clarisse/design-review.md` |
-| Accessibility audit | when chosen or after design review | `.brisar/clarisse/accessibility-checklist.md` |
-| Handoff doc | when chosen or at end of the pipeline | `.brisar/clarisse/handoff.md` |
+| Mode                | Loads                                 | Output                                        |
+| ------------------- | ------------------------------------- | --------------------------------------------- |
+| Design review       | when chosen                           | `.brisar/clarisse/design-review.md`           |
+| Accessibility audit | when chosen or after design review    | `.brisar/clarisse/accessibility-checklist.md` |
+| Handoff doc         | when chosen or at end of the pipeline | `.brisar/clarisse/handoff.md`                 |
 
 ### Stance per mode
 
@@ -91,6 +107,7 @@ Lazy-load `references/deliver-modes.md`. Do not load all modes in Step 0.
 ## Step 3 — Persistence + gate
 
 Always writes:
+
 - `.brisar/session.yaml` updated with the `clarisse:` section (the Deliver phase's state key) and `current_phase: deliver` (or `done` if the journey closes here)
 - 1+ artifacts in `.brisar/clarisse/`
 
@@ -105,8 +122,8 @@ clarisse:
     accessibility: .brisar/clarisse/accessibility-checklist.md
     handoff: .brisar/clarisse/handoff.md
   design_review:
-    blockers: 0      # how many issues block merge
-    significants: 0  # how many significant issues (non-blocking)
+    blockers: 0 # how many issues block merge
+    significants: 0 # how many significant issues (non-blocking)
     fit_with_hypothesis: aligned | partial | misaligned | unknown
   accessibility:
     wcag_aa_status: pass | fail | partial | not-assessed
@@ -119,20 +136,31 @@ clarisse:
 
 ### Gate (always the last)
 
-Echo the final status in 1 line — e.g.: *"Design review: 2 issues significativos, 0 blockers. Accessibility: WCAG AA pass. Handoff doc completo. Artefatos em `.brisar/clarisse/`."* — then the handoff gate:
+Echo the final status in 1 line — e.g.: _"Design review: 2 issues significativos, 0 blockers. Accessibility: WCAG AA pass. Handoff doc completo. Artefatos em `.brisar/clarisse/`."_ — then the handoff gate:
 
 ```json
 {
-  "questions": [{
-    "question": "Deliver fechado. Próximo passo?",
-    "header": "Próximo",
-    "options": [
-      {"label": "Auditoria profunda de acessibilidade", "description": "Sugiro /bb:ui-accessibility — análise WCAG AA completa com matriz de prioridade"},
-      {"label": "Especificar a implementação real", "description": "Sugiro /bb:spec — transforma o protótipo + handoff doc num brief de construção"},
-      {"label": "Encerrar", "description": "Jornada completa; estado salvo em .brisar/. Pra re-run de 1 modo, rode /bb:brisar de novo e escolha Deliver."}
-    ],
-    "multiSelect": false
-  }]
+  "questions": [
+    {
+      "question": "Deliver fechado. Próximo passo?",
+      "header": "Próximo",
+      "options": [
+        {
+          "label": "Auditoria profunda de acessibilidade",
+          "description": "Sugiro /bb:ui-accessibility — análise WCAG AA completa com matriz de prioridade"
+        },
+        {
+          "label": "Especificar a implementação real",
+          "description": "Sugiro /bb:spec — transforma o protótipo + handoff doc num brief de construção"
+        },
+        {
+          "label": "Encerrar",
+          "description": "Jornada completa; estado salvo em .brisar/. Pra re-run de 1 modo, rode /bb:brisar de novo e escolha Deliver."
+        }
+      ],
+      "multiSelect": false
+    }
+  ]
 }
 ```
 
@@ -153,12 +181,12 @@ One sharp caution: design review and accessibility live in **separate files** �
 
 ## Cooperation contract
 
-| Artifact | Produced by | Consumed by |
-|---|---|---|
-| `.brisar/session.yaml` (`clarisse:` section) | Deliver | Human (decides merge), `/bb:review` (cross-checks design review with code review) |
-| `.brisar/clarisse/design-review.md` | Deliver | Human (responds to issues), Develop phase (re-prototype if blockers) |
-| `.brisar/clarisse/accessibility-checklist.md` | Deliver | Human (resolves before merge), CI (reference) |
-| `.brisar/clarisse/handoff.md` | Deliver | Developer / agent who implements, `/bb:spec`, `/bb:review` |
+| Artifact                                      | Produced by | Consumed by                                                                       |
+| --------------------------------------------- | ----------- | --------------------------------------------------------------------------------- |
+| `.brisar/session.yaml` (`clarisse:` section)  | Deliver     | Human (decides merge), `/bb:review` (cross-checks design review with code review) |
+| `.brisar/clarisse/design-review.md`           | Deliver     | Human (responds to issues), Develop phase (re-prototype if blockers)              |
+| `.brisar/clarisse/accessibility-checklist.md` | Deliver     | Human (resolves before merge), CI (reference)                                     |
+| `.brisar/clarisse/handoff.md`                 | Deliver     | Developer / agent who implements, `/bb:spec`, `/bb:review`                        |
 
 ### Related skills (suggest, never invoke)
 

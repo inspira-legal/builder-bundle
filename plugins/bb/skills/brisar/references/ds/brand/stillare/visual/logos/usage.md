@@ -2,10 +2,10 @@
 
 Two assets, both vector, both built on the brand palette: **Slate Gray `#6f7a93`** + **Cornflower `#6a96ea`**. The logo files are the canonical proof of the color direction — the wordmark is Slate, the droplet pairs Slate + Cornflower.
 
-| File | What it is | Use for |
-|---|---|---|
+| File                | What it is                                                     | Use for                                                 |
+| ------------------- | -------------------------------------------------------------- | ------------------------------------------------------- |
 | `stillare-logo.svg` | Full lockup — droplet + "stillare" wordmark (viewBox 1920×524) | Headers, marketing, docs, anywhere with horizontal room |
-| `stillare-iso.svg` | Isotype — the distillation droplet alone (viewBox 1080×1080) | App favicon, sidebar mark, avatars, tight/square spaces |
+| `stillare-iso.svg`  | Isotype — the distillation droplet alone (viewBox 1080×1080)   | App favicon, sidebar mark, avatars, tight/square spaces |
 
 ## The droplet is the brand's verb
 
@@ -26,7 +26,7 @@ Os SVGs abaixo estão inline porque a Loja de Skills não aceita `.svg`. Pra usa
 
 ### stillare-logo.svg
 
-```svg
+````svg
 <?xml version="1.0" encoding="UTF-8"?>
 <svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 523.92">
   <defs>
@@ -78,3 +78,4 @@ Os SVGs abaixo estão inline porque a Loja de Skills não aceita `.svg`. Pra usa
   <path class="cls-2" d="M798.71,395c-8.7-5.84-26.07-11.29-40.92-17.01-29.75-11.13-55.34-24.18-77.04-39.04-56.91-37.71-104.64-110.33-126.72-173.85-4-8.05-10.57-35.19-18.98-23.19-6.7,9.67-17.99,48.13-34.4,78.66-30.63,59.08-78.83,108.16-138.12,138.89-19.19,10.19-40.66,18.32-61.11,25.86-9.46,4.44-23.11,6.96-26.18,17.4.35,6.05,8.88,10.22,13.95,12.79,123.98,42.2,200,116.56,240.09,237.24,2.94,7.06,5.34,11.8,7.47,13.81,9.43,8.66,15.12-29.65,41.02-79.31,38.53-74.18,99.11-130.38,180.78-159.07,13.41-6.27,62.2-17.37,40.95-32.65l-.77-.53Z"/>
   <path class="cls-1" d="M565.46,746.49c-8.02-12.76-14.01-27.81-20.24-40.67-.34-.59-.65-1.17-.95-1.72-2.11-3.84-7.72-3.84-9.72.05-.85,1.66-1.58,3.44-2.38,4.81-4.6,9.92-11.62,27.09-21.15,41.48-14.83,23.11-34.82,43.48-45.01,69.28-12.98,30.93-7.33,70.02,14.75,94.48,52.22,57.36,139.64,16.09,139.48-58.78v-.52c.77-42.92-33.39-74.19-54.79-108.41Z"/>
 </svg>```
+````

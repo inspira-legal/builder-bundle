@@ -3,6 +3,7 @@
 Loaded when the builder chooses to build surfaces (Phase 5 gate, the `develop-direct` shortcut, or re-entry). You build high-fidelity screens by reading the **written contract** produced by the earlier phases: tokens, components, visual direction per surface. This phase does not invent brand, does not decide scope, does not review delivery. It builds what was agreed.
 
 The discipline here is **fidelity to contracts**:
+
 - Read `.brisar/config.yaml` to find the `design_context_path`.
 - Read `tokens.md` + `components.md` from that path — sources of truth for the design system.
 - Read `design/<surface>.md` — visual direction written in Phase 4.
@@ -58,16 +59,27 @@ Call `AskUserQuestion`:
 
 ```json
 {
-  "questions": [{
-    "question": "Que tipo de construção você precisa?",
-    "header": "Modo Develop",
-    "options": [
-      {"label": "Full surface", "description": "Construir 1 ou mais surfaces de ponta a ponta (lê design/<surface>.md de cada). Recomendado se veio do scaffold."},
-      {"label": "Componente isolado", "description": "Construir 1 componente novo ou variant do DS (button, card, dialog, ...). Output vai pro components/ do projeto."},
-      {"label": "Iteração em existente", "description": "Mexer numa tela/componente que já existe. Lê o arquivo atual e propõe diffs."}
-    ],
-    "multiSelect": false
-  }]
+  "questions": [
+    {
+      "question": "Que tipo de construção você precisa?",
+      "header": "Modo Develop",
+      "options": [
+        {
+          "label": "Full surface",
+          "description": "Construir 1 ou mais surfaces de ponta a ponta (lê design/<surface>.md de cada). Recomendado se veio do scaffold."
+        },
+        {
+          "label": "Componente isolado",
+          "description": "Construir 1 componente novo ou variant do DS (button, card, dialog, ...). Output vai pro components/ do projeto."
+        },
+        {
+          "label": "Iteração em existente",
+          "description": "Mexer numa tela/componente que já existe. Lê o arquivo atual e propõe diffs."
+        }
+      ],
+      "multiSelect": false
+    }
+  ]
 }
 ```
 
@@ -75,15 +87,17 @@ If "Full surface" and there is more than 1 surface in `design/`, ask the second 
 
 ```json
 {
-  "questions": [{
-    "question": "Qual(is) surface(s)?",
-    "header": "Surface",
-    "options": [
-      {"label": "<surface_1>", "description": "Direção visual de <surface_1>.md"},
-      {"label": "<surface_2>", "description": "..."}
-    ],
-    "multiSelect": true
-  }]
+  "questions": [
+    {
+      "question": "Qual(is) surface(s)?",
+      "header": "Surface",
+      "options": [
+        { "label": "<surface_1>", "description": "Direção visual de <surface_1>.md" },
+        { "label": "<surface_2>", "description": "..." }
+      ],
+      "multiSelect": true
+    }
+  ]
 }
 ```
 
@@ -95,13 +109,14 @@ Lazy-load `references/develop-modes.md`. Do not load everything in Step 0.
 
 Each mode has a template + checklist:
 
-| Mode | Template/checklist | Main output |
-|---|---|---|
-| Full surface | `develop-modes.md#full-surface` | `<projeto>/src/<surface>.tsx` (or `<surface>.html` if prototype-hosted) |
-| Componente isolado | `develop-modes.md#component` | `<projeto>/src/components/<Name>.tsx` |
-| Iteração | `develop-modes.md#iteration` | Diff applied to the existing file |
+| Mode               | Template/checklist              | Main output                                                             |
+| ------------------ | ------------------------------- | ----------------------------------------------------------------------- |
+| Full surface       | `develop-modes.md#full-surface` | `<projeto>/src/<surface>.tsx` (or `<surface>.html` if prototype-hosted) |
+| Componente isolado | `develop-modes.md#component`    | `<projeto>/src/components/<Name>.tsx`                                   |
+| Iteração           | `develop-modes.md#iteration`    | Diff applied to the existing file                                       |
 
 Cross-cutting rules:
+
 - **Tokens first.** Apply tokens before writing any hardcoded color/spacing.
 - **DS components before custom.** If a Button exists in components.md, use it. Custom only if justifiable.
 - **Loading/Empty/Error states always.** Even on small appetite.
@@ -110,6 +125,7 @@ Cross-cutting rules:
 ## Step 3 — Persistence + gate
 
 Always write:
+
 - `.brisar/session.yaml` updated with the `tarsila:` section
 - Project files (React/HTML) properly
 - Optional: `.brisar/tarsila/notes.md` with build decisions (custom components, missing tokens, doubts)
@@ -123,28 +139,39 @@ tarsila:
     - name: <surface_name>
       file: <path>
       status: built | iterated | blocked
-      custom_components: [<name>]   # components created outside the DS
-      missing_tokens: [<token>]     # tokens that were missing in the DS
+      custom_components: [<name>] # components created outside the DS
+      missing_tokens: [<token>] # tokens that were missing in the DS
   build_target: react+tailwind | prototype-html
   next_action: ready-for-review | needs-tokens | re-prototype
 ```
 
 ### Gate (always the last)
 
-Echo what was built (1 line: *"Construí <surface> em <path>. Loading/Empty/Error inclusos."*) + reminder about missing tokens/components (if any). Then the handoff gate:
+Echo what was built (1 line: _"Construí <surface> em <path>. Loading/Empty/Error inclusos."_) + reminder about missing tokens/components (if any). Then the handoff gate:
 
 ```json
 {
-  "questions": [{
-    "question": "Surface construída. Próximo passo?",
-    "header": "Próximo",
-    "options": [
-      {"label": "Revisar e preparar handoff (fase Deliver)", "description": "Design review + accessibility + handoff doc antes de mergear"},
-      {"label": "Construir outra surface", "description": "Volto pro intake do Develop com a próxima surface"},
-      {"label": "Parar por aqui", "description": "Estado salvo; rode /bb:brisar de novo pra continuar"}
-    ],
-    "multiSelect": false
-  }]
+  "questions": [
+    {
+      "question": "Surface construída. Próximo passo?",
+      "header": "Próximo",
+      "options": [
+        {
+          "label": "Revisar e preparar handoff (fase Deliver)",
+          "description": "Design review + accessibility + handoff doc antes de mergear"
+        },
+        {
+          "label": "Construir outra surface",
+          "description": "Volto pro intake do Develop com a próxima surface"
+        },
+        {
+          "label": "Parar por aqui",
+          "description": "Estado salvo; rode /bb:brisar de novo pra continuar"
+        }
+      ],
+      "multiSelect": false
+    }
+  ]
 }
 ```
 
@@ -158,19 +185,19 @@ Echo what was built (1 line: *"Construí <surface> em <path>. Loading/Empty/Erro
 2. **States always.** Default, loading, empty, error. Even on small appetite, only skip with an explicit `cut_reason`.
 3. **Decision recorded.** If you invented a custom component, write it in `.brisar/tarsila/notes.md` with the reason. Do not disappear without a record.
 4. **At most 2 questions per turn.** More than that becomes a form. Ask + build + echo.
-5. **Cuts respected.** If the discover brief cut X, do not prototype X. If the builder asks for X anyway, flag first: *"Notei que [X] foi cortado no discover. Prosseguir mesmo assim ou reabrir o corte?"*
+5. **Cuts respected.** If the discover brief cut X, do not prototype X. If the builder asks for X anyway, flag first: _"Notei que [X] foi cortado no discover. Prosseguir mesmo assim ou reabrir o corte?"_
 6. **No nitpicking of tokens.** If tokens.md says `--color-primary: #0070F3`, use exactly that. Do not "tweak 1%" to look better.
 
 One sharp caution: **never edit `tokens.md` or `components.md`** — the DS source of truth is governed by the scaffold phases (or an explicit DS-update round), and the Develop phase is a consumer. Writing to it from here creates a race between surfaces.
 
 ## Cooperation contract
 
-| Artifact | Produced by | Consumed by |
-|---|---|---|
-| `.brisar/config.yaml` | Phase 3 | Develop (Step 0) |
-| `<design_context_path>/tokens.md` | Phase 3 | Develop (Step 0 — read) |
-| `<design_context_path>/components.md` | Phase 3 | Develop (Step 0 — read) |
-| `design/<surface>.md` | Phase 4 | Develop (Step 2) |
-| `<projeto>/src/<surface>.tsx` (or .html) | Develop | Deliver, dev |
-| `.brisar/session.yaml` (`tarsila:` section) | Develop | Deliver, re-entry |
-| `.brisar/tarsila/notes.md` | Develop | Deliver, human builder |
+| Artifact                                    | Produced by | Consumed by             |
+| ------------------------------------------- | ----------- | ----------------------- |
+| `.brisar/config.yaml`                       | Phase 3     | Develop (Step 0)        |
+| `<design_context_path>/tokens.md`           | Phase 3     | Develop (Step 0 — read) |
+| `<design_context_path>/components.md`       | Phase 3     | Develop (Step 0 — read) |
+| `design/<surface>.md`                       | Phase 4     | Develop (Step 2)        |
+| `<projeto>/src/<surface>.tsx` (or .html)    | Develop     | Deliver, dev            |
+| `.brisar/session.yaml` (`tarsila:` section) | Develop     | Deliver, re-entry       |
+| `.brisar/tarsila/notes.md`                  | Develop     | Deliver, human builder  |

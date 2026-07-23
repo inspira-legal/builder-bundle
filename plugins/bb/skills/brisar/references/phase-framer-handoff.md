@@ -5,6 +5,7 @@ Replaces Phase 2 (gate) + Phase 3 (scaffold) + Phase 4 (design-direction) **only
 ## Why this phase exists
 
 The standard brisar flow (Vite + Tailwind + design-context/) is incompatible with Framer:
+
 - Framer doesn't accept Tailwind nor CSS modules — code components use inline styles only.
 - Tokens live as Framer color styles (`/Rich Black`, `/Centaurea`, `/Cornflower`), not as CSS vars.
 - The `harpa-lpbuilder` bundle already has rules equivalent to tokens.md/components.md (in `.claude/rules/`), plus the `mcp-unframer-co` MCP to sync with live Framer.
@@ -24,6 +25,7 @@ test -d ~/Desktop/harpa-lpbuilder && echo "found-desktop" \
 ```
 
 Three outcomes:
+
 - **Found**: record the path. Will cite it in the terminal handoff.
 - **Not found**: record `harpa_repo_path: null`. The handoff will include the `git clone` in Step 5.
 
@@ -50,14 +52,15 @@ Use Write to create the file in the cwd. Template:
 <intent.raw_prompt da Phase 1>
 
 ## Como começar a sessão (cole isto na primeira mensagem do Claude Code dentro de harpa-lpbuilder)
-
 ```
+
 Quero <intent.raw_prompt>.
 
 Escopo: <framer.scope>.
 Apetite: <appetite>.
 
 Antes de qualquer ação:
+
 1. Roda `mcp__mcp-unframer-co__getProjectXml` para confirmar que o Harpa está em foco no Framer desktop. Se vier projeto errado (Modo B), me avisa antes de seguir.
 2. Lê `.claude/rules/design-tokens.md` e `.claude/rules/components.md` (Modo A — fonte de verdade live; Modo C — fallback em `references/`).
 3. Para `<framer.scope == new-page>`: scan a Building Blocks page via `getNodeXml` e me proponha 2-3 composições antes de criar a página.
@@ -67,6 +70,7 @@ Antes de qualquer ação:
 4. Reuse-first: nunca crie componente novo sem antes confirmar comigo que nenhum existente serve.
 5. Responsive-first: desktop → tablet (810px) → mobile (390px) overrides.
 6. Inline styles only. WCAG AA. Português pt-BR.
+
 ```
 
 ## Direção visual (rascunho — refine na sessão)

@@ -42,36 +42,36 @@ removida de propósito (quebra de major). Consequências:
 
 ### De-para: 28 skills → 16
 
-| origem             | skill antiga         | destino no bb                                                |
-| ------------------ | -------------------- | ------------------------------------------------------------ |
-| ofc                | `frame-problem`      | `/bb:discover` (fase de enquadramento)                        |
-| ofc                | `assess-fit`         | `/bb:discover` (fase de fit)                                  |
-| brisar             | `nise`               | `/bb:discover` (material de descoberta)                       |
-| brisar             | `esperanca`          | `/bb:discover` (material de hipótese)                         |
-| loja               | `desafio`            | `/bb:challenge` (renomeada)                                   |
-| loja               | `think`              | `/bb:think` (base do método)                                  |
-| ofc                | `answer-yourself`    | `/bb:think` (modo take: veredito direto)                      |
-| ofc                | `legal-lens`         | `/bb:legal-lens`                                              |
-| ofc                | `shape`              | `/bb:spec` (o método veio daqui)                              |
-| loja               | `spec`               | `/bb:spec` (formato de export em `references/export-spec.md`) |
-| ofc                | `implement`          | `/bb:implement`                                               |
-| ofc                | `ship`               | `/bb:ship`                                                    |
-| ofc                | `delegate`           | `/bb:delegate`                                                |
-| ofc                | `gather-branch-context` | `/bb:gather-branch-context`                                |
-| ofc                | `review-changes`     | `/bb:review` (fonte diff)                                     |
-| ofc                | `tidy`               | `/bb:review` (passada de qualidade)                           |
-| ofc                | `tidy-pr`            | `/bb:review` (fonte threads)                                  |
-| loja               | `pr-review`          | `/bb:review`                                                  |
-| loja               | `fix-ci`             | `/bb:review` (fonte CI, absorvida)                            |
-| ofc                | `maintain-repo`      | `/bb:maintain-repo`                                           |
-| inspira-code-review | `code-review-setup` | `/bb:review-setup`                                            |
-| inspira-code-review | `code-review-update` | `/bb:review-setup` (update absorvido)                        |
-| brisar             | `brisar`             | `/bb:brisar`                                                  |
-| brisar             | `tarsila`            | `/bb:brisar` (fase Develop)                                   |
-| brisar             | `clarisse`           | `/bb:brisar` (fase Deliver)                                   |
-| loja               | `ui-accessibility`   | `/bb:ui-accessibility`                                        |
-| ofc                | `code-deep-research` | `/bb:code-deep-research`                                      |
-| ofc                | `write-readme`       | `/bb:write-readme`                                            |
+| origem              | skill antiga            | destino no bb                                                 |
+| ------------------- | ----------------------- | ------------------------------------------------------------- |
+| ofc                 | `frame-problem`         | `/bb:discover` (fase de enquadramento)                        |
+| ofc                 | `assess-fit`            | `/bb:discover` (fase de fit)                                  |
+| brisar              | `nise`                  | `/bb:discover` (material de descoberta)                       |
+| brisar              | `esperanca`             | `/bb:discover` (material de hipótese)                         |
+| loja                | `desafio`               | `/bb:challenge` (renomeada)                                   |
+| loja                | `think`                 | `/bb:think` (base do método)                                  |
+| ofc                 | `answer-yourself`       | `/bb:think` (modo take: veredito direto)                      |
+| ofc                 | `legal-lens`            | `/bb:legal-lens`                                              |
+| ofc                 | `shape`                 | `/bb:spec` (o método veio daqui)                              |
+| loja                | `spec`                  | `/bb:spec` (formato de export em `references/export-spec.md`) |
+| ofc                 | `implement`             | `/bb:implement`                                               |
+| ofc                 | `ship`                  | `/bb:ship`                                                    |
+| ofc                 | `delegate`              | `/bb:delegate`                                                |
+| ofc                 | `gather-branch-context` | `/bb:gather-branch-context`                                   |
+| ofc                 | `review-changes`        | `/bb:review` (fonte diff)                                     |
+| ofc                 | `tidy`                  | `/bb:review` (passada de qualidade)                           |
+| ofc                 | `tidy-pr`               | `/bb:review` (fonte threads)                                  |
+| loja                | `pr-review`             | `/bb:review`                                                  |
+| loja                | `fix-ci`                | `/bb:review` (fonte CI, absorvida)                            |
+| ofc                 | `maintain-repo`         | `/bb:maintain-repo`                                           |
+| inspira-code-review | `code-review-setup`     | `/bb:review-setup`                                            |
+| inspira-code-review | `code-review-update`    | `/bb:review-setup` (update absorvido)                         |
+| brisar              | `brisar`                | `/bb:brisar`                                                  |
+| brisar              | `tarsila`               | `/bb:brisar` (fase Develop)                                   |
+| brisar              | `clarisse`              | `/bb:brisar` (fase Deliver)                                   |
+| loja                | `ui-accessibility`      | `/bb:ui-accessibility`                                        |
+| ofc                 | `code-deep-research`    | `/bb:code-deep-research`                                      |
+| ofc                 | `write-readme`          | `/bb:write-readme`                                            |
 
 ### Arquitetura do bundle
 

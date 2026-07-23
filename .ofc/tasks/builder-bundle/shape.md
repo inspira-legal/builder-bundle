@@ -21,7 +21,7 @@ Trilhas e skills finais:
 
 ## why
 
-Hoje há 4 lugares com skills sobrepostas (ofc, brisar, loja, inspira-code-review), com duplicação, coisas quebradas (codenavi) e desatualizadas. Quem está aprendendo não sabe o que usar. Um plugin só, opinativo, com uma skill por verbo e modos por variação, dá localização ("onde estou na jornada?") e faz qualquer extensão futura acontecer *dentro* do bundle em vez de virar mais um plugin. Decisões validadas pelo time na reunião (nome Builder Bundle, fusões, renames, manifesto como fonte).
+Hoje há 4 lugares com skills sobrepostas (ofc, brisar, loja, inspira-code-review), com duplicação, coisas quebradas (codenavi) e desatualizadas. Quem está aprendendo não sabe o que usar. Um plugin só, opinativo, com uma skill por verbo e modos por variação, dá localização ("onde estou na jornada?") e faz qualquer extensão futura acontecer _dentro_ do bundle em vez de virar mais um plugin. Decisões validadas pelo time na reunião (nome Builder Bundle, fusões, renames, manifesto como fonte).
 
 ## decisions
 
@@ -42,23 +42,23 @@ Hoje há 4 lugares com skills sobrepostas (ofc, brisar, loja, inspira-code-revie
   - **Handoff-gate**: toda skill com próximo passo natural termina com `AskUserQuestion` oferecendo a próxima; "encerrar aqui" sempre é opção; **sugere, nunca auto-invoca** (exceção única: `delegate`, e o auto-chain implement→ship quando o ship já foi autorizado). Formato único em `references/handoff-gate.md`. Sem gate: legal-lens, maintain-repo, review-setup, write-readme, code-deep-research, gather-branch-context, ui-accessibility.
   - **Motor de review compartilhado** entre `ship` e `review` em `references/` + `scripts/` (2 passadas, régua de severidade, CI/threads) — papéis distintos (ship automático landa; review interativo reporta), motor único pra evitar drift. Scripts existentes (`fetch_comments.py`, `reply_resolve_thread.py`, `gather_context.py`) reutilizados.
 - **Reuso**: skills do ofc que seguem quase intactas — implement, ship, delegate, gather-branch-context, legal-lens, maintain-repo, code-deep-research, write-readme (ajustes: paths `.bb/`, referências shape→spec, manifesto, gates, identidade bb). Hooks do ofc (SessionStart operating-context etc.) mantidos com textos atualizados.
-- **Fontes de importação**: repo `inspira-skills` local em `C:\Users\PC\development\inspira-skills` (skills/brisar/*, skills/desafio, skills/think, skills/spec, skills/pr-review, skills/ui-accessibility, skills/inspira-code-review/*, skills/github-management/fix-ci).
+- **Fontes de importação**: repo `inspira-skills` local em `C:\Users\PC\development\inspira-skills` (skills/brisar/_, skills/desafio, skills/think, skills/spec, skills/pr-review, skills/ui-accessibility, skills/inspira-code-review/_, skills/github-management/fix-ci).
 - **Validação só via CI/PR** (`gh pr checks --watch`) — nunca rodar checks localmente. Lefthook/bun existentes mantidos.
 - **Migração documentada**: README + CHANGELOG com nota ofc→bb (desinstalar `ofc@inspira-legal`, instalar `bb@inspira-legal`; GitHub redireciona o nome antigo do repo).
 
 ## out of scope
 
-- Despublicar/deprecar as cópias da loja `inspira-skills` (spec, think, desafio, pr-review, ui-accessibility, brisar bundle, inspira-code-review, tlc-spec-driven, codenavi) — *revisit*: PR separado no repo inspira-skills depois que o bb publicar.
-- Gerenciador de tarefas / backlog compartilhado / session log→git — *revisit* (v2, "arredores do plugin").
-- Memória organizacional OKF (elephant) — *revisit* (plugin irmão).
-- Mobbin MCP como modo do brisar — *revisit* (Matheus explora).
+- Despublicar/deprecar as cópias da loja `inspira-skills` (spec, think, desafio, pr-review, ui-accessibility, brisar bundle, inspira-code-review, tlc-spec-driven, codenavi) — _revisit_: PR separado no repo inspira-skills depois que o bb publicar.
+- Gerenciador de tarefas / backlog compartilhado / session log→git — _revisit_ (v2, "arredores do plugin").
+- Memória organizacional OKF (elephant) — _revisit_ (plugin irmão).
+- Mobbin MCP como modo do brisar — _revisit_ (Matheus explora).
 - Design system / monorepo — fórum separado do Léo.
 - Distribuição org-level (admin instala pra todos) — decidir depois; v1 via marketplace.
 
 ## design
 
 - **Layout**: `plugins/bb/{skills/<16>/,references/,scripts/,hooks/}`. References compartilhadas no nível do plugin (handoff-gate.md, quality/review checklists, motor de review); references por skill dentro de cada `skills/<name>/references/` (fases do brisar, modos do discover, export-spec).
-- **Fluxo da jornada** (o que os gates encadeiam): dor/ideia → `discover` (apoios: challenge, think, legal-lens) → *é código* → `spec` → `implement` → `ship` → `review` da PR; *é design* → `brisar` → volta pro `spec`. `think` só oferece gate quando convergiu; `challenge` devolve pro dono da tese.
+- **Fluxo da jornada** (o que os gates encadeiam): dor/ideia → `discover` (apoios: challenge, think, legal-lens) → _é código_ → `spec` → `implement` → `ship` → `review` da PR; _é design_ → `brisar` → volta pro `spec`. `think` só oferece gate quando convergiu; `challenge` devolve pro dono da tese.
 - **Contrato do estado**: `.bb/tasks/<slug>/spec.md` com o mesmo frontmatter de hoje (`status/created/slug`). Fallback de leitura documentado num único lugar (reference compartilhada) e usado por **spec, implement e delegate** (a Cloud Routine passa pelo delegate, então herda).
 - **Manifesto**: um snippet/reference compartilhado ("consult-manifesto") incluído pela lista canônica acima (implement, ship, review, review-setup) — busca `gh api repos/inspira-legal/manifesto/...`, aplica níveis Obrigatório/Padrão/Alternativa/Proibido, fallback com aviso.
 

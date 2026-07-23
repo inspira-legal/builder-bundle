@@ -46,10 +46,10 @@ Maps to known flags:
 ```yaml
 preflight:
   mcps:
-    unframer: bool       # mcp-unframer-co — needed for Framer path with canvas
-    figma: bool          # mcp__figma — optional, improves design-to-code
-    atlassian: bool      # optional
-    google_drive: bool   # optional
+    unframer: bool # mcp-unframer-co — needed for Framer path with canvas
+    figma: bool # mcp__figma — optional, improves design-to-code
+    atlassian: bool # optional
+    google_drive: bool # optional
     raw_list: [<all keys found>]
 ```
 
@@ -92,6 +92,7 @@ preflight:
 ```
 
 Does not re-run if filled within the last 24h AND the session is active. Re-runs when:
+
 - New session
 - Phase 0 changed the profile (e.g., senior → content — needs to re-check MCPs)
 - Builder explicitly requested a refresh
@@ -120,23 +121,25 @@ If `mcps.unframer: false`: falls back to the product's `fallback_path: framer-ha
 
 Common cases and what to do:
 
-| Detected | Response |
-|---|---|
-| `gh_authed: false` but builder is in a folder of an Inspira product (private) | Warn: "esse produto é privado. Quer autenticar?" |
-| MCP unframer present but builder didn't choose Framer | Don't mention it — only used when relevant |
-| Multiple matches in the product registry | Silent log (debug). Take the first one from the registry. |
-| `git_installed: false` AND persona = builder-senior | "Você marcou senior mas git não tá aqui. Atualizar perfil ou instalar git?" |
-| `git_installed: false` AND persona = executive | Don't mention it — the executive path doesn't require git. |
+| Detected                                                                      | Response                                                                    |
+| ----------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `gh_authed: false` but builder is in a folder of an Inspira product (private) | Warn: "esse produto é privado. Quer autenticar?"                            |
+| MCP unframer present but builder didn't choose Framer                         | Don't mention it — only used when relevant                                  |
+| Multiple matches in the product registry                                      | Silent log (debug). Take the first one from the registry.                   |
+| `git_installed: false` AND persona = builder-senior                           | "Você marcou senior mas git não tá aqui. Atualizar perfil ou instalar git?" |
+| `git_installed: false` AND persona = executive                                | Don't mention it — the executive path doesn't require git.                  |
 
 Detected product and profile calibration stay independent: product = "where I am", profile = "who I am" — a senior embedding into an Inspira product and an executive prototyping something new can sit in the same folder.
 
 ## Minimum acceptable state
 
 brisar can run WITHOUT:
+
 - gh / authentication (falls back to fallbacks)
 - MCPs (falls back to manual path)
 
 brisar needs:
+
 - Bash (comes with any macOS/Linux)
 - Filesystem write in the cwd (for scaffold/session)
 
