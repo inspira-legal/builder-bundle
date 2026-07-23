@@ -1,63 +1,85 @@
 <div align="center">
 
-# ofc-skills
+# builder-bundle
 
-[![github](https://img.shields.io/badge/github-inspira--legal%2Fofc--skills-111111?style=flat-square&logo=github)](https://github.com/inspira-legal/ofc-skills)
+[![github](https://img.shields.io/badge/github-inspira--legal%2Fbuilder--bundle-111111?style=flat-square&logo=github)](https://github.com/inspira-legal/builder-bundle)
 
-_Oficina (`ofc`) — um plugin do claude code com skills de agente agrupadas por uso, e um hook de contexto operacional junto._
+_Builder Bundle (`bb`) — o plugin unificado de skills pra builders da Inspira: 16 skills em 6 trilhas, do problema ao PR._
 
 </div>
 
 adicione o marketplace e instale o plugin único:
 
 ```bash
-claude plugin marketplace add inspira-legal/ofc-skills
-claude plugin install ofc@inspira-legal
+claude plugin marketplace add inspira-legal/builder-bundle
+claude plugin install bb@inspira-legal
 ```
 
-traz um hook `SessionStart` de contexto operacional, auto-ativo na instalação. as skills são invocadas como `/ofc:<skill>` — ex. `/ofc:shape`, `/ofc:ship`, `/ofc:answer-yourself`.
+traz um hook `SessionStart` de contexto operacional, auto-ativo na instalação. as skills são invocadas como `/bb:<skill>` — ex. `/bb:discover`, `/bb:spec`, `/bb:ship`. toda skill com próximo passo natural termina num gate que **sugere** a próxima trilha, nunca auto-invoca.
 
 ## o que tem dentro
 
-um plugin, `ofc`; as skills são organizadas por uso.
+um plugin, `bb`; 16 skills organizadas em 6 trilhas.
 
-### shape & ship — escrever & entregar código, conduzido por você
+### pensar — enquadrar & decidir antes de construir
 
-| skill                        | descrição                                                                                                                                                                                                                                                |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/ofc:shape`                 | alinhe a ideia antes de construir — desenvolve, itera nas zonas cinzentas via perguntas, valida                                                                                                                                                          |
-| `/ofc:implement`             | implementa um brief de shape validado — constrói as fatias, roda o gate, depois oferece entregar (ou emenda direto)                                                                                                                                      |
-| `/ofc:ship`                  | leve a branch ao fim do seu jeito — revisa + deixa os checks verdes, então push numa branch, prepara push pra main, ou abre um PR e cuida dele (comentários, CI, fica de olho)                                                                           |
-| `/ofc:delegate`              | roda uma task shapeada de ponta a ponta — escolhe o brief, constrói as fatias e entrega (implement → ship), trilhando o `status`; `/ofc:delegate <slug>` mira uma task, sem nome pega a mais antiga pendente. o mesmo verbo no desk e na routine noturna |
-| `/ofc:review-changes`        | revisa o diff da branch — bugs de correção + qualidade — só reporta e sugere o próximo passo, nunca edita                                                                                                                                                |
-| `/ofc:tidy-pr`               | passada leve e curada nos threads de review do PR aberto — você escolhe quais tratar; corrige/responde, resolve, e pode ajustar título/corpo                                                                                                             |
-| `/ofc:gather-branch-context` | resume todas as mudanças da branch vs main                                                                                                                                                                                                               |
-| `/ofc:tidy`                  | passada de qualidade behavior-preserving num diff, com guarda dura contra regressão (sem caça a bug)                                                                                                                                                     |
-| `/ofc:write-readme`          | gera um README mínimo de cabeçalho centralizado a partir dos fatos do repo                                                                                                                                                                               |
+| skill            | descrição                                                                                                                              |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:discover`   | do incômodo à aposta shapeável — enquadra o problema, pressiona o fit (vale construir? o que cortar?) e fecha hipótese + apetite       |
+| `/bb:challenge`  | pre-mortem adversarial de uma tese — tenta derrubar antes que a realidade derrube                                                      |
+| `/bb:think`      | pensa junto e se posiciona — recomendação honesta e decisiva, nomeia a tensão não vista, sem bajulação                                 |
+| `/bb:legal-lens` | passada jurídica sobre ideia, fluxo ou documento — risco legal & compliance, fundamentado em normas citadas (brasil por padrão)        |
 
-### think & research — entender & decidir, antes de construir
+### desenhar — alinhar a forma do que vai ser construído
 
-| skill                     | descrição                                                                                                                                  |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `/ofc:frame-problem`      | enquadra o problema antes de qualquer solução — a aposta, quem sente a dor, o sinal de sucesso & o apetite                                 |
-| `/ofc:assess-fit`         | pressiona um problema enquadrado — vale construir? o que cortar, em que ordem, a única hipótese testável                                   |
-| `/ofc:code-deep-research` | acha, clona & explora repos, depois verifica adversarialmente os achados contra o código-fonte                                             |
-| `/ofc:legal-lens`         | uma passada jurídica sobre uma ideia, fluxo ou documento — risco legal & de compliance, fundamentado em normas citadas (brasil por padrão) |
-| `/ofc:answer-yourself`    | recomendação honesta e decisiva — se posiciona, nomeia a tensão não vista, sem bajulação                                                   |
+| skill      | descrição                                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `/bb:spec` | alinhe a ideia antes do código — desenvolve o draft, itera nas zonas cinzentas via perguntas, valida um brief em `.bb/tasks/<slug>/spec.md` |
 
-### loops — rodar ao longo do tempo (agendado / orientado a evento)
+### construir — escrever & entregar código
 
-não há skill dedicada de madrugada — o caminho não-supervisionado **é** a tríade: uma [Cloud Routine](plugins/ofc/references/routines.md) define `OFC_UNATTENDED` e roda `/ofc:delegate <slug>` contra um brief commitado, que encadeia `/ofc:implement` → `/ofc:ship`, construindo todo o backlog e deixando um PR em rascunho. nesse caminho, o never-merge é garantido por **capability scoping** — a routine roda com um token sem permissão de merge/push em branch e sem connector capaz de merge — apoiado pela branch protection do GitHub. controles do lado do servidor, não um hook local.
+| skill                       | descrição                                                                                                                                                                        |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:implement`             | implementa um brief validado — constrói as fatias, roda o gate, depois oferece entregar                                                                                          |
+| `/bb:ship`                  | leva a branch ao fim do seu jeito — revisa + deixa os checks verdes, então push, prepara pra main, ou abre um PR e cuida dele                                                    |
+| `/bb:delegate`              | roda uma task shapeada de ponta a ponta — escolhe o brief, constrói e entrega (implement → ship), trilhando o `status`. o mesmo verbo no desk e na routine noturna               |
+| `/bb:gather-branch-context` | resume todas as mudanças da branch vs main                                                                                                                                       |
 
-| skill                | descrição                                                                            |
-| -------------------- | ------------------------------------------------------------------------------------ |
-| `/ofc:maintain-repo` | tria PRs + dependabot/desatualizados, reporta o que dá pra mergear (nunca faz merge) |
+### revisar — qualidade & manutenção
+
+| skill               | descrição                                                                                                                                |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/bb:review`        | revisa contra 3 fontes — diff da branch, threads do PR e CI — com gate interativo pra escolher o que tratar; corrige, responde e resolve  |
+| `/bb:maintain-repo` | tria PRs + dependabot/desatualizados, reporta o que dá pra mergear (nunca faz merge)                                                      |
+| `/bb:review-setup`  | configura o workflow de code-review da Inspira no repo e escreve o `CODE_REVIEW_GUIDE.md`                                                 |
+
+### design — da ideia à surface em alta fidelidade
+
+| skill                  | descrição                                                                                                                                          |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:brisar`           | jornada de design de ponta a ponta — calibra o perfil, scaffolda com o DS da marca, escreve direção visual por surface, e constrói (Develop) e revisa/entrega (Deliver) como fases internas |
+| `/bb:ui-accessibility` | audita interfaces web pra WCAG AA — contraste, teclado, leitor de tela — com relatório priorizado por impacto                                       |
+
+### pesquisar & documentar
+
+| skill                    | descrição                                                                                        |
+| ------------------------ | -------------------------------------------------------------------------------------------------- |
+| `/bb:code-deep-research` | acha, clona & explora repos, depois verifica adversarialmente os achados contra o código-fonte    |
+| `/bb:write-readme`       | gera um README mínimo de cabeçalho centralizado a partir dos fatos do repo                        |
+
+## rodar sem supervisão
+
+não há skill dedicada de madrugada — o caminho não-supervisionado **é** a tríade: uma [Cloud Routine](plugins/bb/references/routines.md) define `BB_UNATTENDED` e roda `/bb:delegate <slug>` contra um brief commitado, que encadeia `/bb:implement` → `/bb:ship`, construindo todo o backlog e deixando um PR em rascunho. nesse caminho, o never-merge é garantido por **capability scoping** — a routine roda com um token sem permissão de merge/push em branch protegida e sem connector capaz de merge — apoiado pela branch protection do GitHub. controles do lado do servidor, não um hook local.
+
+## migrando do ofc?
+
+veja o [CHANGELOG](CHANGELOG.md) — de-para completo das 28 skills antigas pras 16 novas, aviso de coexistência e como trocar o plugin.
 
 desenvolva localmente:
 
 ```bash
-git clone git@github.com:inspira-legal/ofc-skills.git
-claude --plugin-dir ./ofc-skills/plugins/ofc    # carrega o plugin do disco pra testar
+git clone git@github.com:inspira-legal/builder-bundle.git
+claude --plugin-dir ./builder-bundle/plugins/bb    # carrega o plugin do disco pra testar
 ```
 
-<sub>`/ofc:tidy` é adaptada do `/simplify` do Claude Code (Anthropic, Apache-2.0). componentes individuais mantêm suas licenças originais.</sub>
+<sub>a passada de qualidade do `/bb:review` é adaptada do `/simplify` do Claude Code (Anthropic, Apache-2.0). `/bb:brisar` incorpora as skills do bundle brisa-ds; `/bb:ui-accessibility` é baseada na skill de rafael na loja inspira-skills. componentes individuais mantêm suas licenças originais.</sub>

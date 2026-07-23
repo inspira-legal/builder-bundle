@@ -1,10 +1,10 @@
 ---
 name: code-deep-research
-description: Deep research on code — find, clone, and explore real repositories, then adversarially verify the findings against the actual source before reporting. Use when user says "find repos for", "how do others implement", "code research", "deep dive into how [project] works", "find examples of", "clone and analyze", or asks about implementation patterns, library comparisons, or codebase architecture. For non-code topic research, use the bundled deep-research skill instead.
+description: Pesquisa profunda em código — encontra, clona e explora repositórios reais, e verifica adversarialmente os achados contra o source antes de reportar. Use quando o usuário disser "acha repos de", "como outros implementam", "pesquisa de código", "mergulha em como [projeto] funciona", "acha exemplos de", "clona e analisa", ou perguntar sobre padrões de implementação, comparação de bibliotecas ou arquitetura de codebases. Pra pesquisa de tópicos não-código, use a skill deep-research nativa.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 # Code Deep Research
@@ -77,8 +77,8 @@ Cloning and exploring these now...
 
 Launch all agents in parallel:
 
-- **1 explorer per repo** (`research:repo-explorer`) — clone and analyze the codebase
-- **1 web researcher for all repos** (`research:web-researcher`) — docs, blog posts, design discussions
+- **1 explorer per repo** (`general-purpose` agent) — clone and analyze the codebase
+- **1 web researcher for all repos** (`general-purpose` agent) — docs, blog posts, design discussions
 
 Each explorer must back claims with **evidence** — `file:path:line` citations — so the verify step has something concrete to re-check.
 
