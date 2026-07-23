@@ -1,10 +1,10 @@
 ---
 name: gather-branch-context
-description: Gather and summarize all changes on the current branch compared to main. Use when user says "compare against main", "branch context", "what changed on this branch", "summarize my branch", "diff against main", or "what did I do on this branch". Do NOT use to judge the diff for bugs or quality (use /ofc:review-changes), fix or green a PR (use /ofc:ship), open a PR (use /ofc:ship), or improve the diff's quality (use /ofc:tidy) — this only summarizes, it never edits.
+description: Coleta e resume todas as mudanças da branch atual comparada com a main. Use quando o usuário disser "compara com a main", "contexto da branch", "o que mudou nessa branch", "resume minha branch", "diff contra a main", ou "o que eu fiz nessa branch". NÃO use pra julgar o diff por bugs ou qualidade (use /bb:review), consertar ou esverdear uma PR (use /bb:ship), nem abrir uma PR (use /bb:ship) — isso só resume, nunca edita.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 # Branch Context
@@ -26,7 +26,7 @@ Optional flags:
 - `--base <branch>` to compare against a specific branch (default: repo's default branch)
 - `--repo <path>` to target a specific repo
 
-Returns JSON with: `branch`, `base_branch`, `merge_base`, `commit_log`, `commit_count`, `diff_stat`, `files_changed`, `full_diff`, `uncommitted_changes` (plus `upstream` and `pr_template` when available, used by `/ofc:ship`).
+Returns JSON with: `branch`, `base_branch`, `merge_base`, `commit_log`, `commit_count`, `diff_stat`, `files_changed`, `full_diff`, `uncommitted_changes` (plus `upstream` and `pr_template` when available, used by `/bb:ship`).
 
 If the script returns an `error` field, report it and stop.
 
@@ -71,10 +71,10 @@ Read through the full diff and provide:
    - Breaking API changes
 3. **Suggestions** — optional, only if something clearly stands out
 
-### 4. Offer Next Steps
+### 4. Report and stop
 
-Based on the state of the branch:
+This skill summarizes — it has no handoff gate. Close the report by naming the natural next command in one line, without asking:
 
-- If clean and ready: "Want me to open a PR? (/ofc:ship)"
-- If uncommitted changes: "You have uncommitted changes — want to commit first?"
-- If issues found: "Want me to fix any of these before opening a PR?"
+- Clean and ready: "Pra abrir a PR: `/bb:ship`."
+- Uncommitted changes: point them out with the warning above.
+- Issues found: "Pra revisar e corrigir: `/bb:review`."

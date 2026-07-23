@@ -1,10 +1,10 @@
 ---
 name: ship
-description: Take the current branch to landed — your way. Quality-pass the diff, green the project's local checks, then land via the destination you choose — push to a feature branch, prepare a push to main, or open/finish a pull request. Reviews the diff for correctness bugs and simplification, runs the project's checks, and — on the PR path — auto-handles review comments (replies, applies fixes, pushes, and resolves threads), watches CI until green, then stays watching the PR for new comments/CI/conflicts until you stop it. Never merges and never pushes to a protected branch itself (it hands you that command). Use when the user says "ship it", "ship this", "land this branch", "push this to main", "push it to a branch", "open the PR", "finish the PR", "green the PR", "watch my PR", or "keep my PR green". Do NOT use for triaging all open PRs and dependency updates (use /ofc:maintain-repo) or just summarizing the branch (use /ofc:gather-branch-context).
+description: Leva a branch atual até landed — do seu jeito. Passa o diff pelo quality pass, esverdeia os checks locais do projeto e landa pelo destino que você escolher — push pra feature branch, preparar push pra main, ou abrir/finalizar uma pull request. No caminho de PR, trata comentários de review automaticamente (responde, aplica fixes, pusha, resolve threads), acompanha o CI até verde e fica de olho na PR (comentários novos/CI/conflitos) até você parar. Nunca mergeia e nunca pusha branch protegida (te entrega o comando). Use quando o usuário disser "ship it", "shipa isso", "landa essa branch", "sobe pra main", "abre a PR", "finaliza a PR", "esverdeia a PR", "acompanha minha PR". NÃO use pra triagem de todas as PRs abertas e dependências (use /bb:maintain-repo) nem pra só resumir a branch (use /bb:gather-branch-context).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 1.5.0
+  version: 2.0.0
 ---
 
 # Ship
@@ -18,7 +18,7 @@ Take the current branch all the way to landed — reviewed, checks green, commit
 
 ## Step 1 — Settle the destination (default when known, ask only on doubt)
 
-**Unattended runs skip this question entirely.** If the injected operating frame marks the run unattended (`OFC_UNATTENDED`), the destination is fixed — a **draft PR on a `claude/` branch**, no `AskUserQuestion`. Go straight to the quality pass, create the PR with `--draft`, then watch it **to resolution** (see "Stay and watch → Unattended"). Never-merge holds server-side regardless of the frame.
+**Unattended runs skip this question entirely.** If the injected operating frame marks the run unattended (`BB_UNATTENDED`), the destination is fixed — a **draft PR on a `claude/` branch**, no `AskUserQuestion`. Go straight to the quality pass, create the PR with `--draft`, then watch it **to resolution** (see "Stay and watch → Unattended"). Never-merge holds server-side regardless of the frame.
 
 Don't ask reflexively. If the landing is already settled by signal, **take it and just state which and why** — the question is for genuine ambiguity, not a toll on every run.
 
@@ -28,17 +28,17 @@ Don't ask reflexively. If the landing is already settled by signal, **take it an
 - the landing was **decided earlier this session or on this branch**,
 - the repo state is unambiguous — a PR already open for this branch → finish that PR.
 
-**Ask one `AskUserQuestion` only when** there's no such signal, or signals conflict. Lead with the best-fit lean:
+**Ask one `AskUserQuestion` only when** there's no such signal, or signals conflict (question text PT-BR, per the plugin-level `references/handoff-gate.md` format). Lead with the best-fit lean:
 
-- **Open / finish a PR** — full flow: create the PR if none exists, auto-handle review comments (reply / fix / push / resolve), watch CI until green, then stay watching it until you stop.
-- **Push to a feature branch** — commit and push to a non-protected branch (the current one, or a new name you give). No PR. Reversible, so ship runs it.
-- **Push to main (or another protected branch)** — ship does the whole quality pass and commits, then **hands you the exact push command** and stops. Protected-branch landing stays your call (and branch protection typically enforces it server-side); ship never runs it.
+- **Abrir / finalizar PR** — full flow: create the PR if none exists, auto-handle review comments (reply / fix / push / resolve), watch CI until green, then stay watching it until you stop.
+- **Push pra feature branch** — commit and push to a non-protected branch (the current one, or a new name you give). No PR. Reversible, so ship runs it.
+- **Push pra main (ou outra branch protegida)** — ship does the whole quality pass and commits, then **hands you the exact push command** and stops. Protected-branch landing stays your call (and branch protection typically enforces it server-side); ship never runs it.
 
 When the user confirms or corrects a destination that wasn't obvious, it's worth remembering as this repo's habit so future runs skip the ask.
 
 ## Step 2 — Quality pass + green the gate (always, every destination)
 
-This runs identically whatever the destination — it's the substance of shipping. Self-contained; do not invoke other skills. Review criteria live in `references/review-checklist.md` at the plugin root — the single source of truth shared with `/ofc:review-changes`.
+This runs identically whatever the destination — it's the substance of shipping. Self-contained; do not invoke other skills. Review criteria live in `references/review-checklist.md` at the plugin root — the single source of truth shared with `/bb:review`.
 
 Launch the read-only work concurrently — review agents in one message, scripts/checks as background Bash:
 
@@ -50,7 +50,7 @@ Launch the read-only work concurrently — review agents in one message, scripts
 
    Each verifies every finding against the actual file (not just the diff) and returns: `file:line | what | evidence | suggested fix | confidence`.
    For tiny diffs (≲2 files / ≲100 lines), skip the fan-out and apply the checklist in the main context.
-   If a `.ofc/tasks/*/shape.md` brief matches this branch, pass it to the agents as the intended scope — review the diff against what was agreed (did it build the shaped thing, and only that?), not just generic correctness. Its `## behavior` map is the acceptance contract: each `WHEN … THEN …` row is a test — check the happy path is built and each mapped edge is handled per its outcome. A mapped behavior with no corresponding code or test is a finding.
+   If a task brief matches this branch (resolved per the plugin-level `references/task-state.md` — `.bb/tasks/<slug>/spec.md`, legacy `.ofc/tasks/<slug>/shape.md` fallback), pass it to the agents as the intended scope — review the diff against what was agreed (did it build the shaped thing, and only that?), not just generic correctness. Its `## behavior` map is the acceptance contract: each `WHEN … THEN …` row is a test — check the happy path is built and each mapped edge is handled per its outcome. A mapped behavior with no corresponding code or test is a finding. When judging whether the diff's **stack choices** (new dependency, tool, framework) are approved, consult the manifesto (plugin-level `references/consult-manifesto.md`).
 
 2. **Local checks** (background): detect the project's check commands in this order of authority: project CLAUDE.md / docs, CI workflow files (`.github/workflows/`), then `package.json` / `justfile` / `Makefile` / `pyproject.toml`. Run the full gate CI runs — lint, format, typecheck, tests — as concurrent background shells.
 
@@ -82,7 +82,7 @@ Everything is committed and the gate is green. Ship stops here and hands off —
 
 1. Gather context: `python ${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py` → JSON with `branch`, `upstream`, `base_branch`, `commit_log`, `diff_stat`, `uncommitted_changes`, `pr_template`.
 2. If the branch has no upstream, note that `gh pr create` pushes automatically.
-3. Draft from the commits + diff (and a matching `.ofc/tasks/*/shape.md` brief if present — it's the intended scope):
+3. Draft from the commits + diff (and a matching task brief if present — it's the intended scope):
    - **Title**: conventional commit style `<type>(<scope>): <description>` (≤70 chars).
    - **Body**: follow `.github/pull_request_template.md` if it exists (fill every section; mark N/A where not applicable). Otherwise: Context (why) → Changes (grouped by purpose, not file) → Breaking Changes (only if any).
 4. Present title + body, get approval/edits, then create:
@@ -117,7 +117,7 @@ Pushing fixes to the PR branch is reversible, so ship does it without pausing; m
 
 ### Stay and watch (automatic, PR path)
 
-Once the PR is green, ship **stays resident and watches it** while you work — a supervised, session-scoped loop (this is the old watch-pr skill, now built in), not an AFK agent. Review feedback usually lands _after_ the PR opens, so the watch's main job is catching comments that arrive later — not just the ones present at creation.
+Once the PR is green, ship **stays resident and watches it** while you work — a supervised, session-scoped loop, not an AFK agent. Review feedback usually lands _after_ the PR opens, so the watch's main job is catching comments that arrive later — not just the ones present at creation.
 
 Track a **high-water mark**: the timestamp of the latest comment/review you've already handled. Each tick:
 
@@ -125,7 +125,7 @@ Track a **high-water mark**: the timestamp of the latest comment/review you've a
 2. Nothing new → report one line, **stretch the interval**, and wait.
 3. Something new → re-run the matching flow automatically — triage→fix→push→reply for comments, diagnose→fix→push for red CI — advance the high-water mark, then resume watching.
 
-Pace it with `ScheduleWakeup`: ~270s while CI is running or a thread is open; stretch toward 20–30 min once it goes quiet. **An idle tick means slow down, not stop** — stopping after a couple of quiet ticks is exactly what makes the watch "check only once". Keep watching while the PR is open, unmerged, and still awaiting review. Stop only when: you say so, the PR is green **with approvals** (report "ready — you merge" — nothing left to tend), or a long quiet ceiling is reached. When you stop on the ceiling, say so plainly and name the durable hand-off — a live session can't catch comments that arrive after it ends, so for AFK tending wire a **Channel** (webhook → live session) or a scheduled routine (see the scheduling decision table). A fresh session also clears the watch.
+Pace it with `ScheduleWakeup`: ~270s while CI is running or a thread is open; stretch toward 20–30 min once it goes quiet. **An idle tick means slow down, not stop** — stopping after a couple of quiet ticks is exactly what makes the watch "check only once". Keep watching while the PR is open, unmerged, and still awaiting review. Stop only when: you say so, the PR is green **with approvals** (report "pronta — o merge é seu" — nothing left to tend), or a long quiet ceiling is reached. When you stop on the ceiling, say so plainly and name the durable hand-off — a live session can't catch comments that arrive after it ends, so for AFK tending wire a **Channel** (webhook → live session) or a scheduled routine (see the scheduling decision table). A fresh session also clears the watch.
 
 **Unattended:** the watch runs **to resolution**, bounded by the run budget rather than a human stop. Each tick handles new comments/CI exactly as above, under two caps — the CI fix cap (3 cycles, known-flake only) and the comment-round cap (above). It **terminates** when the PR is resolved (CI green + every thread handled or capped) or the budget/time is spent — it does **not** idle waiting for new comments, and it never stops on a human signal (there isn't one). A persistently-red check or an unsatisfiable bot leaves the draft with the blocker written in and reports. The PR stays **draft**: the run resolves it, the human reviews and merges. The watch is within-run — comments arriving after it ends are for the next fire (or an event-triggered routine), not held open across days.
 
@@ -144,7 +144,7 @@ Read the actual failure logs before touching any source file (multiple failures 
 
 ### references/review-checklist.md (plugin root)
 
-Two-pass diff review checklist for the quality pass: correctness (bug-finding) and quality (simplification) criteria. Lives at the plugin root, shared with `/ofc:review-changes`.
+Two-pass diff review checklist for the quality pass: correctness (bug-finding) and quality (simplification) criteria. Lives at the plugin root, shared with `/bb:review`.
 
 ### references/loop.md
 
@@ -154,15 +154,15 @@ Shared scripts live at the plugin root (`${CLAUDE_PLUGIN_ROOT}/scripts/`); `insp
 
 ### ${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py
 
-Collect branch, upstream, base + merge-base, commit log, diff stat, changed files, full diff, uncommitted changes, and PR template in one call. Shared with `/ofc:gather-branch-context`. Prints JSON.
+Collect branch, upstream, base + merge-base, commit log, diff stat, changed files, full diff, uncommitted changes, and PR template in one call. Shared with `/bb:gather-branch-context`. Prints JSON.
 
 ### ${CLAUDE_PLUGIN_ROOT}/scripts/fetch_comments.py
 
-Fetch all PR conversation comments, reviews, and review threads (with thread IDs and resolved state) via `gh api graphql`. Shared with `/ofc:tidy-pr`. Prints JSON.
+Fetch all PR conversation comments, reviews, and review threads (with thread IDs and resolved state) via `gh api graphql`. Shared with `/bb:review`. Prints JSON.
 
 ### ${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py
 
-Reply to a review thread and/or resolve it. `--thread-id` from fetch_comments.py; `--body` for the reply; `--no-resolve` to reply without resolving. Shared with `/ofc:tidy-pr`.
+Reply to a review thread and/or resolve it. `--thread-id` from fetch_comments.py; `--body` for the reply; `--no-resolve` to reply without resolving. Shared with `/bb:review`.
 
 ### scripts/inspect_pr_checks.py
 

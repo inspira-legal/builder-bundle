@@ -4,25 +4,27 @@ A Cloud Routine is the **only true AFK option** (see
 `../hooks/scheduling-decision.md`): it runs on Anthropic infra from a fresh
 clone, with no local files and no mid-run approval prompts, and its only durable
 output is a commit on a `claude/` branch / a draft PR. That makes it the home for
-running the trio overnight: a routine fires, sets `OFC_UNATTENDED`, and runs
-`/ofc:delegate <slug>` against one shaped brief — `delegate` drives the whole
+running the trio overnight: a routine fires, sets `BB_UNATTENDED`, and runs
+`/bb:delegate <slug>` against one shaped brief — `delegate` drives the whole
 `implement → ship` chain, building the backlog and leaving a
 reviewed-in-the-morning draft PR.
 
-This replaces the old `night-shift` skill. There's no dedicated overnight skill
-anymore — the unattended path is the same `/ofc:delegate` you run at your desk,
-with the `OFC_UNATTENDED` frame changing the behavior underneath it (no questions,
-fixed draft-PR destination, capped retries). The frame is injected by the
-SessionStart hook when `OFC_UNATTENDED` is truthy.
+There's no dedicated overnight skill — the unattended path is the same
+`/bb:delegate` you run at your desk, with the `BB_UNATTENDED` frame changing the
+behavior underneath it (no questions, fixed draft-PR destination, capped
+retries). The frame is injected by the SessionStart hook when `BB_UNATTENDED` is
+truthy (legacy `OFC_UNATTENDED` still works as a fallback).
 
 ## When to reach for a routine
 
 - **The work must run while your laptop is closed.** A session `/loop` expires
   and dies on sleep; a routine survives. If you're at your desk, just run
-  `/ofc:implement` directly — you don't need a routine.
+  `/bb:implement` directly — you don't need a routine.
 - **You have a committed, validated brief.** The fresh clone can only see what's
-  in git, so `.ofc/tasks/<slug>/shape.md` (brief + `## tasks` checklist) must be
-  committed to the target repo. No brief → nothing to build → don't schedule one.
+  in git, so `.bb/tasks/<slug>/spec.md` (brief + `## tasks` checklist; legacy
+  `.ofc/tasks/<slug>/shape.md` also works — see the plugin-level
+  `references/task-state.md`) must be committed to the target repo. No brief →
+  nothing to build → don't schedule one.
 - **One brief per routine.** Each routine targets a single `<slug>`. Queue a
   second brief as a second routine; don't try to make one routine drain a backlog
   of unrelated briefs.
@@ -47,14 +49,14 @@ Generate it with `scripts/scaffold_routine.py` (see below) so the slug, repo, an
 base branch are filled in and the wording stays consistent. The prompt is
 self-contained — the routine has no session memory:
 
-> Set `OFC_UNATTENDED=1`. Run `/ofc:delegate <slug>` against
-> `.ofc/tasks/<slug>/shape.md` in this repo: it builds every unchecked task in the
-> brief, keeping the local gate green (cap retries at 3 on known-flake signatures
-> only), commits per slice to a `claude/<slug>` branch, then chains into `/ofc:ship`
-> to open a **DRAFT** PR against `<base>` and watch it to resolution (green CI +
-> handled review-bot threads), bounded by the run budget. Do **not** merge, do
-> **not** push to a protected branch. If a task or the gate blocks unrecoverably,
-> flip the brief's `status` to `blocked`, write the blocker into the PR description,
+> Set `BB_UNATTENDED=1`. Run `/bb:delegate <slug>` against the brief for
+> `<slug>` in this repo: it builds every unchecked task in the brief, keeping the
+> local gate green (cap retries at 3 on known-flake signatures only), commits per
+> slice to a `claude/<slug>` branch, then chains into `/bb:ship` to open a
+> **DRAFT** PR against `<base>` and watch it to resolution (green CI + handled
+> review-bot threads), bounded by the run budget. Do **not** merge, do **not**
+> push to a protected branch. If a task or the gate blocks unrecoverably, flip
+> the brief's `status` to `blocked`, write the blocker into the PR description,
 > and exit.
 
 ## Trigger & cadence

@@ -16,7 +16,7 @@ On each iteration:
    - a failed/red CI check,
    - a merge conflict / out-of-date base.
 2. If nothing is new, say so in **one line** and stop for this iteration.
-3. If there is something new, run `/ofc:ship` to handle it — it auto-replies,
+3. If there is something new, run `/bb:ship` to handle it — it auto-replies,
    resolves, and pushes fixes to the PR branch; it pauses only for **unclear**
    threads, and never merges.
 
