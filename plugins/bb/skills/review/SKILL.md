@@ -43,8 +43,11 @@ PR/CI-related; diff-only review needs no `gh`.
   branch's): external mode — follow `references/external-pr.md`, then stop
   (the other sources don't apply). Read-only over that PR; posting the review
   requires explicit confirmation.
-- **Current branch with an open PR** (`gh pr view`): full scope — diff + threads
-  - CI, all three sources.
+- **Direct CI ask** ("o CI quebrou", "conserta o CI"): CI-only scope — go
+  straight to `references/ci-diagnosis.md`, skip the diff and thread passes.
+  Findings from the fix still go through the report and curation steps.
+- **Current branch with an open PR** (`gh pr view`): full scope — all three
+  sources (diff, threads, CI).
 - **No open PR**: diff-only scope. Threads and CI are skipped, not failed.
 
 ## Step 2 — Gather findings per source in scope

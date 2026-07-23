@@ -16,11 +16,6 @@ Load only the section for the mode classified in SKILL.md.
    say so before answering.
 6. Issue a clear recommendation with justification — take a position instead of
    closing on "depende".
-7. **Confidence assessment:** close with an explicit evaluation — **HIGH**
-   (solid position), **MEDIUM** (manageable risks), **LOW** (central premise
-   untested), or **PIVOT** (decision poorly framed, recommend revisiting). If
-   MEDIUM or LOW, name the riskiest premise and suggest the smallest experiment
-   to test it.
 
 ## Problem
 
