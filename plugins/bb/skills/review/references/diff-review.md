@@ -31,8 +31,8 @@ fan-out and apply the checklist in the main context.
 ## 3. Review against the brief, when one matches
 
 If a task brief matches this branch (resolve per the plugin-root
-`references/task-state.md` — `.bb/tasks/<slug>/spec.md`, legacy
-`.ofc/tasks/<slug>/shape.md`), pass it to the agents as the intended scope:
+`references/task-state.md` — `.bb/tasks/<slug>/spec.md`), pass it to the agents
+as the intended scope:
 review the diff against what was agreed — did it build the shaped thing, and
 only that? Its `## behavior` map is the acceptance contract: a mapped
 `WHEN … THEN …` row with no corresponding code or test is a finding.

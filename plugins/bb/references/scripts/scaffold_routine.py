@@ -17,8 +17,7 @@ import sys
 
 PROMPT = """\
 Set BB_UNATTENDED=1. Run /bb:delegate {slug} against the brief for `{slug}` \
-(`.bb/tasks/{slug}/spec.md`, or the legacy `.ofc/tasks/{slug}/shape.md`) in \
-{repo}: it builds every unchecked task in the brief, keeping the local gate green \
+(`.bb/tasks/{slug}/spec.md`) in {repo}: it builds every unchecked task in the brief, keeping the local gate green \
 (cap retries at 3 on known-flake signatures only), commits per slice to a \
 `claude/{slug}` branch, then chains into /bb:ship — open a DRAFT PR against \
 `{base}` and watch it to resolution (green CI + handled review-bot threads), \

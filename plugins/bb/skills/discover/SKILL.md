@@ -58,9 +58,8 @@ All user-facing text — echoes, question labels, reports — is PT-BR.
 ## Capture (on disk)
 
 Both phases accrete the same brief, resolved per the task-state contract
-(plugin-level `references/task-state.md`): new work goes to
-`.bb/tasks/<slug>/spec.md`; a legacy `.ofc/tasks/<slug>/shape.md` found for the
-same idea is updated in place. Generate `<slug>` as a short kebab name for the
+(plugin-level `references/task-state.md`): `.bb/tasks/<slug>/spec.md`. Generate
+`<slug>` as a short kebab name for the
 problem area; if the file exists for a _different_ idea, suffix it (`-2`) or ask
 — never overwrite another brief. Section formats live in each phase's reference.
 Keep deferred ideas as plain bullets marked _revisit_ — never checkboxes, so the
@@ -90,7 +89,6 @@ report the verdict with its evidence and stop (a pivot points back to
 | WHEN                                       | THEN                                                                               |
 | ------------------------------------------ | ---------------------------------------------------------------------------------- |
 | slug exists for a different idea           | suffix `-2` or ask — never overwrite                                               |
-| legacy `.ofc/tasks/<slug>/shape.md` found  | seed/update it in place per the task-state contract; mention it in the report      |
 | answer still vague after one clarification | accept at `low` confidence and move on                                             |
 | a field can't be answered                  | record `skipped — <reason>`                                                        |
 | fit asked with no framed problem           | suggest Phase 1 once; if declined, proceed and note `ran without a framed problem` |

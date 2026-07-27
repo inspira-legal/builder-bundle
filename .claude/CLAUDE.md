@@ -24,7 +24,7 @@ plugins/bb/
 ├── references/                        # plugin-level docs (not skill-scoped)
 │   ├── handoff-gate.md                 # the one convention for end-of-skill gates (+ AskUserQuestion rationale)
 │   ├── confidence-and-steelman.md      # shared reasoning protocols (think, challenge)
-│   ├── task-state.md                   # the .bb/tasks/<slug>/spec.md contract (+ legacy fallback)
+│   ├── task-state.md                   # the .bb/tasks/<slug>/spec.md contract
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
 │   ├── quality-checklist.md            # shared quality pass (review engine)
 │   ├── review-checklist.md             # shared review pass (review engine)
@@ -122,8 +122,7 @@ decisions.
 
 The on-disk contract for shaped work is `plugins/bb/references/task-state.md` —
 canonical location `.bb/tasks/<slug>/spec.md`, frontmatter schema
-(`status`/`created`/`slug`), the status lifecycle owned by `/bb:delegate`, and
-the read-only fallback to legacy `.ofc/tasks/<slug>/shape.md` briefs. Skills
+(`status`/`created`/`slug`) and the status lifecycle owned by `/bb:delegate`. Skills
 reference that file instead of restating the contract.
 
 ## Commits

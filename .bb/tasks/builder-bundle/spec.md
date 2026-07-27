@@ -26,7 +26,7 @@ Hoje há 4 lugares com skills sobrepostas (ofc, brisar, loja, inspira-code-revie
 ## decisions
 
 - **Prefixo de invocação: `bb`** (`/bb:spec`, `/bb:brisar`). Plugin name no `plugin.json` = `bb`; dir `plugins/ofc` → `plugins/bb`; marketplace continua `inspira-legal`; versão **2.0.0**. O marketplace.json passa a listar **só `bb`** — a entrada `ofc` é removida (quebra intencional de major; quem tem ofc instalado migra via nota no CHANGELOG, sem entrada dupla de transição).
-- **Estado em disco: `.bb/tasks/<slug>/spec.md`** (novo padrão). `delegate`/`implement` leem `.ofc/tasks/<slug>/shape.md` como **fallback legado** (só leitura/atualização in-place quando não existe `.bb/` pro mesmo slug; escrita nova sempre em `.bb/`). Se o mesmo slug existir nos dois, `.bb/` vence.
+- **Estado em disco: `.bb/tasks/<slug>/spec.md`** — caminho único, sem fallback legado. Briefs antigos são migrados na mão (documentado no CHANGELOG).
 - **Idioma híbrido**: corpo das instruções em inglês (padrão ofc, base do método); descriptions, triggers e todo texto visto pelo usuário (perguntas de gates, relatórios) em PT-BR.
 - **Manifesto em runtime**: `implement`, `ship`, `review` e `review-setup` (lista canônica; `delegate` herda via implement→ship) consultam `inspira-legal/manifesto` via `gh api` quando precisam decidir stack. Fallback gracioso: sem acesso, segue padrões do repo atual e **avisa** que não consultou o manifesto (nunca inventa stack).
 - **6 fusões** (regra geral de conflito: método do ofc vence, conteúdo das outras fontes vira reference):
@@ -77,14 +77,13 @@ Happy path:
 
 Edges (WHEN → THEN):
 
-- WHEN projeto tem `.ofc/tasks/x/shape.md` pendente e roda `/bb:delegate` THEN o brief legado é encontrado (fallback), executado e atualizado in-place; nada é movido.
-- WHEN o mesmo slug existe em `.bb/` e `.ofc/` THEN `.bb/` vence; o legado é ignorado com aviso.
+- WHEN projeto só tem briefs no caminho antigo e roda `/bb:delegate` THEN nenhum brief é encontrado; a migração manual está documentada no CHANGELOG.
 - WHEN manifesto inacessível (offline, sem `gh` auth) THEN a skill segue os padrões do repo atual e avisa que não consultou o manifesto — nunca inventa stack.
 - WHEN usuário responde "encerrar aqui" num handoff-gate THEN nada é auto-invocado.
 - WHEN `/bb:review` roda numa branch sem PR THEN funciona só com a fonte diff (threads/CI ausentes não quebram, reporta que só analisou o diff).
 - WHEN `CODE_REVIEW_GUIDE.md` não existe THEN `review` roda com o motor genérico e sugere `/bb:review-setup`; review-setup num repo que já tem guia atualiza (comportamento do code-review-update absorvido).
 - WHEN repo tem a skill customizada gerada pelo code-review-setup antigo THEN ela continua funcionando isolada; nota de migração recomenda remover e usar `/bb:review`.
-- WHEN delegate roda unattended (`OFC_UNATTENDED`→renomear env var pra `BB_UNATTENDED` com fallback) THEN nunca merge (capability scoping mantido) e o auto-chain implement→ship se aplica.
+- WHEN delegate roda unattended (`BB_UNATTENDED`) THEN nunca merge (capability scoping mantido) e o auto-chain implement→ship se aplica.
 - WHEN usuário tenta `/ofc:<skill>` após migrar THEN não existe; README/CHANGELOG documentam o de-para completo (15 ofc → destino no bb).
 - WHEN skill fundida roda uma fase THEN só o reference daquela fase é carregado (progressive disclosure verificável no SKILL.md).
 - WHEN usuário instala bb sem desinstalar ofc THEN os dois convivem (prefixos distintos) mas os hooks SessionStart injetam contexto em dobro; nota de migração manda desinstalar ofc primeiro.
@@ -92,10 +91,10 @@ Edges (WHEN → THEN):
 
 ## tasks
 
-- [x] 1. Scaffold: `plugins/ofc`→`plugins/bb`, plugin.json (name bb, 2.0.0, descrição PT-BR), marketplace.json só com `bb`, README raiz, hooks com textos atualizados, env var `BB_UNATTENDED` (fallback `OFC_UNATTENDED`) — comportamentos: instalação/listagem (1); edges de migração (coexistência, update)
-- [x] 2. Convenções compartilhadas: `references/handoff-gate.md`, reference do contrato de estado `.bb/`+fallback, reference consult-manifesto, guideline de progressive disclosure no CONTRIBUTING — comportamentos: gates (2, 7); edges: encerrar-aqui, legado, slug-duplicado, manifesto-inacessível, disclosure
+- [x] 1. Scaffold: `plugins/ofc`→`plugins/bb`, plugin.json (name bb, 2.0.0, descrição PT-BR), marketplace.json só com `bb`, README raiz, hooks com textos atualizados, env var `BB_UNATTENDED` — comportamentos: instalação/listagem (1); edges de migração (coexistência, update)
+- [x] 2. Convenções compartilhadas: `references/handoff-gate.md`, reference do contrato de estado `.bb/`, reference consult-manifesto, guideline de progressive disclosure no CONTRIBUTING — comportamentos: gates (2, 7); edges: encerrar-aqui, manifesto-inacessível, disclosure
 - [x] 3. Trilha Desenhar: `spec` (shape renomeado + `references/export-spec.md` + escrita em `.bb/`) — comportamento 3
-- [x] 4. Trilha Construir: `implement`, `delegate` (fallback legado), `ship`, `gather-branch-context` com paths/identidade/manifesto/gates — comportamentos 4, 5, 8; edges: legado, slug-duplicado, unattended
+- [x] 4. Trilha Construir: `implement`, `delegate`, `ship`, `gather-branch-context` com paths/identidade/manifesto/gates — comportamentos 4, 5, 8; edges: unattended
 - [x] 5. Trilha Revisar: `review` (fusão, 3 fontes, interativo), `review-setup` (fusão, guia-only), `maintain-repo`; motor compartilhado extraído pra references/scripts — comportamentos 5, 6; edges: review-sem-PR, guia-ausente, skill-customizada-antiga
 - [x] 6. Trilha Pensar: `discover` (fusão 4 fontes), `challenge` (desafio importado + renomeado), `think` (fusão answer-yourself), `legal-lens` — comportamento 2
 - [x] 7. Trilha Design: `brisar` (tarsila/clarisse como fases em references, mantém `references/ds/`), `ui-accessibility` importada — comportamento 7

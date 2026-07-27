@@ -7,16 +7,10 @@ and nowhere else.
 
 ## Location
 
-- **New work is always written to** `.bb/tasks/<slug>/spec.md`. `<slug>` is a short
-  kebab name matching the dir.
-- **Legacy fallback (read-only path choice):** when resolving a slug, look in
-  `.bb/tasks/<slug>/spec.md` first; if absent, fall back to the legacy
-  `.ofc/tasks/<slug>/shape.md`. A legacy brief found this way is executed and
-  updated **in place** (status flips, checkbox ticks) — never moved or copied.
-- **Both exist for the same slug:** `.bb/` wins; mention the ignored legacy file in
-  the report.
-- Bare selection (`/bb:delegate` with no slug) scans **both** roots, applying the
-  same per-slug precedence before picking by `created`.
+- Briefs live at `.bb/tasks/<slug>/spec.md`. `<slug>` is a short kebab name
+  matching the dir.
+- Bare selection (`/bb:delegate` with no slug) scans `.bb/tasks/*/spec.md` and
+  picks by `created`.
 
 ## Frontmatter (selection & tracking)
 
@@ -37,10 +31,9 @@ slug: <kebab-slug> # matches the dir name
 
 **`/bb:delegate` owns the `status` lifecycle** — it flips the value as it selects,
 runs and lands a task. `spec` only writes the initial block (`status: pending`) on
-finalize, and backfills it on legacy briefs that predate the convention. The
-slice-level `## tasks` checkboxes stay `implement`'s concern. Legacy briefs without
-the block are treated as `pending` with unknown `created` (sorted last in bare
-selection).
+finalize. The slice-level `## tasks` checkboxes stay `implement`'s concern. A brief
+without the block is treated as `pending` with unknown `created` (sorted last in
+bare selection).
 
 ## Upstream sections (discover → spec)
 

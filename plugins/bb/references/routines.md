@@ -13,7 +13,7 @@ There's no dedicated overnight skill — the unattended path is the same
 `/bb:delegate` you run at your desk, with the `BB_UNATTENDED` frame changing the
 behavior underneath it (no questions, fixed draft-PR destination, capped
 retries). The frame is injected by the SessionStart hook when `BB_UNATTENDED` is
-truthy (legacy `OFC_UNATTENDED` still works as a fallback).
+truthy.
 
 ## When to reach for a routine
 
@@ -21,10 +21,9 @@ truthy (legacy `OFC_UNATTENDED` still works as a fallback).
   and dies on sleep; a routine survives. If you're at your desk, just run
   `/bb:implement` directly — you don't need a routine.
 - **You have a committed, validated brief.** The fresh clone can only see what's
-  in git, so `.bb/tasks/<slug>/spec.md` (brief + `## tasks` checklist; legacy
-  `.ofc/tasks/<slug>/shape.md` also works — see the plugin-level
-  `references/task-state.md`) must be committed to the target repo. No brief →
-  nothing to build → don't schedule one.
+  in git, so `.bb/tasks/<slug>/spec.md` (brief + `## tasks` checklist — see the
+  plugin-level `references/task-state.md`) must be committed to the target repo.
+  No brief → nothing to build → don't schedule one.
 - **One brief per routine.** Each routine targets a single `<slug>`. Queue a
   second brief as a second routine; don't try to make one routine drain a backlog
   of unrelated briefs.

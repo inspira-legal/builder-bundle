@@ -1,6 +1,6 @@
 ---
 name: delegate
-description: Roda uma task shaped de ponta a ponta — seleciona um brief não-concluído (`.bb/tasks/<slug>/spec.md`, com fallback pro legado `.ofc/`), constrói todas as slices e landa (`/bb:implement` → `/bb:ship`), rastreando o `status` do brief. `/bb:delegate <slug>` mira uma task nomeada; `/bb:delegate` sem argumento pega a pendente mais antiga. O único verbo "roda tudo", usado igual na sua mesa e numa rotina unattended (`BB_UNATTENDED`). Use quando o usuário disser "delega isso", "roda a task", "constrói e landa o brief", "faz tudo", "delegate <slug>", ou "roda tudo". NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra construir sem landar (use /bb:implement).
+description: Roda uma task shaped de ponta a ponta — seleciona um brief não-concluído (`.bb/tasks/<slug>/spec.md`), constrói todas as slices e landa (`/bb:implement` → `/bb:ship`), rastreando o `status` do brief. `/bb:delegate <slug>` mira uma task nomeada; `/bb:delegate` sem argumento pega a pendente mais antiga. O único verbo "roda tudo", usado igual na sua mesa e numa rotina unattended (`BB_UNATTENDED`). Use quando o usuário disser "delega isso", "roda a task", "constrói e landa o brief", "faz tudo", "delegate <slug>", ou "roda tudo". NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra construir sem landar (use /bb:implement).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -19,22 +19,18 @@ checkboxes stay `implement`'s.
 
 ## Prerequisites
 
-Inside a git repository with a `.bb/tasks/` directory (or a legacy `.ofc/tasks/` —
-see the fallback below). If neither holds, report it and stop.
+Inside a git repository with a `.bb/tasks/` directory. If neither holds, report it
+and stop.
 
 ## Workflow
 
 1. **Resolve the target brief** per the task-state contract (plugin-level
    `references/task-state.md`).
-   - **Named** (`/bb:delegate <slug>`): look for `.bb/tasks/<slug>/spec.md`; if
-     absent, fall back to the legacy `.ofc/tasks/<slug>/shape.md`. A legacy brief is
-     executed and updated **in place** — never moved. Both exist: `.bb/` wins;
-     mention the ignored legacy file in the report. Neither exists: report the
-     error, list the available pending slugs, and stop.
-   - **Bare** (`/bb:delegate`): scan **both roots** (`.bb/tasks/*/spec.md` and
-     `.ofc/tasks/*/shape.md`, per-slug precedence to `.bb/`), read each frontmatter
+   - **Named** (`/bb:delegate <slug>`): use `.bb/tasks/<slug>/spec.md`. If it
+     doesn't exist, report the error, list the available pending slugs, and stop.
+   - **Bare** (`/bb:delegate`): scan `.bb/tasks/*/spec.md`, read each frontmatter
      block, keep those with `status ∈ {pending, in-progress}`, and pick the smallest
-     `created` (tie-break: slug alphabetical). Legacy briefs with no frontmatter count
+     `created` (tie-break: slug alphabetical). A brief with no frontmatter counts
      as `pending` with unknown `created` (sorted last). If none qualify, report "no
      pending tasks" and stop.
    - A brief already `done`: report it's done; supervised, ask whether to re-run;
@@ -67,22 +63,19 @@ see the fallback below). If neither holds, report it and stop.
    protected branch directly.
 
 6. **Report.** Name the slug, what landed (slices, gate result), and the destination
-   (branch / PR URL / the hand-off command for a protected branch). If the run used a
-   legacy `.ofc/` brief, say so.
+   (branch / PR URL / the hand-off command for a protected branch).
 
 ## Edge cases
 
 | WHEN                                            | THEN                                                                                                           |
 | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `/bb:delegate <slug>`, slug exists, not done    | run it end to end                                                                                              |
-| `/bb:delegate <slug>`, slug not found           | report the error, list available pending slugs (both roots), stop                                              |
+| `/bb:delegate <slug>`, slug not found           | report the error, list available pending slugs, stop                                                           |
 | `/bb:delegate <slug>`, status `done`            | report it's done; supervised ask to re-run, unattended stop                                                    |
 | bare `/bb:delegate`, one+ pending               | pick smallest `created` (tie-break slug alpha), run it                                                         |
 | bare `/bb:delegate`, none pending               | report "no pending tasks", stop                                                                                |
-| slug only in legacy `.ofc/tasks/`               | run it; update the legacy brief in place (status, checkboxes) — never move it                                  |
-| slug in both `.bb/` and `.ofc/`                 | `.bb/` wins; mention the ignored legacy file in the report                                                     |
 | selected task already `in-progress`             | resume — implement skips checked slices; status stays `in-progress` until landing                              |
-| brief has no frontmatter (legacy)               | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time           |
+| brief has no frontmatter                        | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time           |
 | implement safety valve fires (underspecified)   | flip `status: blocked`, point back to `/bb:spec`, stop — do not improvise                                      |
 | ship hits an unrecoverable stop / blocker       | flip `status: blocked`; write the blocker into the PR description (unattended) or report it (supervised); exit |
 | `BB_UNATTENDED` set                             | no questions; ship opens a DRAFT PR on `claude/<slug>`; never merge / never push a protected branch            |

@@ -13,7 +13,7 @@ Build the validated, shaped work in the working tree — taking the brief from a
 
 ## Prerequisites
 
-A validated brief with a `## tasks` checklist, resolved per the task-state contract (plugin-level `references/task-state.md`): `.bb/tasks/<slug>/spec.md`, falling back to a legacy `.ofc/tasks/<slug>/shape.md` — a legacy brief is built and updated **in place**, never moved. If there's no shaped brief for this work, stop and suggest `/bb:spec` first — implementing without alignment is exactly what shaping prevents.
+A validated brief with a `## tasks` checklist, resolved per the task-state contract (plugin-level `references/task-state.md`): `.bb/tasks/<slug>/spec.md`. If there's no shaped brief for this work, stop and suggest `/bb:spec` first — implementing without alignment is exactly what shaping prevents.
 
 ## Workflow
 

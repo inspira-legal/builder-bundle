@@ -26,12 +26,16 @@ removida de propósito (quebra de major). Consequências:
   distintos (`/ofc:` e `/bb:`), então nada quebra — porém os dois plugins têm
   hook `SessionStart`, e você passa a injetar contexto operacional **em dobro**
   em toda sessão. Desinstale o ofc primeiro.
-- **Briefs antigos continuam valendo.** O novo padrão é
-  `.bb/tasks/<slug>/spec.md`, mas `spec`, `implement` e `delegate` leem
-  `.ofc/tasks/<slug>/shape.md` como fallback legado e atualizam in-place — nada
-  precisa ser movido. Se o mesmo slug existir nos dois, `.bb/` vence.
-- **Env var da routine: `BB_UNATTENDED`** (a antiga `OFC_UNATTENDED` segue
-  aceita como fallback). Atualize a Cloud Routine pra rodar `/bb:delegate`.
+- **Briefs antigos precisam ser movidos.** O único caminho lido agora é
+  `.bb/tasks/<slug>/spec.md` — não há fallback pro `.ofc/`. Migre com:
+
+  ```bash
+  git mv .ofc/tasks .bb/tasks
+  find .bb/tasks -name shape.md -execdir git mv shape.md spec.md \;
+  ```
+
+- **Env var da routine: `BB_UNATTENDED`** — a antiga `OFC_UNATTENDED` não é mais
+  lida. Atualize a Cloud Routine pra definir a nova e rodar `/bb:delegate`.
 - **Marcador do sticky comment do maintain-repo mudou de `ofc:` pra `bb:`** —
   o `/bb:maintain-repo` não reconhece o comment antigo e cria um novo; apague o
   sticky antigo do `/ofc:maintain-repo` no repo triado.
