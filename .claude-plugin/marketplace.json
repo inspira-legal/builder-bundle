@@ -4,12 +4,12 @@
     "name": "Athena Briana",
     "email": "me@athenabriana.com"
   },
-  "description": "Oficina (OFC) agent skills as a single installable plugin.",
+  "description": "Builder Bundle: as skills de builder da Inspira num único plugin instalável.",
   "plugins": [
     {
-      "name": "ofc",
-      "source": "./plugins/ofc",
-      "description": "shape & ship code, run loops across time (never-merge enforced by cloud capability scoping), and helpers — invoked as /ofc:<skill>"
+      "name": "bb",
+      "source": "./plugins/bb",
+      "description": "Builder Bundle — 16 skills em 6 trilhas cobrindo a jornada inteira do builder (pensar, desenhar, construir, revisar, design, pesquisar/doc), invocadas como /bb:<skill>"
     }
   ]
 }
