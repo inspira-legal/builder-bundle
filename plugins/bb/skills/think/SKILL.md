@@ -50,11 +50,8 @@ objectivity, at least 1 real tradeoff surfaced, recommendation clear and
 testable. For long sessions or ones the user will want to save, offer to
 capture it as a markdown file.
 
-**Every mode closes with an explicit confidence assessment** — **HIGH** (solid
-position), **MEDIUM** (manageable risks), **LOW** (central premise untested), or
-**PIVOT** (the question itself is poorly framed, recommend revisiting). If
-MEDIUM or LOW, name the riskiest premise and suggest the smallest experiment to
-test it.
+**Every mode closes with the confidence assessment** (HIGH / MEDIUM / LOW /
+PIVOT) defined in the plugin-root `references/confidence-and-steelman.md`.
 
 ## Handoff gate
 

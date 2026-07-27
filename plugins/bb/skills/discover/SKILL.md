@@ -40,8 +40,8 @@ Read the invocation and any existing brief before asking anything:
 - **Draft-first, never an interrogation.** Develop best-guess values from the
   one-liner and the codebase/context, mark them as guesses, and bring something
   to react to.
-- **Anything expecting an answer goes through `AskUserQuestion`** — a plain-text
-  question has no response path. **At most 2 questions per turn** (more turns it
+- **Anything expecting an answer goes through `AskUserQuestion`** (rationale in
+  the plugin-root `references/handoff-gate.md`). **At most 2 questions per turn** (more turns it
   into a form, and forms get form-shaped answers), each with concrete options
   and your lean. Decide the obvious yourself.
 - **Echo before advancing.** One line after each turn ("Recebido — problema: X,

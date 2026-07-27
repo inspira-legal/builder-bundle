@@ -131,7 +131,7 @@ clarisse:
   handoff:
     completeness: high | med | low
     ci_code_review_present: bool
-  next_action: ready-to-merge | fix-blockers | re-prototype | run-/bb:ui-accessibility-deep
+  next_action: ready-to-merge | fix-blockers | re-prototype | run-/bb:ui-accessibility
 ```
 
 ### Gate (always the last)

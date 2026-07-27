@@ -21,9 +21,9 @@ user-facing text is PT-BR.
 Extract the user's position from the conversation context. If it is vague, ask
 one clarifying question before proceeding — never fabricate a thesis.
 
-Reformulate the position as the **strongest possible version** of the argument —
-stronger than what the user stated. Confirm: _"Essa é uma leitura justa, ou você
-ajustaria algo?"_ Steelman always comes before any challenge.
+Apply the steelman protocol from the plugin-root
+`references/confidence-and-steelman.md` — strongest version first, confirmed
+with the user before any challenge.
 
 ### Step 2 — Select the mode
 
@@ -71,13 +71,8 @@ Integrate the user's responses with the challenges into a strengthened position:
 1. Concede the challenges that were successfully refuted.
 2. Incorporate valid objections into the refined position.
 3. Name the trade-offs that remain unresolved.
-4. Issue the **confidence assessment**:
-   - **HIGH** — solid position, challenges addressed
-   - **MEDIUM** — controllable risks, premises to monitor
-   - **LOW** — central premise untested, real risk of failure
-   - **PIVOT** — thesis poorly framed; recommend revisiting before acting
-5. If MEDIUM or LOW: name the riskiest premise and suggest the smallest
-   experiment to test it.
+4. Issue the **confidence assessment** (HIGH / MEDIUM / LOW / PIVOT) per the
+   plugin-root `references/confidence-and-steelman.md`.
 
 ## Handoff
 

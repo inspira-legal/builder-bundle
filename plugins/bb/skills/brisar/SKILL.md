@@ -27,8 +27,8 @@ error messages — is **PT-BR**; instruction bodies are English.
 
 ## Execution principles
 
-1. **Every question via `AskUserQuestion`.** Plain text with a question inside
-   is not interaction — the user can't respond and the flow stalls.
+1. **Every question via `AskUserQuestion`** — rationale in the plugin-root
+   `references/handoff-gate.md`.
 2. **Profile calibration BEFORE any content question.** Phase 0 is 1 question
    with 4 clear options. Skip only if session.yaml already has `profile`.
 3. **Adapt depth and vocabulary to the profile.** Executive receives 5-6

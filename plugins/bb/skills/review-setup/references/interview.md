@@ -1,9 +1,8 @@
 # Interview — the maintainer validates every rule
 
 Every interaction goes through `AskUserQuestion` (question text and option
-labels in PT-BR). A question printed as plain text has no way to be answered —
-the flow stalls. The tool auto-provides an "Other" free-text option, so never
-add a manual "Outro"/"Modificar" option.
+labels in PT-BR) — rationale and the "Other" convention in the plugin-root
+`references/handoff-gate.md`.
 
 Processing each answer, always in this order:
 

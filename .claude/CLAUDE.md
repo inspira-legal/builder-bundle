@@ -22,7 +22,8 @@ plugins/bb/
 │   ├── operating-context.md            # the injected operating frame (edit to tune)
 │   └── unattended-context.md           # addendum appended when BB_UNATTENDED is truthy
 ├── references/                        # plugin-level docs (not skill-scoped)
-│   ├── handoff-gate.md                 # the one convention for end-of-skill gates
+│   ├── handoff-gate.md                 # the one convention for end-of-skill gates (+ AskUserQuestion rationale)
+│   ├── confidence-and-steelman.md      # shared reasoning protocols (think, challenge)
 │   ├── task-state.md                   # the .bb/tasks/<slug>/spec.md contract (+ legacy fallback)
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
 │   ├── quality-checklist.md            # shared quality pass (review engine)

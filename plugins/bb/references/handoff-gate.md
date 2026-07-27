@@ -5,6 +5,12 @@ single `AskUserQuestion` that offers the next skill(s) in the journey. The gate 
 how the bundle gives the user a sense of place — "here's where you are, here's
 what usually comes next" — without ever deciding for them.
 
+## Why the tool (applies to any question, not just gates)
+
+Anything expecting an answer goes through `AskUserQuestion` — a question printed
+as plain text has no response path, so the flow stalls. The tool auto-provides
+an "Other" free-text option; a manual "Outro"/"Modificar" option is redundant.
+
 ## The rule
 
 - **Suggest, never auto-invoke.** A gate offers; the user picks. The only

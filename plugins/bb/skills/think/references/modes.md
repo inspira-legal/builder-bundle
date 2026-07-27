@@ -4,10 +4,8 @@ Load only the section for the mode classified in SKILL.md.
 
 ## Decision
 
-1. **Steelman first:** reframe the user's hypothesis or position in the
-   strongest possible version — stronger than they stated. Confirm: _"É uma
-   leitura justa, ou você ajustaria algo?"_ If the position is vague, ask before
-   proceeding.
+1. **Steelman first:** apply the steelman protocol from the plugin-root
+   `references/confidence-and-steelman.md`.
 2. Identify what is being decided and the options at play (ask if unclear).
 3. Elicit the criteria that matter in this context (cost, speed, risk,
    alignment with goals, etc.).
