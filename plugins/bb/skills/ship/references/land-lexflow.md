@@ -77,8 +77,9 @@ generating skill only validates the syntax of YAML it just wrote.
 2. Push: `git push` (or `lexflow push` — interchangeable; the credential helper makes
    auth transparent). This publishes code and changes **no** deploy state.
 3. Read the sha: `git rev-parse HEAD`.
-4. Decide whether a deploy hand-off is even warranted, from the pre-check's `changed`
-   block:
+4. Decide whether a deploy hand-off is even warranted. Re-run the pre-check with the
+   **committed** file list (`git diff --name-only <base>...HEAD`) — the quality pass may
+   have touched files the first run never saw — and read its `changed` block:
    - `affects_deploy: true` → hand over the command.
    - `affects_deploy: false` → nothing deployable changed. Say so and **omit the
      command**; the push was the whole landing.

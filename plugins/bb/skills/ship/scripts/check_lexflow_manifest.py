@@ -146,6 +146,8 @@ def main() -> int:
         nargs="*",
         default=[],
         metavar="FILE",
+        # Paths resolve against the current directory, so run this from wherever
+        # `git diff --name-only` was taken (the repo root).
         help="Changed files (repo-relative) to map onto affected deployments.",
     )
     args = parser.parse_args()
@@ -182,11 +184,11 @@ def main() -> int:
 
     sources = _collect_sources(raw)
     for entry in sources:
-        if not (app_dir / entry["source"]).is_file():
+        entry["exists"] = (app_dir / entry["source"]).is_file()
+        if not entry["exists"]:
             findings.append(
                 f"{entry['kind']} '{entry['slug']}': source '{entry['source']}' not found."
             )
-        entry["exists"] = (app_dir / entry["source"]).is_file()
 
     result: dict = {
         "ok": not findings,
