@@ -56,7 +56,7 @@ degrades to reading the YAMLs alone; report the inventory check as skipped.
 
 Keep Step 2's shape: four agents, **one lens each**, every finding verified against the
 file and returned as `file:line | what | evidence | suggested fix | confidence`. Swap
-the lens *content* to fit a declarative app — a lens about async state has nothing to
+the lens _content_ to fit a declarative app — a lens about async state has nothing to
 grip on in a manifest:
 
 - `workflow-logic` — step order and data flow through the workflow, branch and

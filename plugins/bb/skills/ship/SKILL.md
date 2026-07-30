@@ -41,7 +41,7 @@ Don't ask reflexively. If the landing is already settled by signal, **take it an
 - **Push pra main (ou outra branch protegida)** — ship does the whole quality pass and commits, then **hands you the exact push command** and stops. Protected-branch landing stays your call (and branch protection typically enforces it server-side); ship never runs it.
 - **Deploy no LexFlow** — only offered when `project_kind: lexflow`. Reviews the workflows, commits, pushes the app repo (which changes no deploy state), then **hands you `lexflow deploy --ref <sha>`** for the reviewed commit. Ship never deploys.
 
-The destinations are **exclusive** — one landing per run. Someone who wants a PR *and* a LexFlow deploy runs ship twice.
+The destinations are **exclusive** — one landing per run. Someone who wants a PR _and_ a LexFlow deploy runs ship twice.
 
 When the user confirms or corrects a destination that wasn't obvious, it's worth remembering as this repo's habit so future runs skip the ask.
 
@@ -59,7 +59,7 @@ Launch the read-only work concurrently — review agents in one message, scripts
    - `contracts-security` — contract breaks, security, type safety
    - `quality` — the entire Pass 2 (reuse, simplification, dead weight, efficiency, altitude, consistency)
 
-   For `project_kind: lexflow` the structure is identical but the lens *content* comes from `references/land-lexflow.md` — a declarative manifest gives a lens about async state nothing to grip on.
+   For `project_kind: lexflow` the structure is identical but the lens _content_ comes from `references/land-lexflow.md` — a declarative manifest gives a lens about async state nothing to grip on.
 
    Each verifies every finding against the actual file (not just the diff) and returns: `file:line | what | evidence | suggested fix | confidence`.
    For tiny diffs (≲2 files / ≲100 lines), skip the fan-out and apply the checklist in the main context.
