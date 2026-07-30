@@ -41,7 +41,7 @@ um plugin, `bb`; 16 skills organizadas em 6 trilhas.
 | skill                       | descrição                                                                                                                                                          |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `/bb:implement`             | implementa um brief validado — constrói as fatias, roda o gate, depois oferece entregar                                                                            |
-| `/bb:ship`                  | leva a branch ao fim do seu jeito — revisa + deixa os checks verdes, então push, prepara pra main, abre um PR e cuida dele, ou prepara o deploy no LexFlow          |
+| `/bb:ship`                  | leva a branch ao fim do seu jeito — revisa + deixa os checks verdes, então push, prepara pra main, abre um PR e cuida dele, ou prepara o deploy no LexFlow         |
 | `/bb:delegate`              | roda uma task shapeada de ponta a ponta — escolhe o brief, constrói e entrega (implement → ship), trilhando o `status`. o mesmo verbo no desk e na routine noturna |
 | `/bb:gather-branch-context` | resume todas as mudanças da branch vs main                                                                                                                         |
 
