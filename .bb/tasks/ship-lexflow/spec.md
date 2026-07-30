@@ -155,6 +155,7 @@ Segue valendo: nunca faz merge, nunca aprova, nunca force-push, **nunca deploya*
 | Caso | Resultado |
 |---|---|
 | WHEN o diff não toca nenhum arquivo referenciado pelo `lexflow.toml` (README, notas de design, fixture) | THEN commita e dá push, e **omite o handoff de deploy** — não há o que deployar (a CLI desenhou o bucket exatamente pra isso) |
+| WHEN o arquivo mudado não é referenciado por nenhum `source` declarado, mas pode ser referenciado **de dentro** de um workflow (ex: `queries/*.sql`) | THEN o pré-check devolve `affects_deploy: "unknown"` em vez de um falso negativo; o LLM lê os YAMLs, decide, e diz de que jeito chamou |
 | WHEN o pré-check acha um `source` apontando pra arquivo inexistente | THEN bloqueia antes do quality pass, nomeia o path e o deployment, conserta |
 | WHEN `lexflow deploy --dry-run` sai com `Manifest error:` | THEN bloqueia, conserta, re-roda o dry-run |
 | WHEN o dry-run dá 500 / erro de rede na fase de diff | THEN reporta como instabilidade de plataforma (não do app), segue o landing, e diz que o plano não pôde ser computado |
@@ -171,12 +172,12 @@ Segue valendo: nunca faz merge, nunca aprova, nunca force-push, **nunca deploya*
 
 ## tasks
 
-- [ ] Preflight de detecção no Step 1 + 4º destino no `SKILL.md` (entrega: `/bb:ship` num repo LexFlow oferece o destino) — behaviors: happy 1–2, edges "múltiplos `lexflow.toml`", "sem `lexflow.toml`"
-- [ ] `scripts/check_lexflow_manifest.py` — pré-check `tomllib` (`[app]` + existência de todo `source`), stdlib only, stdout consumível — behaviors: happy 3, edge "`source` inexistente"
-- [ ] Extração dos quatro landings pra `references/land-{branch,main,pr,lexflow}.md`; `SKILL.md` vira router — sem mudança de behavior nos três existentes (refactor de estrutura)
-- [ ] `references/land-lexflow.md` — gate (3 camadas + classificação do dry-run), quality pass com lentes re-apontadas, landing push + handoff `--ref <sha>`, template de relatório em PT-BR — behaviors: happy 3–8 e todos os edges de gate/push/deploy
-- [ ] Triggers PT-BR na frontmatter do `SKILL.md` ("deployar no lexflow", "subir o app lexflow") — behavior: happy 1
-- [ ] Linha no `CHANGELOG.md`
+- [x] Preflight de detecção no Step 1 + 4º destino no `SKILL.md` (entrega: `/bb:ship` num repo LexFlow oferece o destino) — behaviors: happy 1–2, edges "múltiplos `lexflow.toml`", "sem `lexflow.toml`"
+- [x] `scripts/check_lexflow_manifest.py` — pré-check `tomllib` (`[app]` + existência de todo `source`), stdlib only, stdout consumível — behaviors: happy 3, edge "`source` inexistente"
+- [x] Extração dos quatro landings pra `references/land-{branch,main,pr,lexflow}.md`; `SKILL.md` vira router — sem mudança de behavior nos três existentes (refactor de estrutura)
+- [x] `references/land-lexflow.md` — gate (3 camadas + classificação do dry-run), quality pass com lentes re-apontadas, landing push + handoff `--ref <sha>`, template de relatório em PT-BR — behaviors: happy 3–8 e todos os edges de gate/push/deploy
+- [x] Triggers PT-BR na frontmatter do `SKILL.md` ("deployar no lexflow", "subir o app lexflow") — behavior: happy 1
+- [x] Linha no `CHANGELOG.md`
 
 ## out of scope
 
