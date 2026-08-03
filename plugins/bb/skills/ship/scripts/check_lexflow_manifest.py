@@ -17,9 +17,12 @@ A file can reach a deployment two ways: by being a declared ``source``, or by
 being referenced from inside one (a .sql query pulled in by a workflow YAML).
 The second is found by text search, so no YAML parser is needed. A changed file
 that matches neither is reported as ``unmatched`` and ``affects_deploy`` becomes
-``"unknown"`` — never a claim that the change is not deployable.
+``"unknown"``: absence of a text reference is weak evidence, so the call of
+whether a deploy is warranted stays with the caller reading the YAMLs.
 
-Exit codes: 0 clean, 1 findings, 2 cannot check.
+Every exit prints the same envelope — ``ok``, ``findings``, and the rest —
+so the caller reads one shape whatever happened.
+Exit codes: 0 clean, 1 findings in the app, 2 cannot check.
 """
 
 from __future__ import annotations
@@ -138,9 +141,18 @@ def _match_changed(
     return matches, unmatched
 
 
+def _emit(payload: dict, code: int) -> int:
+    payload.setdefault("findings", [])
+    json.dump(payload, sys.stdout, indent=2, ensure_ascii=False)
+    print()
+    return code
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("directory", nargs="?", default=".", help="App dir holding lexflow.toml.")
+    # -d mirrors the lexflow CLI's own flag. A flag rather than a positional because
+    # `--changed` is variadic and would otherwise swallow a trailing directory.
+    parser.add_argument("-d", "--dir", default=".", help="App dir holding lexflow.toml.")
     parser.add_argument(
         "--changed",
         nargs="*",
@@ -153,27 +165,32 @@ def main() -> int:
     args = parser.parse_args()
 
     if tomllib is None:
-        json.dump(
-            {"ok": False, "error": "tomllib requires Python 3.11+ — cannot pre-check locally."},
-            sys.stdout,
+        return _emit(
+            {"ok": False, "error": "tomllib requires Python 3.11+ — cannot pre-check locally."}, 2
         )
-        print()
-        return 2
 
-    app_dir = Path(args.directory)
+    app_dir = Path(args.dir)
     manifest_path = app_dir / "lexflow.toml"
 
     if not manifest_path.is_file():
-        json.dump({"ok": False, "error": f"No lexflow.toml in {app_dir}."}, sys.stdout)
-        print()
-        return 2
+        return _emit({"ok": False, "error": f"No lexflow.toml in {app_dir}."}, 2)
 
     try:
-        raw = tomllib.loads(manifest_path.read_text(encoding="utf-8"))
-    except (tomllib.TOMLDecodeError, OSError) as exc:
-        json.dump({"ok": False, "error": f"lexflow.toml does not parse: {exc}"}, sys.stdout)
-        print()
-        return 1
+        text = manifest_path.read_text(encoding="utf-8")
+    except OSError as exc:  # unreadable file is an environment problem, not a bad manifest
+        return _emit({"ok": False, "error": f"Cannot read {manifest_path}: {exc}"}, 2)
+
+    try:
+        raw = tomllib.loads(text)
+    except tomllib.TOMLDecodeError as exc:
+        return _emit(
+            {
+                "ok": False,
+                "manifest": str(manifest_path),
+                "findings": [f"lexflow.toml does not parse: {exc}"],
+            },
+            1,
+        )
 
     findings: list[str] = []
 
@@ -205,15 +222,13 @@ def main() -> int:
         result["changed"] = {
             "matches": matches,
             "unmatched": unmatched,
-            # "unknown" when nothing matched but files did change: the LLM decides
-            # by reading the YAMLs, rather than this script claiming not-deployable.
-            "affects_deploy": True if matches else ("unknown" if unmatched else False),
+            # Two states only: a match proves the deploy is affected, while no match
+            # is weak evidence. The caller reads the YAMLs and settles "unknown".
+            "affects_deploy": True if matches else "unknown",
             "affected_slugs": sorted({m["slug"] for m in matches if m["slug"]}),
         }
 
-    json.dump(result, sys.stdout, indent=2, ensure_ascii=False)
-    print()
-    return 1 if findings else 0
+    return _emit(result, 1 if findings else 0)
 
 
 if __name__ == "__main__":

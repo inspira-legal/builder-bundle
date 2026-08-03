@@ -30,7 +30,7 @@ decided not to auto-deploy. Point at it; restating it here drifts as the platfor
 
 Run layers 1 and 3 always; layer 2 whenever the CLI is usable.
 
-**1. Local pre-check** — `python scripts/check_lexflow_manifest.py <app-dir> --changed <files…>`
+**1. Local pre-check** — `python scripts/check_lexflow_manifest.py -d <app-dir> --changed <files…>`
 Parses `lexflow.toml` with `tomllib`, requires `[app]`, and checks every declared
 `source` (deployments, workflows, middlewares) resolves to a real file. Milliseconds,
 no network, works logged out. It also reports `secrets_declared`, `has_datastores`, and
@@ -81,10 +81,11 @@ generating skill only validates the syntax of YAML it just wrote.
    **committed** file list (`git diff --name-only <base>...HEAD`) — the quality pass may
    have touched files the first run never saw — and read its `changed` block:
    - `affects_deploy: true` → hand over the command.
-   - `affects_deploy: false` → nothing deployable changed. Say so and **omit the
-     command**; the push was the whole landing.
-   - `affects_deploy: "unknown"` → the changed files are not referenced from any
-     declared source. Read the YAMLs to decide, then say which way you called it.
+   - `affects_deploy: "unknown"` → no declared source references these files, which is
+     weak evidence rather than a verdict. Read the YAMLs and call it: a workflow that
+     pulls the file in dynamically still deploys, while a README, a fixture, or design
+     notes mean nothing deployable changed — then **omit the command** and say the push
+     was the whole landing. Either way, say which way you called it and why.
 5. Report, then hand over the command — never run it.
 
 ## Report template (PT-BR)
