@@ -113,8 +113,10 @@ decisions.
   two entry points must share, and duplicating it would mean two definitions that
   drift. Path it via `${CLAUDE_PLUGIN_ROOT}/skills/<owner>/references/<x>.md` and
   say in both skills who owns it. Reading a reference is not invoking a skill —
-  the borrower still orchestrates its own run. Today: `/bb:ship` reads
-  `skills/review/references/{fronts,verify,front-*}.md`.
+  the borrower still orchestrates its own run, which is why borrowing beats
+  invoking when the owner's router would ask questions the borrower answers by
+  policy. Today: `/bb:ship` reads
+  `skills/review/references/{fronts,verify,front-*,act-apply-fixes}.md`.
 
 ## Scripts
 

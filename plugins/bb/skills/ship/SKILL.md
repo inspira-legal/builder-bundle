@@ -49,13 +49,13 @@ When the destination is LexFlow, load `references/land-lexflow.md` now — it ca
 
 ## Step 2 — Quality pass + green the gate (always, every destination)
 
-This runs identically whatever the destination — it's the substance of shipping. Do not invoke other skills: ship orchestrates the pass itself. The **method** is the one `/bb:review` documents — ship reads its references, so there's one definition of how a review is done and no drift between the two entry points.
+This runs identically whatever the destination — it's the substance of shipping. The **method** is the one `/bb:review` documents: ship **reads its references** and orchestrates the pass itself, so there's one definition of how a review is done and no drift between the two entry points. Reading is the whole borrow — invoking `/bb:review` would bring its router along, and its router asks which fronts to run, asks which findings to apply, and ends at its own gate. Ship answers all three by policy (auto-pick, fix-by-severity, land) and owns the control flow through to the landing.
 
 Launch the read-only work concurrently — review agents in one message, scripts/checks as background Bash:
 
 1. **Review pass — the review engine, auto-picked.** Ship never asks which fronts; it runs every front available on this branch. Load from `${CLAUDE_PLUGIN_ROOT}/skills/review/references/`:
    - `fronts.md` — the front catalog, the availability probe, and the depth table that sizes the fan-out from the diff (its tiny-diff tier is what replaces a hand-rolled "skip the fan-out" rule).
-   - one `front-*.md` per available front: `front-correctness.md`, `front-quality.md`, `front-rules.md`, `front-contract.md`, `front-a11y.md`.
+   - one `front-*.md` per front the probe made available. The catalog in `fronts.md` **is** the list — don't keep a copy of it here, so a front added to the engine reaches ship without an edit to this file.
    - `verify.md` — the barrier, grouping by `file:line`, and the independent verdict (CONFIRMED / PLAUSIBLE / REFUTED) that every candidate passes through before it counts.
 
    Two fronts are ship's own business and stay out: `threads` and `ci` — ship handles review comments and red checks itself, further down and in `references/land-pr.md`. `rules` is where the repo's `CODE_REVIEW_GUIDE.md` and the governing `CLAUDE.md` files become binding on the code ship is about to land; `contract` is where the brief's `## behavior` map is checked row by row (resolved per the plugin-level `references/task-state.md`).
@@ -66,7 +66,7 @@ Launch the read-only work concurrently — review agents in one message, scripts
 
 2. **Local checks** (background): detect the project's check commands in this order of authority: project CLAUDE.md / docs, CI workflow files (`.github/workflows/`), then `package.json` / `justfile` / `Makefile` / `pyproject.toml`. Run the full gate CI runs — lint, format, typecheck, tests — as concurrent background shells. Detection finding nothing is a real answer, not a failure: a LexFlow app repo has no CI and no build, and its gate is the one in `references/land-lexflow.md`. Say which gate ran.
 
-3. **Apply fixes in the main context only** (agents never edit — single writer). The verify pass already deduped and ranked, so what's left is deciding what ships fixed: **CONFIRMED correctness bugs, HIGH rule deviations, Critical/Major a11y failures and missing contract rows get fixed**, along with the local-check failures. PLAUSIBLE findings get fixed when the fix is cheap and safe, and go to the summary otherwise. Quality edits change zero behavior and touch only code this branch changed. Refuted candidates and anything left unfixed are named in the summary, never dropped silently.
+3. **Apply fixes in the main context only** (agents never edit — single writer). The verify pass already deduped and ranked, so what's left is deciding what ships fixed: **CONFIRMED correctness bugs, HIGH rule deviations, Critical/Major a11y failures and missing contract rows get fixed**, along with the local-check failures. PLAUSIBLE findings get fixed when the fix is cheap and safe, and go to the summary otherwise. That severity policy is ship's — it's what replaces review's curation question. **How** each fix is applied is the engine's: `act-apply-fixes.md` from the same borrowed directory carries the regression guard (one change at a time, re-check after each, quality edits behavior-preserving, untested code left flagged) and the order of operations. Refuted candidates and anything left unfixed are named in the summary, never dropped silently.
 
 4. **Re-run the local gate** (failed/affected first, then the full gate) until clean.
 
@@ -89,7 +89,7 @@ Load the reference for the destination Step 1 settled, and follow it:
 
 ### The review engine (`skills/review/references/`, read via `${CLAUDE_PLUGIN_ROOT}`)
 
-`fronts.md`, `verify.md` and the `front-*.md` set — the method for Step 2's review pass, owned by `/bb:review` and read here so both entry points review the same way. Ship auto-picks the available fronts minus `threads`/`ci`; there is no selection question and no gate.
+`fronts.md`, `verify.md`, the `front-*.md` set and `act-apply-fixes.md` — the method for Step 2's review pass, owned by `/bb:review` and read here so both entry points review and fix the same way. What stays ship's own: auto-picking the available fronts minus `threads`/`ci`, the severity policy for what ships fixed, no selection question and no gate.
 
 ### references/review-checklist.md, references/quality-checklist.md (plugin root)
 
