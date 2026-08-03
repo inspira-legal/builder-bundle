@@ -29,8 +29,10 @@ scope is the one path that needs neither a repo nor a diff.
 
 - **Repo guide:** if `CODE_REVIEW_GUIDE.md` exists at the repo root, read it fresh
   (never cached) — it powers the `rules` front and its severities rank the whole
-  report. No guide and no applicable CLAUDE.md → add one line to the report: "Sem
-  CODE_REVIEW_GUIDE.md — regras específicas do repo via /bb:review-setup."
+  report. No guide → one line in the report, "Sem CODE_REVIEW_GUIDE.md — regras
+  específicas do repo via /bb:review-setup", whether or not a CLAUDE.md covers the
+  diff: a CLAUDE.md is written for the agent authoring code, so it carries only part
+  of what a review guide carries (IDs, severities, evidence paths).
 - **Legacy custom skill:** if `.claude/skills/code-review/SKILL.md` exists (an old
   generated per-repo review skill), note in the report that `/bb:review` +
   `CODE_REVIEW_GUIDE.md` supersede it and the user can delete it.
@@ -71,9 +73,10 @@ options:
   - "Nenhuma — encerrar" — nada roda.
 ```
 
-Say the depth the diff resolved to (`3 angles` vs `5 angles + sweep`) in one line
-so the size of what's about to run isn't a surprise. Under `BB_UNATTENDED` there is
-no question: every available front runs, report-only.
+Say the depth the diff resolved to (`inline, sem fan-out` / `3 angles` /
+`5 angles + sweep`) in one line so the size of what's about to run isn't a
+surprise — on a small diff that line is also why no agent shows up. Under
+`BB_UNATTENDED` there is no question: every available front runs, report-only.
 
 ## Step 3 — Run the picked fronts in parallel
 
@@ -118,10 +121,12 @@ Close with what didn't make it and what actually ran:
   closes with its own PASS/FAIL/SKIP checklist per rule (`front-rules.md`), which is
   what makes a silent rule readable as checked instead of forgotten;
 - refuted candidates, one line each;
+- candidates left **sem veredito** (dropped — a verifier died or skipped the index),
+  one line each with the location;
 - the count cut by the cap ("+4 de qualidade fora do cap");
 - one stats line — frentes rodadas, agentes finder, candidatos, verificados,
-  refutados, reportados. It's how the reader knows the depth that ran matches the
-  depth that was announced.
+  refutados, sem veredito, reportados. It's how the reader knows the depth that ran
+  matches the depth that was announced, and `candidatos` has to add up.
 
 Clean everywhere → say so and jump to the gate (step 7).
 
@@ -130,9 +135,9 @@ Clean everywhere → say so and jump to the gate (step 7).
 One `AskUserQuestion` (PT-BR, `multiSelect`): which numbered items to handle now,
 and **how** — fixing is one outcome, leaving the finding on the PR is another.
 Options group naturally ("Todas as correções", "Correção + regras HIGH", "Só os
-threads", "Comentar os itens na PR em vez de corrigir", specific numbers via
-"Other"). Fix and comment can both be picked: fix 1–3, comment 4–6. "Nenhum —
-encerrar" is always an option. Under `BB_UNATTENDED` there is no curation:
+threads", specific numbers via "Other"). "Comentar os itens na PR em vez de corrigir"
+is offered when the probe found an open PR, and fix and comment can both be picked:
+fix 1–3, comment 4–6. "Nenhum — encerrar" is always an option. Under `BB_UNATTENDED` there is no curation:
 report-only, no edits, stop.
 
 ## Step 6 — Apply what was picked
@@ -146,15 +151,9 @@ regression guard; quality edits are strictly behavior-preserving. Then:
 - **answer-threads**: reply, do NOT resolve — the reviewer closes it.
 - **CI fixes**: push and re-check the failing workflow; cap at 3 diagnose→fix
   cycles, then report what's still red instead of thrashing.
-- **comment-on-PR**: for items the user chose to leave on the PR instead of fixing.
-  Show the exact body first and post only on an explicit yes — a PR comment is
-  outward-facing and carries the user's identity. One comment per item, anchored to
-  the diff line (`gh api repos/<owner>/<repo>/pulls/<n>/comments` with `path`,
-  `line`, `commit_id`), or a single summary comment when the items span the whole
-  change (`gh pr comment <n> --body-file -`). Each item keeps the shape it has in
-  the report — rule ID and quoted rule, WCAG criterion, trigger, suggested fix — so
-  the comment stands on its own for whoever reads the PR. No open PR → say the items
-  stay in the report and the gate offers `/bb:ship` to open one.
+- **comment-on-PR**: `references/act-comment-findings.md` — body shown before
+  anything is posted, anchored inline where the location is in the diff and folded
+  into one summary comment where it isn't.
 
 Re-report as a table: `# | item | action taken | commit/status` — `corrigido`,
 `comentado (link)` and `deixado no relatório` are all valid outcomes.
@@ -176,7 +175,7 @@ report; how to resume: `/bb:review`).
 | ------------------------------------------------ | ------------------------------------------------------------------------------------- |
 | diff vs base empty and no PR                     | report "nada pra revisar", stop                                                       |
 | no front available (empty probe)                 | say what was probed and why each came back empty, stop                                |
-| no open PR (review-sem-PR)                       | `threads`/`ci` not offered; gate offers `/bb:ship` to open one                        |
+| no open PR (review-sem-PR)                       | `threads`/`ci` and the comment-on-PR option not offered; gate offers `/bb:ship`       |
 | `CODE_REVIEW_GUIDE.md` absent, CLAUDE.md present | `rules` front runs on the CLAUDE.md set alone, with the pointer to `/bb:review-setup` |
 | neither guide nor applicable CLAUDE.md           | `rules` front not offered; one-line pointer to `/bb:review-setup`                     |
 | no brief for this branch                         | `contract` front not offered                                                          |
@@ -187,7 +186,7 @@ report; how to resume: `/bb:review`).
 | uncommitted changes present                      | include in diff scope, flagged separately                                             |
 | a finder agent dies                              | its front reports with the angles that returned, and says which angle is missing      |
 | user picks nothing at curation                   | no edits; go to the gate                                                              |
-| user picks "comentar na PR" and there's no PR    | items stay in the report; the gate offers `/bb:ship` to open the PR first             |
+| a verifier dies or omits an index                | that candidate is `sem veredito`, reported as its own line, never promoted            |
 | CI still red after 3 diagnose→fix cycles         | stop editing, report the remaining failure and the evidence                           |
 | `gh` unauthenticated                             | `threads`/`ci` unavailable — say so once, offer the diff fronts                       |
 | `BB_UNATTENDED` set                              | every available front runs; report-only: no curation, no edits, no gate               |
@@ -212,6 +211,7 @@ Per-front method (loaded only when that front is picked):
 Actions and modes:
 
 - `references/act-apply-fixes.md` — applying findings: the regression guard and the order of operations.
+- `references/act-comment-findings.md` — leaving findings on the PR instead of fixing: anchoring and approval.
 - `references/mode-external-pr.md` — reviewing a PR in another repo and posting the review.
 
 Shared engine (plugin root, same criteria as `/bb:ship`):

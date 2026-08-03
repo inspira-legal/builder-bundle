@@ -29,8 +29,10 @@ As frentes escolhidas viram um fan-out de agentes read-only numa mensagem só �
 eles reportam candidatos, nunca editam; o contexto principal é o único que
 escreve. Depois vem a barreira: os candidatos são agrupados por `file:line` e
 cada grupo passa por um verificador independente que devolve **CONFIRMED /
-PLAUSIBLE / REFUTED**. Candidato não verificado é descartado, nunca promovido —
-e o que caiu aparece no fim do relatório, junto da contagem cortada pelo cap.
+PLAUSIBLE / REFUTED**. Candidato não verificado é descartado, nunca promovido.
+Todo candidato que saiu de um finder termina num de quatro lugares, e a linha de
+stats fecha a conta: reportado, **refutado** (uma linha cada), **sem veredito** (o
+descartado, com o local e o motivo do veredito faltar) ou contado no cap.
 
 Arquitetura de ângulos e verificação adaptada do `/code-review` do Claude Code
 (Anthropic, Apache-2.0).
@@ -61,8 +63,11 @@ E na curadoria, corrigir não é o único desfecho: item por item você escolhe 
 **corrigir** e **comentar na PR**, e pode misturar (corrige 1–3, comenta 4–6). O
 comentário sai ancorado na linha do diff, com a citação da regra ou o critério WCAG
 junto, e só depois de você ver o corpo exato e aprovar — comentário de PR é
-voltado pra fora. O re-report passou a ter três desfechos: `corrigido`,
-`comentado` e `deixado no relatório`.
+voltado pra fora. Achado cujo local está fora do diff (bug em linha não-alterada de
+função que a branch mexeu) não tem onde ancorar: vai num comentário-resumo com o
+`file:line` escrito no texto, e o re-report diz quais foram assim. A opção só
+aparece quando existe PR aberta. O re-report passou a ter três desfechos:
+`corrigido`, `comentado` e `deixado no relatório`.
 
 ### Acessibilidade entrou como frente — e o `/bb:ui-accessibility` saiu
 

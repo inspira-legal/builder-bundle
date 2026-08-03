@@ -50,7 +50,9 @@ already handled in this diff (cite the guard); or pure style with no observable
 effect.
 
 A candidate the verifier rendered no verdict on (agent died, index omitted) is
-**dropped** — never promoted to PLAUSIBLE on the strength of the finder alone.
+**dropped** — never promoted to PLAUSIBLE on the strength of the finder alone. It
+still gets its line in the report (§4): a candidate nobody judged is a different
+thing from one that was judged and refuted, and the reader has to be able to tell.
 
 ## Rule, contract and a11y candidates verify differently
 
@@ -92,6 +94,9 @@ sweep is a real answer.
      outranks a bug)
 - **Cap** at the depth's report cap. Cuts come off the bottom, so quality is what
   gets trimmed, never a correctness bug.
-- **Nothing vanishes silently.** REFUTED candidates get one line each in a
-  "refutados" list at the end of the report, and anything cut by the cap is
-  counted ("+4 findings de qualidade fora do cap").
+- **Nothing vanishes silently.** Every candidate that came out of a finder ends up
+  in exactly one of four places: reported, **refutados** (one line each at the end of
+  the report), **sem veredito** (the dropped ones, one line each with the location and
+  why the verdict is missing — dead agent, omitted index), or counted under the cap
+  ("+4 findings de qualidade fora do cap"). The stats line's `candidatos` has to add
+  up across the four.
