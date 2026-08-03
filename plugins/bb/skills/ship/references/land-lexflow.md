@@ -54,10 +54,12 @@ degrades to reading the YAMLs alone; report the inventory check as skipped.
 
 ## Quality pass — the lens set for this artifact
 
-Keep Step 2's shape: four agents, **one lens each**, every finding verified against the
-file and returned as `file:line | what | evidence | suggested fix | confidence`. Swap
-the lens _content_ to fit a declarative app — a lens about async state has nothing to
-grip on in a manifest:
+Keep Step 2's shape — one agent per lens, every candidate through the verify pass in
+`verify.md`, returned as `file:line | what | evidence | suggested fix | verdict`. What
+changes is the `correctness` front's lens _content_: swap the generic angles for the
+four below, since a lens about async state has nothing to grip on in a manifest. The
+other fronts run as documented (`rules` and `contract` matter here as much as anywhere;
+`a11y` only if the app ships an `html_page` deployment):
 
 - `workflow-logic` — step order and data flow through the workflow, branch and
   loop conditions, what happens when a step returns empty or errors

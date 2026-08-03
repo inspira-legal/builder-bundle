@@ -107,9 +107,14 @@ decisions.
 - Skill workflows reference their **own** scripts relatively (e.g.
   `scripts/foo.py`). Scripts shared by 2+ skills live at the plugin root in
   `plugins/bb/scripts/` and are referenced with
-  `${CLAUDE_PLUGIN_ROOT}/scripts/<x>.py` — the only case where a skill body uses
-  `${CLAUDE_PLUGIN_ROOT}` (hooks use it for their own files too). A skill's own,
-  non-shared script stays relative.
+  `${CLAUDE_PLUGIN_ROOT}/scripts/<x>.py` (hooks use it for their own files too). A
+  skill's own, non-shared script stays relative.
+- **Borrowing another skill's reference** is allowed when one skill owns a method
+  two entry points must share, and duplicating it would mean two definitions that
+  drift. Path it via `${CLAUDE_PLUGIN_ROOT}/skills/<owner>/references/<x>.md` and
+  say in both skills who owns it. Reading a reference is not invoking a skill —
+  the borrower still orchestrates its own run. Today: `/bb:ship` reads
+  `skills/review/references/{fronts,verify,front-*}.md`.
 
 ## Scripts
 

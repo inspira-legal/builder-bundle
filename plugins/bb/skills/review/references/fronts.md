@@ -4,6 +4,11 @@ A review is a set of **fronts**. Each front is an independent source of findings
 with its own method reference and its own agent budget. The user picks which
 fronts run; nothing else in the skill changes.
 
+Two callers read this engine. `/bb:review` probes and **asks** which fronts to
+run. `/bb:ship` probes and takes **every available front except `threads` and
+`ci`** — no question, no gate, because it handles comments and red checks itself.
+The method below is identical either way.
+
 ## The catalog
 
 | id            | Rótulo (PT-BR)    | O que cobre                                                                                         | Disponível quando                                   | Referência             |

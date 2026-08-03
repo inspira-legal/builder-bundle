@@ -64,6 +64,22 @@ mesmo checklist. `/bb:review` responde aos mesmos gatilhos ("auditoria de
 acessibilidade", "WCAG", "contraste", "leitor de tela"), e o gate do Deliver do
 `/bb:brisar` passou a oferecer essa auditoria. São **15 skills** agora.
 
+### O `/bb:ship` passou a usar a mesma engine
+
+O ship tinha a própria passada de review — quatro lentes fixas, sem probe, sem
+verificação independente — e era ela que rodava no `/bb:delegate` e na routine
+noturna. Ou seja: no caminho que de fato encosta código na main, o
+`CODE_REVIEW_GUIDE.md` do repo não era checado e acessibilidade não existia.
+
+Agora o Step 2 do ship **lê as referências do `/bb:review`**
+(`${CLAUDE_PLUGIN_ROOT}/skills/review/references/{fronts,verify,front-*}.md`) e
+roda todas as frentes disponíveis menos `threads` e `ci` — essas duas continuam
+sendo trabalho do próprio ship. Sem pergunta e sem gate: ship é caminho de
+entrega. Ler reference não é invocar skill, então o ship segue self-contained; o
+que morreu foi a segunda definição de "como se revisa". Consequência direta:
+`/bb:delegate` agora checa regra de projeto, contrato do brief e acessibilidade, e
+cada achado passa pelo verificador antes de virar fix.
+
 ### SKILL.md virou router
 
 Cada frente e cada ação viraram reference própria, carregada só quando aquela
