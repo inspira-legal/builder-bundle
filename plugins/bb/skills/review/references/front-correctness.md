@@ -1,8 +1,8 @@
 # Front: correctness — five angles over the diff
 
 Operationalizes Pass 1 of the plugin-root `references/quality-checklist.md`'s
-sibling, `references/review-checklist.md`: the checklist says *what counts as a
-bug*, this says *how to go looking for one*. Each angle is a different way of
+sibling, `references/review-checklist.md`: the checklist says _what counts as a
+bug_, this says _how to go looking for one_. Each angle is a different way of
 reading the same diff, so two angles flagging the same line for different reasons
 both get recorded — one angle's conclusion never suppresses another's.
 

@@ -6,14 +6,14 @@ fronts run; nothing else in the skill changes.
 
 ## The catalog
 
-| id            | Rótulo (PT-BR)         | O que cobre                                                            | Disponível quando                                      | Referência             |
-| ------------- | ---------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------ | ---------------------- |
-| `correctness` | Correção               | bugs no diff — lógica, edges, contratos, concorrência, segurança       | o diff não está vazio                                   | `front-correctness.md` |
-| `quality`     | Qualidade              | limpeza behavior-preserving — reuso, simplificação, eficiência, dead weight, altitude, consistência | o diff não está vazio                | `front-quality.md`     |
-| `rules`       | Regras do projeto      | desvios do `CODE_REVIEW_GUIDE.md` e dos CLAUDE.md que governam o diff  | existe guia no root **ou** um CLAUDE.md aplicável       | `front-rules.md`       |
-| `contract`    | Contrato do brief      | o diff construiu o que foi combinado — e só isso                        | existe brief da branch (`.bb/tasks/<slug>/spec.md`)     | `front-contract.md`    |
-| `threads`     | Threads da PR          | comentários de review não resolvidos                                    | há PR aberta pra branch                                 | `front-threads.md`     |
-| `ci`          | CI                     | checks vermelhos — evidência, diagnóstico, causa raiz                   | há check falhando na PR ou no último run da branch      | `front-ci.md`          |
+| id            | Rótulo (PT-BR)    | O que cobre                                                                                         | Disponível quando                                   | Referência             |
+| ------------- | ----------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------- |
+| `correctness` | Correção          | bugs no diff — lógica, edges, contratos, concorrência, segurança                                    | o diff não está vazio                               | `front-correctness.md` |
+| `quality`     | Qualidade         | limpeza behavior-preserving — reuso, simplificação, eficiência, dead weight, altitude, consistência | o diff não está vazio                               | `front-quality.md`     |
+| `rules`       | Regras do projeto | desvios do `CODE_REVIEW_GUIDE.md` e dos CLAUDE.md que governam o diff                               | existe guia no root **ou** um CLAUDE.md aplicável   | `front-rules.md`       |
+| `contract`    | Contrato do brief | o diff construiu o que foi combinado — e só isso                                                    | existe brief da branch (`.bb/tasks/<slug>/spec.md`) | `front-contract.md`    |
+| `threads`     | Threads da PR     | comentários de review não resolvidos                                                                | há PR aberta pra branch                             | `front-threads.md`     |
+| `ci`          | CI                | checks vermelhos — evidência, diagnóstico, causa raiz                                               | há check falhando na PR ou no último run da branch  | `front-ci.md`          |
 
 ## Probe availability before asking
 
@@ -33,11 +33,11 @@ offer the rest.
 
 ## Depth — auto-scaled from the diff, not asked
 
-| Diff                             | Correctness angles              | Quality | Rules | Contract | Verify              | Sweep | Report cap |
-| -------------------------------- | ------------------------------- | ------- | ----- | -------- | ------------------- | ----- | ---------- |
-| ≲2 arquivos / ≲100 linhas        | `diff-scan` + `removed-behavior`, inline (sem fan-out) | inline | inline | inline | self-check no contexto principal | —     | 6          |
-| até ~10 arquivos / ~500 linhas   | `diff-scan`, `removed-behavior`, `cross-file` (3 agents) | 1 agent | 1 agent | 1 agent | 1-vote agrupado por local | —     | 10         |
-| acima disso, ou "revisa a fundo" | os 5 angles (5 agents)          | 1 agent | 1–2 agents | 1 agent | 1-vote agrupado por local | 1 agent | 15         |
+| Diff                             | Correctness angles                                       | Quality | Rules      | Contract | Verify                           | Sweep   | Report cap |
+| -------------------------------- | -------------------------------------------------------- | ------- | ---------- | -------- | -------------------------------- | ------- | ---------- |
+| ≲2 arquivos / ≲100 linhas        | `diff-scan` + `removed-behavior`, inline (sem fan-out)   | inline  | inline     | inline   | self-check no contexto principal | —       | 6          |
+| até ~10 arquivos / ~500 linhas   | `diff-scan`, `removed-behavior`, `cross-file` (3 agents) | 1 agent | 1 agent    | 1 agent  | 1-vote agrupado por local        | —       | 10         |
+| acima disso, ou "revisa a fundo" | os 5 angles (5 agents)                                   | 1 agent | 1–2 agents | 1 agent  | 1-vote agrupado por local        | 1 agent | 15         |
 
 ## Fan-out shape
 

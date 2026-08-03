@@ -37,7 +37,7 @@ Flag a deviation only when you can produce **both** halves:
 
 Everything that fails that test stays out: style preferences, "spirit of the
 document" inferences, rules you're paraphrasing from memory, a rule whose scope
-doesn't reach the changed file. When a rule *nearly* applies, it isn't a finding.
+doesn't reach the changed file. When a rule _nearly_ applies, it isn't a finding.
 
 Two more filters, both about not manufacturing work:
 

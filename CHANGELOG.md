@@ -9,14 +9,14 @@ sem perguntar, e o que era "regra do projeto" ficava diluído dentro das lentes 
 correção e qualidade. Agora ele **detecta o que dá pra revisar nessa branch e
 pergunta quais frentes rodar**:
 
-| frente        | o que procura                                                      |
-| ------------- | ------------------------------------------------------------------ |
-| `correctness` | bugs no diff, em 2–5 ângulos nomeados                              |
-| `quality`     | reuso, simplificação, peso morto, eficiência, altitude, consistência |
+| frente        | o que procura                                                           |
+| ------------- | ----------------------------------------------------------------------- |
+| `correctness` | bugs no diff, em 2–5 ângulos nomeados                                   |
+| `quality`     | reuso, simplificação, peso morto, eficiência, altitude, consistência    |
 | `rules`       | desvios do `CODE_REVIEW_GUIDE.md` e dos `CLAUDE.md` que governam o diff |
-| `contract`    | o mapa `## behavior` do brief como contrato de aceite              |
-| `threads`     | comentários de review não resolvidos da PR                        |
-| `ci`          | checks vermelhos — evidência antes de editar                      |
+| `contract`    | o mapa `## behavior` do brief como contrato de aceite                   |
+| `threads`     | comentários de review não resolvidos da PR                              |
+| `ci`          | checks vermelhos — evidência antes de editar                            |
 
 A pergunta oferece só as frentes disponíveis (sem PR aberta não existe `threads`
 nem `ci`; sem brief não existe `contract`), e diz a profundidade que o diff

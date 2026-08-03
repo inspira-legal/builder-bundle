@@ -138,21 +138,21 @@ report; how to resume: `/bb:review`).
 
 ## Edge cases
 
-| WHEN                                         | THEN                                                                   |
-| -------------------------------------------- | ---------------------------------------------------------------------- |
-| diff vs base empty and no PR                 | report "nada pra revisar", stop                                        |
-| no front available (empty probe)             | say what was probed and why each came back empty, stop                 |
-| no open PR (review-sem-PR)                   | `threads`/`ci` not offered; gate offers `/bb:ship` to open one          |
+| WHEN                                             | THEN                                                                                  |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| diff vs base empty and no PR                     | report "nada pra revisar", stop                                                       |
+| no front available (empty probe)                 | say what was probed and why each came back empty, stop                                |
+| no open PR (review-sem-PR)                       | `threads`/`ci` not offered; gate offers `/bb:ship` to open one                        |
 | `CODE_REVIEW_GUIDE.md` absent, CLAUDE.md present | `rules` front runs on the CLAUDE.md set alone, with the pointer to `/bb:review-setup` |
-| neither guide nor applicable CLAUDE.md       | `rules` front not offered; one-line pointer to `/bb:review-setup`      |
-| no brief for this branch                     | `contract` front not offered                                           |
-| legacy `.claude/skills/code-review/` present | flag as superseded; the user deletes it                                |
-| uncommitted changes present                  | include in diff scope, flagged separately                              |
-| a finder agent dies                          | its front reports with the angles that returned, and says which angle is missing |
-| user picks nothing at curation               | no edits; go to the gate                                               |
-| CI still red after 3 diagnose→fix cycles     | stop editing, report the remaining failure and the evidence            |
-| `gh` unauthenticated                         | `threads`/`ci` unavailable — say so once, offer the diff fronts        |
-| `BB_UNATTENDED` set                          | every available front runs; report-only: no curation, no edits, no gate |
+| neither guide nor applicable CLAUDE.md           | `rules` front not offered; one-line pointer to `/bb:review-setup`                     |
+| no brief for this branch                         | `contract` front not offered                                                          |
+| legacy `.claude/skills/code-review/` present     | flag as superseded; the user deletes it                                               |
+| uncommitted changes present                      | include in diff scope, flagged separately                                             |
+| a finder agent dies                              | its front reports with the angles that returned, and says which angle is missing      |
+| user picks nothing at curation                   | no edits; go to the gate                                                              |
+| CI still red after 3 diagnose→fix cycles         | stop editing, report the remaining failure and the evidence                           |
+| `gh` unauthenticated                             | `threads`/`ci` unavailable — say so once, offer the diff fronts                       |
+| `BB_UNATTENDED` set                              | every available front runs; report-only: no curation, no edits, no gate               |
 
 ## Bundled Resources
 
