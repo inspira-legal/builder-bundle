@@ -28,6 +28,12 @@ O gate tem três camadas, cada uma com uma autoridade:
   deslogado **pula** o check e aponta `lexflow login`.
 - conferência de opcodes — `lexflow opcodes list` cruzado com os YAMLs tocados.
 
+### `/bb:delegate` acompanhou o destino novo
+
+O passo de landing do `delegate` afirmava draft PR pro caminho unattended — que não
+existe em repo LexFlow. Agora bifurca por destino, e o blocker de um run travado
+aterrissa no `## still open` do brief quando não há PR pra escrever nele.
+
 ### Landings extraídos pra `references/`
 
 O `SKILL.md` do `ship` virou router: os quatro landings agora vivem em
