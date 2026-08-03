@@ -1,6 +1,6 @@
 ---
 name: review
-description: Revisa a mudança de ponta a ponta — você escolhe as frentes, ela roda em paralelo. Detecta quais frentes fazem sentido (correção, qualidade, regras do projeto, contrato do brief, acessibilidade da UI, threads da PR, CI), pergunta quais rodar, faz fan-out de agentes read-only por ângulo, verifica cada achado com um agente independente (CONFIRMED/PLAUSIBLE/REFUTED) e reporta ranqueado. Desvios de regra vêm com a regra citada ao lado da linha que a quebra — CODE_REVIEW_GUIDE.md do repo e os CLAUDE.md que governam o diff. Depois você escolhe o que aplicar, ela corrige com guarda de regressão, responde/resolve threads e re-reporta. Também revisa uma PR externa por número e posta o review. Use quando o usuário disser "revisa minhas mudanças", "revisa a PR", "revisa esse diff", "tem bug nisso?", "responde os comentários da PR", "o CI quebrou", "conserta o CI", "limpa esse código", "simplifica o diff", "checa se seguiu as regras do projeto", "revisa a acessibilidade do que eu mudei", "auditoria de acessibilidade", "checa acessibilidade dessa pasta/página", "WCAG", "a11y", "contraste", "leitor de tela", ou "revisa a PR #42 do repo X". A frente de acessibilidade também roda sozinha em escopo de superfície — pasta, arquivos ou página rodando, sem diff. NÃO use pra abrir/finalizar uma PR e acompanhar até o fim (use /bb:ship), nem pra triagem de todas as PRs abertas do repo (use /bb:maintain-repo).
+description: Revisa a mudança de ponta a ponta — você escolhe as frentes, ela roda em paralelo. Detecta quais frentes fazem sentido (correção, qualidade, regras do projeto, contrato do brief, acessibilidade da UI, threads da PR, CI), pergunta quais rodar, faz fan-out de agentes read-only por ângulo, verifica cada achado com um agente independente (CONFIRMED/PLAUSIBLE/REFUTED) e reporta ranqueado. Desvios de regra vêm com a regra citada ao lado da linha que a quebra — CODE_REVIEW_GUIDE.md do repo e os CLAUDE.md que governam o diff. Fecha dizendo o que checou e passou, não só o que falhou — a frente de regras entrega checklist PASS/FAIL/SKIP por regra. Depois você escolhe item por item entre corrigir e comentar na PR — ela corrige com guarda de regressão, posta os achados que você preferiu deixar registrados, responde/resolve threads e re-reporta. Também revisa uma PR externa por número e posta o review. Use quando o usuário disser "revisa minhas mudanças", "revisa a PR", "revisa esse diff", "tem bug nisso?", "responde os comentários da PR", "o CI quebrou", "conserta o CI", "limpa esse código", "simplifica o diff", "checa se seguiu as regras do projeto", "revisa a acessibilidade do que eu mudei", "auditoria de acessibilidade", "checa acessibilidade dessa pasta/página", "WCAG", "a11y", "contraste", "leitor de tela", ou "revisa a PR #42 do repo X". A frente de acessibilidade também roda sozinha em escopo de superfície — pasta, arquivos ou página rodando, sem diff. NÃO use pra abrir/finalizar uma PR e acompanhar até o fim (use /bb:ship), nem pra triagem de todas as PRs abertas do repo (use /bb:maintain-repo).
 license: Apache-2.0
 metadata:
   author: Athena Briana - github.com/athenabriana; quality-pass material adapted from Claude Code's /simplify, angle/verify architecture adapted from Claude Code's /code-review (Anthropic, Apache-2.0), a11y front absorbed from rafael's ui-accessibility skill (loja inspira-skills, MIT)
@@ -113,6 +113,10 @@ carrying its front and its verdict:
 
 Close with what didn't make it and what actually ran:
 
+- **what came back clean** — one line per front naming what it covered and found
+  nothing on ("Correção: 5 ângulos, nada fora dos itens 1–3"). The `rules` front
+  closes with its own PASS/FAIL/SKIP checklist per rule (`front-rules.md`), which is
+  what makes a silent rule readable as checked instead of forgotten;
 - refuted candidates, one line each;
 - the count cut by the cap ("+4 de qualidade fora do cap");
 - one stats line — frentes rodadas, agentes finder, candidatos, verificados,
@@ -123,10 +127,13 @@ Clean everywhere → say so and jump to the gate (step 7).
 
 ## Step 5 — Curate (the user picks)
 
-One `AskUserQuestion` (PT-BR, `multiSelect`): which numbered items to handle now.
+One `AskUserQuestion` (PT-BR, `multiSelect`): which numbered items to handle now,
+and **how** — fixing is one outcome, leaving the finding on the PR is another.
 Options group naturally ("Todas as correções", "Correção + regras HIGH", "Só os
-threads", specific numbers via "Other"). "Nenhum — encerrar" is always an option.
-Under `BB_UNATTENDED` there is no curation: report-only, no edits, stop.
+threads", "Comentar os itens na PR em vez de corrigir", specific numbers via
+"Other"). Fix and comment can both be picked: fix 1–3, comment 4–6. "Nenhum —
+encerrar" is always an option. Under `BB_UNATTENDED` there is no curation:
+report-only, no edits, stop.
 
 ## Step 6 — Apply what was picked
 
@@ -139,8 +146,18 @@ regression guard; quality edits are strictly behavior-preserving. Then:
 - **answer-threads**: reply, do NOT resolve — the reviewer closes it.
 - **CI fixes**: push and re-check the failing workflow; cap at 3 diagnose→fix
   cycles, then report what's still red instead of thrashing.
+- **comment-on-PR**: for items the user chose to leave on the PR instead of fixing.
+  Show the exact body first and post only on an explicit yes — a PR comment is
+  outward-facing and carries the user's identity. One comment per item, anchored to
+  the diff line (`gh api repos/<owner>/<repo>/pulls/<n>/comments` with `path`,
+  `line`, `commit_id`), or a single summary comment when the items span the whole
+  change (`gh pr comment <n> --body-file -`). Each item keeps the shape it has in
+  the report — rule ID and quoted rule, WCAG criterion, trigger, suggested fix — so
+  the comment stands on its own for whoever reads the PR. No open PR → say the items
+  stay in the report and the gate offers `/bb:ship` to open one.
 
-Re-report as a table: `# | item | action taken | commit/status`.
+Re-report as a table: `# | item | action taken | commit/status` — `corrigido`,
+`comentado (link)` and `deixado no relatório` are all valid outcomes.
 
 ## Step 7 — Gate
 
@@ -170,6 +187,7 @@ report; how to resume: `/bb:review`).
 | uncommitted changes present                      | include in diff scope, flagged separately                                             |
 | a finder agent dies                              | its front reports with the angles that returned, and says which angle is missing      |
 | user picks nothing at curation                   | no edits; go to the gate                                                              |
+| user picks "comentar na PR" and there's no PR    | items stay in the report; the gate offers `/bb:ship` to open the PR first             |
 | CI still red after 3 diagnose→fix cycles         | stop editing, report the remaining failure and the evidence                           |
 | `gh` unauthenticated                             | `threads`/`ci` unavailable — say so once, offer the diff fronts                       |
 | `BB_UNATTENDED` set                              | every available front runs; report-only: no curation, no edits, no gate               |

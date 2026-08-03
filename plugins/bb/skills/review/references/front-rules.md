@@ -61,7 +61,29 @@ or in-code deviation ranks **MEDIUM** unless its own text states the stakes
 Cap: 8 candidates. When the diff breaks the same rule in many places, report it
 once with the rule cited and the locations listed, not once per location.
 
-## 4. Verdict impact and drift
+## 4. Close with what was checked, not only what failed
+
+The front's section ends with a checklist over the rules it actually evaluated —
+the same rules a maintainer would go through by hand, so the silence is readable:
+
+```
+| regra | status |
+| PAT-002 Service layer | PASS |
+| TST-001 Teste por comportamento novo | FAIL → item 3 |
+| SEC-004 Sem segredo em código | PASS |
+SKIP (fora do escopo do diff): DEP-001, OBS-002, CMT-003 — nenhum arquivo tocado ativa
+```
+
+- **PASS** — the rule reaches this diff and the diff holds it.
+- **FAIL** — pointing at the numbered item in the report, never restating it.
+- **SKIP** — the rule's scope doesn't reach any changed file. Collapse every skip
+  into one line with the IDs and the reason; they're context, not work.
+
+CLAUDE.md and in-code rules enter the checklist by `path§seção` instead of an ID.
+Rules the front never had access to (no guide) don't appear at all — that case is
+already one line at the top of the section.
+
+## 5. Verdict impact and drift
 
 - When the guide defines a verdict rule, it decides: e.g. "qualquer HIGH ⇒ CHANGES
   REQUESTED", "3+ MEDIUM ⇒ CHANGES REQUESTED". Carry it into the report so the

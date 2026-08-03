@@ -49,6 +49,21 @@ arquivos que ela alcança**, que nessa densidade fala mais do guia desatualizado
 do diff (o achado continua, o veredito não muda, e o relatório oferece regenerar a
 regra em vez de pedir sete edições).
 
+### O relatório diz o que passou, e você escolhe corrigir ou comentar
+
+Duas coisas que a skill gerada do plugin antigo fazia bem voltaram. O relatório
+fecha com **o que veio limpo** — uma linha por frente dizendo o que cobriu sem
+achar nada, e na frente `rules` um checklist PASS/FAIL/SKIP regra por regra, com os
+SKIP colapsados numa linha. Regra silenciosa agora se lê como checada, não como
+esquecida.
+
+E na curadoria, corrigir não é o único desfecho: item por item você escolhe entre
+**corrigir** e **comentar na PR**, e pode misturar (corrige 1–3, comenta 4–6). O
+comentário sai ancorado na linha do diff, com a citação da regra ou o critério WCAG
+junto, e só depois de você ver o corpo exato e aprovar — comentário de PR é
+voltado pra fora. O re-report passou a ter três desfechos: `corrigido`,
+`comentado` e `deixado no relatório`.
+
 ### Acessibilidade entrou como frente — e o `/bb:ui-accessibility` saiu
 
 Quando o diff toca UI, a frente `a11y` roda o que dá pra provar do código: papel
