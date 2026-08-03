@@ -54,3 +54,8 @@ offer the rest.
 5. Finders pass through every candidate with a nameable failure scenario. A
    finder that self-censors half-believed candidates bypasses the verifier, which
    is the main way real bugs get missed.
+6. **No Agent tool in this context** (some hosts, some nested runs): work every
+   angle of every picked front yourself, in sequence, in the main context — skip
+   no angle for lack of fan-out — and self-check each candidate against the file
+   before keeping it. Then **say in the report that this was a single-pass review
+   without independent verification**, so nobody reads it as the full fan-out.

@@ -11,8 +11,14 @@ against the file before keeping it.
 
 ## 1. Pool and group
 
-Wait for **all** finders across all picked fronts (the barrier), then group the
-candidates by `file:line`. Grouping is not dedup — every candidate keeps its own
+Wait for **all** finders across all picked fronts (the barrier). **Canonicalize
+every path first**: a finder may return the same file as an absolute path, a
+repo-relative one, or with backslashes. Match each candidate's path by suffix
+against the changed-file list from the scope block (longest match wins) and
+rewrite it to that form. Skipping this splits one location into several groups,
+which is exactly what the grouping exists to prevent.
+
+Then group the candidates by `file:line`. Grouping is not dedup — every candidate keeps its own
 verdict; candidates at the same line are often distinct issues. Cross-finder
 location collisions are common, and one verifier agent per location costs far
 fewer agents than one per candidate with no loss.

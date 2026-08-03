@@ -103,8 +103,15 @@ carrying its front and its verdict:
 - **Threads** — `# | file:line | thread summary | fix or answer`
 - **CI** — `# | failing check | root cause | evidence | proposed fix`
 
-Close with what didn't make it: refuted candidates (one line each) and the count
-cut by the cap. Clean everywhere → say so and jump to the gate (step 7).
+Close with what didn't make it and what actually ran:
+
+- refuted candidates, one line each;
+- the count cut by the cap ("+4 de qualidade fora do cap");
+- one stats line — frentes rodadas, agentes finder, candidatos, verificados,
+  refutados, reportados. It's how the reader knows the depth that ran matches the
+  depth that was announced.
+
+Clean everywhere → say so and jump to the gate (step 7).
 
 ## Step 5 — Curate (the user picks)
 
