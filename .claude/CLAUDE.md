@@ -34,12 +34,12 @@ plugins/bb/
 │   ├── fetch_comments.py               # ship, review
 │   ├── reply_resolve_thread.py         # ship, review
 │   └── gather_context.py               # ship, review, gather-branch-context
-└── skills/                            # all 16 skills flat; trilha grouping is a docs concept
+└── skills/                            # all 15 skills flat; trilha grouping is a docs concept
     ├── Pensar:        discover, challenge, think, legal-lens
     ├── Desenhar:      spec
     ├── Construir:     implement, ship, delegate, gather-branch-context
     ├── Revisar:       review, maintain-repo, review-setup
-    ├── Design:        brisar, ui-accessibility
+    ├── Design:        brisar
     └── Pesquisar/Doc: code-deep-research, write-readme
 ```
 

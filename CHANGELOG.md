@@ -45,15 +45,24 @@ fresh), o conjunto de `CLAUDE.md` que governa os arquivos tocados (escopo por
 diretório ancestral), e comentários de guidance no próprio código. Divergência
 entre guia e código vira item separado apontando pro `/bb:review-setup`.
 
-### Acessibilidade entrou como frente
+### Acessibilidade entrou como frente — e o `/bb:ui-accessibility` saiu
 
 Quando o diff toca UI, a frente `a11y` roda o que dá pra provar do código: papel
 semântico, nome acessível, label de campo, alcance por teclado, foco visível,
 região live, e contraste quando as duas cores estão no diff ou resolvem pelos
 tokens. Cada achado diz **quem fica bloqueado** — é o `failure_scenario` dessa
-frente — e leva prioridade Critical/Major/Minor/Enhancement, o mesmo vocabulário
-do `/bb:ui-accessibility`, que continua sendo o audit da superfície inteira com a
-página rodando (o gate oferece ele quando o achado depende de runtime).
+frente — e leva prioridade Critical/Major/Minor/Enhancement.
+
+A mesma frente roda em **escopo de superfície**: aponta pra uma pasta, um conjunto
+de arquivos ou uma página rodando e ela audita tudo, sem diff e sem repo git, com
+o browser resolvendo o que o código não fecha (contraste computado, ordem real de
+foco, o que o leitor de tela anuncia, reflow em 320px). Relatório agrupado por
+prioridade e veredito `WCAG AA: pass | fail | partial`.
+
+Com isso o **`/bb:ui-accessibility` foi removido** — eram duas skills pedindo o
+mesmo checklist. `/bb:review` responde aos mesmos gatilhos ("auditoria de
+acessibilidade", "WCAG", "contraste", "leitor de tela"), e o gate do Deliver do
+`/bb:brisar` passou a oferecer essa auditoria. São **15 skills** agora.
 
 ### SKILL.md virou router
 
@@ -180,7 +189,7 @@ removida de propósito (quebra de major). Consequências:
 | brisar              | `brisar`                | `/bb:brisar`                                                  |
 | brisar              | `tarsila`               | `/bb:brisar` (fase Develop)                                   |
 | brisar              | `clarisse`              | `/bb:brisar` (fase Deliver)                                   |
-| loja                | `ui-accessibility`      | `/bb:ui-accessibility`                                        |
+| loja                | `ui-accessibility`      | `/bb:review` (frente `a11y`, desde 2.2.0)                     |
 | ofc                 | `code-deep-research`    | `/bb:code-deep-research`                                      |
 | ofc                 | `write-readme`          | `/bb:write-readme`                                            |
 

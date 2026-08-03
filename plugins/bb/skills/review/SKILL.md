@@ -1,9 +1,9 @@
 ---
 name: review
-description: Revisa a mudança de ponta a ponta — você escolhe as frentes, ela roda em paralelo. Detecta quais frentes fazem sentido (correção, qualidade, regras do projeto, contrato do brief, acessibilidade da UI, threads da PR, CI), pergunta quais rodar, faz fan-out de agentes read-only por ângulo, verifica cada achado com um agente independente (CONFIRMED/PLAUSIBLE/REFUTED) e reporta ranqueado. Desvios de regra vêm com a regra citada ao lado da linha que a quebra — CODE_REVIEW_GUIDE.md do repo e os CLAUDE.md que governam o diff. Depois você escolhe o que aplicar, ela corrige com guarda de regressão, responde/resolve threads e re-reporta. Também revisa uma PR externa por número e posta o review. Use quando o usuário disser "revisa minhas mudanças", "revisa a PR", "revisa esse diff", "tem bug nisso?", "responde os comentários da PR", "o CI quebrou", "conserta o CI", "limpa esse código", "simplifica o diff", "checa se seguiu as regras do projeto", "revisa a acessibilidade do que eu mudei", ou "revisa a PR #42 do repo X". NÃO use pra abrir/finalizar uma PR e acompanhar até o fim (use /bb:ship), nem pra auditar acessibilidade de uma página rodando (use /bb:ui-accessibility), nem pra triagem de todas as PRs abertas do repo (use /bb:maintain-repo).
+description: Revisa a mudança de ponta a ponta — você escolhe as frentes, ela roda em paralelo. Detecta quais frentes fazem sentido (correção, qualidade, regras do projeto, contrato do brief, acessibilidade da UI, threads da PR, CI), pergunta quais rodar, faz fan-out de agentes read-only por ângulo, verifica cada achado com um agente independente (CONFIRMED/PLAUSIBLE/REFUTED) e reporta ranqueado. Desvios de regra vêm com a regra citada ao lado da linha que a quebra — CODE_REVIEW_GUIDE.md do repo e os CLAUDE.md que governam o diff. Depois você escolhe o que aplicar, ela corrige com guarda de regressão, responde/resolve threads e re-reporta. Também revisa uma PR externa por número e posta o review. Use quando o usuário disser "revisa minhas mudanças", "revisa a PR", "revisa esse diff", "tem bug nisso?", "responde os comentários da PR", "o CI quebrou", "conserta o CI", "limpa esse código", "simplifica o diff", "checa se seguiu as regras do projeto", "revisa a acessibilidade do que eu mudei", "auditoria de acessibilidade", "checa acessibilidade dessa pasta/página", "WCAG", "a11y", "contraste", "leitor de tela", ou "revisa a PR #42 do repo X". A frente de acessibilidade também roda sozinha em escopo de superfície — pasta, arquivos ou página rodando, sem diff. NÃO use pra abrir/finalizar uma PR e acompanhar até o fim (use /bb:ship), nem pra triagem de todas as PRs abertas do repo (use /bb:maintain-repo).
 license: Apache-2.0
 metadata:
-  author: Athena Briana - github.com/athenabriana; quality-pass material adapted from Claude Code's /simplify, angle/verify architecture adapted from Claude Code's /code-review (Anthropic, Apache-2.0)
+  author: Athena Briana - github.com/athenabriana; quality-pass material adapted from Claude Code's /simplify, angle/verify architecture adapted from Claude Code's /code-review (Anthropic, Apache-2.0), a11y front absorbed from rafael's ui-accessibility skill (loja inspira-skills, MIT)
   version: 2.2.0
 ---
 
@@ -22,7 +22,8 @@ loaded **only when that front was picked**; each action likewise.
 ## Prerequisites
 
 Inside a git repository. `gh` authenticated (`gh auth status`) for anything
-PR/CI-related; the diff fronts need no `gh`.
+PR/CI-related; the diff fronts need no `gh`. The accessibility audit in surface
+scope is the one path that needs neither a repo nor a diff.
 
 ## Step 0 — Load the review context
 
@@ -45,6 +46,10 @@ PR/CI-related; the diff fronts need no `gh`.
 - **Direct front ask** — the user already named the front ("o CI quebrou",
   "responde os comentários", "checa se seguiu as regras"): that front is the
   scope. Skip step 2's question and go straight to it.
+- **Accessibility audit** (an audit of a surface, not of a branch: "auditoria de
+  acessibilidade", "checa a acessibilidade dessa pasta/página", a WCAG check
+  before merging): run `references/front-a11y.md` in surface scope — no diff, no
+  other fronts, no git repository required — and stop at its own gate.
 - **Otherwise**: current branch, all fronts on the table.
 
 ## Step 2 — Probe the fronts, then ask which ones
@@ -144,8 +149,8 @@ state: fronts left unrun → "Rodar as frentes que faltaram" (loops to step 3); 
 items still open → "Aplicar mais" (loops to step 5); no open PR and clean/handled →
 "Abrir a PR — rodo /bb:ship"; guide drift or missing guide reported → "Gerar/atualizar
 o guia — rodo /bb:review-setup"; a11y findings that need a rendered page (runtime
-colors, real focus order, live regions) → "Auditar a UI rodando — rodo
-/bb:ui-accessibility"; always "Encerrar aqui" (what stays saved: the
+colors, real focus order, live regions) → "Auditar a UI rodando — mesma frente em
+escopo de superfície" (loops to `front-a11y.md`, surface scope); always "Encerrar aqui" (what stays saved: the
 report; how to resume: `/bb:review`).
 
 ## Edge cases
@@ -159,7 +164,8 @@ report; how to resume: `/bb:review`).
 | neither guide nor applicable CLAUDE.md           | `rules` front not offered; one-line pointer to `/bb:review-setup`                     |
 | no brief for this branch                         | `contract` front not offered                                                          |
 | diff touches no UI file                          | `a11y` front not offered                                                              |
-| a11y finding needs a rendered page               | report it as out of static reach; the gate offers `/bb:ui-accessibility`              |
+| a11y finding needs a rendered page               | report it as out of static reach; the gate offers the surface-scope audit             |
+| accessibility audit asked outside a git repo     | surface scope needs no diff and no repo — audit what was pointed at                   |
 | legacy `.claude/skills/code-review/` present     | flag as superseded; the user deletes it                                               |
 | uncommitted changes present                      | include in diff scope, flagged separately                                             |
 | a finder agent dies                              | its front reports with the angles that returned, and says which angle is missing      |
@@ -181,7 +187,7 @@ Per-front method (loaded only when that front is picked):
 - `references/front-quality.md` — the cleanup lenses, one finder, behavior-preserving.
 - `references/front-rules.md` — `CODE_REVIEW_GUIDE.md` + CLAUDE.md deviations, with the citation discipline.
 - `references/front-contract.md` — the brief's `## behavior` map as the acceptance contract.
-- `references/front-a11y.md` — WCAG AA over the changed UI, static and diff-scoped.
+- `references/front-a11y.md` — WCAG AA: diff scope (static) and surface scope (folder, files or a rendered page).
 - `references/front-threads.md` — PR review threads: fetch, triage, fix/answer, reply/resolve.
 - `references/front-ci.md` — CI failures: evidence → diagnosis → fix → verify.
 
