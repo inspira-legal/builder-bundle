@@ -46,7 +46,12 @@ offer the rest.
 | -------------------------------- | -------------------------------------------------------- | ------- | ---------- | -------- | ------- | -------------------------------- | ------- | ---------- |
 | ≲2 arquivos / ≲100 linhas        | `diff-scan` + `removed-behavior`, inline (sem fan-out)   | inline  | inline     | inline   | inline  | self-check no contexto principal | —       | 6          |
 | até ~10 arquivos / ~500 linhas   | `diff-scan`, `removed-behavior`, `cross-file` (3 agents) | 1 agent | 1 agent    | 1 agent  | 1 agent | 1-vote agrupado por local        | —       | 10         |
-| acima disso, ou "revisa a fundo" | os 5 angles (5 agents)                                   | 1 agent | 1–2 agents | 1 agent  | 1 agent | 1-vote agrupado por local        | 1 agent | 15         |
+| acima disso, ou "revisa a fundo" | o angle set do diff (até 5 agents)                       | 1 agent | 1–2 agents | 1 agent  | 1 agent | 1-vote agrupado por local        | 1 agent | 15         |
+
+The table sizes the fan-out. **Which** correctness angles are in it comes from what
+the diff is made of (`front-correctness.md`) — a diff of prompts or manifests swaps
+the language-pitfalls angle for one that grips there and drops the wrapper angle, so
+an agent is never spent on a lens with nothing to read.
 
 ## Fan-out shape
 

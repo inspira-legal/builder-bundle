@@ -1,4 +1,4 @@
-# Front: correctness — five angles over the diff
+# Front: correctness — the angle set over the diff
 
 Operationalizes Pass 1 of the plugin-root `references/quality-checklist.md`'s
 sibling, `references/review-checklist.md`: the checklist says _what counts as a
@@ -14,6 +14,40 @@ cresce"). A candidate with no nameable consequence is not a finding.
 Read hunks with their enclosing function open, not just the diff. Bugs on
 unchanged lines of a touched function are in scope — the branch re-exposes them
 or fails to fix them.
+
+## Pick the angles the diff can activate
+
+The depth table (`fronts.md`) sizes the fan-out; **what the diff is made of**
+decides which angles are in it. An angle with nothing to grip returns nothing at
+full agent cost, and a review whose stats line says `5 ângulos` when two of them
+were unrunnable overstates its own depth.
+
+| Diff is mostly                 | Angle set                                                                                                             |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| code (the default)             | all five                                                                                                              |
+| prompt / skill / docs markdown | `diff-scan`, `removed-behavior`, `cross-file`, **`instruction-integrity`** (replaces the pitfalls angle)              |
+| config, manifest, IaC, schema  | `diff-scan`, `removed-behavior`, `cross-file`, plus a **validity** angle against the format's own schema or inventory |
+
+For the last two rows `wrapper-boundary` drops out — there's no wrapped type to
+route through — and the async/state material has nothing to attach to. Say which
+angles ran, and name the dropped ones with the reason, so the depth that's reported
+is the depth that happened. A caller can override the lens _content_ for its own
+artifact the way `/bb:ship` does for LexFlow manifests
+(`skills/ship/references/land-lexflow.md`).
+
+### Angle `instruction-integrity` — for a diff that instructs a model
+
+The failure scenario here is a **run that goes wrong**, stated the same way as any
+other: which instruction fires, and what the model then does. Hunt for two
+sections that contradict each other so the reader's behavior depends on which one
+it hits first; a pointer to a file, section or command that doesn't resolve from
+where it's cited; a rule stated in the negative that writes the unwanted behavior
+into the prompt (a "don't do X" and catalogs of wrong examples both prime X — the
+positive form is the fix, and the exceptions are anti-hallucination, safety, and a
+default verbal tic with no positive form); an instruction the prompt no longer
+needs because what it guarded against was deleted; an unbounded output where the
+surrounding document caps its others; and a precondition the flow never probes
+before offering the action that needs it.
 
 ## Angle `diff-scan` — line by line
 

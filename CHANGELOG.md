@@ -34,6 +34,16 @@ Todo candidato que saiu de um finder termina num de quatro lugares, e a linha de
 stats fecha a conta: reportado, **refutado** (uma linha cada), **sem veredito** (o
 descartado, com o local e o motivo do veredito faltar) ou contado no cap.
 
+O tamanho do diff dimensiona o fan-out; **o conteúdo** decide quais ângulos entram
+nele. Diff de código roda os cinco. Diff de prompt/skill/markdown troca o ângulo de
+footguns de linguagem — que não tem onde morder ali — por `instruction-integrity`:
+duas seções que se contradizem, ponteiro que não resolve de onde é citado, regra no
+negativo que escreve no prompt o comportamento que ela proíbe, instrução que sobrou
+de um guard deletado, saída sem cap num doc que capa as outras, e ação oferecida sem
+o probe da precondição. Diff de config/manifest ganha um ângulo de validade contra o
+schema do formato. O ângulo derrubado é nomeado no relatório com o motivo — a
+profundidade reportada é a que rodou.
+
 Arquitetura de ângulos e verificação adaptada do `/code-review` do Claude Code
 (Anthropic, Apache-2.0).
 
