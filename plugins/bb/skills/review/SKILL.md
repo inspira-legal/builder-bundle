@@ -1,15 +1,15 @@
 ---
 name: review
-description: Revisa a mudança de ponta a ponta — você escolhe as frentes, ela roda em paralelo. Detecta quais frentes fazem sentido (correção, qualidade, regras do projeto, contrato do brief, threads da PR, CI), pergunta quais rodar, faz fan-out de agentes read-only por ângulo, verifica cada achado com um agente independente (CONFIRMED/PLAUSIBLE/REFUTED) e reporta ranqueado. Desvios de regra vêm com a regra citada ao lado da linha que a quebra — CODE_REVIEW_GUIDE.md do repo e os CLAUDE.md que governam o diff. Depois você escolhe o que aplicar, ela corrige com guarda de regressão, responde/resolve threads e re-reporta. Também revisa uma PR externa por número e posta o review. Use quando o usuário disser "revisa minhas mudanças", "revisa a PR", "revisa esse diff", "tem bug nisso?", "responde os comentários da PR", "o CI quebrou", "conserta o CI", "limpa esse código", "simplifica o diff", "checa se seguiu as regras do projeto", ou "revisa a PR #42 do repo X". NÃO use pra abrir/finalizar uma PR e acompanhar até o fim (use /bb:ship), nem pra triagem de todas as PRs abertas do repo (use /bb:maintain-repo).
+description: Revisa a mudança de ponta a ponta — você escolhe as frentes, ela roda em paralelo. Detecta quais frentes fazem sentido (correção, qualidade, regras do projeto, contrato do brief, acessibilidade da UI, threads da PR, CI), pergunta quais rodar, faz fan-out de agentes read-only por ângulo, verifica cada achado com um agente independente (CONFIRMED/PLAUSIBLE/REFUTED) e reporta ranqueado. Desvios de regra vêm com a regra citada ao lado da linha que a quebra — CODE_REVIEW_GUIDE.md do repo e os CLAUDE.md que governam o diff. Depois você escolhe o que aplicar, ela corrige com guarda de regressão, responde/resolve threads e re-reporta. Também revisa uma PR externa por número e posta o review. Use quando o usuário disser "revisa minhas mudanças", "revisa a PR", "revisa esse diff", "tem bug nisso?", "responde os comentários da PR", "o CI quebrou", "conserta o CI", "limpa esse código", "simplifica o diff", "checa se seguiu as regras do projeto", "revisa a acessibilidade do que eu mudei", ou "revisa a PR #42 do repo X". NÃO use pra abrir/finalizar uma PR e acompanhar até o fim (use /bb:ship), nem pra auditar acessibilidade de uma página rodando (use /bb:ui-accessibility), nem pra triagem de todas as PRs abertas do repo (use /bb:maintain-repo).
 license: Apache-2.0
 metadata:
   author: Athena Briana - github.com/athenabriana; quality-pass material adapted from Claude Code's /simplify, angle/verify architecture adapted from Claude Code's /code-review (Anthropic, Apache-2.0)
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 # Review
 
-One review skill, six **fronts** of findings. The skill detects which fronts can
+One review skill, seven **fronts** of findings. The skill detects which fronts can
 produce anything on this branch, asks which ones you want, runs them as a parallel
 fan-out of read-only agents, and puts every candidate through an independent
 verifier before it reaches the report. Then the flow is interactive — report → you
@@ -82,6 +82,8 @@ edit; the main context is the only writer):
   deviations, each with the rule quoted next to the line that breaks it.
 - **Contrato do brief** → `references/front-contract.md` — the `## behavior` map
   as the acceptance contract.
+- **Acessibilidade** → `references/front-a11y.md` — one finder, static, WCAG AA
+  over the UI the diff changed.
 - **Threads da PR** → `references/front-threads.md` — no fan-out; script read plus
   triage (fix vs. answer).
 - **CI** → `references/front-ci.md` — no fan-out; evidence first, diagnosis before
@@ -99,6 +101,7 @@ carrying its front and its verdict:
 - **Correção** — `# | file:line | what breaks | trigger | suggested fix | verdict`
 - **Regras** — `# | rule ID / path§seção | "regra" | file:line | linha que desvia | severidade`
 - **Contrato** — `# | linha do brief | file:line ou "ausente" | o que falta ou sobra`
+- **Acessibilidade** — `# | file:line | critério WCAG | o que falha | quem é bloqueado | prioridade | fix`
 - **Qualidade** — `# | file:line | smell | custo concreto | suggested edit`
 - **Threads** — `# | file:line | thread summary | fix or answer`
 - **CI** — `# | failing check | root cause | evidence | proposed fix`
@@ -140,7 +143,9 @@ Per the plugin-root `references/handoff-gate.md`, one PT-BR question. Options by
 state: fronts left unrun → "Rodar as frentes que faltaram" (loops to step 3); more
 items still open → "Aplicar mais" (loops to step 5); no open PR and clean/handled →
 "Abrir a PR — rodo /bb:ship"; guide drift or missing guide reported → "Gerar/atualizar
-o guia — rodo /bb:review-setup"; always "Encerrar aqui" (what stays saved: the
+o guia — rodo /bb:review-setup"; a11y findings that need a rendered page (runtime
+colors, real focus order, live regions) → "Auditar a UI rodando — rodo
+/bb:ui-accessibility"; always "Encerrar aqui" (what stays saved: the
 report; how to resume: `/bb:review`).
 
 ## Edge cases
@@ -153,6 +158,8 @@ report; how to resume: `/bb:review`).
 | `CODE_REVIEW_GUIDE.md` absent, CLAUDE.md present | `rules` front runs on the CLAUDE.md set alone, with the pointer to `/bb:review-setup` |
 | neither guide nor applicable CLAUDE.md           | `rules` front not offered; one-line pointer to `/bb:review-setup`                     |
 | no brief for this branch                         | `contract` front not offered                                                          |
+| diff touches no UI file                          | `a11y` front not offered                                                              |
+| a11y finding needs a rendered page               | report it as out of static reach; the gate offers `/bb:ui-accessibility`              |
 | legacy `.claude/skills/code-review/` present     | flag as superseded; the user deletes it                                               |
 | uncommitted changes present                      | include in diff scope, flagged separately                                             |
 | a finder agent dies                              | its front reports with the angles that returned, and says which angle is missing      |
@@ -174,6 +181,7 @@ Per-front method (loaded only when that front is picked):
 - `references/front-quality.md` — the cleanup lenses, one finder, behavior-preserving.
 - `references/front-rules.md` — `CODE_REVIEW_GUIDE.md` + CLAUDE.md deviations, with the citation discipline.
 - `references/front-contract.md` — the brief's `## behavior` map as the acceptance contract.
+- `references/front-a11y.md` — WCAG AA over the changed UI, static and diff-scoped.
 - `references/front-threads.md` — PR review threads: fetch, triage, fix/answer, reply/resolve.
 - `references/front-ci.md` — CI failures: evidence → diagnosis → fix → verify.
 

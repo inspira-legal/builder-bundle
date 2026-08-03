@@ -2,7 +2,7 @@
 
 ## 2.2.0 — 2026-08-03
 
-### `/bb:review` virou seis frentes que você escolhe
+### `/bb:review` virou sete frentes que você escolhe
 
 O `review` fazia muita coisa de uma vez: rodava diff, threads e CI em sequência
 sem perguntar, e o que era "regra do projeto" ficava diluído dentro das lentes de
@@ -15,12 +15,13 @@ pergunta quais frentes rodar**:
 | `quality`     | reuso, simplificação, peso morto, eficiência, altitude, consistência    |
 | `rules`       | desvios do `CODE_REVIEW_GUIDE.md` e dos `CLAUDE.md` que governam o diff |
 | `contract`    | o mapa `## behavior` do brief como contrato de aceite                   |
+| `a11y`        | WCAG AA no que o diff mexeu na UI — estático, sem browser               |
 | `threads`     | comentários de review não resolvidos da PR                              |
 | `ci`          | checks vermelhos — evidência antes de editar                            |
 
 A pergunta oferece só as frentes disponíveis (sem PR aberta não existe `threads`
-nem `ci`; sem brief não existe `contract`), e diz a profundidade que o diff
-resolveu antes de gastar agente.
+nem `ci`; sem brief não existe `contract`; sem arquivo de UI no diff não existe
+`a11y`), e diz a profundidade que o diff resolveu antes de gastar agente.
 
 ### Execução em paralelo, com verificação independente
 
@@ -44,10 +45,20 @@ fresh), o conjunto de `CLAUDE.md` que governa os arquivos tocados (escopo por
 diretório ancestral), e comentários de guidance no próprio código. Divergência
 entre guia e código vira item separado apontando pro `/bb:review-setup`.
 
+### Acessibilidade entrou como frente
+
+Quando o diff toca UI, a frente `a11y` roda o que dá pra provar do código: papel
+semântico, nome acessível, label de campo, alcance por teclado, foco visível,
+região live, e contraste quando as duas cores estão no diff ou resolvem pelos
+tokens. Cada achado diz **quem fica bloqueado** — é o `failure_scenario` dessa
+frente — e leva prioridade Critical/Major/Minor/Enhancement, o mesmo vocabulário
+do `/bb:ui-accessibility`, que continua sendo o audit da superfície inteira com a
+página rodando (o gate oferece ele quando o achado depende de runtime).
+
 ### SKILL.md virou router
 
 Cada frente e cada ação viraram reference própria, carregada só quando aquela
-frente foi escolhida: `references/front-{correctness,quality,rules,contract,threads,ci}.md`,
+frente foi escolhida: `references/front-{correctness,quality,rules,contract,a11y,threads,ci}.md`,
 `references/fronts.md` (catálogo + probe + profundidade), `references/verify.md`,
 `references/act-apply-fixes.md`, `references/mode-external-pr.md`.
 

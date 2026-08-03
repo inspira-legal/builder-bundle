@@ -47,18 +47,18 @@ um plugin, `bb`; 16 skills organizadas em 6 trilhas.
 
 ### revisar — qualidade & manutenção
 
-| skill               | descrição                                                                                                                                                                                           |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:review`        | você escolhe as frentes (correção, qualidade, regras do projeto, contrato do brief, threads do PR, CI), ela roda em paralelo e verifica cada achado; corrige, responde e resolve o que você aprovar |
-| `/bb:maintain-repo` | tria PRs + dependabot/desatualizados, reporta o que dá pra mergear (nunca faz merge)                                                                                                                |
-| `/bb:review-setup`  | configura o workflow de code-review da Inspira no repo e escreve o `CODE_REVIEW_GUIDE.md`                                                                                                           |
+| skill               | descrição                                                                                                                                                                                                                 |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:review`        | você escolhe as frentes (correção, qualidade, regras do projeto, contrato do brief, acessibilidade da UI, threads do PR, CI), ela roda em paralelo e verifica cada achado; corrige, responde e resolve o que você aprovar |
+| `/bb:maintain-repo` | tria PRs + dependabot/desatualizados, reporta o que dá pra mergear (nunca faz merge)                                                                                                                                      |
+| `/bb:review-setup`  | configura o workflow de code-review da Inspira no repo e escreve o `CODE_REVIEW_GUIDE.md`                                                                                                                                 |
 
 ### design — da ideia à surface em alta fidelidade
 
-| skill                  | descrição                                                                                                                                                                                   |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:brisar`           | jornada de design de ponta a ponta — calibra o perfil, scaffolda com o DS da marca, escreve direção visual por surface, e constrói (Develop) e revisa/entrega (Deliver) como fases internas |
-| `/bb:ui-accessibility` | audita interfaces web pra WCAG AA — contraste, teclado, leitor de tela — com relatório priorizado por impacto                                                                               |
+| skill                  | descrição                                                                                                                                                                                    |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:brisar`           | jornada de design de ponta a ponta — calibra o perfil, scaffolda com o DS da marca, escreve direção visual por surface, e constrói (Develop) e revisa/entrega (Deliver) como fases internas  |
+| `/bb:ui-accessibility` | audita a superfície inteira pra WCAG AA — contraste, teclado, leitor de tela, página rodando — com relatório priorizado por impacto (só o diff é a frente de acessibilidade do `/bb:review`) |
 
 ### pesquisar & documentar
 

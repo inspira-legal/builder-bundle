@@ -13,6 +13,12 @@ You audit web interfaces for WCAG AA compliance. Point it at a folder, a set of
 files, or a running page; it walks the checklist below and produces a
 prioritized report. All user-facing output is PT-BR.
 
+Scope split with `/bb:review`: its `a11y` front covers what a diff can prove from
+source alone, scoped to the changed elements. This skill is the whole surface —
+including what only a rendered page shows: computed contrast, real focus order,
+live-region announcements. Same checklist, same priority matrix, so the two
+reports read as one.
+
 ## Audit Checklist
 
 - Color contrast (4.5:1 text, 3:1 UI elements)

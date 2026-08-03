@@ -52,13 +52,21 @@ effect.
 A candidate the verifier rendered no verdict on (agent died, index omitted) is
 **dropped** — never promoted to PLAUSIBLE on the strength of the finder alone.
 
-## Rule and contract candidates verify differently
+## Rule, contract and a11y candidates verify differently
 
 For `rules` and `contract` candidates, the verifier checks the **citation**, not a
 crash: does the quoted rule text actually appear in the named source, does its
 scope reach the changed file, and does the quoted line actually break it. A
 citation that doesn't hold up is REFUTED regardless of how sensible the rule
 sounds. This is where hallucinated rules die.
+
+`a11y` candidates verify the same way against WCAG: does the cited criterion
+actually cover this element, and does the markup in the file actually fail it —
+an accessible name supplied further up the tree, a native element that already
+carries the semantics, a focus style defined in a companion stylesheet all refute
+the finding. A criterion number that doesn't match the criterion's real content is
+REFUTED. Contrast claims are checked by recomputing the ratio from the resolved
+colors.
 
 ## 3. Sweep (large diffs only)
 
@@ -76,10 +84,12 @@ sweep is a real answer.
   entry with the most concrete failure scenario, and note the other locations on
   it (`[mesma causa também em: …]`).
 - **Rank**, most severe first:
-  1. CONFIRMED correctness bugs and HIGH rule deviations
-  2. PLAUSIBLE correctness bugs, missing happy-path contract rows
-  3. MEDIUM rule deviations, remaining contract findings
-  4. quality findings (always last — a cleanup never outranks a bug)
+  1. CONFIRMED correctness bugs, HIGH rule deviations, **Critical** a11y failures
+     (something the diff shipped is unusable for someone)
+  2. PLAUSIBLE correctness bugs, missing happy-path contract rows, **Major** a11y
+  3. MEDIUM rule deviations, remaining contract findings, **Minor** a11y
+  4. quality findings and a11y **Enhancement**s (always last — a cleanup never
+     outranks a bug)
 - **Cap** at the depth's report cap. Cuts come off the bottom, so quality is what
   gets trimmed, never a correctness bug.
 - **Nothing vanishes silently.** REFUTED candidates get one line each in a

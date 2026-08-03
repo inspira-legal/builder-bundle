@@ -12,6 +12,7 @@ fronts run; nothing else in the skill changes.
 | `quality`     | Qualidade         | limpeza behavior-preserving — reuso, simplificação, eficiência, dead weight, altitude, consistência | o diff não está vazio                               | `front-quality.md`     |
 | `rules`       | Regras do projeto | desvios do `CODE_REVIEW_GUIDE.md` e dos CLAUDE.md que governam o diff                               | existe guia no root **ou** um CLAUDE.md aplicável   | `front-rules.md`       |
 | `contract`    | Contrato do brief | o diff construiu o que foi combinado — e só isso                                                    | existe brief da branch (`.bb/tasks/<slug>/spec.md`) | `front-contract.md`    |
+| `a11y`        | Acessibilidade    | WCAG AA no que o diff mexeu na UI — semântica, nome acessível, teclado, foco, contraste             | o diff toca arquivo de UI                           | `front-a11y.md`        |
 | `threads`     | Threads da PR     | comentários de review não resolvidos                                                                | há PR aberta pra branch                             | `front-threads.md`     |
 | `ci`          | CI                | checks vermelhos — evidência, diagnóstico, causa raiz                                               | há check falhando na PR ou no último run da branch  | `front-ci.md`          |
 
@@ -24,6 +25,9 @@ batch of cheap read-only calls (parallel background where possible):
   there are uncommitted changes (they enter scope, flagged separately).
 - `test -f CODE_REVIEW_GUIDE.md` and the CLAUDE.md set (per `front-rules.md`).
 - brief lookup for this branch (plugin-root `references/task-state.md`).
+- UI files in the diff — `*.{jsx,tsx,vue,svelte,astro,html,htm}`, template files
+  (`*.erb`, `*.hbs`, `*.blade.php`, Django/Jinja templates), or stylesheets that
+  the diff changes alongside markup.
 - `gh pr view --json number,url` — is there an open PR.
 - `gh pr checks <n>` (only when a PR exists) — any failing check.
 
@@ -33,11 +37,11 @@ offer the rest.
 
 ## Depth — auto-scaled from the diff, not asked
 
-| Diff                             | Correctness angles                                       | Quality | Rules      | Contract | Verify                           | Sweep   | Report cap |
-| -------------------------------- | -------------------------------------------------------- | ------- | ---------- | -------- | -------------------------------- | ------- | ---------- |
-| ≲2 arquivos / ≲100 linhas        | `diff-scan` + `removed-behavior`, inline (sem fan-out)   | inline  | inline     | inline   | self-check no contexto principal | —       | 6          |
-| até ~10 arquivos / ~500 linhas   | `diff-scan`, `removed-behavior`, `cross-file` (3 agents) | 1 agent | 1 agent    | 1 agent  | 1-vote agrupado por local        | —       | 10         |
-| acima disso, ou "revisa a fundo" | os 5 angles (5 agents)                                   | 1 agent | 1–2 agents | 1 agent  | 1-vote agrupado por local        | 1 agent | 15         |
+| Diff                             | Correctness angles                                       | Quality | Rules      | Contract | A11y    | Verify                           | Sweep   | Report cap |
+| -------------------------------- | -------------------------------------------------------- | ------- | ---------- | -------- | ------- | -------------------------------- | ------- | ---------- |
+| ≲2 arquivos / ≲100 linhas        | `diff-scan` + `removed-behavior`, inline (sem fan-out)   | inline  | inline     | inline   | inline  | self-check no contexto principal | —       | 6          |
+| até ~10 arquivos / ~500 linhas   | `diff-scan`, `removed-behavior`, `cross-file` (3 agents) | 1 agent | 1 agent    | 1 agent  | 1 agent | 1-vote agrupado por local        | —       | 10         |
+| acima disso, ou "revisa a fundo" | os 5 angles (5 agents)                                   | 1 agent | 1–2 agents | 1 agent  | 1 agent | 1-vote agrupado por local        | 1 agent | 15         |
 
 ## Fan-out shape
 
