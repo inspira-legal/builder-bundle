@@ -70,6 +70,13 @@ once with the rule cited and the locations listed, not once per location.
   rule citing a path, pattern, or command that no longer exists in the repo. One
   line each, plus the pointer — regenerate with `/bb:review-setup`, which does a
   delta update instead of rewriting the guide.
+- **A systemic deviation is drift too.** When one rule's collapsed finding covers
+  **≥40% of the files its scope reaches**, print the rate next to the finding —
+  "PAT-003 — 7/12 arquivos no escopo da regra" — and flag it as drift: at that
+  density the likelier story is that the repo moved and the rule didn't. The finding
+  stands and the verdict is unaffected; what changes is that the report offers
+  `/bb:review-setup` to revisit the rule instead of asking for seven edits. Below
+  40%, no rate is printed.
 - A convention the diff clearly should have followed that **no source states** is
   not a deviation. It's a candidate rule: mention it once at the end of the
   section as something `/bb:review-setup` could capture.

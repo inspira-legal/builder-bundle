@@ -43,7 +43,11 @@ a quebra** — é o que mata regra alucinada, porque o verificador confere a cit
 não um crash. Três fontes em ordem de precedência: o `CODE_REVIEW_GUIDE.md` (lido
 fresh), o conjunto de `CLAUDE.md` que governa os arquivos tocados (escopo por
 diretório ancestral), e comentários de guidance no próprio código. Divergência
-entre guia e código vira item separado apontando pro `/bb:review-setup`.
+entre guia e código vira item separado apontando pro `/bb:review-setup` — tanto
+regra citando caminho que não existe mais quanto **regra desviada em 40%+ dos
+arquivos que ela alcança**, que nessa densidade fala mais do guia desatualizado que
+do diff (o achado continua, o veredito não muda, e o relatório oferece regenerar a
+regra em vez de pedir sete edições).
 
 ### Acessibilidade entrou como frente — e o `/bb:ui-accessibility` saiu
 
