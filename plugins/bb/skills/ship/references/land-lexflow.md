@@ -55,7 +55,8 @@ degrades to reading the YAMLs alone; report the inventory check as skipped.
 ## Quality pass — the lens set for this artifact
 
 Keep Step 2's shape — one agent per lens, every candidate through the verify pass in
-`verify.md`, returned as `file:line | what | evidence | suggested fix | verdict`. What
+`${CLAUDE_PLUGIN_ROOT}/skills/review/references/verify.md` (owned by `/bb:review`),
+returned as `file:line | what | evidence | suggested fix | verdict`. What
 changes is the `correctness` front's lens _content_: swap the generic angles for the
 four below, since a lens about async state has nothing to grip on in a manifest. The
 other fronts run as documented (`rules` and `contract` matter here as much as anywhere;
