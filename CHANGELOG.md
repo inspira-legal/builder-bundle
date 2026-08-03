@@ -1,5 +1,46 @@
 # Changelog
 
+## 2.1.0 — 2026-07-30
+
+### `/bb:ship` ganhou o destino **LexFlow**
+
+Quem constrói app LexFlow tinha o `ship` desembocando sempre em PR — e parte do
+time não tem `gh`. Agora o LexFlow é um **4º destino**, ao lado de branch / main
+/ PR. Os destinos são exclusivos: quem quer PR **e** deploy roda o `ship` duas
+vezes.
+
+O que o caminho faz: detecta `lexflow.toml` na raiz, roda um gate próprio,
+revisa os workflows YAML com lentes que cabem num app declarativo, commita,
+pusha o repo do app — e **entrega** `lexflow deploy --ref <sha>` com o sha que
+passou pelo review. O `ship` nunca deploya; a mecânica de deploy continua sendo
+do `lexflow-builder`, a skill do time de plataforma.
+
+O gate tem três camadas, cada uma com uma autoridade:
+
+- `scripts/check_lexflow_manifest.py` — parse do `lexflow.toml` via `tomllib`,
+  exige `[app]`, confere que todo `source` declarado (deployments, workflows,
+  middlewares) aponta pra arquivo real. Roda em ms, sem rede, e funciona
+  deslogado. Com `--changed`, mapeia os arquivos do diff nos deployments que eles
+  afetam — direto ou por referência de dentro de um YAML.
+- `lexflow deploy --dry-run` — a autoridade sobre o manifest. `Manifest error:`
+  **bloqueia** (é erro do app, e acontece antes de qualquer chamada de rede); 5xx
+  na fase de diff **reporta** como instabilidade de plataforma; CLI ausente ou
+  deslogado **pula** o check e aponta `lexflow login`.
+- conferência de opcodes — `lexflow opcodes list` cruzado com os YAMLs tocados.
+
+### `/bb:delegate` acompanhou o destino novo
+
+O passo de landing do `delegate` afirmava draft PR pro caminho unattended — que não
+existe em repo LexFlow. Agora bifurca por destino, e o blocker de um run travado
+aterrissa no `## still open` do brief quando não há PR pra escrever nele.
+
+### Landings extraídos pra `references/`
+
+O `SKILL.md` do `ship` virou router: os quatro landings agora vivem em
+`references/land-{branch,main,pr,lexflow}.md`, carregados só quando aquele
+destino é o escolhido. O `SKILL.md` foi de 170 pra 135 linhas carregando um
+destino a mais.
+
 ## 2.0.0 — 2026-07-23
 
 O plugin `ofc` (Oficina) virou o **Builder Bundle** (`bb`): 28 skills de 4 fontes
