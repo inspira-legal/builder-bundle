@@ -1,4 +1,4 @@
-# CI diagnosis — evidence before edits
+# Front: CI — evidence before edits
 
 The rule that makes CI fixing converge instead of thrash: **no edit before a
 diagnosis, no diagnosis before evidence.** A red check pattern-matched to a
@@ -34,7 +34,7 @@ the user picks it before anything is edited.
 
 ## 3. Fix
 
-Apply per `apply-fixes.md` (one change, justified, checked), commit, push to the
+Apply per `act-apply-fixes.md` (one change, justified, checked), commit, push to the
 PR branch. Fix the cause, not the symptom — deleting a failing test or loosening
 an assertion to make CI green needs the user's explicit say-so, never a default.
 

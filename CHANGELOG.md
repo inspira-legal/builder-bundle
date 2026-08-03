@@ -1,5 +1,60 @@
 # Changelog
 
+## 2.2.0 — 2026-08-03
+
+### `/bb:review` virou seis frentes que você escolhe
+
+O `review` fazia muita coisa de uma vez: rodava diff, threads e CI em sequência
+sem perguntar, e o que era "regra do projeto" ficava diluído dentro das lentes de
+correção e qualidade. Agora ele **detecta o que dá pra revisar nessa branch e
+pergunta quais frentes rodar**:
+
+| frente        | o que procura                                                      |
+| ------------- | ------------------------------------------------------------------ |
+| `correctness` | bugs no diff, em 2–5 ângulos nomeados                              |
+| `quality`     | reuso, simplificação, peso morto, eficiência, altitude, consistência |
+| `rules`       | desvios do `CODE_REVIEW_GUIDE.md` e dos `CLAUDE.md` que governam o diff |
+| `contract`    | o mapa `## behavior` do brief como contrato de aceite              |
+| `threads`     | comentários de review não resolvidos da PR                        |
+| `ci`          | checks vermelhos — evidência antes de editar                      |
+
+A pergunta oferece só as frentes disponíveis (sem PR aberta não existe `threads`
+nem `ci`; sem brief não existe `contract`), e diz a profundidade que o diff
+resolveu antes de gastar agente.
+
+### Execução em paralelo, com verificação independente
+
+As frentes escolhidas viram um fan-out de agentes read-only numa mensagem só —
+eles reportam candidatos, nunca editam; o contexto principal é o único que
+escreve. Depois vem a barreira: os candidatos são agrupados por `file:line` e
+cada grupo passa por um verificador independente que devolve **CONFIRMED /
+PLAUSIBLE / REFUTED**. Candidato não verificado é descartado, nunca promovido —
+e o que caiu aparece no fim do relatório, junto da contagem cortada pelo cap.
+
+Arquitetura de ângulos e verificação adaptada do `/code-review` do Claude Code
+(Anthropic, Apache-2.0).
+
+### Desvio de regra agora vem com a regra citada
+
+A frente `rules` é a que responde "seguiu as regras do projeto?". Cada achado
+carrega **o texto exato da regra** (com ID ou `path§seção`) ao lado da **linha que
+a quebra** — é o que mata regra alucinada, porque o verificador confere a citação,
+não um crash. Três fontes em ordem de precedência: o `CODE_REVIEW_GUIDE.md` (lido
+fresh), o conjunto de `CLAUDE.md` que governa os arquivos tocados (escopo por
+diretório ancestral), e comentários de guidance no próprio código. Divergência
+entre guia e código vira item separado apontando pro `/bb:review-setup`.
+
+### SKILL.md virou router
+
+Cada frente e cada ação viraram reference própria, carregada só quando aquela
+frente foi escolhida: `references/front-{correctness,quality,rules,contract,threads,ci}.md`,
+`references/fronts.md` (catálogo + probe + profundidade), `references/verify.md`,
+`references/act-apply-fixes.md`, `references/mode-external-pr.md`.
+
+No `/bb:review-setup`, o campo `Lens` das regras virou `Categoria` — ele não roteia
+mais nada (a frente `rules` lê todas as regras), só diz que tipo de preocupação a
+regra é. Guias já gerados com `Lens` continuam válidos.
+
 ## 2.1.0 — 2026-07-30
 
 ### `/bb:ship` ganhou o destino **LexFlow**

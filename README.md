@@ -49,7 +49,7 @@ um plugin, `bb`; 16 skills organizadas em 6 trilhas.
 
 | skill               | descrição                                                                                                                                |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:review`        | revisa contra 3 fontes — diff da branch, threads do PR e CI — com gate interativo pra escolher o que tratar; corrige, responde e resolve |
+| `/bb:review`        | você escolhe as frentes (correção, qualidade, regras do projeto, contrato do brief, threads do PR, CI), ela roda em paralelo e verifica cada achado; corrige, responde e resolve o que você aprovar |
 | `/bb:maintain-repo` | tria PRs + dependabot/desatualizados, reporta o que dá pra mergear (nunca faz merge)                                                     |
 | `/bb:review-setup`  | configura o workflow de code-review da Inspira no repo e escreve o `CODE_REVIEW_GUIDE.md`                                                |
 
@@ -82,4 +82,4 @@ git clone git@github.com:inspira-legal/builder-bundle.git
 claude --plugin-dir ./builder-bundle/plugins/bb    # carrega o plugin do disco pra testar
 ```
 
-<sub>a passada de qualidade do `/bb:review` é adaptada do `/simplify` do Claude Code (Anthropic, Apache-2.0). `/bb:brisar` incorpora as skills do bundle brisa-ds; `/bb:ui-accessibility` é baseada na skill de rafael na loja inspira-skills. componentes individuais mantêm suas licenças originais.</sub>
+<sub>a passada de qualidade do `/bb:review` é adaptada do `/simplify` do Claude Code e a arquitetura de ângulos/verificação, do `/code-review` (Anthropic, Apache-2.0). `/bb:brisar` incorpora as skills do bundle brisa-ds; `/bb:ui-accessibility` é baseada na skill de rafael na loja inspira-skills. componentes individuais mantêm suas licenças originais.</sub>

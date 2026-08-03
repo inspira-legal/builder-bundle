@@ -1,4 +1,4 @@
-# External PR — reviewing a PR you don't have checked out
+# Mode: external PR — reviewing a PR you don't have checked out
 
 For reviewing a PR in another repo (or another branch's PR) by reference —
 `<owner>/<repo>` + PR number. Everything is read via `gh`; **no local edits, no
@@ -17,11 +17,16 @@ pushes** — the output is a review, optionally posted.
 
 ## 2. Review
 
-Run the two-pass engine over the diff (`diff-review.md` — with the caveat that
-"open the file" here means fetching file contents via
+Fronts available here: `correctness`, `quality`, and `rules` (from the target
+repo's own guide and CLAUDE.md files, fetched via `gh api`). `contract`, `threads`,
+and `ci` don't apply — there's no local brief, the threads aren't yours to resolve,
+and the CI isn't yours to fix. Ask which of the three to run, same as local mode.
+
+Run the picked fronts and the verify pass exactly as documented
+(`front-correctness.md`, `front-quality.md`, `front-rules.md`, `verify.md`), with
+one caveat: "open the file" here means fetching contents via
 `gh api repos/<owner>/<repo>/contents/<path>?ref=<headRefName>` for hunks that
-need surrounding context). Report findings in the unified format, ranked by
-severity, citing guide rule IDs when they match.
+need surrounding context, and finder agents get that command in their scope block.
 
 ## 3. Verdict
 

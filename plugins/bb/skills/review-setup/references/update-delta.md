@@ -6,8 +6,8 @@ and edit the guide surgically — untouched rules stay byte-identical.
 
 ## 1. Read the existing guide
 
-Load the full guide first: rule IDs and severities, file categories, lens
-assignments, last-updated date. This is the baseline every subagent compares
+Load the full guide first: rule IDs and severities, file categories, rule
+categories, last-updated date. This is the baseline every subagent compares
 against.
 
 ## 2. Delta discovery — 3 parallel subagents
@@ -58,8 +58,9 @@ obsoletos, each with evidence) and run the **update-mode interview**
 Use the **Edit** tool — never rewrite the whole file:
 
 - **Add** approved new rules with the next free ID in their domain (PAT-003
-  exists → PAT-004). Severity from the maintainer's answer; lens per the
-  guide-template mapping; real Do/Don't examples when available.
+  exists → PAT-004). Severity from the maintainer's answer; category per the
+  guide-template vocabulary (an older guide using **Lens** keeps that heading);
+  real Do/Don't examples when available.
 - **Update** approved drifted rules — change only the fields that drifted,
   **preserve the original ID**, never renumber.
 - **Remove** rules the maintainer approved for removal.
