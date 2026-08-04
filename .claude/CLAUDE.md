@@ -26,14 +26,14 @@ plugins/bb/
 │   ├── confidence-and-steelman.md      # shared reasoning protocols (think, challenge)
 │   ├── task-state.md                   # the .bb/tasks/<slug>/spec.md contract
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
-│   ├── quality-checklist.md            # shared quality pass (review engine)
-│   ├── review-checklist.md             # shared review pass (review engine)
+│   ├── quality-checklist.md            # canonical quality criteria — the six lenses (review engine)
+│   ├── review-checklist.md             # canonical correctness criteria — Pass 1 rows (review engine)
 │   ├── routines.md                     # Cloud Routine guide — the unattended path
 │   └── scripts/scaffold_routine.py     # emit a routine prompt + setup for a brief slug
 ├── scripts/                           # shared executables (2+ skills) — ref via ${CLAUDE_PLUGIN_ROOT}/scripts/
 │   ├── fetch_comments.py               # ship, review
 │   ├── reply_resolve_thread.py         # ship, review
-│   └── gather_context.py               # ship, review, gather-branch-context
+│   └── gather_context.py               # ship, review (resolves the diff range), gather-branch-context
 └── skills/                            # all 15 skills flat; trilha grouping is a docs concept
     ├── Pensar:        discover, challenge, think, legal-lens
     ├── Desenhar:      spec
@@ -116,7 +116,9 @@ decisions.
   the borrower still orchestrates its own run, which is why borrowing beats
   invoking when the owner's router would ask questions the borrower answers by
   policy. Today: `/bb:ship` reads
-  `skills/review/references/{fronts,verify,front-*,act-apply-fixes}.md`.
+  `skills/review/references/{fronts,verify,front-*,act-apply-fixes}.md`, and
+  `skills/review` reads the plugin-root `references/{review,quality}-checklist.md`
+  as the criteria its fronts point at.
 
 ## Scripts
 

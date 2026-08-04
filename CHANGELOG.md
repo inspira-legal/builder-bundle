@@ -106,7 +106,7 @@ noturna. Ou seja: no caminho que de fato encosta código na main, o
 `CODE_REVIEW_GUIDE.md` do repo não era checado e acessibilidade não existia.
 
 Agora o Step 2 do ship **lê as referências do `/bb:review`**
-(`${CLAUDE_PLUGIN_ROOT}/skills/review/references/{fronts,verify,front-*}.md`) e
+(`${CLAUDE_PLUGIN_ROOT}/skills/review/references/{fronts,verify,front-*,act-apply-fixes}.md`) e
 roda todas as frentes disponíveis menos `threads` e `ci` — essas duas continuam
 sendo trabalho do próprio ship. Sem pergunta e sem gate: ship é caminho de
 entrega. Ler reference não é invocar skill, então o ship segue self-contained; o
@@ -119,7 +119,8 @@ cada achado passa pelo verificador antes de virar fix.
 Cada frente e cada ação viraram reference própria, carregada só quando aquela
 frente foi escolhida: `references/front-{correctness,quality,rules,contract,a11y,threads,ci}.md`,
 `references/fronts.md` (catálogo + probe + profundidade), `references/verify.md`,
-`references/act-apply-fixes.md`, `references/mode-external-pr.md`.
+`references/act-apply-fixes.md`, `references/act-comment-findings.md`,
+`references/mode-external-pr.md`.
 
 No `/bb:review-setup`, o campo `Lens` das regras virou `Categoria` — ele não roteia
 mais nada (a frente `rules` lê todas as regras), só diz que tipo de preocupação a

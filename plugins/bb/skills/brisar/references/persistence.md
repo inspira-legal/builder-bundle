@@ -90,7 +90,7 @@ clarisse:
     completeness: high | med | low
     ci_code_review_present: bool
     surfaces_documented: <N>
-  next_action: ready-to-merge | fix-blockers | re-prototype | run-/bb:review-a11y
+  next_action: ready-to-merge | fix-blockers | re-prototype | run-a11y-audit
 
 # ============================================================
 # Surfaces tracking (Phase 4)

@@ -85,7 +85,7 @@ Consolidate the findings into candidate rules. Each rule gets:
 | **ID**       | `{DOMAIN}-{NUMBER}` — `CMT` commits, `PAT` patterns, `TST` tests, `SEC` security, `DEP` dependencies, `ERR` errors, `API` contracts, plus detected custom domains |
 | **Title**    | short descriptive name, English                                                                                                                                   |
 | **Severity** | suggested `HIGH` / `MEDIUM` / `LOW`                                                                                                                               |
-| **Category** | the kind of concern the rule is: `logic-edges`, `async-state`, `contracts-security`, or `quality`                                                                 |
+| **Category** | the kind of concern the rule is: `correctness`, `contracts`, `security`, `a11y`, or `quality`                                                                     |
 | **Evidence** | file paths / snippets supporting the rule                                                                                                                         |
 | **Status**   | `Confirmed` (80%+ of relevant files) or `Candidate` (needs validation)                                                                                            |
 | **Do/Don't** | real examples from the repo, correct and incorrect                                                                                                                |

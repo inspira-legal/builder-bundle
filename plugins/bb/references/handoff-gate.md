@@ -54,7 +54,7 @@ options:
 - `spec` → implement / delegate / encerrar
 - `implement` → ship / encerrar
 - `ship` → review (da PR aberta) / encerrar
-- `review` → aplicar fixes escolhidos (dentro da própria skill) → encerrar
+- `review` → aplicar mais itens / rodar as frentes que faltaram / auditar a UI rodando / review-setup / ship (quando não há PR) — no máximo três, por prioridade, + encerrar
 - `brisar` (ao entregar) → review (auditoria de acessibilidade) / spec / encerrar
 - `think` (quando convergiu) → spec / discover / encerrar
 - `challenge` → devolve a tese ao dono; oferece spec quando a tese sobreviveu e é construível

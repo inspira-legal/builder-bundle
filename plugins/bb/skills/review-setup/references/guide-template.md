@@ -98,7 +98,7 @@ Rule detail block, one per rule:
 ````markdown
 #### {{ID}} — {{TITLE}}
 
-- **Categoria**: logic-edges | async-state | contracts-security | quality
+- **Categoria**: correctness | contracts | security | a11y | quality
 - **Severidade**: HIGH | MEDIUM | LOW
 - **Descrição**: o que a regra garante e por quê
 - **Evidência**: paths do repo que mostram o padrão
@@ -117,12 +117,14 @@ Rule detail block, one per rule:
 
 ## Generation rules
 
-- The **Categoria** field tags the kind of concern the rule is
-  (`logic-edges`, `async-state`, `contracts-security`, `quality`). `/bb:review`'s
-  `rules` front reads every rule regardless of category; the tag is what lets a
-  finding say _what kind_ of deviation it is, and it groups the guide for a human
-  reader. Guides generated before this field was renamed use **Lens** with the
-  same values — both read the same.
+- The **Categoria** field tags the kind of concern the rule is (`correctness`,
+  `contracts`, `security`, `a11y`, `quality` — the vocabulary of the shared
+  `references/review-checklist.md` and the review fronts). `/bb:review`'s `rules`
+  front reads every rule regardless of category; the tag is what lets a finding say
+  _what kind_ of deviation it is, and it groups the guide for a human reader. Older
+  guides carry the field as **Lens**, and some carry the earlier values
+  (`logic-edges`, `async-state`, `contracts-security`); read them as-is and map on
+  the next delta update rather than rewriting the guide for the tag alone.
 - Every example is real (from the repo) — never invent code to illustrate a
   rule; a rule without a real example gets evidence paths only.
 - Only rules the maintainer accepted in the interview enter the guide.
