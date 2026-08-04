@@ -15,7 +15,7 @@ The method below is identical either way.
 | ------------- | ----------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------- |
 | `correctness` | Correção          | bugs no diff — lógica, edges, contratos, concorrência, segurança                                    | o diff não está vazio                               | `front-correctness.md` |
 | `quality`     | Qualidade         | limpeza behavior-preserving — reuso, simplificação, eficiência, dead weight, altitude, consistência | o diff não está vazio                               | `front-quality.md`     |
-| `rules`       | Regras do projeto | desvios do `CODE_REVIEW_GUIDE.md` e dos CLAUDE.md que governam o diff                               | existe guia no root **ou** um CLAUDE.md aplicável   | `front-rules.md`       |
+| `rules`       | Regras do projeto | desvios do `CODE_REVIEW_GUIDE.md` do repo                                                           | existe `CODE_REVIEW_GUIDE.md` no root               | `front-rules.md`       |
 | `contract`    | Contrato do brief | o diff construiu o que foi combinado — e só isso                                                    | existe brief da branch (`.bb/tasks/<slug>/spec.md`) | `front-contract.md`    |
 | `a11y`        | Acessibilidade    | WCAG AA no que o diff mexeu na UI — semântica, nome acessível, teclado, foco, contraste             | o diff toca arquivo de UI                           | `front-a11y.md`        |
 | `threads`     | Threads da PR     | comentários de review não resolvidos                                                                | há PR aberta pra branch                             | `front-threads.md`     |
@@ -33,8 +33,8 @@ batch of cheap read-only calls (parallel background where possible):
   every front reference and the shared checklists read the same range instead of
   each resolving a base of its own. Uncommitted changes enter scope, flagged
   separately.
-- `CODE_REVIEW_GUIDE.md` at the repo root and the CLAUDE.md set (per
-  `front-rules.md`).
+- `CODE_REVIEW_GUIDE.md` at the repo root — the `rules` front's only rule source
+  (`front-rules.md`), so its absence is what makes the front unavailable.
 - brief lookup for this branch (plugin-root `references/task-state.md`).
 - UI in the diff, decided by **content** and not by extension: markup or
   component files (`*.{jsx,tsx,vue,svelte,astro,html,htm}`, `*.erb`, `*.hbs`,
@@ -52,7 +52,8 @@ batch of cheap read-only calls (parallel background where possible):
 A front whose probe comes back empty is **not offered** and not reported as a
 failure. Only `threads` needs an open PR; `ci` falls back to the branch's last
 run. `gh` unauthenticated makes both unavailable — say so once, with
-`gh auth login` as the remedy, and offer the rest.
+`gh auth login` as the remedy, and offer the rest. No `CODE_REVIEW_GUIDE.md` makes
+`rules` unavailable — one line, with `/bb:review-setup` as the remedy.
 
 ## Depth — auto-scaled from the diff, not asked
 
@@ -77,8 +78,8 @@ dropped.
    writer: the main context.
 2. **Each finder gets the same scope block** — the resolved diff range
    (`<merge_base>...HEAD`, the sha the probe returned, not a `<base>` the finder
-   has to guess), changed files, one paragraph of what changed, the applicable
-   rule sources, the criteria path its front points at (plugin-root
+   has to guess), changed files, one paragraph of what changed, the repo's
+   `CODE_REVIEW_GUIDE.md` when there is one, the criteria path its front points at (plugin-root
    `references/review-checklist.md` or `references/quality-checklist.md`), and the
    brief when there is one — plus ONE angle/lens set and its candidate cap.
 3. **Barrier before verify.** Pool every finder's candidates first: verification

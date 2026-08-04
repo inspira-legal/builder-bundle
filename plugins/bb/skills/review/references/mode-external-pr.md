@@ -17,8 +17,8 @@ pushes** — the output is a review, optionally posted.
 
 ## 2. Review
 
-Fronts available here: `correctness`, `quality`, `rules` (from the target repo's
-own guide and CLAUDE.md files, fetched via `gh api`), and `a11y` when the PR
+Fronts available here: `correctness`, `quality`, `rules` (only when the target repo
+publishes a `CODE_REVIEW_GUIDE.md`, fetched above), and `a11y` when the PR
 touches UI files — it's static, so the fetched source is enough. `contract`,
 `threads`, and `ci` don't apply — there's no local brief, the threads aren't yours
 to resolve, and the CI isn't yours to fix. Ask which of the four to run, same as

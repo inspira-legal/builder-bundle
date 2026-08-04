@@ -1,6 +1,6 @@
 ---
 name: review
-description: Revisa a mudança de ponta a ponta — você escolhe as frentes, ela roda em paralelo. Detecta quais frentes fazem sentido (correção, qualidade, regras do projeto, contrato do brief, acessibilidade da UI, threads da PR, CI), pergunta quais rodar, faz fan-out de agentes read-only por ângulo, verifica cada achado com um agente independente (CONFIRMED/PLAUSIBLE/REFUTED) e reporta ranqueado. Desvios de regra vêm com a regra citada ao lado da linha que a quebra — CODE_REVIEW_GUIDE.md do repo e os CLAUDE.md que governam o diff. Fecha dizendo o que checou e passou, não só o que falhou — a frente de regras entrega checklist PASS/FAIL/SKIP por regra. Depois você escolhe item por item entre corrigir e comentar na PR — ela corrige com guarda de regressão, posta os achados que você preferiu deixar registrados, responde/resolve threads e re-reporta. Também revisa uma PR externa por número e posta o review. Use quando o usuário disser "revisa minhas mudanças", "revisa a PR", "revisa esse diff", "tem bug nisso?", "responde os comentários da PR", "o CI quebrou", "conserta o CI", "limpa esse código", "simplifica o diff", "checa se seguiu as regras do projeto", "revisa a acessibilidade do que eu mudei", "auditoria de acessibilidade", "checa acessibilidade dessa pasta/página", "WCAG", "a11y", "contraste", "leitor de tela", ou "revisa a PR #42 do repo X". A frente de acessibilidade também roda sozinha em escopo de superfície — pasta, arquivos ou página rodando, sem diff. NÃO use pra abrir/finalizar uma PR e acompanhar até o fim (use /bb:ship), nem pra triagem de todas as PRs abertas do repo (use /bb:maintain-repo).
+description: Revisa a mudança de ponta a ponta — você escolhe as frentes, ela roda em paralelo. Detecta quais frentes fazem sentido (correção, qualidade, regras do projeto, contrato do brief, acessibilidade da UI, threads da PR, CI), pergunta quais rodar, faz fan-out de agentes read-only por ângulo, verifica cada achado com um agente independente (CONFIRMED/PLAUSIBLE/REFUTED) e reporta ranqueado. Desvios de regra vêm com a regra citada ao lado da linha que a quebra, direto do CODE_REVIEW_GUIDE.md do repo. Fecha dizendo o que checou e passou, não só o que falhou — a frente de regras entrega checklist PASS/FAIL/SKIP por regra. Depois você escolhe item por item entre corrigir e comentar na PR — ela corrige com guarda de regressão, posta os achados que você preferiu deixar registrados, responde/resolve threads e re-reporta. Também revisa uma PR externa por número e posta o review. Use quando o usuário disser "revisa minhas mudanças", "revisa a PR", "revisa esse diff", "tem bug nisso?", "responde os comentários da PR", "o CI quebrou", "conserta o CI", "limpa esse código", "simplifica o diff", "checa se seguiu as regras do projeto", "revisa a acessibilidade do que eu mudei", "auditoria de acessibilidade", "checa acessibilidade dessa pasta/página", "WCAG", "a11y", "contraste", "leitor de tela", ou "revisa a PR #42 do repo X". A frente de acessibilidade também roda sozinha em escopo de superfície — pasta, arquivos ou página rodando, sem diff. NÃO use pra abrir/finalizar uma PR e acompanhar até o fim (use /bb:ship), nem pra triagem de todas as PRs abertas do repo (use /bb:maintain-repo).
 license: Apache-2.0
 metadata:
   author: Athena Briana - github.com/athenabriana; quality-pass material adapted from Claude Code's /simplify, angle/verify architecture adapted from Claude Code's /code-review (Anthropic, Apache-2.0), a11y front absorbed from rafael's ui-accessibility skill (loja inspira-skills, MIT)
@@ -28,11 +28,10 @@ scope is the one path that needs neither a repo nor a diff.
 ## Step 0 — Load the review context
 
 - **Repo guide:** if `CODE_REVIEW_GUIDE.md` exists at the repo root, read it fresh
-  (never cached) — it powers the `rules` front and its severities rank the whole
-  report. No guide → one line in the report, "Sem CODE_REVIEW_GUIDE.md — regras
-  específicas do repo via /bb:review-setup", whether or not a CLAUDE.md covers the
-  diff: a CLAUDE.md is written for the agent authoring code, so it carries only part
-  of what a review guide carries (IDs, severities, evidence paths).
+  (never cached) — it's the `rules` front's whole rule source, and its severities
+  rank the whole report. No guide → the front is unavailable and the report carries
+  one line, "Sem CODE_REVIEW_GUIDE.md — regras específicas do repo via
+  /bb:review-setup". Why the guide alone is the source: `references/front-rules.md`.
 - **Legacy custom skill:** if `.claude/skills/code-review/SKILL.md` exists (an old
   generated per-repo review skill), note in the report that `/bb:review` +
   `CODE_REVIEW_GUIDE.md` supersede it and the user can delete it.
@@ -70,7 +69,7 @@ front will look for and roughly what it costs:
 question: "Achei <N> frentes possíveis nessa branch. Quais eu reviso?"
 options:
   - "Tudo que se aplica (Recomendado)" — roda as N frentes disponíveis em paralelo.
-  - "Correção + Regras" — bugs no diff e desvios do CODE_REVIEW_GUIDE/CLAUDE.md.
+  - "Correção + Regras" — bugs no diff e desvios do CODE_REVIEW_GUIDE.md.
   - "Só <frente específica>" — <o que ela cobre>.
   - "Nenhuma — encerrar" — nada roda.
 ```
@@ -202,7 +201,7 @@ Per-front method (loaded only when that front is picked):
 
 - `references/front-correctness.md` — the correctness angles over the diff, and how the diff's content picks which of them run.
 - `references/front-quality.md` — the cleanup lenses, one finder, behavior-preserving.
-- `references/front-rules.md` — `CODE_REVIEW_GUIDE.md` + CLAUDE.md deviations, with the citation discipline.
+- `references/front-rules.md` — `CODE_REVIEW_GUIDE.md` deviations, with the citation discipline.
 - `references/front-contract.md` — the brief's `## behavior` map as the acceptance contract.
 - `references/front-a11y.md` — WCAG AA: diff scope (static) and surface scope (folder, files or a rendered page).
 - `references/front-threads.md` — PR review threads: fetch, triage, fix/answer, reply/resolve.
