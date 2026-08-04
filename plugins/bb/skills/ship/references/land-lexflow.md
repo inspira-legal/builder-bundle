@@ -54,13 +54,17 @@ degrades to reading the YAMLs alone; report the inventory check as skipped.
 
 ## Quality pass — the lens set for this artifact
 
-Keep Step 2's shape — one agent per lens, every candidate through the verify pass in
+Keep Step 2's shape. The **depth table in
+`${CLAUDE_PLUGIN_ROOT}/skills/review/references/fronts.md` sizes the fan-out** here
+too — a three-file manifest change is a tiny diff whatever it's made of — and every
+candidate goes through the verify pass in
 `${CLAUDE_PLUGIN_ROOT}/skills/review/references/verify.md` (owned by `/bb:review`),
-returned as `file:line | what | evidence | suggested fix | verdict`. What
-changes is the `correctness` front's lens _content_: swap the generic angles for the
-four below, since a lens about async state has nothing to grip on in a manifest. The
-other fronts run as documented (`rules` and `contract` matter here as much as anywhere;
-`a11y` only if the app ships an `html_page` deployment):
+returned as `file:line | summary | failure_scenario | suggested fix`. The verdict is
+the verifier's column, not the finder's. What changes is the `correctness` front's
+lens _content_: swap the generic angles for the three below, since a lens about async
+state has nothing to grip on in a manifest. The other fronts run as documented —
+`quality` included, so its lenses need no restating here; `rules` and `contract`
+matter as much as anywhere; `a11y` only if the app ships an `html_page` deployment:
 
 - `workflow-logic` — step order and data flow through the workflow, branch and
   loop conditions, what happens when a step returns empty or errors
@@ -68,8 +72,6 @@ other fronts run as documented (`rules` and `contract` matter here as much as an
   referenced but not declared, permission scope of what the app touches
 - `queries-data` — correctness of SQL/queries and the shape they return to the
   workflow, cost and result-size surprises
-- `quality` — the entire Pass 2 (reuse, simplification, dead weight, efficiency,
-  altitude, consistency)
 
 This is the review these apps do not otherwise get: their repos carry no CI, and the
 generating skill only validates the syntax of YAML it just wrote.
@@ -81,7 +83,8 @@ generating skill only validates the syntax of YAML it just wrote.
    auth transparent). This publishes code and changes **no** deploy state.
 3. Read the sha: `git rev-parse HEAD`.
 4. Decide whether a deploy hand-off is even warranted. Re-run the pre-check with the
-   **committed** file list (`git diff --name-only <base>...HEAD`) — the quality pass may
+   **committed** file list (`git diff --name-only <merge_base>...HEAD`, the range the
+   probe resolved) — the quality pass may
    have touched files the first run never saw — and read its `changed` block:
    - `affects_deploy: true` → hand over the command.
    - `affects_deploy: "unknown"` → no declared source references these files, which is
