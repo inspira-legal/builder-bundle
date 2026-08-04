@@ -25,9 +25,3 @@ jobs:
 
       - name: Check formatting
         run: bun run fmt:check
-
-      - name: Show what the formatter would change
-        if: failure()
-        run: |
-          bun run fmt
-          git --no-pager diff
