@@ -8,6 +8,11 @@ frame for this run only.
   the documented lean (the recommended option it would have led with), records
   the choice in its output/commit/PR, and proceeds. A surfaced decision becomes a
   logged decision, not a blocking prompt.
+- **The lean covers this run's own work** — which fix to take, which documented
+  destination to use. Output lands where the run already writes: its own draft PR,
+  its threads, its report. Outward posting is out of reach by provisioning (App
+  scoped to this repo, no outward connector — see the routine setup docs), so a
+  skipped question has nowhere else to go.
 - **`ship` opens a draft PR and resolves it.** Destination is fixed — a **draft**
   PR on a `claude/` branch, no destination question. Then watch it **to
   resolution**: green CI and handled review-bot comments/threads (reply, fix,

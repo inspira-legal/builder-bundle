@@ -1,4 +1,4 @@
-# Applying findings — the regression guard
+# Action: apply findings — the regression guard
 
 Applying a review finding is where a review can _cause_ the next bug. This pass
 is deliberately conservative: a cleanup that changes behavior is a defect, not an
@@ -28,8 +28,16 @@ improvement, and a "fix" that isn't justified against its finding is a guess.
 
 ## Order of operations
 
-1. Correctness fixes first (highest severity first), then quality edits — a
-   quality pass over code about to be fixed is wasted work.
+1. In front order: correctness fixes first (highest severity first), then HIGH
+   rule deviations, then contract gaps, then quality edits — a quality pass over
+   code about to be fixed is wasted work.
+   - A **rule deviation** fix is applied the way the cited rule states it, and
+     the commit body quotes the rule ID. When following the rule would change
+     behavior, it stops being a mechanical fix — treat it as a correctness fix
+     and justify it as one.
+   - A **contract gap** is closed by building the missing behavior or the missing
+     test, not by editing the brief. When the brief itself turns out to be wrong,
+     that's a `/bb:spec` conversation, not a review edit.
 2. Scope stays the code this branch already changed — no refactoring untouched
    code "while at it" (the scope rule in the plugin-root
    `references/quality-checklist.md`).

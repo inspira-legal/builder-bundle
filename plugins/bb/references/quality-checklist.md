@@ -29,10 +29,16 @@ ternaries for multiple conditions.
 - **Dead weight** — unused imports/variables/branches introduced by the branch,
   leftover debug code, commented-out code.
 - **Efficiency** — obvious O(n²) over collections that can be O(n), repeated I/O
-  or queries inside loops, recomputing invariants per iteration.
+  or queries inside loops, recomputing invariants per iteration, independent
+  operations run sequentially, blocking work added to startup or a hot path. Also
+  long-lived objects built from closures or captured environments: they keep the
+  whole enclosing scope alive for the object's lifetime, which is a leak when that
+  scope holds large values — a struct/class copying only the fields it needs is the
+  cheaper form.
 - **Altitude** — code placed at the wrong layer (e.g. project-specific logic in
   shared, or reusable logic buried in a feature folder), respecting the project's
-  stated architecture conventions.
+  stated architecture conventions. Special cases stacked on shared infrastructure
+  belong here too: generalizing the underlying mechanism is the real fix.
 - **Consistency** — naming, error envelopes, and patterns matching what
   neighboring code does.
 

@@ -1,10 +1,10 @@
 # Diff Review Checklist
 
-Two passes over `git diff <base>...HEAD`, in this order. Read every hunk with its surrounding context (open the file, not just the diff) before judging it.
+Two passes over the review's diff range, in this order. The range is resolved once by the caller and handed down in the scope block (`<merge_base>...HEAD`, per the probe in `skills/review/references/fronts.md`) — don't re-resolve a base here. Read every hunk with its surrounding context (open the file, not just the diff) before judging it.
 
 ## Pass 1 — Correctness (find bugs)
 
-Report only findings you can defend with the code in front of you; verify each one against the actual file before claiming it.
+Every finding names a **concrete user-visible consequence** — wrong output, crash, data loss, hung request — with the line that causes it. A candidate with no nameable consequence isn't a finding; one whose trigger is uncertain still is, and the verdict on it belongs to the verify pass (`skills/review/references/verify.md`), not to the pass that found it.
 
 - **Logic errors** — inverted conditions, off-by-one, wrong operator, unreachable branches
 - **Edge cases** — empty/null/undefined inputs, zero-length collections, first/last iteration, unicode
@@ -15,7 +15,7 @@ Report only findings you can defend with the code in front of you; verify each o
 - **Security** — injection (SQL/shell/path), unvalidated input crossing a trust boundary, secrets in code or logs
 - **Type safety** — casts that hide real mismatches, `any`/`type: ignore` covering an actual error
 
-Report each finding as `file:line | what breaks | a concrete triggering input/scenario | suggested fix | confidence`. What happens next is the calling skill's call: `/bb:ship` applies high-confidence fixes and flags uncertain ones at its approval gate; `/bb:review` reports first and applies only what the user picks at its curation step.
+Report each finding as `file:line | summary | failure_scenario | suggested fix`. The verdict column is added by the verify pass, which is what makes CONFIRMED / PLAUSIBLE / REFUTED mean anything — a finder that grades its own candidates bypasses it. What happens next is the calling skill's call: `/bb:ship` fixes by its severity policy (CONFIRMED correctness, HIGH rule deviations, Critical/Major a11y, missing contract rows, plus cheap-and-safe PLAUSIBLE) and names the rest in the summary; `/bb:review` reports first and applies only what the user picks at its curation step.
 
 ## Pass 2 — Quality (simplify; no behavior changes)
 

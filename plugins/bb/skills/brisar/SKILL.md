@@ -49,7 +49,7 @@ error messages — is **PT-BR**; instruction bodies are English.
 8. **Deliver visual direction before Develop.** The Develop phase needs
    `design/<surface>.md`; without it the builder is back to pure shaping.
 9. **Suggest, never auto-invoke.** Other skills (/bb:discover, /bb:spec,
-   /bb:challenge, /bb:ui-accessibility) are always suggested via handoff gate.
+   /bb:challenge, /bb:review) are always suggested via handoff gate.
    Internal phase transitions (→ Develop, → Deliver) also go through a gate —
    the builder crosses them on purpose.
 10. **Never block due to missing tooling.** git missing → manual instructions.
@@ -250,7 +250,7 @@ Develop (entered via gate, shortcut, or direct ask)
 
 Deliver (entered via gate, shortcut, or direct ask)
   → design review + accessibility + handoff doc
-  → gate: /bb:ui-accessibility (deep audit) / /bb:spec / encerrar
+  → gate: /bb:review (auditoria de acessibilidade) / /bb:spec / encerrar
 ```
 
 One sharp caution: **never overwrite an existing `.brisar/` session without

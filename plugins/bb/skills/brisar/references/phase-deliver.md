@@ -5,7 +5,7 @@ Loaded when the builder chooses to review/deliver (Develop gate, the `deliver-di
 This phase does **3 things**:
 
 1. **Design review** — confronts the built surfaces (Develop phase output) against the discover brief's hypothesis and cuts. Flags only what matters.
-2. **Accessibility audit** — validates WCAG AA. Suggests `/bb:ui-accessibility` when depth is required; does inline checks when it's just a sanity check.
+2. **Accessibility audit** — validates WCAG AA. Suggests `/bb:review` (accessibility audit, surface scope) when depth is required; does inline checks when it's just a sanity check.
 3. **Handoff doc** — generates the document that the developer/agent reads to implement (mapped components, states, edge cases, recorded decisions).
 
 Doesn't scaffold (Phases 1–3). Doesn't build (Develop phase). Doesn't decide scope (`/bb:discover`). Only reviews, records, and delivers.
@@ -71,7 +71,7 @@ Call `AskUserQuestion`:
         },
         {
           "label": "Accessibility audit",
-          "description": "WCAG AA — contraste, teclado, leitor de tela, ARIA. Sugere /bb:ui-accessibility se profundidade exige."
+          "description": "WCAG AA — contraste, teclado, leitor de tela, ARIA. Sugere /bb:review (auditoria de acessibilidade) se profundidade exige."
         },
         {
           "label": "Handoff doc",
@@ -101,7 +101,7 @@ Lazy-load `references/deliver-modes.md`. Do not load all modes in Step 0.
 ### Stance per mode
 
 - **Design review:** goes surface by surface (reads `tarsila.surfaces[]`). For each, validates 4 lenses: (a) hypothesis fit, (b) visual hierarchy + CTA, (c) consistency with the design system, (d) obvious missing edge cases. Comments only if the issue is significant. At least 1 piece of praise for what worked (not cheerleading — it's information: "this worked, keep it").
-- **Accessibility:** suggests `/bb:ui-accessibility` if the builder requested depth or if it's going to merge. Otherwise, does inline: color contrast, keyboard navigation (mental walkthrough), `aria-label` on icons, tab order, visible focus.
+- **Accessibility:** suggests `/bb:review`'s accessibility audit (surface scope — it can read the rendered page) if the builder requested depth or if it's going to merge. Otherwise, does inline: color contrast, keyboard navigation (mental walkthrough), `aria-label` on icons, tab order, visible focus.
 - **Handoff doc:** reads tokens + components from the design-context, reads the built surfaces, and generates a structured doc for the developer. Doesn't invent components — only maps what exists. If context to fill a section is missing, ask or skip it with `not-applicable` + reason.
 
 ## Step 3 — Persistence + gate
@@ -131,7 +131,7 @@ clarisse:
   handoff:
     completeness: high | med | low
     ci_code_review_present: bool
-  next_action: ready-to-merge | fix-blockers | re-prototype | run-/bb:ui-accessibility
+  next_action: ready-to-merge | fix-blockers | re-prototype | run-a11y-audit
 ```
 
 ### Gate (always the last)
@@ -147,7 +147,7 @@ Echo the final status in 1 line — e.g.: _"Design review: 2 issues significativ
       "options": [
         {
           "label": "Auditoria profunda de acessibilidade",
-          "description": "Sugiro /bb:ui-accessibility — análise WCAG AA completa com matriz de prioridade"
+          "description": "Sugiro /bb:review — auditoria WCAG AA da superfície, com matriz de prioridade"
         },
         {
           "label": "Especificar a implementação real",
@@ -190,7 +190,6 @@ One sharp caution: design review and accessibility live in **separate files** �
 
 ### Related skills (suggest, never invoke)
 
-- `/bb:ui-accessibility` — when accessibility needs depth
 - `/bb:review-setup` — when the target repo doesn't have the code-review workflow
-- `/bb:review` — after a PR is opened, reviews the diff
+- `/bb:review` — after a PR is opened, reviews the diff; also the accessibility audit when a11y needs depth
 - `/bb:challenge` — when the design review reveals the hypothesis may be wrong (pre-mortem before merging)

@@ -1,10 +1,10 @@
 ---
 name: ship
-description: Leva a branch atual até landed — do seu jeito. Passa o diff pelo quality pass, esverdeia os checks locais do projeto e landa pelo destino que você escolher — push pra feature branch, preparar push pra main, abrir/finalizar uma pull request, ou preparar o deploy de um app LexFlow. No caminho de PR, trata comentários de review automaticamente (responde, aplica fixes, pusha, resolve threads), acompanha o CI até verde e fica de olho na PR (comentários novos/CI/conflitos) até você parar. No caminho LexFlow, revisa os workflows YAML, commita, pusha e te entrega o comando de deploy com o sha revisado. Nunca mergeia, nunca pusha branch protegida e nunca deploya (te entrega o comando). Use quando o usuário disser "ship it", "shipa isso", "landa essa branch", "sobe pra main", "abre a PR", "finaliza a PR", "esverdeia a PR", "acompanha minha PR", "deploya no lexflow", "sobe o app lexflow". NÃO use pra triagem de todas as PRs abertas e dependências (use /bb:maintain-repo) nem pra só resumir a branch (use /bb:gather-branch-context).
+description: Leva a branch atual até landed — do seu jeito. Passa o diff pela mesma engine de review do /bb:review (correção, qualidade, regras do projeto, contrato do brief, acessibilidade — sem perguntar, tudo que se aplica, com verificação independente de cada achado), esverdeia os checks locais do projeto e landa pelo destino que você escolher — push pra feature branch, preparar push pra main, abrir/finalizar uma pull request, ou preparar o deploy de um app LexFlow. No caminho de PR, trata comentários de review automaticamente (responde, aplica fixes, pusha, resolve threads), acompanha o CI até verde e fica de olho na PR (comentários novos/CI/conflitos) até você parar. No caminho LexFlow, revisa os workflows YAML, commita, pusha e te entrega o comando de deploy com o sha revisado. Nunca mergeia, nunca pusha branch protegida e nunca deploya (te entrega o comando). Use quando o usuário disser "ship it", "shipa isso", "landa essa branch", "sobe pra main", "abre a PR", "finaliza a PR", "esverdeia a PR", "acompanha minha PR", "deploya no lexflow", "sobe o app lexflow". NÃO use pra triagem de todas as PRs abertas e dependências (use /bb:maintain-repo) nem pra só resumir a branch (use /bb:gather-branch-context).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 # Ship
@@ -49,25 +49,24 @@ When the destination is LexFlow, load `references/land-lexflow.md` now — it ca
 
 ## Step 2 — Quality pass + green the gate (always, every destination)
 
-This runs identically whatever the destination — it's the substance of shipping. Self-contained; do not invoke other skills. Review criteria live in `references/review-checklist.md` at the plugin root — the single source of truth shared with `/bb:review`.
+This runs identically whatever the destination — it's the substance of shipping. The **method** is the one `/bb:review` documents: ship **reads its references** and orchestrates the pass itself, so there's one definition of how a review is done and no drift between the two entry points. Reading is the whole borrow: ship answers by policy the three things review's router would ask (auto-pick the fronts, fix by severity, land) and owns the control flow through to the landing.
 
 Launch the read-only work concurrently — review agents in one message, scripts/checks as background Bash:
 
-1. **Review agents** (Agent tool, read-only — they report, never edit). Each gets the diff scope (`git diff <base>...HEAD`), the path to the plugin-root `references/review-checklist.md`, and ONE lens:
-   - `logic-edges` — logic errors, edge cases, error handling
-   - `async-state` — async/concurrency, state & lifecycle
-   - `contracts-security` — contract breaks, security, type safety
-   - `quality` — the entire Pass 2 (reuse, simplification, dead weight, efficiency, altitude, consistency)
+1. **Review pass — the review engine, auto-picked.** Ship never asks which fronts; it runs every front available on this branch. Load from `${CLAUDE_PLUGIN_ROOT}/skills/review/references/`:
+   - `fronts.md` — the front catalog, the availability probe (which also resolves the diff range every finder gets), and the depth table that sizes the fan-out from the diff.
+   - one `front-*.md` per front the probe made available. The catalog in `fronts.md` **is** the list, so a front added to the engine reaches ship without an edit to this file.
+   - `verify.md` — the barrier, grouping by `file:line`, and the independent verdict (CONFIRMED / PLAUSIBLE / REFUTED) that every candidate passes through before it counts.
 
-   For `project_kind: lexflow` the structure is identical but the lens _content_ comes from `references/land-lexflow.md` — a declarative manifest gives a lens about async state nothing to grip on.
+   Two fronts are ship's own business and stay out: `threads` and `ci` — ship handles review comments and red checks itself, further down and in `references/land-pr.md`. `rules` is where the repo's `CODE_REVIEW_GUIDE.md` becomes binding on the code ship is about to land — and its absence is what takes the front off the table; `contract` is where the brief's `## behavior` map is checked row by row (resolved per the plugin-level `references/task-state.md`).
 
-   Each verifies every finding against the actual file (not just the diff) and returns: `file:line | what | evidence | suggested fix | confidence`.
-   For tiny diffs (≲2 files / ≲100 lines), skip the fan-out and apply the checklist in the main context.
-   If a task brief matches this branch (resolved per the plugin-level `references/task-state.md` — `.bb/tasks/<slug>/spec.md`), pass it to the agents as the intended scope — review the diff against what was agreed (did it build the shaped thing, and only that?), not just generic correctness. Its `## behavior` map is the acceptance contract: each `WHEN … THEN …` row is a test — check the happy path is built and each mapped edge is handled per its outcome. A mapped behavior with no corresponding code or test is a finding. When judging whether the diff's **stack choices** (new dependency, tool, framework) are approved, consult the manifesto (plugin-level `references/consult-manifesto.md`).
+   For `project_kind: lexflow` the structure is identical but the correctness lens _content_ comes from `references/land-lexflow.md` — a declarative manifest gives a lens about async state nothing to grip on.
+
+   When judging whether the diff's **stack choices** (new dependency, tool, framework) are approved, consult the manifesto (plugin-level `references/consult-manifesto.md`).
 
 2. **Local checks** (background): detect the project's check commands in this order of authority: project CLAUDE.md / docs, CI workflow files (`.github/workflows/`), then `package.json` / `justfile` / `Makefile` / `pyproject.toml`. Run the full gate CI runs — lint, format, typecheck, tests — as concurrent background shells. Detection finding nothing is a real answer, not a failure: a LexFlow app repo has no CI and no build, and its gate is the one in `references/land-lexflow.md`. Say which gate ran.
 
-3. **Apply fixes in the main context only** (agents never edit — single writer): dedupe review findings against each other, re-check each against the file, then apply high-confidence review fixes + local-check fixes. Quality edits change zero behavior and touch only code this branch changed. Keep uncertain findings for the summary.
+3. **Apply fixes in the main context only** (agents never edit — single writer). The verify pass already deduped and ranked, so what's left is deciding what ships fixed: **CONFIRMED correctness bugs, HIGH rule deviations, Critical/Major a11y failures and missing contract rows get fixed**, along with the local-check failures. PLAUSIBLE findings get fixed when the fix is cheap and safe, and go to the summary otherwise. **Quality findings ship fixed only when the edit is local to a hunk the diff already touched and the gate re-runs clean** — a cleanup is never worth a landing delay, so anything broader than that goes to the summary as a suggestion. That severity policy is ship's — it's what replaces review's curation question. **How** each fix is applied is the engine's: `act-apply-fixes.md` from the same borrowed directory carries the regression guard (one change at a time, re-check after each, quality edits behavior-preserving, untested code left flagged) and the order of operations. Refuted candidates and anything left unfixed are named in the summary, never dropped silently.
 
 4. **Re-run the local gate** (failed/affected first, then the full gate) until clean.
 
@@ -88,9 +87,13 @@ Load the reference for the destination Step 1 settled, and follow it:
 
 ## Bundled Resources
 
-### references/review-checklist.md (plugin root)
+### The review engine (`skills/review/references/`, read via `${CLAUDE_PLUGIN_ROOT}`)
 
-Two-pass diff review checklist for the quality pass: correctness (bug-finding) and quality (simplification) criteria. Lives at the plugin root, shared with `/bb:review`.
+`fronts.md`, `verify.md`, the `front-*.md` set and `act-apply-fixes.md` — the method for Step 2's review pass, owned by `/bb:review` and read here so both entry points review and fix the same way. What stays ship's own: auto-picking the available fronts minus `threads`/`ci`, the severity policy for what ships fixed, no selection question and no gate.
+
+### references/review-checklist.md, references/quality-checklist.md (plugin root)
+
+The correctness and quality criteria the fronts point at. Shared with `/bb:review`.
 
 ### references/land-branch.md
 

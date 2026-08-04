@@ -121,18 +121,18 @@ Not cheerleading. Information. Identify 1 decision that worked and say _why_ —
 
 ### Decision: inline or delegate?
 
-| Signal                                                     | Action                                                                                                                                        |
-| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Builder asked for "deep audit" or "before merging to prod" | **Suggest `/bb:ui-accessibility`** (specialized skill). Flag in handoff: "Rode `/bb:ui-accessibility` na pasta `<projeto>` antes de mergear." |
-| Quick sanity check during design review                    | **Inline** (5 checks below)                                                                                                                   |
-| Small appetite + hosted prototype                          | **Inline** is sufficient                                                                                                                      |
+| Signal                                                     | Action                                                                                                                                                                      |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Builder asked for "deep audit" or "before merging to prod" | **Suggest `/bb:review`'s accessibility audit** (surface scope). Flag in handoff: "Rode `/bb:review` — auditoria de acessibilidade na pasta `<projeto>` — antes de mergear." |
+| Quick sanity check during design review                    | **Inline** (5 checks below)                                                                                                                                                 |
+| Small appetite + hosted prototype                          | **Inline** is sufficient                                                                                                                                                    |
 
 ### Inline checks (only if decision = inline)
 
 **1. Color contrast (WCAG AA = 4.5:1 for normal text, 3:1 for large text)**
 
 - For each foreground/background pair used in the prototype, validate.
-- If in doubt, suggest /bb:ui-accessibility — don't guess values.
+- If in doubt, suggest the /bb:review accessibility audit — don't guess values.
 
 **2. Keyboard navigation (mental walkthrough)**
 
@@ -166,7 +166,7 @@ Not cheerleading. Information. Identify 1 decision that worked and say _why_ —
 # Accessibility checklist — <projeto>
 
 > Gerado pela fase Deliver do /bb:brisar em <ISO date>
-> Modo: inline | delegated (sugerido /bb:ui-accessibility)
+> Modo: inline | delegated (sugerido /bb:review — auditoria de acessibilidade)
 > WCAG target: AA
 
 ## Status
@@ -332,5 +332,5 @@ clarisse:
 **Mental recap before closing the phase:**
 - Each mode generated its artifact.
 - session.yaml has `clarisse:` complete with `status`, `ran_modes`, `next_action`.
-- End at the Step 3 gate of `phase-deliver.md` (ui-accessibility / spec / encerrar) — suggest, never invoke.
+- End at the Step 3 gate of `phase-deliver.md` (auditoria de acessibilidade / spec / encerrar) — suggest, never invoke.
 ```

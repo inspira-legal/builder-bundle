@@ -40,6 +40,11 @@ the routine is provisioned, and that holds even if the frame is ignored:
 - **Enable branch protection** on `main` / `master` / `release` (require a PR,
   block direct and force pushes) — the server-side backstop that holds even if the
   token scoping above is misconfigured.
+- **Scope the outward reach the same way.** A skipped question must not be able to
+  resolve into a post somewhere public, so make that unreachable rather than
+  discouraged: install the App on **only** the repos the routine works, and attach
+  **no** outward connector (Slack, email, social). What's left is the run's own
+  draft PR and its threads — which is exactly the documented lean.
 - **Network:** the Trusted preset (registries + GitHub) is enough.
 
 ## The routine prompt
