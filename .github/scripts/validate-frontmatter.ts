@@ -90,7 +90,7 @@ function validateAgentTools(tools: unknown): ValidationIssue[] {
     return [
       {
         level: "error",
-        message: 'Missing "tools" field — an agent without it inherits every tool, write tools included',
+        message: 'Missing "tools" field — an agent without it inherits every tool',
       },
     ];
   }
@@ -102,17 +102,23 @@ function validateAgentTools(tools: unknown): ValidationIssue[] {
       : null;
 
   if (listed === null) {
-    return [{ level: "error", message: `"tools" must be a list or a comma-separated string (got ${typeof tools})` }];
+    return [
+      {
+        level: "error",
+        message: `"tools" must be a list or a comma-separated string (got ${typeof tools})`,
+      },
+    ];
   }
 
   const names = listed.map((t) => t.trim()).filter(Boolean);
   const forbidden = names.filter((t) => FORBIDDEN_AGENT_TOOLS.includes(t) || t === "*");
 
   if (forbidden.length > 0) {
+    const list = forbidden.join(", ");
     return [
       {
         level: "error",
-        message: `Write-capable tools in "tools": ${forbidden.join(", ")} — bb agents are read-only roles`,
+        message: `Write-capable tools in "tools": ${list} — bb agents are read-only roles`,
       },
     ];
   }
