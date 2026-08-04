@@ -14,6 +14,9 @@ enforced by cloud capability scoping (see the routine setup docs), not a local h
 .claude-plugin/marketplace.json        # lists the single `bb` plugin
 plugins/bb/
 ├── .claude-plugin/plugin.json
+├── agents/                            # pipeline roles (auto-discovered, no plugin.json entry)
+│   ├── bb-finder.md                    # review fan-out: finds candidates, read-only by `tools:`
+│   └── bb-verifier.md                  # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
 ├── hooks/                             # session infra (auto-active, no skill)
 │   ├── hooks.json                      # SessionStart context injection
 │   ├── enter_worktree.py               # worktree isolation for local autonomous runs
@@ -52,6 +55,14 @@ plugins/bb/
   the dir name identical to the frontmatter `name`.
 - Each skill is self-contained: `scripts/` and `references/*.md` relative to the
   skill dir.
+- Agents live in `plugins/bb/agents/<name>.md`, auto-discovered (no `plugin.json`
+  entry). They exist to make a hazard structural: the `tools:` list is what keeps
+  the review fan-out from writing, which is why CI fails a bb agent that lists a
+  write tool. Name them by **role in the pipeline**, not by front or phase — what
+  varies between fronts is prompt content the caller already assembles. The system
+  prompt owns that role's invariant contract as its single owner, and the skill
+  references defer to it; the `description` is PT-BR and sits in context globally,
+  so keep it narrow and name the skill that is the real entry point.
 - The plugin ships hooks in `plugins/bb/hooks/hooks.json` (auto-activate when the
   plugin is enabled). Hook commands reference files via `${CLAUDE_PLUGIN_ROOT}/...`.
   Irreversible hazards on the unattended path are kept out by capability scoping

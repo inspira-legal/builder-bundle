@@ -113,24 +113,24 @@ a defesa de leitura; o scoping é redução de superfície, não isolamento.
 
 ## tasks
 
-- [ ] **Slice 1 — os dois agentes.** `plugins/bb/agents/bb-finder.md` e
+- [x] **Slice 1 — os dois agentes.** `plugins/bb/agents/bb-finder.md` e
       `bb-verifier.md`: frontmatter (`name`, `description` PT-BR estreita,
       `tools: ["Read", "Grep", "Glob", "Bash"]`, sem `model`) + system prompt em
       inglês com o contrato invariante de cada papel migrado. Entrega os
       comportamentos: happy path 3/5, "sem Finding shape", "injection" (limite
       declarado no prompt), dispatch estreito.
-- [ ] **Slice 2 — o engine passa a despachá-los.** `fronts.md` (item 1 nomeia
+- [x] **Slice 2 — o engine passa a despachá-los.** `fronts.md` (item 1 nomeia
       `subagent_type: bb-finder`; item 5 defere o contrato ao agente),
       `review/SKILL.md:91`, `verify.md §2` (defere a rubrica, mantém o addendum por
       frente), `front-correctness.md` (defere o parágrafo da consequência nomeável).
       Entrega: happy path 2/5, fallback sem `bb-finder`, candidatos de
       rules/contract/a11y, `/bb:ship` herdando.
-- [ ] **Slice 3 — o CI guarda o scoping.** `validate-frontmatter.ts` caminha em
+- [x] **Slice 3 — o CI guarda o scoping.** `validate-frontmatter.ts` caminha em
       `agents/*.md`, exige `name`+`description` e falha em `Write`/`Edit`/
       `NotebookEdit` no `tools:` de agente do bb; `validate.yml` ganha
       `plugins/bb/agents/**` e `.github/scripts/**` no `paths:`. Entrega: as duas
       linhas de CI da tabela de edges.
-- [ ] **Slice 4 — docs e versão** (sem comportamento próprio, housekeeping):
+- [x] **Slice 4 — docs e versão** (sem comportamento próprio, housekeeping):
       `.claude/CLAUDE.md` (árvore ganha `agents/`, uma linha de convenção ao lado
       da de scripts compartilhados), README se listar a estrutura, bump
       `2.2.0` → `2.3.0` no `plugin.json` e nos SKILL.md tocados.
