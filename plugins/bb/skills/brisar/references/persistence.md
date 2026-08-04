@@ -12,9 +12,9 @@ Optional fields appear as `null` when not filled in.
 
 ```yaml
 version: 2
-brisar_version: "2.0.0"
+brisar_version: "2.1.0"
 status: in-progress | completed | bootstrapped-to-discover
-current_phase: brisar-intake | develop | deliver | done
+current_phase: brisar-intake | research | brief | diverge | medium | develop | deliver | done
 
 created_at: <ISO>
 completed_at: <ISO or null>
@@ -47,23 +47,97 @@ gate:
   resolution: bootstrap-to-discover | override | not-applicable
   override_reason: <string or null>
   discover_brief: <path or null>   # filled on the bootstrap return (Step 0.1) — points at .bb/tasks/<slug>/spec.md
+  design_brief: <path or null>     # filled by the Brief phase — points at .bb/tasks/<slug>/brief-design.md
 
-# Shaping lives OUTSIDE this file: /bb:discover writes .bb/tasks/<slug>/spec.md
-# (problem, fit, hypothesis, appetite, cuts). gate.discover_brief points at it.
+# Two briefs, two questions, and they COEXIST — neither replaces the other:
+#   discover_brief → is it worth building, for whom, what did we cut?  (/bb:discover, /bb:spec)
+#   design_brief   → how should this surface be, and why?              (the Brief phase here)
+# Shaping lives OUTSIDE this file. Both paths point into .bb/tasks/<slug>/.
+
+# ============================================================
+# Research phase (the first diamond — before any pixel)
+# ============================================================
+research:
+  status: null | in-progress | completed | partial | blocked
+  mode: pocket | full
+  ran: [bench, ds, new-component, biases, heuristics, mental-models, product-inventory]
+  skipped:
+    - front: <name>
+      reason: <one line — why it did not earn its cost>   # declared, never silent
+  ds_source:
+    path: <path actually read>
+    authority: source | frozen-fallback
+  degraded: [<front>: <reason>]   # tooling gaps, e.g. mobbin absent
+  next_action: ready-for-brief
+
+# ============================================================
+# Brief phase (the design contract — updated EVERY later round)
+# ============================================================
+brief:
+  status: null | in-progress | completed
+  path: <canonical path to brief-design.md>
+  round: <int>                     # increments on every update
+  reconciliation:
+    upstream: <path to the discover brief, or null>
+    confirms: <n>
+    contradicts: <n>               # >0 means the framing needs a decision
+    unreachable: <n>
+  open_tension: <one line>
+  next_action: ready-for-diverge
+
+# ============================================================
+# Diverge phase (directions in equal standing)
+# ============================================================
+diverge:
+  status: null | in-progress | completed
+  count: <n>                       # >= 2
+  base_declared: bool              # the block common to all directions
+  directions:
+    - id: <short-name>
+      bet: <one line>
+      is_baseline: bool            # the conventional direction, used as the comparison floor
+      cost: low | fits-appetite | over-appetite
+      status: chosen | runner-up | discarded
+      discard_reason: <only when discarded>
+  pivot_condition: <one line>
+  excluded: [<idea>: <reason>]     # never went to divergence, and why
+  next_action: ready-for-medium
+
+# ============================================================
+# Medium (where the exploration happens — asked, never assumed)
+# ============================================================
+medium:
+  chosen: código | claude-design | paper | figma | pencil
+  offered: [<options presented>]
+  unavailable: [<medium>: <missing mcp>]   # named to the builder, not hidden
+  reason: <one line — why this one fits>
+  history: [<medium per round, in order>]  # canvas-then-code is normal, not a conflict
+  scaffold: required | skipped              # canvas mediums skip Phase 3
+  deliver_reader: files | preview | paper-mcp | figma-mcp | pencil-mcp
 
 # ============================================================
 # Develop phase (high-fidelity surface construction)
 # ============================================================
 tarsila:
   status: null | in-progress | completed | blocked
-  build_target: react+tailwind | prototype-html | storybook
+  medium: código | claude-design | paper | figma | pencil
+  build_target: react+tailwind | prototype-html | storybook | canvas | preview-html
   surfaces:
     - name: <surface_name>
-      file: <path>
+      # Locator — Deliver opens the artifact from this. Imprecise here = unreviewable.
+      file: <path>                 # medium código / claude-design
+      canvas:                      # medium paper / figma / pencil
+        file: <file name or id>
+        page: <page name>
+        artboards: [<names, one per state or variant>]
+      variants: [<variant name>]   # the review unit is surface × variant
       status: built | iterated | blocked
       custom_components: [<name>]
       missing_tokens: [<token>]
       states_covered: [default, loading, empty, error]
+      deviations:                  # conscious departures — judged by Deliver, not rediscovered
+        - what: <one line>
+          why: <one line>
       last_updated: <ISO>
   notes_path: ".brisar/tarsila/notes.md" | null
   next_action: ready-for-review | needs-tokens | re-prototype
@@ -74,6 +148,8 @@ tarsila:
 clarisse:
   status: null | in-progress | completed | blocked
   ran_modes: [design-review | accessibility | handoff]
+  medium: código | claude-design | paper | figma | pencil
+  reader: files | preview | paper-mcp | figma-mcp | pencil-mcp
   artifacts:
     design_review: ".brisar/clarisse/design-review.md" | null
     accessibility: ".brisar/clarisse/accessibility-checklist.md" | null
@@ -81,7 +157,16 @@ clarisse:
   design_review:
     blockers: <N>
     significants: <N>
+    divergences: <N>               # >0 means a contract decision needs the owner
+    minors: <N>
+    surfaces_swept: <N>            # surface × variant combinations actually reviewed
+    variants_unreviewed: [<name>]  # unreachable ones — never silently omitted
+    lenses_skipped: [<lens>: <reason>]   # e.g. contrast, when values were unreadable
     fit_with_hypothesis: aligned | partial | misaligned | unknown
+    triangulation:
+      built_honors_research: aligned | partial | misaligned | unknown
+      research_honors_problem: aligned | partial | misaligned | unknown
+      who_is_wrong: none | design | framing | both
   accessibility:
     wcag_aa_status: pass | fail | partial | not-assessed
     mode: inline | delegated
@@ -90,7 +175,11 @@ clarisse:
     completeness: high | med | low
     ci_code_review_present: bool
     surfaces_documented: <N>
-  next_action: ready-to-merge | fix-blockers | re-prototype | run-/bb:ui-accessibility
+    spec_delta: [<what the contract has to absorb>]   # empty is a valid answer
+  next_action: ready-to-merge | fix-blockers | decide-divergences | re-prototype | run-/bb:ui-accessibility
+
+# variants_unreviewed and lenses_skipped are not bookkeeping: they are the difference
+# between "reviewed" and "reviewed the first artboard with the lenses that happened to work".
 
 # ============================================================
 # Surfaces tracking (Phase 4)
@@ -122,15 +211,22 @@ Old sessions may carry `nise:`/`esperanca:` sections, a `shaping:` block, and st
 - `bootstrapped-from-brisar` → `bootstrapped-to-discover` (the builder now runs `/bb:discover` instead of /nise).
 - `deferred-to-*` statuses → `in-progress` (the deferral targets no longer exist as separate skills; the gates re-offer the right next step).
 - Leave the old `nise:`/`esperanca:` sections in place (read-only reference); write only the v2 keys.
-- Bump `brisar_version: "2.0.0"`.
+- Bump `brisar_version: "2.1.0"`.
 
 ### Status states — who can set
 
-| Status                     | Set by                           | Meaning                                                                                                                                                                             |
-| -------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `in-progress`              | any phase                        | Session started, not finished. Step 0.1 offers to resume.                                                                                                                           |
-| `bootstrapped-to-discover` | Phase 2 (gate accepted)          | Partial intake written; waiting for the builder to run `/bb:discover` and come back. Step 0.1 detects it, locates the brief, records `gate.discover_brief`, and resumes at Phase 3. |
-| `completed`                | last phase run (usually Deliver) | Journey finished. Re-runs enter the re-entry contract.                                                                                                                              |
+| Status                     | Set by                           | Meaning                                                                                                                                                                                                                                           |
+| -------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `in-progress`              | any phase                        | Session started, not finished. Step 0.1 offers to resume.                                                                                                                                                                                         |
+| `bootstrapped-to-discover` | Phase 2 (gate accepted)          | Partial intake written; waiting for the builder to run `/bb:discover` and come back. Step 0.1 detects it, locates the brief, records `gate.discover_brief`, and resumes at the **Research phase** — the framing is what the research has to test. |
+| `completed`                | last phase run (usually Deliver) | Journey finished. Re-runs enter the re-entry contract.                                                                                                                                                                                            |
+
+**A design brief on disk is itself a resume signal**, session or no session. Step 0.1 globs
+`.bb/tasks/*/brief-design.md`; when one exists the first diamond already ran, and brisar picks up
+from how far it got (findings only → Diverge · directions with none chosen → convergence · a chosen
+direction, nothing built → the medium question · surfaces built → Deliver). **Never re-run research
+over an existing brief** — it is the most expensive mistake available here, and it destroys the
+round history the brief was keeping.
 
 ### Where session.yaml lives
 
@@ -144,7 +240,7 @@ This is the file the Develop phase reads to find tokens.md/components.md. More s
 
 ```yaml
 version: 1
-brisar_version: "2.0.0"
+brisar_version: "2.1.0"
 slug: "<slug>"
 created_at: <ISO>
 

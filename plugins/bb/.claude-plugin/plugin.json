@@ -1,7 +1,7 @@
 {
   "name": "bb",
   "description": "Builder Bundle (bb): o plugin unificado de skills pra builders da Inspira — 16 skills em 6 trilhas (Pensar, Desenhar, Construir, Revisar, Design, Pesquisar/Doc), invocadas como /bb:<skill> (ex.: /bb:spec). Nunca-merge no caminho unattended via capability scoping. Inclui hook SessionStart de contexto operacional.",
-  "version": "2.0.0",
+  "version": "2.1.0-dev",
   "author": {
     "name": "Athena Briana",
     "email": "me@athenabriana.com"

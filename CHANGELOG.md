@@ -1,5 +1,87 @@
 # Changelog
 
+## 2.1.0 — 2026-07-31
+
+O `/bb:brisar` passa a cobrir o **duplo diamante inteiro**. Antes ele começava no
+scaffold: o builder chegava com uma ideia e saía com uma tela, sem nenhuma etapa
+entre as duas além do próprio repertório dele. O primeiro diamante — pesquisar o
+espaço antes de desenhar dentro dele — não existia em skill nenhuma do bundle.
+
+Nada foi removido e nenhuma fase existente mudou de contrato. As fases 0–3
+(calibração, intake, maturity gate, scaffold) seguem iguais.
+
+### Novo — o primeiro diamante
+
+- **`references/phase-research.md`** — pesquisa antes do pixel, em subagentes
+  paralelos. **Piso que roda em qualquer modo:** bench de mercado (Mobbin),
+  o design system **lido da fonte** (não da memória, não de cópia congelada), e
+  a resposta explícita pra "precisa de componente novo?". **Discricionário, e
+  declarado:** vieses comportamentais com proveniência (fonte primária ou
+  `[não verificado]`), heurísticas, modelos mentais, e "o que o produto já tem
+  pra mostrar" (assets no repo, dado que existe de fato, copy viva no i18n,
+  locales). O modo (`pocket`/`full`) é julgado, não perguntado — e o que foi
+  pulado é dito em voz alta. Corte silencioso se lê como cobertura completa.
+- **`references/brief.md`** — o design brief como **contrato vivo** em
+  `.bb/tasks/<slug>/brief-design.md`, registrado em `gate.design_brief`.
+  Atualizado a cada rodada sem ser pedido, e no fim vira delta pro spec.
+  Traz a **reconciliação obrigatória** contra o enquadramento do
+  `/bb:discover` — _confirma · contradiz · não alcança_ — e a **leitura em
+  chat** como parte da entrega, não cortesia.
+- **`references/phase-diverge.md`** — direções **em pé de igualdade**. Cada uma
+  com cinco partes obrigatórias (aposta · composição · copy prevista · racional
+  ancorado na pesquisa · risco e custo), depois de declarar a base comum a
+  todas. Recomendar é permitido; descrever uma em detalhe e as outras num
+  parágrafo, não — o check de tratamento igual **bloqueia o gate**.
+- **`references/phase-medium.md`** — o meio virou **pergunta**: código, Claude
+  design, Figma, Paper ou Pencil, oferecendo só o que o preflight detecta e
+  **nomeando** o que falta. O brief serve os cinco; só o build muda. Meio de
+  canvas pula o scaffold, e canvas-primeiro-código-depois é caminho normal, não
+  reinício.
+
+### Mudou — o segundo diamante ficou medium-aware e a review, sênior
+
+- **Develop** lê `medium.chosen` e constrói no meio escolhido. Passa a gravar um
+  **locator preciso** por surface × variante (arquivo, ou arquivo + página +
+  pranchas) e as **deviations** conscientes — sem isso o Deliver não consegue
+  abrir nem julgar o que foi feito.
+- **Deliver** ganhou o que faltava:
+  - **lê o artefato de qualquer meio** (arquivos, preview, MCP do Paper/Figma/
+    Pencil). Antes o input era literalmente "HTML/React em `src/`": quem
+    desenhou num canvas não tinha o que ele abrisse;
+  - **a unidade de review é surface × variante**, não surface. É nos deltas
+    entre variantes que o contrato é violado;
+  - **sete lentes** em vez de quatro. As três novas: **copy lida palavra por
+    palavra** (rótulo que nomeia processo inexistente, claim que a fonte não
+    sustenta, erro de português no herói), **contraste calculado como número**
+    contra o mínimo da WCAG, e a **triangulação**;
+  - **triangulação problema × pesquisa × construído.** O `gate.design_brief`
+    **soma** ao `gate.discover_brief`, nunca substitui. Três perguntas: o
+    construído honra a pesquisa? a pesquisa honra o problema? onde discordam,
+    quem está errado? A resposta pode ser **o enquadramento**;
+  - **severidade `divergência`** — o build está fiel e a review discorda de uma
+    decisão do brief ou do spec. Nunca bloqueia; abre decisão, e exige o
+    argumento (sem ele é preferência, e preferência não entra em review);
+  - **delta pro spec** no handoff: o contrato alcança o que o design aprendeu.
+- **`preflight-tooling.md`** — detecta `paper`/`figma`/`pencil`/`mobbin`, e passa
+  a ler os **dois escopos** de `mcpServers` (global e de projeto). Servidor
+  configurado só pro diretório atual não aparecia no topo e era reportado como
+  ausente — o que removia silenciosamente um meio que o builder tinha.
+- **Retomada** — um `brief-design.md` no disco é sinal de retomada por si só, com
+  ou sem sessão. O brisar continua de onde o brief parou e **nunca re-roda a
+  pesquisa por cima de um brief existente**.
+
+### Postura preservada de propósito
+
+A editorial stance do Deliver não mudou: só sinaliza o que importa, todo issue vem
+com solução, **um elogio específico** ("não é torcida, é informação"),
+não-bloqueante quando falta contexto, review e a11y em arquivos separados. O que
+mudou foi o alcance das lentes, não o tom.
+
+E uma regra nova que atravessa tudo: **legibilidade é requisito do artefato.** O
+público não é só designer. Ponteiro interno carrega o significado no primeiro uso,
+conceito de design ganha glosa de 5–10 palavras. Denso é bom; precisar de
+decodificador não.
+
 ## 2.0.0 — 2026-07-23
 
 O plugin `ofc` (Oficina) virou o **Builder Bundle** (`bb`): 28 skills de 4 fontes

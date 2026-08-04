@@ -39,7 +39,7 @@ Then the gate:
       "options": [
         {
           "label": "Construir as surfaces agora (fase Develop)",
-          "description": "Continuo nesta sessão: leio design-context/ + design/<surface>.md e construo tela a tela"
+          "description": "Continuo nesta sessão: leio a direção escolhida no brief de design + design-context/ e construo tela a tela"
         },
         {
           "label": "Rodar /bb:discover antes",

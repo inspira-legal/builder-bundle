@@ -2,6 +2,35 @@
 
 Load lazily: only read the section of the mode chosen in Step 1 of `phase-develop.md`.
 
+## Medium comes before mode
+
+`medium.chosen` (from `references/phase-medium.md`) decides **what kind of artifact** is produced;
+the mode below decides **how much** of it. Read the medium first — the three modes apply within
+every medium, but the target and the tooling change:
+
+| `medium.chosen` | Target artifact                             | Tooling    | Notes                                                                                                    |
+| --------------- | ------------------------------------------- | ---------- | -------------------------------------------------------------------------------------------------------- |
+| `código`        | `.tsx` / `.html` in the project             | Write/Edit | The templates below. Uses `design-context/` from Phase 3.                                                |
+| `claude-design` | one self-contained HTML preview per surface | Write      | Inline all CSS; no external fetches. No scaffold exists — token values come from the research (Front B). |
+| `paper`         | artboards in a Paper file                   | Paper MCP  | Read the tool's own guide before the first write. Values set explicitly, never eyeballed.                |
+| `figma`         | frames in a Figma file                      | Figma MCP  | Reuse the file's components and variables before creating new nodes.                                     |
+| `pencil`        | nodes in a `.pen` file                      | Pencil MCP | `.pen` files are only reachable through the MCP — never Read/Grep them.                                  |
+
+**Rules that hold in every medium:**
+
+- **Tokens first, from the source.** On a canvas medium there is no `design-context/tokens.md` —
+  the values come from the research's DS front, which read the real source. Same authority, one
+  step earlier.
+- **The chosen direction is the contract.** Same five parts (bet, composition, copy, rationale,
+  risk) whatever the medium. If the medium makes a part awkward, say so — do not quietly drop it.
+- **The copy is the copy.** The direction's strings go in as written. Placeholder text on a canvas
+  becomes a decision nobody made.
+- **States always** (see the per-surface checklist). A canvas represents them as separate
+  artboards; code as separate states.
+- **Deliver has to read this back.** Name the artifact and its location precisely in
+  `session.yaml` — file path, or file + page + artboard names for a canvas. A review that cannot
+  find the artifact is not a review.
+
 ---
 
 ## Mode 1: Full surface (`full-surface`)
@@ -14,11 +43,16 @@ Load lazily: only read the section of the mode chosen in Step 1 of `phase-develo
 - `<design_context_path>/tokens.md` — colors, spacing, type-scale
 - `<design_context_path>/components.md` — components available in the DS
 - `<design_context_path>/design/<surface>.md` — visual direction written by brisar Phase 4 (hierarchy, components, states, sketch)
-- `.brisar/session.yaml` — gate.discover_brief (cuts, hypothesis, appetite live in the brief)
+- `.brisar/session.yaml` — `gate.discover_brief` (cuts, hypothesis, appetite), `gate.design_brief`
+  (the research and the chosen direction — **the richer input when it exists**), `medium.chosen`
+- On a canvas or `claude-design` medium, `.brisar/config.yaml` and `design-context/` **do not
+  exist**. Fall back to `gate.design_brief` + the research DS values. That is not degraded mode;
+  it is the normal path for those mediums.
 
 ### Target decision (silent before building)
 
-Read `artifact.hosting` from session.yaml:
+First `medium.chosen` (table at the top of this file). When the medium is `código`, then read
+`artifact.hosting` from session.yaml:
 
 | Hosting            | Target                                                                             |
 | ------------------ | ---------------------------------------------------------------------------------- |

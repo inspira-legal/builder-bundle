@@ -15,13 +15,30 @@ The discipline here is **fidelity to contracts**:
 Before any question, read `.brisar/session.yaml` in full:
 
 - **If `gate.discover_brief` points at a brief** (`.bb/tasks/<slug>/spec.md`) — read it. Cuts recorded there are respected: DO NOT prototype features that were cut. Flag at the start: "Vou pular [feature_x] porque foi cortada no discover." The hypothesis informs layout decisions (when the builder asks "how should I arrange the CTA?", recall it). The appetite scales fidelity: small/medium appetite = lean fidelity (structure + tokens; no microinteraction polish); large appetite = polish included.
+- **If `gate.design_brief` points at a brief** (`.bb/tasks/<slug>/brief-design.md`) — read it. This is the **richer contract** when it exists: it carries the research, the chosen direction with its five parts (bet, composition, copy, rationale, risk), the base block common to all directions, and the token constraints read from source. The copy in the direction is the copy you build — not a starting point to improve on. The two briefs **coexist**: discover says what problem and what was cut; design says how this surface should be.
+- **Read `medium.chosen`** — it decides the artifact and the tooling (table at the top of `references/develop-modes.md`). On a canvas or `claude-design` medium there is no scaffold and no `design-context/`; that is the normal path, not a failure.
 - **Save your output** in the `tarsila:` section of session.yaml (the Develop phase's state key) and set `current_phase: develop`.
 
 ## Step 0 — Pre-flight (silent)
 
-Three checks, without printing anything:
+Checks, without printing anything. **Which ones apply depends on `medium.chosen`** — read it first.
 
-### 0.1 — Config
+### 0.0 — Medium
+
+```bash
+grep -A6 '^medium:' .brisar/session.yaml 2>/dev/null
+```
+
+- `medium.chosen: código` → run 0.1–0.3 below.
+- `medium.chosen` is `claude-design`, `paper`, `figma` or `pencil` → **skip 0.1 and 0.2**. There is
+  no config and no `design-context/` by design (`medium.scaffold: skipped`). Instead confirm the
+  MCP for that medium is reachable, and get the contract from `gate.design_brief` + the research
+  DS values. Only if the design brief is also missing do you fall into fallback mode.
+- `medium` absent entirely → the builder arrived by shortcut, without the medium question. Do not
+  guess: run the medium question (`references/phase-medium.md`) first. It is one turn and it
+  decides everything downstream.
+
+### 0.1 — Config (medium `código` only)
 
 ```bash
 test -f .brisar/config.yaml && cat .brisar/config.yaml
@@ -29,7 +46,7 @@ test -f .brisar/config.yaml && cat .brisar/config.yaml
 
 If it does not exist: the builder reached Develop without the scaffold phases. Fall into **fallback mode** — ask where the design system is (with tokens.md/components.md) or offer to run the full brisar journey first.
 
-### 0.2 — Design context
+### 0.2 — Design context (medium `código` only)
 
 Read from `.brisar/config.yaml` the `design_context_path` field. Default: `<projeto>/design-context/`.
 
@@ -48,6 +65,10 @@ ls <projeto>/design/*.md 2>/dev/null
 ```
 
 If no surface has a md: Phase 4 needs to run first (offer it) or the builder describes the screen directly in chat.
+
+**Exception — a design brief outranks this check.** When `gate.design_brief` exists with a chosen
+direction, you already have the visual direction in a richer form. Do not send the builder back to
+Phase 4 to produce a thinner version of what the brief already says.
 
 ## Step 1 — Intake (1-2 questions)
 
@@ -127,7 +148,7 @@ Cross-cutting rules:
 Always write:
 
 - `.brisar/session.yaml` updated with the `tarsila:` section
-- Project files (React/HTML) properly
+- The artifact itself, in the chosen medium (project files, preview, or canvas nodes)
 - Optional: `.brisar/tarsila/notes.md` with build decisions (custom components, missing tokens, doubts)
 
 Expected schema in `tarsila:`:
@@ -135,15 +156,35 @@ Expected schema in `tarsila:`:
 ```yaml
 tarsila:
   status: completed | in-progress | blocked
+  medium: código | claude-design | paper | figma | pencil
   surfaces:
     - name: <surface_name>
-      file: <path>
+      # Locator — Deliver reads the artifact from this. Precise or Deliver cannot review it.
+      file: <path> # medium código / claude-design
+      canvas: # medium paper / figma / pencil
+        file: <file name or id>
+        page: <page name>
+        artboards: [<artboard/frame names, one per state or variant>]
+      variants: [<variant name>] # when the surface has more than one, per the contract
+      states: [default, loading, empty, error]
       status: built | iterated | blocked
       custom_components: [<name>] # components created outside the DS
       missing_tokens: [<token>] # tokens that were missing in the DS
-  build_target: react+tailwind | prototype-html
+      deviations: # conscious departures from the brief or the DS — Deliver checks these
+        - what: <one line>
+          why: <one line>
+  build_target: react+tailwind | prototype-html | canvas | preview-html
   next_action: ready-for-review | needs-tokens | re-prototype
 ```
+
+**Why the locator is strict:** the Deliver phase opens what you wrote. On a canvas medium it needs
+file, page and artboard names to read structure and computed values through the MCP — "designed in
+Paper" is not a locator. On any medium, a surface with variants that lists only one is a surface
+whose other variants will not be reviewed.
+
+**Record deviations rather than absorbing them.** A departure you justified in your head is
+invisible to the review; one written here gets checked against the brief instead of being
+rediscovered as a bug.
 
 ### Gate (always the last)
 
