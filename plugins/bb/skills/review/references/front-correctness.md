@@ -7,9 +7,9 @@ reading the same diff, so two angles flagging the same line for different reason
 both get recorded — one angle's conclusion never suppresses another's.
 
 Every candidate carries `file`, `line`, a one-line `summary`, and a concrete
-`failure_scenario` — **the user-visible consequence** (wrong output, crash, data
-loss, hung request), not an intermediate state ("o valor fica stale", "o set
-cresce"). A candidate with no nameable consequence is not a finding.
+`failure_scenario`. What makes a consequence worth reporting — and why a
+half-believed candidate goes through anyway — is the finder's own contract, in
+`plugins/bb/agents/bb-finder.md`.
 
 Read hunks with their enclosing function open, not just the diff. Bugs on
 unchanged lines of a touched function are in scope — the branch re-exposes them

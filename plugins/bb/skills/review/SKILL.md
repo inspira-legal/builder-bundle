@@ -88,8 +88,9 @@ The catalog in `fronts.md` maps each picked front to its `references/front-*.md`
 that mapping is the list, so a front added to the engine reaches this router with no
 edit here. Load only the picked fronts' references, build the shared scope block
 (the resolved diff range included), and send every finder agent in **one message**
-(Agent tool, read-only — they report, never edit; the main context is the only
-writer). `threads` and `ci` don't fan out: script/`gh` reads plus judgment here.
+(Agent tool, `subagent_type: bb-finder` — read-only by capability; the main context
+is the only writer). `threads` and `ci` don't fan out: script/`gh` reads plus
+judgment here.
 
 Then `references/verify.md`: pool everything at the barrier, group by `file:line`,
 one independent verifier per location (CONFIRMED / PLAUSIBLE / REFUTED), sweep on
@@ -216,6 +217,11 @@ Actions and modes:
 - `references/act-apply-fixes.md` — applying findings: the regression guard and the order of operations.
 - `references/act-comment-findings.md` — leaving findings on the PR instead of fixing: anchoring and approval.
 - `references/mode-external-pr.md` — reviewing a PR in another repo and posting the review.
+
+Pipeline agents (plugin root, dispatched by the fan-out — same two for `/bb:ship`):
+
+- `${CLAUDE_PLUGIN_ROOT}/agents/bb-finder.md` — the finder's contract, and the `tools:` that keeps it read-only.
+- `${CLAUDE_PLUGIN_ROOT}/agents/bb-verifier.md` — the CONFIRMED / PLAUSIBLE / REFUTED rubric.
 
 Shared engine (plugin root, same criteria as `/bb:ship`):
 
