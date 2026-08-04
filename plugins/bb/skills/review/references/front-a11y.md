@@ -76,10 +76,10 @@ scope.
 
 ## Auditing a whole surface
 
-When the ask is an audit rather than a review of a branch — "auditoria de
-acessibilidade", "checa acessibilidade dessa pasta/página", a WCAG check before
-merging, the Deliver phase of `/bb:brisar` asking for depth — this front runs
-standalone: no diff, no other fronts, no curation question. There may be no git
+When the ask names a **surface** instead of a branch — a folder, a file set, a URL,
+a running page ("auditoria de acessibilidade", "checa acessibilidade dessa
+pasta/página"), or the Deliver phase of `/bb:brisar` asking for depth — this front
+runs standalone: no diff, no other fronts, no curation question. There may be no git
 repository and no branch; the scope is whatever the user pointed at.
 
 1. **Establish the scope.** A folder or file set → enumerate the UI files under it
@@ -90,13 +90,15 @@ repository and no branch; the scope is whatever the user pointed at.
 2. **Walk every criterion above** across that scope, not just the changed lines.
    Fan out one agent per criterion group (semantics+names, forms, keyboard+focus,
    live regions+state, contrast+motion) when the surface is more than a handful of
-   files; the barrier and the verify pass in `verify.md` still apply.
+   files; the barrier and the verify pass in `verify.md` still apply, with the
+   enumerated file set as `scope_files` and **no report cap** — surface scope's
+   no-cap outranks any cap a depth tier resolved.
 3. **With the page rendered, settle what source can't**: computed contrast from
    the actual colors, real tab order and focus visibility (`Tab` through it), what
    a screen reader would announce (the accessibility tree via `read_page`), live
    regions firing on a state change, reflow at 320px and at 200% zoom.
 4. **Report grouped by priority**, Critical first, each finding with where
    (file/element), the WCAG criterion that fails, who is blocked, and a concrete
-   fix. Close with `WCAG AA: pass | fail | partial` plus the count per priority.
-5. **Gate**: offer to fix the Critical/Major findings (`act-apply-fixes.md`), then
-   "Encerrar aqui".
+   fix. Close with `WCAG AA: passa | falha | parcial` plus the count per priority.
+5. **Gate** (per the plugin-root `references/handoff-gate.md`): "Corrigir os
+   Critical/Major (Recomendado)" → `act-apply-fixes.md`, then "Encerrar aqui".

@@ -48,10 +48,12 @@ scope is the one path that needs neither a repo nor a diff.
 - **Direct front ask** — the user already named the front ("o CI quebrou",
   "responde os comentários", "checa se seguiu as regras"): that front is the
   scope. Skip step 2's question and go straight to it.
-- **Accessibility audit** (an audit of a surface, not of a branch: "auditoria de
-  acessibilidade", "checa a acessibilidade dessa pasta/página", a WCAG check
-  before merging): run `references/front-a11y.md` in surface scope — no diff, no
-  other fronts, no git repository required — and stop at its own gate.
+- **Accessibility audit** — the user named a **surface** instead of the branch: a
+  folder, a set of files, a URL or a running page ("auditoria de acessibilidade",
+  "checa a acessibilidade dessa pasta/página"). The named target is what routes
+  here; an a11y ask with no target is the `a11y` front over the diff, picked at
+  step 2. Run `references/front-a11y.md` in surface scope — no diff, no other
+  fronts, no git repository required — and stop at its own gate.
 - **Otherwise**: current branch, all fronts on the table.
 
 ## Step 2 — Probe the fronts, then ask which ones
@@ -73,29 +75,22 @@ options:
   - "Nenhuma — encerrar" — nada roda.
 ```
 
-Say the depth the diff resolved to (`inline, sem fan-out` / `3 angles` /
-`5 angles + sweep`) in one line so the size of what's about to run isn't a
-surprise — on a small diff that line is also why no agent shows up. Under
-`BB_UNATTENDED` there is no question: every available front runs, report-only.
+Say the depth the diff resolved to in one line, with the numbers the resolution
+actually produced — how many angles are in the diff's set, how many the tier funds,
+which ones were dropped and why, and whether the sweep runs (`markdown: 4 ângulos
+no set, 3 rodam, wrapper-boundary fora — sem sweep`). Every number in that line comes
+from the resolution that just ran, which is what makes it match the stats line at the
+end; on a small diff it's also why no agent shows up. Under `BB_UNATTENDED` there is
+no question: every available front runs, report-only.
 
 ## Step 3 — Run the picked fronts in parallel
 
-Load only the picked fronts' references, build the shared scope block, and send
-every finder agent in **one message** (Agent tool, read-only — they report, never
-edit; the main context is the only writer):
-
-- **Correção** → `references/front-correctness.md` — 2–5 angles over the diff.
-- **Qualidade** → `references/front-quality.md` — one finder, all cleanup lenses.
-- **Regras do projeto** → `references/front-rules.md` — guide + CLAUDE.md
-  deviations, each with the rule quoted next to the line that breaks it.
-- **Contrato do brief** → `references/front-contract.md` — the `## behavior` map
-  as the acceptance contract.
-- **Acessibilidade** → `references/front-a11y.md` — one finder, static, WCAG AA
-  over the UI the diff changed.
-- **Threads da PR** → `references/front-threads.md` — no fan-out; script read plus
-  triage (fix vs. answer).
-- **CI** → `references/front-ci.md` — no fan-out; evidence first, diagnosis before
-  any edit.
+The catalog in `fronts.md` maps each picked front to its `references/front-*.md` —
+that mapping is the list, so a front added to the engine reaches this router with no
+edit here. Load only the picked fronts' references, build the shared scope block
+(the resolved diff range included), and send every finder agent in **one message**
+(Agent tool, read-only — they report, never edit; the main context is the only
+writer). `threads` and `ci` don't fan out: script/`gh` reads plus judgment here.
 
 Then `references/verify.md`: pool everything at the barrier, group by `file:line`,
 one independent verifier per location (CONFIRMED / PLAUSIBLE / REFUTED), sweep on
@@ -103,21 +98,19 @@ large diffs, then dedupe, rank and cap.
 
 ## Step 4 — Report
 
-One unified report, numbered items across all fronts, most severe first, each item
-carrying its front and its verdict:
-
-- **Correção** — `# | file:line | what breaks | trigger | suggested fix | verdict`
-- **Regras** — `# | rule ID / path§seção | "regra" | file:line | linha que desvia | severidade`
-- **Contrato** — `# | linha do brief | file:line ou "ausente" | o que falta ou sobra`
-- **Acessibilidade** — `# | file:line | critério WCAG | o que falha | quem é bloqueado | prioridade | fix`
-- **Qualidade** — `# | file:line | smell | custo concreto | suggested edit`
-- **Threads** — `# | file:line | thread summary | fix or answer`
-- **CI** — `# | failing check | root cause | evidence | proposed fix`
+One unified report, numbered items across all fronts, most severe first. Each item
+carries its front, its verdict, and the columns of **its own front's Finding
+shape** — the row format lives in each `front-*.md` next to the method that
+produces it, so a front that changes its columns doesn't leave a stale template
+here. Group the items by front under PT-BR headings (Correção, Qualidade, Regras,
+Contrato, Acessibilidade, Threads, CI) and keep one numbering across the whole
+report.
 
 Close with what didn't make it and what actually ran:
 
 - **what came back clean** — one line per front naming what it covered and found
-  nothing on ("Correção: 5 ângulos, nada fora dos itens 1–3"). The `rules` front
+  nothing on, with the count the depth resolution actually produced ("Correção:
+  3 dos 4 ângulos do set, nada fora dos itens 1–3"). The `rules` front
   closes with its own PASS/FAIL/SKIP checklist per rule (`front-rules.md`), which is
   what makes a silent rule readable as checked instead of forgotten;
 - refuted candidates, one line each;
@@ -160,36 +153,43 @@ Re-report as a table: `# | item | action taken | commit/status` — `corrigido`,
 
 ## Step 7 — Gate
 
-Per the plugin-root `references/handoff-gate.md`, one PT-BR question. Options by
-state: fronts left unrun → "Rodar as frentes que faltaram" (loops to step 3); more
-items still open → "Aplicar mais" (loops to step 5); no open PR and clean/handled →
-"Abrir a PR — rodo /bb:ship"; guide drift or missing guide reported → "Gerar/atualizar
-o guia — rodo /bb:review-setup"; a11y findings that need a rendered page (runtime
-colors, real focus order, live regions) → "Auditar a UI rodando — mesma frente em
-escopo de superfície" (loops to `front-a11y.md`, surface scope); always "Encerrar aqui" (what stays saved: the
-report; how to resume: `/bb:review`).
+Per the plugin-root `references/handoff-gate.md`, one PT-BR question with **2–4
+options**. Five states can qualify, so take the first three that apply in this
+priority order — unfinished work on this report outranks the next skill:
+
+1. items still open → **"Aplicar mais"** (loops to step 5)
+2. fronts left unrun → **"Rodar as frentes que faltaram"** (loops to step 3)
+3. a11y findings that need a rendered page (runtime colors, real focus order, live
+   regions) → **"Auditar a UI rodando"** (loops to `front-a11y.md`, surface scope)
+4. guide drift or missing guide reported → **"Gerar/atualizar o guia — rodo
+   /bb:review-setup"**
+5. no open PR and everything clean/handled → **"Abrir a PR — rodo /bb:ship"**
+
+Lead with the highest-priority one and suffix its label `(Recomendado)`. The states
+that didn't fit go in one line of prose above the question, so nothing is hidden —
+the user can still ask for them via "Other". Last option is always **"Encerrar
+aqui"** (what stays saved: the report; how to resume: `/bb:review`).
 
 ## Edge cases
 
-| WHEN                                             | THEN                                                                                  |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------- |
-| diff vs base empty and no PR                     | report "nada pra revisar", stop                                                       |
-| no front available (empty probe)                 | say what was probed and why each came back empty, stop                                |
-| no open PR (review-sem-PR)                       | `threads`/`ci` and the comment-on-PR option not offered; gate offers `/bb:ship`       |
-| `CODE_REVIEW_GUIDE.md` absent, CLAUDE.md present | `rules` front runs on the CLAUDE.md set alone, with the pointer to `/bb:review-setup` |
-| neither guide nor applicable CLAUDE.md           | `rules` front not offered; one-line pointer to `/bb:review-setup`                     |
-| no brief for this branch                         | `contract` front not offered                                                          |
-| diff touches no UI file                          | `a11y` front not offered                                                              |
-| a11y finding needs a rendered page               | report it as out of static reach; the gate offers the surface-scope audit             |
-| accessibility audit asked outside a git repo     | surface scope needs no diff and no repo — audit what was pointed at                   |
-| legacy `.claude/skills/code-review/` present     | flag as superseded; the user deletes it                                               |
-| uncommitted changes present                      | include in diff scope, flagged separately                                             |
-| a finder agent dies                              | its front reports with the angles that returned, and says which angle is missing      |
-| user picks nothing at curation                   | no edits; go to the gate                                                              |
-| a verifier dies or omits an index                | that candidate is `sem veredito`, reported as its own line, never promoted            |
-| CI still red after 3 diagnose→fix cycles         | stop editing, report the remaining failure and the evidence                           |
-| `gh` unauthenticated                             | `threads`/`ci` unavailable — say so once, offer the diff fronts                       |
-| `BB_UNATTENDED` set                              | every available front runs; report-only: no curation, no edits, no gate               |
+Front availability is `fronts.md`'s probe — an empty probe means the front isn't
+offered, which needs no row here. What this table covers is everything else:
+
+| WHEN                                         | THEN                                                                                                                  |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| diff vs base empty and no PR                 | report "nada pra revisar", stop                                                                                       |
+| no front available (empty probe)             | say what was probed and why each came back empty, stop                                                                |
+| no open PR (review-sem-PR)                   | `threads` and the comment-on-PR option not offered; `ci` still runs off the branch's last run; gate offers `/bb:ship` |
+| `gh` unauthenticated                         | `threads`/`ci` unavailable — say so once with `gh auth login` as the remedy, offer the diff fronts                    |
+| a11y finding needs a rendered page           | report it as out of static reach; the gate offers the surface-scope audit                                             |
+| accessibility audit asked outside a git repo | surface scope needs no diff and no repo — audit what was pointed at                                                   |
+| legacy `.claude/skills/code-review/` present | flag as superseded; the user deletes it                                                                               |
+| uncommitted changes present                  | include in diff scope, flagged separately                                                                             |
+| a finder agent dies                          | its front reports with the angles that returned, and says which angle is missing                                      |
+| user picks nothing at curation               | no edits; go to the gate                                                                                              |
+| a verifier dies or omits an index            | that candidate is `sem veredito`, reported as its own line, never promoted                                            |
+| CI still red after 3 diagnose→fix cycles     | stop editing, report the remaining failure and the evidence                                                           |
+| `BB_UNATTENDED` set                          | every available front runs; report-only: no curation, no edits, no gate                                               |
 
 ## Bundled Resources
 
@@ -200,13 +200,17 @@ Router support:
 
 Per-front method (loaded only when that front is picked):
 
-- `references/front-correctness.md` — the five correctness angles over the diff.
+- `references/front-correctness.md` — the correctness angles over the diff, and how the diff's content picks which of them run.
 - `references/front-quality.md` — the cleanup lenses, one finder, behavior-preserving.
 - `references/front-rules.md` — `CODE_REVIEW_GUIDE.md` + CLAUDE.md deviations, with the citation discipline.
 - `references/front-contract.md` — the brief's `## behavior` map as the acceptance contract.
 - `references/front-a11y.md` — WCAG AA: diff scope (static) and surface scope (folder, files or a rendered page).
 - `references/front-threads.md` — PR review threads: fetch, triage, fix/answer, reply/resolve.
 - `references/front-ci.md` — CI failures: evidence → diagnosis → fix → verify.
+
+Skill-owned script:
+
+- `scripts/group_candidates.py` — canonicalizes finder paths against the scope file list and groups candidates by location for the verify pass. Reads/writes JSON.
 
 Actions and modes:
 
@@ -216,5 +220,6 @@ Actions and modes:
 
 Shared engine (plugin root, same criteria as `/bb:ship`):
 
-- `references/review-checklist.md`, `references/quality-checklist.md` — the correctness and quality criteria.
+- `${CLAUDE_PLUGIN_ROOT}/references/review-checklist.md`, `${CLAUDE_PLUGIN_ROOT}/references/quality-checklist.md` — the correctness and quality criteria.
+- `${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py` — branch, base + merge-base, diff stat, changed files, full diff, uncommitted changes. Resolves the review's diff range for the probe.
 - `${CLAUDE_PLUGIN_ROOT}/scripts/fetch_comments.py`, `${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py` — thread I/O via `gh api graphql`.

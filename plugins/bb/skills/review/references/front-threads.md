@@ -10,8 +10,14 @@ fetch through reply/resolve.
 comments, reviews, and review threads (with `id` and `isResolved`) as JSON.
 Resolved threads are not shown in the report.
 
-For the report, each unresolved thread gets one line with a summary and what
-handling it would take:
+## Finding shape
+
+```
+# | file:line | resumo da thread | fix, answer ou unclear
+```
+
+Each unresolved thread gets one such line, where the last column is what handling
+it would take:
 
 - **fix** — the thread asks for a code change you agree with (or a
   high-confidence defect).

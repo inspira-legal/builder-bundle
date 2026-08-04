@@ -11,19 +11,31 @@ against the file before keeping it.
 
 ## 1. Pool and group
 
-Wait for **all** finders across all picked fronts (the barrier). **Canonicalize
-every path first**: a finder may return the same file as an absolute path, a
-repo-relative one, or with backslashes. Match each candidate's path by suffix
-against the changed-file list from the scope block (longest match wins) and
-rewrite it to that form. Skipping this splits one location into several groups,
-which is exactly what the grouping exists to prevent.
+Wait for **all** finders across all picked fronts (the barrier), then run
+`scripts/group_candidates.py` — it canonicalizes the paths and groups by location
+in one deterministic pass:
 
-Then group the candidates by `file:line`. Grouping is not dedup — every candidate keeps its own
-verdict; candidates at the same line are often distinct issues. Cross-finder
-location collisions are common, and one verifier agent per location costs far
-fewer agents than one per candidate with no loss.
+```bash
+python scripts/group_candidates.py < candidates.json
+```
 
-Candidates with no line (a whole-file or cross-file claim) group by `file`.
+Input is `{"scope_files": [...], "candidates": [...]}`; output is the groups, the
+paths that matched nothing in scope, and the counts for the stats line. A finder
+may return the same file as an absolute path, a repo-relative one, or with
+backslashes — the script matches by path segment suffix (longest match wins) and
+rewrites each to the scope form. Skipping this splits one location into several
+groups, which is exactly what the grouping exists to prevent.
+
+**`scope_files` is whatever enumerated the review's scope**: the changed-file list
+in diff scope, and in surface scope (a11y over a folder, a file set or a rendered
+page) the file set the audit enumerated. There is always a list to canonicalize
+against; a review with no diff is not a review with no scope.
+
+Grouping is not dedup — every candidate keeps its own verdict; candidates at the
+same line are often distinct issues. Cross-finder location collisions are common,
+and one verifier agent per location costs far fewer agents than one per candidate
+with no loss. Candidates with no line (a whole-file or cross-file claim) group by
+`file`.
 
 ## 2. One verifier per location
 
@@ -93,7 +105,10 @@ sweep is a real answer.
   4. quality findings and a11y **Enhancement**s (always last — a cleanup never
      outranks a bug)
 - **Cap** at the depth's report cap. Cuts come off the bottom, so quality is what
-  gets trimmed, never a correctness bug.
+  gets trimmed, never a correctness bug. A front that states **no cap for its own
+  scope** wins over a depth cap resolved from a diff — a surface-scope a11y audit
+  reports every verified failure (`front-a11y.md`), because a cap there would hide
+  exactly what the audit was asked for.
 - **Nothing vanishes silently.** Every candidate that came out of a finder ends up
   in exactly one of four places: reported, **refutados** (one line each at the end of
   the report), **sem veredito** (the dropped ones, one line each with the location and

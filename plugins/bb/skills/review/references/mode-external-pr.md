@@ -30,6 +30,9 @@ Run the picked fronts and the verify pass exactly as documented
 one caveat: "open the file" here means fetching contents via
 `gh api repos/<owner>/<repo>/contents/<path>?ref=<headRefName>` for hunks that
 need surrounding context, and finder agents get that command in their scope block.
+The diff range comes from the PR itself, so the scope block carries the PR's
+changed-file list where a local run carries the probe's `<merge_base>...HEAD` — that
+list is what `verify.md` canonicalizes paths against.
 
 ## 3. Verdict
 
