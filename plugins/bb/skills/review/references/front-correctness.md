@@ -15,16 +15,32 @@ Read hunks with their enclosing function open, not just the diff. Bugs on
 unchanged lines of a touched function are in scope — the branch re-exposes them
 or fails to fix them.
 
+Cap: **8 candidates per angle**. The cap is on what each finder hands to the
+barrier, not on what it looks at — when an angle is over, keep the ones with the
+sharpest failure scenario and say how many were cut.
+
+## Finding shape
+
+```
+# | file:line | o que quebra | cenário que dispara | fix sugerido | veredito
+```
+
+The `veredito` column is filled by `verify.md`, not by the angle that found it.
+
 ## Pick the angles the diff can activate
 
 The depth table (`fronts.md`) sizes the fan-out; **what the diff is made of**
-decides which angles are in it. An angle with nothing to grip returns nothing at
-full agent cost, and a review whose stats line says `5 ângulos` when two of them
-were unrunnable overstates its own depth.
+decides which angles are in it. An angle with nothing to grip costs a full agent
+and returns nothing, so the set is trimmed to the angles the artifact activates —
+and the stats line reports that trimmed count, which is the depth that actually
+ran.
 
-| Diff is mostly                 | Angle set                                                                                                             |
+Each set below is in **priority order** — a depth tier that funds two or three
+angles takes them from the left:
+
+| Diff is mostly                 | Angle set (priority order)                                                                                            |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| code (the default)             | all five                                                                                                              |
+| code (the default)             | `diff-scan`, `removed-behavior`, `cross-file`, `language-pitfalls`, `wrapper-boundary`                                |
 | prompt / skill / docs markdown | `diff-scan`, `removed-behavior`, `cross-file`, **`instruction-integrity`** (replaces the pitfalls angle)              |
 | config, manifest, IaC, schema  | `diff-scan`, `removed-behavior`, `cross-file`, plus a **validity** angle against the format's own schema or inventory |
 
@@ -33,7 +49,7 @@ route through — and the async/state material has nothing to attach to. Say whi
 angles ran, and name the dropped ones with the reason, so the depth that's reported
 is the depth that happened. A caller can override the lens _content_ for its own
 artifact the way `/bb:ship` does for LexFlow manifests
-(`skills/ship/references/land-lexflow.md`).
+(`${CLAUDE_PLUGIN_ROOT}/skills/ship/references/land-lexflow.md`).
 
 ### Angle `instruction-integrity` — for a diff that instructs a model
 
@@ -56,6 +72,12 @@ ask: which input, state, timing, or platform makes this line wrong? Hunt for
 inverted or wrong conditions, off-by-one, null/undefined deref, missing `await`,
 falsy-zero treated as absent, wrong-variable copy-paste, an error swallowed in a
 `catch` that should propagate, unescaped regex metacharacters.
+
+This angle owns the checklist's **security** and **type safety** rows
+(`references/review-checklist.md`, Pass 1), which are line-local the same way:
+untrusted input reaching a query, shell, path or template without validation or
+escaping; a secret landing in code or a log line; a cast, `any` or `type: ignore`
+covering a mismatch the compiler was right about.
 
 ## Angle `removed-behavior` — what the diff deleted
 

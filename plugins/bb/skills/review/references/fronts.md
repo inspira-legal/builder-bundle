@@ -26,41 +26,61 @@ The method below is identical either way.
 Ask only about fronts that can actually produce findings. Run the probe as one
 batch of cheap read-only calls (parallel background where possible):
 
-- `git diff --stat <base>...HEAD` + `git diff --stat` — diff size and whether
-  there are uncommitted changes (they enter scope, flagged separately).
-- `test -f CODE_REVIEW_GUIDE.md` and the CLAUDE.md set (per `front-rules.md`).
+- `${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py` — one call returns
+  `base_branch`, `merge_base`, `diff_stat`, `files_changed` and
+  `uncommitted_changes`. **`<merge_base>...HEAD` is the review's diff range for
+  the whole run** — carry the resolved sha into the scope block so every finder,
+  every front reference and the shared checklists read the same range instead of
+  each resolving a base of its own. Uncommitted changes enter scope, flagged
+  separately.
+- `CODE_REVIEW_GUIDE.md` at the repo root and the CLAUDE.md set (per
+  `front-rules.md`).
 - brief lookup for this branch (plugin-root `references/task-state.md`).
-- UI files in the diff — `*.{jsx,tsx,vue,svelte,astro,html,htm}`, template files
-  (`*.erb`, `*.hbs`, `*.blade.php`, Django/Jinja templates), or stylesheets that
-  the diff changes alongside markup.
+- UI in the diff, decided by **content** and not by extension: markup or
+  component files (`*.{jsx,tsx,vue,svelte,astro,html,htm}`, `*.erb`, `*.hbs`,
+  `*.blade.php`, Django/Jinja templates), a `.js`/`.ts`/`.py` file whose diff
+  renders markup (JSX, tagged template strings, `createElement`, `innerHTML`,
+  server-side HTML), or a stylesheet hunk that decides focus, contrast or
+  visibility (`outline`, `:focus`, `color`, `background`, `display: none`). Grep
+  the diff for those; a `.tsx` of pure types doesn't activate the front and a
+  `.js` that builds a dialog does.
 - `gh pr view --json number,url` — is there an open PR.
-- `gh pr checks <n>` (only when a PR exists) — any failing check.
+- failing checks: `gh pr checks <n>` when a PR exists, otherwise
+  `gh run list --branch <branch> --limit 1` — the branch's last run is evidence
+  enough for `ci` without a PR.
 
 A front whose probe comes back empty is **not offered** and not reported as a
-failure. `gh` unauthenticated makes `threads`/`ci` unavailable — say so once and
-offer the rest.
+failure. Only `threads` needs an open PR; `ci` falls back to the branch's last
+run. `gh` unauthenticated makes both unavailable — say so once, with
+`gh auth login` as the remedy, and offer the rest.
 
 ## Depth — auto-scaled from the diff, not asked
 
-| Diff                             | Correctness angles                                       | Quality | Rules      | Contract | A11y    | Verify                           | Sweep   | Report cap |
-| -------------------------------- | -------------------------------------------------------- | ------- | ---------- | -------- | ------- | -------------------------------- | ------- | ---------- |
-| ≲2 arquivos / ≲100 linhas        | `diff-scan` + `removed-behavior`, inline (sem fan-out)   | inline  | inline     | inline   | inline  | self-check no contexto principal | —       | 6          |
-| até ~10 arquivos / ~500 linhas   | `diff-scan`, `removed-behavior`, `cross-file` (3 agents) | 1 agent | 1 agent    | 1 agent  | 1 agent | 1-vote agrupado por local        | —       | 10         |
-| acima disso, ou "revisa a fundo" | o angle set do diff (até 5 agents)                       | 1 agent | 1–2 agents | 1 agent  | 1 agent | 1-vote agrupado por local        | 1 agent | 15         |
+| Diff                             | Correctness angles                                | Quality | Rules      | Contract | A11y    | Verify                           | Sweep   | Report cap |
+| -------------------------------- | ------------------------------------------------- | ------- | ---------- | -------- | ------- | -------------------------------- | ------- | ---------- |
+| ≲2 arquivos / ≲100 linhas        | os 2 primeiros do angle set, inline (sem fan-out) | inline  | inline     | inline   | inline  | self-check no contexto principal | —       | 6          |
+| até ~10 arquivos / ~500 linhas   | os 3 primeiros do angle set (3 agents)            | 1 agent | 1 agent    | 1 agent  | 1 agent | 1-vote agrupado por local        | —       | 10         |
+| acima disso, ou "revisa a fundo" | o angle set inteiro (até 5 agents)                | 1 agent | 1–2 agents | 1 agent  | 1 agent | 1-vote agrupado por local        | 1 agent | 15         |
 
-The table sizes the fan-out. **Which** correctness angles are in it comes from what
-the diff is made of (`front-correctness.md`) — a diff of prompts or manifests swaps
-the language-pitfalls angle for one that grips there and drops the wrapper angle, so
-an agent is never spent on a lens with nothing to read.
+The table sizes the fan-out. **Which** angles fill it comes from what the diff is
+made of (`front-correctness.md`) — a diff of prompts or manifests swaps the
+language-pitfalls angle for one that grips there and drops the wrapper angle, so an
+agent is never spent on a lens with nothing to read. The sets there are written in
+priority order, which is what "os 2 primeiros" resolves against: a tier that funds
+fewer angles than the set has takes them from the left and names the ones it
+dropped.
 
 ## Fan-out shape
 
 1. **One message, all finder agents.** Every picked front's finders go out
    concurrently via the Agent tool, read-only — they report, never edit. Single
    writer: the main context.
-2. **Each finder gets the same scope block** — diff command, changed files, one
-   paragraph of what changed, the applicable rule sources, and the brief when
-   there is one — plus ONE angle/lens set and a candidate cap.
+2. **Each finder gets the same scope block** — the resolved diff range
+   (`<merge_base>...HEAD`, the sha the probe returned, not a `<base>` the finder
+   has to guess), changed files, one paragraph of what changed, the applicable
+   rule sources, the criteria path its front points at (plugin-root
+   `references/review-checklist.md` or `references/quality-checklist.md`), and the
+   brief when there is one — plus ONE angle/lens set and its candidate cap.
 3. **Barrier before verify.** Pool every finder's candidates first: verification
    groups them by `file:line`, which needs all of them (`verify.md`).
 4. **`threads` and `ci` don't fan out** — they're script/`gh` reads followed by
