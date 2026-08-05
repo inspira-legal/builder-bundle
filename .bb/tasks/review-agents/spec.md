@@ -116,7 +116,7 @@ Happy path (`/bb:review`, step 3, depth com fan-out):
 | -------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | `bb-finder` não resolve como `subagent_type` | cai no agente genérico com o contrato inline; sem crash nem regressão silenciosa         |
 | não há Agent tool nenhum no host             | item 6 do `fronts.md` — tudo no main context, e o relatório diz que foi single-pass      |
-| o caller não passa Finding shape             | o finder devolve `file:line \| summary \| failure_scenario`                              |
+| o caller não passa Finding shape             | o finder devolve `file:line \| summary \| failure_scenario`                                |
 | diff tiny (≲2 arquivos / ≲100 linhas)        | nenhum agente é spawnado — a depth table já manda inline                                 |
 | candidato de `rules` / `contract` / `a11y`   | o caller anexa o addendum; o verifier aplica os 3 estados sobre citação, não sobre crash |
 | um finder morre                              | o front reporta com os ângulos que voltaram e nomeia o que falta                         |

@@ -126,7 +126,7 @@ caller" diz mais que "design".
 | a spec é reescrita depois de landada      | o porquê mudou vai no commit; o arquivo só ganha a decisão nova     |
 | aparece uma seção `## design`             | o lint falha nomeando a linha e aponta a metade de cima             |
 | célula de tabela passa de 100 chars       | o lint falha; o conteúdo vira prosa ou bullet                       |
-| uma row tem `\|` não escapado             | o lint pega pela contagem de células — o bug de `review-agents:103` |
+| uma row tem `\|` não escapado              | o lint pega pela contagem de células — o bug de `review-agents:103` |
 | falta `## behavior` ou `## tasks`         | o lint avisa; spec Medium pode não ter as duas                      |
 | o autor cria seções próprias no topo      | passa — é o ponto; o lint só checa a espinha                        |
 | spec antiga de outro repo tem `## design` | o lint só roda no que o `/bb:spec` acabou de escrever               |
