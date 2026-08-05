@@ -27,7 +27,7 @@ plugins/bb/
 ├── references/                        # plugin-level docs (not skill-scoped)
 │   ├── handoff-gate.md                 # the one convention for end-of-skill gates (+ AskUserQuestion rationale)
 │   ├── confidence-and-steelman.md      # shared reasoning protocols (think, challenge)
-│   ├── task-state.md                   # the .bb/tasks/<slug>/spec.md contract
+│   ├── task-state.md                   # the .bb/tasks/<slug>/ folder contract
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
 │   ├── quality-checklist.md            # canonical quality criteria — the six lenses (review engine)
 │   ├── review-checklist.md             # canonical correctness criteria — Pass 1 rows (review engine)
@@ -142,12 +142,14 @@ decisions.
 - Scripts write to stdout (JSON or plain text) for the LLM to consume
 - New scripts should use Python, stdlib only (no third-party imports)
 
-## Task briefs
+## Task state
 
-The on-disk contract for a specced brief is `plugins/bb/references/task-state.md` —
-canonical location `.bb/tasks/<slug>/spec.md`, frontmatter schema
-(`status`/`created`/`slug`) and the status lifecycle owned by `/bb:delegate`. Skills
-reference that file instead of restating the contract.
+The on-disk contract is `plugins/bb/references/task-state.md` — `.bb/tasks/<slug>/`
+is the task's folder, holding the brief (`spec.md`, with its `status`/`created`/`slug`
+frontmatter and the status lifecycle owned by `/bb:delegate`) and the visual direction
+`/bb:brisar` writes next to it (`design.md` for a single surface, `design/<surface>.md`
+plus an index for several). Members are independent — a folder can carry either one
+alone. Skills reference that file instead of restating the contract.
 
 The brief's **form** belongs to `plugins/bb/skills/spec/references/spec-format.md`:
 a free top half (opening plus whatever sections the problem asks for) over a fixed

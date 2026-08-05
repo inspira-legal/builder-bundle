@@ -69,7 +69,8 @@ A espinha é fixa porque tem quem leia. A metade de cima não tem consumidor de 
 tem leitor humano, e por isso a forma dela é do autor.
 
 `## design` não volta em nenhuma das metades: no bb a palavra já significa desenho de
-tela (`/bb:brisar` escreve `design/<surface>.md`). Arquitetura, quando o caso pede, mora
+tela (`/bb:brisar` escreve a direção visual em `design.md`, na mesma pasta da task).
+Arquitetura, quando o caso pede, mora
 na metade de cima com o nome que ela tem naquele problema — "o seam entre agente e
 caller" diz mais que "design".
 

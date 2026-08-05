@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.5.0 — 2026-08-05
+
+### A direção visual do brisar mora junto do brief
+
+O `/bb:brisar` escrevia a direção visual dentro da pasta scaffoldada
+(`<slug>/design/<surface>.md`), longe do brief que ela serve. Agora ela é membro da
+pasta da task: uma surface vira `.bb/tasks/<slug>/design.md`, duas ou mais viram
+`.bb/tasks/<slug>/design/<surface>.md` mais um índice. A pasta do projeto continua
+com código e `design-context/` (tokens e componentes, que são do scaffold) — o que
+saiu de lá é só o brief de tela.
+
+Os dois membros da pasta são independentes: brisar sem `/bb:discover` deixa uma task
+só com design, e uma spec sem desenho segue legal. A seleção do `/bb:delegate` varre
+`spec.md`, então uma pasta sem brief simplesmente não é candidata.
+
+Quem lê não hardcoda caminho: o `.brisar/config.yaml` ganhou `design_path` (absoluto,
+mesmo idioma do `ds_path` já existente) e `surfaces[].file` passou a ser relativo a
+ele. A escolha entre um arquivo e uma pasta acontece uma vez, na Phase 4, e nunca é
+re-derivada rio abaixo.
+
 ## 2.4.0 — 2026-08-05
 
 ### A spec virou um documento pra ser lido

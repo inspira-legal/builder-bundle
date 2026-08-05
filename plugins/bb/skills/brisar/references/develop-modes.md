@@ -10,10 +10,10 @@ Load lazily: only read the section of the mode chosen in Step 1 of `phase-develo
 
 ### Inputs
 
-- `.brisar/config.yaml` — `design_context_path`, `brand.name`, `surfaces[]`
+- `.brisar/config.yaml` — `design_context_path`, `design_path`, `brand.name`, `surfaces[]`
 - `<design_context_path>/tokens.md` — colors, spacing, type-scale
 - `<design_context_path>/components.md` — components available in the DS
-- `<design_context_path>/design/<surface>.md` — visual direction written by brisar Phase 4 (hierarchy, components, states, sketch)
+- `<design_path>/<surfaces[].file>` — visual direction written by brisar Phase 4 in the task folder (hierarchy, components, states, sketch)
 - `.brisar/session.yaml` — gate.discover_brief (cuts, hypothesis, appetite live in the brief)
 
 ### Target decision (silent before building)

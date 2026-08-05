@@ -89,7 +89,8 @@ row on either side is an omission made visible.
 ## Dead names
 
 `## design` is not a spec section. Inside bb the word already means screen design —
-`/bb:brisar` writes `design/<surface>.md` with visual hierarchy, components and states.
+`/bb:brisar` writes the visual direction — hierarchy, components and states — into
+`.bb/tasks/<slug>/design.md`, next to this brief.
 Architecture, when a spec needs it, lives in the top half under the name it actually has
 in that problem.
 

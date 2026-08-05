@@ -4,7 +4,7 @@ description: Trilha de design ponta a ponta — do "tenho uma ideia" ao protóti
 license: MIT
 metadata:
   author: Inspira
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 # Brisar
@@ -46,8 +46,9 @@ error messages — is **PT-BR**; instruction bodies are English.
    in session.yaml; blocking costs trust.
 7. **Scaffold ≠ planning.** This skill WRITES real files. If Bash fails,
    surface the error — don't fake success.
-8. **Deliver visual direction before Develop.** The Develop phase needs
-   `design/<surface>.md`; without it the builder is back to guessing the screen.
+8. **Deliver visual direction before Develop.** The Develop phase needs the
+   surface's direction file; without it the builder is back to guessing the
+   screen.
 9. **Suggest, never auto-invoke.** Other skills (/bb:discover, /bb:spec,
    /bb:challenge, /bb:review) are always suggested via handoff gate.
    Internal phase transitions (→ Develop, → Deliver) also go through a gate —
@@ -162,7 +163,7 @@ in Step 0** — open only what the current phase needs.
 | `.brisar/session.yaml`                                                    | direction phases (0-5), Develop, Deliver — each writes its own section | all phases (each reads the whole YAML in its Step 0), re-runs |
 | `.brisar/config.yaml`                                                     | Phase 3                                                                | Develop (tokens.md/components.md path), future invocations    |
 | `<slug>/design-context/tokens.md` + `components.md`                       | Phase 3                                                                | Develop (Step 0)                                              |
-| `<slug>/design/<surface>.md`                                              | Phase 4                                                                | builder, Develop                                              |
+| `.bb/tasks/<slug>/design.md` (or `design/<surface>.md`)                   | Phase 4                                                                | builder, Develop                                              |
 | `<slug>/...` (vite, package.json, src/)                                   | Phase 3                                                                | builder (`pnpm install && pnpm dev`), Develop                 |
 | `<slug>/HANDOFF-DEV.md`                                                   | Phase 3 (persona = executive)                                          | dev who picks up the prototype later                          |
 | `.brisar/tarsila/notes.md`                                                | Develop (optional decisions log)                                       | Deliver, builder                                              |
@@ -203,9 +204,11 @@ jumps straight to Phase 3 (scaffold) with the framing carried over.
 
 ### Critical path rule
 
-`.brisar/config.yaml` is where the design-context path is registered. Phase 3
-decides the path (default: `<slug>/design-context/`); Develop reads it from the
-config — no hardcoded string on either side.
+`.brisar/config.yaml` is where the paths are registered. Phase 3 decides
+`design_context_path` (default: `<slug>/design-context/`); Phase 4 decides
+`design_path` — the task folder `.bb/tasks/<slug>/`, where the visual direction
+lands next to the brief (plugin-level `references/task-state.md`). Develop and
+Deliver read both from the config — no hardcoded string on either side.
 
 ---
 
@@ -235,7 +238,7 @@ Phase 3 — Scaffold OR prototype-hosted
   → executive = prototype-hosted (folder + HANDOFF-DEV.md, no local npm install)
 
 Phase 4 — Design direction
-  → <slug>/design/<surface>.md per surface (max 5)
+  → .bb/tasks/<slug>/design.md, or design/<surface>.md per surface (max 5)
 
 Phase Framer (replaces Phase 2-4 on the Framer/content path)
   → harpa-handoff-<slug>-<date>.md, with or without MCP unframer
