@@ -2,6 +2,12 @@
 
 After Phase 4 writes the visual direction of each surface into `.bb/tasks/<slug>/`, the journey-map part of brisar is done. This phase prints the handoff summary (persona-shaped) and ends with the **handoff gate** — a single `AskUserQuestion` offering the natural next steps. The gate suggests, never auto-invokes (per `plugins/bb/references/handoff-gate.md`).
 
+**Read the medium before writing the summary.** Everything below that names `design-context/`,
+`.brisar/config.yaml` or the scaffolded project folder assumes medium `código`. On a canvas or
+`claude-design` medium Phase 3 was skipped (`medium.scaffold: skipped`) and none of those exist —
+report the design brief and the canvas artifact instead. Telling the builder to open a folder that
+was never created is the kind of error that reads as the tool being confused about its own state.
+
 ## Output shape (default — senior/standard)
 
 Plain text, in pt-BR. Structure:
@@ -43,7 +49,7 @@ Then the gate:
       "options": [
         {
           "label": "Construir as surfaces agora (fase Develop)",
-          "description": "Continuo nesta sessão: leio design-context/ + a direção visual em .bb/tasks/<slug>/ e construo tela a tela"
+          "description": "Continuo nesta sessão: leio a direção escolhida no brief de design + a direção visual em .bb/tasks/<slug>/ + design-context/ e construo tela a tela"
         },
         {
           "label": "Rodar /bb:discover antes",

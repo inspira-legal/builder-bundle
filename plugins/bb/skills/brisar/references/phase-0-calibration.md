@@ -85,6 +85,10 @@ profile:
 - **Phase 3 does NOT scaffold locally with `pnpm install`.** Goes to `prototype-hosted` (generates folder + HANDOFF-DEV.md, makes it explicit that dev picks up later).
 - **Terminal handoff** always includes instruction to pass the prototype + handoff markdown to someone in engineering.
 - **Banned vocabulary in messages:** scaffold, embed, npm, MCP, repo, branch, slug. Use: "pasta", "projeto", "instalar", "ambiente", "nome do projeto".
+  - **This binds on every phase that prints, not only the intake.** The first diamond adds its own
+    method names to the list — `divergência`/`divergir`, `reconciliação`, `piso` da pesquisa,
+    `pocket`/`full` — and they get replaced by what they mean ("os caminhos que montei", "a pesquisa
+    mínima"), never annotated. `references/brief.md` carries the mechanical self-check.
 
 ### `builder-senior`
 
