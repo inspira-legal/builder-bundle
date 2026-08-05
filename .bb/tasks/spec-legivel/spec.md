@@ -153,7 +153,7 @@ caller" diz mais que "design".
 - [x] **6. Rename shape→spec** — `task-state.md`, `delegate`, `implement`, `discover`,
       `brisar`, `operating-context.md`, `routines.md`, `spec/SKILL.md`, README
       → behavior 7 · dep: — · verifica: CI
-- [ ] **7. Migrar as 3 specs e ligar o CI** — reescreve `builder-bundle`, `ship-lexflow` e
+- [x] **7. Migrar as 3 specs e ligar o CI** — reescreve `builder-bundle`, `ship-lexflow` e
       `review-agents` na forma nova; passo `python3` e `.bb/tasks/**` no `validate.yml`
       → behavior 5 · dep: 1, 6 · verifica: CI verde
 - [ ] **8. Versão e docs** — `plugin.json` `2.4.0`, `spec/SKILL.md` `2.1.0`, CHANGELOG,

@@ -6,6 +6,7 @@ on:
       - "**/SKILL.md"
       - "skills/**"
       - "**/agents/**"
+      - ".bb/tasks/**"
       - ".github/scripts/**"
       - ".github/workflows/validate.yml"
 
@@ -22,6 +23,9 @@ jobs:
 
       - name: Validate frontmatter
         run: bun .github/scripts/validate-frontmatter.ts
+
+      - name: Lint task briefs
+        run: python3 plugins/bb/skills/spec/scripts/lint_spec.py .bb/tasks/*/spec.md
 
       - name: Check formatting
         run: bun run fmt:check
