@@ -29,9 +29,3 @@ jobs:
 
       - name: Check formatting
         run: bun run fmt:check
-
-      - name: Show formatting diff
-        if: failure()
-        run: |
-          bunx oxfmt --write . >/dev/null 2>&1 || true
-          git --no-pager diff
