@@ -40,10 +40,10 @@ with no loss. Candidates with no line (a whole-file or cross-file claim) group b
 ## 2. One verifier per location
 
 Each verifier goes out as `subagent_type: "bb-verifier"`
-(`plugins/bb/agents/bb-verifier.md`) — read-only by capability, and the owner of the
-rubric: the three verdicts, the PLAUSIBLE default and what makes a REFUTED
-constructible from the code all live in that prompt, so both callers of this engine
-judge the same way without a second copy to keep in sync.
+(`plugins/bb/agents/bb-verifier.md`), which owns the rubric: the three verdicts, the
+PLAUSIBLE default and what makes a REFUTED constructible from the code all live in
+that prompt, so both callers of this engine judge the same way without a second copy
+to keep in sync — and without the fan-out having to re-send it.
 
 What this pass hands it: the scope block, the candidates at that location labeled
 `[0]`, `[1]`, …, and the addendum below when the front calls for one. Back comes one
