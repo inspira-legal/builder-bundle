@@ -667,6 +667,8 @@ Esta ferramenta é candidata a virar app interno. Stack alinhada com o resto da 
 <pessoa> (executive). Use <pessoa> como stakeholder de validação — não como cliente final do código.
 ```
 
+Fill the "Direção visual" column from what Phase 4 recorded (`design_path` + `surfaces[].file`), one row per surface — with a single surface that path is `../.bb/tasks/<slug>/design.md`.
+
 ##### `<slug>/README.md` — executive language
 
 ```markdown
@@ -727,7 +729,7 @@ design_path: null
 
 surfaces:
   - name: <surface-1>
-    file: design/<surface-1>.md # relative to design_path
+    file: null # filled by Phase 4 — it decides design.md vs design/<name>.md
     html: <surface-1>.html # relative to the prototype folder
     state: drafted
 ```
