@@ -137,7 +137,7 @@ caller" diz mais que "design".
 
 ## tasks
 
-- [ ] **1. Formato e lint** — `references/spec-format.md` (as duas metades, a espinha, o
+- [x] **1. Formato e lint** — `references/spec-format.md` (as duas metades, a espinha, o
       critério descreve-vs-reconta) e `scripts/lint_spec.py` (stdlib, `path:line CODE msg`,
       exit 1 no erro) → behaviors 2, 3, 5 · dep: — · verifica: CI
 - [ ] **2. Poda do prompt** — deleta do `SKILL.md` o parágrafo do `## design`,
