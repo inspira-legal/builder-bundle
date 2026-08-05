@@ -146,7 +146,7 @@ caller" diz mais que "design".
 - [x] **3. Revisor como passo próprio** — passo dedicado no `SKILL.md`, obrigatório em
       Medium+, com duplicação e arqueologia no mandato; veredito de uma linha no gate
       → behaviors 4, 6 · dep: 2 · verifica: leitura
-- [ ] **4. Slice pronta pra workflow** — `dep:` e `verifica:` no `spec-format.md`;
+- [x] **4. Slice pronta pra workflow** — `dep:` e `verifica:` no `spec-format.md`;
       `implement` e `delegate` leem os dois → behavior 3 · dep: 1 · verifica: leitura
 - [ ] **5. Justificativa no commit** — linha no `SKILL.md` e na seção Commits do
       `.claude/CLAUDE.md` → behavior 2 · dep: — · verifica: leitura

@@ -41,10 +41,11 @@ and stop.
    commit that edit (conventional style; no AI attribution). Unattended: put it on the
    `claude/<slug>` branch the build will use.
 
-3. **Build — follow `/bb:implement`'s workflow (steps 1–6), then return here.** Load
+3. **Build — follow `/bb:implement`'s workflow (steps 1–7), then return here.** Load
    the brief, honor its reuse notes and `## behavior` contract, build every unchecked
-   slice in order, keep the gate green, and commit per slice ticking its box. **Do not
-   run implement's step-7 ship hand-off** — delegate owns the transition to landing, so
+   slice in the order its `dep:` fields imply, run each slice's `verifica:`, keep the
+   gate green, and commit per slice ticking its box. **Do not
+   run implement's step-8 ship hand-off** — delegate owns the transition to landing, so
    the chain lives here, not split across skills. If implement's **safety valve** fires
    (the brief was underspecified), stop: flip `status: blocked`, point back to
    `/bb:spec` to re-shape, and exit — do not improvise past the brief.
@@ -56,7 +57,7 @@ and stop.
    app repo, whose remote has no PR mechanism. delegate adds no destination logic of its
    own. If ship hits an unrecoverable stop (or an unattended blocker), flip
    `status: blocked`, and land the blocker where the run can be found again: the PR
-   description when there is a PR, otherwise the brief's own `## still open` on the
+   description when there is a PR, otherwise the brief's own `## open` on the
    pushed branch. Supervised, report it. Then exit.
 
 5. **Close the run — flip `status: done`.** Once the chain lands cleanly, edit the
@@ -80,7 +81,7 @@ and stop.
 | selected task already `in-progress`             | resume — implement skips checked slices; status stays `in-progress` until landing                                                                                       |
 | brief has no frontmatter                        | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                                                    |
 | implement safety valve fires (underspecified)   | flip `status: blocked`, point back to `/bb:spec`, stop — do not improvise                                                                                               |
-| ship hits an unrecoverable stop / blocker       | flip `status: blocked`; write the blocker into the PR description, or into the brief's `## still open` when the destination has no PR; report it supervised; exit       |
+| ship hits an unrecoverable stop / blocker       | flip `status: blocked`; write the blocker into the PR description, or into the brief's `## open` when the destination has no PR; report it supervised; exit       |
 | `BB_UNATTENDED` set                             | no questions; ship opens a DRAFT PR on `claude/<slug>` — or pushes it and reports the deploy command in a LexFlow app repo; never merge / never push a protected branch |
 | not in a git repo / no tasks dir in either root | report the error, stop                                                                                                                                                  |
 
