@@ -82,8 +82,8 @@ function validateFrontmatter(
 }
 
 /**
- * The read-only guarantee of the review fan-out is this `tools:` list, so a write
- * tool landing in it has to fail the build rather than get caught in review.
+ * The `tools:` list is how far the read-only rule is enforced rather than asked for,
+ * so a write tool landing in it fails the build instead of waiting for review.
  */
 function validateAgentTools(tools: unknown): ValidationIssue[] {
   if (tools === undefined) {

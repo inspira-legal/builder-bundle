@@ -88,8 +88,8 @@ The catalog in `fronts.md` maps each picked front to its `references/front-*.md`
 that mapping is the list, so a front added to the engine reaches this router with no
 edit here. Load only the picked fronts' references, build the shared scope block
 (the resolved diff range included), and send every finder agent in **one message**
-(Agent tool, `subagent_type: bb-finder` — read-only by capability; the main context
-is the only writer). `threads` and `ci` don't fan out: script/`gh` reads plus
+(Agent tool, `subagent_type: bb-finder`, which carries the finder contract in its
+own prompt; the main context is the only writer). `threads` and `ci` don't fan out: script/`gh` reads plus
 judgment here.
 
 Then `references/verify.md`: pool everything at the barrier, group by `file:line`,
@@ -220,7 +220,7 @@ Actions and modes:
 
 Pipeline agents (plugin root, dispatched by the fan-out — same two for `/bb:ship`):
 
-- `${CLAUDE_PLUGIN_ROOT}/agents/bb-finder.md` — the finder's contract, and the `tools:` that keeps it read-only.
+- `${CLAUDE_PLUGIN_ROOT}/agents/bb-finder.md` — the finder's contract, and the narrowed `tools:` list.
 - `${CLAUDE_PLUGIN_ROOT}/agents/bb-verifier.md` — the CONFIRMED / PLAUSIBLE / REFUTED rubric.
 
 Shared engine (plugin root, same criteria as `/bb:ship`):

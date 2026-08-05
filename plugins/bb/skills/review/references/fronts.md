@@ -74,9 +74,11 @@ dropped.
 ## Fan-out shape
 
 1. **One message, all finder agents.** Every picked front's finders go out
-   concurrently via the Agent tool as `subagent_type: "bb-finder"` — read-only by
-   capability rather than by instruction, since that agent's `tools:` has no way to
-   edit (`plugins/bb/agents/bb-finder.md`). Single writer: the main context.
+   concurrently via the Agent tool as `subagent_type: "bb-finder"`, whose prompt
+   carries the finder contract and whose `tools:` has no editing tool
+   (`plugins/bb/agents/bb-finder.md`). `Bash` is on that list for reading, so the
+   read-only rule still rests on the prompt at the margin. Single writer: the main
+   context — hold that line when you dispatch.
 2. **Each finder gets the same scope block** — the resolved diff range
    (`<merge_base>...HEAD`, the sha the probe returned, not a `<base>` the finder
    has to guess), changed files, one paragraph of what changed, the repo's
