@@ -107,10 +107,14 @@ def check_body(lines):
                     )
 
     for i, line in enumerate(lines, start=1):
-        if FENCE.match(line):
-            in_fence = not in_fence
-            continue
-        if in_fence:
+        # A fence ends the current run of rows — two tables around a code block are
+        # two tables, not one with a mismatched header.
+        if FENCE.match(line) or in_fence:
+            if table:
+                yield from flush(table)
+                table = []
+            if FENCE.match(line):
+                in_fence = not in_fence
             continue
 
         if line.strip().startswith("|"):
