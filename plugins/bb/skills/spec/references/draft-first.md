@@ -41,10 +41,11 @@ Ask the forks through the **`AskUserQuestion` tool** — concrete options the us
 - After each round, **fold the answers into the draft and show only what
   changed** — the diff, not the whole document again.
 - **When the gray areas run dry, run the adversarial completeness pass** — the
-  three moves in the skill's step 5 (generators + an independent reviewer subagent
-  for Medium+ + the behavior→slice→test trace), not a casual re-read. It hunts
-  open load-bearing decisions, unmapped behavior, and material contradictions, and
-  loops anything it surfaces back into the questions.
+  skill's step 5 (generators + the behavior→slice→test trace), not a casual
+  re-read. It hunts open load-bearing decisions, unmapped behavior, and material
+  contradictions, and loops anything it surfaces back into the questions.
+- **Then the check, step 6** — the lint, then an independent reviewer in fresh
+  context. Medium and up, every time, before the gate ever opens.
 - **The gate blocks on open load-bearing decisions.** Never offer a clean "build"
   while one is unresolved — the user must resolve it or defer it explicitly
   ("decide at build time", recorded in the brief). No silent "build anyway".

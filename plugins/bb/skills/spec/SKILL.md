@@ -37,14 +37,25 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
 
 4. **Loop.** Fold each answer into the draft, re-surface anything new it opens, ask again. Keep going until a round surfaces no new gray areas.
 
-5. **Adversarial completeness pass (when the gray areas run dry).** Don't _review_ the brief — try to **break** it; the same model that wrote the map rubber-stamps it on a re-read. Three moves, looping anything they surface back to step 3:
+5. **Adversarial completeness pass (when the gray areas run dry).** Don't _review_ the brief — try to **break** it; the same model that wrote the map rubber-stamps it on a re-read. Two moves, looping anything they surface back to step 3:
    - **Run the generators** (`references/completeness-generators.md`) to manufacture questions along the axes omission hides in — input dimensions, external outputs' empty/limit/shape-change cases, state & lifecycle, failure & recovery, concurrency, trust boundary, data lifecycle, observability. Output is questions, not filled sections.
-   - **Spawn an independent reviewer** (Agent tool, fresh context) given ONLY the brief and the mandate _"you did not write this — find what's missing, unmapped, or self-contradicting."_ The author can't see its own omissions; a reviewer with no memory of the conversation that produced the brief can. **Run it for every Medium-and-up brief** — one fan-out is cheap against a hole the gate then certifies as closed. Carry its verdict to the gate (the gate shows it).
    - **Render the trace** — lay out behavior → slice → test as a coverage table, not a mental check: every mapped behavior traces to a slice and every slice to a behavior. An unlinked row IS the omission — made visible rather than asserted. This is the table the gate shows; "I checked traceability" becomes proof the user can see.
 
    What you're hunting: (a) **unresolved load-bearing decisions** (a technical fork building can't proceed without, still blank or "TBD"); (b) **unmapped or unanswered behavior** (a happy-path step glossed over, an edge with no decided outcome); (c) **material contradictions**. Load-bearing gaps, behavior holes, and real conflicts only — don't manufacture nitpicks, or the loop never closes.
 
-6. **The exit gate — blocks on open load-bearing decisions.** Don't gate blind: first **show the artifact the user is signing off on** — a tight recap of the happy path, the full edge→outcome table, the **coverage table** (behavior → slice → test) with `⚠️` on any unmapped row plus a one-line counter (`N behaviors, M mapped, K open`), and (Medium+) the **independent reviewer's verdict** in one line (clean, or what it flagged and how it was resolved) — so "is this complete?" is answerable at a glance instead of forcing them to reopen the file. Then list what's **still open** (unresolved load-bearing decisions + parked questions). Then ask one `AskUserQuestion` (a handoff gate — format in the plugin-level `references/handoff-gate.md`):
+6. **Check the brief — the lint, then an independent reviewer. Every Medium-and-up brief, every time.** This is a step of its own because it's the one an author skips: you cannot see your own omissions, and the pass that would catch them is the pass that feels redundant.
+
+   First the lint — dead section names, malformed tables, a missing spine member — so the gate spends its attention on completeness instead:
+
+   ```bash
+   python3 scripts/lint_spec.py .bb/tasks/<slug>/spec.md
+   ```
+
+   Then spawn a reviewer (Agent tool, fresh context) given ONLY the brief and this mandate: _"você não escreveu isto. Ache o que está faltando, o que não está mapeado, o que se contradiz — e o que sobra: fato repetido em mais de uma seção, prosa que reconta a conversa em vez de descrever o que construir."_ A reviewer with no memory of the conversation that produced the brief reads it the way the builder will. Fold what it finds back into step 3, and carry its verdict to the gate in one line.
+
+   Without an Agent tool in this context, say so at the gate rather than showing a verdict that never ran.
+
+7. **The exit gate — blocks on open load-bearing decisions.** Don't gate blind: first **show the artifact the user is signing off on** — a tight recap of the happy path, the full edge→outcome table, the **coverage table** (behavior → slice → test) with `⚠️` on any unmapped row plus a one-line counter (`N behaviors, M mapped, K open`), and (Medium+) the **independent reviewer's verdict** in one line (clean, or what it flagged and how it was resolved) — so "is this complete?" is answerable at a glance instead of forcing them to reopen the file. Then list what's **still open** (unresolved load-bearing decisions + parked questions). Then ask one `AskUserQuestion` (a handoff gate — format in the plugin-level `references/handoff-gate.md`):
    - **If any load-bearing decision is still open:** do NOT offer a clean "build". The only options are **resolve it now** or **defer explicitly** ("decide at build time" — recorded as such in the brief). Never a silent "build anyway".
    - **If nothing load-bearing is open:** finalize `.bb/tasks/<slug>/spec.md` (with its frontmatter block — see "Capture the alignment"), then offer three paths — **Implementar** (invoke `/bb:implement` now: build every slice and stop ready to ship, where it offers `/bb:ship`), **Delegar** (invoke `/bb:delegate <slug>` now: build every slice _and_ land it, the full `implement → ship` run), or **Encerrar aqui** (leave the brief; the user picks up later). Choosing to adjust instead is always available — that loops back into the question tool; an Implementar or Delegar pick is the affirmative start, not a silent roll-through.
 
@@ -82,11 +93,7 @@ The on-disk contract — location, frontmatter schema, status lifecycle — is t
 
 On finalize, open the brief with the frontmatter block (`status: pending`, `created: <today>`, `slug: <slug>`). If `/bb:discover` wrote the file first without the block, backfill it on finalize. Leave the lifecycle after this to delegate — spec only seeds `pending`.
 
-**Large** work carries `## behavior` and `## tasks` as their own sections — the acceptance contract and the vertical slices the build side consumes. **Medium** work keeps both inline in the decisions. Then run the lint before the gate; it catches the mechanical defects (dead section names, malformed tables, missing spine) so the gate spends its attention on completeness:
-
-```bash
-python3 scripts/lint_spec.py .bb/tasks/<slug>/spec.md
-```
+**Large** work carries `## behavior` and `## tasks` as their own sections — the acceptance contract and the vertical slices the build side consumes. **Medium** work keeps both inline in the decisions.
 
 ## Export mode — a shareable product/UX spec
 

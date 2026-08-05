@@ -143,7 +143,7 @@ caller" diz mais que "design".
 - [x] **2. Poda do prompt** — deleta do `SKILL.md` o parágrafo do `## design`,
       "meticulously" e "Don't abbreviate"; mata a lista de 7 do `draft-first.md`; os dois
       passam a apontar pro `spec-format.md` → behaviors 1, 2 · dep: 1 · verifica: CI
-- [ ] **3. Revisor como passo próprio** — passo dedicado no `SKILL.md`, obrigatório em
+- [x] **3. Revisor como passo próprio** — passo dedicado no `SKILL.md`, obrigatório em
       Medium+, com duplicação e arqueologia no mandato; veredito de uma linha no gate
       → behaviors 4, 6 · dep: 2 · verifica: leitura
 - [ ] **4. Slice pronta pra workflow** — `dep:` e `verifica:` no `spec-format.md`;
