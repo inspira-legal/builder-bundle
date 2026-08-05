@@ -32,6 +32,9 @@ From `.brisar/session.yaml` and the brief:
   reconciliation already flagged the cut as wrong and the builder reopened it.
 - **`research.mode`** → pocket or full. It sets the count (Step 2), never the depth per
   direction.
+- **`profile.persona_id`** → who is choosing. It changes nothing about the directions themselves
+  and two things about the presentation: the vocabulary (Phase 0's banned list binds for
+  `executive` and `content`), and whether the recommendation is optional (Step 3).
 
 ## Step 1 — Separate the base from what varies
 
@@ -109,6 +112,15 @@ use, gloss design concepts in 5–10 words, and remember the audience is not onl
 A recommendation may be stated — clearly, as a recommendation, with the reason. It goes **after**
 all directions are described, never instead of describing them.
 
+**For `executive` and `content` the recommendation is mandatory.** Equal treatment is what makes
+the choice real, and for someone without design repertoire it also makes the choice hard: N paths
+at identical depth, no criterion to weigh them by. Withholding the recommendation there is not
+neutrality — it hands over the hardest judgement in the flow to the person least equipped to make
+it, and the usual outcome is picking the first one. This does not bend the equal-treatment rule:
+that rule forbids **asymmetric description**, not a stated recommendation. Describe all of them at
+the same grain, then say which one you would pick, why, and what would have to be true for the
+runner-up to win.
+
 ## Step 4 — Equal-treatment check (blocking)
 
 Before the gate, check your own output. For each direction, all five parts present and specified
@@ -165,24 +177,24 @@ diverge:
 {
   "questions": [
     {
-      "question": "<N> direções montadas em pé de igualdade, e a escolhida é <nome>. Como seguimos?",
+      "question": "<N> caminhos montados no mesmo nível de detalhe, e o escolhido é <nome>. Como seguimos?",
       "header": "Próximo",
       "options": [
         {
-          "label": "Construir a direção escolhida (Recomendado)",
-          "description": "Pergunto onde você quer explorar (código, Claude design, Figma ou Paper) e sigo pra construção."
+          "label": "Construir o caminho escolhido (Recomendado)",
+          "description": "Pergunto onde você quer ver isso de pé e sigo pra construção."
         },
         {
-          "label": "Trocar a direção escolhida",
-          "description": "Você escolhe outra das direções — todas estão descritas no mesmo nível pra isso. Registro a troca no brief."
+          "label": "Trocar o caminho escolhido",
+          "description": "Você escolhe outro — todos estão descritos no mesmo nível pra isso. Registro a troca no brief."
         },
         {
-          "label": "Mais uma rodada de divergência",
-          "description": "Só vale com insight material novo — senão é a mesma direção redesenhada. Digo o que eu buscaria."
+          "label": "Buscar mais caminhos",
+          "description": "Só vale se houver uma ideia genuinamente nova — senão é a mesma coisa redesenhada. Digo o que eu buscaria antes de você decidir."
         },
         {
           "label": "Encerrar aqui",
-          "description": "Direções e escolha ficam salvas no brief. Retome depois com /bb:brisar."
+          "description": "Os caminhos e a escolha ficam salvos no brief. Retome depois com /bb:brisar."
         }
       ],
       "multiSelect": false

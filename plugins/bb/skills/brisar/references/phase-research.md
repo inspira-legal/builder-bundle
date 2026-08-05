@@ -41,6 +41,11 @@ Before any question, read `.brisar/session.yaml` in full:
     legitimate finding and it goes in the brief's reconciliation section — with the argument.
     Never silently design on top of a cut.
 - **`preflight.product`** — settles where the design system lives (`ds_source`).
+- **`profile.persona_id`** — who is reading. It does not change **what** the floor researches; it
+  changes the vocabulary of everything printed. For `executive` and `content`, Phase 0 established
+  a banned vocabulary (`scaffold`, `embed`, `npm`, `MCP`, `repo`, `branch`, `slug` — see
+  `phase-0-calibration.md`) and it binds here too: the mode line and the findings are user-facing
+  text. Say "o projeto do produto não está neste computador", not "o repo não está no cwd".
 - **`intent.raw_prompt`** — the builder's own words. Often carries the constraint that matters
   most, phrased casually.
 - If a project spec exists (a full behavior contract, not just the discover sections), read it
@@ -73,6 +78,16 @@ Then print **one line**, before running anything:
 The line has three parts and all three are mandatory: **the mode · what runs · what was
 skipped and why**. "Nothing was skipped" is a valid third part in `full` mode.
 
+**A fourth part appears whenever a floor front ran degraded: what the degradation invalidates.**
+Naming the missing tool is not enough — the reader needs to know which conclusions got weaker.
+"Rodei a Front B sem o repo" tells them nothing; "não li o token da fonte, então os valores são
+de segunda mão e o inventário de componentes não existe" tells them what not to trust:
+
+> **Pesquisa — modo `full`.** Rodei o piso e os vieses. **Degradado:** o repo do produto não
+> está aqui e o `gh` não está autenticado, então o design system foi lido do pacote de marca —
+> os valores são de segunda mão, o inventário de componentes não existe, e **não verifiquei se
+> essa página já está em produção**. Nada foi pulado.
+
 ## Step 1 — The floor (runs in every mode, no exceptions)
 
 Three fronts. They are the floor because each one has been the source of a finding that
@@ -100,6 +115,52 @@ Two mandatory blocks:
 
 Return links + the decision each one makes. Never screenshots.
 
+#### Without Mobbin (`preflight.mcps.mobbin: false`)
+
+The front still runs — it is the floor. What changes is where the corpus comes from, and the
+first thing to settle is **whether the surface you are designing is public or behind a login**,
+because that decides which rungs exist at all.
+
+**Behind a login — which is most of a product.** An in-app paywall, a trial-expiry screen, an
+upgrade modal, an empty state, onboarding after signup: none of these are reachable. They need an
+account, and **brisar does not create accounts or sign in** — so a competitor's live app is not a
+source here, however tempting. Do not plan around getting in. Available rungs, in order:
+
+1. **Public galleries, searched by site.** `site:land-book.com`, `site:saaslandingpage.com`,
+   `site:refero.design`, `site:pageflows.com`, `site:nicelydone.club`, and Mobbin's own public
+   pages. This is the primary rung off Mobbin and it is what separates the fallback from a
+   generic search: these return **screens**, not articles about patterns. Some of them index
+   recorded product flows rather than single frames, which is the closest substitute for a
+   logged-in surface — check what each one actually holds instead of assuming coverage.
+2. **Ask for what the builder already has.** If they mentioned a reference, or work in this
+   market, the screenshot in their hand beats a blind search. One question, highest signal per
+   token, and it is the rung most often skipped out of politeness.
+3. **The product's own precedent.** Adjacent surfaces already shipped are a corpus of one that
+   you can actually read — and it is the corpus the design has to be consistent with anyway.
+   Weak for novelty, strong for convention.
+4. **Generic web search** — last resort. Returns named patterns without visual evidence; treat
+   what comes back as a hypothesis to verify, never as a bench.
+
+**Public — a landing, a pricing page, a marketing site.** Here the browser earns its place:
+`preview_start` with a url, or a Chrome MCP when present. It is the current state and the whole
+page is walkable, which beats a cropped screenshot. Two cautions: it reads the **marketing**
+surface and says nothing about how the platform behaves once you are inside, and a consent banner
+gets the most privacy-preserving answer, not a click-through to see the page faster.
+
+**Say which rungs were available, not just which one you used.** "Fiz o bench em galerias
+públicas porque a tela é logada e não há como entrar" is a finding about the corpus, and it is
+what lets the reader weigh everything built on top of it.
+
+The two obligations that give Front A its value survive the degradation: group **by recurring
+decision, never by app**, and keep the **"does not apply to us, and why"** block.
+
+**One obligation changes, and it matters.** A negative finding needs a corpus that was sampled
+systematically — "none of the 18 screens uses urgency" only carries weight if the 18 were not
+handed to you by a ranking algorithm. Off Mobbin, a negative finding is reported **with the size
+and the origin of the corpus** ("nas 6 landings que abri, nenhuma usa contagem regressiva") or it
+is not reported at all. Absence measured on a biased corpus is not evidence, and a brief that
+asserts it will be quoted back.
+
 ### Front B — The design system, read from source
 
 **Read the token source from disk, in full.** Not from memory, not from a brand package, not
@@ -113,10 +174,121 @@ Locate it in this order — stop at the first that works:
    `tokens.json`, a design-system package under `packages/`. Also read the repo's own token
    rules if it has them (e.g. a `.claude/rules/*tokens*.md`) — **the repo's rules win over
    any general convention.**
-3. `references/ds/` bundled here, flagged explicitly as a frozen fallback.
+3. **The repo elsewhere on this machine** — see below. Cheapest rung after the cwd, and the one
+   most often skipped: "not in the cwd" is not "not on the disk".
+4. **The repo remotely, without cloning** — see below. The rung for: the repo really is absent
+   and `gh` is authenticated.
+5. `references/ds/brand/` bundled here — **a brand package, not a token source.** See the
+   caution below before using it.
 
 _Known gap:_ the beta `product-registry.yaml` has no Inspira product entries, so detection
 usually does not fire and step 2 is the real path. Don't rely on the registry.
+
+#### Rung 3 — the repo is on this machine, just not here
+
+Before concluding the repo is absent, **look for it on disk**. A builder who has ever cloned the
+product still has it, and brisar is frequently invoked from somewhere else — a sibling folder, a
+docs repo, a fresh directory. Detecting only the cwd turns "I am standing somewhere else" into "the
+source does not exist", which then degrades three fronts for no reason.
+
+```bash
+# macOS — Spotlight, sub-second even across a home directory
+mdfind -name "theme.css" -onlyin ~ 2>/dev/null | grep -v node_modules
+# portable fallback
+find ~ -maxdepth 6 -name "tokens.json" -not -path "*/node_modules/*" 2>/dev/null
+```
+
+Search for the artifact, not the repo name — the folder can be named anything. Good targets: the
+token file, `tokens.json`, the repo's own rules file, the i18n directory. **Exclude
+`node_modules`**: a dependency's own `theme.css` will match and it is not the design system.
+
+This rung is worth more than the remote one, and it is worth saying why: it reads **real source**,
+so it recovers the component inventory and the "how many places use this" answer that the remote
+rung cannot give. When it hits, Front B is not degraded at all.
+
+Two cautions. Confirm the hit is the **right** checkout before reading it — a stale worktree, a
+vendored copy or another branch's copy will answer confidently and wrongly, so state which path
+you read. And more than one plausible hit is a question for the builder, not a coin flip.
+
+#### Rung 4 — read the repo remotely (`gh`)
+
+When rungs 1–3 found nothing and `preflight.tooling.gh_authed` is true, read the files straight
+from GitHub. Seconds, no disk, no clone. **Two calls, in this order:**
+
+```bash
+# 1. the whole file listing, in ONE call — this is the map
+gh api "repos/<owner>/<repo>/git/trees/HEAD?recursive=1" --jq '.tree[].path' > /tmp/tree.txt
+grep -iE 'tailwind|tokens|theme\.css|i18n|locales' /tmp/tree.txt
+
+# 2. read the files the listing pointed at
+gh api "repos/<owner>/<repo>/contents/<path>" -H "Accept: application/vnd.github.raw"
+```
+
+**Use the tree, not code search.** `gh search code` sits on a **10-requests-per-minute** budget
+(`gh api rate_limit --jq .resources.code_search`) — a fan-out of research subagents exhausts it in
+one round, and the 403 comes back as empty output, indistinguishable from "found nothing". Its
+`path:` qualifier also does not take globs, so a query that looks reasonable returns zero and reads
+as absence. The tree endpoint is on the ordinary 5,000/hour budget, returns every path in one call,
+and is greppable locally.
+
+What this rung gets you and what it does not:
+
+- **Token values and live i18n copy** — fully. This is the half that works.
+- **Whether a path exists** — and here the tree is genuinely conclusive: when the response says
+  `truncated: false`, the listing is complete, so a path that is absent from it **is** absent.
+  Check that field before claiming either way.
+- **The component inventory with its traps** — no. Knowing a card component is really a `<button
+role=option>` means reading component source, and that is a sweep, not two file reads. This is
+  the half that stays open, and it is the expensive half.
+- **"How many places use this"** — no. There is no grep here.
+
+So: report what you read with its path, and report the inventory as **missing** rather than
+inferring it from token names.
+
+#### When `gh` is not available — the rung that actually gets used
+
+`gh_authed: false` is not an edge case: `gh` may be missing, unauthenticated, or authenticated on
+an account without access to a private product. So this path needs to be as designed as the happy
+one. In order, and **each of these is a real answer, not a shrug**:
+
+1. **Rung 3 first, always.** Most `gh_authed: false` cases are solved on disk, because someone who
+   works on the product has it cloned. Do not offer authentication before looking.
+2. **Offer `gh auth login`** — one command, and it upgrades every later run, not just this one.
+   Never run it silently: it is an authentication step and it belongs to the builder.
+3. **Ask the builder to point at it.** "Onde fica o projeto do produto nesta máquina?" or "me cola
+   o arquivo de tokens" is one question with a complete answer. Cheapest of all, and the rung most
+   often skipped out of a reflex to seem self-sufficient — a builder who works on the product knows
+   this path from memory.
+4. **Ask what the repo's own rules say.** Many repos carry a token rules file
+   (`.claude/rules/*tokens*.md`, `CONTRIBUTING`, a DS README) that names the canonical path and the
+   local conventions. Getting **that** file is often better than getting the tokens, because it is
+   authored guidance rather than raw values, and **it stays right when the paths move**.
+5. **Only then rung 5** — the brand package, for voice and visual intent, with the token gap
+   declared in the mode line.
+
+Cloning the repo shallowly is the rung that would give real grep without an existing checkout.
+brisar does **not** clone on its own: dropping a private company repo onto someone's machine is the
+builder's call. Mention it as an option and move on.
+
+**Where the paths should live — and it is not in this file.** Hardcoding a product's token path
+into the plugin makes the plugin wrong the day the repo is refactored, and it puts internal layout
+in a place that does not own it. Two better homes, in order: the **repo's own rules file** (the
+product repo states where its tokens are — it is the only thing that can keep that true), and
+`references/product-registry.yaml` (the `ds_source` field exists precisely for this) or a local
+`.brisar/config.yaml`/`BRISAR_DS_PATH` for a machine-specific override. When you spend real effort
+locating a source, **say so and suggest recording it** in one of those — the next run should not
+repeat the search.
+
+#### Caution about rung 5
+
+`references/ds/brand/` is the **brand** package — voice, principles, colour meanings, logo usage.
+Its `tokens/tokens.json` is a brand artifact and is **not** the production token vocabulary; the
+production source is the design-system package in the product repo. Designing against it produces
+class names the codebase does not have, which surfaces at implementation time and costs a rewrite.
+
+So on rung 5: use it for **voice and visual intent**, never for token values. When rung 5 is all
+you have, the honest report is _"não li o design system da fonte"_ — with the consequence spelled
+out in the mode line (Step 0's fourth part), not a token table presented as if it were read.
 
 Then answer the question that matters — **how far can we diverge without leaving the
 system?** — in four parts:
@@ -141,6 +313,11 @@ system?** — in four parts:
 for the shell you are about to design — a full-screen page without the app chrome, an
 unauthenticated layout, an empty state of this shape. Finding that the pattern is already
 written and shipped turns "build a new shell" into "reuse the one in production".
+
+Without the repo on disk, run it through rung 4's file listing — path names carry a lot here (a
+`pages/TrialExpired/` directory answers the question by itself), and an untruncated tree makes the
+negative answer trustworthy too. What the listing cannot tell you is what the shell actually
+does, so read the file before concluding it is reusable.
 
 If the surface is going to production code, also state what would have to be **added** to the
 system, and what escaping the scale costs — that is a decision to document, never to hide.
@@ -207,6 +384,13 @@ the cheapest front and it repeatedly returns the most actionable material:
   translation runs longer; a slot whose text comes from an external dashboard may have no
   translation dimension at all.
 
+**This is the front the missing repo hits hardest** — all four items above are reads from disk.
+Rung 3 (the repo found elsewhere on disk) recovers all of it, which is why it comes first. Rung 4
+recovers the live copy and, partially, the assets; **what data actually exists and whether
+authorization serves it cannot be answered remotely**, and guessing it is how a design ends up
+promising a number the backend will not return. When the repo is absent, this front reports what
+it recovered and marks the data question `[não verificado]` instead of assuming availability.
+
 ## Step 3 — Fan-out execution
 
 **Fire every selected front in ONE message, as parallel Agent tool calls.** Research never
@@ -250,9 +434,18 @@ research:
     - front: biases
       reason: <one line — why it did not earn its cost>
   ds_source:
-    path: <path actually read>
-    authority: source | frozen-fallback
-  degraded: [<front>: <reason>] # tooling gaps
+    path: <path actually read, or the gh coordinates>
+    authority: source | remote | brand-only # brand-only = rung 5, not a token source
+    found_via: cwd | disk-search | remote | registry | builder-told-us
+    record_suggestion: <path worth adding to product-registry/.brisar config, or null>
+  bench:
+    via: mobbin | galleries | builder-screenshots | product-precedent | browser | web-search
+    surface_access: public | behind-login # decides which rungs exist
+    corpus_size: <n or null> # null when the corpus was not systematically sampled
+  degraded:
+    - front: <name>
+      reason: <one line — what was missing>
+      invalidates: <one line — which conclusions got weaker>
   next_action: ready-for-brief
 ```
 

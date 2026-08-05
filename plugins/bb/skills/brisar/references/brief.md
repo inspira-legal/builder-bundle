@@ -152,10 +152,58 @@ In chat, in this order:
 Not ornate, not long-winded — but enough that someone can read it, understand it, and not need
 the full document to have a view. That is the bar.
 
+**Present the delta once the reader has already read it.** "Assume nothing has been read" is true
+for a stakeholder seeing it for the first time and false for the builder on their fourth round with
+the same document — re-reading a brief they helped write is the most common way this step becomes
+noise. So the discriminator is **the reader, not the round number**: for someone who has followed
+the rounds, give what changed, what it revoked, and what is still open, then stop. When the round
+is being presented to someone new — a stakeholder, a dev picking up the handoff — the full reading
+comes back, because for them it is round 1. If you cannot tell which case you are in, ask; it is
+one short question and it decides the whole shape of the message.
+
+### Three tests that keep the reading tight
+
+Legibility (below) has a mechanical self-check and concision does not, so concision loses by
+default — glossing, expanding pointers and citing evidence all push the text up. These three
+tests are the counterweight, and they cut length **without** cutting content:
+
+1. **Each block earns its place by enabling a decision or an opinion.** A sentence that changes
+   nothing the reader will decide comes out, however true it is.
+2. **The finding travels with its consequence, not with its path.** "A escala para em 32px, então
+   manchete grande sai do sistema" — not the story of how it was discovered. The reader wants the
+   constraint, not the search.
+3. **Evidence lives in the document; the chat carries the conclusion.** The citation rules above
+   (path and value, author and year, `[não verificado]`) govern the artifact. In chat, name the
+   source once and point at the document — a chat block that reproduces the evidence has become
+   the document, and then nobody reads either.
+
+Self-check, symmetric to the legibility one: scan your own reading for a sentence that changes no
+decision. Cut it. Density is content; length is not.
+
+### When concision and legibility disagree, legibility wins
+
+The two rules pull in opposite directions and the tie has to be called, or the text oscillates.
+**Legibility wins, and it wins for a reason:** a sentence the reader cannot decode costs them the
+whole point, while a sentence that is ten words longer costs them ten words. So the gloss stays and
+the pointer stays expanded, every time.
+
+Concision does not lose its teeth, though — it just aims somewhere else. **Cut whole items, not the
+words inside them.** The finding that changes no decision comes out entirely; the finding that
+survives keeps its gloss, its number and its source. That is the resolution: concision decides
+**what** is in the reading, legibility decides **how** each surviving thing is written. Shortening
+by stripping glosses is the one move that fails both rules at once — it produces a text that is
+still long and now needs a decoder.
+
 ### Three hard legibility rules — they apply to the document too, not just the chat
 
 The audience is **not only designers**. A document that needs decoding is a document that was
 not read.
+
+Read `profile.persona_id` before writing: for `executive` and `content`, Phase 0's banned
+vocabulary binds here (`phase-0-calibration.md`). And it binds on **the skill's own words**, not
+only on design concepts — "divergência", "reconciliação", "piso da pesquisa" are our method's
+names, and a builder without design repertoire has no reason to know them. Name the phase by its
+result: "monto caminhos pra você escolher", not "divergir em direções".
 
 1. **An internal pointer carries its meaning on first use.** Never a bare `D7`, `P6`,
    "restriction 2", "axis 2" — always `D7 (a decisão de que o bloco de valor carrega a
@@ -168,8 +216,20 @@ persuasão)`. The ruler: _a reader who has opened neither the spec nor the disco
    how much content is there. Illegibility is the reader needing a decoder. Cut the decoder,
    keep the content.
 
-Self-check before presenting: scan your own output for bare pointers (`D\d+`, `P\d+`,
-"restrição N", "eixo N") with no gloss at first occurrence. Target zero.
+Self-check before presenting, two passes, both target **zero**:
+
+1. **Bare pointers** — `D\d+`, `P\d+`, "restrição N", "eixo N" with no gloss at first occurrence.
+2. **Banned vocabulary, when `persona_id` is `executive` or `content`** — scan for `scaffold`,
+   `embed`, `npm`, `MCP`, `repo`, `branch`, `slug`, plus the method's own names (`divergência`,
+   `divergir`, `reconciliação`, `piso`, `pocket`, `full`). Each hit gets replaced by what it means
+   for the reader, not annotated: "o projeto do produto", "os caminhos que montei", "a pesquisa
+   mínima". The list from Phase 0 was written for the intake and it binds on every phase that
+   prints — a phase that honours it in the questions and breaks it in the findings has not honoured
+   it.
+
+Both passes are mechanical on purpose. A rule with a check gets followed and a rule with an
+adjective gets drifted, which is exactly how the vocabulary contract went unenforced through four
+phases.
 
 ## Step 5 — Persistence and gate
 
@@ -206,8 +266,8 @@ a decision the builder owns, and it is cheaper to settle now than after the scre
       "header": "Próximo",
       "options": [
         {
-          "label": "Divergir em direções (Recomendado)",
-          "description": "Sigo pra fase de divergência: monto as direções em pé de igualdade a partir do brief, e você escolhe."
+          "label": "Montar caminhos pra você escolher (Recomendado)",
+          "description": "Monto 2 ou 3 caminhos diferentes pra essa tela, todos descritos no mesmo nível de detalhe, e você escolhe. Cada um aposta num motivo diferente pra pessoa não agir hoje."
         },
         {
           "label": "Resolver a contradição primeiro",

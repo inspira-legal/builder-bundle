@@ -145,10 +145,15 @@ Heuristic in order (stop at the first one that works):
 1. Variable `BRISAR_DS_PATH`.
 2. `.brisar/config.yaml` field `ds_path`.
 3. Bundled: `references/ds/` **in this skill's own directory** — ships with the
-   plugin; contains `brand/DESIGN.md` + sub-brands + tokens + voice references.
+   plugin; contains `brand/DESIGN.md` + sub-brands + voice references.
 
 If nothing works, record `ds_path: not-found` and continue in brand free-text
 mode.
+
+This resolves the **brand** — voice, principles, sub-brand identity. It is not the
+production token source, and its bundled `brand/tokens/tokens.json` must not be
+used as one; the research phase locates the real one from the repo, or remotely
+via `gh` (`references/phase-research.md`, Front B).
 
 ### 0.3 — Build the brand registry
 
@@ -308,8 +313,10 @@ Phase 2 — Maturity gate (senior/junior only)
 
 ╭─ FIRST DIAMOND ─────────────────────────────────────────────────────────────╮
 │ Research — pesquisa antes do pixel                                          │
-│   → declare the mode (pocket|full): what runs, what was skipped, why        │
-│   → floor, always: bench Mobbin · DS read from source · new component?      │
+│   → declare the mode (pocket|full): what runs, what was skipped, why,       │
+│     and what any degraded front invalidates                                 │
+│   → floor, always: bench · DS read from source · new component?             │
+│     no Mobbin → galleries/prints (login wall) · no repo → gh remote read    │
 │   → discretionary: biases w/ provenance · heuristics · mental models ·      │
 │     what the product has to show                                            │
 │   → fan-out in parallel subagents; only the distillate returns              │
@@ -320,14 +327,16 @@ Phase 2 — Maturity gate (senior/junior only)
 │   → reconcile vs the framing: confirma · contradiz · não alcança            │
 │   → close on an unresolved tension (none found = research was shallow)      │
 │   → present it in chat: findings · references · directions · tension        │
-│   → gate: divergir / resolver a contradição / encerrar                      │
+│     (round ≥2 = the delta only; each block must enable a decision)          │
+│   → gate: montar caminhos / resolver a contradição / encerrar               │
 │                                                                             │
 │ Diverge — direções em pé de igualdade                                       │
 │   → declare the base common to all directions first                         │
 │   → ≥2 directions, each with all 5 parts (aposta·composição·copy·           │
 │     racional·risco); equal-treatment check BLOCKS the gate                  │
 │   → converge: chosen + runner-up + discarded + pivot condition              │
-│   → gate: construir / trocar direção / mais uma rodada / encerrar            │
+│   → recommendation MANDATORY for executive/content personas                 │
+│   → gate: construir / trocar caminho / buscar mais / encerrar               │
 ╰─────────────────────────────────────────────────────────────────────────────╯
 
 Medium — onde explorar (1 question, offers only what's detected)
@@ -350,16 +359,16 @@ Phase 5 — Terminal report + gate
   → gate: continue to Develop / run /bb:discover / stop here
 
 ╭─ SECOND DIAMOND ────────────────────────────────────────────────────────────╮
-│ Develop (entered via gate, shortcut, or direct ask)                          │
+│ Develop (entered via gate, shortcut, or direct ask)                         │
 │   → build in the chosen medium, against the direction + tokens              │
 │   → record a precise locator per surface × variant, plus deviations         │
 │   → gate: continue to Deliver / add surface / stop here                     │
 │                                                                             │
 │ Deliver (entered via gate, shortcut, or direct ask)                         │
-│   → open the artifact via the reader for its medium                        │
-│   → review surface × VARIANT through 7 lenses: fidelity · hypothesis ·     │
-│     hierarchy · DS+states · COPY word-by-word · CONTRAST computed ·        │
-│     TRIANGULATION (problem × research × built)                             │
+│   → open the artifact via the reader for its medium                         │
+│   → review surface × VARIANT through 7 lenses: fidelity · hypothesis ·      │
+│     hierarchy · DS+states · COPY word-by-word · CONTRAST computed ·         │
+│     TRIANGULATION (problem × research × built)                              │
 │   → severity: blocker · significant · DIVERGÊNCIA · minor                   │
 │   → accessibility + handoff doc + DELTA back into the spec                  │
 │   → gate: decidir divergências / construir em código / /bb:ui-accessibility │

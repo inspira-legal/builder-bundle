@@ -82,7 +82,12 @@ preflight:
   MCP is present, and **names** the missing ones instead of hiding them. Code and Claude design
   need no MCP and are always offered.
 - **The research floor** (`references/phase-research.md`, Front A) uses Mobbin. Without it the
-  market bench degrades to web search — a **declared** degradation, never a silent skip.
+  bench falls back to public galleries by `site:`, the builder's own screenshots, the product's
+  own precedent, and only then generic search — and the negative-finding rule tightens, because
+  an absence measured on a ranked corpus is not evidence. Which rungs exist depends on whether
+  the surface is **public or behind a login**: a competitor's live app is not a source, since
+  brisar does not create accounts. The recipe lives in Front A, "Without Mobbin". A **declared**
+  degradation, never a silent skip.
 
 ### 3. Detected product (cross-ref with product-registry)
 
@@ -150,9 +155,19 @@ If `mcps.unframer: false`: falls back to the product's `fallback_path: framer-ha
 
 ### Research phase (market bench)
 
-`mcps.mobbin` gates Front A of the research floor. Present → bench via Mobbin. Absent → degrade
-to web search and **say so in the mode line**: the floor never scales down silently, so a
-degraded front is announced, not omitted.
+`mcps.mobbin` gates Front A of the research floor. Present → bench via Mobbin. Absent → climb the
+fallback ladder in Front A and **say so in the mode line**: the floor never scales down silently,
+so a degraded front is announced, not omitted — and the announcement names what the degradation
+invalidates, not only which tool was missing.
+
+### Research phase (design system, Front B)
+
+`tooling.gh_authed` decides whether the **remote** rung is available when the product repo is not
+on this machine. Authenticated → read the token source and the i18n strings straight from GitHub
+with `gh api`: the git-trees endpoint for the file listing, then `contents` for the files. Not
+`gh search code` — 10 requests per minute, and its 403 is indistinguishable from an empty result
+(the reasoning is in Front B). Not authenticated on a private product → offer `gh auth login`;
+never authenticate silently, and never clone on brisar's own initiative.
 
 ### Medium question (`references/phase-medium.md`)
 
@@ -177,7 +192,9 @@ Common cases and what to do:
 | `git_installed: false` AND persona = executive                                | Don't mention it — the executive path doesn't require git.                                                                                                       |
 | `scope_read: global-only` (no python3)                                        | A project-scoped MCP may exist and be invisible. Before naming a medium as missing, say the check was partial — never report a clean absence you did not verify. |
 | No canvas MCP at all                                                          | Don't treat it as a gap. Code and Claude design cover the medium question; mention the canvas paths once, without nagging.                                       |
-| `mobbin: false`                                                               | Declare the degraded bench in the research mode line. Do not drop Front A.                                                                                       |
+| `mobbin: false`                                                               | Declare the degraded bench in the research mode line, with what it invalidates. Climb Front A's ladder. Do not drop Front A.                                     |
+| Product repo not on disk AND `gh_authed: true`                                | Read the DS and i18n remotely (Front B, rung 3). Say the reading is remote and that a miss in the GitHub index is not proof of absence.                          |
+| Product repo not on disk AND `gh_authed: false`                               | Offer `gh auth login`. If declined, Front B falls to the brand package — which is **not** a token source. Report `authority: brand-only` and its consequence.    |
 
 Detected product and profile calibration stay independent: product = "where I am", profile = "who I am" — a senior embedding into an Inspira product and an executive prototyping something new can sit in the same folder.
 

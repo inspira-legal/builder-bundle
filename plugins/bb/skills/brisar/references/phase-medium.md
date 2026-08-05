@@ -20,7 +20,7 @@ design need no MCP, so there is always a path.
 
 ## Step 0 — Build the option list
 
-Read `preflight.mcps` and `preflight.product`:
+Read `preflight.mcps`, `preflight.product` and `profile.persona_id`:
 
 | Option            | Offered when  | Needs                                      |
 | ----------------- | ------------- | ------------------------------------------ |
@@ -41,31 +41,37 @@ may exist and be invisible. Say the check was partial instead of asserting a cle
 
 Print one intro line naming the chosen direction and what is missing, if anything:
 
-> **Direção escolhida: <nome>.** Onde você quer explorar? _(Não detectei o MCP do Figma aqui —
-> se quiser esse caminho, é só configurar e eu ofereço na próxima.)_
+> **Caminho escolhido: <nome>.** Onde você quer ver isso de pé? _(Não detectei o Figma conectado
+> aqui — se quiser esse caminho, é só configurar e eu ofereço na próxima.)_
+
+**Lead each description with the outcome, not the tool.** Someone without design repertoire is not
+choosing between Paper and Figma — they are choosing between "quero ver rápido", "quero mostrar e
+receber comentário" and "isso vai pra produção". The tool name stays as the label; the description
+sells the consequence. Drop `MCP` from user-facing text entirely — for `executive` and `content` it
+is banned vocabulary, and for everyone else it is an implementation detail of our side.
 
 ```json
 {
   "questions": [
     {
-      "question": "Onde você quer explorar a direção <nome>?",
+      "question": "Onde você quer ver <nome> de pé?",
       "header": "Meio",
       "options": [
         {
-          "label": "Paper",
-          "description": "Desenho as pranchas no Paper via MCP. Melhor pra comparar composições lado a lado e iterar rápido antes de existir código."
-        },
-        {
-          "label": "Código",
-          "description": "Construo a surface no projeto (React + Tailwind, ou HTML se for protótipo). Melhor quando o destino já é produção."
-        },
-        {
           "label": "Claude design",
-          "description": "Monto um preview renderizado aqui, sem setup local e sem MCP. Melhor pra ver de pé rápido e mostrar pra alguém."
+          "description": "Vejo de pé em minutos, aqui na conversa, sem instalar nada. Melhor pra formar opinião rápido e mostrar pra alguém."
+        },
+        {
+          "label": "Paper",
+          "description": "Desenho as pranchas no Paper. Melhor quando há composições pra comparar lado a lado e nada está decidido ainda."
         },
         {
           "label": "Figma",
-          "description": "Desenho no Figma via MCP. Melhor quando a revisão é assíncrona com stakeholders ou o arquivo tem a biblioteca do time."
+          "description": "Desenho no Figma. Melhor quando outras pessoas vão comentar no seu tempo, ou quando o arquivo tem a biblioteca do time."
+        },
+        {
+          "label": "Código",
+          "description": "Construo dentro do projeto de verdade. Melhor quando o destino já é produção e você quer sair daqui com isso encaminhado."
         }
       ],
       "multiSelect": false
@@ -74,10 +80,10 @@ Print one intro line naming the chosen direction and what is missing, if anythin
 }
 ```
 
-Order the options by fit, not alphabetically, and put the best fit first. Signals: a detected
-product with a real repo leans **Código**; an unresolved visual direction with several
-compositions to compare leans a **canvas**; a builder with no local toolchain leans **Claude
-design**.
+Order the options by fit, not alphabetically, and put the best fit first — the order above is a
+default for an unresolved visual direction, not a fixed list. Signals: a detected product with a
+real repo leans **Código**; several compositions to compare leans a **canvas**; no local toolchain,
+or `persona_id: executive`, leans **Claude design**.
 
 Do **not** add an "Outro" option — the tool provides free text.
 
