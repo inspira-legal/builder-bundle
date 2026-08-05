@@ -1,6 +1,6 @@
 # Phase 5 — Handoff + gate
 
-After Phase 4 writes `design/<surface>.md` for each surface, the journey-map part of brisar is done. This phase prints the handoff summary (persona-shaped) and ends with the **handoff gate** — a single `AskUserQuestion` offering the natural next steps. The gate suggests, never auto-invokes (per `plugins/bb/references/handoff-gate.md`).
+After Phase 4 writes the visual direction of each surface into `.bb/tasks/<slug>/`, the journey-map part of brisar is done. This phase prints the handoff summary (persona-shaped) and ends with the **handoff gate** — a single `AskUserQuestion` offering the natural next steps. The gate suggests, never auto-invokes (per `plugins/bb/references/handoff-gate.md`).
 
 ## Output shape (default — senior/standard)
 
@@ -14,12 +14,14 @@ Estrutura criada:
   ├── package.json, vite.config.ts, tsconfig.json
   ├── src/{main.tsx, App.tsx, index.css, tokens-brand.css}
   ├── design-context/{tokens.md, components.md}     ← a fase Develop lê isto
-  ├── design/                                        ← brief de cada surface
-  │   ├── README.md (ordem sugerida)
-  │   ├── <surface-1>.md
-  │   ├── <surface-2>.md
-  │   └── <surface-3>.md
   └── .brisar/{config.yaml, session.yaml}
+
+  .bb/tasks/<slug>/                                  ← junto do brief
+  └── design/                                        ← brief de cada surface
+      ├── README.md (ordem sugerida)
+      ├── <surface-1>.md
+      ├── <surface-2>.md
+      └── <surface-3>.md
 
 Para rodar:
 
@@ -27,6 +29,8 @@ Para rodar:
   pnpm install
   pnpm dev
 ```
+
+With a single surface, that last block is one line — `.bb/tasks/<slug>/design.md`.
 
 Then the gate:
 
@@ -39,7 +43,7 @@ Then the gate:
       "options": [
         {
           "label": "Construir as surfaces agora (fase Develop)",
-          "description": "Continuo nesta sessão: leio a direção escolhida no brief de design + design-context/ e construo tela a tela"
+          "description": "Continuo nesta sessão: leio a direção escolhida no brief de design + a direção visual em .bb/tasks/<slug>/ + design-context/ e construo tela a tela"
         },
         {
           "label": "Rodar /bb:discover antes",
@@ -76,8 +80,9 @@ O que tem aqui:
   ├── <surface-2>.html
   ├── styles.css              ← visual da marca <brand>
   ├── README.md               ← como mostrar pro time
-  ├── HANDOFF-DEV.md          ← pacote pro time técnico continuar
-  └── design/                 ← brief escrito de cada tela
+  └── HANDOFF-DEV.md          ← pacote pro time técnico continuar
+
+  .bb/tasks/<slug>/           ← o brief escrito de cada tela fica aqui
 
 Como abrir:
   1. Vá na pasta <slug>/ no Finder
@@ -205,9 +210,9 @@ If the builder returns to the same `<slug>/` and runs /bb:brisar:
   - Revisar/handoff do que existe (fase Deliver)
   - Adicionar surface nova (vai pra Phase 4)
   - Trocar marca (regrava design-context/, mantém src/)
-  - Re-shape (sugiro /bb:discover)
+  - Re-enquadrar (sugiro /bb:discover)
   - Recomeçar do zero (arquiva .brisar/session.archived-<ISO>.yaml antes)
   ```
-- Routes accordingly. "Re-shape" suggests `/bb:discover` and stops; "Recomeçar" always archives the old session first.
+- Routes accordingly. "Re-enquadrar" suggests `/bb:discover` and stops; "Recomeçar" always archives the old session first.
 
 This is the re-entry contract. Not used on the first invocation, but keeps the skill useful in subsequent sessions.

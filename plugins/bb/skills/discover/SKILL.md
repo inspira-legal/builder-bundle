@@ -4,13 +4,13 @@ description: Roda o primeiro diamante inteiro antes de qualquer design — enqua
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 # Discover
 
 Run the whole first diamond: get the **problem** sharp, then decide **what
-survives to design**. Shaping the wrong problem crisply still ships the wrong
+survives to design**. Framing the wrong problem crisply still ships the wrong
 thing — this is the lowest-cost moment to catch that. The output is a brief
 seeded with framing and fit that `/bb:spec` reads as upstream intent.
 

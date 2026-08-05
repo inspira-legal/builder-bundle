@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.4.0 — 2026-08-05
+## 2.6.0 — 2026-08-05
 
 O `/bb:brisar` passa a cobrir o **duplo diamante inteiro**. Antes ele começava no
 scaffold: o builder chegava com uma ideia e saía com uma tela, sem nenhuma etapa
@@ -205,6 +205,80 @@ ponteiro fica expandido, sempre — e a concisão passa a mirar outro lugar: **c
 itens inteiros, não as palavras dentro deles.** Concisão decide **o que** entra na
 leitura, legibilidade decide **como** cada coisa sobrevivente é escrita. Encurtar
 raspando glosa é o único movimento que falha nas duas ao mesmo tempo.
+
+## 2.5.0 — 2026-08-05
+
+### A direção visual do brisar mora junto do brief
+
+O `/bb:brisar` escrevia a direção visual dentro da pasta scaffoldada
+(`<slug>/design/<surface>.md`), longe do brief que ela serve. Agora ela é membro da
+pasta da task: uma surface vira `.bb/tasks/<slug>/design.md`, duas ou mais viram
+`.bb/tasks/<slug>/design/<surface>.md` mais um índice. A pasta do projeto continua
+com código e `design-context/` (tokens e componentes, que são do scaffold) — o que
+saiu de lá é só o brief de tela.
+
+Os dois membros da pasta são independentes: brisar sem `/bb:discover` deixa uma task
+só com design, e uma spec sem desenho segue legal. A seleção do `/bb:delegate` varre
+`spec.md`, então uma pasta sem brief simplesmente não é candidata.
+
+Quem lê não hardcoda caminho: o `.brisar/config.yaml` ganhou `design_path` (absoluto,
+mesmo idioma do `ds_path` já existente) e `surfaces[].file` passou a ser relativo a
+ele. A escolha entre um arquivo e uma pasta acontece uma vez, na Phase 4, e nunca é
+re-derivada rio abaixo.
+
+## 2.4.0 — 2026-08-05
+
+### A spec virou um documento pra ser lido
+
+Os briefs do `/bb:spec` eram formulário: seis seções fixas dizendo a mesma coisa
+três vezes, tabela com parágrafo de 300 caracteres dentro da célula, e seção
+inteira recontando a conversa que produziu o brief. Quem ia construir preferia
+reler o chat. Agora a spec tem **duas metades**:
+
+- **topo livre** — abertura de 1–3 parágrafos e quantas seções o problema pedir,
+  com os nomes que ele pedir. Arquitetura, quando o caso tem, mora aqui com nome
+  próprio: "o seam entre agente e caller" diz mais que "design".
+- **espinha fixa** — `decisions`, `behavior`, `tasks`, `out of scope`, `open`,
+  nesta ordem. Fixa porque cada uma tem quem leia: o `implement` consome `tasks`,
+  a frente `contract` do review caminha `behavior`, o gate trava em `open`.
+
+O critério que separa as duas metades é um só: **a prosa descreve, não reconta**.
+O que a coisa é fica na spec; como chegamos até ela vai pro corpo do commit.
+`## design` saiu de vez — no bb a palavra já é desenho de tela.
+
+### O revisor independente virou passo próprio
+
+Era sub-bullet de um passo condicional; agora é um passo obrigatório em todo brief
+Medium+, antes do gate, em contexto fresco e só com o brief na mão. O mandato
+ganhou a metade que faltava: além do que está faltando, achar **o que sobra** —
+fato repetido em três seções, prosa que reconta a conversa. O veredito aparece no
+gate em uma linha.
+
+### Um lint mecânico, e o CI rodando ele
+
+`lint_spec.py` (stdlib, sem dependência) barra o que é objetivo: seção morta
+(`## design`, `## still open`), célula de tabela acima de 100 caracteres, row com
+contagem de células errada — o bug do `|` não escapado —, frontmatter inválido e
+espinha ausente. Sem teto de linhas: tamanho é julgamento, e julgamento é do
+revisor. O `validate.yml` roda ele em todo `.bb/tasks/*/spec.md`.
+
+### Slice pronta pra workflow
+
+Cada slice do `## tasks` agora carrega dependência e verificação:
+
+```
+- [ ] **3. nome** — o que entrega → behaviors 1,3 · dep: 2 · verifica: CI verde
+```
+
+O `implement` lê `dep:` como ordem de construção (não a ordem da lista) e roda o
+`verifica:` antes de marcar o checkbox. É o DAG que a adoção de workflow consome
+sem reinterpretar prosa.
+
+### `shape` saiu do vocabulário
+
+Brief é **spec**; o verbo é **especificar**. No `/bb:discover` e no `/bb:brisar`,
+onde "shaping" queria dizer enquadrar o problema, virou **enquadrar**. `Finding
+shape` e `return shape` ficam: são formato de dado, outro sentido da palavra.
 
 ## 2.2.0 — 2026-08-03
 

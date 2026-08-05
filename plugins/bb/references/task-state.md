@@ -1,16 +1,42 @@
-# Task state — the `.bb/tasks/<slug>/spec.md` contract
+# Task state — the `.bb/tasks/<slug>/` contract
 
-The single on-disk contract for shaped work. Written by `/bb:spec` (and seeded by
-`/bb:discover`), consumed by `/bb:implement`, `/bb:ship` and `/bb:delegate`. Any
-skill that reads or writes task state follows this file — the contract lives here
-and nowhere else.
+The single on-disk contract for a task's durable artifacts. The brief is written by
+`/bb:spec` (and seeded by `/bb:discover`), consumed by `/bb:implement`, `/bb:ship`
+and `/bb:delegate`; the visual direction is written by `/bb:brisar`. Any skill that
+reads or writes task state follows this file — the contract lives here and nowhere
+else.
 
 ## Location
 
-- Briefs live at `.bb/tasks/<slug>/spec.md`. `<slug>` is a short kebab name
-  matching the dir.
+`.bb/tasks/<slug>/` is the task's folder — `<slug>` is a short kebab name matching
+the dir, and everything durable about that task lives inside it:
+
+```
+.bb/tasks/<slug>/
+├── spec.md              # the brief — /bb:discover seeds, /bb:spec finalizes
+├── brief-design.md      # the design brief — /bb:brisar first diamond
+├── design.md            # visual direction, single surface — /bb:brisar Phase 4
+└── design/              # …or one file per surface, when there is more than one
+    ├── README.md        # index + suggested drawing order
+    └── <surface>.md
+```
+
+- `design.md` and `design/` are the same artifact in two shapes: one surface writes
+  the flat file, two or more write the folder. A task never has both.
+- **`brief-design.md` is a different artifact from both.** It is the design brief —
+  the research record, the reconciliation against the framing, the directions and the
+  chosen one. `spec.md` answers _is it worth building, and what did we cut?_;
+  `brief-design.md` answers _how should this be, and why?_; the design files say what
+  each surface looks like. The two briefs **coexist** — neither replaces the other,
+  and where they disagree **`spec.md` wins**, because the brief is a record and the
+  spec is the contract.
+- Members are independent. A brisar run that never went through `/bb:discover`
+  leaves a folder with design and no `spec.md`; a specced task that never touched
+  design has only `spec.md`.
 - Bare selection (`/bb:delegate` with no slug) scans `.bb/tasks/*/spec.md` and
-  picks by `created`.
+  picks by `created` — a folder without a brief is simply not a candidate.
+- The `.bb/` root is the nearest ancestor of the cwd that already has one; if none
+  does, it is created in the cwd.
 
 ## Frontmatter (selection & tracking)
 
@@ -39,6 +65,8 @@ bare selection).
 
 `/bb:discover` seeds the brief with `## problem` / `## hypothesis` (problem
 framing) and `## fit` / `## cuts` (appetite & scope). `/bb:spec` reads them as the
-intent the shaping serves and builds the full brief in the same file: `## what`,
-`## why`, decisions, out-of-scope, and for Large work `## design`, `## behavior`
-and `## tasks` (the slice checklist).
+intent this work serves and builds the rest of the brief in the same file — the
+upstream sections stay where they are, in the free top half, and the spine
+(`## decisions`, `## behavior`, `## tasks`, `## out of scope`, `## open`) goes
+below them. The format is
+`${CLAUDE_PLUGIN_ROOT}/skills/spec/references/spec-format.md`.

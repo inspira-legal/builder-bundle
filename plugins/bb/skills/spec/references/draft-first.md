@@ -7,22 +7,15 @@ accurately, than they answer open questions cold.
 
 ## What the draft must cover
 
-Fill each of these in yourself, using your best read of the goal + the codebase.
-Mark anything you're guessing so it's visibly a guess, not a fact.
+The brief's form belongs to `spec-format.md` — the free top half, then the spine.
+The draft's job is to arrive with those already filled from your best read of the goal
+and the codebase, so the user reacts to a proposal instead of completing a blank. Mark
+anything you're guessing so it reads as a guess rather than a fact.
 
-- **Intent & value** — what we're building, who for, what changes once it ships.
-  One sentence.
-- **Scope edges** — what's explicitly OUT; the smallest version still worth shipping.
-- **Reuse** — what existing code, patterns, or modules this should build on.
-  Name them. The cheapest guard against reinventing something that already exists.
-- **Decisions** — the forks (data model, naming, where the logic lives, sync vs
-  async). Make the obvious calls; flag only the rest (see below).
-- **Edge cases** — empty / zero / huge inputs; first run vs repeat; failure and
-  rollback; migrating data that already exists. State how the draft handles each.
-- **Done & proof** — what "done" looks like, and how we'll know it works (a test,
-  a demo, a metric).
-- **Constraints** — existing conventions, perf budget, dependencies, deadline,
-  blast radius if it goes wrong.
+Two things a first draft earns the most from: **reuse** — name the existing code,
+patterns or modules this builds on, the cheapest guard against reinventing something
+that exists — and the **smallest version still worth shipping**, which is what turns a
+scope edge into a line you can actually hold.
 
 ## Surfacing the forks (the only thing you ask about)
 
@@ -48,10 +41,11 @@ Ask the forks through the **`AskUserQuestion` tool** — concrete options the us
 - After each round, **fold the answers into the draft and show only what
   changed** — the diff, not the whole document again.
 - **When the gray areas run dry, run the adversarial completeness pass** — the
-  three moves in the skill's step 5 (generators + an independent reviewer subagent
-  for Medium+ + the behavior→slice→test trace), not a casual re-read. It hunts
-  open load-bearing decisions, unmapped behavior, and material contradictions, and
-  loops anything it surfaces back into the questions.
+  skill's step 5 (generators + the behavior→slice→test trace), not a casual
+  re-read. It hunts open load-bearing decisions, unmapped behavior, and material
+  contradictions, and loops anything it surfaces back into the questions.
+- **Then the check, step 6** — the lint, then an independent reviewer in fresh
+  context. Medium and up, every time, before the gate ever opens.
 - **The gate blocks on open load-bearing decisions.** Never offer a clean "build"
   while one is unresolved — the user must resolve it or defer it explicitly
   ("decide at build time", recorded in the brief). No silent "build anyway".
@@ -63,7 +57,7 @@ Ask the forks through the **`AskUserQuestion` tool** — concrete options the us
 - **The validated brief is the checkpoint.** When the user approves (or sends last
   edits), that `.bb/tasks/<slug>/spec.md` is the artifact. The gate then offers to
   build (or build and ship) — and an explicit build pick is the user affirmatively
-  starting execution, not shaping silently rolling into it. Never start building
+  starting execution, not the spec silently rolling into it. Never start building
   off the back of a re-read; only off that explicit pick.
 - Keep **deferred decisions visible** — anything handed back to you ("your call")
   gets noted, so it's not silently assumed.

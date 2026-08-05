@@ -36,8 +36,8 @@ where the user wants them (default: alongside the brief in
 
 ## spec.md — the definition document
 
-Map from the brief: `## what`/`## why` → Shaping; decisions → Decision
-rationale; out-of-scope bullets → Out of scope; `## behavior` → Behaviors;
+Map from the brief: the opening and the free top half → context and framing;
+`## decisions` → Decision rationale; `## out of scope` → Out of scope; `## behavior` → Behaviors;
 the behavior map's `WHEN … THEN …` rows → Definition of done criteria.
 
 ```markdown

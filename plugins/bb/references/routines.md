@@ -5,7 +5,7 @@ A Cloud Routine is the **only true AFK option** (see
 clone, with no local files and no mid-run approval prompts, and its only durable
 output is a commit on a `claude/` branch / a draft PR. That makes it the home for
 running the trio overnight: a routine fires, sets `BB_UNATTENDED`, and runs
-`/bb:delegate <slug>` against one shaped brief — `delegate` drives the whole
+`/bb:delegate <slug>` against one validated brief — `delegate` drives the whole
 `implement → ship` chain, building the backlog and leaving a
 reviewed-in-the-morning draft PR.
 
