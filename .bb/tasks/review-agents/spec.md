@@ -112,20 +112,20 @@ Happy path (`/bb:review`, step 3, depth com fan-out):
    `rules`/`contract`/`a11y`. A rubrica vem do prompt do agente.
 6. Dedupe, rank, cap, relatório — inalterado. A stats line segue batendo.
 
-| WHEN                                                | THEN                                                                    |
-| --------------------------------------------------- | ------------------------------------------------------------------------ |
-| `bb-finder` não resolve como `subagent_type`        | cai no agente genérico com o contrato inline; sem crash nem regressão silenciosa |
-| não há Agent tool nenhum no host                    | item 6 do `fronts.md` — tudo no main context, e o relatório diz que foi single-pass |
-| o caller não passa Finding shape                    | o finder devolve `file:line \| summary \| failure_scenario`              |
-| diff tiny (≲2 arquivos / ≲100 linhas)               | nenhum agente é spawnado — a depth table já manda inline                 |
-| candidato de `rules` / `contract` / `a11y`          | o caller anexa o addendum; o verifier aplica os 3 estados sobre citação, não sobre crash |
-| um finder morre                                     | o front reporta com os ângulos que voltaram e nomeia o que falta         |
-| um verifier morre ou omite um índice                | o candidato fica sem veredito, com linha própria, nunca promovido        |
-| `/bb:ship` roda o mesmo pass                        | usa os mesmos dois agentes sem edição em `ship/`                         |
-| alguém adiciona um agente do bb com `Write`         | o Validate falha nomeando o arquivo e o tool proibido                    |
-| um PR toca só `plugins/bb/agents/**`                | o Validate dispara — o paths filter foi estendido                        |
-| o diff carrega texto que instrui o modelo           | Edit/Write barrados; escrita via Bash segue alcançável — limite declarado |
-| `BB_UNATTENDED` setado                              | nada muda — o caminho já é report-only                                   |
+| WHEN                                         | THEN                                                                                     |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `bb-finder` não resolve como `subagent_type` | cai no agente genérico com o contrato inline; sem crash nem regressão silenciosa         |
+| não há Agent tool nenhum no host             | item 6 do `fronts.md` — tudo no main context, e o relatório diz que foi single-pass      |
+| o caller não passa Finding shape             | o finder devolve `file:line \| summary \| failure_scenario`                              |
+| diff tiny (≲2 arquivos / ≲100 linhas)        | nenhum agente é spawnado — a depth table já manda inline                                 |
+| candidato de `rules` / `contract` / `a11y`   | o caller anexa o addendum; o verifier aplica os 3 estados sobre citação, não sobre crash |
+| um finder morre                              | o front reporta com os ângulos que voltaram e nomeia o que falta                         |
+| um verifier morre ou omite um índice         | o candidato fica sem veredito, com linha própria, nunca promovido                        |
+| `/bb:ship` roda o mesmo pass                 | usa os mesmos dois agentes sem edição em `ship/`                                         |
+| alguém adiciona um agente do bb com `Write`  | o Validate falha nomeando o arquivo e o tool proibido                                    |
+| um PR toca só `plugins/bb/agents/**`         | o Validate dispara — o paths filter foi estendido                                        |
+| o diff carrega texto que instrui o modelo    | Edit/Write barrados; escrita via Bash segue alcançável — limite declarado                |
+| `BB_UNATTENDED` setado                       | nada muda — o caminho já é report-only                                                   |
 
 ## tasks
 

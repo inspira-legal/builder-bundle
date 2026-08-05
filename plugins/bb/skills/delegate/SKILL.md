@@ -81,7 +81,7 @@ and stop.
 | selected task already `in-progress`             | resume — implement skips checked slices; status stays `in-progress` until landing                                                                                       |
 | brief has no frontmatter                        | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                                                    |
 | implement safety valve fires (underspecified)   | flip `status: blocked`, point back to `/bb:spec`, stop — do not improvise                                                                                               |
-| ship hits an unrecoverable stop / blocker       | flip `status: blocked`; write the blocker into the PR description, or into the brief's `## open` when the destination has no PR; report it supervised; exit       |
+| ship hits an unrecoverable stop / blocker       | flip `status: blocked`; write the blocker into the PR description, or into the brief's `## open` when the destination has no PR; report it supervised; exit             |
 | `BB_UNATTENDED` set                             | no questions; ship opens a DRAFT PR on `claude/<slug>` — or pushes it and reports the deploy command in a LexFlow app repo; never merge / never push a protected branch |
 | not in a git repo / no tasks dir in either root | report the error, stop                                                                                                                                                  |
 

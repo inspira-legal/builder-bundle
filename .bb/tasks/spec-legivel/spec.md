@@ -121,19 +121,19 @@ caller" diz mais que "design".
    `.bb/tasks/<slug>/spec.md` e oferece implement / delegate / parar.
 7. Toda skill que fala do brief diz "spec"; "shape" só sobrevive como formato de dado.
 
-| WHEN                                     | THEN                                                             |
-| ---------------------------------------- | ---------------------------------------------------------------- |
-| a spec é reescrita depois de landada     | o porquê mudou vai no commit; o arquivo só ganha a decisão nova  |
-| aparece uma seção `## design`            | o lint falha nomeando a linha e aponta a metade de cima          |
-| célula de tabela passa de 100 chars      | o lint falha; o conteúdo vira prosa ou bullet                    |
-| uma row tem `\|` não escapado            | o lint pega pela contagem de células — o bug de `review-agents:103` |
-| falta `## behavior` ou `## tasks`        | o lint avisa; spec Medium pode não ter as duas                   |
-| o autor cria seções próprias no topo     | passa — é o ponto; o lint só checa a espinha                     |
-| spec antiga de outro repo tem `## design`| o lint só roda no que o `/bb:spec` acabou de escrever            |
-| não há Agent tool no host                | o revisor não roda e o gate diz isso, em vez de omitir           |
-| o revisor acha buraco load-bearing       | volta pro passo de perguntas; o gate não abre com decisão aberta |
-| o trabalho é Tiny                        | nada de spec — segue a regra de auto-size que já existe          |
-| o brief foi seedado pelo `/bb:discover`  | as seções upstream ficam no topo, que é livre                    |
+| WHEN                                      | THEN                                                                |
+| ----------------------------------------- | ------------------------------------------------------------------- |
+| a spec é reescrita depois de landada      | o porquê mudou vai no commit; o arquivo só ganha a decisão nova     |
+| aparece uma seção `## design`             | o lint falha nomeando a linha e aponta a metade de cima             |
+| célula de tabela passa de 100 chars       | o lint falha; o conteúdo vira prosa ou bullet                       |
+| uma row tem `\|` não escapado             | o lint pega pela contagem de células — o bug de `review-agents:103` |
+| falta `## behavior` ou `## tasks`         | o lint avisa; spec Medium pode não ter as duas                      |
+| o autor cria seções próprias no topo      | passa — é o ponto; o lint só checa a espinha                        |
+| spec antiga de outro repo tem `## design` | o lint só roda no que o `/bb:spec` acabou de escrever               |
+| não há Agent tool no host                 | o revisor não roda e o gate diz isso, em vez de omitir              |
+| o revisor acha buraco load-bearing        | volta pro passo de perguntas; o gate não abre com decisão aberta    |
+| o trabalho é Tiny                         | nada de spec — segue a regra de auto-size que já existe             |
+| o brief foi seedado pelo `/bb:discover`   | as seções upstream ficam no topo, que é livre                       |
 
 ## tasks
 

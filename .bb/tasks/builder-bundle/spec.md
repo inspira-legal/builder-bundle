@@ -128,19 +128,19 @@ Sucesso: o time instala um plugin e sabe qual verbo usar em cada ponto da jornad
 8. `implement`/`ship`/`review`/`review-setup` consultam o manifesto em runtime pra decisões
    de stack.
 
-| WHEN                                          | THEN                                                                     |
-| --------------------------------------------- | ------------------------------------------------------------------------ |
-| só há briefs no caminho antigo                | `/bb:delegate` não acha nada; a migração manual está no CHANGELOG        |
-| manifesto inacessível (offline, sem `gh`)     | segue os padrões do repo atual e avisa que não consultou                  |
-| o usuário responde "encerrar aqui" num gate   | nada é auto-invocado                                                     |
-| `/bb:review` roda numa branch sem PR          | funciona só com a fonte diff, e reporta que só analisou o diff           |
-| `CODE_REVIEW_GUIDE.md` não existe             | review roda genérico e sugere `/bb:review-setup`; se existe, atualiza    |
+| WHEN                                           | THEN                                                                     |
+| ---------------------------------------------- | ------------------------------------------------------------------------ |
+| só há briefs no caminho antigo                 | `/bb:delegate` não acha nada; a migração manual está no CHANGELOG        |
+| manifesto inacessível (offline, sem `gh`)      | segue os padrões do repo atual e avisa que não consultou                 |
+| o usuário responde "encerrar aqui" num gate    | nada é auto-invocado                                                     |
+| `/bb:review` roda numa branch sem PR           | funciona só com a fonte diff, e reporta que só analisou o diff           |
+| `CODE_REVIEW_GUIDE.md` não existe              | review roda genérico e sugere `/bb:review-setup`; se existe, atualiza    |
 | o repo tem a skill customizada do setup antigo | ela segue funcionando isolada; a nota de migração recomenda remover      |
-| delegate roda sob `BB_UNATTENDED`             | nunca merge (capability scoping) e o auto-chain implement→ship se aplica |
-| o usuário tenta `/ofc:<skill>` após migrar    | não existe; README/CHANGELOG têm o de-para completo (15 ofc → bb)        |
-| uma skill fundida roda uma fase               | só o reference daquela fase é carregado                                  |
-| instala bb sem desinstalar ofc                | os dois convivem, mas os hooks injetam contexto em dobro                 |
-| quem tem ofc roda `claude plugin update`      | falha — o marketplace lista só `bb`; esperado no major 2.0.0             |
+| delegate roda sob `BB_UNATTENDED`              | nunca merge (capability scoping) e o auto-chain implement→ship se aplica |
+| o usuário tenta `/ofc:<skill>` após migrar     | não existe; README/CHANGELOG têm o de-para completo (15 ofc → bb)        |
+| uma skill fundida roda uma fase                | só o reference daquela fase é carregado                                  |
+| instala bb sem desinstalar ofc                 | os dois convivem, mas os hooks injetam contexto em dobro                 |
+| quem tem ofc roda `claude plugin update`       | falha — o marketplace lista só `bb`; esperado no major 2.0.0             |
 
 ## tasks
 

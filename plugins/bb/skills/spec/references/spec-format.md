@@ -108,15 +108,15 @@ doesn't do. Both can appear in the same file.
 python3 plugins/bb/skills/spec/scripts/lint_spec.py .bb/tasks/<slug>/spec.md
 ```
 
-| code | level | what it catches                                      |
-| ---- | ----- | ---------------------------------------------------- |
+| code | level | what it catches                                              |
+| ---- | ----- | ------------------------------------------------------------ |
 | E001 | erro  | frontmatter ausente, incompleto ou com status/data inválidos |
-| E002 | erro  | `## decisions` ou `## open` ausente                   |
-| E003 | erro  | seção de nome morto (`## design`, `## still open`)    |
-| E004 | erro  | célula de tabela acima de 100 caracteres              |
-| E005 | erro  | row com número de células diferente do cabeçalho      |
-| W001 | aviso | sem `## behavior`                                     |
-| W002 | aviso | sem `## tasks`                                        |
+| E002 | erro  | `## decisions` ou `## open` ausente                          |
+| E003 | erro  | seção de nome morto (`## design`, `## still open`)           |
+| E004 | erro  | célula de tabela acima de 100 caracteres                     |
+| E005 | erro  | row com número de células diferente do cabeçalho             |
+| W001 | aviso | sem `## behavior`                                            |
+| W002 | aviso | sem `## tasks`                                               |
 
 Whether the document is too long, repeats itself, or drifts into archaeology is not a
 lint check — it's what the independent reviewer is asked to find. A line ceiling on a

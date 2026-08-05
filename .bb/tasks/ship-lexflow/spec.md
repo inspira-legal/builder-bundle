@@ -120,23 +120,23 @@ valendo: nunca faz merge, nunca aprova, nunca force-push, **nunca deploya**.
 8. Relatório final: sha, quais deployments o diff afeta, resultado de cada camada do gate, e
    o comando `lexflow deploy --ref <sha>`.
 
-| WHEN                                            | THEN                                                                   |
-| ----------------------------------------------- | ---------------------------------------------------------------------- |
-| o diff não toca nada referenciado pelo manifest | commita e dá push, e omite o handoff de deploy — não há o que deployar  |
+| WHEN                                                                       | THEN                                                                                |
+| -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| o diff não toca nada referenciado pelo manifest                            | commita e dá push, e omite o handoff de deploy — não há o que deployar              |
 | o arquivo pode ser referenciado de dentro de um workflow (`queries/*.sql`) | o pré-check devolve `affects_deploy: "unknown"`; quem decide é o LLM lendo os YAMLs |
-| um `source` aponta pra arquivo inexistente      | bloqueia antes do quality pass, nomeia o path e o deployment           |
-| o dry-run sai com `Manifest error:`             | bloqueia, conserta, re-roda o dry-run                                  |
-| o dry-run dá 500 / erro de rede na fase de diff | reporta como instabilidade de plataforma e segue o landing             |
-| não está logado                                 | dry-run e `opcodes list` viram checks pulados; aponta `lexflow login`  |
-| a CLI não está no PATH ou o shim está quebrado  | mesma degradação de deslogado, e reporta o shim quebrado               |
-| o `git push` falha com `could not read Username` | diagnostica credential helper ausente e aponta `lexflow login`        |
-| o push é rejeitado por remote à frente          | `lexflow sync` (ff-only) ou `lexflow pull`; segue proibido force-push  |
-| o diff declara um `$secret` novo em `[env]`     | nomeia o secret e aponta `lexflow secret set` — o deploy vai pedir     |
-| o diff toca `[[datastores]]`                    | avisa que é a área do bug de dry-run; um 500 ali provavelmente não é do app |
-| há múltiplos `lexflow.toml` (monorepo)          | deriva o app pelo que o diff toca; se cruza mais de um, pergunta qual  |
-| pediram destino LexFlow e não há `lexflow.toml` | diz que não achou o manifest e sugere o diretório certo ou `lexflow clone` |
-| o diff é pequeno (≲2 arquivos / ≲100 linhas)    | pula o fan-out, review inline — regra atual do ship, mantida           |
-| alguém deployou outro sha no meio-tempo         | irrelevante pro handoff: `--ref <sha>` é determinístico                |
+| um `source` aponta pra arquivo inexistente                                 | bloqueia antes do quality pass, nomeia o path e o deployment                        |
+| o dry-run sai com `Manifest error:`                                        | bloqueia, conserta, re-roda o dry-run                                               |
+| o dry-run dá 500 / erro de rede na fase de diff                            | reporta como instabilidade de plataforma e segue o landing                          |
+| não está logado                                                            | dry-run e `opcodes list` viram checks pulados; aponta `lexflow login`               |
+| a CLI não está no PATH ou o shim está quebrado                             | mesma degradação de deslogado, e reporta o shim quebrado                            |
+| o `git push` falha com `could not read Username`                           | diagnostica credential helper ausente e aponta `lexflow login`                      |
+| o push é rejeitado por remote à frente                                     | `lexflow sync` (ff-only) ou `lexflow pull`; segue proibido force-push               |
+| o diff declara um `$secret` novo em `[env]`                                | nomeia o secret e aponta `lexflow secret set` — o deploy vai pedir                  |
+| o diff toca `[[datastores]]`                                               | avisa que é a área do bug de dry-run; um 500 ali provavelmente não é do app         |
+| há múltiplos `lexflow.toml` (monorepo)                                     | deriva o app pelo que o diff toca; se cruza mais de um, pergunta qual               |
+| pediram destino LexFlow e não há `lexflow.toml`                            | diz que não achou o manifest e sugere o diretório certo ou `lexflow clone`          |
+| o diff é pequeno (≲2 arquivos / ≲100 linhas)                               | pula o fan-out, review inline — regra atual do ship, mantida                        |
+| alguém deployou outro sha no meio-tempo                                    | irrelevante pro handoff: `--ref <sha>` é determinístico                             |
 
 ## tasks
 
