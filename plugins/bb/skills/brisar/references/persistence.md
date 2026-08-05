@@ -161,7 +161,12 @@ brand:
 # Where the context files live — the "agreed path" of the contract with Develop.
 design_context_path: "<slug>/design-context/"
 
-# Surface tracking (updated by Phase 4 and re-runs)
+# The task folder — .bb/tasks/<slug>/, where Phase 4 writes the visual direction
+# next to the brief (plugin-level references/task-state.md). Absolute, like ds_path.
+design_path: "<absolute path>"
+
+# Surface tracking (updated by Phase 4 and re-runs). `file` is relative to
+# design_path: `design.md` for a single surface, `design/<name>.md` for several.
 surfaces:
   - name: busca
     file: design/busca.md
@@ -175,22 +180,25 @@ surfaces:
 1. Develop reads .brisar/config.yaml (searches in cwd and ancestors).
 2. Reads <design_context_path>/tokens.md
 3. Reads <design_context_path>/components.md
-4. For a specific surface: also reads design/<surface>.md.
+4. For a specific surface: also reads <design_path>/<surfaces[].file>.
 5. Step 0 declares: "Active context: external" (because it found tokens.md/components.md).
 ```
+
+Readers take `file` from the config and join it to `design_path` — the single/multi
+shape is decided once, in Phase 4, and never re-derived downstream.
 
 ## Re-entry and idempotency
 
 When /bb:brisar is called again in the same project:
 
 1. Detects `.brisar/session.yaml` with `status: completed`.
-2. Reads `.brisar/config.yaml` for slug, brand, design_context_path, surfaces.
+2. Reads `.brisar/config.yaml` for slug, brand, design_context_path, design_path, surfaces.
 3. Offers the re-entry options (see phase-5-handoff.md "When to run /bb:brisar again"):
    - Build/iterate surfaces (Develop phase)
    - Review/handoff (Deliver phase)
    - Add surface (Phase 4 only)
    - Change brand (Phase 3 partial — only design-context/ and tokens-brand.css)
-   - Re-shape (suggests /bb:discover)
+   - Re-enquadrar (suggests /bb:discover)
    - Restart (archives session, restarts)
 
 The rule: NEVER overwrite without asking. Always archive (`.brisar/session.archived-<ISO timestamp>.yaml`) before restarting.

@@ -1,4 +1,4 @@
-# Front: contract — the diff against the brief that shaped it
+# Front: contract — the diff against the brief that specified it
 
 Available only when a task brief matches this branch (resolve per the plugin-root
 `references/task-state.md` — `.bb/tasks/<slug>/spec.md`). It's the one front that
@@ -6,13 +6,13 @@ can catch a diff where every line is correct and the wrong thing got built.
 
 ## The two questions
 
-1. **Did it build the shaped thing?** Walk the brief's `## behavior` map. Each
+1. **Did it build the specified thing?** Walk the brief's `## behavior` map. Each
    `WHEN … THEN …` row is an acceptance row: find the code that implements it and
    the test that pins it. A mapped row with no corresponding code **or** no test
    is a finding — cite the row verbatim and say which half is missing.
 2. **Did it build only that?** Anything in the diff that no brief section asked
    for is scope drift: name it, and say whether it looks like a necessary
-   dependency of the shaped work (fine, mention once) or an unrelated ride-along
+   dependency of the specified work (fine, mention once) or an unrelated ride-along
    (a finding — it belongs in its own branch).
 
 ## Also read the upstream sections when present

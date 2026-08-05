@@ -82,7 +82,7 @@ Ask ONE extra question to record the reason:
       "header": "Override",
       "options": [
         {
-          "label": "Já fiz shaping antes em outro contexto",
+          "label": "Já enquadrei o problema em outro contexto",
           "description": "Trio existe na cabeça/Notion/Linear, não preciso re-fazer aqui"
         },
         {
@@ -90,7 +90,7 @@ Ask ONE extra question to record the reason:
           "description": "Marquei 'vai escalar' por intuição, mas na real é exploratório"
         },
         {
-          "label": "Tenho prazo apertado, vou shapear no caminho",
+          "label": "Tenho prazo apertado, vou enquadrar no caminho",
           "description": "Aceito o risco; rodo /bb:discover mais tarde se virar dor"
         },
         { "label": "Outro motivo", "description": "Texto livre" }

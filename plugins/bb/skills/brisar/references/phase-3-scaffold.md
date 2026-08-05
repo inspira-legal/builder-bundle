@@ -59,17 +59,16 @@ Create:
 ├── design-context/
 │   ├── tokens.md
 │   └── components.md
-├── design/
-│   ├── README.md
-│   └── (one <surface>.md per surface — generated in Phase 4)
 └── .brisar/
     └── config.yaml
 ```
 
+The visual direction does **not** live here — Phase 4 writes it into the task folder, `.bb/tasks/<slug>/`, next to the brief (plugin-level `references/task-state.md`).
+
 Command:
 
 ```bash
-mkdir -p <slug>/src/components <slug>/design-context <slug>/design <slug>/.brisar
+mkdir -p <slug>/src/components <slug>/design-context <slug>/.brisar
 ```
 
 ## Step 3 — File templates
@@ -182,7 +181,7 @@ export default function App() {
         <h1 className="text-3xl font-semibold mb-4">{`<slug>`}</h1>
         <p className="text-text-secondary">
           Scaffolded by /bb:brisar. Tokens da marca <strong>Inspira</strong> ativos. Próximo: a fase
-          Develop constrói cada surface de <code>design/</code>.
+          Develop constrói cada surface a partir da direção visual em <code>.bb/tasks/</code>.
         </p>
       </main>
     </div>
@@ -265,12 +264,13 @@ pnpm dev
 
 - `src/` — código React. Ainda vazio; surfaces vão preencher.
 - `design-context/` — fonte para a fase Develop do /bb:brisar. Não edite à mão a menos que saiba o que está fazendo.
-- `design/` — direção visual por surface (gerado pelo /bb:brisar). Leia antes de desenhar.
-- `.brisar/config.yaml` — config do brisar. A fase Develop lê esse arquivo para saber onde estão os tokens.
+- `.brisar/config.yaml` — config do brisar. A fase Develop lê esse arquivo para saber onde estão os tokens e a direção visual.
+
+A direção visual de cada surface fica em `.bb/tasks/<slug>/`, junto do brief. Leia antes de desenhar.
 
 ## Próximos passos
 
-Rode `/bb:brisar` de novo nesta pasta — ele detecta o projeto e oferece a fase Develop, que lê `design-context/tokens.md` e `design-context/components.md`, mais a `design/<surface>.md` específica, e te ajuda a construir cada surface.
+Rode `/bb:brisar` de novo nesta pasta — ele detecta o projeto e oferece a fase Develop, que lê `design-context/tokens.md` e `design-context/components.md`, mais a direção visual da surface, e te ajuda a construir cada surface.
 
 Para shaping mais profundo: `/bb:discover`.
 Para spec formal: `/bb:spec`.
@@ -291,16 +291,16 @@ Short synthesis extracted from `<DS_PATH>/<brand.design_md_path>`. Don't copy th
 
 ## Color (semantic)
 
-| Role | Token | Value |
-|---|---|---|
-| Page background | `--color-bg-primary` | `<value>` |
-| Primary text | `--color-text-primary` | `<value>` |
-| Primary CTA | `--color-interactive-primary` | `<value>` |
-| Secondary CTA | `--color-interactive-secondary` | `<value>` |
-| Border default | `--color-border-default` | `<value>` |
-| Focus ring | `--color-interactive-focus-ring` | `<value>` |
-| Error | `--color-feedback-critical-text` | `<value>` |
-| Success | `--color-feedback-success-text` | `<value>` |
+| Role            | Token                            | Value     |
+| --------------- | -------------------------------- | --------- |
+| Page background | `--color-bg-primary`             | `<value>` |
+| Primary text    | `--color-text-primary`           | `<value>` |
+| Primary CTA     | `--color-interactive-primary`    | `<value>` |
+| Secondary CTA   | `--color-interactive-secondary`  | `<value>` |
+| Border default  | `--color-border-default`         | `<value>` |
+| Focus ring      | `--color-interactive-focus-ring` | `<value>` |
+| Error           | `--color-feedback-critical-text` | `<value>` |
+| Success         | `--color-feedback-success-text`  | `<value>` |
 
 (Adicione mais linhas conforme o DESIGN.md específico tem.)
 
@@ -375,7 +375,10 @@ brand:
 # Path of design-context — THIS IS WHERE THE DEVELOP PHASE WILL LOOK.
 design_context_path: "<slug>/design-context/"
 
-# Surface tracking — one entry per design/<surface>.md generated in Phase 4.
+# Task folder (.bb/tasks/<slug>/) — Phase 4 fills it in when it writes the direction.
+design_path: null
+
+# Surface tracking — one entry per surface file generated in Phase 4.
 surfaces: []
 ```
 
@@ -398,7 +401,7 @@ Instead of Vite + App.tsx, use:
 Don't create a new folder. Instead:
 
 - Ask which folder of the app is the entry point.
-- Create only `design-context/`, `design/`, `.brisar/` at the root of the existing app.
+- Create only `design-context/` and `.brisar/` at the root of the existing app (the design direction goes to `.bb/tasks/<slug>/` as usual).
 - Create `src/components/<slug>/` for the feature's components.
 - Don't touch existing `package.json`, `vite.config`, `index.html`.
 
@@ -423,13 +426,12 @@ Warning: embedded is riskier. Confirm with the builder before touching any file 
 ├── styles.css                       ← brand tokens in :root + inline components
 ├── HANDOFF-DEV.md                   ← instructions for the technical team to continue
 ├── README.md                        ← executive language — how to open, how to show
-├── design/
-│   ├── README.md
-│   └── <surface>.md                 ← generated in Phase 4
 └── .brisar/
     ├── config.yaml
     └── session.yaml
 ```
+
+The written direction for each screen lands in `.bb/tasks/<slug>/` (Phase 4), same as the standard variant.
 
 DO NOT create: `package.json`, `vite.config.ts`, `tsconfig.json`, `src/`, `node_modules/`.
 
@@ -440,7 +442,7 @@ Same Step 1 as the standard scaffold. Confirms slug and where to create the fold
 #### Step 2 — Create directories
 
 ```bash
-mkdir -p <slug>/design <slug>/.brisar
+mkdir -p <slug>/.brisar
 ```
 
 #### Step 3 — HTML templates
@@ -634,12 +636,12 @@ a {
 
 ## Telas / surfaces
 
-| Tela        | Arquivo                              | Direção visual                                 |
-| ----------- | ------------------------------------ | ---------------------------------------------- |
-| <surface-1> | [<surface-1>.html](<surface-1>.html) | [design/<surface-1>.md](design/<surface-1>.md) |
-| <surface-2> | [<surface-2>.html](<surface-2>.html) | [design/<surface-2>.md](design/<surface-2>.md) |
+| Tela        | Arquivo                              | Direção visual                              |
+| ----------- | ------------------------------------ | ------------------------------------------- |
+| <surface-1> | [<surface-1>.html](<surface-1>.html) | `../.bb/tasks/<slug>/design/<surface-1>.md` |
+| <surface-2> | [<surface-2>.html](<surface-2>.html) | `../.bb/tasks/<slug>/design/<surface-2>.md` |
 
-`design/<surface>.md` tem o brief de cada tela — leia ANTES do HTML. O HTML é mockado; o brief tem a intenção.
+A direção visual de cada tela mora em `.bb/tasks/<slug>/`, junto do brief — leia ANTES do HTML. O HTML é mockado; o brief tem a intenção.
 
 ## Stack recomendada pra produção
 
@@ -652,13 +654,13 @@ Esta ferramenta é candidata a virar app interno. Stack alinhada com o resto da 
   1. Rode `/bb:brisar` na pasta-raiz da Inspira (não nesta pasta — esta é só protótipo).
   2. Quando perguntar perfil, marque "Sei mexer em código".
   3. Quando perguntar produto/marca: marque <brand>.
-  4. /bb:brisar scaffolda Vite. Use os arquivos `design/<surface>.md` desta pasta como input pra fase Develop no projeto novo.
+  4. /bb:brisar scaffolda Vite. Use a direção visual em `.bb/tasks/<slug>/` como input pra fase Develop no projeto novo.
 
 ## O que NÃO fazer
 
 - Não copie HTML/CSS direto. Re-escreva como componentes React tipados, usando o DS.
 - Não use as cores hardcoded em `styles.css` — use os tokens semânticos do Tailwind v4 do scaffold real.
-- Não precise pedir aprovação a cada tela — a direção visual já tá em `design/<surface>.md`.
+- Não precise pedir aprovação a cada tela — a direção visual já tá em `.bb/tasks/<slug>/`.
 
 ## Quem fez o protótipo
 
@@ -696,8 +698,9 @@ Esse protótipo é pra validar a ideia. **Não é o produto final.** O time téc
 - `index.html` — tela inicial (lista todas as telas)
 - `<surface>.html` — uma por tela do protótipo
 - `styles.css` — visual (cores, fontes, espaçamentos da marca <brand>)
-- `design/` — brief de cada tela (texto explicando o que cada tela faz)
 - `HANDOFF-DEV.md` — pacote pro time técnico (não precisa abrir, mas se for passar adiante, manda esse arquivo)
+
+O brief de cada tela (texto explicando o que ela faz) fica em `.bb/tasks/<slug>/`, uma pasta acima.
 ```
 
 #### Step 4 — `.brisar/config.yaml` (variant)
@@ -719,10 +722,13 @@ brand:
 # But we keep it for compatibility in case the builder regenerates later in Vite mode.
 design_context_path: null
 
+# Task folder — filled by Phase 4, same as the standard variant.
+design_path: null
+
 surfaces:
   - name: <surface-1>
-    file: design/<surface-1>.md
-    html: <surface-1>.html
+    file: design/<surface-1>.md # relative to design_path
+    html: <surface-1>.html # relative to the prototype folder
     state: drafted
 ```
 
@@ -752,7 +758,7 @@ profile:
 
 #### Phase 4 in this variant
 
-Phase 4 populates the `<surface>.html` stubs with HTML markup aligned to `design/<surface>.md`. Not with React components, but with sections/divs styled via classes in `styles.css`. Result: builder opens `index.html`, clicks on a surface, sees a layout close to the brief.
+Phase 4 populates the `<surface>.html` stubs with HTML markup aligned to the surface's direction file in `.bb/tasks/<slug>/`. Not with React components, but with sections/divs styled via classes in `styles.css`. Result: builder opens `index.html`, clicks on a surface, sees a layout close to the brief.
 
 #### Phase 5 in this variant
 

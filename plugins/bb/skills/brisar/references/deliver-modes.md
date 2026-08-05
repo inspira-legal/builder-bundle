@@ -11,6 +11,7 @@ Lazy load: read only the section of the mode chosen in Step 1 of `phase-deliver.
 ### Inputs
 
 - `.brisar/session.yaml` — read `gate.discover_brief` (→ `.bb/tasks/<slug>/spec.md`: hypothesis, cuts, appetite) and `tarsila.surfaces[]`
+- `.brisar/config.yaml` — `design_path` + `surfaces[].file`, the visual direction in the same task folder
 - Surfaces built by the Develop phase: HTML/React in `<project>/src/...` or `<project>/<surface>.html`
 - Design context: `<design_context_path>/tokens.md` + `components.md` (path in `.brisar/config.yaml`)
 
@@ -231,7 +232,7 @@ clarisse:
 ### Inputs
 
 - `<design_context_path>/tokens.md` + `components.md`
-- `<design_context_path>/<surface>.md` (visual direction written by brisar Phase 4)
+- `<design_path>/<surfaces[].file>` (visual direction written by brisar Phase 4, in `.bb/tasks/<slug>/`)
 - Surfaces in `<project>/src/...` (React structure) or `<project>/<surface>.html`
 - `.brisar/session.yaml` (all sections — uses recorded decisions)
 
@@ -266,11 +267,11 @@ Resumo (auto-extraído):
 
 ## Componentes do DS usados
 
-| Componente | Onde | Variant |
-|---|---|---|
-| Button | <surface>.header, <surface>.footer | primary, secondary |
-| Card | <surface>.list | default |
-| ... | | |
+| Componente | Onde                               | Variant            |
+| ---------- | ---------------------------------- | ------------------ |
+| Button     | <surface>.header, <surface>.footer | primary, secondary |
+| Card       | <surface>.list                     | default            |
+| ...        |                                    |                    |
 
 ## Componentes custom (fora do DS)
 

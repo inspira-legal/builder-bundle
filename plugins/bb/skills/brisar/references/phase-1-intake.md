@@ -1,6 +1,6 @@
 # Phase 1 — Lightning intake (depth adapts to persona_id)
 
-The previous version asked 6-10 questions just to reach "now I'll shape it." This phase cuts that — but the number and language of the questions vary by the `profile.persona_id` captured in Phase 0. When the trade-off of skipping shaping isn't worth it (serious artifact, persona = senior/junior), Phase 2 (maturity gate) pulls /bb:discover into the flow.
+The previous version asked 6-10 questions just to reach "now I'll frame it." This phase cuts that — but the number and language of the questions vary by the `profile.persona_id` captured in Phase 0. When the trade-off of skipping the framing isn't worth it (serious artifact, persona = senior/junior), Phase 2 (maturity gate) pulls /bb:discover into the flow.
 
 ## Step 0a — Shortcut router (pre-persona)
 

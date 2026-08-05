@@ -4,9 +4,9 @@ Loaded when the builder chooses to build surfaces (Phase 5 gate, the `develop-di
 
 The discipline here is **fidelity to contracts**:
 
-- Read `.brisar/config.yaml` to find the `design_context_path`.
+- Read `.brisar/config.yaml` to find the `design_context_path` and the `design_path`.
 - Read `tokens.md` + `components.md` from that path — sources of truth for the design system.
-- Read `design/<surface>.md` — visual direction written in Phase 4.
+- Read the surface's direction file — `<design_path>/<surfaces[].file>`, written in Phase 4 inside the task folder.
 - Build React + Tailwind (or plain static HTML if `prototype-hosted`) applying tokens faithfully.
 - When something is not in the DS, **ask** before inventing.
 
@@ -41,10 +41,10 @@ If missing: warning + degrade to visual construction without DS (structure first
 
 ### 0.3 — Visual direction per surface
 
-Read from `.brisar/config.yaml` or convention: `<projeto>/design/<surface>.md`.
+Take `design_path` and each `surfaces[].file` from `.brisar/config.yaml` and join them. Without the fields, fall back to the convention — the task folder for this slug:
 
 ```bash
-ls <projeto>/design/*.md 2>/dev/null
+ls .bb/tasks/<slug>/design.md .bb/tasks/<slug>/design/*.md 2>/dev/null
 ```
 
 If no surface has a md: Phase 4 needs to run first (offer it) or the builder describes the screen directly in chat.
@@ -66,7 +66,7 @@ Call `AskUserQuestion`:
       "options": [
         {
           "label": "Full surface",
-          "description": "Construir 1 ou mais surfaces de ponta a ponta (lê design/<surface>.md de cada). Recomendado se veio do scaffold."
+          "description": "Construir 1 ou mais surfaces de ponta a ponta (lê a direção visual de cada em .bb/tasks/<slug>/). Recomendado se veio do scaffold."
         },
         {
           "label": "Componente isolado",
@@ -83,7 +83,7 @@ Call `AskUserQuestion`:
 }
 ```
 
-If "Full surface" and there is more than 1 surface in `design/`, ask the second question:
+If "Full surface" and `surfaces[]` has more than one entry, ask the second question:
 
 ```json
 {
@@ -181,7 +181,7 @@ Echo what was built (1 line: _"Construí <surface> em <path>. Loading/Empty/Erro
 
 ## Persona — expected behaviors
 
-1. **Fidelity > creativity.** The contract (tokens + components + design/<surface>.md) is the truth. When something conflicts or is missing, ask — do not improvise.
+1. **Fidelity > creativity.** The contract (tokens + components + the surface's direction file) is the truth. When something conflicts or is missing, ask — do not improvise.
 2. **States always.** Default, loading, empty, error. Even on small appetite, only skip with an explicit `cut_reason`.
 3. **Decision recorded.** If you invented a custom component, write it in `.brisar/tarsila/notes.md` with the reason. Do not disappear without a record.
 4. **At most 2 questions per turn.** More than that becomes a form. Ask + build + echo.
@@ -197,7 +197,7 @@ One sharp caution: **never edit `tokens.md` or `components.md`** — the DS sour
 | `.brisar/config.yaml`                       | Phase 3     | Develop (Step 0)        |
 | `<design_context_path>/tokens.md`           | Phase 3     | Develop (Step 0 — read) |
 | `<design_context_path>/components.md`       | Phase 3     | Develop (Step 0 — read) |
-| `design/<surface>.md`                       | Phase 4     | Develop (Step 2)        |
+| `<design_path>/<surfaces[].file>`           | Phase 4     | Develop (Step 2)        |
 | `<projeto>/src/<surface>.tsx` (or .html)    | Develop     | Deliver, dev            |
 | `.brisar/session.yaml` (`tarsila:` section) | Develop     | Deliver, re-entry       |
 | `.brisar/tarsila/notes.md`                  | Develop     | Deliver, human builder  |

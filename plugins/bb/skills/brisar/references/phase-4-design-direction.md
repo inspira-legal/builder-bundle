@@ -2,7 +2,9 @@
 
 The missing piece. Without this, brisar would end without concrete direction to start designing. The builder opens the editor, sees an empty App.tsx, and now what?
 
-This phase produces `design/<surface>.md` for each confirmed surface, with enough brief for the builder (or the Develop phase) to start designing. Each file has 5 fixed sections: Visual hierarchy, DS components, States, First sketch direction, Notes.
+This phase produces the visual direction for each confirmed surface, with enough brief for the builder (or the Develop phase) to start designing. Each file has 5 fixed sections: Visual hierarchy, DS components, States, First sketch direction, Notes.
+
+**Where it lands:** inside the task's folder, next to the brief — the plugin-level `references/task-state.md` owns that contract. One surface writes `.bb/tasks/<slug>/design.md`; two or more write `.bb/tasks/<slug>/design/<surface>.md` plus an index. The project folder scaffolded in Phase 3 holds code and design-context, not design direction.
 
 ## Step 1 — Confirm surfaces
 
@@ -17,7 +19,7 @@ Phase 1 inferred provisional surfaces from the initial prompt (e.g.: `[busca, re
       "options": [
         {
           "label": "Confirma a lista",
-          "description": "Vou gerar design/<surface>.md para cada uma"
+          "description": "Vou gerar a direção visual de cada uma em .bb/tasks/<slug>/"
         },
         { "label": "Ajustar / adicionar", "description": "Texto livre — separe por vírgula" },
         {
@@ -35,9 +37,13 @@ If the builder answers "adjust" or "only one", parse the response. Limit to 5 su
 
 Slugify each surface: lowercase, kebab-case, ASCII (`Tela de busca` → `busca`, `Resultado vazio` → `vazio`, etc).
 
-## Step 2 — Generate design/README.md (index + suggested order)
+## Step 2 — Resolve the task folder, then the index
 
-Create `<slug>/design/README.md`:
+Resolve `.bb/` per the task-state contract (nearest ancestor with one, else create it in the cwd) and use `.bb/tasks/<slug>/` — the same `<slug>` as the project. If a brief already sits there (`spec.md`, from `/bb:discover`), the folder exists; otherwise `mkdir -p` it.
+
+With **one** confirmed surface, write `.bb/tasks/<slug>/design.md` with the Step 3 template and skip the index — an index of one is ceremony.
+
+With **two or more**, write `.bb/tasks/<slug>/design/<surface>.md` for each plus `.bb/tasks/<slug>/design/README.md`:
 
 ```markdown
 # Design — <slug>
@@ -63,10 +69,10 @@ Se sua estrutura é diferente, edite este README à vontade — é seu projeto.
 
 ## Como construir
 
-Rode `/bb:brisar` de novo nesta pasta — ele detecta o projeto e oferece a fase Develop. A fase lê `design-context/` para tokens/componentes, e `design/<surface-name>.md` para o brief específico. Recomendo desenhar uma surface por vez.
+Rode `/bb:brisar` de novo na pasta do projeto — ele detecta o projeto e oferece a fase Develop. A fase lê `design-context/` para tokens/componentes, e o arquivo desta pasta para o brief da surface específica. Recomendo desenhar uma surface por vez.
 ```
 
-## Step 3 — For each surface, generate design/<surface>.md
+## Step 3 — Generate one file per surface
 
 Template:
 
@@ -147,9 +153,13 @@ Max 3 items. If the list grows, it's a sign that this surface needs more shaping
 
 ## Step 4 — Update .brisar/config.yaml and session.yaml
 
-### config.yaml — fill in `surfaces`
+### config.yaml — fill in `design_path` and `surfaces`
+
+`design_path` is the absolute path of the task folder; each `file` is relative to it. Three surfaces:
 
 ```yaml
+design_path: "<absolute path of .bb/tasks/<slug>/>"
+
 surfaces:
   - name: busca
     file: design/busca.md
@@ -161,6 +171,18 @@ surfaces:
     last_updated: <ISO>
   - name: vazio
     file: design/vazio.md
+    state: drafted
+    last_updated: <ISO>
+```
+
+One surface:
+
+```yaml
+design_path: "<absolute path of .bb/tasks/<slug>/>"
+
+surfaces:
+  - name: busca
+    file: design.md
     state: drafted
     last_updated: <ISO>
 ```
@@ -187,7 +209,7 @@ The difference between a useful design.md and a generic one is the **specificity
 - For Inspira: remember it is light theme + Rich Black for primary CTAs.
 - For custom: cite the base and say explicitly "adjust from here".
 
-If the builder asked for "search screen" and the brand is Lexflow, design/busca.md MUST reflect the composer dark gradient as reference (not Inspira's white input).
+If the builder asked for "search screen" and the brand is Lexflow, the busca file MUST reflect the composer dark gradient as reference (not Inspira's white input).
 
 When you're lost about what to write in "Visual hierarchy" or "First sketch direction" for a surface, read the brand's entire DESIGN.md once — there will be a concept (DarkGradientCard, HeroTitle two-line accent-split, etc.) that serves as an anchor.
 
