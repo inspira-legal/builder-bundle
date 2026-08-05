@@ -9,17 +9,17 @@ metadata:
 
 # Spec
 
-Reach a **shared understanding of the idea before any code**. The asset that matters is the alignment, not a document — you and the model converge on the _shape_ of what you're building, then build fast against it.
+Reach a **shared understanding of the idea before any code**. What matters is the alignment; the brief is where it lands — a document written to be read, not a form to fill. You and the model converge on what you're building, then build fast against it.
 
-> The point was never the spec document; it was building context and discussing before building. This keeps that and drops the ceremony. (When someone downstream needs a shareable product/UX spec document, that's the export mode — see `references/export-spec.md`.)
+> The point was never a template; it was building context and discussing before building. The brief keeps that — the converged conversation, written down for whoever builds from it. (When someone downstream needs a shareable product/UX spec document, that's the export mode — see `references/export-spec.md`.)
 
 ## Auto-size by complexity
 
-- **Tiny** (≤3 files, one obvious change): skip shaping — just build it.
+- **Tiny** (≤3 files, one obvious change): skip the spec — just build it.
 - **Medium** (a clear feature): the loop — gray areas + reuse scan + the load-bearing technical forks + the behavior map (happy path + edges), then the gate.
 - **Large / fuzzy** (new domain, real ambiguity): the full loop — reuse, the components and how data moves between them, the technical forks, the behavior map, slice into pieces, then the gate.
 
-Always required: reach alignment, **close the load-bearing technical decisions, map the behavior**, and stop at a validated brief. Size is a running estimate, not locked at the start — if a "Tiny/Medium" task keeps surfacing gray areas mid-flow, re-size up and shape it properly.
+Always required: reach alignment, **close the load-bearing technical decisions, map the behavior**, and stop at a validated brief. Size is a running estimate, not locked at the start — if a "Tiny/Medium" task keeps surfacing gray areas mid-flow, re-size up and spec it properly.
 
 ## Read upstream intent first
 
@@ -105,7 +105,7 @@ Before asserting how something works: check the codebase, then its docs, then th
 
 ## Hand off — the gate decides whether to roll on
 
-spec always ends at a validated `.bb/tasks/<slug>/spec.md`; the brief is the durable asset either way. What changes is what happens next, and the gate's 3-way pick (above) decides it — the seam between shaping and building is a checkpoint the user crosses on purpose, not a wall.
+spec always ends at a validated `.bb/tasks/<slug>/spec.md`; the brief is the durable asset either way. What changes is what happens next, and the gate's 3-way pick (above) decides it — the seam between speccing and building is a checkpoint the user crosses on purpose, not a wall.
 
 - **Implementar:** invoke `/bb:implement` now — it loads this brief as the intent, builds every slice, and stops ready to ship, where it offers `/bb:ship`. The "build it, I'll decide on shipping after" path.
 - **Delegar:** invoke `/bb:delegate <slug>` now — it loads this brief as the intent, builds every slice, _and_ lands it (the full `/bb:implement` → `/bb:ship` run, the same verb the overnight routine uses). The "I'm happy, run the whole thing" path.

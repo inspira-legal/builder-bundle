@@ -25,7 +25,7 @@ um plugin, `bb`; 15 skills organizadas em 6 trilhas.
 
 | skill            | descrição                                                                                                                        |
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:discover`   | do incômodo à aposta shapeável — enquadra o problema, pressiona o fit (vale construir? o que cortar?) e fecha hipótese + apetite |
+| `/bb:discover`   | do incômodo à aposta que dá pra especificar — enquadra o problema, pressiona o fit (vale construir? o que cortar?) e fecha hipótese + apetite |
 | `/bb:challenge`  | pre-mortem adversarial de uma tese — tenta derrubar antes que a realidade derrube                                                |
 | `/bb:think`      | pensa junto e se posiciona — recomendação honesta e decisiva, nomeia a tensão não vista, sem bajulação                           |
 | `/bb:legal-lens` | passada jurídica sobre ideia, fluxo ou documento — risco legal & compliance, fundamentado em normas citadas (brasil por padrão)  |
@@ -42,7 +42,7 @@ um plugin, `bb`; 15 skills organizadas em 6 trilhas.
 | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/bb:implement`             | implementa um brief validado — constrói as fatias, roda o gate, depois oferece entregar                                                                                                                                                      |
 | `/bb:ship`                  | leva a branch ao fim do seu jeito — roda a engine de review do `/bb:review` (todas as frentes que se aplicam, sem perguntar) + deixa os checks verdes, então push, prepara pra main, abre um PR e cuida dele, ou prepara o deploy no LexFlow |
-| `/bb:delegate`              | roda uma task shapeada de ponta a ponta — escolhe o brief, constrói e entrega (implement → ship), trilhando o `status`. o mesmo verbo no desk e na routine noturna                                                                           |
+| `/bb:delegate`              | roda uma task especificada de ponta a ponta — escolhe o brief, constrói e entrega (implement → ship), trilhando o `status`. o mesmo verbo no desk e na routine noturna                                                                           |
 | `/bb:gather-branch-context` | resume todas as mudanças da branch vs main                                                                                                                                                                                                   |
 
 ### revisar — qualidade & manutenção

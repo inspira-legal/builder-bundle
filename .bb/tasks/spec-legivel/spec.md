@@ -150,7 +150,7 @@ caller" diz mais que "design".
       `implement` e `delegate` leem os dois → behavior 3 · dep: 1 · verifica: leitura
 - [x] **5. Justificativa no commit** — linha no `SKILL.md` e na seção Commits do
       `.claude/CLAUDE.md` → behavior 2 · dep: — · verifica: leitura
-- [ ] **6. Rename shape→spec** — `task-state.md`, `delegate`, `implement`, `discover`,
+- [x] **6. Rename shape→spec** — `task-state.md`, `delegate`, `implement`, `discover`,
       `brisar`, `operating-context.md`, `routines.md`, `spec/SKILL.md`, README
       → behavior 7 · dep: — · verifica: CI
 - [ ] **7. Migrar as 3 specs e ligar o CI** — reescreve `builder-bundle`, `ship-lexflow` e

@@ -190,7 +190,7 @@ When /bb:brisar is called again in the same project:
    - Review/handoff (Deliver phase)
    - Add surface (Phase 4 only)
    - Change brand (Phase 3 partial — only design-context/ and tokens-brand.css)
-   - Re-shape (suggests /bb:discover)
+   - Re-enquadrar (suggests /bb:discover)
    - Restart (archives session, restarts)
 
 The rule: NEVER overwrite without asking. Always archive (`.brisar/session.archived-<ISO timestamp>.yaml`) before restarting.

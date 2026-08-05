@@ -1,6 +1,6 @@
 # Task state — the `.bb/tasks/<slug>/spec.md` contract
 
-The single on-disk contract for shaped work. Written by `/bb:spec` (and seeded by
+The single on-disk contract for a specced brief. Written by `/bb:spec` (and seeded by
 `/bb:discover`), consumed by `/bb:implement`, `/bb:ship` and `/bb:delegate`. Any
 skill that reads or writes task state follows this file — the contract lives here
 and nowhere else.
@@ -39,6 +39,8 @@ bare selection).
 
 `/bb:discover` seeds the brief with `## problem` / `## hypothesis` (problem
 framing) and `## fit` / `## cuts` (appetite & scope). `/bb:spec` reads them as the
-intent the shaping serves and builds the full brief in the same file: `## what`,
-`## why`, decisions, out-of-scope, and for Large work `## design`, `## behavior`
-and `## tasks` (the slice checklist).
+intent this work serves and builds the rest of the brief in the same file — the
+upstream sections stay where they are, in the free top half, and the spine
+(`## decisions`, `## behavior`, `## tasks`, `## out of scope`, `## open`) goes
+below them. The format is
+`${CLAUDE_PLUGIN_ROOT}/skills/spec/references/spec-format.md`.

@@ -1,6 +1,6 @@
 ---
 name: delegate
-description: Roda uma task shaped de ponta a ponta — seleciona um brief não-concluído (`.bb/tasks/<slug>/spec.md`), constrói todas as slices e landa (`/bb:implement` → `/bb:ship`), rastreando o `status` do brief. `/bb:delegate <slug>` mira uma task nomeada; `/bb:delegate` sem argumento pega a pendente mais antiga. O único verbo "roda tudo", usado igual na sua mesa e numa rotina unattended (`BB_UNATTENDED`). Use quando o usuário disser "delega isso", "roda a task", "constrói e landa o brief", "faz tudo", "delegate <slug>", ou "roda tudo". NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra construir sem landar (use /bb:implement).
+description: Roda uma task especificada de ponta a ponta — seleciona um brief não-concluído (`.bb/tasks/<slug>/spec.md`), constrói todas as slices e landa (`/bb:implement` → `/bb:ship`), rastreando o `status` do brief. `/bb:delegate <slug>` mira uma task nomeada; `/bb:delegate` sem argumento pega a pendente mais antiga. O único verbo "roda tudo", usado igual na sua mesa e numa rotina unattended (`BB_UNATTENDED`). Use quando o usuário disser "delega isso", "roda a task", "constrói e landa o brief", "faz tudo", "delegate <slug>", ou "roda tudo". NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra construir sem landar (use /bb:implement).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -9,7 +9,7 @@ metadata:
 
 # Delegate
 
-Take a shaped task all the way: select it, build every slice, and land it — the
+Take a specced task all the way: select it, build every slice, and land it — the
 `/bb:implement` → `/bb:ship` chain defined in one place. delegate is the single
 "run everything" verb, routed through identically whether you call it at your desk
 or a Cloud Routine fires it overnight under `BB_UNATTENDED` (see the routine guide,
@@ -35,7 +35,7 @@ and stop.
      pending tasks" and stop.
    - A brief already `done`: report it's done; supervised, ask whether to re-run;
      unattended, stop (no-op). A `blocked` brief is skipped in bare selection and
-     reported, not silently dropped — name it so the user can re-shape.
+     reported, not silently dropped — name it so the user can re-spec it.
 
 2. **Open the run — flip `status: in-progress`.** Edit the brief's frontmatter and
    commit that edit (conventional style; no AI attribution). Unattended: put it on the
@@ -48,7 +48,7 @@ and stop.
    run implement's step-8 ship hand-off** — delegate owns the transition to landing, so
    the chain lives here, not split across skills. If implement's **safety valve** fires
    (the brief was underspecified), stop: flip `status: blocked`, point back to
-   `/bb:spec` to re-shape, and exit — do not improvise past the brief.
+   `/bb:spec` to re-spec it, and exit — do not improvise past the brief.
 
 4. **Land — follow `/bb:ship`'s workflow.** Run the quality pass and land per ship's
    own destination logic: supervised, ship settles the destination (asking only on real

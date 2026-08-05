@@ -9,11 +9,11 @@ metadata:
 
 # Implement
 
-Build the validated, shaped work in the working tree — taking the brief from alignment to code that's ready to ship. The trio's executor: at your desk it builds the backlog then offers to ship; under the unattended frame (`BB_UNATTENDED`) it builds the whole backlog and chains straight to a draft PR. To schedule that unattended run, see the routine guide (`references/routines.md` at the plugin root).
+Build the validated brief in the working tree — taking it from alignment to code that's ready to ship. The trio's executor: at your desk it builds the backlog then offers to ship; under the unattended frame (`BB_UNATTENDED`) it builds the whole backlog and chains straight to a draft PR. To schedule that unattended run, see the routine guide (`references/routines.md` at the plugin root).
 
 ## Prerequisites
 
-A validated brief with a `## tasks` checklist, resolved per the task-state contract (plugin-level `references/task-state.md`): `.bb/tasks/<slug>/spec.md`. If there's no shaped brief for this work, stop and suggest `/bb:spec` first — implementing without alignment is exactly what shaping prevents.
+A validated brief with a `## tasks` checklist, resolved per the task-state contract (plugin-level `references/task-state.md`): `.bb/tasks/<slug>/spec.md`. If there's no brief for this work, stop and suggest `/bb:spec` first — implementing without alignment is exactly what the spec prevents.
 
 ## Workflow
 
@@ -23,8 +23,8 @@ A validated brief with a `## tasks` checklist, resolved per the task-state contr
 4. **Keep the gate green as you go.** Detect the project's checks in this order of authority: CLAUDE.md / docs → CI workflow files → `package.json` / `justfile` / `Makefile` / `pyproject.toml`. Run lint/format/typecheck/tests; fix before moving on. Run what CI runs, not a subset. **Unattended:** retry a failing gate at most **3 times and only on a known-flake signature** (a transient the same command clears); a real, unrecoverable failure stops the build — commit what's green, then chain to `/bb:ship` to open the draft PR with the blocker written into its description, and exit (no further slices).
 5. **Run the slice's `verifica:` before you tick it.** It names how that slice is proven — a test, a command, reading the result, green CI. It's the slice's own check, on top of the project gate; a slice whose `verifica:` didn't run is a slice that isn't done.
 6. **Commit per slice, check the box.** Commit in logical units (conventional style; no AI attribution), and tick that slice's `- [ ]` → `- [x]` in the `## tasks` section as it lands — so progress is visible and a partial run is resumable. **Unattended:** put the commits on a `claude/<slug>` branch (create it before the first commit; the routine clones on the default branch) so ship opens the draft PR from it.
-7. **Safety valve.** If a slice reveals the idea was underspecified — surprises pile up, scope wants to grow, a decision the brief skipped now bites — STOP and hand back to `/bb:spec` to re-shape. Don't improvise past the brief; that's the signal alignment was incomplete.
+7. **Safety valve.** If a slice reveals the idea was underspecified — surprises pile up, scope wants to grow, a decision the brief skipped now bites — STOP and hand back to `/bb:spec` to re-spec it. Don't improvise past the brief; that's the signal alignment was incomplete.
 8. **Hand off — offer to ship, or chain.** Summarize what landed against the task list (done / skipped / blocked). Then branch on how the run went:
    - **Clean and supervised** (every slice landed, gate green): offer ship via a handoff gate (plugin-level `references/handoff-gate.md`) — lead **"Shipar agora"** (invoke `/bb:ship`) against **"Encerrar aqui"** (print the command and stop). Either path, ship loads this same brief as the intent. (When the whole run is wanted up front without this stop, that's `/bb:delegate` — it drives this build loop and chains into ship itself; implement, whether picked at the spec gate or run by command, is the build-then-decide path.)
    - **Clean and unattended:** no question to ask — invoke `/bb:ship` directly. It opens the draft PR on the `claude/<slug>` branch and watches it to resolution.
-   - **Not clean** (a slice blocked, or the safety valve fired): report done/skipped/blocked and point back to `/bb:spec` to re-shape — **don't** offer ship. A partial build shouldn't become a PR that claims to satisfy the brief.
+   - **Not clean** (a slice blocked, or the safety valve fired): report done/skipped/blocked and point back to `/bb:spec` to re-spec it — **don't** offer ship. A partial build shouldn't become a PR that claims to satisfy the brief.

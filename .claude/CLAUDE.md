@@ -144,7 +144,7 @@ decisions.
 
 ## Task briefs
 
-The on-disk contract for shaped work is `plugins/bb/references/task-state.md` —
+The on-disk contract for a specced brief is `plugins/bb/references/task-state.md` —
 canonical location `.bb/tasks/<slug>/spec.md`, frontmatter schema
 (`status`/`created`/`slug`) and the status lifecycle owned by `/bb:delegate`. Skills
 reference that file instead of restating the contract.

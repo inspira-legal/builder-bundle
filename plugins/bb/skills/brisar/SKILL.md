@@ -47,7 +47,7 @@ error messages — is **PT-BR**; instruction bodies are English.
 7. **Scaffold ≠ planning.** This skill WRITES real files. If Bash fails,
    surface the error — don't fake success.
 8. **Deliver visual direction before Develop.** The Develop phase needs
-   `design/<surface>.md`; without it the builder is back to pure shaping.
+   `design/<surface>.md`; without it the builder is back to guessing the screen.
 9. **Suggest, never auto-invoke.** Other skills (/bb:discover, /bb:spec,
    /bb:challenge, /bb:review) are always suggested via handoff gate.
    Internal phase transitions (→ Develop, → Deliver) also go through a gate —
@@ -188,7 +188,7 @@ is not used on this path. Details in `references/phase-framer-handoff.md`.
 
 ### Bootstrap protocol (brisar → /bb:discover → brisar)
 
-When the maturity gate fires and the builder accepts shaping first, brisar
+When the maturity gate fires and the builder accepts framing the problem first, brisar
 writes `.brisar/session.yaml` with:
 
 - `status: bootstrapped-to-discover`

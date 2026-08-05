@@ -205,9 +205,9 @@ If the builder returns to the same `<slug>/` and runs /bb:brisar:
   - Revisar/handoff do que existe (fase Deliver)
   - Adicionar surface nova (vai pra Phase 4)
   - Trocar marca (regrava design-context/, mantém src/)
-  - Re-shape (sugiro /bb:discover)
+  - Re-enquadrar (sugiro /bb:discover)
   - Recomeçar do zero (arquiva .brisar/session.archived-<ISO>.yaml antes)
   ```
-- Routes accordingly. "Re-shape" suggests `/bb:discover` and stops; "Recomeçar" always archives the old session first.
+- Routes accordingly. "Re-enquadrar" suggests `/bb:discover` and stops; "Recomeçar" always archives the old session first.
 
 This is the re-entry contract. Not used on the first invocation, but keeps the skill useful in subsequent sessions.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Emit the concrete Cloud Routine setup for one shaped brief: a self-contained
+"""Emit the concrete Cloud Routine setup for one validated brief: a self-contained
 routine prompt (slug / repo / base branch filled in) plus the provisioning
 checklist that makes never-merge hold server-side. Boilerplate generation kept
 deterministic and out of the model's hands — see references/routines.md for the
@@ -47,7 +47,7 @@ def render(slug: str, base: str, repo: str | None) -> str:
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="Scaffold a Cloud Routine for one shaped brief.")
+    p = argparse.ArgumentParser(description="Scaffold a Cloud Routine for one validated brief.")
     p.add_argument("--slug", help="The brief slug (.bb/tasks/<slug>/spec.md).")
     p.add_argument("--base", default="main", help="Protected base branch the draft PR targets.")
     p.add_argument("--repo", help="owner/name, if you want it named in the prompt.")

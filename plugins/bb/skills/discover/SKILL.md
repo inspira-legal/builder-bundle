@@ -10,7 +10,7 @@ metadata:
 # Discover
 
 Run the whole first diamond: get the **problem** sharp, then decide **what
-survives to design**. Shaping the wrong problem crisply still ships the wrong
+survives to design**. Framing the wrong problem crisply still ships the wrong
 thing — this is the lowest-cost moment to catch that. The output is a brief
 seeded with framing and fit that `/bb:spec` reads as upstream intent.
 

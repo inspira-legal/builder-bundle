@@ -7,7 +7,7 @@ accurately, than they answer open questions cold.
 
 ## What the draft must cover
 
-The brief's shape belongs to `spec-format.md` — the free top half, then the spine.
+The brief's form belongs to `spec-format.md` — the free top half, then the spine.
 The draft's job is to arrive with those already filled from your best read of the goal
 and the codebase, so the user reacts to a proposal instead of completing a blank. Mark
 anything you're guessing so it reads as a guess rather than a fact.
@@ -57,7 +57,7 @@ Ask the forks through the **`AskUserQuestion` tool** — concrete options the us
 - **The validated brief is the checkpoint.** When the user approves (or sends last
   edits), that `.bb/tasks/<slug>/spec.md` is the artifact. The gate then offers to
   build (or build and ship) — and an explicit build pick is the user affirmatively
-  starting execution, not shaping silently rolling into it. Never start building
+  starting execution, not the spec silently rolling into it. Never start building
   off the back of a re-read; only off that explicit pick.
 - Keep **deferred decisions visible** — anything handed back to you ("your call")
   gets noted, so it's not silently assumed.
