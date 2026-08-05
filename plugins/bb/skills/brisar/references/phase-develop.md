@@ -41,10 +41,11 @@ If missing: warning + degrade to visual construction without DS (structure first
 
 ### 0.3 — Visual direction per surface
 
-Take `design_path` and each `surfaces[].file` from `.brisar/config.yaml` and join them. Without the fields, fall back to the convention — the task folder for this slug:
+Take `design_path` and each `surfaces[].file` from `.brisar/config.yaml` and join them. Without the fields, fall back to the convention — the task folder for this slug, under the nearest `.bb/` up the tree (Develop usually runs inside the project folder, one level below it):
 
 ```bash
-ls .bb/tasks/<slug>/design.md .bb/tasks/<slug>/design/*.md 2>/dev/null
+BB=$(d=$PWD; while [ "$d" != / ] && [ ! -d "$d/.bb" ]; do d=$(dirname "$d"); done; echo "$d/.bb")
+ls "$BB/tasks/<slug>/design.md" "$BB/tasks/<slug>/design"/*.md 2>/dev/null
 ```
 
 If no surface has a md: Phase 4 needs to run first (offer it) or the builder describes the screen directly in chat.
