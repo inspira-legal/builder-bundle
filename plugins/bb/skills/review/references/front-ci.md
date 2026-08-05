@@ -1,4 +1,4 @@
-# CI diagnosis — evidence before edits
+# Front: CI — evidence before edits
 
 The rule that makes CI fixing converge instead of thrash: **no edit before a
 diagnosis, no diagnosis before evidence.** A red check pattern-matched to a
@@ -20,21 +20,25 @@ Collect, read-only:
 
 ## 2. Diagnosis (reported before any edit)
 
-For each failing check, state in the report:
+Finding shape:
 
-- **Failing check** — name + run URL
-- **Root cause** — one sentence, specific ("test X asserts the old error
-  message", not "tests fail")
-- **Evidence** — the log lines that support it
-- **Proposed fix** — what would change and where; or "flaky — re-run" when the
+```
+# | check que falha (nome + URL do run) | causa raiz | evidência | fix proposto
+```
+
+- **causa raiz** — one sentence, specific ("test X asserts the old error message",
+  not "tests fail")
+- **evidência** — the log lines that support it
+- **fix proposto** — what would change and where; or "flaky — re-run" when the
   evidence shows a known-flake signature (same sha passed before, infra timeout)
 
-The proposed fix goes through the skill's curation step like any other finding —
-the user picks it before anything is edited.
+The diagnosis is reported before any edit either way; **who decides on the fix is
+the caller's** — `/bb:review` puts it through the user's curation step, `/bb:ship`
+takes it under its severity policy along with the other local-check failures.
 
 ## 3. Fix
 
-Apply per `apply-fixes.md` (one change, justified, checked), commit, push to the
+Apply per `act-apply-fixes.md` (one change, justified, checked), commit, push to the
 PR branch. Fix the cause, not the symptom — deleting a failing test or loosening
 an assertion to make CI green needs the user's explicit say-so, never a default.
 

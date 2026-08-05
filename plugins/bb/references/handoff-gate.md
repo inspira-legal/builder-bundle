@@ -23,7 +23,7 @@ an "Other" free-text option; a manual "Outro"/"Modificar" option is redundant.
   business (gray areas, confirmations); the handoff gate is the last interaction.
 - **Skills without a natural next step have no gate** — they just report and stop:
   `legal-lens`, `maintain-repo`, `review-setup`, `write-readme`,
-  `code-deep-research`, `gather-branch-context`, `ui-accessibility`.
+  `code-deep-research`, `gather-branch-context`.
 - **Unattended runs never gate.** Under `BB_UNATTENDED` the skill takes its
   documented lean, records the choice, and proceeds (see the unattended addendum).
 
@@ -54,7 +54,7 @@ options:
 - `spec` → implement / delegate / encerrar
 - `implement` → ship / encerrar
 - `ship` → review (da PR aberta) / encerrar
-- `review` → aplicar fixes escolhidos (dentro da própria skill) → encerrar
-- `brisar` (ao entregar) → ui-accessibility / spec / encerrar
+- `review` → aplicar mais itens / rodar as frentes que faltaram / auditar a UI rodando / review-setup / ship (quando não há PR) — no máximo três, por prioridade, + encerrar
+- `brisar` (ao entregar) → review (auditoria de acessibilidade) / spec / encerrar
 - `think` (quando convergiu) → spec / discover / encerrar
 - `challenge` → devolve a tese ao dono; oferece spec quando a tese sobreviveu e é construível

@@ -1,4 +1,4 @@
-# External PR — reviewing a PR you don't have checked out
+# Mode: external PR — reviewing a PR you don't have checked out
 
 For reviewing a PR in another repo (or another branch's PR) by reference —
 `<owner>/<repo>` + PR number. Everything is read via `gh`; **no local edits, no
@@ -17,11 +17,22 @@ pushes** — the output is a review, optionally posted.
 
 ## 2. Review
 
-Run the two-pass engine over the diff (`diff-review.md` — with the caveat that
-"open the file" here means fetching file contents via
+Fronts available here: `correctness`, `quality`, `rules` (only when the target repo
+publishes a `CODE_REVIEW_GUIDE.md`, fetched above), and `a11y` when the PR
+touches UI files — it's static, so the fetched source is enough. `contract`,
+`threads`, and `ci` don't apply — there's no local brief, the threads aren't yours
+to resolve, and the CI isn't yours to fix. Ask which of the four to run, same as
+local mode.
+
+Run the picked fronts and the verify pass exactly as documented
+(`front-correctness.md`, `front-quality.md`, `front-rules.md`, `front-a11y.md`,
+`verify.md`), with
+one caveat: "open the file" here means fetching contents via
 `gh api repos/<owner>/<repo>/contents/<path>?ref=<headRefName>` for hunks that
-need surrounding context). Report findings in the unified format, ranked by
-severity, citing guide rule IDs when they match.
+need surrounding context, and finder agents get that command in their scope block.
+The diff range comes from the PR itself, so the scope block carries the PR's
+changed-file list where a local run carries the probe's `<merge_base>...HEAD` — that
+list is what `verify.md` canonicalizes paths against.
 
 ## 3. Verdict
 
@@ -33,7 +44,10 @@ REQUEST_CHANGES; only quality smells ⇒ COMMENT.
 ## 4. Post (only with explicit confirmation)
 
 Show the full review body first and ask before posting — a posted review is
-outward-facing and carries the user's identity. On yes:
+outward-facing and carries the user's identity. Under `BB_UNATTENDED` this mode is
+**report-only**: the review stays in the run's output and the section says it wasn't
+posted. A question that can't be asked resolves to the side that keeps the run inside
+its own repo. On yes:
 
 ```
 gh pr review <number> --repo <owner>/<repo> --comment|--approve|--request-changes --body-file -

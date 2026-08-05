@@ -19,7 +19,7 @@ Processing each answer, always in this order:
 ### Confirmed rules — one batch
 
 Print the confirmed rules as an informational table (ID, título, severidade,
-lens) — context only, no questions in the text. Then immediately ask:
+categoria) — context only, no questions in the text. Then immediately ask:
 
 ```
 question: "Revisou as regras confirmadas acima. Sigo com todas ou ajusta alguma?"

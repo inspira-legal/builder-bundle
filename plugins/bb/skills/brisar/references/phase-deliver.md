@@ -5,7 +5,7 @@ Loaded when the builder chooses to review/deliver (Develop gate, the `deliver-di
 This phase does **3 things**:
 
 1. **Design review** — confronts the built surfaces against **the problem and the research**, and flags only what matters. This is a senior designer's review, not a conformance check: it reads the copy, computes the contrast, sweeps every variant against the contract, and it is allowed to **disagree with a decision in the brief or the spec** when it sees a better option.
-2. **Accessibility audit** — validates WCAG AA. Suggests `/bb:ui-accessibility` when depth is required; does inline checks when it's just a sanity check.
+2. **Accessibility audit** — validates WCAG AA. Suggests `/bb:review` (accessibility audit, surface scope) when depth is required; does inline checks when it's just a sanity check.
 3. **Handoff doc** — generates the document that the developer/agent reads to implement (mapped components, states, edge cases, recorded decisions) — plus the **delta back into the spec** when the design learned something the contract does not yet know.
 
 Doesn't scaffold (Phases 1–3). Doesn't build (Develop phase). Doesn't decide scope (`/bb:discover`). Only reviews, records, and delivers.
@@ -135,7 +135,7 @@ Call `AskUserQuestion`:
         },
         {
           "label": "Accessibility audit",
-          "description": "WCAG AA — contraste, teclado, leitor de tela, ARIA. Sugere /bb:ui-accessibility se profundidade exige."
+          "description": "WCAG AA — contraste, teclado, leitor de tela, ARIA. Sugere /bb:review (auditoria de acessibilidade) se profundidade exige."
         },
         {
           "label": "Handoff doc",
@@ -165,7 +165,7 @@ Lazy-load `references/deliver-modes.md`. Do not load all modes in Step 0.
 ### Stance per mode
 
 - **Design review:** sweeps **surface × variant** (reads `tarsila.surfaces[]` and each entry's `variants[]`), through **seven lenses** — the four structural ones plus copy, computed contrast, and the triangulation. Full list and how to run each: `deliver-modes.md#mode-1-design-review`. Comments only if the issue is significant. At least 1 piece of praise for what worked (not cheerleading — it's information: "this worked, keep it").
-- **Accessibility:** suggests `/bb:ui-accessibility` if the builder requested depth or if it's going to merge. Otherwise, does inline: color contrast, keyboard navigation (mental walkthrough), `aria-label` on icons, tab order, visible focus.
+- **Accessibility:** suggests `/bb:review`'s accessibility audit (surface scope — it can read the rendered page) if the builder requested depth or if it's going to merge. Otherwise, does inline: color contrast, keyboard navigation (mental walkthrough), `aria-label` on icons, tab order, visible focus.
 - **Handoff doc:** reads tokens + components from the design-context (or from the design brief's DS section on a canvas medium), reads the built surfaces, and generates a structured doc for the developer. Doesn't invent components — only maps what exists. If context to fill a section is missing, ask or skip it with `not-applicable` + reason. **Also produces the spec delta** when the design learned something the contract does not carry yet.
 
 ### Severity — four levels, and one of them is new
@@ -221,7 +221,7 @@ clarisse:
     completeness: high | med | low
     ci_code_review_present: bool
     spec_delta: [] # what the contract has to absorb; empty is a valid answer
-  next_action: ready-to-merge | fix-blockers | re-prototype | decide-divergences | run-/bb:ui-accessibility
+  next_action: ready-to-merge | fix-blockers | re-prototype | decide-divergences | run-a11y-audit
 ```
 
 **`variants_unreviewed` and `lenses_skipped` are not bookkeeping.** They are the difference between
@@ -241,7 +241,7 @@ Echo the final status in 1 line — e.g.: _"Design review: 2 issues significativ
       "options": [
         {
           "label": "Auditoria profunda de acessibilidade",
-          "description": "Sugiro /bb:ui-accessibility — análise WCAG AA completa com matriz de prioridade"
+          "description": "Sugiro /bb:review — auditoria WCAG AA da superfície, com matriz de prioridade"
         },
         {
           "label": "Especificar a implementação real",
@@ -304,7 +304,6 @@ And a second: **do not turn the review into a redesign.** The strongest failure 
 
 ### Related skills (suggest, never invoke)
 
-- `/bb:ui-accessibility` — when accessibility needs depth
 - `/bb:review-setup` — when the target repo doesn't have the code-review workflow
-- `/bb:review` — after a PR is opened, reviews the diff
+- `/bb:review` — after a PR is opened, reviews the diff; also the accessibility audit when a11y needs depth
 - `/bb:challenge` — when the design review reveals the hypothesis may be wrong (pre-mortem before merging)

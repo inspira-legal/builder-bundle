@@ -12,7 +12,7 @@ Required content:
 2. **Severidades** — the HIGH/MEDIUM/LOW ladder and its verdict impact.
 3. **Pre-PR checklist** — numbered, actionable, derived from the HIGH and MEDIUM
    rules (concrete commands: the repo's own test/lint invocations).
-4. **Rules by severity** — every rule with ID, título, lens, descrição,
+4. **Rules by severity** — every rule with ID, título, categoria, descrição,
    evidência (real paths), and Do/Don't examples from the repo.
 5. **Categorização de arquivos** — file patterns → categories, so a reviewer
    knows which rules apply to which files.
@@ -53,8 +53,8 @@ está documentada aqui com evidência.
 
 ### HIGH
 
-| ID  | Título | Lens |
-| --- | ------ | ---- |
+| ID  | Título | Categoria |
+| --- | ------ | --------- |
 
 {{HIGH_RULES_TABLE}}
 
@@ -98,7 +98,7 @@ Rule detail block, one per rule:
 ````markdown
 #### {{ID}} — {{TITLE}}
 
-- **Lens**: logic-edges | async-state | contracts-security | quality
+- **Categoria**: correctness | contracts | security | a11y | quality
 - **Severidade**: HIGH | MEDIUM | LOW
 - **Descrição**: o que a regra garante e por quê
 - **Evidência**: paths do repo que mostram o padrão
@@ -117,9 +117,14 @@ Rule detail block, one per rule:
 
 ## Generation rules
 
-- The **Lens** field maps each rule to the `/bb:review` lens that enforces it
-  (`logic-edges`, `async-state`, `contracts-security`, `quality`) — that's how
-  the engine routes guide rules to its fan-out agents.
+- The **Categoria** field tags the kind of concern the rule is (`correctness`,
+  `contracts`, `security`, `a11y`, `quality` — the vocabulary of the shared
+  `references/review-checklist.md` and the review fronts). `/bb:review`'s `rules`
+  front reads every rule regardless of category; the tag is what lets a finding say
+  _what kind_ of deviation it is, and it groups the guide for a human reader. Older
+  guides carry the field as **Lens**, and some carry the earlier values
+  (`logic-edges`, `async-state`, `contracts-security`); read them as-is and map on
+  the next delta update rather than rewriting the guide for the tag alone.
 - Every example is real (from the repo) — never invent code to illustrate a
   rule; a rule without a real example gets evidence paths only.
 - Only rules the maintainer accepted in the interview enter the guide.

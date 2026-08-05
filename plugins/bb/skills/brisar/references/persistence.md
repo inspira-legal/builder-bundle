@@ -176,7 +176,7 @@ clarisse:
     ci_code_review_present: bool
     surfaces_documented: <N>
     spec_delta: [<what the contract has to absorb>]   # empty is a valid answer
-  next_action: ready-to-merge | fix-blockers | decide-divergences | re-prototype | run-/bb:ui-accessibility
+  next_action: ready-to-merge | fix-blockers | decide-divergences | re-prototype | run-a11y-audit
 
 # variants_unreviewed and lenses_skipped are not bookkeeping: they are the difference
 # between "reviewed" and "reviewed the first artboard with the lenses that happened to work".

@@ -14,6 +14,9 @@ enforced by cloud capability scoping (see the routine setup docs), not a local h
 .claude-plugin/marketplace.json        # lists the single `bb` plugin
 plugins/bb/
 ├── .claude-plugin/plugin.json
+├── agents/                            # pipeline roles (auto-discovered, no plugin.json entry)
+│   ├── bb-finder.md                    # review fan-out: finds candidates, read-only by `tools:`
+│   └── bb-verifier.md                  # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
 ├── hooks/                             # session infra (auto-active, no skill)
 │   ├── hooks.json                      # SessionStart context injection
 │   ├── enter_worktree.py               # worktree isolation for local autonomous runs
@@ -26,20 +29,20 @@ plugins/bb/
 │   ├── confidence-and-steelman.md      # shared reasoning protocols (think, challenge)
 │   ├── task-state.md                   # the .bb/tasks/<slug>/spec.md contract
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
-│   ├── quality-checklist.md            # shared quality pass (review engine)
-│   ├── review-checklist.md             # shared review pass (review engine)
+│   ├── quality-checklist.md            # canonical quality criteria — the six lenses (review engine)
+│   ├── review-checklist.md             # canonical correctness criteria — Pass 1 rows (review engine)
 │   ├── routines.md                     # Cloud Routine guide — the unattended path
 │   └── scripts/scaffold_routine.py     # emit a routine prompt + setup for a brief slug
 ├── scripts/                           # shared executables (2+ skills) — ref via ${CLAUDE_PLUGIN_ROOT}/scripts/
 │   ├── fetch_comments.py               # ship, review
 │   ├── reply_resolve_thread.py         # ship, review
-│   └── gather_context.py               # ship, review, gather-branch-context
-└── skills/                            # all 16 skills flat; trilha grouping is a docs concept
+│   └── gather_context.py               # ship, review (resolves the diff range), gather-branch-context
+└── skills/                            # all 15 skills flat; trilha grouping is a docs concept
     ├── Pensar:        discover, challenge, think, legal-lens
     ├── Desenhar:      spec
     ├── Construir:     implement, ship, delegate, gather-branch-context
     ├── Revisar:       review, maintain-repo, review-setup
-    ├── Design:        brisar, ui-accessibility
+    ├── Design:        brisar
     └── Pesquisar/Doc: code-deep-research, write-readme
 ```
 
@@ -52,6 +55,18 @@ plugins/bb/
   the dir name identical to the frontmatter `name`.
 - Each skill is self-contained: `scripts/` and `references/*.md` relative to the
   skill dir.
+- Agents live in `plugins/bb/agents/<name>.md`, auto-discovered (no `plugin.json`
+  entry). What an agent buys is a **system prompt the harness delivers** — the
+  invariant half of a role travels with it instead of being re-composed into every
+  prompt by the context that fans out, which is the half that gets shortened first.
+  That single ownership is the reason to reach for an agent; the skill references
+  defer to it rather than restating it. The `tools:` list narrows the surface on top
+  of that — CI fails a bb agent that lists a write tool — but with `Bash` on the list
+  it is a smaller door, not a closed one, so don't write it up as a guarantee. Name
+  agents by **role in the pipeline**, not by front or phase: what varies between
+  fronts is prompt content the caller already assembles. The `description` is PT-BR
+  and sits in context globally, so keep it narrow and name the skill that is the real
+  entry point.
 - The plugin ships hooks in `plugins/bb/hooks/hooks.json` (auto-activate when the
   plugin is enabled). Hook commands reference files via `${CLAUDE_PLUGIN_ROOT}/...`.
   Irreversible hazards on the unattended path are kept out by capability scoping
@@ -107,9 +122,18 @@ decisions.
 - Skill workflows reference their **own** scripts relatively (e.g.
   `scripts/foo.py`). Scripts shared by 2+ skills live at the plugin root in
   `plugins/bb/scripts/` and are referenced with
-  `${CLAUDE_PLUGIN_ROOT}/scripts/<x>.py` — the only case where a skill body uses
-  `${CLAUDE_PLUGIN_ROOT}` (hooks use it for their own files too). A skill's own,
-  non-shared script stays relative.
+  `${CLAUDE_PLUGIN_ROOT}/scripts/<x>.py` (hooks use it for their own files too). A
+  skill's own, non-shared script stays relative.
+- **Borrowing another skill's reference** is allowed when one skill owns a method
+  two entry points must share, and duplicating it would mean two definitions that
+  drift. Path it via `${CLAUDE_PLUGIN_ROOT}/skills/<owner>/references/<x>.md` and
+  say in both skills who owns it. Reading a reference is not invoking a skill —
+  the borrower still orchestrates its own run, which is why borrowing beats
+  invoking when the owner's router would ask questions the borrower answers by
+  policy. Today: `/bb:ship` reads
+  `skills/review/references/{fronts,verify,front-*,act-apply-fixes}.md`, and
+  `skills/review` reads the plugin-root `references/{review,quality}-checklist.md`
+  as the criteria its fronts point at.
 
 ## Scripts
 

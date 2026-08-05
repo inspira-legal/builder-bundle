@@ -4,7 +4,7 @@ description: Trilha de design ponta a ponta — duplo diamante inteiro, do "tenh
 license: MIT
 metadata:
   author: Inspira
-  version: 2.1.0
+  version: 2.4.0
 ---
 
 # Brisar
@@ -72,7 +72,7 @@ error messages — is **PT-BR**; instruction bodies are English.
     asked. It ends as a delta back into the spec. Where brief and spec disagree,
     **the spec wins** — the brief is the research record, the spec is the contract.
 11. **Suggest, never auto-invoke.** Other skills (/bb:discover, /bb:spec,
-    /bb:challenge, /bb:ui-accessibility) are always suggested via handoff gate.
+    /bb:challenge, /bb:review) are always suggested via handoff gate.
     Internal phase transitions also go through a gate — the builder crosses them
     on purpose. The one exception inside this skill: Research flows straight into
     Brief, because the research is the brief's input and does not stand alone.
@@ -84,6 +84,8 @@ error messages — is **PT-BR**; instruction bodies are English.
     a fallback.
 14. **Write for the non-designer.** Expand an internal pointer on first use, gloss
     a design concept in 5–10 words. Dense is fine; needing a decoder is not.
+15. **Deliver visual direction before Develop.** The Develop phase needs
+    `design/<surface>.md`; without it the builder is back to pure shaping.
 
 ---
 
@@ -371,7 +373,7 @@ Phase 5 — Terminal report + gate
 │     TRIANGULATION (problem × research × built)                              │
 │   → severity: blocker · significant · DIVERGÊNCIA · minor                   │
 │   → accessibility + handoff doc + DELTA back into the spec                  │
-│   → gate: decidir divergências / construir em código / /bb:ui-accessibility │
+│   → gate: decidir divergências / construir em código / /bb:review (a11y)    │
 │     / /bb:spec / encerrar                                                   │
 ╰─────────────────────────────────────────────────────────────────────────────╯
 ```
