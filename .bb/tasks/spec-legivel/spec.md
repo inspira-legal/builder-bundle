@@ -148,7 +148,7 @@ caller" diz mais que "design".
       → behaviors 4, 6 · dep: 2 · verifica: leitura
 - [x] **4. Slice pronta pra workflow** — `dep:` e `verifica:` no `spec-format.md`;
       `implement` e `delegate` leem os dois → behavior 3 · dep: 1 · verifica: leitura
-- [ ] **5. Justificativa no commit** — linha no `SKILL.md` e na seção Commits do
+- [x] **5. Justificativa no commit** — linha no `SKILL.md` e na seção Commits do
       `.claude/CLAUDE.md` → behavior 2 · dep: — · verifica: leitura
 - [ ] **6. Rename shape→spec** — `task-state.md`, `delegate`, `implement`, `discover`,
       `brisar`, `operating-context.md`, `routines.md`, `spec/SKILL.md`, README

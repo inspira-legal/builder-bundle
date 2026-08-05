@@ -155,3 +155,9 @@ reference that file instead of restating the contract.
 - Conventional commit style: `<type>(<scope>): <description>`
 - Scope is the skill name (`spec`, `maintain-repo`, …), `hooks` for the hook
   layer, or `repo` for repo-wide changes
+- **The commit body carries the rationale.** Why a decision changed, what a
+  closer read of the source corrected, which alternative lost and on what
+  grounds — that belongs here, not in the file being changed. A brief in
+  `.bb/tasks/` describes what to build as it stands now; the history of how it
+  got there is what `git log` is for, and duplicating it into the document is
+  what makes briefs unreadable.
