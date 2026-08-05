@@ -59,7 +59,7 @@ built thing, which did not exist then. Neither pass replaces the other.
 Before any question, read `.brisar/session.yaml` in full:
 
 - **If `tarsila:` exists** — surfaces are built. Use `tarsila.surfaces[]` as the locator (file, or
-  file + page + artboards on a canvas), plus `variants[]`, `states[]` and `deviations[]`.
+  file + page + artboards on a canvas), plus `variants[]`, `states_covered[]` and `deviations[]`.
 - **`medium.chosen`** — decides how you open the artifact. See Step 0.
 - **If `gate.discover_brief` points at a brief** (`.bb/tasks/<slug>/spec.md`) — read it. The hypothesis, cuts, and appetite there are the criteria against which to review. Appetite informs review rigor (small appetite = lean review; large = dense review).
 - **If `gate.design_brief` points at a brief** (`.bb/tasks/<slug>/brief-design.md`) — read it. The research, the chosen direction, the base block common to all directions, the token limits read from source, and the open tension. **The two briefs coexist and neither substitutes for the other** — reviewing against the research alone loses the problem; reviewing against the hypothesis alone loses everything the research learned.

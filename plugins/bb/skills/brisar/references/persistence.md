@@ -65,9 +65,18 @@ research:
     - front: <name>
       reason: <one line — why it did not earn its cost>   # declared, never silent
   ds_source:
-    path: <path actually read>
-    authority: source | frozen-fallback
-  degraded: [<front>: <reason>]   # tooling gaps, e.g. mobbin absent
+    path: <path actually read, or the gh coordinates>
+    authority: source | remote | brand-only   # brand-only = the bundled brand package, NOT a token source
+    found_via: cwd | disk-search | remote | registry | builder-told-us
+    record_suggestion: <path worth adding to product-registry/.brisar config, or null>
+  bench:
+    via: mobbin | galleries | builder-screenshots | product-precedent | browser | web-search
+    surface_access: public | behind-login   # decides which rungs of the bench ladder exist
+    corpus_size: <n or null>                # null when the corpus was not systematically sampled
+  degraded:
+    - front: <name>
+      reason: <one line — what was missing>
+      invalidates: <one line — which conclusions got weaker>   # mandatory; naming the tool is not enough
   next_action: ready-for-brief
 
 # ============================================================

@@ -17,14 +17,26 @@ Beside the task contract, as its sibling:
 .bb/tasks/<slug>/brief-design.md  ← this file's output
 ```
 
+**Resolve `.bb/` the way the contract says** — the nearest ancestor of the cwd that already has
+one, and only create it in the cwd when no ancestor does (plugin-level
+`references/task-state.md`). Never resolve it as a bare relative path: after Phase 3 the session
+runs from **inside** the project folder, so a relative `.bb/` would mint a second root one level
+down, and the brief would land in a different tree than its sibling `design.md` — which is exactly
+what the folder contract exists to prevent.
+
+```bash
+BB=$(d=$PWD; while [ "$d" != / ] && [ ! -d "$d/.bb" ]; do d=$(dirname "$d"); done; [ -d "$d/.bb" ] && echo "$d/.bb" || echo "$PWD/.bb")
+```
+
 **If that path is a symlink into a canonical store**, read through it and **write to the
 canonical target**. The Edit tool refuses to write through a symlink on purpose — that refusal
 is what stops a copy from being born inside the repo. Record the real path in the brief's own
 frontmatter (`canonical:`) so the instruction travels inside the artifact and nobody has to
-remember it.
+remember it. **Leave the in-repo path in place as the symlink**: the resumption glob and every
+reader below name `.bb/tasks/<slug>/brief-design.md`, and they have to keep finding it.
 
 If there is no task contract yet (pocket mode, no spec), write to
-`.bb/tasks/<slug>/brief-design.md` anyway and create the dir — the brief can precede the spec.
+`$BB/tasks/<slug>/brief-design.md` anyway and create the dir — the brief can precede the spec.
 
 ## Authority — say this once and never blur it
 

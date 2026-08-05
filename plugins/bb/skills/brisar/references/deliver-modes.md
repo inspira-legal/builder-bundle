@@ -12,8 +12,8 @@ execution of the wrong question.
 
 ### Inputs
 
-- `.brisar/session.yaml` — `gate.discover_brief` (→ `.bb/tasks/<slug>/spec.md`: hypothesis, cuts, appetite), `gate.design_brief` (→ `.bb/tasks/<slug>/brief-design.md`: research, chosen direction with its five parts, base block, token limits read from source, open tension), `tarsila.surfaces[]` (locator + `variants[]` + `states[]` + `deviations[]`), `medium.chosen`
-- `.brisar/config.yaml` — `design_path` + `surfaces[].file`, the visual direction in the same task folder
+- `.brisar/session.yaml` — `gate.discover_brief` (→ `.bb/tasks/<slug>/spec.md`: hypothesis, cuts, appetite), `gate.design_brief` (→ `.bb/tasks/<slug>/brief-design.md`: research, chosen direction with its five parts, base block, token limits read from source, open tension), `tarsila.surfaces[]` (locator + `variants[]` + `states_covered[]` + `deviations[]`), `medium.chosen`
+- `.brisar/config.yaml` — `design_path` + `surfaces[].file`, the visual direction in the same task folder. **Only on medium `código`** — on a canvas or `claude-design` medium there is no config, and the direction comes from `gate.design_brief` instead. That is the normal path there, not a degradation.
 - **The artifact, opened through the reader for its medium** — files, preview, or Paper/Figma/Pencil MCP. Resolved in Step 0.1 of `phase-deliver.md`. On a canvas, read structure and computed values through the MCP; a screenshot judges composition and **never** supplies numbers.
 - Design context: `<design_context_path>/tokens.md` + `components.md` when the medium is `código`; otherwise the DS section of the design brief, which read the same source.
 

@@ -36,17 +36,36 @@ the dir, and everything durable about that task lives inside it:
 - Bare selection (`/bb:delegate` with no slug) scans `.bb/tasks/*/spec.md` and
   picks by `created` — a folder without a brief is simply not a candidate.
 - The `.bb/` root is the nearest ancestor of the cwd that already has one; if none
-  does, it is created in the cwd.
+  does, it is created in the cwd. **Resolve it that way every time** — a bare relative
+  `.bb/` mints a second root whenever a skill runs from a subfolder, and the task's
+  members end up in different trees.
+- **The folder may be a symlink into a canonical store** (the pattern used when a
+  project's briefs live outside the repo). Read through it and write to the canonical
+  target — the Edit tool refuses to write through a symlink on purpose, and that refusal
+  is what stops a copy being born in the repo. Two obligations: the in-repo path stays in
+  place as the symlink, because every reader and every resumption glob names
+  `.bb/tasks/<slug>/…`; and **all** members travel together, so a brief written to the
+  canonical store cannot leave its `design.md` behind in a local `.bb/`.
 
 ## Frontmatter (selection & tracking)
 
-Every brief opens with:
+Every **`spec.md`** opens with:
 
 ```yaml
 ---
 status: pending # pending | in-progress | done | blocked
 created: 2026-07-23 # YYYY-MM-DD, set when the brief is first written
 slug: <kebab-slug> # matches the dir name
+---
+```
+
+`brief-design.md` carries its own, smaller block — it is a record, not a selection
+candidate, so it has no `status` for `/bb:delegate` to drive:
+
+```yaml
+---
+slug: <kebab-slug>
+canonical: <absolute path actually written, when the folder is a symlink; else omitted>
 ---
 ```
 
