@@ -149,6 +149,12 @@ canonical location `.bb/tasks/<slug>/spec.md`, frontmatter schema
 (`status`/`created`/`slug`) and the status lifecycle owned by `/bb:delegate`. Skills
 reference that file instead of restating the contract.
 
+The brief's **form** belongs to `plugins/bb/skills/spec/references/spec-format.md`:
+a free top half (opening plus whatever sections the problem asks for) over a fixed
+spine — `decisions`, `behavior`, `tasks`, `out of scope`, `open` — fixed because each
+member has a reader. `skills/spec/scripts/lint_spec.py` enforces the mechanical half
+of that and runs in CI over every `.bb/tasks/*/spec.md`.
+
 ## Commits
 
 - No AI attribution in commits, PRs, or code comments

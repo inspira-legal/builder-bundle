@@ -4,7 +4,7 @@ description: Trilha de design ponta a ponta — do "tenho uma ideia" ao protóti
 license: MIT
 metadata:
   author: Inspira
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 # Brisar

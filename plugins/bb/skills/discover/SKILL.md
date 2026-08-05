@@ -4,7 +4,7 @@ description: Roda o primeiro diamante inteiro antes de qualquer design — enqua
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 # Discover

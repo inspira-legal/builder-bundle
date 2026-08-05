@@ -156,7 +156,7 @@ caller" diz mais que "design".
 - [x] **7. Migrar as 3 specs e ligar o CI** — reescreve `builder-bundle`, `ship-lexflow` e
       `review-agents` na forma nova; passo `python3` e `.bb/tasks/**` no `validate.yml`
       → behavior 5 · dep: 1, 6 · verifica: CI verde
-- [ ] **8. Versão e docs** — `plugin.json` `2.4.0`, `spec/SKILL.md` `2.1.0`, CHANGELOG,
+- [x] **8. Versão e docs** — `plugin.json` `2.4.0`, `spec/SKILL.md` `2.1.0`, CHANGELOG,
       `.claude/CLAUDE.md` → behavior 7 · dep: 1-7 · verifica: CI
 
 ## out of scope
