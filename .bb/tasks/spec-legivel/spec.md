@@ -87,13 +87,14 @@ caller" diz mais que "design".
   `## open`; avisa na falta de `## behavior` e `## tasks`, que spec Medium não precisa ter.
 - **`## design` é nome morto** — o lint barra. Arquitetura vai pro topo, com nome próprio.
 - **`## still open` → `## open`** — nome único, e só decisão de fato aberta.
-- **`## cuts` do discover permanece** — é escopo cortado *na fase de problema*, com o
+- **`## cuts` do discover permanece** — é escopo cortado _na fase de problema_, com o
   porquê; `## out of scope` é o que esta spec não faz. O lint aceita as duas.
 - **Remover > negar** — saem do prompt: o parágrafo do `## design` (`SKILL.md:83`),
   "map them meticulously" (`:68`), "Don't abbreviate" (`:70`) e a lista de 7 itens do
   `draft-first.md:13-25`, que é o índice concorrente.
-- **Slice carrega dep e verificação** — `- [ ] **N. nome** — entrega → behaviors 1,3 ·
-  dep: N-1 · verifica: <como>`. É o DAG que um workflow consome sem reinterpretar prosa.
+- **Slice carrega dep e verificação** — a linha vira
+  `**N. nome** — entrega → behaviors 1,3 · dep: N-1 · verifica: <como>`. É o DAG que um
+  workflow consome sem reinterpretar prosa.
 - **Revisor é passo próprio** — obrigatório em Medium+, antes do gate, veredito de uma
   linha no gate. Hoje é sub-bullet de um passo condicional.
 - **Lint só no mecânico** — erro: `## design`, `## still open`, row com contagem de células
@@ -126,7 +127,7 @@ caller" diz mais que "design".
 | a spec é reescrita depois de landada      | o porquê mudou vai no commit; o arquivo só ganha a decisão nova     |
 | aparece uma seção `## design`             | o lint falha nomeando a linha e aponta a metade de cima             |
 | célula de tabela passa de 100 chars       | o lint falha; o conteúdo vira prosa ou bullet                       |
-| uma row tem `\|` não escapado              | o lint pega pela contagem de células — o bug de `review-agents:103` |
+| uma row tem `\|` não escapado             | o lint pega pela contagem de células — o bug de `review-agents:103` |
 | falta `## behavior` ou `## tasks`         | o lint avisa; spec Medium pode não ter as duas                      |
 | o autor cria seções próprias no topo      | passa — é o ponto; o lint só checa a espinha                        |
 | spec antiga de outro repo tem `## design` | o lint só roda no que o `/bb:spec` acabou de escrever               |
