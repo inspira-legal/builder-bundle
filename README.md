@@ -15,7 +15,7 @@ claude plugin marketplace add inspira-legal/builder-bundle
 claude plugin install bb@inspira-legal
 ```
 
-traz um hook `SessionStart` de contexto operacional, auto-ativo na instalação. as skills são invocadas como `/bb:<skill>` — ex. `/bb:discover`, `/bb:spec`, `/bb:ship`. toda skill com próximo passo natural termina num gate que **sugere** a próxima trilha, nunca auto-invoca.
+traz um hook `SessionStart` de contexto operacional, auto-ativo na instalação, e dois agentes read-only (`bb-finder`, `bb-verifier`) que o fan-out de review despacha — papéis internos do pipeline, não portas de entrada. as skills são invocadas como `/bb:<skill>` — ex. `/bb:discover`, `/bb:spec`, `/bb:ship`. toda skill com próximo passo natural termina num gate que **sugere** a próxima trilha, nunca auto-invoca.
 
 ## o que tem dentro
 

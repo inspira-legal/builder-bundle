@@ -14,6 +14,9 @@ enforced by cloud capability scoping (see the routine setup docs), not a local h
 .claude-plugin/marketplace.json        # lists the single `bb` plugin
 plugins/bb/
 ├── .claude-plugin/plugin.json
+├── agents/                            # pipeline roles (auto-discovered, no plugin.json entry)
+│   ├── bb-finder.md                    # review fan-out: finds candidates, read-only by `tools:`
+│   └── bb-verifier.md                  # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
 ├── hooks/                             # session infra (auto-active, no skill)
 │   ├── hooks.json                      # SessionStart context injection
 │   ├── enter_worktree.py               # worktree isolation for local autonomous runs
@@ -52,6 +55,18 @@ plugins/bb/
   the dir name identical to the frontmatter `name`.
 - Each skill is self-contained: `scripts/` and `references/*.md` relative to the
   skill dir.
+- Agents live in `plugins/bb/agents/<name>.md`, auto-discovered (no `plugin.json`
+  entry). What an agent buys is a **system prompt the harness delivers** — the
+  invariant half of a role travels with it instead of being re-composed into every
+  prompt by the context that fans out, which is the half that gets shortened first.
+  That single ownership is the reason to reach for an agent; the skill references
+  defer to it rather than restating it. The `tools:` list narrows the surface on top
+  of that — CI fails a bb agent that lists a write tool — but with `Bash` on the list
+  it is a smaller door, not a closed one, so don't write it up as a guarantee. Name
+  agents by **role in the pipeline**, not by front or phase: what varies between
+  fronts is prompt content the caller already assembles. The `description` is PT-BR
+  and sits in context globally, so keep it narrow and name the skill that is the real
+  entry point.
 - The plugin ships hooks in `plugins/bb/hooks/hooks.json` (auto-activate when the
   plugin is enabled). Hook commands reference files via `${CLAUDE_PLUGIN_ROOT}/...`.
   Irreversible hazards on the unattended path are kept out by capability scoping

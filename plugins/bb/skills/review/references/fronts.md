@@ -74,8 +74,11 @@ dropped.
 ## Fan-out shape
 
 1. **One message, all finder agents.** Every picked front's finders go out
-   concurrently via the Agent tool, read-only — they report, never edit. Single
-   writer: the main context.
+   concurrently via the Agent tool as `subagent_type: "bb-finder"`, whose prompt
+   carries the finder contract and whose `tools:` has no editing tool
+   (`plugins/bb/agents/bb-finder.md`). `Bash` is on that list for reading, so the
+   read-only rule still rests on the prompt at the margin. Single writer: the main
+   context — hold that line when you dispatch.
 2. **Each finder gets the same scope block** — the resolved diff range
    (`<merge_base>...HEAD`, the sha the probe returned, not a `<base>` the finder
    has to guess), changed files, one paragraph of what changed, the repo's
@@ -86,9 +89,10 @@ dropped.
    groups them by `file:line`, which needs all of them (`verify.md`).
 4. **`threads` and `ci` don't fan out** — they're script/`gh` reads followed by
    judgment in the main context.
-5. Finders pass through every candidate with a nameable failure scenario. A
-   finder that self-censors half-believed candidates bypasses the verifier, which
-   is the main way real bugs get missed.
+5. The finder's own contract — name a consequence, pass through every candidate
+   that clears that bar, return the shape it was given — belongs to the `bb-finder`
+   prompt. What the fan-out owes each finder is the scope block above, one angle
+   set and its cap.
 6. **No Agent tool in this context** (some hosts, some nested runs): work every
    angle of every picked front yourself, in sequence, in the main context — skip
    no angle for lack of fan-out — and self-check each candidate against the file

@@ -5,6 +5,9 @@ on:
     paths:
       - "**/SKILL.md"
       - "skills/**"
+      - "**/agents/**"
+      - ".github/scripts/**"
+      - ".github/workflows/validate.yml"
 
 jobs:
   validate:

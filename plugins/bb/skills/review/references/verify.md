@@ -39,34 +39,26 @@ with no loss. Candidates with no line (a whole-file or cross-file claim) group b
 
 ## 2. One verifier per location
 
-Each verifier agent gets the scope block, the candidates at that location labeled
-`[0]`, `[1]`, …, and returns one verdict per index, judging each **independently
-on its own claim**, with evidence that quotes or cites the relevant line:
+Each verifier goes out as `subagent_type: "bb-verifier"`
+(`plugins/bb/agents/bb-verifier.md`), which owns the rubric: the three verdicts, the
+PLAUSIBLE default and what makes a REFUTED constructible from the code all live in
+that prompt, so both callers of this engine judge the same way without a second copy
+to keep in sync — and without the fan-out having to re-send it.
 
-- **CONFIRMED** — can name the inputs/state that trigger it and the wrong output
-  or crash. Quote the line.
-- **PLAUSIBLE** — the mechanism is real, the trigger is uncertain (timing, env,
-  config). State what would confirm it.
-- **REFUTED** — factually wrong (the code doesn't say that) or guarded elsewhere.
-  Quote the line that proves it.
-
-**PLAUSIBLE is the default when the state is realistic.** Concurrency races,
-nil/undefined on a rare-but-reachable path (error handler, cold cache, missing
-optional field), falsy-zero treated as missing, off-by-one on a boundary the code
-doesn't exclude, retry storms, a regex or allowlist that lost an anchor — all
-PLAUSIBLE, not refuted for being "speculative".
-
-**REFUTED only when constructible from the code**: factually wrong (quote the
-actual line); provably impossible via a type, constant, or invariant (show it);
-already handled in this diff (cite the guard); or pure style with no observable
-effect.
+What this pass hands it: the scope block, the candidates at that location labeled
+`[0]`, `[1]`, …, and the addendum below when the front calls for one. Back comes one
+verdict per index, each judged independently on its own claim, with evidence.
 
 A candidate the verifier rendered no verdict on (agent died, index omitted) is
 **dropped** — never promoted to PLAUSIBLE on the strength of the finder alone. It
 still gets its line in the report (§4): a candidate nobody judged is a different
 thing from one that was judged and refuted, and the reader has to be able to tell.
 
-## Rule, contract and a11y candidates verify differently
+## The addendum — rules, contract and a11y verify differently
+
+These fronts don't turn on a crash, so their verifiers get one extra paragraph in
+the prompt saying what verification means there. It replaces the crash question and
+leaves the three verdicts and the evidence rule untouched.
 
 For `rules` and `contract` candidates, the verifier checks the **citation**, not a
 crash: does the quoted rule text actually appear in the named source, does its
