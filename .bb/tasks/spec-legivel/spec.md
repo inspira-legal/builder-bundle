@@ -140,7 +140,7 @@ caller" diz mais que "design".
 - [x] **1. Formato e lint** — `references/spec-format.md` (as duas metades, a espinha, o
       critério descreve-vs-reconta) e `scripts/lint_spec.py` (stdlib, `path:line CODE msg`,
       exit 1 no erro) → behaviors 2, 3, 5 · dep: — · verifica: CI
-- [ ] **2. Poda do prompt** — deleta do `SKILL.md` o parágrafo do `## design`,
+- [x] **2. Poda do prompt** — deleta do `SKILL.md` o parágrafo do `## design`,
       "meticulously" e "Don't abbreviate"; mata a lista de 7 do `draft-first.md`; os dois
       passam a apontar pro `spec-format.md` → behaviors 1, 2 · dep: 1 · verifica: CI
 - [ ] **3. Revisor como passo próprio** — passo dedicado no `SKILL.md`, obrigatório em

@@ -7,22 +7,15 @@ accurately, than they answer open questions cold.
 
 ## What the draft must cover
 
-Fill each of these in yourself, using your best read of the goal + the codebase.
-Mark anything you're guessing so it's visibly a guess, not a fact.
+The brief's shape belongs to `spec-format.md` — the free top half, then the spine.
+The draft's job is to arrive with those already filled from your best read of the goal
+and the codebase, so the user reacts to a proposal instead of completing a blank. Mark
+anything you're guessing so it reads as a guess rather than a fact.
 
-- **Intent & value** — what we're building, who for, what changes once it ships.
-  One sentence.
-- **Scope edges** — what's explicitly OUT; the smallest version still worth shipping.
-- **Reuse** — what existing code, patterns, or modules this should build on.
-  Name them. The cheapest guard against reinventing something that already exists.
-- **Decisions** — the forks (data model, naming, where the logic lives, sync vs
-  async). Make the obvious calls; flag only the rest (see below).
-- **Edge cases** — empty / zero / huge inputs; first run vs repeat; failure and
-  rollback; migrating data that already exists. State how the draft handles each.
-- **Done & proof** — what "done" looks like, and how we'll know it works (a test,
-  a demo, a metric).
-- **Constraints** — existing conventions, perf budget, dependencies, deadline,
-  blast radius if it goes wrong.
+Two things a first draft earns the most from: **reuse** — name the existing code,
+patterns or modules this builds on, the cheapest guard against reinventing something
+that exists — and the **smallest version still worth shipping**, which is what turns a
+scope edge into a line you can actually hold.
 
 ## Surfacing the forks (the only thing you ask about)
 
