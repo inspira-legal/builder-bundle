@@ -66,8 +66,9 @@ self-contained — the routine has no session memory:
 > **DRAFT** PR against `<base>` and watch it to resolution (green CI + handled
 > review-bot threads), bounded by the run budget. Do **not** merge, do **not**
 > push to a protected branch. If a task or the gate blocks unrecoverably, flip
-> the brief's `status` to `blocked`, write the blocker into the PR description,
-> and exit.
+> the brief's `status` to `blocked` and land the blocker where the run can be
+> found again — the PR description once a PR exists, otherwise push
+> `claude/<slug>` and write it into the brief's `## open` — then exit.
 
 ## The build fans out — one agent per slice
 

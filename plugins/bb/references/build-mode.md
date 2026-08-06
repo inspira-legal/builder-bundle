@@ -18,10 +18,14 @@ note is what's paid with — lossy on purpose instead of lossy by accident.
 
 `/bb:implement` and `/bb:delegate` ask it **once, at the start of every supervised
 run**, before the first slice — no size threshold. A brief with a single slice is
-still asked; the choice is the user's, not a heuristic's.
+still asked; the choice is the user's, not a heuristic's. When `/bb:delegate` drives
+the build it's delegate that asks, and the implement loop it drives takes the answer
+as given.
 
-Two things skip it entirely: a brief with no `## tasks` section (there are no slices
-to fan out over), and a run where workflows aren't available.
+Two things skip it entirely. A brief with **no `## tasks` section** has no slices to
+fan out over — and no build either: implement's Prerequisites stop the run and send
+it back to `/bb:spec` before this question would have been reached. The other is a
+run where workflows aren't available, below.
 
 This is a mid-skill question, not the handoff gate — the gate convention in
 `handoff-gate.md` still applies to the one at the end of the skill. What carries over
@@ -70,6 +74,3 @@ the run's report, which is what `/bb:ship` already carries into the PR descripti
   pick up the caller's own contract from its result.
 - **Context** — build the slices as implement's steps 3–7 describe. Nothing about
   the brief, the gate or the commits changes.
-
-`/bb:delegate` asks this once and passes the answer into the build; the implement
-loop it drives doesn't ask again.

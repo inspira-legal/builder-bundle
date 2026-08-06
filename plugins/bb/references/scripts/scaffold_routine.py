@@ -22,8 +22,9 @@ Set BB_UNATTENDED=1. Run /bb:delegate {slug} against the brief for `{slug}` \
 `claude/{slug}` branch, then chains into /bb:ship — open a DRAFT PR against \
 `{base}` and watch it to resolution (green CI + handled review-bot threads), \
 bounded by the run budget. Do not merge, do not push to a protected branch. If a \
-task or the gate blocks unrecoverably, flip the brief's status to blocked, write \
-the blocker into the PR description, and exit."""
+task or the gate blocks unrecoverably, flip the brief's status to blocked and land \
+the blocker where the run can be found again — the PR description once a PR exists, \
+otherwise push `claude/{slug}` and write it into the brief's `## open` — then exit."""
 
 CHECKLIST = """\
 Do this once per repo:

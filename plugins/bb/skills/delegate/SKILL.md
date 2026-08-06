@@ -65,7 +65,11 @@ and stop.
    gone, a gate the run can't execute, a tree already red), a red slice, a lost
    agent, or a brief the agent found underspecified — lands the same place the safety
    valve does: flip `status: blocked`, name the blocker, exit without landing. What
-   came back green is already committed and ticked.
+   came back green is already committed and ticked. **Unattended, name it where the
+   run can be found again**: this stop happens before ship, so there is no PR to
+   write into and the routine's clone is thrown away with the run — push
+   `claude/<slug>` and put the blocker in the brief's own `## open` on that branch,
+   the same fallback step 5 takes when the destination has no PR.
 
 5. **Land — follow `/bb:ship`'s workflow.** Run the quality pass and land per ship's
    own destination logic: supervised, ship settles the destination (asking only on real
@@ -99,7 +103,7 @@ and stop.
 | selected task already `in-progress`             | resume — implement skips checked slices; status stays `in-progress` until landing                                                                                       |
 | brief has no frontmatter                        | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                                                    |
 | implement safety valve fires (underspecified)   | flip `status: blocked`, point back to `/bb:spec`, stop — do not improvise                                                                                               |
-| workflow mode stops (stage zero or a slice)     | flip `status: blocked`, name the blocker, exit without landing; what is green stays committed                                                                           |
+| workflow mode stops (stage zero or a slice)     | flip `status: blocked`, exit without landing; unattended, push `claude/<slug>` and put the blocker in the brief's `## open`                                             |
 | ship hits an unrecoverable stop / blocker       | flip `status: blocked`; write the blocker into the PR description, or into the brief's `## open` when the destination has no PR; report it supervised; exit             |
 | `BB_UNATTENDED` set                             | no questions; ship opens a DRAFT PR on `claude/<slug>` — or pushes it and reports the deploy command in a LexFlow app repo; never merge / never push a protected branch |
 | not in a git repo / no tasks dir in either root | report the error, stop                                                                                                                                                  |
