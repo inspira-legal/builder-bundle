@@ -158,7 +158,7 @@ O único ponto genuinamente paralelo é o estágio zero, read-only por natureza.
 - [x] **4. implement** — a mesma escolha quando invocado direto, suprimida quando o delegate
       dirige; blocker de volta cai na válvula do passo 7
       → behaviors 1, 4, 10 · dep: 1, 2 · verifica: leitura
-- [ ] **5. Fallback sem workflow** — detecção e caminho em contexto nos dois, com o motivo
+- [x] **5. Fallback sem workflow** — detecção e caminho em contexto nos dois, com o motivo
       dito → behavior 11 · dep: 3, 4 · verifica: leitura
 - [ ] **6. routines.md** — tira a proibição de fan-out, descreve o modo workflow como default
       da routine e põe a allowlist do gate no provisionamento

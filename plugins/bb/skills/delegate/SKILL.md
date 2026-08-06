@@ -45,7 +45,9 @@ and stop.
    plugin-level `references/build-mode.md`: one agent per slice dispatched as a
    dynamic workflow, or the slices built here as always. Unattended takes the
    documented lean (workflow) without asking. The answer goes into step 4, and the
-   implement loop it drives doesn't ask again.
+   implement loop it drives doesn't ask again. With no `Workflow` tool in the session
+   there's nothing to offer: build in context and name the reason, in step 7's report
+   too, so a silent downgrade doesn't pass for a choice.
 
 4. **Build — follow `/bb:implement`'s workflow (steps 1–7), then return here.** Load
    the brief, honor its reuse notes and `## behavior` contract, build every unchecked

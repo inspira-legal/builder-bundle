@@ -51,6 +51,18 @@ Under `BB_UNATTENDED` there's no question: the run goes via workflow and records
 choice in its report. This is the documented lean the unattended frame takes, the
 same as every other skipped question.
 
+## When workflows aren't available
+
+The `Workflow` tool is absent from the session when the `disableWorkflows` setting is
+on, when org-managed settings turn it off, or when the client predates the version
+that shipped dynamic workflows. Check before asking: an option that can't be executed
+isn't a choice.
+
+Absent, both skills build in context and **say why in one line** — "workflows
+desligados nesta sessão, construindo aqui". A silent downgrade reads as a preference
+and hides a setting the user may not know is on. Unattended, the same line goes into
+the run's report, which is what `/bb:ship` already carries into the PR description.
+
 ## After the pick
 
 - **Workflow** — read `build-slices-workflow.md`, author the script, run the
