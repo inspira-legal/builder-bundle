@@ -3,8 +3,8 @@
 The workflow build mode runs one agent per slice instead of building the whole brief
 in the main context. This file is the **contract the generated script has to meet**;
 `/bb:implement` and `/bb:delegate` author the JS per run and pass it inline via the
-`Workflow` tool's `script` input. Nothing here ships as an executable — there is no
-`workflows/` entry and no `/bb:build-slices` command.
+`Workflow` tool's `script` input. What ships is this contract; the script itself is
+authored fresh per run and lives only in the session directory.
 
 The mode choice itself — when it's offered, the question, the unattended rule — is
 `build-mode.md`, next to this file. Read this one only once workflow was chosen.
@@ -73,10 +73,17 @@ baseline. It returns:
 { commands: ["..."], ran: true | false, green: true | false, blocker: "<why, if any>" }
 ```
 
-The script stops before slice 1 when any note came back `gone`, when `ran` is false
-(permission), or when `green` is false (the tree was already red — a broken gate the
-build didn't cause). `moved` is not a stop: the new path goes into the convention
-note. No gate found at all is not a stop either — the script logs it and proceeds.
+`commands` is the discriminator. **Empty means no gate was found** — the script logs
+that and proceeds; `ran` and `green` say nothing in that case. **Non-empty** puts two
+stops on the table: `ran: false` (the run has no permission to execute it) and
+`green: false` (the tree was already red — a broken gate the build didn't cause).
+A note that came back `gone` is the third stop. `moved` is not a stop: the new path
+goes into the convention note, and from slice 1 on it outranks the path the brief's
+reuse note names.
+
+A stage-zero stop is normalized into the shape a slice result has, so the caller has
+one thing to read and a blocker to name:
+`{ n: 0, status: "red", blocker: "<which note died, or which command, and why>" }`.
 
 ## The slice loop
 
@@ -87,14 +94,24 @@ for (const s of args.slices) {
     phase: "Build",
     schema: SLICE_RESULT,
   })
-  if (!r || r.status !== "green") { stopped = r; break }
+  if (!r) {
+    stopped = { n: s.n, status: "red", blocker: "agente perdido (retorno null)" }
+    break
+  }
+  if (r.status === "skipped") { skipped.push(r.n); continue }
+  if (r.status !== "green") { stopped = r; break }
   conventions = r.conventions
+  if (r.verifica.result === "pending") pendingVerifica.push(r.n)
   results.push(r)
 }
 ```
 
-A `null` return (the user skipped the agent, or it died on a terminal API error) is
-treated as a failed slice: stop the loop, keep what's already green.
+Three exits, and each needs its own line. A `null` return (the user skipped the
+agent, or it died on a terminal API error) is a failed slice that carries no blocker
+of its own, so the script writes one — assigning `stopped = r` there would hand the
+caller a `null` `stopped`, which reads as a clean run over a half-built brief. A
+`skipped` slice was already ticked before the run: count it and move on, keeping the
+conventions the loop already had. Anything else stops the loop and keeps what's green.
 
 ## What the slice agent is told to do
 
@@ -104,21 +121,28 @@ accumulated convention note, and the gate commands stage zero resolved. Its step
 1. **Re-read `## tasks` on disk.** If this slice is already `- [x]`, return
    immediately with `status: "skipped"` — the run is resumable and re-running a
    half-built brief must not redo what already landed.
-2. **Build the slice**, staying inside the brief's `## out of scope`.
-3. **Satisfy `verifica:`.** A command gets run. `leitura` means self-inspection: read
-   what you produced against the behaviors this slice cites and return short
-   evidence. `CI` is out of reach inside the run — return it as pending; `/bb:ship`
-   is what covers it. No `verifica:` is silently skipped.
+2. **Build the slice**, staying inside the brief's `## out of scope`. A **stack
+   choice** the brief didn't close (framework, package manager, tooling) is settled
+   against the manifesto first — the plugin-level `references/consult-manifesto.md`,
+   whose path goes into the prompt.
+3. **Satisfy `verifica:`.** A command gets run: `result` is `passed` or `failed`.
+   `leitura` means self-inspection — read what you produced against the behaviors
+   this slice cites and return short evidence. `CI` is out of reach inside the run:
+   return `result: "pending"`, which is neither a pass nor a failure; `/bb:ship` is
+   what covers it. No `verifica:` is silently skipped.
 4. **Run the gate** and fix what broke. Unattended: at most 3 retries, and only on a
    known-flake signature.
 5. **Commit** — only the files this slice touched, with its `- [ ]` → `- [x]` in the
-   same commit. The commit is the checkpoint (workflow resume is same-session only
-   and replays everything that started after the first unfinished agent; commits
-   survive anything).
-6. **Return** the structured result. A red gate after the retries, a failed
-   `verifica:`, or a brief too underspecified to build against all mean: **don't
-   commit, don't revert.** Leave the tree as it is for diagnosis and return the
-   blocker.
+   same commit, on the branch the run is already on. **Conventional style, and no AI
+   attribution** — the agent starts with no memory of the target repo's habits, so
+   the convention travels in the prompt. The commit is the checkpoint (workflow
+   resume is same-session only and replays everything that started after the first
+   unfinished agent; commits survive anything).
+6. **Return** the structured result. A red gate after the retries, a `verifica:` that
+   came back `failed`, or a brief too underspecified to build against all mean:
+   **don't commit, don't revert.** Leave the tree as it is for diagnosis and return
+   the blocker. A `verifica:` still `pending` is a green slice — it commits, and the
+   pending rides the script's return out to ship.
 
 Return shape:
 
@@ -126,7 +150,7 @@ Return shape:
 {
   n: 1,
   status: "green" | "red" | "skipped" | "underspecified",
-  verifica: { kind: "command" | "leitura" | "ci", passed: true, evidence: "..." },
+  verifica: { kind: "command" | "leitura" | "ci", result: "passed" | "failed" | "pending", evidence: "..." },
   commit: "<sha, or null>",
   conventions: "<the accumulated note this slice hands forward>",
   blocker: "<what stopped it, when not green>"
@@ -153,12 +177,13 @@ model and effort; they're doing the same work the main context would have done.
 ## What the script returns
 
 ```
-{ slug, built: [<n>], skipped: [<n>], stopped: <the failing result, or null>, conventions }
+{ slug, built: [<n>], skipped: [<n>], pendingVerifica: [<n>], stopped: <the failing result, or null>, conventions }
 ```
 
 The caller reads that and follows its own contract: `/bb:implement` goes to its
 step 8, `/bb:delegate` to ship. A non-null `stopped` means neither proceeds to
 landing — delegate flips `status: blocked`, implement stops at its safety valve.
+`pendingVerifica` names the slices whose proof is CI, which is ship's to close.
 
 ## Before invoking — the checklist
 
@@ -173,6 +198,9 @@ and CI never sees it. Confirm all of it, then invoke:
 - No `Date.now()`, `new Date()` or `Math.random()` anywhere.
 - `args` is passed as a JSON value, and `slices` holds only unticked slices.
 - The slice prompt includes: the brief path, the slice line, its behaviors, the
-  accumulated note, the gate commands, and the six steps above.
+  accumulated note, the gate commands, the commit convention (conventional style, no
+  AI attribution), the manifesto's path for stack choices, and the six steps above.
+- The branch the commits belong on already exists and is checked out — the agents
+  commit where the run puts them, and unattended that has to be `claude/<slug>`.
 - The agent count is `slices.length + reuseNotes.length + 1` — under the session's
   workflow size guideline, and far under the 1000-per-run cap.
