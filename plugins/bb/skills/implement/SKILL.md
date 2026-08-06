@@ -4,7 +4,7 @@ description: Constrói um brief validado (`.bb/tasks/<slug>/spec.md`) na working
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 # Implement

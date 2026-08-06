@@ -163,7 +163,7 @@ O único ponto genuinamente paralelo é o estágio zero, read-only por natureza.
 - [x] **6. routines.md** — tira a proibição de fan-out, descreve o modo workflow como default
       da routine e põe a allowlist do gate no provisionamento
       → behaviors 1, 3 · dep: 2 · verifica: leitura
-- [ ] **7. Versão e docs** — `plugin.json` `2.7.0`, versões de `implement` e `delegate`,
+- [x] **7. Versão e docs** — `plugin.json` `2.7.0`, versões de `implement` e `delegate`,
       CHANGELOG, o reference novo no `.claude/CLAUDE.md`
       → behavior 1 · dep: 1-6 · verifica: CI
 
