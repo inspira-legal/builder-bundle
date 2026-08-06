@@ -34,6 +34,8 @@ Do this once per repo:
   [ ] Enable branch protection on `{base}` (require a PR, block direct and force
       pushes) — the server-side backstop.
   [ ] Network: the Trusted preset (registries + GitHub) is enough.
+  [ ] Allowlist the project's gate commands (lint / typecheck / tests) — outside
+      the allowlist they fail instead of prompting, and the build blocks on it.
 
 Trigger: schedule, daily, an overnight slot; off-the-hour minute. One brief per
 routine. With every task already checked the run is a no-op."""

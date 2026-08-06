@@ -160,7 +160,7 @@ O único ponto genuinamente paralelo é o estágio zero, read-only por natureza.
       → behaviors 1, 4, 10 · dep: 1, 2 · verifica: leitura
 - [x] **5. Fallback sem workflow** — detecção e caminho em contexto nos dois, com o motivo
       dito → behavior 11 · dep: 3, 4 · verifica: leitura
-- [ ] **6. routines.md** — tira a proibição de fan-out, descreve o modo workflow como default
+- [x] **6. routines.md** — tira a proibição de fan-out, descreve o modo workflow como default
       da routine e põe a allowlist do gate no provisionamento
       → behaviors 1, 3 · dep: 2 · verifica: leitura
 - [ ] **7. Versão e docs** — `plugin.json` `2.7.0`, versões de `implement` e `delegate`,
