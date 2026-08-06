@@ -12,7 +12,7 @@ The mode choice itself — when it's offered, the question, the unattended rule 
 ## What the platform forces
 
 - **No user input mid-run.** Only a permission prompt pauses a workflow. A slice
-  agent can *return* "the brief is underspecified"; it can't ask. The script decides.
+  agent can _return_ "the brief is underspecified"; it can't ask. The script decides.
 - **The script has no shell and no filesystem.** Only agents read, write and run
   commands. Every gate, commit and `verifica:` happens inside an agent; the script
   coordinates and reads structured returns.
