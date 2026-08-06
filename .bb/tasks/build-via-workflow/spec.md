@@ -1,5 +1,5 @@
 ---
-status: pending
+status: in-progress
 created: 2026-08-06
 slug: build-via-workflow
 ---
