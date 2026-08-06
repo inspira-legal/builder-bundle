@@ -155,7 +155,7 @@ O único ponto genuinamente paralelo é o estágio zero, read-only por natureza.
 - [x] **3. delegate** — passo novo entre o 2 e o 3, repassa a decisão pro build, suprime a
       pergunta do implement e trata o blocker de volta flipando `blocked`
       → behaviors 1, 4, 10 · dep: 1, 2 · verifica: leitura
-- [ ] **4. implement** — a mesma escolha quando invocado direto, suprimida quando o delegate
+- [x] **4. implement** — a mesma escolha quando invocado direto, suprimida quando o delegate
       dirige; blocker de volta cai na válvula do passo 7
       → behaviors 1, 4, 10 · dep: 1, 2 · verifica: leitura
 - [ ] **5. Fallback sem workflow** — detecção e caminho em contexto nos dois, com o motivo
