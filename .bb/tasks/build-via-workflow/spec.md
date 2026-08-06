@@ -144,7 +144,7 @@ O único ponto genuinamente paralelo é o estágio zero, read-only por natureza.
 
 ## tasks
 
-- [ ] **1. Reference da forma do script** — `references/build-slices-workflow.md`: `for`
+- [x] **1. Reference da forma do script** — `references/build-slices-workflow.md`: `for`
       sequencial, `parallel()` no estágio zero, os schemas de retorno, a nota acumulada com
       teto, a idempotência pelo checkbox, o escopo do commit, o tratamento de gate e
       allowlist, e o checklist que a skill confere antes de invocar
