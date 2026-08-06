@@ -149,7 +149,7 @@ O único ponto genuinamente paralelo é o estágio zero, read-only por natureza.
       teto, a idempotência pelo checkbox, o escopo do commit, o tratamento de gate e
       allowlist, e o checklist que a skill confere antes de invocar
       → behaviors 2, 3, 5, 6, 7, 8, 9 · dep: — · verifica: leitura
-- [ ] **2. O gate da escolha** — reference compartilhado com a pergunta em PT-BR, quando
+- [x] **2. O gate da escolha** — reference compartilhado com a pergunta em PT-BR, quando
       aparece e a regra unattended, no formato do `handoff-gate.md`
       → behavior 1 · dep: — · verifica: leitura
 - [ ] **3. delegate** — passo novo entre o 2 e o 3, repassa a decisão pro build, suprime a
