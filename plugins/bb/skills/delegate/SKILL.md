@@ -4,7 +4,7 @@ description: Roda uma task especificada de ponta a ponta — seleciona um brief 
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 # Delegate
@@ -41,7 +41,15 @@ and stop.
    commit that edit (conventional style; no AI attribution). Unattended: put it on the
    `claude/<slug>` branch the build will use.
 
-3. **Build — follow `/bb:implement`'s workflow (steps 1–7), then return here.** Load
+3. **Pick the build mode — workflow, or this context.** Ask once, per the
+   plugin-level `references/build-mode.md`: one agent per slice dispatched as a
+   dynamic workflow, or the slices built here as always. Unattended takes the
+   documented lean (workflow) without asking. The answer goes into step 4, and the
+   implement loop it drives doesn't ask again. With no `Workflow` tool in the session
+   there's nothing to offer: build in context and name the reason, in step 7's report
+   too, so a silent downgrade doesn't pass for a choice.
+
+4. **Build — follow `/bb:implement`'s workflow (steps 1–7), then return here.** Load
    the brief, honor its reuse notes and `## behavior` contract, build every unchecked
    slice in the order its `dep:` fields imply, run each slice's `verifica:`, keep the
    gate green, and commit per slice ticking its box. **Do not
@@ -50,7 +58,20 @@ and stop.
    (the brief was underspecified), stop: flip `status: blocked`, point back to
    `/bb:spec` to re-spec it, and exit — do not improvise past the brief.
 
-4. **Land — follow `/bb:ship`'s workflow.** Run the quality pass and land per ship's
+   **In workflow mode** the build is dispatched rather than run here: author the
+   script per the plugin-level `references/build-slices-workflow.md`, run its
+   pre-invoke checklist, and invoke `Workflow`. Its result is the build report. A
+   non-null `stopped` — a stage-zero blocker (a reuse note pointing at code that's
+   gone, a gate the run can't execute, a tree already red), a red slice, a lost
+   agent, or a brief the agent found underspecified — lands the same place the safety
+   valve does: flip `status: blocked`, name the blocker, exit without landing. What
+   came back green is already committed and ticked. **Unattended, name it where the
+   run can be found again**: this stop happens before ship, so there is no PR to
+   write into and the routine's clone is thrown away with the run — push
+   `claude/<slug>` and put the blocker in the brief's own `## open` on that branch,
+   the same fallback step 5 takes when the destination has no PR.
+
+5. **Land — follow `/bb:ship`'s workflow.** Run the quality pass and land per ship's
    own destination logic: supervised, ship settles the destination (asking only on real
    doubt); unattended, ship's Step 1 fixes it — a **draft PR** on `claude/<slug>` where
    the remote has PRs, and a push of `claude/<slug>` plus the deploy command in a LexFlow
@@ -60,14 +81,15 @@ and stop.
    description when there is a PR, otherwise the brief's own `## open` on the
    pushed branch. Supervised, report it. Then exit.
 
-5. **Close the run — flip `status: done`.** Once the chain lands cleanly, edit the
+6. **Close the run — flip `status: done`.** Once the chain lands cleanly, edit the
    frontmatter to `done` and commit. Unattended, this commit rides `claude/<slug>` and
    only reaches the default branch when a human merges the PR — the same merge gate the
    `## tasks` checkboxes already pass through; delegate never writes status to a
    protected branch directly.
 
-6. **Report.** Name the slug, what landed (slices, gate result), and the destination
-   (branch / PR URL / the hand-off command for a protected branch).
+7. **Report.** Name the slug, the build mode it ran in, what landed (slices, gate
+   result), and the destination (branch / PR URL / the hand-off command for a
+   protected branch).
 
 ## Edge cases
 
@@ -81,6 +103,7 @@ and stop.
 | selected task already `in-progress`             | resume — implement skips checked slices; status stays `in-progress` until landing                                                                                       |
 | brief has no frontmatter                        | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                                                    |
 | implement safety valve fires (underspecified)   | flip `status: blocked`, point back to `/bb:spec`, stop — do not improvise                                                                                               |
+| workflow mode stops (stage zero or a slice)     | flip `status: blocked`, exit without landing; unattended, push `claude/<slug>` and put the blocker in the brief's `## open`                                             |
 | ship hits an unrecoverable stop / blocker       | flip `status: blocked`; write the blocker into the PR description, or into the brief's `## open` when the destination has no PR; report it supervised; exit             |
 | `BB_UNATTENDED` set                             | no questions; ship opens a DRAFT PR on `claude/<slug>` — or pushes it and reports the deploy command in a LexFlow app repo; never merge / never push a protected branch |
 | not in a git repo / no tasks dir in either root | report the error, stop                                                                                                                                                  |
