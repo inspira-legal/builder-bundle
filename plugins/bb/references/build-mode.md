@@ -44,16 +44,43 @@ options:
   - "Neste contexto" — Construo as slices aqui mesmo, como sempre. Num brief grande o build bate compactação no meio e começa a derivar do brief.
 ```
 
-Which one leads depends on the brief: several unticked slices makes the compaction
-risk real, so workflow is the recommendation; one or two slices doesn't, and context
-is the simpler answer. Swap the `(Recomendado)` suffix accordingly — the option text
-itself doesn't change.
+Swap the `(Recomendado)` suffix per the rule below; the option text itself doesn't
+change.
+
+## Which one leads — how self-sufficient the brief is
+
+A slice agent receives the brief, its own line and the convention note. Nothing else.
+So the question to answer before recommending is: **what does this session know that
+the file doesn't?** Slice count is the size of the bet, not the discriminator.
+
+**Nothing → workflow leads.** The brief is the whole picture, so a fresh agent per
+slice reads what the main context would have read. Signals: the brief was written in
+another session or on an earlier day; the run is a resume with slices already ticked;
+a bare `/bb:delegate` selected it, so nothing about it is in this context at all.
+
+**Something load-bearing → context leads, and say which piece.** Signals: this run
+arrived from `/bb:spec`'s own exit gate, so the conversation that produced the brief
+is still live and was richer than the file; the brief was edited or argued with in
+this session; a premise got corrected here and landed in the file as one dry line.
+This case peaks exactly where the compaction risk is highest — a big brief just
+specced — which is why it gets read rather than assumed.
+
+Naming the piece matters more than the recommendation. A brief that needs this
+session to be buildable is a brief that won't survive an unattended run either, and
+writing the missing piece into it is the durable fix — it makes workflow safe on the
+spot, and the user is the only one who can judge whether the piece belongs in the
+brief. Offer that in the same breath as the question.
+
+**One or two slices → context leads regardless.** There's no compaction to buy off,
+and each agent would pay from scratch for the repo orientation this context already
+has.
 
 ## Unattended
 
 Under `BB_UNATTENDED` there's no question: the run goes via workflow and records the
-choice in its report. This is the documented lean the unattended frame takes, the
-same as every other skipped question.
+choice in its report. This is the documented lean the unattended frame takes, the same
+as every other skipped question — and it's the rule above at its cleanest, since a
+routine's session starts with the brief and nothing else by construction.
 
 ## When workflows aren't available
 
