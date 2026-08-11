@@ -1,5 +1,52 @@
 # Changelog
 
+## 2.8.0 — 2026-08-11
+
+O **caminho unattended sai do plugin**. `BB_UNATTENDED` e o guia de Cloud
+Routines não existem mais: o bb agora tem uma forma só de rodar, a supervisionada.
+
+O caminho nunca foi ligado — nenhuma routine chegou a rodar um `/bb:delegate` —
+mas ele cobrava pedágio em quase toda skill da trilha Construir. Todo o debate de
+onde o blocker aparece (descrição da PR ou `## open` do brief), o destino fixo do
+`ship`, a régua "unattended sempre workflow" do build-mode, o cap de retry das
+slices, a linha `claude/<slug>` repetida em três skills e as quatro linhas de
+"sob `BB_UNATTENDED` não há pergunta" espalhadas pelo `review` existiam só por
+causa dele. Um ramo que ninguém percorre é um ramo que ninguém corrige: o passo 4
+do `/bb:implement` já carregava um cap de retry que contradizia o próprio gate
+logo acima.
+
+### Removido
+
+- **`hooks/unattended-context.md`** e o `is_unattended()` do
+  `inject_operating_context.py` — o hook injeta um frame só, o mesmo em toda
+  sessão.
+- **`references/routines.md`** e **`references/scripts/scaffold_routine.py`** — o
+  guia da Cloud Routine e o scaffold do prompt de routine.
+- **`skills/maintain-repo/references/routines-setup.md`** e a seção de setup de
+  routine da skill: a triagem continua sendo decision-support, agora só como run
+  supervisionada.
+- A linha da Cloud Routine no `hooks/scheduling-decision.md` — e, com ela, a
+  coluna `Survives laptop closed?`, que só separava routine de tudo o mais.
+- A seção `## Unattended` do `references/build-mode.md` e o bullet de gate do
+  `references/handoff-gate.md`.
+- A seção "rodar sem supervisão" do README.
+
+### Mudou
+
+- **`/bb:delegate`** (2.4.0), **`/bb:implement`** (2.3.0) e **`/bb:ship`** (2.3.0)
+  perderam os ramos duplos: um destino, uma pergunta de branch, um comportamento
+  por passo. O `references/land-pr.md` perde o cap de rodadas de comentário e a
+  vigília AFK — a tenda da PR é um loop que vive e morre com a sessão, e pra ir
+  além dela existem Channels ou uma tarefa agendada no Desktop.
+- **Nunca-merge continua valendo, ancorado no que sobrou.** Antes a garantia era
+  capability scoping na routine; agora é o que sempre foi verdade também no desk:
+  as skills não têm passo de merge e a branch protegida é o backstop server-side.
+- **O estágio zero segue justificado.** O fato que o sustentava não era o
+  unattended e sim o runtime: um agente de slice roda sob `claude -p` e o Agent
+  SDK, onde não há a quem perguntar, então comando fora da allowlist falha em vez
+  de pausar. Isso está agora dito no `references/build-slices-workflow.md` sem
+  passar pela routine.
+
 ## 2.7.0 — 2026-08-06
 
 O `/bb:implement` e o `/bb:delegate` ganham um **segundo caminho de build**:

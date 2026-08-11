@@ -161,7 +161,7 @@ Sucesso: `rg -i 'BB_UNATTENDED|unattended|routine|AFK'` volta zero em `plugins/b
       capability, a entrega via connector Slack, a entrada de bundled resource e a seção
       `### Safety model`
       → behavior 7 · dep: — · verifica: `rg -i -c` na skill volta zero
-- [ ] **6. docs do repo e versão** — `README.md` (2: linha do `/bb:delegate` na tabela e a
+- [x] **6. docs do repo e versão** — `README.md` (2: linha do `/bb:delegate` na tabela e a
       seção "rodar sem supervisão"); `.claude/CLAUDE.md` (8: a claim do topo, quatro linhas
       da árvore — inclusive o comentário do `scheduling-decision.md`, que fica — e a nota de
       hooks); `description` do `plugin.json` e `2.8.0`; `metadata.version` das 9 skills;

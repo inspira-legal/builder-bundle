@@ -4,7 +4,7 @@ description: Gera ou atualiza o CODE_REVIEW_GUIDE.md do repositório — descobe
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 # Review Setup

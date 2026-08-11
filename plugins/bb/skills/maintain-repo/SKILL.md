@@ -4,7 +4,7 @@ description: Faz a triagem de manutenção do repo e reporta o que é seguro mer
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 # Repo Maintenance

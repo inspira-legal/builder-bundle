@@ -4,7 +4,7 @@ description: Roda uma task especificada de ponta a ponta — seleciona um brief 
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.3.0
+  version: 2.4.0
 ---
 
 # Delegate

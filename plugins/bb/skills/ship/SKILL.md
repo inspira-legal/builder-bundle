@@ -4,7 +4,7 @@ description: Leva a branch atual até landed — do seu jeito. Passa o diff pela
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 # Ship

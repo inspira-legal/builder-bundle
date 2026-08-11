@@ -4,7 +4,7 @@ description: Alinhar a ideia antes de construir — desenvolve um draft, itera a
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 # Spec
