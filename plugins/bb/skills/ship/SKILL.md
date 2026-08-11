@@ -24,8 +24,6 @@ The flag makes LexFlow the **recommended** destination — it does not settle th
 
 ## Step 1 — Settle the destination (default when known, ask only on doubt)
 
-**Unattended runs skip this question entirely.** If the injected operating frame marks the run unattended (`BB_UNATTENDED`), the destination is fixed — a **draft PR on a `claude/` branch**, no `AskUserQuestion`. Go straight to the quality pass, create the PR with `--draft`, then watch it **to resolution** (see `references/land-pr.md` → "Stay and watch → Unattended"). Never-merge holds server-side regardless of the frame. Unattended in a LexFlow app repo has no PR to open — that remote has no PR mechanism — so it pushes `claude/<slug>` and reports the deploy command; deploying stays a human action either way.
-
 Don't ask reflexively. If the landing is already settled by signal, **take it and just state which and why** — the question is for genuine ambiguity, not a toll on every run.
 
 **Take it without asking when:**
@@ -105,7 +103,7 @@ Landing on a protected branch: summary, then hand off the exact push command. Sh
 
 ### references/land-pr.md
 
-The full PR path: create the PR, triage comments → fix → push → reply, watch CI until green, stay and watch (supervised and unattended variants), and diagnose CI failures before editing.
+The full PR path: create the PR, triage comments → fix → push → reply, watch CI until green, stay and watch, and diagnose CI failures before editing.
 
 ### references/land-lexflow.md
 

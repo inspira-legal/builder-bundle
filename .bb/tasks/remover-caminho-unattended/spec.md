@@ -145,7 +145,7 @@ Sucesso: `rg -i 'BB_UNATTENDED|unattended|routine|AFK'` volta zero em `plugins/b
       routine no bullet de allowlist, o ponteiro do topo, o cap de retry e a branch; no
       `handoff-gate.md` (3) a regra "unattended runs never gate" e a cláusula do auto-chain
       → behaviors 4, 6 · dep: — · verifica: `rg -i -c` em `references/` volta zero
-- [ ] **3. o trio** — `delegate` (15: description, abertura, passos 1 a 6, três linhas de edge
+- [x] **3. o trio** — `delegate` (15: description, abertura, passos 1 a 6, três linhas de edge
       case, fecho), `implement` (7: description, abertura, passos 3/4/6/7/8 — o 4 fecha por
       deleção e o 7 aponta pro `routines.md`), `ship` (2: parágrafo do Step 1 e a linha de
       bundled resource) e `land-pr.md` (6: `--draft`, thread sem pausa, cap de rodada, "not
