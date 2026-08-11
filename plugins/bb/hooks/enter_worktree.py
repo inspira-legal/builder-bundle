@@ -1,18 +1,13 @@
 #!/usr/bin/env python3
 """
 Create (or reuse) an isolated git worktree on a throwaway branch so an
-autonomous / unattended run can edit and commit WITHOUT touching the user's live
-checkout or a protected branch. Emits JSON to stdout.
+autonomous run can edit and commit WITHOUT touching the user's live checkout or
+a protected branch. Emits JSON to stdout.
 
 Fail-closed: if the destination working tree is dirty, if the run is on a
 protected branch, or if a worktree can't be created, it emits dirty_blocked /
 blocked and exits non-zero so the caller aborts rather than falling back to the
 live tree.
-
-NOTE: this is for LOCAL / Desktop-scheduled runs and parallel local tasks. A
-Cloud Routine already runs on a disposable fresh clone writing to a
-claude/-prefixed branch, so it does NOT need this — see
-scheduling-decision.md.
 
 Usage:
   python enter_worktree.py --label implement
@@ -64,7 +59,7 @@ def main() -> int:
 
     current = git(["branch", "--show-current"], cwd=root) or ""
     if current in PROTECTED:
-        # Refuse to run an unattended job from a protected branch's worktree.
+        # Refuse to run an autonomous job from a protected branch's worktree.
         return emit(
             {"blocked": True, "reason": f"on protected branch '{current}'", "worktree_path": None},
             1,

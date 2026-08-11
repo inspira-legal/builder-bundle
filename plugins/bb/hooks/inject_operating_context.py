@@ -6,10 +6,6 @@ Emits operating-context.md as `additionalContext`.
 Deliberately light and principle-level (not a procedure): it loads on EVERY
 session in every repo where the plugin is enabled, so it nudges the way of
 working, it does not force a mode. Edit operating-context.md to change the frame.
-
-On an unattended run (BB_UNATTENDED truthy) it appends unattended-context.md —
-the no-questions / draft-PR / capped-retries addendum. That addendum is UX and loop discipline only;
-never-merge is enforced server-side by capability scoping, not by this frame.
 """
 
 from __future__ import annotations
@@ -17,14 +13,6 @@ from __future__ import annotations
 import json
 import os
 import sys
-
-# Truthy values for BB_UNATTENDED (case-insensitive). Anything else — including
-# unset, "0", "false", "" — is supervised.
-UNATTENDED_TRUTHY = {"1", "true", "yes"}
-
-
-def is_unattended() -> bool:
-    return os.environ.get("BB_UNATTENDED", "").strip().lower() in UNATTENDED_TRUTHY
 
 
 def read_frame(here: str, filename: str) -> str:
@@ -37,10 +25,6 @@ def read_frame(here: str, filename: str) -> str:
 def main() -> int:
     here = os.path.dirname(os.path.abspath(__file__))
     ctx = read_frame(here, "operating-context.md")
-    if is_unattended():
-        addendum = read_frame(here, "unattended-context.md")
-        if addendum:
-            ctx = f"{ctx}\n\n{addendum}".strip()
     if not ctx:
         return 0
     print(

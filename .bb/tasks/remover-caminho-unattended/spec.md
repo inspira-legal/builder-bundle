@@ -133,7 +133,7 @@ Sucesso: `rg -i 'BB_UNATTENDED|unattended|routine|AFK'` volta zero em `plugins/b
 
 ## tasks
 
-- [ ] **1. hooks** — deleta `unattended-context.md` (5); tira o `if`, o helper e a constante
+- [x] **1. hooks** — deleta `unattended-context.md` (5); tira o `if`, o helper e a constante
       do `inject_operating_context.py` (7); a cláusula de capability scoping do
       `operating-context.md` (1); o parágrafo `NOTE:` e dois comentários do
       `enter_worktree.py` (3); a linha Cloud Routine, a coluna "Survives laptop closed?", os
