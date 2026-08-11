@@ -1,5 +1,5 @@
 ---
-status: pending
+status: in-progress
 created: 2026-08-11
 slug: remover-caminho-unattended
 ---
