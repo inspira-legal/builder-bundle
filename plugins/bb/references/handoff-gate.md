@@ -16,7 +16,7 @@ an "Other" free-text option; a manual "Outro"/"Modificar" option is redundant.
 - **Suggest, never auto-invoke.** A gate offers; the user picks. The only
   exceptions: `/bb:delegate` (the explicit "run everything" verb — chaining is its
   job), and the `implement → ship` auto-chain when shipping was already authorized
-  up front (a delegate run, or the unattended frame).
+  up front (a delegate run).
 - **"Encerrar aqui" is always an option.** Picking it ends the turn — nothing is
   invoked, no follow-up question. The user is never trapped in the flow.
 - **One gate per skill, at the end.** Mid-skill questions are the skill's own
@@ -24,8 +24,6 @@ an "Other" free-text option; a manual "Outro"/"Modificar" option is redundant.
 - **Skills without a natural next step have no gate** — they just report and stop:
   `legal-lens`, `maintain-repo`, `review-setup`, `write-readme`,
   `code-deep-research`, `gather-branch-context`.
-- **Unattended runs never gate.** Under `BB_UNATTENDED` the skill takes its
-  documented lean, records the choice, and proceeds (see the unattended addendum).
 
 ## The format
 

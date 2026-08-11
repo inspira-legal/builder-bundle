@@ -4,7 +4,7 @@ description: Roda o primeiro diamante inteiro antes de qualquer design — enqua
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 # Discover
@@ -92,4 +92,3 @@ report the verdict with its evidence and stop (a pivot points back to
 | answer still vague after one clarification | accept at `low` confidence and move on                                             |
 | a field can't be answered                  | record `skipped — <reason>`                                                        |
 | fit asked with no framed problem           | suggest Phase 1 once; if declined, proceed and note `ran without a framed problem` |
-| `BB_UNATTENDED` set                        | stop and report — discover is an interview; running it without the user defeats it |

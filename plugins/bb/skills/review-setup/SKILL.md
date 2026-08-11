@@ -4,7 +4,7 @@ description: Gera ou atualiza o CODE_REVIEW_GUIDE.md do repositório — descobe
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 # Review Setup
@@ -67,7 +67,6 @@ No handoff gate — report and stop:
 | maintainer rejects every candidate               | guide ships with confirmed rules only — thin is fine, invented is not |
 | legacy `.claude/skills/code-review/` present     | flag as superseded; never regenerate it                               |
 | not a git repo                                   | report the error, stop                                                |
-| `BB_UNATTENDED` set                              | stop — the interview is the point; this skill has no unattended mode  |
 
 ## Bundled Resources
 

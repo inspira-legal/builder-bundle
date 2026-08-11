@@ -23,7 +23,24 @@ report and nothing is sent.
 - Items that are about the change as a whole (a contract gap, the rules checklist)
   are summary comments by nature: `gh pr comment <n> --body-file -`.
 
-## 3. Keep the shape the report gave it
+## 3. On a PR that already carries a review comment
+
+Before posting, read what's already there — `gh pr view <n> --json comments` plus
+`gh api repos/<owner>/<repo>/pulls/<n>/comments` — and match this round's items
+against the findings already raised (by `file:line` + what the point is, not by
+wording). Each point then lands exactly once:
+
+- **already raised and still true** → one line under `ainda aberto`, referencing the
+  point instead of re-explaining it. A reader who saw the first comment gets the
+  status, not the essay again.
+- **raised for the first time** → under `novo`, with the full shape from section 4.
+- **already raised and now fixed** → out of the body; it survives as a count in the
+  opening line ("2 dos 3 pontos anteriores resolvidos").
+
+The new comment is a new comment: the earlier one stays on the PR as posted, so the
+thread reads as a history.
+
+## 4. Keep the shape the report gave it
 
 Each item carries over what it had — rule ID and quoted rule, WCAG criterion,
 trigger, suggested fix, **and its verdict** — so the comment stands on its own for

@@ -4,7 +4,7 @@ description: Revisa a mudança de ponta a ponta — você escolhe as frentes, el
 license: Apache-2.0
 metadata:
   author: Athena Briana - github.com/athenabriana; quality-pass material adapted from Claude Code's /simplify, angle/verify architecture adapted from Claude Code's /code-review (Anthropic, Apache-2.0), a11y front absorbed from rafael's ui-accessibility skill (loja inspira-skills, MIT)
-  version: 2.3.0
+  version: 2.4.0
 ---
 
 # Review
@@ -79,8 +79,7 @@ actually produced — how many angles are in the diff's set, how many the tier f
 which ones were dropped and why, and whether the sweep runs (`markdown: 4 ângulos
 no set, 3 rodam, wrapper-boundary fora — sem sweep`). Every number in that line comes
 from the resolution that just ran, which is what makes it match the stats line at the
-end; on a small diff it's also why no agent shows up. Under `BB_UNATTENDED` there is
-no question: every available front runs, report-only.
+end; on a small diff it's also why no agent shows up.
 
 ## Step 3 — Run the picked fronts in parallel
 
@@ -130,8 +129,7 @@ and **how** — fixing is one outcome, leaving the finding on the PR is another.
 Options group naturally ("Todas as correções", "Correção + regras HIGH", "Só os
 threads", specific numbers via "Other"). "Comentar os itens na PR em vez de corrigir"
 is offered when the probe found an open PR, and fix and comment can both be picked:
-fix 1–3, comment 4–6. "Nenhum — encerrar" is always an option. Under `BB_UNATTENDED` there is no curation:
-report-only, no edits, stop.
+fix 1–3, comment 4–6. "Nenhum — encerrar" is always an option.
 
 ## Step 6 — Apply what was picked
 
@@ -146,7 +144,9 @@ regression guard; quality edits are strictly behavior-preserving. Then:
   cycles, then report what's still red instead of thrashing.
 - **comment-on-PR**: `references/act-comment-findings.md` — body shown before
   anything is posted, anchored inline where the location is in the diff and folded
-  into one summary comment where it isn't.
+  into one summary comment where it isn't. On a PR that already carries a review
+  comment, each point lands once: still-open prior points as status lines, first-time
+  findings in full, fixed ones as a count.
 
 Re-report as a table: `# | item | action taken | commit/status` — `corrigido`,
 `comentado (link)` and `deixado no relatório` are all valid outcomes.
@@ -189,7 +189,6 @@ offered, which needs no row here. What this table covers is everything else:
 | user picks nothing at curation               | no edits; go to the gate                                                                                              |
 | a verifier dies or omits an index            | that candidate is `sem veredito`, reported as its own line, never promoted                                            |
 | CI still red after 3 diagnose→fix cycles     | stop editing, report the remaining failure and the evidence                                                           |
-| `BB_UNATTENDED` set                          | every available front runs; report-only: no curation, no edits, no gate                                               |
 
 ## Bundled Resources
 

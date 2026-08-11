@@ -5,8 +5,7 @@ unified skill set for Inspira builders. Install via
 `claude plugin marketplace add inspira-legal/builder-bundle` then
 `claude plugin install bb@inspira-legal`. Skills are invoked as `/bb:<skill>`
 (e.g. `/bb:spec`). The plugin ships a `SessionStart` operating-context hook,
-auto-active when the plugin is enabled. Never-merge for the unattended path is
-enforced by cloud capability scoping (see the routine setup docs), not a local hook.
+auto-active when the plugin is enabled.
 
 ## Structure
 
@@ -20,10 +19,9 @@ plugins/bb/
 ├── hooks/                             # session infra (auto-active, no skill)
 │   ├── hooks.json                      # SessionStart context injection
 │   ├── enter_worktree.py               # worktree isolation for local autonomous runs
-│   ├── scheduling-decision.md          # /loop vs Desktop task vs Cloud Routine decision table
+│   ├── scheduling-decision.md          # /loop vs Desktop task vs Channels decision table
 │   ├── inject_operating_context.py     # SessionStart hook script
-│   ├── operating-context.md            # the injected operating frame (edit to tune)
-│   └── unattended-context.md           # addendum appended when BB_UNATTENDED is truthy
+│   └── operating-context.md            # the injected operating frame (edit to tune)
 ├── references/                        # plugin-level docs (not skill-scoped)
 │   ├── handoff-gate.md                 # the one convention for end-of-skill gates (+ AskUserQuestion rationale)
 │   ├── confidence-and-steelman.md      # shared reasoning protocols (think, challenge)
@@ -32,9 +30,7 @@ plugins/bb/
 │   ├── quality-checklist.md            # canonical quality criteria — the six lenses (review engine)
 │   ├── review-checklist.md             # canonical correctness criteria — Pass 1 rows (review engine)
 │   ├── build-mode.md                   # workflow-or-context: the per-run build choice (implement, delegate)
-│   ├── build-slices-workflow.md        # contract the generated one-agent-per-slice script meets
-│   ├── routines.md                     # Cloud Routine guide — the unattended path
-│   └── scripts/scaffold_routine.py     # emit a routine prompt + setup for a brief slug
+│   └── build-slices-workflow.md        # contract the generated one-agent-per-slice script meets
 ├── scripts/                           # shared executables (2+ skills) — ref via ${CLAUDE_PLUGIN_ROOT}/scripts/
 │   ├── fetch_comments.py               # ship, review
 │   ├── reply_resolve_thread.py         # ship, review
@@ -71,8 +67,6 @@ plugins/bb/
   entry point.
 - The plugin ships hooks in `plugins/bb/hooks/hooks.json` (auto-activate when the
   plugin is enabled). Hook commands reference files via `${CLAUDE_PLUGIN_ROOT}/...`.
-  Irreversible hazards on the unattended path are kept out by capability scoping
-  in the cloud routine, not by a local hook.
 
 ## Skills
 

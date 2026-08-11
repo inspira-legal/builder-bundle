@@ -4,7 +4,7 @@ description: Alinhar a ideia antes de construir — desenvolve um draft, itera a
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 # Spec
@@ -85,7 +85,7 @@ Walking each behavior surfaces decisions you haven't made — those go back into
 
 ## Capture the alignment (lightweight, on disk)
 
-Write a single `.bb/tasks/<slug>/spec.md` — the converged draft itself, written as something a person will read: an opening that says what this is and why now, then whatever sections describe this particular problem, then the fixed spine the other skills consume. The format — the two halves, the spine and its readers, the table rule, the slice shape — lives in `references/spec-format.md`; follow it. There's no separate write-up step; the draft you iterated _is_ the brief, and it survives a context reset so a fresh session or an unattended run reloads it.
+Write a single `.bb/tasks/<slug>/spec.md` — the converged draft itself, written as something a person will read: an opening that says what this is and why now, then whatever sections describe this particular problem, then the fixed spine the other skills consume. The format — the two halves, the spine and its readers, the table rule, the slice shape — lives in `references/spec-format.md`; follow it. There's no separate write-up step; the draft you iterated _is_ the brief, and it survives a context reset so a fresh session reloads it.
 
 **The prose describes what to build.** How the conversation got there — what you first assumed, what a later read corrected, which message settled it — goes in the commit body instead. A landed brief that gets rewritten gains the new decision in the file and the reason in the commit.
 
@@ -108,8 +108,8 @@ Before asserting how something works: check the codebase, then its docs, then th
 spec always ends at a validated `.bb/tasks/<slug>/spec.md`; the brief is the durable asset either way. What changes is what happens next, and the gate's 3-way pick (above) decides it — the seam between speccing and building is a checkpoint the user crosses on purpose, not a wall.
 
 - **Implementar:** invoke `/bb:implement` now — it loads this brief as the intent, builds every slice, and stops ready to ship, where it offers `/bb:ship`. The "build it, I'll decide on shipping after" path.
-- **Delegar:** invoke `/bb:delegate <slug>` now — it loads this brief as the intent, builds every slice, _and_ lands it (the full `/bb:implement` → `/bb:ship` run, the same verb the overnight routine uses). The "I'm happy, run the whole thing" path.
-- **Encerrar aqui:** leave the brief and say the next step plainly — "Brief salvo em `.bb/tasks/<slug>/spec.md`. Pra construir depois: `/bb:implement` (constrói, depois oferece ship), ou `/bb:delegate <slug>` pra construir + landar de uma vez." For an unattended overnight run, point to the routine guide (`references/routines.md` at the plugin root): commit the brief, then schedule `/bb:delegate <slug>` under `BB_UNATTENDED`.
+- **Delegar:** invoke `/bb:delegate <slug>` now — it loads this brief as the intent, builds every slice, _and_ lands it (the full `/bb:implement` → `/bb:ship` run). The "I'm happy, run the whole thing" path.
+- **Encerrar aqui:** leave the brief and say the next step plainly — "Brief salvo em `.bb/tasks/<slug>/spec.md`. Pra construir depois: `/bb:implement` (constrói, depois oferece ship), ou `/bb:delegate <slug>` pra construir + landar de uma vez."
 
 **Safety valve:** if building later reveals the idea was underspecified (surprises pile up), STOP and re-spec — that's the signal alignment was incomplete, not a license to improvise.
 

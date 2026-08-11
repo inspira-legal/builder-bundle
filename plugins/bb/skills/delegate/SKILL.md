@@ -1,21 +1,19 @@
 ---
 name: delegate
-description: Roda uma task especificada de ponta a ponta — seleciona um brief não-concluído (`.bb/tasks/<slug>/spec.md`), constrói todas as slices e landa (`/bb:implement` → `/bb:ship`), rastreando o `status` do brief. `/bb:delegate <slug>` mira uma task nomeada; `/bb:delegate` sem argumento pega a pendente mais antiga. O único verbo "roda tudo", usado igual na sua mesa e numa rotina unattended (`BB_UNATTENDED`). Use quando o usuário disser "delega isso", "roda a task", "constrói e landa o brief", "faz tudo", "delegate <slug>", ou "roda tudo". NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra construir sem landar (use /bb:implement).
+description: Roda uma task especificada de ponta a ponta — seleciona um brief não-concluído (`.bb/tasks/<slug>/spec.md`), constrói todas as slices e landa (`/bb:implement` → `/bb:ship`), rastreando o `status` do brief. `/bb:delegate <slug>` mira uma task nomeada; `/bb:delegate` sem argumento pega a pendente mais antiga. O único verbo "roda tudo". Use quando o usuário disser "delega isso", "roda a task", "constrói e landa o brief", "faz tudo", "delegate <slug>", ou "roda tudo". NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra construir sem landar (use /bb:implement).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.3.0
+  version: 2.4.0
 ---
 
 # Delegate
 
 Take a specced task all the way: select it, build every slice, and land it — the
 `/bb:implement` → `/bb:ship` chain defined in one place. delegate is the single
-"run everything" verb, routed through identically whether you call it at your desk
-or a Cloud Routine fires it overnight under `BB_UNATTENDED` (see the routine guide,
-`references/routines.md` at the plugin root). It owns the brief's `status` lifecycle
-(contract in the plugin-level `references/task-state.md`); the slice-level `## tasks`
-checkboxes stay `implement`'s.
+"run everything" verb. It owns the brief's `status` lifecycle (contract in the
+plugin-level `references/task-state.md`); the slice-level `## tasks` checkboxes stay
+`implement`'s.
 
 ## Prerequisites
 
@@ -33,21 +31,19 @@ and stop.
      `created` (tie-break: slug alphabetical). A brief with no frontmatter counts
      as `pending` with unknown `created` (sorted last). If none qualify, report "no
      pending tasks" and stop.
-   - A brief already `done`: report it's done; supervised, ask whether to re-run;
-     unattended, stop (no-op). A `blocked` brief is skipped in bare selection and
-     reported, not silently dropped — name it so the user can re-spec it.
+   - A brief already `done`: report it's done and ask whether to re-run. A `blocked`
+     brief is skipped in bare selection and reported, not silently dropped — name it
+     so the user can re-spec it.
 
 2. **Open the run — flip `status: in-progress`.** Edit the brief's frontmatter and
-   commit that edit (conventional style; no AI attribution). Unattended: put it on the
-   `claude/<slug>` branch the build will use.
+   commit that edit (conventional style; no AI attribution).
 
 3. **Pick the build mode — workflow, or this context.** Ask once, per the
    plugin-level `references/build-mode.md`: one agent per slice dispatched as a
-   dynamic workflow, or the slices built here as always. Unattended takes the
-   documented lean (workflow) without asking. The answer goes into step 4, and the
-   implement loop it drives doesn't ask again. With no `Workflow` tool in the session
-   there's nothing to offer: build in context and name the reason, in step 7's report
-   too, so a silent downgrade doesn't pass for a choice.
+   dynamic workflow, or the slices built here as always. The answer goes into step 4,
+   and the implement loop it drives doesn't ask again. With no `Workflow` tool in the
+   session there's nothing to offer: build in context and name the reason, in step 7's
+   report too, so a silent downgrade doesn't pass for a choice.
 
 4. **Build — follow `/bb:implement`'s workflow (steps 1–7), then return here.** Load
    the brief, honor its reuse notes and `## behavior` contract, build every unchecked
@@ -65,27 +61,20 @@ and stop.
    gone, a gate the run can't execute, a tree already red), a red slice, a lost
    agent, or a brief the agent found underspecified — lands the same place the safety
    valve does: flip `status: blocked`, name the blocker, exit without landing. What
-   came back green is already committed and ticked. **Unattended, name it where the
-   run can be found again**: this stop happens before ship, so there is no PR to
-   write into and the routine's clone is thrown away with the run — push
-   `claude/<slug>` and put the blocker in the brief's own `## open` on that branch,
-   the same fallback step 5 takes when the destination has no PR.
+   came back green is already committed and ticked.
 
 5. **Land — follow `/bb:ship`'s workflow.** Run the quality pass and land per ship's
-   own destination logic: supervised, ship settles the destination (asking only on real
-   doubt); unattended, ship's Step 1 fixes it — a **draft PR** on `claude/<slug>` where
-   the remote has PRs, and a push of `claude/<slug>` plus the deploy command in a LexFlow
-   app repo, whose remote has no PR mechanism. delegate adds no destination logic of its
-   own. If ship hits an unrecoverable stop (or an unattended blocker), flip
-   `status: blocked`, and land the blocker where the run can be found again: the PR
-   description when there is a PR, otherwise the brief's own `## open` on the
-   pushed branch. Supervised, report it. Then exit.
+   own destination logic — ship settles the destination, asking only on real doubt;
+   delegate adds no destination logic of its own. If ship hits an unrecoverable stop,
+   flip `status: blocked`, and land the blocker where the run can be found again: the
+   PR description when there is a PR, otherwise the brief's own `## open` on the
+   pushed branch. Report it, then exit.
 
 6. **Close the run — flip `status: done`.** Once the chain lands cleanly, edit the
-   frontmatter to `done` and commit. Unattended, this commit rides `claude/<slug>` and
-   only reaches the default branch when a human merges the PR — the same merge gate the
-   `## tasks` checkboxes already pass through; delegate never writes status to a
-   protected branch directly.
+   frontmatter to `done` and commit. On a feature branch that commit only reaches the
+   default branch when a human merges the PR — the same merge gate the `## tasks`
+   checkboxes already pass through; delegate never writes status to a protected branch
+   directly.
 
 7. **Report.** Name the slug, the build mode it ran in, what landed (slices, gate
    result), and the destination (branch / PR URL / the hand-off command for a
@@ -93,21 +82,19 @@ and stop.
 
 ## Edge cases
 
-| WHEN                                            | THEN                                                                                                                                                                    |
-| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:delegate <slug>`, slug exists, not done    | run it end to end                                                                                                                                                       |
-| `/bb:delegate <slug>`, slug not found           | report the error, list available pending slugs, stop                                                                                                                    |
-| `/bb:delegate <slug>`, status `done`            | report it's done; supervised ask to re-run, unattended stop                                                                                                             |
-| bare `/bb:delegate`, one+ pending               | pick smallest `created` (tie-break slug alpha), run it                                                                                                                  |
-| bare `/bb:delegate`, none pending               | report "no pending tasks", stop                                                                                                                                         |
-| selected task already `in-progress`             | resume — implement skips checked slices; status stays `in-progress` until landing                                                                                       |
-| brief has no frontmatter                        | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                                                    |
-| implement safety valve fires (underspecified)   | flip `status: blocked`, point back to `/bb:spec`, stop — do not improvise                                                                                               |
-| workflow mode stops (stage zero or a slice)     | flip `status: blocked`, exit without landing; unattended, push `claude/<slug>` and put the blocker in the brief's `## open`                                             |
-| ship hits an unrecoverable stop / blocker       | flip `status: blocked`; write the blocker into the PR description, or into the brief's `## open` when the destination has no PR; report it supervised; exit             |
-| `BB_UNATTENDED` set                             | no questions; ship opens a DRAFT PR on `claude/<slug>` — or pushes it and reports the deploy command in a LexFlow app repo; never merge / never push a protected branch |
-| not in a git repo / no tasks dir in either root | report the error, stop                                                                                                                                                  |
+| WHEN                                            | THEN                                                                                                                                             |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/bb:delegate <slug>`, slug exists, not done    | run it end to end                                                                                                                                |
+| `/bb:delegate <slug>`, slug not found           | report the error, list available pending slugs, stop                                                                                             |
+| `/bb:delegate <slug>`, status `done`            | report it's done, ask whether to re-run                                                                                                          |
+| bare `/bb:delegate`, one+ pending               | pick smallest `created` (tie-break slug alpha), run it                                                                                           |
+| bare `/bb:delegate`, none pending               | report "no pending tasks", stop                                                                                                                  |
+| selected task already `in-progress`             | resume — implement skips checked slices; status stays `in-progress` until landing                                                                |
+| brief has no frontmatter                        | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                             |
+| implement safety valve fires (underspecified)   | flip `status: blocked`, point back to `/bb:spec`, stop — do not improvise                                                                        |
+| workflow mode stops (stage zero or a slice)     | flip `status: blocked`, exit without landing                                                                                                     |
+| ship hits an unrecoverable stop / blocker       | flip `status: blocked`; write the blocker into the PR description, or into the brief's `## open` when the destination has no PR; report it; exit |
+| not in a git repo / no tasks dir in either root | report the error, stop                                                                                                                           |
 
 The hard line holds throughout: delegate never merges, never approves, never
-force-pushes — landing on a protected branch stays a human action, enforced by
-capability scoping on the unattended path.
+force-pushes — landing on a protected branch stays a human action.

@@ -42,7 +42,7 @@ um plugin, `bb`; 15 skills organizadas em 6 trilhas.
 | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/bb:implement`             | implementa um brief validado — constrói as fatias, roda o gate, depois oferece entregar                                                                                                                                                      |
 | `/bb:ship`                  | leva a branch ao fim do seu jeito — roda a engine de review do `/bb:review` (todas as frentes que se aplicam, sem perguntar) + deixa os checks verdes, então push, prepara pra main, abre um PR e cuida dele, ou prepara o deploy no LexFlow |
-| `/bb:delegate`              | roda uma task especificada de ponta a ponta — escolhe o brief, constrói e entrega (implement → ship), trilhando o `status`. o mesmo verbo no desk e na routine noturna                                                                       |
+| `/bb:delegate`              | roda uma task especificada de ponta a ponta — escolhe o brief, constrói e entrega (implement → ship), trilhando o `status`                                                                                                                   |
 | `/bb:gather-branch-context` | resume todas as mudanças da branch vs main                                                                                                                                                                                                   |
 
 ### revisar — qualidade & manutenção
@@ -65,10 +65,6 @@ um plugin, `bb`; 15 skills organizadas em 6 trilhas.
 | ------------------------ | ---------------------------------------------------------------------------------------------- |
 | `/bb:code-deep-research` | acha, clona & explora repos, depois verifica adversarialmente os achados contra o código-fonte |
 | `/bb:write-readme`       | gera um README mínimo de cabeçalho centralizado a partir dos fatos do repo                     |
-
-## rodar sem supervisão
-
-não há skill dedicada de madrugada — o caminho não-supervisionado **é** a tríade: uma [Cloud Routine](plugins/bb/references/routines.md) define `BB_UNATTENDED` e roda `/bb:delegate <slug>` contra um brief commitado, que encadeia `/bb:implement` → `/bb:ship`, construindo todo o backlog e deixando um PR em rascunho. nesse caminho, o never-merge é garantido por **capability scoping** — a routine roda com um token sem permissão de merge/push em branch protegida e sem connector capaz de merge — apoiado pela branch protection do GitHub. controles do lado do servidor, não um hook local.
 
 ## migrando do ofc?
 
