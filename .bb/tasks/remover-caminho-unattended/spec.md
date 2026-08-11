@@ -151,7 +151,7 @@ Sucesso: `rg -i 'BB_UNATTENDED|unattended|routine|AFK'` volta zero em `plugins/b
       bundled resource) e `land-pr.md` (6: `--draft`, thread sem pausa, cap de rodada, "not
       an AFK agent", o ponteiro de Channel/routine e o watch unattended)
       → behaviors 3, 4, 5 · dep: 1, 2 · verifica: `rg -i -c` nas três skills volta zero
-- [ ] **4. skills periféricas** — `review` (3: fan-out, curadoria, linha de edge case),
+- [x] **4. skills periféricas** — `review` (3: fan-out, curadoria, linha de edge case),
       `mode-external-pr.md` (1: parágrafo report-only), `review-setup` (1) e `discover` (1),
       linha de edge case cada; `spec` (3: a menção de reload, o "mesmo verbo da routine" no
       Delegar e o ponteiro pro guia no "Encerrar aqui")

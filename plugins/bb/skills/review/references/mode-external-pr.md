@@ -44,10 +44,10 @@ REQUEST_CHANGES; only quality smells ⇒ COMMENT.
 ## 4. Post (only with explicit confirmation)
 
 Show the full review body first and ask before posting — a posted review is
-outward-facing and carries the user's identity. Under `BB_UNATTENDED` this mode is
-**report-only**: the review stays in the run's output and the section says it wasn't
-posted. A question that can't be asked resolves to the side that keeps the run inside
-its own repo. On yes:
+outward-facing and carries the user's identity. If the PR already carries a review
+comment of the user's, dedupe against it exactly as in
+`act-comment-findings.md` §3 — still-open points as status lines, first-time findings
+in full. On yes:
 
 ```
 gh pr review <number> --repo <owner>/<repo> --comment|--approve|--request-changes --body-file -
