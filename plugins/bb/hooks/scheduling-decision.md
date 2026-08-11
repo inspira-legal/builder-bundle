@@ -1,8 +1,6 @@
 # Scheduling & trigger decision table
 
-Pick the mechanism by **durability** and **what wakes it**. The most common
-mistake is scheduling an overnight job as a session `/loop` and waking to
-nothing — `/loop` is not durable.
+Pick the mechanism by **durability** and **what wakes it**.
 
 | Mechanism                  | Wakes on                                         | Runs where                 | Min interval | Durable state | Notes                                                                                                                                                   |
 | -------------------------- | ------------------------------------------------ | -------------------------- | ------------ | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |

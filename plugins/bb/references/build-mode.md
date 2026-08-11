@@ -16,11 +16,10 @@ note is what's paid with — lossy on purpose instead of lossy by accident.
 
 ## When the question is asked
 
-`/bb:implement` and `/bb:delegate` ask it **once, at the start of every supervised
-run**, before the first slice — no size threshold. A brief with a single slice is
-still asked; the choice is the user's, not a heuristic's. When `/bb:delegate` drives
-the build it's delegate that asks, and the implement loop it drives takes the answer
-as given.
+`/bb:implement` and `/bb:delegate` ask it **once, at the start of every run**, before
+the first slice — no size threshold. A brief with a single slice is still asked; the
+choice is the user's, not a heuristic's. When `/bb:delegate` drives the build it's
+delegate that asks, and the implement loop it drives takes the answer as given.
 
 Two things skip it entirely. A brief with **no `## tasks` section** has no slices to
 fan out over — and no build either: implement's Prerequisites stop the run and send

@@ -46,6 +46,11 @@ logo acima.
   SDK, onde não há a quem perguntar, então comando fora da allowlist falha em vez
   de pausar. Isso está agora dito no `references/build-slices-workflow.md` sem
   passar pela routine.
+- **`/bb:review`** (2.4.0) dedupa contra comentário de review anterior. Numa PR que
+  já carrega um, cada ponto aparece uma vez: os ainda abertos como linha de status,
+  os inéditos por inteiro, os resolvidos como contagem
+  (`references/act-comment-findings.md` §3, que o `mode-external-pr.md` agora
+  também aponta).
 
 ## 2.7.0 — 2026-08-06
 

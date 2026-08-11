@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import json
 import os
-import sys
 
 
 def read_frame(here: str, filename: str) -> str:

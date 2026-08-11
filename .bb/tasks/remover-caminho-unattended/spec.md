@@ -79,7 +79,7 @@ Sucesso: `rg -i 'BB_UNATTENDED|unattended|routine|AFK'` volta zero em `plugins/b
 - **CHANGELOG e briefs antigos em `.bb/tasks/` não são reescritos** — são histórico, e ficam
   fora do escopo de toda varredura. Entra só uma entrada nova no CHANGELOG.
 - **`references/scripts/` some junto com `scaffold_routine.py`** — é o único arquivo lá.
-- **Versão:** `plugin.json` vai a `2.8.0` e as **9 skills tocadas** levam bump de
+- **Versão:** `plugin.json` vai a `2.8.0` e as **8 skills tocadas** levam bump de
   `metadata.version` (delegate, implement, ship, review, review-setup, discover, spec,
   maintain-repo — e nenhuma outra). Remover comportamento documentado é mudança de
   comportamento, inclusive quando é só uma linha de edge case.
@@ -128,7 +128,7 @@ Sucesso: `rg -i 'BB_UNATTENDED|unattended|routine|AFK'` volta zero em `plugins/b
 | `plugin.json` perde a cláusula de capability scoping | never-merge segue afirmado como linha dura em ship e delegate              |
 | `maintain-repo` perde as duas rotinas próprias       | sobra o supervisionado inteiro; some o pré-requisito de provisionar antes  |
 | CHANGELOG e `.bb/tasks/` antigos citam unattended    | ficam; estão fora do escopo de toda varredura                              |
-| CI não dispara em PR que só toca `references/`       | esta PR toca 9 `SKILL.md`, então dispara; o gatilho não muda               |
+| CI não dispara em PR que só toca `references/`       | esta PR toca 8 `SKILL.md`, então dispara; o gatilho não muda               |
 | sobra frase pela metade depois de tirar a cláusula   | encurta a frase; não entra prosa nova explicando a ausência                |
 
 ## tasks
@@ -164,7 +164,7 @@ Sucesso: `rg -i 'BB_UNATTENDED|unattended|routine|AFK'` volta zero em `plugins/b
 - [x] **6. docs do repo e versão** — `README.md` (2: linha do `/bb:delegate` na tabela e a
       seção "rodar sem supervisão"); `.claude/CLAUDE.md` (8: a claim do topo, quatro linhas
       da árvore — inclusive o comentário do `scheduling-decision.md`, que fica — e a nota de
-      hooks); `description` do `plugin.json` e `2.8.0`; `metadata.version` das 9 skills;
+      hooks); `description` do `plugin.json` e `2.8.0`; `metadata.version` das 8 skills;
       entrada no CHANGELOG
       → behavior 10 · dep: 3, 4, 5 · verifica: `rg -i -c` em `README.md` e `.claude/` zero
 - [x] **7. varredura** — `rg -i` do conjunto em `plugins/`, `README.md` e `.claude/` volta
