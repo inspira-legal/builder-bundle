@@ -156,7 +156,7 @@ Sucesso: `rg -i 'BB_UNATTENDED|unattended|routine|AFK'` volta zero em `plugins/b
       linha de edge case cada; `spec` (3: a menção de reload, o "mesmo verbo da routine" no
       Delegar e o ponteiro pro guia no "Encerrar aqui")
       → behavior 9 · dep: — · verifica: `rg -i -c` nas cinco skills volta zero
-- [ ] **5. maintain-repo** — deleta `references/routines-setup.md` (22); no `SKILL.md` (8) a
+- [x] **5. maintain-repo** — deleta `references/routines-setup.md` (22); no `SKILL.md` (8) a
       moldura "roda de dois jeitos", o pré-requisito de provisionar, o bullet never-merge por
       capability, a entrega via connector Slack, a entrada de bundled resource e a seção
       `### Safety model`
