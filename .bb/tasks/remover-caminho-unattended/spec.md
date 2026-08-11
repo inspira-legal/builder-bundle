@@ -55,7 +55,7 @@ Sucesso: `rg -i 'BB_UNATTENDED|unattended|routine|AFK'` volta zero em `plugins/b
   força push") mais a branch protection do repo, que é fato do repo e não do bb. Toda
   cláusula "enforced by capability scoping on the unattended path" vira só a linha dura.
 - **`hooks/enter_worktree.py` fica, e são três pontos, não dois.** Ele é isolamento de
-  worktree pra run local e task paralela — a própria docstring diz que uma routine *não*
+  worktree pra run local e task paralela — a própria docstring diz que uma routine _não_
   precisa dele. Mas essa nota é uma comparação com uma coisa que deixa de existir: o
   parágrafo `NOTE:` inteiro sai (ele também aponta pra linha da tabela que a slice 1
   deleta), e `unattended` sai de mais dois comentários. Nada de lógica muda.
