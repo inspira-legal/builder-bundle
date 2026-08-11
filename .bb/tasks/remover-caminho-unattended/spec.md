@@ -167,7 +167,7 @@ Sucesso: `rg -i 'BB_UNATTENDED|unattended|routine|AFK'` volta zero em `plugins/b
       hooks); `description` do `plugin.json` e `2.8.0`; `metadata.version` das 9 skills;
       entrada no CHANGELOG
       → behavior 10 · dep: 3, 4, 5 · verifica: `rg -i -c` em `README.md` e `.claude/` zero
-- [ ] **7. varredura** — `rg -i` do conjunto em `plugins/`, `README.md` e `.claude/` volta
+- [x] **7. varredura** — `rg -i` do conjunto em `plugins/`, `README.md` e `.claude/` volta
       zero, e `rg -i 'routines(-setup)?\.md|scaffold_routine|unattended-context'` no repo
       inteiro só casa em `CHANGELOG.md` e `.bb/`; PR verde
       → behavior 11 · dep: 1-6 · verifica: CI
