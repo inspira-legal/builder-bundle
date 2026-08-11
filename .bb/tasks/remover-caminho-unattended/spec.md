@@ -115,21 +115,21 @@ Sucesso: `rg -i 'BB_UNATTENDED|unattended|routine|AFK'` volta zero em `plugins/b
 11. `rg -i` do conjunto volta zero em `plugins/`, `README.md` e `.claude/CLAUDE.md`, e
     nenhuma referência aponta pra arquivo deletado.
 
-| WHEN                                                | THEN                                                                             |
-| --------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `BB_UNATTENDED=1` setado depois da remoção          | nada acontece; a sessão roda supervisionada normal                               |
-| a varredura roda sem `-i`                           | passa verde sobre plugin sujo: `Unattended:` e `Cloud Routine` escapam           |
-| `unattended-context.md` some mas o `if` fica        | o hook injeta bloco vazio; por isso o `if` e o helper saem no mesmo commit       |
-| alguma skill ainda aponta pra arquivo deletado      | o CI não pega; quem pega é a varredura da slice 7                                |
-| a coluna "Survives laptop closed?" fica só com `No` | some a coluna; valor único não informa                                           |
-| o bullet de allowlist perde a moldura de routine    | o fato `claude -p` / SDK fica; o estágio zero segue justificado                  |
-| o `NOTE:` do `enter_worktree.py` compara com routine | o parágrafo sai inteiro; a lógica do arquivo não muda                            |
-| passo 4 do implement, gate irrecuperável            | o parágrafo unattended some; a regra do passo 8 já cobre, sem texto novo         |
-| `plugin.json` perde a cláusula de capability scoping | never-merge segue afirmado como linha dura em ship e delegate                    |
-| `maintain-repo` perde as duas rotinas próprias      | sobra o supervisionado inteiro; some o pré-requisito de provisionar antes        |
-| CHANGELOG e `.bb/tasks/` antigos citam unattended   | ficam; estão fora do escopo de toda varredura                                    |
-| CI não dispara em PR que só toca `references/`      | esta PR toca 9 `SKILL.md`, então dispara; o gatilho não muda                     |
-| sobra frase pela metade depois de tirar a cláusula  | encurta a frase; não entra prosa nova explicando a ausência                      |
+| WHEN                                                 | THEN                                                                       |
+| ---------------------------------------------------- | -------------------------------------------------------------------------- |
+| `BB_UNATTENDED=1` setado depois da remoção           | nada acontece; a sessão roda supervisionada normal                         |
+| a varredura roda sem `-i`                            | passa verde sobre plugin sujo: `Unattended:` e `Cloud Routine` escapam     |
+| `unattended-context.md` some mas o `if` fica         | o hook injeta bloco vazio; por isso o `if` e o helper saem no mesmo commit |
+| alguma skill ainda aponta pra arquivo deletado       | o CI não pega; quem pega é a varredura da slice 7                          |
+| a coluna "Survives laptop closed?" fica só com `No`  | some a coluna; valor único não informa                                     |
+| o bullet de allowlist perde a moldura de routine     | o fato `claude -p` / SDK fica; o estágio zero segue justificado            |
+| o `NOTE:` do `enter_worktree.py` compara com routine | o parágrafo sai inteiro; a lógica do arquivo não muda                      |
+| passo 4 do implement, gate irrecuperável             | o parágrafo unattended some; a regra do passo 8 já cobre, sem texto novo   |
+| `plugin.json` perde a cláusula de capability scoping | never-merge segue afirmado como linha dura em ship e delegate              |
+| `maintain-repo` perde as duas rotinas próprias       | sobra o supervisionado inteiro; some o pré-requisito de provisionar antes  |
+| CHANGELOG e `.bb/tasks/` antigos citam unattended    | ficam; estão fora do escopo de toda varredura                              |
+| CI não dispara em PR que só toca `references/`       | esta PR toca 9 `SKILL.md`, então dispara; o gatilho não muda               |
+| sobra frase pela metade depois de tirar a cláusula   | encurta a frase; não entra prosa nova explicando a ausência                |
 
 ## tasks
 
