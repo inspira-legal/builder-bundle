@@ -31,6 +31,8 @@ plugins/bb/
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
 │   ├── quality-checklist.md            # canonical quality criteria — the six lenses (review engine)
 │   ├── review-checklist.md             # canonical correctness criteria — Pass 1 rows (review engine)
+│   ├── build-mode.md                   # workflow-or-context: the per-run build choice (implement, delegate)
+│   ├── build-slices-workflow.md        # contract the generated one-agent-per-slice script meets
 │   ├── routines.md                     # Cloud Routine guide — the unattended path
 │   └── scripts/scaffold_routine.py     # emit a routine prompt + setup for a brief slug
 ├── scripts/                           # shared executables (2+ skills) — ref via ${CLAUDE_PLUGIN_ROOT}/scripts/

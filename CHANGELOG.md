@@ -1,5 +1,59 @@
 # Changelog
 
+## 2.7.0 — 2026-08-06
+
+O `/bb:implement` e o `/bb:delegate` ganham um **segundo caminho de build**:
+despachar um dynamic workflow com um agente por slice, em vez de construir o
+brief inteiro no contexto principal. O caminho antigo continua exatamente como
+era, e a escolha é do usuário, uma vez por run.
+
+O problema não era velocidade. Um brief de oito slices construído num contexto só
+bate compactação no meio do build, e é ali que o loop degrada: o `## behavior`
+cai do contexto e a construção começa a derivar das `## decisions`. Um agente por
+slice começa com orçamento limpo carregando só o brief e a sua fatia; o que se
+perde de contexto tácito é pago por uma nota de convenções que atravessa os
+estágios — lossy de propósito em vez de lossy por acidente.
+
+### Novo
+
+- **`references/build-mode.md`** — a escolha entre workflow e contexto: quando é
+  perguntada (uma vez, no início de toda run supervisionada, sem limiar de
+  tamanho), a pergunta em PT-BR, a regra unattended (sempre workflow, sem
+  perguntar) e o fallback quando o `Workflow` não existe na sessão —
+  `disableWorkflows`, política da org ou cliente antigo. Sem ele, os dois
+  caminhos constroem em contexto **e dizem por quê**: downgrade silencioso se lê
+  como preferência.
+- **`references/build-slices-workflow.md`** — o contrato que o script gerado tem
+  que cumprir. As slices rodam num `for` com `await`, não em `pipeline()`: elas
+  compartilham uma working tree e o `dep:` existe justamente pra dizer que a 2 se
+  apoia no que a 1 criou. `parallel()` aparece uma vez só, no **estágio zero**,
+  que é read-only — um agente por reuse note, mais um que resolve os comandos do
+  gate **e roda todos eles uma vez**. Rodar é o ponto: prova a permissão e
+  estabelece a linha de base verde, então árvore já vermelha vira blocker antes
+  da slice 1 em vez de slice falsa-vermelha no meio.
+
+### Mudou
+
+- **`/bb:implement`** (2.2.0) escolhe o modo dentro do passo 3, e a válvula de
+  segurança do passo 7 passa a atender também o blocker que volta de dentro da
+  run — do estágio zero ou de um agente de slice. A árvore fica como a run
+  deixou, pro diagnóstico.
+- **`/bb:delegate`** (2.3.0) escolhe uma vez e repassa a decisão, então o loop do
+  implement não re-pergunta. Workflow parado no meio cai onde a válvula já caía:
+  `status: blocked`, blocker nomeado, sem landing. O que voltou verde já está
+  commitado e ticado.
+- **`references/routines.md`** perdeu a regra "single-agent only until you've
+  measured cost". Ela existia porque fan-out não tinha forma definida; agora tem,
+  e é numa run sem ninguém acordado que a compactação no meio do build mais
+  machuca. O provisionamento ganhou a **allowlist dos comandos de gate** —
+  comando fora dela não pausa numa routine, falha.
+
+O commit é o checkpoint: cada agente commita só os arquivos que tocou, com o
+`- [x]` da sua slice no mesmo commit. O resume do workflow é só na mesma sessão e
+re-roda tudo que começou depois do primeiro agente não-terminado; os commits
+sobrevivem a qualquer coisa, então re-rodar um brief meio construído retoma pelos
+checkboxes, não pela run.
+
 ## 2.6.0 — 2026-08-05
 
 O `/bb:brisar` passa a cobrir o **duplo diamante inteiro**. Antes ele começava no

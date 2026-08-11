@@ -46,6 +46,12 @@ the routine is provisioned, and that holds even if the frame is ignored:
   **no** outward connector (Slack, email, social). What's left is the run's own
   draft PR and its threads — which is exactly the documented lean.
 - **Network:** the Trusted preset (registries + GitHub) is enough.
+- **Allowlist the gate commands.** Same principle pointed the other way: a shell
+  command outside the allowlist has nobody to prompt in an unattended run, so it
+  fails instead of pausing. Whatever the project's gate is (`pnpm lint`,
+  `just check`, `pytest`), permit it before the run needs it — the workflow build
+  mode runs the whole gate once up front precisely so a missing permission comes
+  back as one blocker before the first slice, not as a red slice halfway through.
 
 ## The routine prompt
 
@@ -60,8 +66,27 @@ self-contained — the routine has no session memory:
 > **DRAFT** PR against `<base>` and watch it to resolution (green CI + handled
 > review-bot threads), bounded by the run budget. Do **not** merge, do **not**
 > push to a protected branch. If a task or the gate blocks unrecoverably, flip
-> the brief's `status` to `blocked`, write the blocker into the PR description,
-> and exit.
+> the brief's `status` to `blocked` and land the blocker where the run can be
+> found again — the PR description once a PR exists, otherwise push
+> `claude/<slug>` and write it into the brief's `## open` — then exit.
+
+## The build fans out — one agent per slice
+
+Unattended, the build goes through the **workflow mode** without asking; the pick
+and its rule live in `build-mode.md`, next to this file. A dynamic workflow runs
+one agent per slice, sequentially, on the same working tree, and `/bb:delegate`
+takes the result from there.
+
+It's the default here for the reason the routine exists. A whole backlog built in
+one context hits compaction mid-run, and at 3am there's nobody to notice the build
+drifting from the `## behavior` map. Each slice agent starts on a clean budget
+carrying the brief and its own cut; a convention note threads forward what the
+earlier slices established.
+
+The bill scales with the brief: one agent per unticked slice, plus stage zero's
+read-only lookups, all against the same run budget. Read your usage at claude.ai
+after the first week — a routine on a five-slice brief costs a different amount
+from one on fifteen.
 
 ## Trigger & cadence
 
@@ -70,9 +95,8 @@ self-contained — the routine has no session memory:
 - A routine fires against a `<slug>`; with the brief already `done` (or every task
   checked), the run is a no-op (delegate finds nothing to build and nothing to
   open) — it reports and exits rather than inventing work.
-- **Single-agent only** inside the run until you've measured cost — no sub-agent
-  fan-out (≈15× tokens compounds per run). Routines have a per-account daily run
-  cap; read your usage at claude.ai after the first week.
+- Routines have a **per-account daily run cap** — check yours before scheduling
+  several against the same account.
 
 ## Morning
 
