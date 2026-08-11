@@ -66,21 +66,14 @@ This case peaks exactly where the compaction risk is highest — a big brief jus
 specced — which is why it gets read rather than assumed.
 
 Naming the piece matters more than the recommendation. A brief that needs this
-session to be buildable is a brief that won't survive an unattended run either, and
-writing the missing piece into it is the durable fix — it makes workflow safe on the
+session to be buildable is a brief no fresh agent can build from, and writing the
+missing piece into it is the durable fix — it makes workflow safe on the
 spot, and the user is the only one who can judge whether the piece belongs in the
 brief. Offer that in the same breath as the question.
 
 **One or two slices → context leads regardless.** There's no compaction to buy off,
 and each agent would pay from scratch for the repo orientation this context already
 has.
-
-## Unattended
-
-Under `BB_UNATTENDED` there's no question: the run goes via workflow and records the
-choice in its report. This is the documented lean the unattended frame takes, the same
-as every other skipped question — and it's the rule above at its cleanest, since a
-routine's session starts with the brief and nothing else by construction.
 
 ## When workflows aren't available
 
@@ -91,8 +84,7 @@ isn't a choice.
 
 Absent, both skills build in context and **say why in one line** — "workflows
 desligados nesta sessão, construindo aqui". A silent downgrade reads as a preference
-and hides a setting the user may not know is on. Unattended, the same line goes into
-the run's report, which is what `/bb:ship` already carries into the PR description.
+and hides a setting the user may not know is on.
 
 ## After the pick
 

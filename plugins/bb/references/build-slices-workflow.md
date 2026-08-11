@@ -6,7 +6,7 @@ in the main context. This file is the **contract the generated script has to mee
 `Workflow` tool's `script` input. What ships is this contract; the script itself is
 authored fresh per run and lives only in the session directory.
 
-The mode choice itself — when it's offered, the question, the unattended rule — is
+The mode choice itself — when it's offered and the question it asks — is
 `build-mode.md`, next to this file. Read this one only once workflow was chosen.
 
 ## What the platform forces
@@ -16,10 +16,10 @@ The mode choice itself — when it's offered, the question, the unattended rule 
 - **The script has no shell and no filesystem.** Only agents read, write and run
   commands. Every gate, commit and `verifica:` happens inside an agent; the script
   coordinates and reads structured returns.
-- **Out-of-allowlist commands don't prompt in a routine.** Under `claude -p` and the
-  Agent SDK there is nobody to ask, so the call follows the configured rules without
-  confirmation — in practice it fails. A gate the run can't execute is a red slice,
-  not a question. Stage zero exists to catch that first.
+- **Out-of-allowlist commands don't prompt.** A slice agent runs under `claude -p`
+  and the Agent SDK, where there is nobody to ask, so the call follows the configured
+  rules without confirmation — in practice it fails. A gate the run can't execute is
+  a red slice, not a question. Stage zero exists to catch that first.
 - **`Date.now()`, `new Date()` and `Math.random()` throw** — they'd break resume.
   Vary anything per-slice by index, and stamp times after the workflow returns.
 
@@ -130,8 +130,7 @@ accumulated convention note, and the gate commands stage zero resolved. Its step
    this slice cites and return short evidence. `CI` is out of reach inside the run:
    return `result: "pending"`, which is neither a pass nor a failure; `/bb:ship` is
    what covers it. No `verifica:` is silently skipped.
-4. **Run the gate** and fix what broke. Unattended: at most 3 retries, and only on a
-   known-flake signature.
+4. **Run the gate** and fix what broke.
 5. **Commit** — only the files this slice touched, with its `- [ ]` → `- [x]` in the
    same commit, on the branch the run is already on. **Conventional style, and no AI
    attribution** — the agent starts with no memory of the target repo's habits, so
@@ -201,6 +200,6 @@ and CI never sees it. Confirm all of it, then invoke:
   accumulated note, the gate commands, the commit convention (conventional style, no
   AI attribution), the manifesto's path for stack choices, and the six steps above.
 - The branch the commits belong on already exists and is checked out — the agents
-  commit where the run puts them, and unattended that has to be `claude/<slug>`.
+  commit where the run puts them.
 - The agent count is `slices.length + reuseNotes.length + 1` — under the session's
   workflow size guideline, and far under the 1000-per-run cap.

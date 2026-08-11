@@ -139,7 +139,7 @@ Sucesso: `rg -i 'BB_UNATTENDED|unattended|routine|AFK'` volta zero em `plugins/b
       `enter_worktree.py` (3); a linha Cloud Routine, a coluna "Survives laptop closed?", os
       dois bullets AFK e a frase de abertura do `scheduling-decision.md` (5)
       → behaviors 1, 2, 8 · dep: — · verifica: `rg -i -c` em `hooks/` volta zero
-- [ ] **2. references de plugin-root** — deleta `routines.md` (25) e `scripts/` inteiro (13);
+- [x] **2. references de plugin-root** — deleta `routines.md` (25) e `scripts/` inteiro (13);
       no `build-mode.md` (6) a seção `## Unattended`, a frase "won't survive an unattended
       run either" e a linha do relatório; no `build-slices-workflow.md` (4) a moldura de
       routine no bullet de allowlist, o ponteiro do topo, o cap de retry e a branch; no
