@@ -46,13 +46,13 @@ gate:
   fired: bool
   resolution: bootstrap-to-discover | override | not-applicable
   override_reason: <string or null>
-  discover_brief: <path or null>   # filled on the bootstrap return (Step 0.1) — points at .bb/tasks/<slug>/spec.md
-  design_brief: <path or null>     # filled by the Brief phase — points at .bb/tasks/<slug>/brief-design.md
+  discover_brief: <path or null>   # filled on the bootstrap return (Step 0.1) — points at .bb/<slug>/spec.md
+  design_brief: <path or null>     # filled by the Brief phase — points at .bb/<slug>/brief-design.md
 
 # Two briefs, two questions, and they COEXIST — neither replaces the other:
 #   discover_brief → is it worth building, for whom, what did we cut?  (/bb:discover, /bb:spec)
 #   design_brief   → how should this surface be, and why?              (the Brief phase here)
-# Shaping lives OUTSIDE this file. Both paths point into .bb/tasks/<slug>/.
+# Shaping lives OUTSIDE this file. Both paths point into .bb/<slug>/.
 
 # ============================================================
 # Research phase (the first diamond — before any pixel)
@@ -216,7 +216,7 @@ The `tarsila:` and `clarisse:` section keys are kept for continuity with pre-2.0
 
 Old sessions may carry `nise:`/`esperanca:` sections, a `shaping:` block, and statuses like `bootstrapped-from-brisar` or `deferred-to-*`. When brisar detects one, perform a soft migration:
 
-- `nise.status: completed` (or a filled `shaping:` block) means shaping was done — treat the session as having its framing settled; if a `.bb/tasks/<slug>/spec.md` exists, point `gate.discover_brief` at it.
+- `nise.status: completed` (or a filled `shaping:` block) means shaping was done — treat the session as having its framing settled; if a `.bb/<slug>/spec.md` exists, point `gate.discover_brief` at it.
 - `bootstrapped-from-brisar` → `bootstrapped-to-discover` (the builder now runs `/bb:discover` instead of /nise).
 - `deferred-to-*` statuses → `in-progress` (the deferral targets no longer exist as separate skills; the gates re-offer the right next step).
 - Leave the old `nise:`/`esperanca:` sections in place (read-only reference); write only the v2 keys.
@@ -231,7 +231,7 @@ Old sessions may carry `nise:`/`esperanca:` sections, a `shaping:` block, and st
 | `completed`                | last phase run (usually Deliver) | Journey finished. Re-runs enter the re-entry contract.                                                                                                                                                                                           |
 
 **A design brief on disk is itself a resume signal**, session or no session. Step 0.1 globs
-`.bb/tasks/*/brief-design.md`; when one exists the first diamond already ran, and brisar picks up
+`.bb/*/brief-design.md`; when one exists the first diamond already ran, and brisar picks up
 from how far it got (findings only → Diverge · directions with none chosen → convergence · a chosen
 direction, nothing built → the medium question · surfaces built → Deliver). **Never re-run research
 over an existing brief** — it is the most expensive mistake available here, and it destroys the
@@ -266,7 +266,7 @@ brand:
 # Where the context files live — the "agreed path" of the contract with Develop.
 design_context_path: "<slug>/design-context/"
 
-# The task folder — .bb/tasks/<slug>/, where Phase 4 writes the visual direction
+# The task folder — .bb/<slug>/, where Phase 4 writes the visual direction
 # next to the spec (plugin-level references/spec-state.md). Absolute, like ds_path.
 design_path: "<absolute path>"
 

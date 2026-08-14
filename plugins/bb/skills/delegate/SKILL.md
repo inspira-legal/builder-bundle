@@ -1,6 +1,6 @@
 ---
 name: delegate
-description: Roda uma spec de ponta a ponta — seleciona uma spec não-concluída (`.bb/tasks/<slug>/spec.md`), constrói todas as tarefas e landa (`/bb:implement` → `/bb:ship`), rastreando o `status` da spec. `/bb:delegate <slug>` mira uma spec nomeada; `/bb:delegate` sem argumento pega a pendente mais antiga. O único verbo "roda tudo". Use quando o usuário disser "delega isso", "roda a task", "constrói e landa o brief", "faz tudo", "delegate <slug>", ou "roda tudo". NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra construir sem landar (use /bb:implement).
+description: Roda uma spec de ponta a ponta — seleciona uma spec não-concluída (`.bb/<slug>/spec.md`), constrói todas as tarefas e landa (`/bb:implement` → `/bb:ship`), rastreando o `status` da spec. `/bb:delegate <slug>` mira uma spec nomeada; `/bb:delegate` sem argumento pega a pendente mais antiga. O único verbo "roda tudo". Use quando o usuário disser "delega isso", "roda a task", "constrói e landa o brief", "faz tudo", "delegate <slug>", ou "roda tudo". NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra construir sem landar (use /bb:implement).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -17,20 +17,23 @@ plugin-level `references/spec-state.md`); the `## tasks` checkboxes inside it st
 
 ## Prerequisites
 
-Inside a git repository with a `.bb/tasks/` directory. If neither holds, report it
+Inside a git repository with a `.bb/` directory. If neither holds, report it
 and stop.
 
 ## Workflow
 
 1. **Resolve the target spec** per the spec-state contract (plugin-level
    `references/spec-state.md`).
-   - **Named** (`/bb:delegate <slug>`): use `.bb/tasks/<slug>/spec.md`. If it
-     doesn't exist, report the error, list the available pending slugs, and stop.
-   - **Bare** (`/bb:delegate`): scan `.bb/tasks/*/spec.md`, read each frontmatter
-     block, keep those with `status ∈ {pending, in-progress}`, and pick the smallest
-     `created` (tie-break: slug alphabetical). A spec with no frontmatter counts
-     as `pending` with unknown `created` (sorted last). If none qualify, report "no
-     pending specs" and stop.
+   - **Named** (`/bb:delegate <slug>`): use `.bb/<slug>/spec.md`, falling back to
+     `.bb/tasks/<slug>/spec.md` for a spec still on the older layout. If neither
+     exists, report the error, list the available pending slugs, and stop.
+   - **Bare** (`/bb:delegate`): scan `.bb/*/spec.md` and `.bb/tasks/*/spec.md`,
+     read each frontmatter block, keep those with `status ∈ {pending, in-progress}`,
+     and pick the smallest `created` (tie-break: slug alphabetical). The folder's
+     `<slug>` is the key — a slug found under both paths is one candidate, read
+     from `.bb/<slug>/`. A spec with no frontmatter counts as `pending` with
+     unknown `created` (sorted last). If none qualify, report "no pending specs"
+     and stop.
    - A spec already `done`: report it's done and ask whether to re-run. A `blocked`
      spec is skipped in bare selection and reported, not silently dropped — name it
      so the user can re-spec it.
@@ -82,19 +85,21 @@ and stop.
 
 ## Edge cases
 
-| WHEN                                            | THEN                                                                                                                                             |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `/bb:delegate <slug>`, slug exists, not done    | run it end to end                                                                                                                                |
-| `/bb:delegate <slug>`, slug not found           | report the error, list available pending slugs, stop                                                                                             |
-| `/bb:delegate <slug>`, status `done`            | report it's done, ask whether to re-run                                                                                                          |
-| bare `/bb:delegate`, one+ pending               | pick smallest `created` (tie-break slug alpha), run it                                                                                           |
-| bare `/bb:delegate`, none pending               | report "no pending specs", stop                                                                                                                  |
-| selected spec already `in-progress`             | resume — implement skips checked tasks; status stays `in-progress` until landing                                                                 |
-| spec has no frontmatter                         | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                             |
-| implement safety valve fires (underspecified)   | flip `status: blocked`, point back to `/bb:spec`, stop — do not improvise                                                                        |
-| workflow mode stops (stage zero or a task)      | flip `status: blocked`, exit without landing                                                                                                     |
-| ship hits an unrecoverable stop / blocker       | flip `status: blocked`; write the blocker into the PR description, or into the spec's `## open` when the destination has no PR; report it; exit  |
-| not in a git repo / no tasks dir in either root | report the error, stop                                                                                                                           |
+| WHEN                                             | THEN                                                                                                                                            |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:delegate <slug>`, slug exists, not done     | run it end to end                                                                                                                               |
+| `/bb:delegate <slug>`, slug not found            | report the error, list available pending slugs, stop                                                                                            |
+| `/bb:delegate <slug>`, status `done`             | report it's done, ask whether to re-run                                                                                                         |
+| bare `/bb:delegate`, one+ pending                | pick smallest `created` (tie-break slug alpha), run it                                                                                          |
+| bare `/bb:delegate`, none pending                | report "no pending specs", stop                                                                                                                 |
+| selected spec already `in-progress`              | resume — implement skips checked tasks; status stays `in-progress` until landing                                                                |
+| spec has no frontmatter                          | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                            |
+| implement safety valve fires (underspecified)    | flip `status: blocked`, point back to `/bb:spec`, stop — do not improvise                                                                       |
+| workflow mode stops (stage zero or a task)       | flip `status: blocked`, exit without landing                                                                                                    |
+| ship hits an unrecoverable stop / blocker        | flip `status: blocked`; write the blocker into the PR description, or into the spec's `## open` when the destination has no PR; report it; exit |
+| slug sits under both `.bb/` layouts              | one candidate — the `.bb/<slug>/` copy is the one read                                                                                          |
+| spec only under `.bb/tasks/<slug>/`              | found by the second glob, run as usual                                                                                                          |
+| not in a git repo / no `.bb/` dir in either root | report the error, stop                                                                                                                          |
 
 The hard line holds throughout: delegate never merges, never approves, never
 force-pushes — landing on a protected branch stays a human action.

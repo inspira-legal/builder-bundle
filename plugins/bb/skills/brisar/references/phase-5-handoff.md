@@ -1,6 +1,6 @@
 # Phase 5 — Handoff + gate
 
-After Phase 4 writes the visual direction of each surface into `.bb/tasks/<slug>/`, the journey-map part of brisar is done. This phase prints the handoff summary (persona-shaped) and ends with the **handoff gate** — a single `AskUserQuestion` offering the natural next steps. The gate suggests, never auto-invokes (per `plugins/bb/references/handoff-gate.md`).
+After Phase 4 writes the visual direction of each surface into `.bb/<slug>/`, the journey-map part of brisar is done. This phase prints the handoff summary (persona-shaped) and ends with the **handoff gate** — a single `AskUserQuestion` offering the natural next steps. The gate suggests, never auto-invokes (per `plugins/bb/references/handoff-gate.md`).
 
 **Read the medium before writing the summary.** Everything below that names `design-context/`,
 `.brisar/config.yaml` or the scaffolded project folder assumes medium `código`. On a canvas or
@@ -22,7 +22,7 @@ Estrutura criada:
   ├── design-context/{tokens.md, components.md}     ← a fase Develop lê isto
   └── .brisar/{config.yaml, session.yaml}
 
-  .bb/tasks/<slug>/                                  ← junto do brief
+  .bb/<slug>/                                        ← junto do brief
   └── design/                                        ← brief de cada surface
       ├── README.md (ordem sugerida)
       ├── <surface-1>.md
@@ -36,7 +36,7 @@ Para rodar:
   pnpm dev
 ```
 
-With a single surface, that last block is one line — `.bb/tasks/<slug>/design.md`.
+With a single surface, that last block is one line — `.bb/<slug>/design.md`.
 
 Then the gate:
 
@@ -49,7 +49,7 @@ Then the gate:
       "options": [
         {
           "label": "Construir as surfaces agora (fase Develop)",
-          "description": "Continuo nesta sessão: leio a direção escolhida no brief de design + a direção visual em .bb/tasks/<slug>/ + design-context/ e construo tela a tela"
+          "description": "Continuo nesta sessão: leio a direção escolhida no brief de design + a direção visual em .bb/<slug>/ + design-context/ e construo tela a tela"
         },
         {
           "label": "Rodar /bb:discover antes",
@@ -88,7 +88,7 @@ O que tem aqui:
   ├── README.md               ← como mostrar pro time
   └── HANDOFF-DEV.md          ← pacote pro time técnico continuar
 
-  .bb/tasks/<slug>/           ← o brief escrito de cada tela fica aqui
+  .bb/<slug>/                 ← o brief escrito de cada tela fica aqui
 
 Como abrir:
   1. Vá na pasta <slug>/ no Finder

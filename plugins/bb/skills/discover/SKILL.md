@@ -58,7 +58,7 @@ All user-facing text — echoes, question labels, reports — is PT-BR.
 ## Capture (on disk)
 
 Both phases accrete the same spec, resolved per the spec-state contract
-(plugin-level `references/spec-state.md`): `.bb/tasks/<slug>/spec.md`. Generate
+(plugin-level `references/spec-state.md`): `.bb/<slug>/spec.md`. Generate
 `<slug>` as a short kebab name for the
 problem area; if the file exists for a _different_ idea, suffix it (`-2`) or ask
 — never overwrite another spec. Section formats live in each phase's reference.
@@ -72,7 +72,7 @@ Lead with the pick the fit verdict supports: `next_action: build-mvp` → spec;
 `validate-first` or low confidence → challenge; design-led work → brisar.
 
 ```
-question: "Primeiro diamante fechado — problema enquadrado e fit decidido em .bb/tasks/<slug>/spec.md. Como seguimos?"
+question: "Primeiro diamante fechado — problema enquadrado e fit decidido em .bb/<slug>/spec.md. Como seguimos?"
 options:
   - "Especificar (Recomendado)" — Rodo /bb:spec agora: desenho a solução em cima do problema e do fit.
   - "Design" — Rodo /bb:brisar: direção visual e prototipagem pra trabalho design-led.

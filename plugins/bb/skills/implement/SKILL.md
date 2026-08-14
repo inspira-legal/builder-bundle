@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Constrói uma spec validada (`.bb/tasks/<slug>/spec.md`) na working tree — implementa as tarefas, mantém o gate verde, commita por tarefa e oferece o ship no final (ou encadeia direto quando o ship já foi autorizado). O executor da trilha Construir. Use quando o usuário disser "implementa o brief", "constrói as tasks", "build it", "implementa isso", ou logo depois do /bb:spec. NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra abrir/esverdear uma PR sozinha (use /bb:ship).
+description: Constrói uma spec validada (`.bb/<slug>/spec.md`) na working tree — implementa as tarefas, mantém o gate verde, commita por tarefa e oferece o ship no final (ou encadeia direto quando o ship já foi autorizado). O executor da trilha Construir. Use quando o usuário disser "implementa o brief", "constrói as tasks", "build it", "implementa isso", ou logo depois do /bb:spec. NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra abrir/esverdear uma PR sozinha (use /bb:ship).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -13,7 +13,7 @@ Build the validated spec in the working tree — taking it from alignment to cod
 
 ## Prerequisites
 
-A validated spec with a `## tasks` checklist, resolved per the spec-state contract (plugin-level `references/spec-state.md`): `.bb/tasks/<slug>/spec.md`. If there's no spec for this work, stop and suggest `/bb:spec` first — implementing without alignment is exactly what the spec prevents.
+A validated spec with a `## tasks` checklist, resolved per the spec-state contract (plugin-level `references/spec-state.md`): `.bb/<slug>/spec.md`. If there's no spec for this work, stop and suggest `/bb:spec` first — implementing without alignment is exactly what the spec prevents.
 
 ## Workflow
 

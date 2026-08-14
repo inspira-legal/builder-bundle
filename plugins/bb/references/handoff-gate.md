@@ -39,7 +39,7 @@ Ask one question, in PT-BR (all gate text the user sees is PT-BR):
 Example (spec's exit gate, 3-way):
 
 ```
-question: "Spec validada e salva em .bb/tasks/<slug>/spec.md. Como seguimos?"
+question: "Spec validada e salva em .bb/<slug>/spec.md. Como seguimos?"
 options:
   - "Implementar (Recomendado)" — Rodo /bb:implement agora: construo as tarefas e paro pronto pra ship.
   - "Delegar" — Rodo /bb:delegate <slug>: implement + ship de ponta a ponta.

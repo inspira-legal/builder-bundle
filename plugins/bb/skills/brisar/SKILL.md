@@ -109,7 +109,7 @@ a new surface, or (c) start from scratch archiving the old session.
 
 If `status: bootstrapped-to-discover`: the maturity gate fired earlier and the
 builder went to /bb:discover. Look for the resulting spec (the spec-state
-contract, plugin-level `references/spec-state.md`: `.bb/tasks/<slug>/spec.md`
+contract, plugin-level `references/spec-state.md`: `.bb/<slug>/spec.md`
 carrying `## problem` / `## fit`); confirm with the builder which spec it is if
 more than one matches. Record its path under `gate.discover_brief`, let the
 appetite and cuts inform fidelity/scope, and resume at the **Research phase** —
@@ -120,7 +120,7 @@ test.
 
 ```bash
 BB=$(d=$PWD; while [ "$d" != / ] && [ ! -d "$d/.bb" ]; do d=$(dirname "$d"); done; echo "$d/.bb")
-ls "$BB"/tasks/*/brief-design.md 2>/dev/null
+ls "$BB"/*/brief-design.md "$BB"/tasks/*/brief-design.md 2>/dev/null
 ```
 
 The walk-up matters: a re-entry from inside the project folder would miss a brief that lives in
@@ -230,15 +230,15 @@ in Step 0** — open only what the current phase needs.
 | Artifact                                                                  | Produced by                                                                | Consumed by                                                                                                                  |
 | ------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `.brisar/session.yaml`                                                    | every phase — each writes its own section                                  | all phases (each reads the whole YAML in its Step 0), re-runs                                                                |
-| **`.bb/tasks/<slug>/brief-design.md`**                                    | **Brief** — and updated by every later round, including Deliver            | Diverge, Develop, Deliver, the implementing dev, later rounds                                                                |
+| **`.bb/<slug>/brief-design.md`**                                          | **Brief** — and updated by every later round, including Deliver            | Diverge, Develop, Deliver, the implementing dev, later rounds                                                                |
 | `.brisar/config.yaml`                                                     | Phase 3 (medium `código` only)                                             | Develop (tokens.md/components.md path), future invocations                                                                   |
 | `<slug>/design-context/tokens.md` + `components.md`                       | Phase 3 (medium `código` only)                                             | Develop (Step 0). On canvas mediums the DS values come from the Research instead                                             |
-| `.bb/tasks/<slug>/design.md` (or `design/<surface>.md`)                   | Phase 4                                                                    | builder, Develop — complements the design brief (brief = chosen direction; this = per-surface hierarchy, states, components) |
+| `.bb/<slug>/design.md` (or `design/<surface>.md`)                         | Phase 4                                                                    | builder, Develop — complements the design brief (brief = chosen direction; this = per-surface hierarchy, states, components) |
 | `<slug>/...` (vite, package.json, src/)                                   | Phase 3                                                                    | builder (`pnpm install && pnpm dev`), Develop                                                                                |
 | `<slug>/HANDOFF-DEV.md`                                                   | Phase 3 (persona = executive)                                              | dev who picks up the prototype later                                                                                         |
 | `.brisar/tarsila/notes.md`                                                | Develop (optional decisions log)                                           | Deliver, builder                                                                                                             |
 | `.brisar/clarisse/*.md` (design-review, accessibility-checklist, handoff) | Deliver                                                                    | builder, implementing dev                                                                                                    |
-| `.bb/tasks/<slug>/spec.md`                                                | /bb:discover, /bb:spec (outside this skill); **delta proposed by Deliver** | Step 0.1 (bootstrap return), Research, Brief, Diverge, Develop, Deliver                                                      |
+| `.bb/<slug>/spec.md`                                                      | /bb:discover, /bb:spec (outside this skill); **delta proposed by Deliver** | Step 0.1 (bootstrap return), Research, Brief, Diverge, Develop, Deliver                                                      |
 | `harpa-handoff-<slug>-<date>.md` (in cwd)                                 | Framer/content path                                                        | builder inside `harpa-lpbuilder/`                                                                                            |
 
 Each phase reads the whole session.yaml in Step 0 and writes **only its
@@ -267,7 +267,7 @@ writes `.brisar/session.yaml` with:
 - `gate.resolution: bootstrap-to-discover`
 
 …then suggests running `/bb:discover <ideia>` and stops (never auto-invokes).
-/bb:discover keeps its own state in `.bb/tasks/<slug>/spec.md`. When the
+/bb:discover keeps its own state in `.bb/<slug>/spec.md`. When the
 builder returns and runs `/bb:brisar` again, Step 0.1 detects the bootstrap
 status, locates the spec, records it under `gate.discover_brief`, and
 resumes at the **Research phase** with the framing carried over.
@@ -276,10 +276,10 @@ resumes at the **Research phase** with the framing carried over.
 
 Two slots in `session.yaml`, two different questions, and later phases read both:
 
-| Slot                  | File                                                                         | Answers                                              | Written by                 |
-| --------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------- |
-| `gate.discover_brief` | `.bb/tasks/<slug>/spec.md` (`## problem`/`## hypothesis`/`## fit`/`## cuts`) | Is it worth building, for whom, and what did we cut? | `/bb:discover`, `/bb:spec` |
-| `gate.design_brief`   | `.bb/tasks/<slug>/brief-design.md`                                           | How should this surface be, and why?                 | the Brief phase here       |
+| Slot                  | File                                                                   | Answers                                              | Written by                 |
+| --------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------- |
+| `gate.discover_brief` | `.bb/<slug>/spec.md` (`## problem`/`## hypothesis`/`## fit`/`## cuts`) | Is it worth building, for whom, and what did we cut? | `/bb:discover`, `/bb:spec` |
+| `gate.design_brief`   | `.bb/<slug>/brief-design.md`                                           | How should this surface be, and why?                 | the Brief phase here       |
 
 **Never substitute one for the other.** Reviewing against the research alone loses the
 problem; reviewing against the hypothesis alone loses everything the research learned.
@@ -290,7 +290,7 @@ against the built thing — the artifact that did not exist the first time.
 
 `.brisar/config.yaml` is where the paths are registered. Phase 3 decides
 `design_context_path` (default: `<slug>/design-context/`); Phase 4 decides
-`design_path` — the task folder `.bb/tasks/<slug>/`, where the visual direction
+`design_path` — the task folder `.bb/<slug>/`, where the visual direction
 lands next to the spec (plugin-level `references/spec-state.md`). Develop and
 Deliver read both from the config — no hardcoded string on either side.
 
@@ -333,7 +333,7 @@ Phase 2 — Maturity gate (senior/junior only)
 │   → NO GATE — flows straight into Brief                                     │
 │                                                                             │
 │ Brief — o contrato de design                                                │
-│   → .bb/tasks/<slug>/brief-design.md, recorded at gate.design_brief         │
+│   → .bb/<slug>/brief-design.md, recorded at gate.design_brief               │
 │   → reconcile vs the framing: confirma · contradiz · não alcança            │
 │   → close on an unresolved tension (none found = research was shallow)      │
 │   → present it in chat: findings · references · directions · tension        │
@@ -359,7 +359,7 @@ Phase 3 — Scaffold OR prototype-hosted     [medium == código only]
   → executive = prototype-hosted (folder + HANDOFF-DEV.md, no local npm install)
 
 Phase 4 — Design direction        [prose skipped when the brief has it]
-  → .bb/tasks/<slug>/design.md, or design/<surface>.md per surface (max 5)
+  → .bb/<slug>/design.md, or design/<surface>.md per surface (max 5)
 
 Phase Framer (replaces Phase 2-4 on the Framer/content path)
   → harpa-handoff-<slug>-<date>.md, with or without MCP unframer

@@ -13,8 +13,8 @@ phase builds directions from it, Develop builds against it, Deliver reviews agai
 Beside the task contract, as its sibling:
 
 ```
-.bb/tasks/<slug>/spec.md          ← the execution contract (/bb:spec)
-.bb/tasks/<slug>/brief-design.md  ← this file's output
+.bb/<slug>/spec.md          ← the execution contract (/bb:spec)
+.bb/<slug>/brief-design.md  ← this file's output
 ```
 
 **Resolve `.bb/` the way the contract says** — the nearest ancestor of the cwd that already has
@@ -33,10 +33,10 @@ canonical target**. The Edit tool refuses to write through a symlink on purpose 
 is what stops a copy from being born inside the repo. Record the real path in the brief's own
 frontmatter (`canonical:`) so the instruction travels inside the artifact and nobody has to
 remember it. **Leave the in-repo path in place as the symlink**: the resumption glob and every
-reader below name `.bb/tasks/<slug>/brief-design.md`, and they have to keep finding it.
+reader below name `.bb/<slug>/brief-design.md`, and they have to keep finding it.
 
 If there is no task contract yet (pocket mode, no spec), write to
-`$BB/tasks/<slug>/brief-design.md` anyway and create the dir — the brief can precede the spec.
+`$BB/<slug>/brief-design.md` anyway and create the dir — the brief can precede the spec.
 
 ## Authority — say this once and never blur it
 
@@ -324,10 +324,10 @@ pre-loading the answer.
 
 ## Cooperation contract
 
-| Artifact                                                                     | Produced by                               | Consumed by                                     |
-| ---------------------------------------------------------------------------- | ----------------------------------------- | ----------------------------------------------- |
-| `.brisar/session.yaml` (`research:` section)                                 | Research                                  | Brief (Step 1 — the material)                   |
-| `.bb/tasks/<slug>/spec.md` (`## problem`/`## hypothesis`/`## fit`/`## cuts`) | `/bb:discover`, `/bb:spec`                | Brief (Step 2 — reconciliation)                 |
-| `.bb/tasks/<slug>/brief-design.md`                                           | **Brief** (and updated every later round) | Diverge, Develop, Deliver, the implementing dev |
-| `.brisar/session.yaml` (`brief:` + `gate.design_brief`)                      | Brief                                     | Diverge, Develop, Deliver, re-entry             |
-| Delta back into `spec.md`                                                    | Deliver (material from here)              | `/bb:implement`, `/bb:spec`                     |
+| Artifact                                                               | Produced by                               | Consumed by                                     |
+| ---------------------------------------------------------------------- | ----------------------------------------- | ----------------------------------------------- |
+| `.brisar/session.yaml` (`research:` section)                           | Research                                  | Brief (Step 1 — the material)                   |
+| `.bb/<slug>/spec.md` (`## problem`/`## hypothesis`/`## fit`/`## cuts`) | `/bb:discover`, `/bb:spec`                | Brief (Step 2 — reconciliation)                 |
+| `.bb/<slug>/brief-design.md`                                           | **Brief** (and updated every later round) | Diverge, Develop, Deliver, the implementing dev |
+| `.brisar/session.yaml` (`brief:` + `gate.design_brief`)                | Brief                                     | Diverge, Develop, Deliver, re-entry             |
+| Delta back into `spec.md`                                              | Deliver (material from here)              | `/bb:implement`, `/bb:spec`                     |

@@ -14,8 +14,8 @@ The discipline here is **fidelity to contracts**:
 
 Before any question, read `.brisar/session.yaml` in full:
 
-- **If `gate.discover_brief` points at a spec** (`.bb/tasks/<slug>/spec.md`) — read it. Cuts recorded there are respected: DO NOT prototype features that were cut. Flag at the start: "Vou pular [feature_x] porque foi cortada no discover." The hypothesis informs layout decisions (when the builder asks "how should I arrange the CTA?", recall it). The appetite scales fidelity: small/medium appetite = lean fidelity (structure + tokens; no microinteraction polish); large appetite = polish included.
-- **If `gate.design_brief` points at a brief** (`.bb/tasks/<slug>/brief-design.md`) — read it. This is the **richer contract** when it exists: it carries the research, the chosen direction with its five parts (bet, composition, copy, rationale, risk), the base block common to all directions, and the token constraints read from source. The copy in the direction is the copy you build — not a starting point to improve on. The spec and the design brief **coexist**: the spec says what problem and what was cut; the design brief says how this surface should be.
+- **If `gate.discover_brief` points at a spec** (`.bb/<slug>/spec.md`) — read it. Cuts recorded there are respected: DO NOT prototype features that were cut. Flag at the start: "Vou pular [feature_x] porque foi cortada no discover." The hypothesis informs layout decisions (when the builder asks "how should I arrange the CTA?", recall it). The appetite scales fidelity: small/medium appetite = lean fidelity (structure + tokens; no microinteraction polish); large appetite = polish included.
+- **If `gate.design_brief` points at a brief** (`.bb/<slug>/brief-design.md`) — read it. This is the **richer contract** when it exists: it carries the research, the chosen direction with its five parts (bet, composition, copy, rationale, risk), the base block common to all directions, and the token constraints read from source. The copy in the direction is the copy you build — not a starting point to improve on. The spec and the design brief **coexist**: the spec says what problem and what was cut; the design brief says how this surface should be.
 - **Read `medium.chosen`** — it decides the artifact and the tooling (table at the top of `references/develop-modes.md`). On a canvas or `claude-design` medium there is no scaffold and no `design-context/`; that is the normal path, not a failure.
 - **Save your output** in the `tarsila:` section of session.yaml (the Develop phase's state key) and set `current_phase: develop`.
 
@@ -62,7 +62,7 @@ Take `design_path` and each `surfaces[].file` from `.brisar/config.yaml` and joi
 
 ```bash
 BB=$(d=$PWD; while [ "$d" != / ] && [ ! -d "$d/.bb" ]; do d=$(dirname "$d"); done; echo "$d/.bb")
-ls "$BB/tasks/<slug>/design.md" "$BB/tasks/<slug>/design"/*.md 2>/dev/null
+ls "$BB/<slug>/design.md" "$BB/<slug>/design"/*.md \n   "$BB/tasks/<slug>/design.md" "$BB/tasks/<slug>/design"/*.md 2>/dev/null
 ```
 
 If no surface has a md: Phase 4 needs to run first (offer it) or the builder describes the screen directly in chat.
@@ -88,7 +88,7 @@ Call `AskUserQuestion`:
       "options": [
         {
           "label": "Full surface",
-          "description": "Construir 1 ou mais surfaces de ponta a ponta (lê a direção visual de cada em .bb/tasks/<slug>/). Recomendado se veio do scaffold."
+          "description": "Construir 1 ou mais surfaces de ponta a ponta (lê a direção visual de cada em .bb/<slug>/). Recomendado se veio do scaffold."
         },
         {
           "label": "Componente isolado",

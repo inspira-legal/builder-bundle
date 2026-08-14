@@ -95,7 +95,7 @@ row on either side is an omission made visible.
 
 `## design` is not a spec section. Inside bb the word already means screen design —
 `/bb:brisar` writes the visual direction — hierarchy, components and states — into
-`.bb/tasks/<slug>/design.md`, next to this spec.
+`.bb/<slug>/design.md`, next to this spec.
 Architecture, when a spec needs it, lives in the top half under the name it actually has
 in that problem.
 
@@ -111,7 +111,7 @@ doesn't do. Both can appear in the same file.
 `scripts/lint_spec.py` checks the mechanical half and stays out of judgment:
 
 ```bash
-python3 plugins/bb/skills/spec/scripts/lint_spec.py .bb/tasks/<slug>/spec.md
+python3 plugins/bb/skills/spec/scripts/lint_spec.py .bb/<slug>/spec.md
 ```
 
 | code | level | what it catches                                              |

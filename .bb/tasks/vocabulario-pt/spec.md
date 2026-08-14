@@ -171,7 +171,7 @@ Caminho principal:
 - [x] **4. Rename do nível de cima → spec** — as 216 ocorrências fora do `skills/brisar/**`,
       mais as do brisar que apontam pro `spec.md`; `task-state.md` vira `spec-state.md`
       → behaviors 2, 4 · dep: 1 · verifica: grep + leitura
-- [ ] **5. Pasta `.bb/<slug>/`** — `spec-state.md`, os 33 arquivos que citam o caminho, o
+- [x] **5. Pasta `.bb/<slug>/`** — `spec-state.md`, os 33 arquivos que citam o caminho, o
       glob do `delegate` e o `validate.yml`, com o caminho antigo mantido na varredura
       → behaviors 2, 6, 7, 15, 16 · dep: 4 · verifica: CI
 - [ ] **6. Espinha em português no formato e no lint** — `spec-format.md` e `lint_spec.py`

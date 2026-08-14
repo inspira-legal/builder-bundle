@@ -63,7 +63,7 @@ Create:
     └── config.yaml
 ```
 
-The visual direction does **not** live here — Phase 4 writes it into the task folder, `.bb/tasks/<slug>/`, next to the spec (plugin-level `references/spec-state.md`).
+The visual direction does **not** live here — Phase 4 writes it into the task folder, `.bb/<slug>/`, next to the spec (plugin-level `references/spec-state.md`).
 
 Command:
 
@@ -181,7 +181,7 @@ export default function App() {
         <h1 className="text-3xl font-semibold mb-4">{`<slug>`}</h1>
         <p className="text-text-secondary">
           Scaffolded by /bb:brisar. Tokens da marca <strong>Inspira</strong> ativos. Próximo: a fase
-          Develop constrói cada surface a partir da direção visual em <code>.bb/tasks/</code>.
+          Develop constrói cada surface a partir da direção visual em <code>.bb/</code>.
         </p>
       </main>
     </div>
@@ -266,7 +266,7 @@ pnpm dev
 - `design-context/` — fonte para a fase Develop do /bb:brisar. Não edite à mão a menos que saiba o que está fazendo.
 - `.brisar/config.yaml` — config do brisar. A fase Develop lê esse arquivo para saber onde estão os tokens e a direção visual.
 
-A direção visual de cada surface fica em `.bb/tasks/<slug>/`, junto do brief. Leia antes de desenhar.
+A direção visual de cada surface fica em `.bb/<slug>/`, junto do brief. Leia antes de desenhar.
 
 ## Próximos passos
 
@@ -375,7 +375,7 @@ brand:
 # Path of design-context — THIS IS WHERE THE DEVELOP PHASE WILL LOOK.
 design_context_path: "<slug>/design-context/"
 
-# Task folder (.bb/tasks/<slug>/) — Phase 4 fills it in when it writes the direction.
+# Task folder (.bb/<slug>/) — Phase 4 fills it in when it writes the direction.
 design_path: null
 
 # Surface tracking — one entry per surface file generated in Phase 4.
@@ -401,7 +401,7 @@ Instead of Vite + App.tsx, use:
 Don't create a new folder. Instead:
 
 - Ask which folder of the app is the entry point.
-- Create only `design-context/` and `.brisar/` at the root of the existing app (the design direction goes to `.bb/tasks/<slug>/` as usual).
+- Create only `design-context/` and `.brisar/` at the root of the existing app (the design direction goes to `.bb/<slug>/` as usual).
 - Create `src/components/<slug>/` for the feature's components.
 - Don't touch existing `package.json`, `vite.config`, `index.html`.
 
@@ -431,7 +431,7 @@ Warning: embedded is riskier. Confirm with the builder before touching any file 
     └── session.yaml
 ```
 
-The written direction for each screen lands in `.bb/tasks/<slug>/` (Phase 4), same as the standard variant.
+The written direction for each screen lands in `.bb/<slug>/` (Phase 4), same as the standard variant.
 
 DO NOT create: `package.json`, `vite.config.ts`, `tsconfig.json`, `src/`, `node_modules/`.
 
@@ -636,12 +636,12 @@ a {
 
 ## Telas / surfaces
 
-| Tela        | Arquivo                              | Direção visual                              |
-| ----------- | ------------------------------------ | ------------------------------------------- |
-| <surface-1> | [<surface-1>.html](<surface-1>.html) | `../.bb/tasks/<slug>/design/<surface-1>.md` |
-| <surface-2> | [<surface-2>.html](<surface-2>.html) | `../.bb/tasks/<slug>/design/<surface-2>.md` |
+| Tela        | Arquivo                              | Direção visual                        |
+| ----------- | ------------------------------------ | ------------------------------------- |
+| <surface-1> | [<surface-1>.html](<surface-1>.html) | `../.bb/<slug>/design/<surface-1>.md` |
+| <surface-2> | [<surface-2>.html](<surface-2>.html) | `../.bb/<slug>/design/<surface-2>.md` |
 
-A direção visual de cada tela mora em `.bb/tasks/<slug>/`, junto do brief — leia ANTES do HTML. O HTML é mockado; o brief tem a intenção.
+A direção visual de cada tela mora em `.bb/<slug>/`, junto do brief — leia ANTES do HTML. O HTML é mockado; o brief tem a intenção.
 
 ## Stack recomendada pra produção
 
@@ -654,20 +654,20 @@ Esta ferramenta é candidata a virar app interno. Stack alinhada com o resto da 
   1. Rode `/bb:brisar` na pasta-raiz da Inspira (não nesta pasta — esta é só protótipo).
   2. Quando perguntar perfil, marque "Sei mexer em código".
   3. Quando perguntar produto/marca: marque <brand>.
-  4. /bb:brisar scaffolda Vite. Use a direção visual em `.bb/tasks/<slug>/` como input pra fase Develop no projeto novo.
+  4. /bb:brisar scaffolda Vite. Use a direção visual em `.bb/<slug>/` como input pra fase Develop no projeto novo.
 
 ## O que NÃO fazer
 
 - Não copie HTML/CSS direto. Re-escreva como componentes React tipados, usando o DS.
 - Não use as cores hardcoded em `styles.css` — use os tokens semânticos do Tailwind v4 do scaffold real.
-- Não precise pedir aprovação a cada tela — a direção visual já tá em `.bb/tasks/<slug>/`.
+- Não precise pedir aprovação a cada tela — a direção visual já tá em `.bb/<slug>/`.
 
 ## Quem fez o protótipo
 
 <pessoa> (executive). Use <pessoa> como stakeholder de validação — não como cliente final do código.
 ```
 
-Fill the "Direção visual" column from what Phase 4 recorded (`design_path` + `surfaces[].file`), one row per surface — with a single surface that path is `../.bb/tasks/<slug>/design.md`.
+Fill the "Direção visual" column from what Phase 4 recorded (`design_path` + `surfaces[].file`), one row per surface — with a single surface that path is `../.bb/<slug>/design.md`.
 
 ##### `<slug>/README.md` — executive language
 
@@ -702,7 +702,7 @@ Esse protótipo é pra validar a ideia. **Não é o produto final.** O time téc
 - `styles.css` — visual (cores, fontes, espaçamentos da marca <brand>)
 - `HANDOFF-DEV.md` — pacote pro time técnico (não precisa abrir, mas se for passar adiante, manda esse arquivo)
 
-O brief de cada tela (texto explicando o que ela faz) fica em `.bb/tasks/<slug>/`, uma pasta acima.
+O brief de cada tela (texto explicando o que ela faz) fica em `.bb/<slug>/`, uma pasta acima.
 ```
 
 #### Step 4 — `.brisar/config.yaml` (variant)
@@ -760,7 +760,7 @@ profile:
 
 #### Phase 4 in this variant
 
-Phase 4 populates the `<surface>.html` stubs with HTML markup aligned to the surface's direction file in `.bb/tasks/<slug>/`. Not with React components, but with sections/divs styled via classes in `styles.css`. Result: builder opens `index.html`, clicks on a surface, sees a layout close to the brief.
+Phase 4 populates the `<surface>.html` stubs with HTML markup aligned to the surface's direction file in `.bb/<slug>/`. Not with React components, but with sections/divs styled via classes in `styles.css`. Result: builder opens `index.html`, clicks on a surface, sees a layout close to the brief.
 
 #### Phase 5 in this variant
 

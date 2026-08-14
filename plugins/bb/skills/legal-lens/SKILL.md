@@ -20,7 +20,7 @@ All user-facing text — findings, the report, the `## legal` section — is PT-
 Invoke on one of:
 
 - a **slug** → resolve the spec per the spec-state contract (plugin-level
-  `references/spec-state.md`: `.bb/tasks/<slug>/spec.md`) and review the framed
+  `references/spec-state.md`: `.bb/<slug>/spec.md`) and review the framed
   work;
 - a **file path** → review that document (a contract, policy, ToS, spec);
 - a **free description** → review the idea as stated.

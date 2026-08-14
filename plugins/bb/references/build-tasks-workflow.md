@@ -38,7 +38,7 @@ The skill passes a real JSON value (never a stringified one):
 ```
 {
   slug: "<slug>",
-  specPath: ".bb/tasks/<slug>/spec.md",
+  specPath: ".bb/<slug>/spec.md",
   gateHint: "<what the authority chain resolved, or null>",
   reuseNotes: ["<one string per reuse note in ## decisions>"],
   tasks: [

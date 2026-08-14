@@ -1,7 +1,7 @@
 # Front: contract — the diff against the spec that specified it
 
 Available only when a spec matches this branch (resolve per the plugin-root
-`references/spec-state.md` — `.bb/tasks/<slug>/spec.md`). It's the one front that
+`references/spec-state.md` — `.bb/<slug>/spec.md`). It's the one front that
 can catch a diff where every line is correct and the wrong thing got built.
 
 ## The two questions

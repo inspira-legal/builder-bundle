@@ -55,7 +55,7 @@ Ask the forks through the **`AskUserQuestion` tool** — concrete options the us
   mere absence of objections. No reaction usually means they checked out, not that
   they agree; prompt for the explicit nod.
 - **The validated spec is the checkpoint.** When the user approves (or sends last
-  edits), that `.bb/tasks/<slug>/spec.md` is the artifact. The gate then offers to
+  edits), that `.bb/<slug>/spec.md` is the artifact. The gate then offers to
   build (or build and ship) — and an explicit build pick is the user affirmatively
   starting execution, not the spec silently rolling into it. Never start building
   off the back of a re-read; only off that explicit pick.

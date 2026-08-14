@@ -1,6 +1,6 @@
 # Export mode — the shareable product/UX spec
 
-Load this only when exporting. The converged spec in `.bb/tasks/<slug>/spec.md`
+Load this only when exporting. The converged spec in `.bb/<slug>/spec.md`
 stays the source of truth; the export is a **rendering** of it for an audience
 without the spec's context — a designer picking it up in Figma, a dev team, a
 stakeholder deck. Everything below comes from the alignment already reached in
@@ -32,7 +32,7 @@ not at all.
 When in doubt, export the smallest set and expand on request. Name the files
 `spec-<feature>.md`, `content-<feature>.md`, `tasks-<feature>.md` and write them
 where the user wants them (default: alongside the spec in
-`.bb/tasks/<slug>/`).
+`.bb/<slug>/`).
 
 ## spec.md — the definition document
 

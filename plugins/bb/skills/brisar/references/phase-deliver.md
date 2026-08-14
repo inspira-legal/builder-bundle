@@ -61,8 +61,8 @@ Before any question, read `.brisar/session.yaml` in full:
 - **If `tarsila:` exists** — surfaces are built. Use `tarsila.surfaces[]` as the locator (file, or
   file + page + artboards on a canvas), plus `variants[]`, `states_covered[]` and `deviations[]`.
 - **`medium.chosen`** — decides how you open the artifact. See Step 0.
-- **If `gate.discover_brief` points at a spec** (`.bb/tasks/<slug>/spec.md`) — read it. The hypothesis, cuts, and appetite there are the criteria against which to review. Appetite informs review rigor (small appetite = lean review; large = dense review).
-- **If `gate.design_brief` points at a brief** (`.bb/tasks/<slug>/brief-design.md`) — read it. The research, the chosen direction, the base block common to all directions, the token limits read from source, and the open tension. **The two briefs coexist and neither substitutes for the other** — reviewing against the research alone loses the problem; reviewing against the hypothesis alone loses everything the research learned.
+- **If `gate.discover_brief` points at a spec** (`.bb/<slug>/spec.md`) — read it. The hypothesis, cuts, and appetite there are the criteria against which to review. Appetite informs review rigor (small appetite = lean review; large = dense review).
+- **If `gate.design_brief` points at a brief** (`.bb/<slug>/brief-design.md`) — read it. The research, the chosen direction, the base block common to all directions, the token limits read from source, and the open tension. **The two briefs coexist and neither substitutes for the other** — reviewing against the research alone loses the problem; reviewing against the hypothesis alone loses everything the research learned.
 - **If there is no spec** — **flag as a non-blocking warning**: "Não consigo reviewar contra hipótese porque ela não foi formulada. Posso reviewar contra critérios padrão de UI/UX, mas a profundidade fica limitada. Quer rodar /bb:discover antes? (não-bloqueante — posso seguir)"
 - **If there is no design brief** — same stance, one line: the review runs, but it cannot check
   fidelity to research that was never written. Say which lens is unavailable instead of implying
@@ -296,8 +296,8 @@ And a second: **do not turn the review into a redesign.** The strongest failure 
 | Artifact                                      | Produced by                            | Consumed by                                                                                       |
 | --------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | `.brisar/session.yaml` (`clarisse:` section)  | Deliver                                | Human (decides merge and divergences), `/bb:review` (cross-checks design review with code review) |
-| `.bb/tasks/<slug>/brief-design.md`            | Brief (updated here — living contract) | Human, the implementing dev, later rounds                                                         |
-| `.bb/tasks/<slug>/spec.md`                    | `/bb:spec` (delta proposed here)       | `/bb:implement`, `/bb:delegate`                                                                   |
+| `.bb/<slug>/brief-design.md`                  | Brief (updated here — living contract) | Human, the implementing dev, later rounds                                                         |
+| `.bb/<slug>/spec.md`                          | `/bb:spec` (delta proposed here)       | `/bb:implement`, `/bb:delegate`                                                                   |
 | `.brisar/clarisse/design-review.md`           | Deliver                                | Human (responds to issues), Develop phase (re-prototype if blockers)                              |
 | `.brisar/clarisse/accessibility-checklist.md` | Deliver                                | Human (resolves before merge), CI (reference)                                                     |
 | `.brisar/clarisse/handoff.md`                 | Deliver                                | Developer / agent who implements, `/bb:spec`, `/bb:review`                                        |
