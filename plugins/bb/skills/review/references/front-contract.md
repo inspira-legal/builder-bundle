@@ -6,7 +6,8 @@ can catch a diff where every line is correct and the wrong thing got built.
 
 ## The two questions
 
-1. **Did it build the specified thing?** Walk the spec's `## behavior` map. Each
+1. **Did it build the specified thing?** Walk the spec's `## Comportamento` map —
+   `## behavior` on a spec written before the rename, same map. Each
    `WHEN … THEN …` row is an acceptance row: find the code that implements it and
    the test that pins it. A mapped row with no corresponding code **or** no test
    is a finding — cite the row verbatim and say which half is missing.
@@ -17,8 +18,8 @@ can catch a diff where every line is correct and the wrong thing got built.
 
 ## Also read the upstream sections when present
 
-`## problem`, `## hypothesis`, `## fit`, and `## cuts` (written by
-`/bb:discover`) bound the work too. A diff that implements something `## cuts`
+`## Problema`, `## Hipótese`, `## Encaixe`, and `## Cortes` (written by
+`/bb:discover`) bound the work too. A diff that implements something `## Cortes`
 explicitly deferred is a finding with a strong citation — the decision to leave it
 out was already made.
 
@@ -32,5 +33,5 @@ Severity: a missing happy path is HIGH; a missing mapped edge or a missing test
 for a built behavior is MEDIUM; scope drift is MEDIUM; a stylistic divergence from
 the spec's wording is not a finding at all.
 
-Cap: 8. When the spec has no `## behavior` map (a small spec that skipped it),
+Cap: 8. When the spec has no `## Comportamento` map (a small spec that skipped it),
 say so and fall back to question 2 alone rather than inventing acceptance rows.

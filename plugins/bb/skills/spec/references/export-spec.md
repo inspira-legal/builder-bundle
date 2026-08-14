@@ -15,7 +15,7 @@ not at all.
 **Test:** "Will the user change any behavior because of this?"
 
 - **Yes** → `Hypothesis` required → trio (`Connected OKR` + `Expected Impact` +
-  `Metric`) required. If the spec's `## hypothesis` (from `/bb:discover`)
+  `Metric`) required. If the spec's `## Hipótese` (from `/bb:discover`)
   exists, render it here; if the trio can't be filled from the spec, ask —
   don't invent.
 - **No** (internal feature, design pattern, compliance) → trio omitted entirely
@@ -37,7 +37,7 @@ where the user wants them (default: alongside the spec in
 ## spec.md — the definition document
 
 Map from the spec: the opening and the free top half → context and framing;
-`## decisions` → Decision rationale; `## out of scope` → Out of scope; `## behavior` → Behaviors;
+`## Decisões` → Decision rationale; `## Fora de escopo` → Out of scope; `## Comportamento` → Behaviors;
 the behavior map's `WHEN … THEN …` rows → Definition of done criteria.
 
 ```markdown
@@ -125,7 +125,7 @@ product's language (PT-BR for Inspira products).
 ## tasks.md — implementation breakdown
 
 Generate for Large scope or non-trivial technical dependencies. Render from the
-spec's `## tasks` items — same work, table form with explicit dependencies and
+spec's `## Tarefas` items — same work, table form with explicit dependencies and
 verification criteria.
 
 ```markdown

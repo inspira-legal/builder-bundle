@@ -34,16 +34,17 @@ what still needs validation before it becomes code:
 
 ## Capture
 
-Write two sections into the spec (location per the spec-state contract):
+Write two sections into the spec (location per the spec-state contract) — under
+the English names when the spec already carries them:
 
 ```
-## problem
+## Problema
 <one-paragraph statement>  [confidence: med]
 - who & impact: <who, how many, how badly>  [confidence: low]
 - appetite: <budget, e.g. "~2 semanas">
 - success signal: <the one observable metric>  [confidence: med]
 
-## hypothesis
+## Hipótese
 If <change>, the <success signal> moves, because <mechanism>.  [confidence: low]
 ```
 

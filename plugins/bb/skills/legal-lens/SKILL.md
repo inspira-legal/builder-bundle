@@ -1,6 +1,6 @@
 ---
 name: legal-lens
-description: Passa uma lente jurídica sobre qualquer artefato — ideia, feature, fluxo ou documento — pra levantar implicações legais e regulatórias, gaps de compliance, risco e o que um advogado exigiria antes do lançamento. Default direito brasileiro (LGPD, CDC, Marco Civil…), sobrescrevível pra qualquer jurisdição. Grounded — cita a norma quando conhece, sinaliza incerteza em vez de inventar lei, e faz triagem pra revisão jurídica humana em vez de dar parecer. Reporta só o significativo, cada issue com mitigação; anexa `## legal` à spec quando roda sobre uma. Use quando o usuário disser "revisão jurídica", "isso é legal?", "implicações legais", "checa compliance", "LGPD", "risco regulatório", ou "o que um advogado objetaria". NÃO use como substituto de um advogado qualificado.
+description: Passa uma lente jurídica sobre qualquer artefato — ideia, feature, fluxo ou documento — pra levantar implicações legais e regulatórias, gaps de compliance, risco e o que um advogado exigiria antes do lançamento. Default direito brasileiro (LGPD, CDC, Marco Civil…), sobrescrevível pra qualquer jurisdição. Grounded — cita a norma quando conhece, sinaliza incerteza em vez de inventar lei, e faz triagem pra revisão jurídica humana em vez de dar parecer. Reporta só o significativo, cada issue com mitigação; anexa `## Jurídico` à spec quando roda sobre uma. Use quando o usuário disser "revisão jurídica", "isso é legal?", "implicações legais", "checa compliance", "LGPD", "risco regulatório", ou "o que um advogado objetaria". NÃO use como substituto de um advogado qualificado.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -13,7 +13,7 @@ A juridical pass over whatever you point it at — surfacing where it touches th
 law, the risk that carries, and what a lawyer would require before it ships. It
 **triages for human legal review; it is not legal advice** and does not replace
 counsel. Default jurisdiction is **Brazilian law**; pass another to override.
-All user-facing text — findings, the report, the `## legal` section — is PT-BR.
+All user-facing text — findings, the report, the `## Jurídico` section — is PT-BR.
 
 ## Input
 
@@ -71,12 +71,14 @@ fix is half a finding. Rank by severity:
 
 Always report the findings in the conversation, grouped by severity. **If the
 artifact is a spec** (resolved via the spec-state contract), also append
-or update a `## legal` section so the spec carries the legal context
-downstream; for an arbitrary document outside the task dirs, report only —
-don't write into it.
+or update a `## Jurídico` section so the spec carries the legal context
+downstream; for an arbitrary document outside the spec folders, report only —
+don't write into it. A spec that already carries a `## legal` section from before
+the rename is read and updated under the name it has — and one line of the report
+says the Portuguese name is `## Jurídico`, the same answer the lint's `W003` gives.
 
 ```
-## legal
+## Jurídico
 jurisdiction: Brazil (default)
 - [blocker] <issue> — <norm, cited or flagged as uncertain> — <mitigation>
 - [significant] <issue> — <norm> — <mitigation>  [confidence: med]

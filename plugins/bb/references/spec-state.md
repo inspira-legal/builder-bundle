@@ -80,16 +80,37 @@ canonical: <absolute path actually written, when the folder is a symlink; else o
 
 **`/bb:delegate` owns the `status` lifecycle** — it flips the value as it selects,
 runs and lands a spec. `spec` only writes the initial block (`status: pending`) on
-finalize. The `## tasks` checkboxes inside the spec stay `implement`'s concern. A spec
+finalize. The `## Tarefas` checkboxes inside the spec stay `implement`'s concern. A spec
 without the block is treated as `pending` with unknown `created` (sorted last in
 bare selection).
 
 ## Upstream sections (discover → spec)
 
-`/bb:discover` seeds the spec with `## problem` / `## hypothesis` (problem
-framing) and `## fit` / `## cuts` (appetite & scope). `/bb:spec` reads them as the
-intent this work serves and builds the rest of the spec in the same file — the
+`/bb:discover` seeds the spec with `## Problema` / `## Hipótese` (problem
+framing) and `## Encaixe` / `## Cortes` (appetite & scope). `/bb:spec` reads them as
+the intent this work serves and builds the rest of the spec in the same file — the
 upstream sections stay where they are, in the free top half, and the spine
-(`## decisions`, `## behavior`, `## tasks`, `## out of scope`, `## open`) goes
-below them. The format is
+(`## Decisões`, `## Comportamento`, `## Tarefas`, `## Fora de escopo`,
+`## Em aberto`) goes below them. The format is
 `${CLAUDE_PLUGIN_ROOT}/skills/spec/references/spec-format.md`.
+
+## Both names read the same
+
+The section names are Portuguese, and a spec written before the rename carries the
+English one. **Every reader takes both**, one pair per section:
+
+| português           | inglês         | português     | inglês       |
+| ------------------- | -------------- | ------------- | ------------ |
+| `## Decisões`       | `decisions`    | `## Problema` | `problem`    |
+| `## Comportamento`  | `behavior`     | `## Hipótese` | `hypothesis` |
+| `## Tarefas`        | `tasks`        | `## Encaixe`  | `fit`        |
+| `## Fora de escopo` | `out of scope` | `## Cortes`   | `cuts`       |
+| `## Em aberto`      | `open`         | `## Jurídico` | `legal`      |
+
+The task line's dependency field is one field under two spellings — `depende:` and
+`dep:` — and reads the same either way.
+
+**Writing is not symmetric.** A new section is written in Portuguese; a section
+already on disk keeps the spelling it has, so one spec never carries both names for
+the same thing. The lint answers an English heading with `W003` and the Portuguese
+name to write, and the file stays valid.

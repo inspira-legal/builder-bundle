@@ -144,13 +144,13 @@ Caminho principal:
 8. `/bb:review` despacha os agentes → a `description:` e o relatório saem em português sem
    termo que precise de tradução.
 
-| #   | WHEN                                                | THEN                                                              |
-| --- | --------------------------------------------------- | ------------------------------------------------------------------ |
+| #   | WHEN                                                | THEN                                                                |
+| --- | --------------------------------------------------- | ------------------------------------------------------------------- |
 | 9   | spec antiga com `## decisions`/`## open`            | lint emite `W003` com a tradução; sem erro, arquivo continua válido |
-| 10  | spec antiga chega no `/bb:implement`                | acha `## tasks` pelo nome antigo e constrói igual                  |
+| 10  | spec antiga chega no `/bb:implement`                | acha `## tasks` pelo nome antigo e constrói igual                   |
 | 11  | spec mistura `## Tarefas` e `## tasks`              | lint emite `W003` na seção em inglês; as duas são lidas             |
-| 12  | spec sem `## Decisões` nem `## decisions`           | `E002` como hoje, agora citando o nome português                   |
-| 13  | spec com `## design` ou `## still open`             | `E003` como hoje — nome morto continua morto                       |
+| 12  | spec sem `## Decisões` nem `## decisions`           | `E002` como hoje, agora citando o nome português                    |
+| 13  | spec com `## design` ou `## still open`             | `E003` como hoje — nome morto continua morto                        |
 | 14  | linha de tarefa ainda escrita com `dep:`            | lida normalmente; `depende:` e `dep:` valem os dois                 |
 | 15  | spec mora em `.bb/tasks/<slug>/` de outro repo      | encontrada e construída — o glob antigo continua na varredura       |
 | 16  | repo tem `.bb/<slug>/` e `.bb/tasks/<slug>/` iguais | conta uma vez; o slug da pasta é a chave                            |
@@ -176,7 +176,7 @@ Caminho principal:
       → behaviors 2, 6, 7, 15, 16 · dep: 4 · verifica: CI
 - [x] **6. Espinha em português no formato e no lint** — `spec-format.md` e `lint_spec.py`
       com `W003` e os nomes duplos → behaviors 2, 3, 9, 11, 12, 13 · dep: 3, 4 · verifica: CI
-- [ ] **7. Leitores de seção aceitam os dois nomes** — `implement`, `review`, `delegate`,
+- [x] **7. Leitores de seção aceitam os dois nomes** — `implement`, `review`, `delegate`,
       `discover`, `brisar`, `legal-lens`, `build-mode`, `spec-state`, mais `depende:`/`dep:`
       → behaviors 4, 5, 10, 14, 19 · dep: 6 · verifica: leitura
 - [ ] **8. `description:` dos agentes em português** — `bb-finder` e `bb-verifier` pela

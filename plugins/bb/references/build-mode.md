@@ -10,9 +10,10 @@ Two ways to build a spec's tasks, and the user picks per run:
 
 The reason to offer the choice isn't speed. A spec of eight tasks built in one
 context hits compaction mid-build, and that's exactly where the loop degrades: the
-`## behavior` map falls out of context and the build starts drifting from the
-`## decisions`. Losing tacit context between agents is the price, and the convention
-note is what's paid with — lossy on purpose instead of lossy by accident.
+`## Comportamento` map falls out of context and the build starts drifting from
+the `## Decisões`. Losing tacit context between agents is the price, and the
+convention note is what's paid with — lossy on purpose instead of lossy by
+accident.
 
 ## When the question is asked
 
@@ -21,10 +22,11 @@ the first task — no size threshold. A spec with a single task is still asked; 
 choice is the user's, not a heuristic's. When `/bb:delegate` drives the build it's
 delegate that asks, and the implement loop it drives takes the answer as given.
 
-Two things skip it entirely. A spec with **no `## tasks` section** has no tasks to
-fan out over — and no build either: implement's Prerequisites stop the run and send
-it back to `/bb:spec` before this question would have been reached. The other is a
-run where workflows aren't available, below.
+Two things skip it entirely. A spec with **no `## Tarefas` section** — and none
+under the older `## tasks` either — has no tasks to fan out over, and no build
+either: implement's Prerequisites stop the run and send it back to `/bb:spec`
+before this question would have been reached. The other is a run where workflows
+aren't available, below.
 
 This is a mid-skill question, not the handoff gate — the gate convention in
 `handoff-gate.md` still applies to the one at the end of the skill. What carries over

@@ -32,8 +32,9 @@ builder.
 
 Before any question, read `.brisar/session.yaml` in full:
 
-- **`gate.discover_brief`** (`.bb/<slug>/spec.md` with `## problem` / `## hypothesis` /
-  `## fit` / `## cuts`) — this is the **upstream contract**. The research answers _how should
+- **`gate.discover_brief`** (`.bb/<slug>/spec.md` with `## Problema` / `## Hipótese` /
+  `## Encaixe` / `## Cortes`, or the English names on a spec written before the rename) —
+  this is the **upstream contract**. The research answers _how should
   this be?_; the spec answered _is it worth building, and what did we cut?_ Load it:
   the hypothesis tells you what the research must test, and the cuts tell you what **not** to
   research a solution for.
@@ -479,9 +480,9 @@ decorative ones.
 
 ## Cooperation contract
 
-| Artifact                                                               | Produced by                                     | Consumed by                                                   |
-| ---------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------- |
-| `.bb/<slug>/spec.md` (`## problem`/`## hypothesis`/`## fit`/`## cuts`) | `/bb:discover`, `/bb:spec` (outside this skill) | Research (Step 0 — upstream contract), Brief (reconciliation) |
-| `.brisar/session.yaml` (`research:` section)                           | Research                                        | Brief, Diverge, Deliver (what was skipped, and why)           |
-| Distilled findings per front                                           | Research subagents                              | Brief (`references/brief.md`)                                 |
-| Token source on disk + the repo's own token rules                      | the product repo                                | Research (Front B — read, never written)                      |
+| Artifact                                                                    | Produced by                                     | Consumed by                                                   |
+| --------------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------- |
+| `.bb/<slug>/spec.md` (`## Problema`/`## Hipótese`/`## Encaixe`/`## Cortes`) | `/bb:discover`, `/bb:spec` (outside this skill) | Research (Step 0 — upstream contract), Brief (reconciliation) |
+| `.brisar/session.yaml` (`research:` section)                                | Research                                        | Brief, Diverge, Deliver (what was skipped, and why)           |
+| Distilled findings per front                                                | Research subagents                              | Brief (`references/brief.md`)                                 |
+| Token source on disk + the repo's own token rules                           | the product repo                                | Research (Front B — read, never written)                      |

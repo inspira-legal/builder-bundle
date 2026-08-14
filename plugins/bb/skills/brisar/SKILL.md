@@ -110,7 +110,8 @@ a new surface, or (c) start from scratch archiving the old session.
 If `status: bootstrapped-to-discover`: the maturity gate fired earlier and the
 builder went to /bb:discover. Look for the resulting spec (the spec-state
 contract, plugin-level `references/spec-state.md`: `.bb/<slug>/spec.md`
-carrying `## problem` / `## fit`); confirm with the builder which spec it is if
+carrying `## Problema` / `## Encaixe`, or the English names on an older spec);
+confirm with the builder which spec it is if
 more than one matches. Record its path under `gate.discover_brief`, let the
 appetite and cuts inform fidelity/scope, and resume at the **Research phase** —
 intake is already filled, and the framing is exactly what the research has to
@@ -276,10 +277,10 @@ resumes at the **Research phase** with the framing carried over.
 
 Two slots in `session.yaml`, two different questions, and later phases read both:
 
-| Slot                  | File                                                                   | Answers                                              | Written by                 |
-| --------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------- |
-| `gate.discover_brief` | `.bb/<slug>/spec.md` (`## problem`/`## hypothesis`/`## fit`/`## cuts`) | Is it worth building, for whom, and what did we cut? | `/bb:discover`, `/bb:spec` |
-| `gate.design_brief`   | `.bb/<slug>/brief-design.md`                                           | How should this surface be, and why?                 | the Brief phase here       |
+| Slot                  | File                                                                        | Answers                                              | Written by                 |
+| --------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------- |
+| `gate.discover_brief` | `.bb/<slug>/spec.md` (`## Problema`/`## Hipótese`/`## Encaixe`/`## Cortes`) | Is it worth building, for whom, and what did we cut? | `/bb:discover`, `/bb:spec` |
+| `gate.design_brief`   | `.bb/<slug>/brief-design.md`                                                | How should this surface be, and why?                 | the Brief phase here       |
 
 **Never substitute one for the other.** Reviewing against the research alone loses the
 problem; reviewing against the hypothesis alone loses everything the research learned.

@@ -27,7 +27,7 @@ The mode choice itself — when it's offered and the question it asks — is
 
 The tasks run in a `for` loop with `await` — not `pipeline()`. `pipeline` runs each
 item through the stages independently and concurrently, which is the wrong primitive
-here: the tasks share one working tree, and `dep:` exists precisely to say that
+here: the tasks share one working tree, and `depende:` exists precisely to say that
 task 2 builds on what task 1 created. `parallel()` appears exactly once, in stage
 zero, which is read-only.
 
@@ -40,7 +40,7 @@ The skill passes a real JSON value (never a stringified one):
   slug: "<slug>",
   specPath: ".bb/<slug>/spec.md",
   gateHint: "<what the authority chain resolved, or null>",
-  reuseNotes: ["<one string per reuse note in ## decisions>"],
+  reuseNotes: ["<one string per reuse note in ## Decisões>"],
   tasks: [
     { n: 1, title: "...", delivers: "...", behaviors: [2, 3], dep: [], verifica: "..." }
   ]
@@ -48,8 +48,8 @@ The skill passes a real JSON value (never a stringified one):
 ```
 
 `tasks` carries only the ones still unticked at invoke time, in an order that
-already satisfies `dep:`. The agents re-read the spec anyway — `args` is the plan,
-the file on disk is the truth.
+already satisfies `depende:`. The agents re-read the spec anyway — `args` is the
+plan, the file on disk is the truth.
 
 ## Stage zero — prove the ground before task 1
 
@@ -118,10 +118,11 @@ conventions the loop already had. Anything else stops the loop and keeps what's 
 The prompt carries the spec path, the task's own line, the behaviors it cites, the
 accumulated convention note, and the gate commands stage zero resolved. Its steps:
 
-1. **Re-read `## tasks` on disk.** If this task is already `- [x]`, return
-   immediately with `status: "skipped"` — the run is resumable and re-running a
-   half-built spec must not redo what already landed.
-2. **Build the task**, staying inside the spec's `## out of scope`. A **stack
+1. **Re-read `## Tarefas` on disk** — `## tasks` when the spec still spells it in
+   English. If this task is already `- [x]`, return immediately with
+   `status: "skipped"` — the run is resumable and re-running a half-built spec
+   must not redo what already landed.
+2. **Build the task**, staying inside the spec's `## Fora de escopo`. A **stack
    choice** the spec didn't close (framework, package manager, tooling) is settled
    against the manifesto first — the plugin-level `references/consult-manifesto.md`,
    whose path goes into the prompt.

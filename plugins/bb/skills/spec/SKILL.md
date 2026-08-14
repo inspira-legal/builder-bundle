@@ -1,6 +1,6 @@
 ---
 name: spec
-description: Alinhar a ideia antes de construir — desenvolve um draft, itera as zonas cinzentas com você via question tool (decisões técnicas load-bearing E um mapa de comportamento meticuloso — happy path + edges com outcome esperado), roda um passe adversarial de completude (geradores + revisor independente + rastreabilidade comportamento↔tarefa) e fecha num gate de 3 vias implement / delegate / parar. Auto-dimensiona por complexidade. Lê as seções upstream `## problem` / `## hypothesis` / `## fit` do /bb:discover quando presentes. Use quando o usuário disser "faz o spec", "especifica isso", "vamos planejar", "shape this", "o que a gente deveria construir", "discutir antes de construir", ou começar uma feature não-trivial. NÃO use pra mudanças mecânicas pequenas (só faça), nem pra achar bugs (use /bb:review).
+description: Alinhar a ideia antes de construir — desenvolve um draft, itera as zonas cinzentas com você via question tool (decisões técnicas load-bearing E um mapa de comportamento meticuloso — happy path + edges com outcome esperado), roda um passe adversarial de completude (geradores + revisor independente + rastreabilidade comportamento↔tarefa) e fecha num gate de 3 vias implement / delegate / parar. Auto-dimensiona por complexidade. Lê as seções upstream `## Problema` / `## Hipótese` / `## Encaixe` do /bb:discover quando presentes. Use quando o usuário disser "faz o spec", "especifica isso", "vamos planejar", "shape this", "o que a gente deveria construir", "discutir antes de construir", ou começar uma feature não-trivial. NÃO use pra mudanças mecânicas pequenas (só faça), nem pra achar bugs (use /bb:review).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -23,7 +23,7 @@ Always required: reach alignment, **close the load-bearing technical decisions, 
 
 ## Read upstream intent first
 
-If the spec for this slug already carries `## problem` / `## hypothesis` / `## fit` / `## cuts` (seeded by `/bb:discover`), **read them before drafting** — they're the intent this work serves. The problem and success signal anchor the `why`, the appetite bounds the scope, and `## fit` / `## cuts` already settle what's in and what was deliberately dropped — so don't re-litigate a cut the user made upstream, and don't ask gray-area questions discover already answered. Echo the framing in one line so the user sees it carried through, then develop the design on top of it. No upstream sections is fine — spec from the one-liner as usual.
+If the spec for this slug already carries `## Problema` / `## Hipótese` / `## Encaixe` / `## Cortes` (seeded by `/bb:discover`, or under the English names on a spec written before the rename), **read them before drafting** — they're the intent this work serves. The problem and success signal anchor the `why`, the appetite bounds the scope, and `## Encaixe` / `## Cortes` already settle what's in and what was deliberately dropped — so don't re-litigate a cut the user made upstream, and don't ask gray-area questions discover already answered. Echo the framing in one line so the user sees it carried through, then develop the design on top of it. No upstream sections is fine — spec from the one-liner as usual.
 
 ## The loop
 
@@ -63,7 +63,7 @@ Size the ask to the stakes: cheap-to-reverse decisions lead with your pick (the 
 
 ## Decide the technical forks (required for Medium+)
 
-Before the gate, the load-bearing technical decisions must be **made or explicitly deferred** — not left implicit. Surface each that genuinely could go more than one way as a tool question (draft-first: your lean + the alternatives). Skip only what the codebase or goal already settles. Each fork closes as one bullet in `## decisions`. When a fork is a **stack choice** (framework, package manager, tooling), consult the manifesto first (plugin-level `references/consult-manifesto.md`) — the answer may already be settled company-wide.
+Before the gate, the load-bearing technical decisions must be **made or explicitly deferred** — not left implicit. Surface each that genuinely could go more than one way as a tool question (draft-first: your lean + the alternatives). Skip only what the codebase or goal already settles. Each fork closes as one bullet in `## Decisões`. When a fork is a **stack choice** (framework, package manager, tooling), consult the manifesto first (plugin-level `references/consult-manifesto.md`) — the answer may already be settled company-wide.
 
 - **Reuse** — what existing code, patterns, or modules this builds on. Name them (the cheapest guard against reinventing).
 - **Data model / shape** — the entities, fields, and relationships, or the shape of the data flowing through.
@@ -81,7 +81,7 @@ The behaviors are what guarantee the built thing matches the idea. An unmapped b
 - **Happy path** — walk the main flow step by step and concretely: input → what happens → observable output. Every step the flow really takes gets a line.
 - **Edge cases** — every meaningful deviation, each with its **expected outcome**, phrased `WHEN <case> THEN <observable outcome>` so each row reads directly as a test: empty / zero / huge input, invalid input, first-run vs repeat, concurrent use, failure & rollback, denied permission/auth, partial or interrupted runs, migrating existing data. Map the _outcome_, not just that the case exists.
 
-Walking each behavior surfaces decisions you haven't made — those go back into the loop as gray areas, and each edge's outcome drives its handling in the technical forks. **A behavior with no decided outcome is an open item the gate blocks on.** Litmus for whether an edge's outcome is load-bearing (not just a minor case): **does its outcome contradict the `why`?** If choosing the wrong outcome would make the built thing betray its own reason for existing, it's load-bearing, and the gate blocks on it like any other fork. This map doubles as the acceptance criteria: each behavior is something `/bb:ship` and `/bb:review` check against, and each happy-path segment is a vertical task. Record it in a `## behavior` section for Large work (happy path + an edge→outcome table); inline for Medium.
+Walking each behavior surfaces decisions you haven't made — those go back into the loop as gray areas, and each edge's outcome drives its handling in the technical forks. **A behavior with no decided outcome is an open item the gate blocks on.** Litmus for whether an edge's outcome is load-bearing (not just a minor case): **does its outcome contradict the `why`?** If choosing the wrong outcome would make the built thing betray its own reason for existing, it's load-bearing, and the gate blocks on it like any other fork. This map doubles as the acceptance criteria: each behavior is something `/bb:ship` and `/bb:review` check against, and each happy-path segment is a vertical task. Record it in a `## Comportamento` section for Large work (happy path + an edge→outcome table); inline for Medium.
 
 ## Capture the alignment (lightweight, on disk)
 
@@ -93,7 +93,7 @@ The on-disk contract — location, frontmatter schema, status lifecycle — is t
 
 On finalize, open the spec with the frontmatter block (`status: pending`, `created: <today>`, `slug: <slug>`). If `/bb:discover` wrote the file first without the block, backfill it on finalize. Leave the lifecycle after this to delegate — spec only seeds `pending`.
 
-**Large** work carries `## behavior` and `## tasks` as their own sections — the acceptance contract and the vertical tasks the build side consumes. **Medium** work keeps both inline in the decisions.
+**Large** work carries `## Comportamento` and `## Tarefas` as their own sections — the acceptance contract and the vertical tasks the build side consumes. **Medium** work keeps both inline in the decisions.
 
 ## Export mode — a shareable product/UX spec
 

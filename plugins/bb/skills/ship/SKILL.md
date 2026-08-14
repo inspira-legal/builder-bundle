@@ -56,7 +56,7 @@ Launch the read-only work concurrently — review agents in one message, scripts
    - one `front-*.md` per front the probe made available. The catalog in `fronts.md` **is** the list, so a front added to the engine reaches ship without an edit to this file.
    - `verify.md` — the barrier, grouping by `file:line`, and the independent verdict (CONFIRMED / PLAUSIBLE / REFUTED) that every candidate passes through before it counts.
 
-   Two fronts are ship's own business and stay out: `threads` and `ci` — ship handles review comments and red checks itself, further down and in `references/land-pr.md`. `rules` is where the repo's `CODE_REVIEW_GUIDE.md` becomes binding on the code ship is about to land — and its absence is what takes the front off the table; `contract` is where the spec's `## behavior` map is checked row by row (resolved per the plugin-level `references/spec-state.md`).
+   Two fronts are ship's own business and stay out: `threads` and `ci` — ship handles review comments and red checks itself, further down and in `references/land-pr.md`. `rules` is where the repo's `CODE_REVIEW_GUIDE.md` becomes binding on the code ship is about to land — and its absence is what takes the front off the table; `contract` is where the spec's `## Comportamento` map is checked row by row (resolved per the plugin-level `references/spec-state.md`).
 
    For `project_kind: lexflow` the structure is identical but the correctness lens _content_ comes from `references/land-lexflow.md` — a declarative manifest gives a lens about async state nothing to grip on.
 
