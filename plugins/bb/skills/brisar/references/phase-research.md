@@ -34,7 +34,7 @@ Before any question, read `.brisar/session.yaml` in full:
 
 - **`gate.discover_brief`** (`.bb/tasks/<slug>/spec.md` with `## problem` / `## hypothesis` /
   `## fit` / `## cuts`) — this is the **upstream contract**. The research answers _how should
-  this be?_; the discover brief answered _is it worth building, and what did we cut?_ Load it:
+  this be?_; the spec answered _is it worth building, and what did we cut?_ Load it:
   the hypothesis tells you what the research must test, and the cuts tell you what **not** to
   research a solution for.
   - **A cut is a constraint, not a taboo.** If the research finds a cut was wrong, that is a
@@ -58,16 +58,16 @@ Write your output to the `research:` section of session.yaml and set
 
 Judge the depth from what you already have; **do not ask**. Signals, in order of weight:
 
-| Signal                                                             | Pushes toward       |
-| ------------------------------------------------------------------ | ------------------- |
-| No spec, no discover brief, one surface, adjustment-shaped request | `pocket`            |
-| Builder said "rápido", "simples", "só uma tela"                    | `pocket`            |
-| Discover brief with small appetite                                 | `pocket`            |
-| New surface with no precedent in the product                       | `full`              |
-| Contract with multiple variants/states, or a metric attached       | `full`              |
-| Commercial/persuasive surface, or a novel interaction              | `full`              |
-| Builder said "com profundidade", "pesquisa a fundo"                | `full`              |
-| The hardest composition has no market repertoire                   | `full`, and say why |
+| Signal                                                       | Pushes toward       |
+| ------------------------------------------------------------ | ------------------- |
+| No spec, one surface, adjustment-shaped request              | `pocket`            |
+| Builder said "rápido", "simples", "só uma tela"              | `pocket`            |
+| Spec with small appetite                                     | `pocket`            |
+| New surface with no precedent in the product                 | `full`              |
+| Contract with multiple variants/states, or a metric attached | `full`              |
+| Commercial/persuasive surface, or a novel interaction        | `full`              |
+| Builder said "com profundidade", "pesquisa a fundo"          | `full`              |
+| The hardest composition has no market repertoire             | `full`, and say why |
 
 Then print **one line**, before running anything:
 

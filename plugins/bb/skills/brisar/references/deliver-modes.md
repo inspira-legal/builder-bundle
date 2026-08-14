@@ -45,7 +45,7 @@ significant.
 
 **2. Hypothesis fit**
 
-- Read the hypothesis from the discover brief.
+- Read the hypothesis from the spec.
 - "If a user enters this screen, does their path lead to the behavior this hypothesis predicts?"
 - Flag if: primary CTA below the fold, primary action not visually dominant, unnecessary friction in
   the critical path.
@@ -408,7 +408,7 @@ it.
 
 ## Contexto rápido
 
-- **Hipótese (do brief em .bb/tasks/<slug>/spec.md):** <statement>
+- **Hipótese (da spec em .bb/tasks/<slug>/spec.md):** <statement>
 - **Apetite (do brief):** <small|medium|large>
 - **Surfaces no escopo:** <lista>
 - **Cortes registrados:** <lista de cortes do brief — pra evitar implementar o que foi cortado>

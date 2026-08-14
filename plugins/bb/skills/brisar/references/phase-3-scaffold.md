@@ -5,7 +5,7 @@ This is the phase that delivers. Everything before was conversation; here you wr
 ## When to run
 
 - Coming out of Phase 2 with `gate.resolution: not-applicable` or `override`.
-- OR coming from a subsequent /bb:brisar invocation resumed by Step 0.1 of SKILL.md after a `status: bootstrapped-to-discover` session (the builder ran /bb:discover and came back — the discover brief informs scope and fidelity here).
+- OR coming from a subsequent /bb:brisar invocation resumed by Step 0.1 of SKILL.md after a `status: bootstrapped-to-discover` session (the builder ran /bb:discover and came back — the spec informs scope and fidelity here).
 
 ## Step 1 — Confirm slug and location
 
@@ -63,7 +63,7 @@ Create:
     └── config.yaml
 ```
 
-The visual direction does **not** live here — Phase 4 writes it into the task folder, `.bb/tasks/<slug>/`, next to the brief (plugin-level `references/task-state.md`).
+The visual direction does **not** live here — Phase 4 writes it into the task folder, `.bb/tasks/<slug>/`, next to the spec (plugin-level `references/spec-state.md`).
 
 Command:
 

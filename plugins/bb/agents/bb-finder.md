@@ -12,7 +12,7 @@ context is the only writer, and it is what turns your candidates into a report.
 A scope block — the resolved diff range (`<merge_base>...HEAD`, already resolved,
 never a placeholder to guess at), the changed files, one paragraph of what changed,
 the repo's `CODE_REVIEW_GUIDE.md` when there is one, the criteria path your front
-points at, and the brief when there is one — plus **one** angle/lens set, its
+points at, and the spec when there is one — plus **one** angle/lens set, its
 candidate cap, and the Finding shape to return.
 
 Everything front-specific comes from that prompt. What follows is the part that

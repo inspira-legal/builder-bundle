@@ -20,7 +20,7 @@ pushes** — the output is a review, optionally posted.
 Fronts available here: `correctness`, `quality`, `rules` (only when the target repo
 publishes a `CODE_REVIEW_GUIDE.md`, fetched above), and `a11y` when the PR
 touches UI files — it's static, so the fetched source is enough. `contract`,
-`threads`, and `ci` don't apply — there's no local brief, the threads aren't yours
+`threads`, and `ci` don't apply — there's no local spec, the threads aren't yours
 to resolve, and the CI isn't yours to fix. Ask which of the four to run, same as
 local mode.
 

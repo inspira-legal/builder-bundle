@@ -4,7 +4,7 @@ The missing piece. Without this, brisar would end without concrete direction to 
 
 This phase produces the visual direction for each confirmed surface, with enough brief for the builder (or the Develop phase) to start designing. Each file has 5 fixed sections: Visual hierarchy, DS components, States, First sketch direction, Notes.
 
-**Where it lands:** inside the task's folder, next to the brief — the plugin-level `references/task-state.md` owns that contract. One surface writes `.bb/tasks/<slug>/design.md`; two or more write `.bb/tasks/<slug>/design/<surface>.md` plus an index. The project folder scaffolded in Phase 3 holds code and design-context, not design direction.
+**Where it lands:** inside the task's folder, next to the spec — the plugin-level `references/spec-state.md` owns that contract. One surface writes `.bb/tasks/<slug>/design.md`; two or more write `.bb/tasks/<slug>/design/<surface>.md` plus an index. The project folder scaffolded in Phase 3 holds code and design-context, not design direction.
 
 ## Step 1 — Confirm surfaces
 
@@ -39,7 +39,7 @@ Slugify each surface: lowercase, kebab-case, ASCII (`Tela de busca` → `busca`,
 
 ## Step 2 — Resolve the task folder, then the index
 
-Resolve `.bb/` per the task-state contract (nearest ancestor with one, else create it in the cwd) and use `.bb/tasks/<slug>/` — the same `<slug>` as the project. If a brief already sits there (`spec.md`, from `/bb:discover`), the folder exists; otherwise `mkdir -p` it.
+Resolve `.bb/` per the spec-state contract (nearest ancestor with one, else create it in the cwd) and use `.bb/tasks/<slug>/` — the same `<slug>` as the project. If a spec already sits there (`spec.md`, from `/bb:discover`), the folder exists; otherwise `mkdir -p` it.
 
 With **one** confirmed surface, write `.bb/tasks/<slug>/design.md` with the Step 3 template and skip the index — an index of one is ceremony.
 

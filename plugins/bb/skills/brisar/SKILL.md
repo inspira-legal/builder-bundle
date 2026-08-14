@@ -108,9 +108,9 @@ Develop phase with the context loaded, (b) regenerate the visual direction for
 a new surface, or (c) start from scratch archiving the old session.
 
 If `status: bootstrapped-to-discover`: the maturity gate fired earlier and the
-builder went to /bb:discover. Look for the resulting brief (the task-state
-contract, plugin-level `references/task-state.md`: `.bb/tasks/<slug>/spec.md`
-carrying `## problem` / `## fit`); confirm with the builder which brief it is if
+builder went to /bb:discover. Look for the resulting spec (the spec-state
+contract, plugin-level `references/spec-state.md`: `.bb/tasks/<slug>/spec.md`
+carrying `## problem` / `## fit`); confirm with the builder which spec it is if
 more than one matches. Record its path under `gate.discover_brief`, let the
 appetite and cuts inform fidelity/scope, and resume at the **Research phase** —
 intake is already filled, and the framing is exactly what the research has to
@@ -269,10 +269,10 @@ writes `.brisar/session.yaml` with:
 …then suggests running `/bb:discover <ideia>` and stops (never auto-invokes).
 /bb:discover keeps its own state in `.bb/tasks/<slug>/spec.md`. When the
 builder returns and runs `/bb:brisar` again, Step 0.1 detects the bootstrap
-status, locates the discover brief, records it under `gate.discover_brief`, and
+status, locates the spec, records it under `gate.discover_brief`, and
 resumes at the **Research phase** with the framing carried over.
 
-### The two briefs — they coexist, neither replaces the other
+### The spec and the design brief — they coexist, neither replaces the other
 
 Two slots in `session.yaml`, two different questions, and later phases read both:
 
@@ -291,7 +291,7 @@ against the built thing — the artifact that did not exist the first time.
 `.brisar/config.yaml` is where the paths are registered. Phase 3 decides
 `design_context_path` (default: `<slug>/design-context/`); Phase 4 decides
 `design_path` — the task folder `.bb/tasks/<slug>/`, where the visual direction
-lands next to the brief (plugin-level `references/task-state.md`). Develop and
+lands next to the spec (plugin-level `references/spec-state.md`). Develop and
 Deliver read both from the config — no hardcoded string on either side.
 
 **On canvas mediums there is no config and no design-context**, by design

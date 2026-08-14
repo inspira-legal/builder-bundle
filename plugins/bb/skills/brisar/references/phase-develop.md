@@ -14,8 +14,8 @@ The discipline here is **fidelity to contracts**:
 
 Before any question, read `.brisar/session.yaml` in full:
 
-- **If `gate.discover_brief` points at a brief** (`.bb/tasks/<slug>/spec.md`) — read it. Cuts recorded there are respected: DO NOT prototype features that were cut. Flag at the start: "Vou pular [feature_x] porque foi cortada no discover." The hypothesis informs layout decisions (when the builder asks "how should I arrange the CTA?", recall it). The appetite scales fidelity: small/medium appetite = lean fidelity (structure + tokens; no microinteraction polish); large appetite = polish included.
-- **If `gate.design_brief` points at a brief** (`.bb/tasks/<slug>/brief-design.md`) — read it. This is the **richer contract** when it exists: it carries the research, the chosen direction with its five parts (bet, composition, copy, rationale, risk), the base block common to all directions, and the token constraints read from source. The copy in the direction is the copy you build — not a starting point to improve on. The two briefs **coexist**: discover says what problem and what was cut; design says how this surface should be.
+- **If `gate.discover_brief` points at a spec** (`.bb/tasks/<slug>/spec.md`) — read it. Cuts recorded there are respected: DO NOT prototype features that were cut. Flag at the start: "Vou pular [feature_x] porque foi cortada no discover." The hypothesis informs layout decisions (when the builder asks "how should I arrange the CTA?", recall it). The appetite scales fidelity: small/medium appetite = lean fidelity (structure + tokens; no microinteraction polish); large appetite = polish included.
+- **If `gate.design_brief` points at a brief** (`.bb/tasks/<slug>/brief-design.md`) — read it. This is the **richer contract** when it exists: it carries the research, the chosen direction with its five parts (bet, composition, copy, rationale, risk), the base block common to all directions, and the token constraints read from source. The copy in the direction is the copy you build — not a starting point to improve on. The spec and the design brief **coexist**: the spec says what problem and what was cut; the design brief says how this surface should be.
 - **Read `medium.chosen`** — it decides the artifact and the tooling (table at the top of `references/develop-modes.md`). On a canvas or `claude-design` medium there is no scaffold and no `design-context/`; that is the normal path, not a failure.
 - **Save your output** in the `tarsila:` section of session.yaml (the Develop phase's state key) and set `current_phase: develop`.
 
@@ -227,7 +227,7 @@ Echo what was built (1 line: _"Construí <surface> em <path>. Loading/Empty/Erro
 2. **States always.** Default, loading, empty, error. Even on small appetite, only skip with an explicit `cut_reason`.
 3. **Decision recorded.** If you invented a custom component, write it in `.brisar/tarsila/notes.md` with the reason. Do not disappear without a record.
 4. **At most 2 questions per turn.** More than that becomes a form. Ask + build + echo.
-5. **Cuts respected.** If the discover brief cut X, do not prototype X. If the builder asks for X anyway, flag first: _"Notei que [X] foi cortado no discover. Prosseguir mesmo assim ou reabrir o corte?"_
+5. **Cuts respected.** If the spec cut X, do not prototype X. If the builder asks for X anyway, flag first: _"Notei que [X] foi cortado no discover. Prosseguir mesmo assim ou reabrir o corte?"_
 6. **No nitpicking of tokens.** If tokens.md says `--color-primary: #0070F3`, use exactly that. Do not "tweak 1%" to look better.
 
 One sharp caution: **never edit `tokens.md` or `components.md`** — the DS source of truth is governed by the scaffold phases (or an explicit DS-update round), and the Develop phase is a consumer. Writing to it from here creates a race between surfaces.

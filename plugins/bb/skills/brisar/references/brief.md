@@ -19,7 +19,7 @@ Beside the task contract, as its sibling:
 
 **Resolve `.bb/` the way the contract says** — the nearest ancestor of the cwd that already has
 one, and only create it in the cwd when no ancestor does (plugin-level
-`references/task-state.md`). Never resolve it as a bare relative path: after Phase 3 the session
+`references/spec-state.md`). Never resolve it as a bare relative path: after Phase 3 the session
 runs from **inside** the project folder, so a relative `.bb/` would mint a second root one level
 down, and the brief would land in a different tree than its sibling `design.md` — which is exactly
 what the folder contract exists to prevent.
@@ -92,7 +92,7 @@ Two rules about the findings section:
 ## Step 2 — Reconciliation against the upstream framing (mandatory)
 
 The step that stops a beautiful screen from answering the wrong question. Compare the research
-against the discover brief's `## problem` / `## hypothesis` / `## fit` / `## cuts` and write
+against the spec's `## problem` / `## hypothesis` / `## fit` / `## cuts` and write
 **three blocks**. All three, even when one is short.
 
 - **Confirma** — where the research supports the hypothesis, **and with what**: the reference,
@@ -115,7 +115,7 @@ against the discover brief's `## problem` / `## hypothesis` / `## fit` / `## cut
 
 That third question is the one nobody asks, and it is where the expensive findings live.
 
-If there is no discover brief, say so in one line and continue — the reconciliation degrades,
+If there is no spec, say so in one line and continue — the reconciliation degrades,
 it does not block. Same non-blocking stance the Deliver phase already takes.
 
 ### Legibility bites hardest here
@@ -219,8 +219,8 @@ result: "monto caminhos pra você escolher", not "divergir em direções".
 
 1. **An internal pointer carries its meaning on first use.** Never a bare `D7`, `P6`,
    "restriction 2", "axis 2" — always `D7 (a decisão de que o bloco de valor carrega a
-persuasão)`. The ruler: _a reader who has opened neither the spec nor the discover brief
-   understands the sentence._
+persuasão)`. The ruler: _a reader who has not opened the spec understands the
+   sentence._
 2. **A design concept gets a 5–10 word gloss on first use.** "reactância (a defesa que a pessoa
    levanta quando sente que estão vendendo pra ela)", "efeito de dotação (a mesma coisa vale
    mais depois que já é sua)". One short gloss, then use the term freely.
@@ -253,7 +253,7 @@ brief:
   path: <canonical path to brief-design.md>
   round: 1 # increments on every update
   reconciliation:
-    upstream: <path to the discover brief, or null>
+    upstream: <path to the spec, or null>
     confirms: <n>
     contradicts: <n> # >0 means the framing needs a decision
     unreachable: <n>
@@ -263,7 +263,7 @@ brief:
 
 Also record the path under `gate.design_brief` — that is the slot Develop and Deliver read,
 the same way `gate.discover_brief` carries the upstream framing. **The two coexist; the design
-brief never replaces the discover brief.**
+brief never replaces the spec.**
 
 ### Gate
 

@@ -11,15 +11,15 @@ The method below is identical either way.
 
 ## The catalog
 
-| id            | Rótulo (PT-BR)    | O que cobre                                                                                         | Disponível quando                                   | Referência             |
-| ------------- | ----------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------- |
-| `correctness` | Correção          | bugs no diff — lógica, edges, contratos, concorrência, segurança                                    | o diff não está vazio                               | `front-correctness.md` |
-| `quality`     | Qualidade         | limpeza behavior-preserving — reuso, simplificação, eficiência, dead weight, altitude, consistência | o diff não está vazio                               | `front-quality.md`     |
-| `rules`       | Regras do projeto | desvios do `CODE_REVIEW_GUIDE.md` do repo                                                           | existe `CODE_REVIEW_GUIDE.md` no root               | `front-rules.md`       |
-| `contract`    | Contrato do brief | o diff construiu o que foi combinado — e só isso                                                    | existe brief da branch (`.bb/tasks/<slug>/spec.md`) | `front-contract.md`    |
-| `a11y`        | Acessibilidade    | WCAG AA no que o diff mexeu na UI — semântica, nome acessível, teclado, foco, contraste             | o diff toca arquivo de UI                           | `front-a11y.md`        |
-| `threads`     | Threads da PR     | comentários de review não resolvidos                                                                | há PR aberta pra branch                             | `front-threads.md`     |
-| `ci`          | CI                | checks vermelhos — evidência, diagnóstico, causa raiz                                               | há check falhando na PR ou no último run da branch  | `front-ci.md`          |
+| id            | Rótulo (PT-BR)    | O que cobre                                                                                         | Disponível quando                                  | Referência             |
+| ------------- | ----------------- | --------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ---------------------- |
+| `correctness` | Correção          | bugs no diff — lógica, edges, contratos, concorrência, segurança                                    | o diff não está vazio                              | `front-correctness.md` |
+| `quality`     | Qualidade         | limpeza behavior-preserving — reuso, simplificação, eficiência, dead weight, altitude, consistência | o diff não está vazio                              | `front-quality.md`     |
+| `rules`       | Regras do projeto | desvios do `CODE_REVIEW_GUIDE.md` do repo                                                           | existe `CODE_REVIEW_GUIDE.md` no root              | `front-rules.md`       |
+| `contract`    | Contrato da spec  | o diff construiu o que foi combinado — e só isso                                                    | existe spec da branch (`.bb/tasks/<slug>/spec.md`) | `front-contract.md`    |
+| `a11y`        | Acessibilidade    | WCAG AA no que o diff mexeu na UI — semântica, nome acessível, teclado, foco, contraste             | o diff toca arquivo de UI                          | `front-a11y.md`        |
+| `threads`     | Threads da PR     | comentários de review não resolvidos                                                                | há PR aberta pra branch                            | `front-threads.md`     |
+| `ci`          | CI                | checks vermelhos — evidência, diagnóstico, causa raiz                                               | há check falhando na PR ou no último run da branch | `front-ci.md`          |
 
 ## Probe availability before asking
 
@@ -35,7 +35,7 @@ batch of cheap read-only calls (parallel background where possible):
   separately.
 - `CODE_REVIEW_GUIDE.md` at the repo root — the `rules` front's only rule source
   (`front-rules.md`), so its absence is what makes the front unavailable.
-- brief lookup for this branch (plugin-root `references/task-state.md`).
+- spec lookup for this branch (plugin-root `references/spec-state.md`).
 - UI in the diff, decided by **content** and not by extension: markup or
   component files (`*.{jsx,tsx,vue,svelte,astro,html,htm}`, `*.erb`, `*.hbs`,
   `*.blade.php`, Django/Jinja templates), a `.js`/`.ts`/`.py` file whose diff
@@ -84,7 +84,7 @@ dropped.
    has to guess), changed files, one paragraph of what changed, the repo's
    `CODE_REVIEW_GUIDE.md` when there is one, the criteria path its front points at (plugin-root
    `references/review-checklist.md` or `references/quality-checklist.md`), and the
-   brief when there is one — plus ONE angle/lens set and its candidate cap.
+   spec when there is one — plus ONE angle/lens set and its candidate cap.
 3. **Barrier before verify.** Pool every finder's candidates first: verification
    groups them by `file:line`, which needs all of them (`verify.md`).
 4. **`threads` and `ci` don't fan out** — they're script/`gh` reads followed by

@@ -1,6 +1,6 @@
 # Building the tasks as a dynamic workflow — the script's shape
 
-The workflow build mode runs one agent per task instead of building the whole brief
+The workflow build mode runs one agent per task instead of building the whole spec
 in the main context. This file is the **contract the generated script has to meet**;
 `/bb:implement` and `/bb:delegate` author the JS per run and pass it inline via the
 `Workflow` tool's `script` input. What ships is this contract; the script itself is
@@ -12,7 +12,7 @@ The mode choice itself — when it's offered and the question it asks — is
 ## What the platform forces
 
 - **No user input mid-run.** Only a permission prompt pauses a workflow. A task
-  agent can _return_ "the brief is underspecified"; it can't ask. The script decides.
+  agent can _return_ "the spec is underspecified"; it can't ask. The script decides.
 - **The script has no shell and no filesystem.** Only agents read, write and run
   commands. Every gate, commit and `verifica:` happens inside an agent; the script
   coordinates and reads structured returns.
@@ -38,7 +38,7 @@ The skill passes a real JSON value (never a stringified one):
 ```
 {
   slug: "<slug>",
-  briefPath: ".bb/tasks/<slug>/spec.md",
+  specPath: ".bb/tasks/<slug>/spec.md",
   gateHint: "<what the authority chain resolved, or null>",
   reuseNotes: ["<one string per reuse note in ## decisions>"],
   tasks: [
@@ -48,7 +48,7 @@ The skill passes a real JSON value (never a stringified one):
 ```
 
 `tasks` carries only the ones still unticked at invoke time, in an order that
-already satisfies `dep:`. The agents re-read the brief anyway — `args` is the plan,
+already satisfies `dep:`. The agents re-read the spec anyway — `args` is the plan,
 the file on disk is the truth.
 
 ## Stage zero — prove the ground before task 1
@@ -78,7 +78,7 @@ that and proceeds; `ran` and `green` say nothing in that case. **Non-empty** put
 stops on the table: `ran: false` (the run has no permission to execute it) and
 `green: false` (the tree was already red — a broken gate the build didn't cause).
 A note that came back `gone` is the third stop. `moved` is not a stop: the new path
-goes into the convention note, and from task 1 on it outranks the path the brief's
+goes into the convention note, and from task 1 on it outranks the path the spec's
 reuse note names.
 
 A stage-zero stop is normalized into the shape a task result has, so the caller has
@@ -109,20 +109,20 @@ for (const t of args.tasks) {
 Three exits, and each needs its own line. A `null` return (the user skipped the
 agent, or it died on a terminal API error) is a failed task that carries no blocker
 of its own, so the script writes one — assigning `stopped = r` there would hand the
-caller a `null` `stopped`, which reads as a clean run over a half-built brief. A
+caller a `null` `stopped`, which reads as a clean run over a half-built spec. A
 `skipped` task was already ticked before the run: count it and move on, keeping the
 conventions the loop already had. Anything else stops the loop and keeps what's green.
 
 ## What the task agent is told to do
 
-The prompt carries the brief path, the task's own line, the behaviors it cites, the
+The prompt carries the spec path, the task's own line, the behaviors it cites, the
 accumulated convention note, and the gate commands stage zero resolved. Its steps:
 
 1. **Re-read `## tasks` on disk.** If this task is already `- [x]`, return
    immediately with `status: "skipped"` — the run is resumable and re-running a
-   half-built brief must not redo what already landed.
-2. **Build the task**, staying inside the brief's `## out of scope`. A **stack
-   choice** the brief didn't close (framework, package manager, tooling) is settled
+   half-built spec must not redo what already landed.
+2. **Build the task**, staying inside the spec's `## out of scope`. A **stack
+   choice** the spec didn't close (framework, package manager, tooling) is settled
    against the manifesto first — the plugin-level `references/consult-manifesto.md`,
    whose path goes into the prompt.
 3. **Satisfy `verifica:`.** A command gets run: `result` is `passed` or `failed`.
@@ -138,7 +138,7 @@ accumulated convention note, and the gate commands stage zero resolved. Its step
    resume is same-session only and replays everything that started after the first
    unfinished agent; commits survive anything).
 6. **Return** the structured result. A red gate after the retries, a `verifica:` that
-   came back `failed`, or a brief too underspecified to build against all mean:
+   came back `failed`, or a spec too underspecified to build against all mean:
    **don't commit, don't revert.** Leave the tree as it is for diagnosis and return
    the blocker. A `verifica:` still `pending` is a green task — it commits, and the
    pending rides the script's return out to ship.
@@ -166,7 +166,7 @@ The agent returns the note it received plus what it established. Past roughly 15
 characters it condenses the oldest entries itself before returning; no dedicated
 summarizer agent. What belongs in it: names and paths introduced, signatures other
 tasks will call, a pattern chosen among alternatives, and any `moved` reuse target
-from stage zero. What doesn't: anything already written in the brief.
+from stage zero. What doesn't: anything already written in the spec.
 
 ## Effort and model
 
@@ -196,7 +196,7 @@ and CI never sees it. Confirm all of it, then invoke:
   null-checked before use.
 - No `Date.now()`, `new Date()` or `Math.random()` anywhere.
 - `args` is passed as a JSON value, and `tasks` holds only unticked tasks.
-- The task prompt includes: the brief path, the task line, its behaviors, the
+- The task prompt includes: the spec path, the task line, its behaviors, the
   accumulated note, the gate commands, the commit convention (conventional style, no
   AI attribution), the manifesto's path for stack choices, and the six steps above.
 - The branch the commits belong on already exists and is checked out — the agents

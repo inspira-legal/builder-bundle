@@ -87,7 +87,7 @@ brief:
   path: <canonical path to brief-design.md>
   round: <int>                     # increments on every update
   reconciliation:
-    upstream: <path to the discover brief, or null>
+    upstream: <path to the spec, or null>
     confirms: <n>
     contradicts: <n>               # >0 means the framing needs a decision
     unreachable: <n>
@@ -224,11 +224,11 @@ Old sessions may carry `nise:`/`esperanca:` sections, a `shaping:` block, and st
 
 ### Status states — who can set
 
-| Status                     | Set by                           | Meaning                                                                                                                                                                                                                                           |
-| -------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `in-progress`              | any phase                        | Session started, not finished. Step 0.1 offers to resume.                                                                                                                                                                                         |
-| `bootstrapped-to-discover` | Phase 2 (gate accepted)          | Partial intake written; waiting for the builder to run `/bb:discover` and come back. Step 0.1 detects it, locates the brief, records `gate.discover_brief`, and resumes at the **Research phase** — the framing is what the research has to test. |
-| `completed`                | last phase run (usually Deliver) | Journey finished. Re-runs enter the re-entry contract.                                                                                                                                                                                            |
+| Status                     | Set by                           | Meaning                                                                                                                                                                                                                                          |
+| -------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `in-progress`              | any phase                        | Session started, not finished. Step 0.1 offers to resume.                                                                                                                                                                                        |
+| `bootstrapped-to-discover` | Phase 2 (gate accepted)          | Partial intake written; waiting for the builder to run `/bb:discover` and come back. Step 0.1 detects it, locates the spec, records `gate.discover_brief`, and resumes at the **Research phase** — the framing is what the research has to test. |
+| `completed`                | last phase run (usually Deliver) | Journey finished. Re-runs enter the re-entry contract.                                                                                                                                                                                           |
 
 **A design brief on disk is itself a resume signal**, session or no session. Step 0.1 globs
 `.bb/tasks/*/brief-design.md`; when one exists the first diamond already ran, and brisar picks up
@@ -267,7 +267,7 @@ brand:
 design_context_path: "<slug>/design-context/"
 
 # The task folder — .bb/tasks/<slug>/, where Phase 4 writes the visual direction
-# next to the brief (plugin-level references/task-state.md). Absolute, like ds_path.
+# next to the spec (plugin-level references/spec-state.md). Absolute, like ds_path.
 design_path: "<absolute path>"
 
 # Surface tracking (updated by Phase 4 and re-runs). `file` is relative to

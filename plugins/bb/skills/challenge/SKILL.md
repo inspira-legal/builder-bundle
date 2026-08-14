@@ -83,7 +83,7 @@ format per the plugin-level `references/handoff-gate.md`:
 ```
 question: "Desafio fechado — a tese saiu fortalecida (confidence <X>). Como seguimos?"
 options:
-  - "Especificar (Recomendado)" — Rodo /bb:spec agora: transformo a tese num brief construível.
+  - "Especificar (Recomendado)" — Rodo /bb:spec agora: transformo a tese numa spec construível.
   - "Encerrar aqui" — A síntese fica com você; retome com /bb:spec quando quiser construir.
 ```
 

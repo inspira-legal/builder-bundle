@@ -7,7 +7,7 @@ and leaves the rest to whoever is describing the problem.
 ## Two halves
 
 ```
----  frontmatter  ---                    the on-disk contract (references/task-state.md)
+---  frontmatter  ---                    the on-disk contract (references/spec-state.md)
 
 # title
 opening, 1–3 paragraphs                  ┐
@@ -95,7 +95,7 @@ row on either side is an omission made visible.
 
 `## design` is not a spec section. Inside bb the word already means screen design —
 `/bb:brisar` writes the visual direction — hierarchy, components and states — into
-`.bb/tasks/<slug>/design.md`, next to this brief.
+`.bb/tasks/<slug>/design.md`, next to this spec.
 Architecture, when a spec needs it, lives in the top half under the name it actually has
 in that problem.
 

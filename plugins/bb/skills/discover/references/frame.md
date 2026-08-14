@@ -6,7 +6,7 @@ statement you'd defend, not a filled form.
 ## What you converge on
 
 Five fields, each **confidence-tagged** `[low | med | high]` by how clear,
-specific, and causal the answer is — the tags travel into the brief and flag
+specific, and causal the answer is — the tags travel into the spec and flag
 what still needs validation before it becomes code:
 
 - **Problem** — what's wrong today, stated concretely. The pain, not the missing
@@ -34,7 +34,7 @@ what still needs validation before it becomes code:
 
 ## Capture
 
-Write two sections into the brief (location per the task-state contract):
+Write two sections into the spec (location per the spec-state contract):
 
 ```
 ## problem

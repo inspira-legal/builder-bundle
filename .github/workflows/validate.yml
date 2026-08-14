@@ -24,15 +24,15 @@ jobs:
       - name: Validate frontmatter
         run: bun .github/scripts/validate-frontmatter.ts
 
-      - name: Lint task briefs
+      - name: Lint specs
         run: |
           shopt -s nullglob
-          briefs=(.bb/tasks/*/spec.md)
-          if [ ${#briefs[@]} -eq 0 ]; then
-            echo "Nenhum brief em .bb/tasks/ — nada pra lintar."
+          specs=(.bb/tasks/*/spec.md)
+          if [ ${#specs[@]} -eq 0 ]; then
+            echo "Nenhuma spec em .bb/tasks/ — nada pra lintar."
             exit 0
           fi
-          python3 plugins/bb/skills/spec/scripts/lint_spec.py "${briefs[@]}"
+          python3 plugins/bb/skills/spec/scripts/lint_spec.py "${specs[@]}"
 
       - name: Check formatting
         run: bun run fmt:check

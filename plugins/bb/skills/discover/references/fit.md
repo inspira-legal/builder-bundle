@@ -41,7 +41,7 @@ came from a framed problem; otherwise run only the mode the user asked for.
 
 ## Capture
 
-Write into the same brief, accreting alongside `## problem` / `## hypothesis`:
+Write into the same spec, accreting alongside `## problem` / `## hypothesis`:
 
 ```
 ## fit
@@ -60,5 +60,5 @@ Kept, in priority order:
 And refine the `## hypothesis` section in place into the testable form. Keep cut
 ideas worth revisiting as plain bullets marked _revisit_ — never checkboxes.
 
-A legal-sensitive bet deserves `/bb:legal-lens` over the brief before committing
+A legal-sensitive bet deserves `/bb:legal-lens` over the spec before committing
 — mention it in the report when it applies.

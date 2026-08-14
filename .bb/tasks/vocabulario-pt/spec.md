@@ -168,7 +168,7 @@ Caminho principal:
 - [x] **3. Rename `slice` → task/tarefa** — 12 arquivos, incluindo o `W002` do
       `lint_spec.py`; `build-slices-workflow.md` vira `build-tasks-workflow.md` e os 4
       ponteiros pra ele acompanham → behaviors 4, 10 · dep: 1 · verifica: grep zerado
-- [ ] **4. Rename do nível de cima → spec** — as 216 ocorrências fora do `skills/brisar/**`,
+- [x] **4. Rename do nível de cima → spec** — as 216 ocorrências fora do `skills/brisar/**`,
       mais as do brisar que apontam pro `spec.md`; `task-state.md` vira `spec-state.md`
       → behaviors 2, 4 · dep: 1 · verifica: grep + leitura
 - [ ] **5. Pasta `.bb/<slug>/`** — `spec-state.md`, os 33 arquivos que citam o caminho, o

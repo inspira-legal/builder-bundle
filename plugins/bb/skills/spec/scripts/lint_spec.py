@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check the mechanical shape of a spec brief.
+"""Check the mechanical shape of a spec.
 
 Judgment — is it too long, does it repeat itself, is it recounting the conversation —
 belongs to the independent reviewer. This only catches what is decidable by reading
@@ -46,7 +46,7 @@ def split_row(line):
 
 
 def check_frontmatter(lines):
-    """Yield problems with the `---` block the task-state contract requires."""
+    """Yield problems with the `---` block the spec-state contract requires."""
     if not lines or lines[0].strip() != "---":
         yield 1, "E001", "frontmatter ausente — o bloco `---` com status/created/slug abre o arquivo"
         return

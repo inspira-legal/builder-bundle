@@ -62,7 +62,7 @@ Format per the plugin-level `references/handoff-gate.md`:
 ```
 question: "A análise convergiu em algo construível. Como seguimos?"
 options:
-  - "Especificar (Recomendado)" — Rodo /bb:spec agora: transformo a conclusão num brief construível.
+  - "Especificar (Recomendado)" — Rodo /bb:spec agora: transformo a conclusão numa spec construível.
   - "Discover" — Rodo /bb:discover: enquadro o problema e o fit antes de desenhar.
   - "Encerrar aqui" — A conclusão fica com você; retome com /bb:spec ou /bb:discover.
 ```

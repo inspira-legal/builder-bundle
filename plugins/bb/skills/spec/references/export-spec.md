@@ -1,8 +1,8 @@
 # Export mode — the shareable product/UX spec
 
-Load this only when exporting. The converged brief in `.bb/tasks/<slug>/spec.md`
+Load this only when exporting. The converged spec in `.bb/tasks/<slug>/spec.md`
 stays the source of truth; the export is a **rendering** of it for an audience
-without the brief's context — a designer picking it up in Figma, a dev team, a
+without the spec's context — a designer picking it up in Figma, a dev team, a
 stakeholder deck. Everything below comes from the alignment already reached in
 the loop; the export never introduces new decisions.
 
@@ -15,8 +15,8 @@ not at all.
 **Test:** "Will the user change any behavior because of this?"
 
 - **Yes** → `Hypothesis` required → trio (`Connected OKR` + `Expected Impact` +
-  `Metric`) required. If the brief's `## hypothesis` (from `/bb:discover`)
-  exists, render it here; if the trio can't be filled from the brief, ask —
+  `Metric`) required. If the spec's `## hypothesis` (from `/bb:discover`)
+  exists, render it here; if the trio can't be filled from the spec, ask —
   don't invent.
 - **No** (internal feature, design pattern, compliance) → trio omitted entirely
   — no placeholder, no "N/A".
@@ -31,12 +31,12 @@ not at all.
 
 When in doubt, export the smallest set and expand on request. Name the files
 `spec-<feature>.md`, `content-<feature>.md`, `tasks-<feature>.md` and write them
-where the user wants them (default: alongside the brief in
+where the user wants them (default: alongside the spec in
 `.bb/tasks/<slug>/`).
 
 ## spec.md — the definition document
 
-Map from the brief: the opening and the free top half → context and framing;
+Map from the spec: the opening and the free top half → context and framing;
 `## decisions` → Decision rationale; `## out of scope` → Out of scope; `## behavior` → Behaviors;
 the behavior map's `WHEN … THEN …` rows → Definition of done criteria.
 
@@ -76,7 +76,7 @@ the behavior map's `WHEN … THEN …` rows → Definition of done criteria.
 
 ### Main flow
 
-[step by step of the normal journey — from the brief's happy path]
+[step by step of the normal journey — from the spec's happy path]
 
 ### States and variations
 
@@ -125,7 +125,7 @@ product's language (PT-BR for Inspira products).
 ## tasks.md — implementation breakdown
 
 Generate for Large scope or non-trivial technical dependencies. Render from the
-brief's `## tasks` items — same work, table form with explicit dependencies and
+spec's `## tasks` items — same work, table form with explicit dependencies and
 verification criteria.
 
 ```markdown
@@ -169,12 +169,12 @@ After exporting, emit:
 Spec exportada. O que levar para cada destino:
 
 → Exploração visual: use spec.md + content.md como insumo (Figma / /bb:brisar)
-→ Implementação: compartilhe spec.md [+ tasks.md se houver] com o time — ou rode /bb:implement direto do brief
+→ Implementação: compartilhe spec.md [+ tasks.md se houver] com o time — ou rode /bb:implement direto da spec
 → Próximo passo: [ação específica mais importante agora]
 ```
 
 ## Don't invent
 
-Every field renders from the brief or from an answer the user gave. A field the
-brief doesn't settle gets asked (one round, batched) or left blank — blank beats
+Every field renders from the spec or from an answer the user gave. A field the
+spec doesn't settle gets asked (one round, batched) or left blank — blank beats
 invented.

@@ -61,9 +61,9 @@ Before any question, read `.brisar/session.yaml` in full:
 - **If `tarsila:` exists** — surfaces are built. Use `tarsila.surfaces[]` as the locator (file, or
   file + page + artboards on a canvas), plus `variants[]`, `states_covered[]` and `deviations[]`.
 - **`medium.chosen`** — decides how you open the artifact. See Step 0.
-- **If `gate.discover_brief` points at a brief** (`.bb/tasks/<slug>/spec.md`) — read it. The hypothesis, cuts, and appetite there are the criteria against which to review. Appetite informs review rigor (small appetite = lean review; large = dense review).
+- **If `gate.discover_brief` points at a spec** (`.bb/tasks/<slug>/spec.md`) — read it. The hypothesis, cuts, and appetite there are the criteria against which to review. Appetite informs review rigor (small appetite = lean review; large = dense review).
 - **If `gate.design_brief` points at a brief** (`.bb/tasks/<slug>/brief-design.md`) — read it. The research, the chosen direction, the base block common to all directions, the token limits read from source, and the open tension. **The two briefs coexist and neither substitutes for the other** — reviewing against the research alone loses the problem; reviewing against the hypothesis alone loses everything the research learned.
-- **If there is no discover brief** — **flag as a non-blocking warning**: "Não consigo reviewar contra hipótese porque ela não foi formulada. Posso reviewar contra critérios padrão de UI/UX, mas a profundidade fica limitada. Quer rodar /bb:discover antes? (não-bloqueante — posso seguir)"
+- **If there is no spec** — **flag as a non-blocking warning**: "Não consigo reviewar contra hipótese porque ela não foi formulada. Posso reviewar contra critérios padrão de UI/UX, mas a profundidade fica limitada. Quer rodar /bb:discover antes? (não-bloqueante — posso seguir)"
 - **If there is no design brief** — same stance, one line: the review runs, but it cannot check
   fidelity to research that was never written. Say which lens is unavailable instead of implying
   full coverage.
@@ -245,7 +245,7 @@ Echo the final status in 1 line — e.g.: _"Design review: 2 issues significativ
         },
         {
           "label": "Especificar a implementação real",
-          "description": "Sugiro /bb:spec — transforma o protótipo + handoff doc num brief de construção"
+          "description": "Sugiro /bb:spec — transforma o protótipo + handoff doc numa spec de construção"
         },
         {
           "label": "Encerrar",
@@ -280,7 +280,7 @@ Two options to prepend when the situation calls for them:
 3. **Issue with solution, not without.** "Button has no `aria-label`" + "suggestion: `aria-label='Salvar petição'`". An issue without a solution is just noise. For a `divergência`, the "solution" is what you would do instead **plus the argument** — otherwise it is a preference.
 4. **Don't invent components.** If the design proposes something not in the DS, flag it: "This pattern isn't in the DS — want to add as a DS issue, make it custom local, or rework to use what exists?"
 5. **At least 1 specific piece of praise.** Not cheerleading — information. "The visual hierarchy of the home guides the eye from the hero to the primary CTA in <2s — works, keep this pattern."
-6. **Non-blocking when context is missing.** If there is no discover brief, flag a warning and continue with a standard UI/UX review. Blocking breaks the flow of the mature builder who knows what they're skipping.
+6. **Non-blocking when context is missing.** If there is no spec, flag a warning and continue with a standard UI/UX review. Blocking breaks the flow of the mature builder who knows what they're skipping.
 7. **Read the copy, don't scan it.** Word by word, in every variant. A duplicated preposition, a label naming a process that does not exist, a claim the source does not support — these are what users actually hit, and structure-only reviews never see them.
 8. **Compute, don't estimate.** Contrast is a number against a threshold. "Looks low contrast" is not a finding; "2,89:1 against the 4,5:1 minimum for text this size" is, and it comes with the fix.
 9. **Every variant, or say which ones you didn't.** N variants means N sweeps. Reviewing the default and generalizing is how a variant reaches production with a coupon that makes no sense for it.
