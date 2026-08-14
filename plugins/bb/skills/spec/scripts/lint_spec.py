@@ -12,17 +12,31 @@ Output: `path:line CODE mensagem` on stdout. Exit 1 when any E-code fired.
 import re
 import sys
 
-REQUIRED_SECTIONS = ("decisions", "open")
-RECOMMENDED_SECTIONS = {
-    "behavior": ("W001", "sem `## behavior` — o mapa de comportamento é o contrato de aceite"),
-    "tasks": ("W002", "sem `## tasks` — sem tarefas o build não tem o que consumir"),
+# (nome em português, nome em inglês) — as duas grafias valem; a mensagem cita a portuguesa.
+REQUIRED_SECTIONS = (("Decisões", "decisions"), ("Em aberto", "open"))
+RECOMMENDED_SECTIONS = (
+    ("Comportamento", "behavior", "W001", "o mapa de comportamento é o contrato de aceite"),
+    ("Tarefas", "tasks", "W002", "sem tarefas o build não tem o que consumir"),
+)
+# An English section still parses; W003 carries the Portuguese name to write instead.
+TRANSLATED_SECTIONS = {
+    "decisions": "Decisões",
+    "behavior": "Comportamento",
+    "tasks": "Tarefas",
+    "out of scope": "Fora de escopo",
+    "open": "Em aberto",
+    "problem": "Problema",
+    "hypothesis": "Hipótese",
+    "fit": "Encaixe",
+    "cuts": "Cortes",
+    "legal": "Jurídico",
 }
 DEAD_SECTIONS = {
     "design": (
         "`## design` é nome morto — no bb `design` é desenho de tela (`/bb:brisar`). "
         "Arquitetura vai pra metade de cima, com o nome que ela tem neste problema."
     ),
-    "still open": "seção `## still open` — o nome é `## open`.",
+    "still open": "seção `## still open` — o nome é `## Em aberto`.",
 }
 VALID_STATUS = ("pending", "in-progress", "done", "blocked")
 MAX_CELL = 100
@@ -130,17 +144,22 @@ def check_body(lines):
             seen.add(name)
             if name in DEAD_SECTIONS:
                 yield i, "E003", DEAD_SECTIONS[name]
+            elif name in TRANSLATED_SECTIONS:
+                yield i, "W003", (
+                    f"`## {name}` em inglês — em português é "
+                    f"`## {TRANSLATED_SECTIONS[name]}`; o arquivo continua válido"
+                )
 
     if table:
         yield from flush(table)
 
-    for name in REQUIRED_SECTIONS:
-        if name not in seen:
-            yield 1, "E002", f"sem `## {name}` — a espinha precisa dela"
+    for pt, en in REQUIRED_SECTIONS:
+        if pt.lower() not in seen and en not in seen:
+            yield 1, "E002", f"sem `## {pt}` — a espinha precisa dela"
 
-    for name, (code, message) in RECOMMENDED_SECTIONS.items():
-        if name not in seen:
-            yield 1, code, message
+    for pt, en, code, why in RECOMMENDED_SECTIONS:
+        if pt.lower() not in seen and en not in seen:
+            yield 1, code, f"sem `## {pt}` — {why}"
 
 
 def lint(path):

@@ -15,11 +15,11 @@ opening, 1–3 paragraphs                  ┐
 ## <whatever section the problem needs>  │  as many as the problem needs, named for
 ## <another>                             ┘  the problem. prose, diagram, short table, code.
 
-## decisions                             ┐
-## behavior                              │  the spine: fixed, in this order
-## tasks                                 │  each one has a reader
-## out of scope                          │
-## open                                  ┘
+## Decisões                              ┐
+## Comportamento                         │  the spine: fixed, in this order
+## Tarefas                               │  each one has a reader
+## Fora de escopo                        │
+## Em aberto                             ┘
 ```
 
 **The top half is yours.** Open with what the thing is, why now, and what success
@@ -29,22 +29,27 @@ architectural change might want "O seam entre agente e caller". Prose is the def
 diagrams, short tables and code fragments earn their place when they carry the idea
 better than a sentence would.
 
-**The spine is fixed because it has readers.** `/bb:implement` consumes `## tasks` and
-builds against `## behavior`; the `contract` front of `/bb:review` walks `## behavior`
-row by row; the spec gate itself blocks on `## open`. A section nobody reads is a
-section that drifts, which is why the set is small and every member earns its slot.
+**The spine is fixed because it has readers.** `/bb:implement` consumes `## Tarefas`
+and builds against `## Comportamento`; the `contract` front of `/bb:review` walks
+`## Comportamento` row by row; the spec gate itself blocks on `## Em aberto`. A section
+nobody reads is a section that drifts, which is why the set is small and every member
+earns its slot.
 
-- `## decisions` — the closed calls, one bullet each, so the build side never has to
+- `## Decisões` — the closed calls, one bullet each, so the build side never has to
   re-derive them from prose.
-- `## behavior` — the happy path step by step, then a `WHEN … THEN …` table where every
-  row reads as a test. The acceptance contract.
-- `## tasks` — vertical tasks (below).
-- `## out of scope` — the hard line, including ideas parked for later (mark them
+- `## Comportamento` — the happy path step by step, then a `WHEN … THEN …` table where
+  every row reads as a test. The acceptance contract.
+- `## Tarefas` — vertical tasks (below).
+- `## Fora de escopo` — the hard line, including ideas parked for later (mark them
   _revisit_). Plain bullets, never checkboxes.
-- `## open` — genuinely unresolved load-bearing decisions. `Nada.` when there are none.
+- `## Em aberto` — genuinely unresolved load-bearing decisions. `Nada.` when there are
+  none.
 
-`## behavior` and `## tasks` are what Large work needs; a Medium spec can carry those
-inline and skip them, which is why the lint only warns on their absence.
+`## Comportamento` and `## Tarefas` are what Large work needs; a Medium spec can carry
+those inline and skip them, which is why the lint only warns on their absence.
+
+A spec written before the rename keeps its English spine and still builds: both names
+resolve everywhere, and the lint answers with `W003` naming the Portuguese one to write.
 
 ## The rule that does the most work
 
@@ -80,12 +85,13 @@ first, and how it gets checked:
 
 ```
 - [ ] **3. Independent reviewer** — dedicated step in `SKILL.md`, verdict at the gate
-      → behaviors 4, 6 · dep: 2 · verifica: leitura
+      → behaviors 4, 6 · depende: 2 · verifica: leitura
 ```
 
-`dep:` is `—` when nothing blocks it. Those three fields are the DAG: what can run in
-parallel, what has to wait, and what proves each one landed — so the build side reads a
-graph instead of re-interpreting prose.
+`depende:` is `—` when nothing blocks it, and a task line still written with `dep:`
+reads the same. Those three fields are the DAG: what can run in parallel, what has to
+wait, and what proves each one landed — so the build side reads a graph instead of
+re-interpreting prose.
 
 Every task cites at least one behavior and every behavior is cited by at least one
 task. That two-way trace is what the gate renders as the coverage table; an unlinked
@@ -99,12 +105,12 @@ row on either side is an omission made visible.
 Architecture, when a spec needs it, lives in the top half under the name it actually has
 in that problem.
 
-`## still open` is spelled `## open`.
+`## still open` is spelled `## Em aberto`.
 
-Sections seeded upstream by `/bb:discover` (`## problem`, `## hypothesis`, `## fit`,
-`## cuts`) live in the top half and stay as they are. `## cuts` is scope dropped while
-framing the problem, with the appetite behind it; `## out of scope` is what this spec
-doesn't do. Both can appear in the same file.
+Sections seeded upstream by `/bb:discover` (`## Problema`, `## Hipótese`, `## Encaixe`,
+`## Cortes`) live in the top half and stay as they are. `## Cortes` is scope dropped
+while framing the problem, with the appetite behind it; `## Fora de escopo` is what this
+spec doesn't do. Both can appear in the same file.
 
 ## The lint
 
@@ -114,15 +120,16 @@ doesn't do. Both can appear in the same file.
 python3 plugins/bb/skills/spec/scripts/lint_spec.py .bb/<slug>/spec.md
 ```
 
-| code | level | what it catches                                              |
-| ---- | ----- | ------------------------------------------------------------ |
-| E001 | erro  | frontmatter ausente, incompleto ou com status/data inválidos |
-| E002 | erro  | `## decisions` ou `## open` ausente                          |
-| E003 | erro  | seção de nome morto (`## design`, `## still open`)           |
-| E004 | erro  | célula de tabela acima de 100 caracteres                     |
-| E005 | erro  | row com número de células diferente do cabeçalho             |
-| W001 | aviso | sem `## behavior`                                            |
-| W002 | aviso | sem `## tasks`                                               |
+| code | level | what it catches                                               |
+| ---- | ----- | ------------------------------------------------------------- |
+| E001 | erro  | frontmatter ausente, incompleto ou com status/data inválidos  |
+| E002 | erro  | `## Decisões` ou `## Em aberto` ausente                       |
+| E003 | erro  | seção de nome morto (`## design`, `## still open`)            |
+| E004 | erro  | célula de tabela acima de 100 caracteres                      |
+| E005 | erro  | row com número de células diferente do cabeçalho              |
+| W001 | aviso | sem `## Comportamento`                                        |
+| W002 | aviso | sem `## Tarefas`                                              |
+| W003 | aviso | seção com o nome em inglês — a mensagem traz o nome português |
 
 Whether the document is too long, repeats itself, or drifts into archaeology is not a
 lint check — it's what the independent reviewer is asked to find. A line ceiling on a

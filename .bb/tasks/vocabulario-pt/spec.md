@@ -174,7 +174,7 @@ Caminho principal:
 - [x] **5. Pasta `.bb/<slug>/`** — `spec-state.md`, os 33 arquivos que citam o caminho, o
       glob do `delegate` e o `validate.yml`, com o caminho antigo mantido na varredura
       → behaviors 2, 6, 7, 15, 16 · dep: 4 · verifica: CI
-- [ ] **6. Espinha em português no formato e no lint** — `spec-format.md` e `lint_spec.py`
+- [x] **6. Espinha em português no formato e no lint** — `spec-format.md` e `lint_spec.py`
       com `W003` e os nomes duplos → behaviors 2, 3, 9, 11, 12, 13 · dep: 3, 4 · verifica: CI
 - [ ] **7. Leitores de seção aceitam os dois nomes** — `implement`, `review`, `delegate`,
       `discover`, `brisar`, `legal-lens`, `build-mode`, `spec-state`, mais `depende:`/`dep:`
