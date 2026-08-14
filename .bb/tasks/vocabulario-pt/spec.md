@@ -161,7 +161,7 @@ Caminho principal:
 
 ## tasks
 
-- [ ] **1. `references/vocabulario.md`** — o princípio, a tabela EN→PT e a regra de
+- [x] **1. `references/vocabulario.md`** — o princípio, a tabela EN→PT e a regra de
       capitalização, em instrução positiva → behaviors 1, 17, 20 · dep: — · verifica: leitura
 - [ ] **2. Ponteiro no hook e no formato** — bullet curto no `hooks/operating-context.md`
       e linha no `spec/references/spec-format.md` → behavior 1 · dep: 1 · verifica: leitura
