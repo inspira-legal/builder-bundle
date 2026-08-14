@@ -1,14 +1,14 @@
 # Build mode — workflow or main context
 
-Two ways to build a brief's slices, and the user picks per run:
+Two ways to build a brief's tasks, and the user picks per run:
 
-- **Workflow** — one agent per slice, dispatched as a dynamic workflow. Each slice
+- **Workflow** — one agent per task, dispatched as a dynamic workflow. Each task
   starts on a clean budget carrying only the brief and its own cut, and a convention
-  note is threaded between them. Shape of the script: `build-slices-workflow.md`.
-- **Context** — the main session builds every slice itself. What `/bb:implement` has
+  note is threaded between them. Shape of the script: `build-tasks-workflow.md`.
+- **Context** — the main session builds every task itself. What `/bb:implement` has
   always done.
 
-The reason to offer the choice isn't speed. A brief of eight slices built in one
+The reason to offer the choice isn't speed. A brief of eight tasks built in one
 context hits compaction mid-build, and that's exactly where the loop degrades: the
 `## behavior` map falls out of context and the build starts drifting from the
 `## decisions`. Losing tacit context between agents is the price, and the convention
@@ -17,11 +17,11 @@ note is what's paid with — lossy on purpose instead of lossy by accident.
 ## When the question is asked
 
 `/bb:implement` and `/bb:delegate` ask it **once, at the start of every run**, before
-the first slice — no size threshold. A brief with a single slice is still asked; the
+the first task — no size threshold. A brief with a single task is still asked; the
 choice is the user's, not a heuristic's. When `/bb:delegate` drives the build it's
 delegate that asks, and the implement loop it drives takes the answer as given.
 
-Two things skip it entirely. A brief with **no `## tasks` section** has no slices to
+Two things skip it entirely. A brief with **no `## tasks` section** has no tasks to
 fan out over — and no build either: implement's Prerequisites stop the run and send
 it back to `/bb:spec` before this question would have been reached. The other is a
 run where workflows aren't available, below.
@@ -37,10 +37,10 @@ leads and is suffixed `(Recomendado)`.
 All of it in PT-BR:
 
 ```
-question: "O brief tem N slices. Construir via workflow (um agente por slice) ou no contexto desta sessão?"
+question: "O brief tem N tarefas. Construir via workflow (um agente por tarefa) ou no contexto desta sessão?"
 options:
-  - "Via workflow (Recomendado)" — Um agente por slice, em sequência, na mesma árvore. Cada um começa com contexto limpo; as convenções passam adiante numa nota. Você acompanha em /workflows.
-  - "Neste contexto" — Construo as slices aqui mesmo, como sempre. Num brief grande o build bate compactação no meio e começa a derivar do brief.
+  - "Via workflow (Recomendado)" — Um agente por tarefa, em sequência, na mesma árvore. Cada um começa com contexto limpo; as convenções passam adiante numa nota. Você acompanha em /workflows.
+  - "Neste contexto" — Construo as tarefas aqui mesmo, como sempre. Num brief grande o build bate compactação no meio e começa a derivar do brief.
 ```
 
 Swap the `(Recomendado)` suffix per the rule below; the option text itself doesn't
@@ -48,13 +48,13 @@ change.
 
 ## Which one leads — how self-sufficient the brief is
 
-A slice agent receives the brief, its own line and the convention note. Nothing else.
+A task agent receives the brief, its own line and the convention note. Nothing else.
 So the question to answer before recommending is: **what does this session know that
-the file doesn't?** Slice count is the size of the bet, not the discriminator.
+the file doesn't?** Task count is the size of the bet, not the discriminator.
 
 **Nothing → workflow leads.** The brief is the whole picture, so a fresh agent per
-slice reads what the main context would have read. Signals: the brief was written in
-another session or on an earlier day; the run is a resume with slices already ticked;
+task reads what the main context would have read. Signals: the brief was written in
+another session or on an earlier day; the run is a resume with tasks already ticked;
 a bare `/bb:delegate` selected it, so nothing about it is in this context at all.
 
 **Something load-bearing → context leads, and say which piece.** Signals: this run
@@ -70,7 +70,7 @@ missing piece into it is the durable fix — it makes workflow safe on the
 spot, and the user is the only one who can judge whether the piece belongs in the
 brief. Offer that in the same breath as the question.
 
-**One or two slices → context leads regardless.** There's no compaction to buy off,
+**One or two tasks → context leads regardless.** There's no compaction to buy off,
 and each agent would pay from scratch for the repo orientation this context already
 has.
 
@@ -87,8 +87,8 @@ and hides a setting the user may not know is on.
 
 ## After the pick
 
-- **Workflow** — read `build-slices-workflow.md`, author the script, run the
+- **Workflow** — read `build-tasks-workflow.md`, author the script, run the
   pre-invoke checklist at the end of that file, invoke `Workflow`. When it returns,
   pick up the caller's own contract from its result.
-- **Context** — build the slices as implement's steps 3–7 describe. Nothing about
+- **Context** — build the tasks as implement's steps 3–7 describe. Nothing about
   the brief, the gate or the commits changes.

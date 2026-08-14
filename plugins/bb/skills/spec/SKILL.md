@@ -1,6 +1,6 @@
 ---
 name: spec
-description: Alinhar a ideia antes de construir — desenvolve um draft, itera as zonas cinzentas com você via question tool (decisões técnicas load-bearing E um mapa de comportamento meticuloso — happy path + edges com outcome esperado), roda um passe adversarial de completude (geradores + revisor independente + rastreabilidade comportamento↔slice) e fecha num gate de 3 vias implement / delegate / parar. Auto-dimensiona por complexidade. Lê as seções upstream `## problem` / `## hypothesis` / `## fit` do /bb:discover quando presentes. Use quando o usuário disser "faz o spec", "especifica isso", "vamos planejar", "shape this", "o que a gente deveria construir", "discutir antes de construir", ou começar uma feature não-trivial. NÃO use pra mudanças mecânicas pequenas (só faça), nem pra achar bugs (use /bb:review).
+description: Alinhar a ideia antes de construir — desenvolve um draft, itera as zonas cinzentas com você via question tool (decisões técnicas load-bearing E um mapa de comportamento meticuloso — happy path + edges com outcome esperado), roda um passe adversarial de completude (geradores + revisor independente + rastreabilidade comportamento↔tarefa) e fecha num gate de 3 vias implement / delegate / parar. Auto-dimensiona por complexidade. Lê as seções upstream `## problem` / `## hypothesis` / `## fit` do /bb:discover quando presentes. Use quando o usuário disser "faz o spec", "especifica isso", "vamos planejar", "shape this", "o que a gente deveria construir", "discutir antes de construir", ou começar uma feature não-trivial. NÃO use pra mudanças mecânicas pequenas (só faça), nem pra achar bugs (use /bb:review).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -17,7 +17,7 @@ Reach a **shared understanding of the idea before any code**. What matters is th
 
 - **Tiny** (≤3 files, one obvious change): skip the spec — just build it.
 - **Medium** (a clear feature): the loop — gray areas + reuse scan + the load-bearing technical forks + the behavior map (happy path + edges), then the gate.
-- **Large / fuzzy** (new domain, real ambiguity): the full loop — reuse, the components and how data moves between them, the technical forks, the behavior map, slice into pieces, then the gate.
+- **Large / fuzzy** (new domain, real ambiguity): the full loop — reuse, the components and how data moves between them, the technical forks, the behavior map, break it into tasks, then the gate.
 
 Always required: reach alignment, **close the load-bearing technical decisions, map the behavior**, and stop at a validated brief. Size is a running estimate, not locked at the start — if a "Tiny/Medium" task keeps surfacing gray areas mid-flow, re-size up and spec it properly.
 
@@ -39,7 +39,7 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
 
 5. **Adversarial completeness pass (when the gray areas run dry).** Don't _review_ the brief — try to **break** it; the same model that wrote the map rubber-stamps it on a re-read. Two moves, looping anything they surface back to step 3:
    - **Run the generators** (`references/completeness-generators.md`) to manufacture questions along the axes omission hides in — input dimensions, external outputs' empty/limit/shape-change cases, state & lifecycle, failure & recovery, concurrency, trust boundary, data lifecycle, observability. Output is questions, not filled sections.
-   - **Render the trace** — lay out behavior → slice → test as a coverage table, not a mental check: every mapped behavior traces to a slice and every slice to a behavior. An unlinked row IS the omission — made visible rather than asserted. This is the table the gate shows; "I checked traceability" becomes proof the user can see.
+   - **Render the trace** — lay out behavior → task → test as a coverage table, not a mental check: every mapped behavior traces to a task and every task to a behavior. An unlinked row IS the omission — made visible rather than asserted. This is the table the gate shows; "I checked traceability" becomes proof the user can see.
 
    What you're hunting: (a) **unresolved load-bearing decisions** (a technical fork building can't proceed without, still blank or "TBD"); (b) **unmapped or unanswered behavior** (a happy-path step glossed over, an edge with no decided outcome); (c) **material contradictions**. Load-bearing gaps, behavior holes, and real conflicts only — don't manufacture nitpicks, or the loop never closes.
 
@@ -55,9 +55,9 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
 
    Without an Agent tool in this context, say so at the gate rather than showing a verdict that never ran.
 
-7. **The exit gate — blocks on open load-bearing decisions.** Don't gate blind: first **show the artifact the user is signing off on** — a tight recap of the happy path, the full edge→outcome table, the **coverage table** (behavior → slice → test) with `⚠️` on any unmapped row plus a one-line counter (`N behaviors, M mapped, K open`), and (Medium+) the **independent reviewer's verdict** in one line (clean, or what it flagged and how it was resolved) — so "is this complete?" is answerable at a glance instead of forcing them to reopen the file. Then list what's **still open** (unresolved load-bearing decisions + parked questions). Then ask one `AskUserQuestion` (a handoff gate — format in the plugin-level `references/handoff-gate.md`):
+7. **The exit gate — blocks on open load-bearing decisions.** Don't gate blind: first **show the artifact the user is signing off on** — a tight recap of the happy path, the full edge→outcome table, the **coverage table** (behavior → task → test) with `⚠️` on any unmapped row plus a one-line counter (`N behaviors, M mapped, K open`), and (Medium+) the **independent reviewer's verdict** in one line (clean, or what it flagged and how it was resolved) — so "is this complete?" is answerable at a glance instead of forcing them to reopen the file. Then list what's **still open** (unresolved load-bearing decisions + parked questions). Then ask one `AskUserQuestion` (a handoff gate — format in the plugin-level `references/handoff-gate.md`):
    - **If any load-bearing decision is still open:** do NOT offer a clean "build". The only options are **resolve it now** or **defer explicitly** ("decide at build time" — recorded as such in the brief). Never a silent "build anyway".
-   - **If nothing load-bearing is open:** finalize `.bb/tasks/<slug>/spec.md` (with its frontmatter block — see "Capture the alignment"), then offer three paths — **Implementar** (invoke `/bb:implement` now: build every slice and stop ready to ship, where it offers `/bb:ship`), **Delegar** (invoke `/bb:delegate <slug>` now: build every slice _and_ land it, the full `implement → ship` run), or **Encerrar aqui** (leave the brief; the user picks up later). Choosing to adjust instead is always available — that loops back into the question tool; an Implementar or Delegar pick is the affirmative start, not a silent roll-through.
+   - **If nothing load-bearing is open:** finalize `.bb/tasks/<slug>/spec.md` (with its frontmatter block — see "Capture the alignment"), then offer three paths — **Implementar** (invoke `/bb:implement` now: build every task and stop ready to ship, where it offers `/bb:ship`), **Delegar** (invoke `/bb:delegate <slug>` now: build every task _and_ land it, the full `implement → ship` run), or **Encerrar aqui** (leave the brief; the user picks up later). Choosing to adjust instead is always available — that loops back into the question tool; an Implementar or Delegar pick is the affirmative start, not a silent roll-through.
 
 Size the ask to the stakes: cheap-to-reverse decisions lead with your pick (the user vetoes if wrong); expensive-to-undo ones lay the options out and let them choose. Full playbook in `references/draft-first.md`.
 
@@ -81,11 +81,11 @@ The behaviors are what guarantee the built thing matches the idea. An unmapped b
 - **Happy path** — walk the main flow step by step and concretely: input → what happens → observable output. Every step the flow really takes gets a line.
 - **Edge cases** — every meaningful deviation, each with its **expected outcome**, phrased `WHEN <case> THEN <observable outcome>` so each row reads directly as a test: empty / zero / huge input, invalid input, first-run vs repeat, concurrent use, failure & rollback, denied permission/auth, partial or interrupted runs, migrating existing data. Map the _outcome_, not just that the case exists.
 
-Walking each behavior surfaces decisions you haven't made — those go back into the loop as gray areas, and each edge's outcome drives its handling in the technical forks. **A behavior with no decided outcome is an open item the gate blocks on.** Litmus for whether an edge's outcome is load-bearing (not just a minor case): **does its outcome contradict the `why`?** If choosing the wrong outcome would make the built thing betray its own reason for existing, it's load-bearing, and the gate blocks on it like any other fork. This map doubles as the acceptance criteria: each behavior is something `/bb:ship` and `/bb:review` check against, and each happy-path segment is a vertical slice. Record it in a `## behavior` section for Large work (happy path + an edge→outcome table); inline for Medium.
+Walking each behavior surfaces decisions you haven't made — those go back into the loop as gray areas, and each edge's outcome drives its handling in the technical forks. **A behavior with no decided outcome is an open item the gate blocks on.** Litmus for whether an edge's outcome is load-bearing (not just a minor case): **does its outcome contradict the `why`?** If choosing the wrong outcome would make the built thing betray its own reason for existing, it's load-bearing, and the gate blocks on it like any other fork. This map doubles as the acceptance criteria: each behavior is something `/bb:ship` and `/bb:review` check against, and each happy-path segment is a vertical task. Record it in a `## behavior` section for Large work (happy path + an edge→outcome table); inline for Medium.
 
 ## Capture the alignment (lightweight, on disk)
 
-Write a single `.bb/tasks/<slug>/spec.md` — the converged draft itself, written as something a person will read: an opening that says what this is and why now, then whatever sections describe this particular problem, then the fixed spine the other skills consume. The format — the two halves, the spine and its readers, the table rule, the slice shape — lives in `references/spec-format.md`; follow it. There's no separate write-up step; the draft you iterated _is_ the brief, and it survives a context reset so a fresh session reloads it.
+Write a single `.bb/tasks/<slug>/spec.md` — the converged draft itself, written as something a person will read: an opening that says what this is and why now, then whatever sections describe this particular problem, then the fixed spine the other skills consume. The format — the two halves, the spine and its readers, the table rule, the task shape — lives in `references/spec-format.md`; follow it. There's no separate write-up step; the draft you iterated _is_ the brief, and it survives a context reset so a fresh session reloads it.
 
 **The prose describes what to build.** How the conversation got there — what you first assumed, what a later read corrected, which message settled it — goes in the commit body instead. A landed brief that gets rewritten gains the new decision in the file and the reason in the commit.
 
@@ -93,7 +93,7 @@ The on-disk contract — location, frontmatter schema, status lifecycle — is t
 
 On finalize, open the brief with the frontmatter block (`status: pending`, `created: <today>`, `slug: <slug>`). If `/bb:discover` wrote the file first without the block, backfill it on finalize. Leave the lifecycle after this to delegate — spec only seeds `pending`.
 
-**Large** work carries `## behavior` and `## tasks` as their own sections — the acceptance contract and the vertical slices the build side consumes. **Medium** work keeps both inline in the decisions.
+**Large** work carries `## behavior` and `## tasks` as their own sections — the acceptance contract and the vertical tasks the build side consumes. **Medium** work keeps both inline in the decisions.
 
 ## Export mode — a shareable product/UX spec
 
@@ -107,8 +107,8 @@ Before asserting how something works: check the codebase, then its docs, then th
 
 spec always ends at a validated `.bb/tasks/<slug>/spec.md`; the brief is the durable asset either way. What changes is what happens next, and the gate's 3-way pick (above) decides it — the seam between speccing and building is a checkpoint the user crosses on purpose, not a wall.
 
-- **Implementar:** invoke `/bb:implement` now — it loads this brief as the intent, builds every slice, and stops ready to ship, where it offers `/bb:ship`. The "build it, I'll decide on shipping after" path.
-- **Delegar:** invoke `/bb:delegate <slug>` now — it loads this brief as the intent, builds every slice, _and_ lands it (the full `/bb:implement` → `/bb:ship` run). The "I'm happy, run the whole thing" path.
+- **Implementar:** invoke `/bb:implement` now — it loads this brief as the intent, builds every task, and stops ready to ship, where it offers `/bb:ship`. The "build it, I'll decide on shipping after" path.
+- **Delegar:** invoke `/bb:delegate <slug>` now — it loads this brief as the intent, builds every task, _and_ lands it (the full `/bb:implement` → `/bb:ship` run). The "I'm happy, run the whole thing" path.
 - **Encerrar aqui:** leave the brief and say the next step plainly — "Brief salvo em `.bb/tasks/<slug>/spec.md`. Pra construir depois: `/bb:implement` (constrói, depois oferece ship), ou `/bb:delegate <slug>` pra construir + landar de uma vez."
 
 **Safety valve:** if building later reveals the idea was underspecified (surprises pile up), STOP and re-spec — that's the signal alignment was incomplete, not a license to improvise.
@@ -117,7 +117,7 @@ spec always ends at a validated `.bb/tasks/<slug>/spec.md`; the brief is the dur
 
 ### references/spec-format.md
 
-The brief's format — the free top half and the fixed spine, what each spine section is read by, the describes-vs-recounts rule, tables, dead section names, and the slice shape with its dependencies. Paired with `scripts/lint_spec.py`, which enforces the mechanical half.
+The brief's format — the free top half and the fixed spine, what each spine section is read by, the describes-vs-recounts rule, tables, dead section names, and the task shape with its dependencies. Paired with `scripts/lint_spec.py`, which enforces the mechanical half.
 
 ### references/draft-first.md
 

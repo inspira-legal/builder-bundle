@@ -15,7 +15,7 @@ import sys
 REQUIRED_SECTIONS = ("decisions", "open")
 RECOMMENDED_SECTIONS = {
     "behavior": ("W001", "sem `## behavior` — o mapa de comportamento é o contrato de aceite"),
-    "tasks": ("W002", "sem `## tasks` — sem slices o build não tem o que consumir"),
+    "tasks": ("W002", "sem `## tasks` — sem tarefas o build não tem o que consumir"),
 }
 DEAD_SECTIONS = {
     "design": (

@@ -69,14 +69,14 @@ canonical: <absolute path actually written, when the folder is a symlink; else o
 ---
 ```
 
-- `pending` — no slice done yet.
-- `in-progress` — some slices done, not landed (resumable).
+- `pending` — no task done yet.
+- `in-progress` — some tasks done, not landed (resumable).
 - `done` — the implement→ship chain completed its landing.
 - `blocked` — implement's safety valve or ship hit an unrecoverable stop; needs a human.
 
 **`/bb:delegate` owns the `status` lifecycle** — it flips the value as it selects,
 runs and lands a task. `spec` only writes the initial block (`status: pending`) on
-finalize. The slice-level `## tasks` checkboxes stay `implement`'s concern. A brief
+finalize. The task-level `## tasks` checkboxes stay `implement`'s concern. A brief
 without the block is treated as `pending` with unknown `created` (sorted last in
 bare selection).
 

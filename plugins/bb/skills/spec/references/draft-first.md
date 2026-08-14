@@ -41,7 +41,7 @@ Ask the forks through the **`AskUserQuestion` tool** — concrete options the us
 - After each round, **fold the answers into the draft and show only what
   changed** — the diff, not the whole document again.
 - **When the gray areas run dry, run the adversarial completeness pass** — the
-  skill's step 5 (generators + the behavior→slice→test trace), not a casual
+  skill's step 5 (generators + the behavior→task→test trace), not a casual
   re-read. It hunts open load-bearing decisions, unmapped behavior, and material
   contradictions, and loops anything it surfaces back into the questions.
 - **Then the check, step 6** — the lint, then an independent reviewer in fresh

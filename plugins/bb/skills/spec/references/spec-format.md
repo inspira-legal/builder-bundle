@@ -38,7 +38,7 @@ section that drifts, which is why the set is small and every member earns its sl
   re-derive them from prose.
 - `## behavior` — the happy path step by step, then a `WHEN … THEN …` table where every
   row reads as a test. The acceptance contract.
-- `## tasks` — vertical slices (below).
+- `## tasks` — vertical tasks (below).
 - `## out of scope` — the hard line, including ideas parked for later (mark them
   _revisit_). Plain bullets, never checkboxes.
 - `## open` — genuinely unresolved load-bearing decisions. `Nada.` when there are none.
@@ -73,9 +73,9 @@ screen. Long content is prose or a bullet.
 Escape any literal `|` inside a cell as `\|`; an unescaped one silently splits the row
 into the wrong number of columns.
 
-## Slices carry their own dependencies
+## Tasks carry their own dependencies
 
-Each slice is a thin end-to-end cut, and it states what it delivers, what has to land
+Each task is a thin end-to-end cut, and it states what it delivers, what has to land
 first, and how it gets checked:
 
 ```
@@ -87,8 +87,8 @@ first, and how it gets checked:
 parallel, what has to wait, and what proves each one landed — so the build side reads a
 graph instead of re-interpreting prose.
 
-Every slice cites at least one behavior and every behavior is cited by at least one
-slice. That two-way trace is what the gate renders as the coverage table; an unlinked
+Every task cites at least one behavior and every behavior is cited by at least one
+task. That two-way trace is what the gate renders as the coverage table; an unlinked
 row on either side is an omission made visible.
 
 ## Dead names

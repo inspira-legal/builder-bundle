@@ -22,7 +22,7 @@ improvement, and a "fix" that isn't justified against its finding is a guess.
   evaluation / short-circuit order; truthiness or coercion shifts when collapsing
   conditionals; removing "dead" code that actually has side effects; merging
   error handling so different errors now propagate the same; altering async
-  timing/ordering; off-by-one when refactoring a loop or slice.
+  timing/ordering; off-by-one when refactoring a loop or an index range.
 - **When in doubt, leave it and flag it.** A missed cleanup costs nothing; a
   regression costs trust.
 

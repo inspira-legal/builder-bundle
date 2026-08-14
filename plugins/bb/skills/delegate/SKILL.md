@@ -1,6 +1,6 @@
 ---
 name: delegate
-description: Roda uma task especificada de ponta a ponta — seleciona um brief não-concluído (`.bb/tasks/<slug>/spec.md`), constrói todas as slices e landa (`/bb:implement` → `/bb:ship`), rastreando o `status` do brief. `/bb:delegate <slug>` mira uma task nomeada; `/bb:delegate` sem argumento pega a pendente mais antiga. O único verbo "roda tudo". Use quando o usuário disser "delega isso", "roda a task", "constrói e landa o brief", "faz tudo", "delegate <slug>", ou "roda tudo". NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra construir sem landar (use /bb:implement).
+description: Roda uma task especificada de ponta a ponta — seleciona um brief não-concluído (`.bb/tasks/<slug>/spec.md`), constrói todas as tarefas e landa (`/bb:implement` → `/bb:ship`), rastreando o `status` do brief. `/bb:delegate <slug>` mira uma task nomeada; `/bb:delegate` sem argumento pega a pendente mais antiga. O único verbo "roda tudo". Use quando o usuário disser "delega isso", "roda a task", "constrói e landa o brief", "faz tudo", "delegate <slug>", ou "roda tudo". NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra construir sem landar (use /bb:implement).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -9,10 +9,10 @@ metadata:
 
 # Delegate
 
-Take a specced task all the way: select it, build every slice, and land it — the
+Take a specced task all the way: select it, build every task, and land it — the
 `/bb:implement` → `/bb:ship` chain defined in one place. delegate is the single
 "run everything" verb. It owns the brief's `status` lifecycle (contract in the
-plugin-level `references/task-state.md`); the slice-level `## tasks` checkboxes stay
+plugin-level `references/task-state.md`); the task-level `## tasks` checkboxes stay
 `implement`'s.
 
 ## Prerequisites
@@ -39,26 +39,26 @@ and stop.
    commit that edit (conventional style; no AI attribution).
 
 3. **Pick the build mode — workflow, or this context.** Ask once, per the
-   plugin-level `references/build-mode.md`: one agent per slice dispatched as a
-   dynamic workflow, or the slices built here as always. The answer goes into step 4,
+   plugin-level `references/build-mode.md`: one agent per task dispatched as a
+   dynamic workflow, or the tasks built here as always. The answer goes into step 4,
    and the implement loop it drives doesn't ask again. With no `Workflow` tool in the
    session there's nothing to offer: build in context and name the reason, in step 7's
    report too, so a silent downgrade doesn't pass for a choice.
 
 4. **Build — follow `/bb:implement`'s workflow (steps 1–7), then return here.** Load
    the brief, honor its reuse notes and `## behavior` contract, build every unchecked
-   slice in the order its `dep:` fields imply, run each slice's `verifica:`, keep the
-   gate green, and commit per slice ticking its box. **Do not
+   task in the order its `dep:` fields imply, run each task's `verifica:`, keep the
+   gate green, and commit per task ticking its box. **Do not
    run implement's step-8 ship hand-off** — delegate owns the transition to landing, so
    the chain lives here, not split across skills. If implement's **safety valve** fires
    (the brief was underspecified), stop: flip `status: blocked`, point back to
    `/bb:spec` to re-spec it, and exit — do not improvise past the brief.
 
    **In workflow mode** the build is dispatched rather than run here: author the
-   script per the plugin-level `references/build-slices-workflow.md`, run its
+   script per the plugin-level `references/build-tasks-workflow.md`, run its
    pre-invoke checklist, and invoke `Workflow`. Its result is the build report. A
    non-null `stopped` — a stage-zero blocker (a reuse note pointing at code that's
-   gone, a gate the run can't execute, a tree already red), a red slice, a lost
+   gone, a gate the run can't execute, a tree already red), a red task, a lost
    agent, or a brief the agent found underspecified — lands the same place the safety
    valve does: flip `status: blocked`, name the blocker, exit without landing. What
    came back green is already committed and ticked.
@@ -76,7 +76,7 @@ and stop.
    checkboxes already pass through; delegate never writes status to a protected branch
    directly.
 
-7. **Report.** Name the slug, the build mode it ran in, what landed (slices, gate
+7. **Report.** Name the slug, the build mode it ran in, what landed (tasks, gate
    result), and the destination (branch / PR URL / the hand-off command for a
    protected branch).
 
@@ -89,10 +89,10 @@ and stop.
 | `/bb:delegate <slug>`, status `done`            | report it's done, ask whether to re-run                                                                                                          |
 | bare `/bb:delegate`, one+ pending               | pick smallest `created` (tie-break slug alpha), run it                                                                                           |
 | bare `/bb:delegate`, none pending               | report "no pending tasks", stop                                                                                                                  |
-| selected task already `in-progress`             | resume — implement skips checked slices; status stays `in-progress` until landing                                                                |
+| selected task already `in-progress`             | resume — implement skips checked tasks; status stays `in-progress` until landing                                                                 |
 | brief has no frontmatter                        | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                             |
 | implement safety valve fires (underspecified)   | flip `status: blocked`, point back to `/bb:spec`, stop — do not improvise                                                                        |
-| workflow mode stops (stage zero or a slice)     | flip `status: blocked`, exit without landing                                                                                                     |
+| workflow mode stops (stage zero or a task)      | flip `status: blocked`, exit without landing                                                                                                     |
 | ship hits an unrecoverable stop / blocker       | flip `status: blocked`; write the blocker into the PR description, or into the brief's `## open` when the destination has no PR; report it; exit |
 | not in a git repo / no tasks dir in either root | report the error, stop                                                                                                                           |
 

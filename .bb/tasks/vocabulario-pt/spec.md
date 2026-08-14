@@ -165,7 +165,7 @@ Caminho principal:
       capitalização, em instrução positiva → behaviors 1, 17, 20 · dep: — · verifica: leitura
 - [x] **2. Ponteiro no hook e no formato** — bullet curto no `hooks/operating-context.md`
       e linha no `spec/references/spec-format.md` → behavior 1 · dep: 1 · verifica: leitura
-- [ ] **3. Rename `slice` → task/tarefa** — 12 arquivos, incluindo o `W002` do
+- [x] **3. Rename `slice` → task/tarefa** — 12 arquivos, incluindo o `W002` do
       `lint_spec.py`; `build-slices-workflow.md` vira `build-tasks-workflow.md` e os 4
       ponteiros pra ele acompanham → behaviors 4, 10 · dep: 1 · verifica: grep zerado
 - [ ] **4. Rename do nível de cima → spec** — as 216 ocorrências fora do `skills/brisar/**`,

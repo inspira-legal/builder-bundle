@@ -30,7 +30,7 @@ plugins/bb/
 │   ├── quality-checklist.md            # canonical quality criteria — the six lenses (review engine)
 │   ├── review-checklist.md             # canonical correctness criteria — Pass 1 rows (review engine)
 │   ├── build-mode.md                   # workflow-or-context: the per-run build choice (implement, delegate)
-│   └── build-slices-workflow.md        # contract the generated one-agent-per-slice script meets
+│   └── build-tasks-workflow.md         # contract the generated one-agent-per-task script meets
 ├── scripts/                           # shared executables (2+ skills) — ref via ${CLAUDE_PLUGIN_ROOT}/scripts/
 │   ├── fetch_comments.py               # ship, review
 │   ├── reply_resolve_thread.py         # ship, review
