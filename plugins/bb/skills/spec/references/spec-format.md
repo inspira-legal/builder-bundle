@@ -58,6 +58,11 @@ changed goes in the commit body.
 Say each thing once. A fact that appears in the opening, again in a decision, and again
 in a behavior row is one fact and two copies to keep in sync.
 
+**Name things the way the repo names them.** The spec is the document the builder rereads,
+so its words become the words of the build — the plugin-level `references/vocabulario.md`
+carries the principle, the EN→PT table and the capitalization rule for the Portuguese it
+gets written in.
+
 ## Tables carry short cells
 
 A table cell holds a value, not a paragraph. Past ~100 characters it stops being a table:

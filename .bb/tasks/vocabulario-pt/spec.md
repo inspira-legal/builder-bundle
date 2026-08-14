@@ -163,7 +163,7 @@ Caminho principal:
 
 - [x] **1. `references/vocabulario.md`** — o princípio, a tabela EN→PT e a regra de
       capitalização, em instrução positiva → behaviors 1, 17, 20 · dep: — · verifica: leitura
-- [ ] **2. Ponteiro no hook e no formato** — bullet curto no `hooks/operating-context.md`
+- [x] **2. Ponteiro no hook e no formato** — bullet curto no `hooks/operating-context.md`
       e linha no `spec/references/spec-format.md` → behavior 1 · dep: 1 · verifica: leitura
 - [ ] **3. Rename `slice` → task/tarefa** — 12 arquivos, incluindo o `W002` do
       `lint_spec.py`; `build-slices-workflow.md` vira `build-tasks-workflow.md` e os 4
