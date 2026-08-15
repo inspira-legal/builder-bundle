@@ -140,13 +140,14 @@ def check_body(lines):
 
         match = HEADING.match(line)
         if match:
-            name = match.group(1).strip().lower()
+            raw = match.group(1).strip()
+            name = raw.lower()
             seen.add(name)
             if name in DEAD_SECTIONS:
                 yield i, "E003", DEAD_SECTIONS[name]
             elif name in TRANSLATED_SECTIONS:
                 yield i, "W003", (
-                    f"`## {name}` em inglês — em português é "
+                    f"`## {raw}` em inglês — em português é "
                     f"`## {TRANSLATED_SECTIONS[name]}`; o arquivo continua válido"
                 )
 
