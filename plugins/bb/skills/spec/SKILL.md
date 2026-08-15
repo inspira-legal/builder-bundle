@@ -1,6 +1,6 @@
 ---
 name: spec
-description: Alinhar a ideia antes de construir — desenvolve um draft, itera as zonas cinzentas com você via question tool (decisões técnicas load-bearing E um mapa de comportamento meticuloso — happy path + edges com outcome esperado), roda um passe adversarial de completude (geradores + revisor independente + rastreabilidade comportamento↔tarefa) e fecha num gate de 3 vias implement / delegate / parar. Auto-dimensiona por complexidade. Lê as seções upstream `## Problema` / `## Hipótese` / `## Encaixe` do /bb:discover quando presentes. Use quando o usuário disser "faz o spec", "especifica isso", "vamos planejar", "shape this", "o que a gente deveria construir", "discutir antes de construir", ou começar uma feature não-trivial. NÃO use pra mudanças mecânicas pequenas (só faça), nem pra achar bugs (use /bb:review).
+description: Alinhar a ideia antes de construir — desenvolve um draft, itera as zonas cinzentas com você via question tool (decisões técnicas estruturantes E um mapa de comportamento meticuloso — happy path + edges com outcome esperado), roda um passe adversarial de completude (geradores + revisor independente + rastreabilidade comportamento↔tarefa) e fecha num gate de 3 vias implement / delegate / parar. Auto-dimensiona por complexidade. Lê as seções upstream `## Problema` / `## Hipótese` / `## Encaixe` do /bb:discover quando presentes. Use quando o usuário disser "faz o spec", "especifica isso", "vamos planejar", "shape this", "o que a gente deveria construir", "discutir antes de construir", ou começar uma feature não-trivial. NÃO use pra mudanças mecânicas pequenas (só faça), nem pra achar bugs (use /bb:review).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -29,7 +29,7 @@ If the spec for this slug already carries `## Problema` / `## Hipótese` / `## E
 
 You bring the idea; Claude develops it, then loops with you through the **`AskUserQuestion` tool** until the picture is consistent and you sign off. Never interrogate from a blank page, and never decide silently — drive it through real questions. All question text the user sees is PT-BR.
 
-1. **Develop the draft (draft-first).** Read the one-liner, look at the codebase, and write a short draft spec with your best-guess decisions filled in — what/why, scope edges, reuse, the decisions you can already make. For Large work, also sketch the _how_ (next section) before slicing. Bring something concrete to react to.
+1. **Develop the draft (draft-first).** Read the one-liner, look at the codebase, and write a short draft spec with your best-guess decisions filled in — what/why, scope edges, reuse, the decisions you can already make. For Large work, also sketch the _how_ (next section) before breaking it into tasks. Bring something concrete to react to.
 
 2. **Highest-stakes fork first — ask before you anchor.** On the single decision most expensive to undo, ask the user how _they'd_ call it _before_ you reveal your own pick (an open `AskUserQuestion`). Anchoring is strongest on the choice that matters most — don't pre-frame that one. One fork only; everything else stays draft-first.
 
@@ -72,7 +72,7 @@ Before the gate, the load-bearing technical decisions must be **made or explicit
 - **Error & edge handling** — for each edge in the behavior map (below), decide _how_ it's handled (failure & rollback, validation, retries). Map the case in the behavior; decide the handling here.
 - **Integration points** — what it touches: existing systems, dependencies, external services.
 
-These are the decisions that bite _after_ you've built against them — expensive to undo — so they get closed here, before slicing. A fork left open is what the gate blocks on. Architecture that needs more room than a bullet — a seam, a data flow, a diagram — is described in the spec's free top half, under the name it has in this problem (`references/spec-format.md`).
+These are the decisions that bite _after_ you've built against them — expensive to undo — so they get closed here, before breaking it into tasks. A fork left open is what the gate blocks on. Architecture that needs more room than a bullet — a seam, a data flow, a diagram — is described in the spec's free top half, under the name it has in this problem (`references/spec-format.md`).
 
 ## Map the behavior (required for Medium+)
 
