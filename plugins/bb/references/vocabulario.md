@@ -6,7 +6,10 @@ Everything the builder reads in Portuguese: gate questions and option labels, th
 Portuguese prose of a `description:`, reports, commit messages, and plain chat. The
 reference documents and the SKILL.md prose are written in English and stay English — an
 English document saying "load-bearing decision" is ordinary English, written the way that
-language writes it. This page governs the Portuguese sentence, and the table below is what
+language writes it. **A concept this plugin named itself is the exception**: it gets one
+name in both languages, so the English prose writes `spec` and `task` too, and a rename
+here is a rename everywhere. This page governs the Portuguese sentence, and the table
+below is what
 you reach for when the document you just read is in English and the answer you are about to
 give is in Portuguese.
 

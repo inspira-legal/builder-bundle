@@ -25,7 +25,7 @@ opening, 1–3 paragraphs                  ┐
 **The top half is yours.** Open with what the thing is, why now, and what success
 looks like — then describe the problem in whatever sections it calls for. A UI change
 might want "As três telas"; a CLI might want "O que a ferramenta já faz"; an
-architectural change might want "O seam entre agente e caller". Prose is the default;
+architectural change might want "A fronteira entre agente e caller". Prose is the default;
 diagrams, short tables and code fragments earn their place when they carry the idea
 better than a sentence would.
 
@@ -64,7 +64,7 @@ Say each thing once. A fact that appears in the opening, again in a decision, an
 in a behavior row is one fact and two copies to keep in sync.
 
 **Name things the way the repo names them.** The spec is the document the builder rereads,
-so its words become the words of the build — the plugin-level `references/vocabulario.md`
+so its words become the words of the build — `${CLAUDE_PLUGIN_ROOT}/references/vocabulario.md`
 carries the principle, the EN→PT table and the capitalization rule for the Portuguese it
 gets written in.
 
