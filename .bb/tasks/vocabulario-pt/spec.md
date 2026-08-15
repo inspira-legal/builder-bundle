@@ -179,7 +179,7 @@ Caminho principal:
 - [x] **7. Leitores de seção aceitam os dois nomes** — `implement`, `review`, `delegate`,
       `discover`, `brisar`, `legal-lens`, `build-mode`, `spec-state`, mais `depende:`/`dep:`
       → behaviors 4, 5, 10, 14, 19 · dep: 6 · verifica: leitura
-- [ ] **8. `description:` dos agentes em português** — `bb-finder` e `bb-verifier` pela
+- [x] **8. `description:` dos agentes em português** — `bb-finder` e `bb-verifier` pela
       tabela, gatilhos preservados → behaviors 8, 18 · dep: 1 · verifica: leitura
 - [ ] **9. Migrar as 7 specs em disco** — move pra `.bb/<slug>/`, espinha traduzida e
       `depende:`, inclusive as `done` e esta → behaviors 6, 7 · dep: 5, 6 · verifica: CI verde
