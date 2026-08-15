@@ -19,7 +19,8 @@ can catch a diff where every line is correct and the wrong thing got built.
 ## Also read the upstream sections when present
 
 `## Problema`, `## Hipótese`, `## Encaixe`, and `## Cortes` (written by
-`/bb:discover`) bound the work too. A diff that implements something `## Cortes`
+`/bb:discover`) bound the work too — `## problem`, `## hypothesis`, `## fit` and
+`## cuts` on a spec written before the rename, same sections. A diff that implements something `## Cortes`
 explicitly deferred is a finding with a strong citation — the decision to leave it
 out was already made.
 

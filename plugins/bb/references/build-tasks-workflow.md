@@ -122,7 +122,8 @@ accumulated convention note, and the gate commands stage zero resolved. Its step
    English. If this task is already `- [x]`, return immediately with
    `status: "skipped"` — the run is resumable and re-running a half-built spec
    must not redo what already landed.
-2. **Build the task**, staying inside the spec's `## Fora de escopo`. A **stack
+2. **Build the task**, staying inside the spec's `## Fora de escopo` (`## out of scope`
+   on a spec written before the rename). A **stack
    choice** the spec didn't close (framework, package manager, tooling) is settled
    against the manifesto first — the plugin-level `references/consult-manifesto.md`,
    whose path goes into the prompt.
