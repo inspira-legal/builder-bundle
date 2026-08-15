@@ -79,7 +79,7 @@ início da sessão **e depois de cada compactação** — vale pra toda skill e 
 solta, que é o alcance pedido. O `spec-format.md` ganha uma linha própria: a spec é
 artefato escrito e o vocabulário dela é o que o builder vai repetir depois.
 
-## decisions
+## Decisões
 
 - **`slice` morre.** O item do `## Tarefas` é **tarefa** em português e **task** em inglês.
   São cognatos, então o conceito tem um nome só e nenhuma terceira palavra entra. A troca
@@ -125,7 +125,7 @@ artefato escrito e o vocabulário dela é o que o builder vai repetir depois.
 - **A regra não lista palavra proibida.** Instrução positiva; a tabela tem a coluna
   "escreva", e o termo em inglês aparece só como chave de busca.
 
-## behavior
+## Comportamento
 
 Caminho principal:
 
@@ -159,34 +159,37 @@ Caminho principal:
 | 19  | `/bb:legal-lens` roda sobre uma spec                | anexa `## Jurídico`; `## legal` existente é lido e avisado          |
 | 20  | falta na tabela o termo que o Claude precisa        | descreve em três palavras o que acontece, em vez de batizar         |
 
-## tasks
+## Tarefas
 
 - [x] **1. `references/vocabulario.md`** — o princípio, a tabela EN→PT e a regra de
-      capitalização, em instrução positiva → behaviors 1, 17, 20 · dep: — · verifica: leitura
+      capitalização, em instrução positiva → behaviors 1, 17, 20 · depende: — ·
+      verifica: leitura
 - [x] **2. Ponteiro no hook e no formato** — bullet curto no `hooks/operating-context.md`
-      e linha no `spec/references/spec-format.md` → behavior 1 · dep: 1 · verifica: leitura
+      e linha no `spec/references/spec-format.md` → behavior 1 · depende: 1 · verifica: leitura
 - [x] **3. Rename `slice` → task/tarefa** — 12 arquivos, incluindo o `W002` do
       `lint_spec.py`; `build-slices-workflow.md` vira `build-tasks-workflow.md` e os 4
-      ponteiros pra ele acompanham → behaviors 4, 10 · dep: 1 · verifica: grep zerado
+      ponteiros pra ele acompanham → behaviors 4, 10 · depende: 1 · verifica: grep zerado
 - [x] **4. Rename do nível de cima → spec** — as 216 ocorrências fora do `skills/brisar/**`,
       mais as do brisar que apontam pro `spec.md`; `task-state.md` vira `spec-state.md`
-      → behaviors 2, 4 · dep: 1 · verifica: grep + leitura
+      → behaviors 2, 4 · depende: 1 · verifica: grep + leitura
 - [x] **5. Pasta `.bb/<slug>/`** — `spec-state.md`, os 33 arquivos que citam o caminho, o
       glob do `delegate` e o `validate.yml`, com o caminho antigo mantido na varredura
-      → behaviors 2, 6, 7, 15, 16 · dep: 4 · verifica: CI
+      → behaviors 2, 6, 7, 15, 16 · depende: 4 · verifica: CI
 - [x] **6. Espinha em português no formato e no lint** — `spec-format.md` e `lint_spec.py`
-      com `W003` e os nomes duplos → behaviors 2, 3, 9, 11, 12, 13 · dep: 3, 4 · verifica: CI
+      com `W003` e os nomes duplos → behaviors 2, 3, 9, 11, 12, 13 · depende: 3, 4 ·
+      verifica: CI
 - [x] **7. Leitores de seção aceitam os dois nomes** — `implement`, `review`, `delegate`,
       `discover`, `brisar`, `legal-lens`, `build-mode`, `spec-state`, mais `depende:`/`dep:`
-      → behaviors 4, 5, 10, 14, 19 · dep: 6 · verifica: leitura
+      → behaviors 4, 5, 10, 14, 19 · depende: 6 · verifica: leitura
 - [x] **8. `description:` dos agentes em português** — `bb-finder` e `bb-verifier` pela
-      tabela, gatilhos preservados → behaviors 8, 18 · dep: 1 · verifica: leitura
-- [ ] **9. Migrar as 7 specs em disco** — move pra `.bb/<slug>/`, espinha traduzida e
-      `depende:`, inclusive as `done` e esta → behaviors 6, 7 · dep: 5, 6 · verifica: CI verde
+      tabela, gatilhos preservados → behaviors 8, 18 · depende: 1 · verifica: leitura
+- [x] **9. Migrar as 7 specs em disco** — move pra `.bb/<slug>/`, espinha traduzida e
+      `depende:`, inclusive as `done` e esta → behaviors 6, 7 · depende: 5, 6 ·
+      verifica: CI verde
 - [ ] **10. Versão e docs** — `plugin.json` `2.9.0`, CHANGELOG, README e
-      `.claude/CLAUDE.md` → behavior 7 · dep: 1-9 · verifica: CI
+      `.claude/CLAUDE.md` → behavior 7 · depende: 1-9 · verifica: CI
 
-## out of scope
+## Fora de escopo
 
 - Traduzir a prosa em inglês do plugin. Os documentos de referência são escritos em inglês
   e continuam assim.
@@ -202,6 +205,6 @@ Caminho principal:
 - Re-medir as sessões pra confirmar que os termos caíram em vez de se deslocarem pra um
   vizinho. _revisit_ — mede-se depois de algumas semanas de uso, não no PR.
 
-## open
+## Em aberto
 
 - Nada.

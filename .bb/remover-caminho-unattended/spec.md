@@ -45,7 +45,7 @@ varredura sem `-i` volta verde sobre um plugin ainda sujo. Todo `verifica:` dest
 Sucesso: `rg -i 'BB_UNATTENDED|unattended|routine|AFK'` volta zero em `plugins/bb/`,
 `README.md` e `.claude/CLAUDE.md`, e nenhuma skill referencia arquivo deletado.
 
-## decisions
+## Decisões
 
 - **Reuse:** nada novo é escrito. A remoção é subtrativa; onde sobra frase incompleta, ela é
   encurtada, não substituída por prosa nova. Segue a régua do `CLAUDE.md` do usuário:
@@ -87,7 +87,7 @@ Sucesso: `rg -i 'BB_UNATTENDED|unattended|routine|AFK'` volta zero em `plugins/b
   rodam na PR. O `verifica:` de cada slice é `rg -i -c` no próprio escopo voltando zero —
   busca, não build.
 
-## behavior
+## Comportamento
 
 1. Sessão qualquer num repo com o plugin ligado: o `inject_operating_context.py` lê
    `operating-context.md` e injeta, sem ramo condicional. `BB_UNATTENDED=1` no ambiente não
@@ -131,48 +131,48 @@ Sucesso: `rg -i 'BB_UNATTENDED|unattended|routine|AFK'` volta zero em `plugins/b
 | CI não dispara em PR que só toca `references/`       | esta PR toca 8 `SKILL.md`, então dispara; o gatilho não muda               |
 | sobra frase pela metade depois de tirar a cláusula   | encurta a frase; não entra prosa nova explicando a ausência                |
 
-## tasks
+## Tarefas
 
 - [x] **1. hooks** — deleta `unattended-context.md` (5); tira o `if`, o helper e a constante
       do `inject_operating_context.py` (7); a cláusula de capability scoping do
       `operating-context.md` (1); o parágrafo `NOTE:` e dois comentários do
       `enter_worktree.py` (3); a linha Cloud Routine, a coluna "Survives laptop closed?", os
       dois bullets AFK e a frase de abertura do `scheduling-decision.md` (5)
-      → behaviors 1, 2, 8 · dep: — · verifica: `rg -i -c` em `hooks/` volta zero
+      → behaviors 1, 2, 8 · depende: — · verifica: `rg -i -c` em `hooks/` volta zero
 - [x] **2. references de plugin-root** — deleta `routines.md` (25) e `scripts/` inteiro (13);
       no `build-mode.md` (6) a seção `## Unattended`, a frase "won't survive an unattended
       run either" e a linha do relatório; no `build-slices-workflow.md` (4) a moldura de
       routine no bullet de allowlist, o ponteiro do topo, o cap de retry e a branch; no
       `handoff-gate.md` (3) a regra "unattended runs never gate" e a cláusula do auto-chain
-      → behaviors 4, 6 · dep: — · verifica: `rg -i -c` em `references/` volta zero
+      → behaviors 4, 6 · depende: — · verifica: `rg -i -c` em `references/` volta zero
 - [x] **3. o trio** — `delegate` (15: description, abertura, passos 1 a 6, três linhas de edge
       case, fecho), `implement` (7: description, abertura, passos 3/4/6/7/8 — o 4 fecha por
       deleção e o 7 aponta pro `routines.md`), `ship` (2: parágrafo do Step 1 e a linha de
       bundled resource) e `land-pr.md` (6: `--draft`, thread sem pausa, cap de rodada, "not
       an AFK agent", o ponteiro de Channel/routine e o watch unattended)
-      → behaviors 3, 4, 5 · dep: 1, 2 · verifica: `rg -i -c` nas três skills volta zero
+      → behaviors 3, 4, 5 · depende: 1, 2 · verifica: `rg -i -c` nas três skills volta zero
 - [x] **4. skills periféricas** — `review` (3: fan-out, curadoria, linha de edge case),
       `mode-external-pr.md` (1: parágrafo report-only), `review-setup` (1) e `discover` (1),
       linha de edge case cada; `spec` (3: a menção de reload, o "mesmo verbo da routine" no
       Delegar e o ponteiro pro guia no "Encerrar aqui")
-      → behavior 9 · dep: — · verifica: `rg -i -c` nas cinco skills volta zero
+      → behavior 9 · depende: — · verifica: `rg -i -c` nas cinco skills volta zero
 - [x] **5. maintain-repo** — deleta `references/routines-setup.md` (22); no `SKILL.md` (8) a
       moldura "roda de dois jeitos", o pré-requisito de provisionar, o bullet never-merge por
       capability, a entrega via connector Slack, a entrada de bundled resource e a seção
       `### Safety model`
-      → behavior 7 · dep: — · verifica: `rg -i -c` na skill volta zero
+      → behavior 7 · depende: — · verifica: `rg -i -c` na skill volta zero
 - [x] **6. docs do repo e versão** — `README.md` (2: linha do `/bb:delegate` na tabela e a
       seção "rodar sem supervisão"); `.claude/CLAUDE.md` (8: a claim do topo, quatro linhas
       da árvore — inclusive o comentário do `scheduling-decision.md`, que fica — e a nota de
       hooks); `description` do `plugin.json` e `2.8.0`; `metadata.version` das 8 skills;
       entrada no CHANGELOG
-      → behavior 10 · dep: 3, 4, 5 · verifica: `rg -i -c` em `README.md` e `.claude/` zero
+      → behavior 10 · depende: 3, 4, 5 · verifica: `rg -i -c` em `README.md` e `.claude/` zero
 - [x] **7. varredura** — `rg -i` do conjunto em `plugins/`, `README.md` e `.claude/` volta
       zero, e `rg -i 'routines(-setup)?\.md|scaffold_routine|unattended-context'` no repo
       inteiro só casa em `CHANGELOG.md` e `.bb/`; PR verde
-      → behavior 11 · dep: 1-6 · verifica: CI
+      → behavior 11 · depende: 1-6 · verifica: CI
 
-## out of scope
+## Fora de escopo
 
 - **Guard de CI contra regressão.** Um job que falha se `BB_UNATTENDED` reaparecer é peso
   permanente pra uma remoção única.
@@ -183,6 +183,6 @@ Sucesso: `rg -i 'BB_UNATTENDED|unattended|routine|AFK'` volta zero em `plugins/b
 - **A nota de convenções não sobreviver a um resume** — achado real do build-via-workflow,
   brief próprio.
 
-## open
+## Em aberto
 
 Nada aberto.

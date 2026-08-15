@@ -48,7 +48,7 @@ merge que o script não tem como executar.
 O único ponto genuinamente paralelo é o estágio zero, read-only por natureza. Ali
 `parallel()` é barreira legítima — nada começa antes de todos os veredictos chegarem.
 
-## decisions
+## Decisões
 
 - **A escolha é uma pergunta, em toda run** — `/bb:implement` e `/bb:delegate`
   supervisionados abrem perguntando entre construir via workflow ou em contexto, qualquer
@@ -95,7 +95,7 @@ O único ponto genuinamente paralelo é o estágio zero, read-only por natureza.
 - **Versão** — `plugin.json` `2.6.0` → `2.7.0`; `implement` `2.1.0` → `2.2.0`; `delegate`
   `2.2.0` → `2.3.0`.
 
-## behavior
+## Comportamento
 
 1. Supervisionado, `/bb:implement` e `/bb:delegate` abrem perguntando entre workflow e
    contexto; unattended não pergunta e vai de workflow.
@@ -142,32 +142,32 @@ O único ponto genuinamente paralelo é o estágio zero, read-only por natureza.
 | o brief não tem `## tasks`                  | não entra no modo workflow                                       |
 | o brief tem uma slice só                    | pergunta mesmo assim; a escolha é do usuário, não do limiar      |
 
-## tasks
+## Tarefas
 
 - [x] **1. Reference da forma do script** — `references/build-slices-workflow.md`: `for`
       sequencial, `parallel()` no estágio zero, os schemas de retorno, a nota acumulada com
       teto, a idempotência pelo checkbox, o escopo do commit, o tratamento de gate e
       allowlist, e o checklist que a skill confere antes de invocar
-      → behaviors 2, 3, 5, 6, 7, 8, 9 · dep: — · verifica: leitura
+      → behaviors 2, 3, 5, 6, 7, 8, 9 · depende: — · verifica: leitura
 - [x] **2. O gate da escolha** — reference compartilhado com a pergunta em PT-BR, quando
       aparece e a regra unattended, no formato do `handoff-gate.md`
-      → behavior 1 · dep: — · verifica: leitura
+      → behavior 1 · depende: — · verifica: leitura
 - [x] **3. delegate** — passo novo entre o 2 e o 3, repassa a decisão pro build, suprime a
       pergunta do implement e trata o blocker de volta flipando `blocked`
-      → behaviors 1, 4, 10 · dep: 1, 2 · verifica: leitura
+      → behaviors 1, 4, 10 · depende: 1, 2 · verifica: leitura
 - [x] **4. implement** — a mesma escolha quando invocado direto, suprimida quando o delegate
       dirige; blocker de volta cai na válvula do passo 7
-      → behaviors 1, 4, 10 · dep: 1, 2 · verifica: leitura
+      → behaviors 1, 4, 10 · depende: 1, 2 · verifica: leitura
 - [x] **5. Fallback sem workflow** — detecção e caminho em contexto nos dois, com o motivo
-      dito → behavior 11 · dep: 3, 4 · verifica: leitura
+      dito → behavior 11 · depende: 3, 4 · verifica: leitura
 - [x] **6. routines.md** — tira a proibição de fan-out, descreve o modo workflow como default
       da routine e põe a allowlist do gate no provisionamento
-      → behaviors 1, 3 · dep: 2 · verifica: leitura
+      → behaviors 1, 3 · depende: 2 · verifica: leitura
 - [x] **7. Versão e docs** — `plugin.json` `2.7.0`, versões de `implement` e `delegate`,
       CHANGELOG, o reference novo no `.claude/CLAUDE.md`
-      → behavior 1 · dep: 1-6 · verifica: CI
+      → behavior 1 · depende: 1-6 · verifica: CI
 
-## out of scope
+## Fora de escopo
 
 - Paralelizar slices entre si — o `dep:` e a árvore compartilhada impedem. Se um dia houver
   brief largo com várias slices `dep: —` e arquivos disjuntos, é brief próprio (_revisit_).
@@ -176,6 +176,6 @@ O único ponto genuinamente paralelo é o estágio zero, read-only por natureza.
 - Medir custo por run automaticamente — o `/workflows` já mostra tokens por agente.
 - Qualquer mudança no `/bb:ship`; o workflow devolve o controle antes do landing.
 
-## open
+## Em aberto
 
 - Nada.
