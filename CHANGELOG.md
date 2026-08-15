@@ -1,5 +1,73 @@
 # Changelog
 
+## 2.9.0 — 2026-08-15
+
+**Uma palavra por coisa, em português.** O item do `## Tarefas` é uma **tarefa**,
+o artefato de topo é a **spec**, a espinha da spec passou a ser escrita em
+português e a pasta em disco perdeu um nível. Junto vai a regra que impede o
+próximo batismo: `references/vocabulario.md`.
+
+O sintoma era o plugin escrever `slice` 125 vezes e a sessão devolver "fatia" —
+uma palavra que não existe nem no código nem na conversa, com o gênero oscilando
+na mesma sessão. Quando o nome é o conceito, trocar o nome mata o vazamento na
+origem. Quando é inglês normal num documento inglês — `load-bearing`, `fan-out`,
+`seam` — o documento fica como está e a tabela diz o que escrever quando a frase
+é portuguesa. Duas causas, dois remédios.
+
+### Novo
+
+- **`references/vocabulario.md`** — o princípio (chamar cada coisa pelo nome que
+  ela tem no código ou no repo), a tabela `chave`→`escreva` e a capitalização:
+  português em caixa de sentença, nome próprio e identificador com o caso exato.
+  Escrito em instrução positiva — a coluna é "escreva", e o termo em inglês entra
+  só como chave de busca. O ponteiro vive no `hooks/operating-context.md`, que é
+  injetado no início da sessão **e depois de cada compactação**, então vale pra
+  toda skill e pra conversa solta; o `spec/references/spec-format.md` ganha uma
+  linha própria, porque a spec é o texto que o builder repete depois.
+- **`W003` no `lint_spec.py`** — seção em inglês continua válida e ganha um aviso
+  com a tradução ao lado. Spec escrita antes do rename, em qualquer repo, continua
+  construível.
+
+### Mudou
+
+- **`slice` → tarefa (task em inglês).** São cognatos, então o conceito tem um nome
+  só e nenhuma terceira palavra entra. 12 arquivos, incluindo a mensagem `W002` do
+  `lint_spec.py`; `references/build-slices-workflow.md` virou
+  `build-tasks-workflow.md`.
+- **`brief` → spec** no nível de cima, nas duas línguas — o arquivo é `spec.md`, o
+  comando é `/bb:spec`, e `references/task-state.md` virou `spec-state.md`. Dentro
+  de `skills/brisar/**` a palavra "brief" fica: lá ela é o `brief-design.md`,
+  outro artefato, com arquivo e nome próprios. A exceção da exceção é onde o
+  texto do brisar aponta pro `spec.md`.
+- **A pasta perde um nível: `.bb/<slug>/`.** O `.bb/` não guardava nada além de
+  `tasks/`, e o nível intermediário só repetia a palavra que está sendo
+  aposentada. O glob de varredura virou `.bb/*/spec.md`, o `validate.yml` junto —
+  e `.bb/tasks/*/spec.md` continua na varredura, pra spec que mora em outro repo.
+  O slug da pasta é a chave, então a mesma spec nos dois lugares conta uma vez. As
+  7 specs deste repo já migraram.
+- **A espinha da spec em português:** `## Decisões`, `## Comportamento`,
+  `## Tarefas`, `## Fora de escopo`, `## Em aberto` — mais `## Problema`,
+  `## Hipótese`, `## Encaixe` e `## Cortes`, semeadas pelo `/bb:discover`, e
+  `## Jurídico`, do `/bb:legal-lens`. `dep:` virou `depende:`. Os leitores aceitam
+  os dois nomes, e o pareamento EN↔PT mora num lugar só, o
+  `references/spec-state.md`; os outros citam esse arquivo em vez de repetir a
+  lista. O frontmatter fica em inglês — `status`, `created`, `slug` são chaves de
+  dado, validadas pelo `E001` e escritas pelo `/bb:delegate`.
+- **`description:` de `bb-finder` e `bb-verifier`** reescrita pela tabela: "só
+  leitura", "despacha em paralelo", "veredito", "ângulo/lente", "formato do
+  achado". As frases-gatilho das skills continuam intactas — "landa essa branch",
+  "esverdeia a PR" e "shapeia essa ideia" são como o usuário fala e são o que
+  roteia.
+
+### Não mudou
+
+- A prosa em inglês dos documentos de referência e das SKILL.md. Um documento em
+  inglês escrever "load-bearing decision" é inglês normal; trocar por "decisão
+  estruturante" no meio da frase produz texto quebrado.
+- A capitalização do texto em português já estava certa — a varredura achou duas
+  linhas em Title Case fora do design system, e as duas se defendem. O que
+  faltava era a regra escrita, não um passe de correção.
+
 ## 2.8.0 — 2026-08-11
 
 O **caminho unattended sai do plugin**. `BB_UNATTENDED` e o guia de Cloud

@@ -23,6 +23,7 @@ plugins/bb/
 │   ├── inject_operating_context.py     # SessionStart hook script
 │   └── operating-context.md            # the injected operating frame (edit to tune)
 ├── references/                        # plugin-level docs (not skill-scoped)
+│   ├── vocabulario.md                  # one name per thing, in Portuguese (table + capitalization)
 │   ├── handoff-gate.md                 # the one convention for end-of-skill gates (+ AskUserQuestion rationale)
 │   ├── confidence-and-steelman.md      # shared reasoning protocols (think, challenge)
 │   ├── spec-state.md                   # the .bb/<slug>/ folder contract
@@ -80,6 +81,13 @@ the skill.
 Instruction bodies are written in **English** (the method); everything the user
 sees is **PT-BR**: frontmatter `description`/triggers, handoff-gate questions and
 option labels, report templates, error messages addressed to the user.
+
+Which Portuguese word each concept gets — and how it is capitalized — is
+`plugins/bb/references/vocabulario.md`, pointed at by the SessionStart hook so it
+holds for a plain chat too. The item of `## Tarefas` is a **tarefa**; the artifact
+at `.bb/<slug>/spec.md` is a **spec**. The reference bodies stay English — the page
+governs the Portuguese sentence, and its table is what you reach for when the
+document you just read is English and the answer you are about to give is not.
 
 ### Progressive disclosure (mandatory for fused skills)
 
@@ -149,9 +157,11 @@ alone. Skills reference that file instead of restating the contract.
 
 The spec's **form** belongs to `plugins/bb/skills/spec/references/spec-format.md`:
 a free top half (opening plus whatever sections the problem asks for) over a fixed
-spine — `decisions`, `behavior`, `tasks`, `out of scope`, `open` — fixed because each
-member has a reader. `skills/spec/scripts/lint_spec.py` enforces the mechanical half
-of that and runs in CI over every `.bb/*/spec.md`.
+spine — `Decisões`, `Comportamento`, `Tarefas`, `Fora de escopo`, `Em aberto` —
+fixed because each member has a reader. A spec written before the rename keeps its
+English spine and still builds: both names resolve everywhere, and the lint answers
+`W003` naming the Portuguese one. `skills/spec/scripts/lint_spec.py` enforces the
+mechanical half of that and runs in CI over every `.bb/*/spec.md`.
 
 ## Commits
 

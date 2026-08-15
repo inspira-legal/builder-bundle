@@ -186,7 +186,7 @@ Caminho principal:
 - [x] **9. Migrar as 7 specs em disco** — move pra `.bb/<slug>/`, espinha traduzida e
       `depende:`, inclusive as `done` e esta → behaviors 6, 7 · depende: 5, 6 ·
       verifica: CI verde
-- [ ] **10. Versão e docs** — `plugin.json` `2.9.0`, CHANGELOG, README e
+- [x] **10. Versão e docs** — `plugin.json` `2.9.0`, CHANGELOG, README e
       `.claude/CLAUDE.md` → behavior 7 · depende: 1-9 · verifica: CI
 
 ## Fora de escopo
