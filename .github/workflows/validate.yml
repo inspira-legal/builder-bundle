@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - "**/SKILL.md"
-      - "skills/**"
+      - "plugins/**"
       - "**/agents/**"
       - ".bb/**"
       - ".github/scripts/**"
