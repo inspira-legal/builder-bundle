@@ -33,12 +33,15 @@ the dir, and everything durable about that work lives inside it:
 - Members are independent. A brisar run that never went through `/bb:discover`
   leaves a folder with design and no `spec.md`; a specced idea that never touched
   design has only `spec.md`.
-- Bare selection (`/bb:delegate` with no slug) scans `.bb/*/spec.md` **and**
-  `.bb/tasks/*/spec.md`, then picks by `created` — a folder without a spec is
-  simply not a candidate. The second glob is the layout this folder had before,
-  kept in the scan so a spec still written under it — in another repo, or in one
-  not migrated yet — is found. The folder's `<slug>` is the key: the same slug
-  seen under both paths is one spec, and the `.bb/<slug>/` copy is the one read.
+- **`.bb/tasks/<slug>/` is the layout this folder had before, and it still resolves.**
+  A named slug reads `.bb/<slug>/spec.md` and falls back to `.bb/tasks/<slug>/spec.md`;
+  bare selection (`/bb:delegate` with no slug) scans `.bb/*/spec.md` **and**
+  `.bb/tasks/*/spec.md` before picking by `created` — a folder without a spec is
+  simply not a candidate. A spec still written under the old path — in another repo,
+  or in one not migrated yet — is found either way, and the other members resolve
+  beside it, in whichever of the two folders the spec was found. The folder's `<slug>`
+  is the key: the same slug seen under both paths is one spec, and the `.bb/<slug>/`
+  copy is the one read. New work is written to `.bb/<slug>/`.
 - The `.bb/` root is the nearest ancestor of the cwd that already has one; if none
   does, it is created in the cwd. **Resolve it that way every time** — a bare relative
   `.bb/` mints a second root whenever a skill runs from a subfolder, and the slug's
@@ -111,6 +114,11 @@ The task line's dependency field is one field under two spellings — `depende:`
 `dep:` — and reads the same either way.
 
 **Writing is not symmetric.** A new section is written in Portuguese; a section
-already on disk keeps the spelling it has, so one spec never carries both names for
-the same thing. The lint answers an English heading with `W003` and the Portuguese
-name to write, and the file stays valid.
+already on disk keeps the spelling it has. The lint answers an English heading with
+`W003` and the Portuguese name to write, and the file stays valid.
+
+A half-migrated spec can carry **both** names for the same thing — `## Tarefas` and
+`## tasks` in one file. Read both and treat them as one section, in file order: the
+task lines under the English heading are as unbuilt as the ones under the Portuguese
+heading, and stopping at the first match would let a run report clean over work it
+never did.
