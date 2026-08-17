@@ -118,8 +118,10 @@ conventions the loop already had. Anything else stops the loop and keeps what's 
 The prompt carries the spec path, the task's own line, the behaviors it cites, the
 accumulated convention note, and the gate commands stage zero resolved. Its steps:
 
-1. **Re-read `## Tarefas` on disk** — `## tasks` when the spec still spells it in
-   English. If this task is already `- [x]`, return immediately with
+1. **Re-read `## Tarefas` on disk** — plus `## tasks`, the English spelling, and a
+   half-migrated spec carrying both headings gets **both** enumerated, in file order
+   (the whole pairing is in the plugin-level `references/spec-state.md`). If this task
+   is already `- [x]`, return immediately with
    `status: "skipped"` — the run is resumable and re-running a half-built spec
    must not redo what already landed.
 2. **Build the task**, staying inside the spec's `## Fora de escopo` (`## out of scope`

@@ -34,5 +34,6 @@ Severity: a missing happy path is HIGH; a missing mapped edge or a missing test
 for a built behavior is MEDIUM; scope drift is MEDIUM; a stylistic divergence from
 the spec's wording is not a finding at all.
 
-Cap: 8. When the spec has no `## Comportamento` map (a small spec that skipped it),
-say so and fall back to question 2 alone rather than inventing acceptance rows.
+Cap: 8. When the spec has neither `## Comportamento` nor `## behavior` (a small spec
+that skipped the map), say so and fall back to question 2 alone rather than inventing
+acceptance rows.

@@ -127,7 +127,7 @@ product's language (PT-BR for Inspira products).
 ## tasks.md — implementation breakdown
 
 Generate for Large scope or non-trivial technical dependencies. Render from the
-spec's `## Tarefas` items — same work, table form with explicit dependencies and
+spec's `## Tarefas` (or `## tasks`) items — same work, table form with explicit dependencies and
 verification criteria.
 
 ```markdown
