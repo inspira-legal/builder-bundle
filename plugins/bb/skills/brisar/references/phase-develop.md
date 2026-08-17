@@ -62,7 +62,8 @@ Take `design_path` and each `surfaces[].file` from `.brisar/config.yaml` and joi
 
 ```bash
 BB=$(d=$PWD; while [ "$d" != / ] && [ ! -d "$d/.bb" ]; do d=$(dirname "$d"); done; echo "$d/.bb")
-ls "$BB/<slug>/design.md" "$BB/<slug>/design"/*.md \n   "$BB/tasks/<slug>/design.md" "$BB/tasks/<slug>/design"/*.md 2>/dev/null
+ls "$BB/<slug>/design.md" "$BB/<slug>/design"/*.md \
+   "$BB/tasks/<slug>/design.md" "$BB/tasks/<slug>/design"/*.md 2>/dev/null
 ```
 
 If no surface has a md: Phase 4 needs to run first (offer it) or the builder describes the screen directly in chat.

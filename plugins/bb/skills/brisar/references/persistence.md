@@ -232,7 +232,9 @@ Old sessions may carry `nise:`/`esperanca:` sections, a `shaping:` block, and st
 
 **A design brief on disk is itself a resume signal**, session or no session. Step 0.1 globs
 `.bb/*/brief-design.md` **and** `.bb/tasks/*/brief-design.md`, the layout the folder had
-before; when one exists the first diamond already ran, and brisar picks up
+before; the same slug under both paths is one brief, the `.bb/<slug>/` copy is the one
+read, and every round writes back to the file it read — a resumed round that grew a
+second brief in the other folder lost its own history. When one exists the first diamond already ran, and brisar picks up
 from how far it got (findings only → Diverge · directions with none chosen → convergence · a chosen
 direction, nothing built → the medium question · surfaces built → Deliver). **Never re-run research
 over an existing brief** — it is the most expensive mistake available here, and it destroys the
