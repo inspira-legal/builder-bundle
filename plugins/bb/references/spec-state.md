@@ -38,10 +38,13 @@ the dir, and everything durable about that work lives inside it:
   bare selection (`/bb:delegate` with no slug) scans `.bb/*/spec.md` **and**
   `.bb/tasks/*/spec.md` before picking by `created` — a folder without a spec is
   simply not a candidate. A spec still written under the old path — in another repo,
-  or in one not migrated yet — is found either way, and the other members resolve
+  or in one not migrated yet — is found either way, and the other members are **read**
   beside it, in whichever of the two folders the spec was found. The folder's `<slug>`
   is the key: the same slug seen under both paths is one spec, and the `.bb/<slug>/`
-  copy is the one read. New work is written to `.bb/<slug>/`.
+  copy is the one read. **Writing is where the two paths stop being symmetric**: a new
+  member goes to `.bb/<slug>/` even when the spec was found under the old path, while
+  an update is written back to the file it was read from. So a reader looks for a
+  member in both folders and takes the `.bb/<slug>/` copy when both answer.
 - The `.bb/` root is the nearest ancestor of the cwd that already has one; if none
   does, it is created in the cwd. **Resolve it that way every time** — a bare relative
   `.bb/` mints a second root whenever a skill runs from a subfolder, and the slug's
