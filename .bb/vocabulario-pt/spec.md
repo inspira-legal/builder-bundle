@@ -1,5 +1,5 @@
 ---
-status: in-progress
+status: done
 created: 2026-08-12
 slug: vocabulario-pt
 ---
