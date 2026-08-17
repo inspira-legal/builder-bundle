@@ -23,14 +23,15 @@ plugins/bb/
 │   ├── inject_operating_context.py     # SessionStart hook script
 │   └── operating-context.md            # the injected operating frame (edit to tune)
 ├── references/                        # plugin-level docs (not skill-scoped)
+│   ├── vocabulario.md                  # one name per thing, in Portuguese (table + capitalization)
 │   ├── handoff-gate.md                 # the one convention for end-of-skill gates (+ AskUserQuestion rationale)
 │   ├── confidence-and-steelman.md      # shared reasoning protocols (think, challenge)
-│   ├── task-state.md                   # the .bb/tasks/<slug>/ folder contract
+│   ├── spec-state.md                   # the .bb/<slug>/ folder contract
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
 │   ├── quality-checklist.md            # canonical quality criteria — the six lenses (review engine)
 │   ├── review-checklist.md             # canonical correctness criteria — Pass 1 rows (review engine)
 │   ├── build-mode.md                   # workflow-or-context: the per-run build choice (implement, delegate)
-│   └── build-slices-workflow.md        # contract the generated one-agent-per-slice script meets
+│   └── build-tasks-workflow.md         # contract the generated one-agent-per-task script meets
 ├── scripts/                           # shared executables (2+ skills) — ref via ${CLAUDE_PLUGIN_ROOT}/scripts/
 │   ├── fetch_comments.py               # ship, review
 │   ├── reply_resolve_thread.py         # ship, review
@@ -80,6 +81,13 @@ the skill.
 Instruction bodies are written in **English** (the method); everything the user
 sees is **PT-BR**: frontmatter `description`/triggers, handoff-gate questions and
 option labels, report templates, error messages addressed to the user.
+
+Which Portuguese word each concept gets — and how it is capitalized — is
+`plugins/bb/references/vocabulario.md`, pointed at by the SessionStart hook so it
+holds for a plain chat too. The item of `## Tarefas` is a **tarefa**; the artifact
+at `.bb/<slug>/spec.md` is a **spec**. The reference bodies stay English — the page
+governs the Portuguese sentence, and its table is what you reach for when the
+document you just read is English and the answer you are about to give is not.
 
 ### Progressive disclosure (mandatory for fused skills)
 
@@ -138,20 +146,22 @@ decisions.
 - Scripts write to stdout (JSON or plain text) for the LLM to consume
 - New scripts should use Python, stdlib only (no third-party imports)
 
-## Task state
+## Spec state
 
-The on-disk contract is `plugins/bb/references/task-state.md` — `.bb/tasks/<slug>/`
-is the task's folder, holding the brief (`spec.md`, with its `status`/`created`/`slug`
+The on-disk contract is `plugins/bb/references/spec-state.md` — `.bb/<slug>/`
+is the spec's folder, holding the spec (`spec.md`, with its `status`/`created`/`slug`
 frontmatter and the status lifecycle owned by `/bb:delegate`) and the visual direction
 `/bb:brisar` writes next to it (`design.md` for a single surface, `design/<surface>.md`
 plus an index for several). Members are independent — a folder can carry either one
 alone. Skills reference that file instead of restating the contract.
 
-The brief's **form** belongs to `plugins/bb/skills/spec/references/spec-format.md`:
+The spec's **form** belongs to `plugins/bb/skills/spec/references/spec-format.md`:
 a free top half (opening plus whatever sections the problem asks for) over a fixed
-spine — `decisions`, `behavior`, `tasks`, `out of scope`, `open` — fixed because each
-member has a reader. `skills/spec/scripts/lint_spec.py` enforces the mechanical half
-of that and runs in CI over every `.bb/tasks/*/spec.md`.
+spine — `Decisões`, `Comportamento`, `Tarefas`, `Fora de escopo`, `Em aberto` —
+fixed because each member has a reader. A spec written before the rename keeps its
+English spine and still builds: both names resolve everywhere, and the lint answers
+`W003` naming the Portuguese one. `skills/spec/scripts/lint_spec.py` enforces the
+mechanical half of that and runs in CI over every `.bb/*/spec.md`.
 
 ## Commits
 
@@ -161,7 +171,7 @@ of that and runs in CI over every `.bb/tasks/*/spec.md`.
   layer, or `repo` for repo-wide changes
 - **The commit body carries the rationale.** Why a decision changed, what a
   closer read of the source corrected, which alternative lost and on what
-  grounds — that belongs here, not in the file being changed. A brief in
-  `.bb/tasks/` describes what to build as it stands now; the history of how it
+  grounds — that belongs here, not in the file being changed. A spec in
+  `.bb/` describes what to build as it stands now; the history of how it
   got there is what `git log` is for, and duplicating it into the document is
-  what makes briefs unreadable.
+  what makes specs unreadable.

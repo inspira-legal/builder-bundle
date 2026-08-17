@@ -15,7 +15,7 @@ claude plugin marketplace add inspira-legal/builder-bundle
 claude plugin install bb@inspira-legal
 ```
 
-traz um hook `SessionStart` de contexto operacional, auto-ativo na instalação, e dois agentes read-only (`bb-finder`, `bb-verifier`) que o fan-out de review despacha — papéis internos do pipeline, não portas de entrada. as skills são invocadas como `/bb:<skill>` — ex. `/bb:discover`, `/bb:spec`, `/bb:ship`. toda skill com próximo passo natural termina num gate que **sugere** a próxima trilha, nunca auto-invoca.
+traz um hook `SessionStart` de contexto operacional, auto-ativo na instalação, e dois agentes de só leitura (`bb-finder`, `bb-verifier`) que o review despacha em paralelo — papéis internos do pipeline, não portas de entrada. as skills são invocadas como `/bb:<skill>` — ex. `/bb:discover`, `/bb:spec`, `/bb:ship`. toda skill com próximo passo natural termina num gate que **sugere** a próxima trilha, nunca auto-invoca.
 
 ## o que tem dentro
 
@@ -32,26 +32,26 @@ um plugin, `bb`; 15 skills organizadas em 6 trilhas.
 
 ### desenhar — alinhar a forma do que vai ser construído
 
-| skill      | descrição                                                                                                                                   |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:spec` | alinhe a ideia antes do código — desenvolve o draft, itera nas zonas cinzentas via perguntas, valida um brief em `.bb/tasks/<slug>/spec.md` |
+| skill      | descrição                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:spec` | alinhe a ideia antes do código — desenvolve o draft, itera nas zonas cinzentas via perguntas, valida uma spec em `.bb/<slug>/spec.md` |
 
 ### construir — escrever & entregar código
 
 | skill                       | descrição                                                                                                                                                                                                                                    |
 | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:implement`             | implementa um brief validado — constrói as fatias, roda o gate, depois oferece entregar                                                                                                                                                      |
+| `/bb:implement`             | implementa uma spec validada — constrói as tarefas, roda o gate, depois oferece entregar                                                                                                                                                     |
 | `/bb:ship`                  | leva a branch ao fim do seu jeito — roda a engine de review do `/bb:review` (todas as frentes que se aplicam, sem perguntar) + deixa os checks verdes, então push, prepara pra main, abre um PR e cuida dele, ou prepara o deploy no LexFlow |
-| `/bb:delegate`              | roda uma task especificada de ponta a ponta — escolhe o brief, constrói e entrega (implement → ship), trilhando o `status`                                                                                                                   |
+| `/bb:delegate`              | roda uma spec de ponta a ponta — seleciona, constrói todas as tarefas e entrega (implement → ship), trilhando o `status`                                                                                                                     |
 | `/bb:gather-branch-context` | resume todas as mudanças da branch vs main                                                                                                                                                                                                   |
 
 ### revisar — qualidade & manutenção
 
-| skill               | descrição                                                                                                                                                                                                                                                                                                                       |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:review`        | você escolhe as frentes (correção, qualidade, regras do projeto, contrato do brief, acessibilidade da UI, threads do PR, CI), ela roda em paralelo e verifica cada achado; corrige, responde e resolve o que você aprovar. a frente de acessibilidade também roda sozinha como auditoria WCAG AA de uma pasta ou página rodando |
-| `/bb:maintain-repo` | tria PRs + dependabot/desatualizados, reporta o que dá pra mergear (nunca faz merge)                                                                                                                                                                                                                                            |
-| `/bb:review-setup`  | configura o workflow de code-review da Inspira no repo e escreve o `CODE_REVIEW_GUIDE.md`                                                                                                                                                                                                                                       |
+| skill               | descrição                                                                                                                                                                                                                                                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/bb:review`        | você escolhe as frentes (correção, qualidade, regras do projeto, contrato da spec, acessibilidade da UI, threads do PR, CI), ela roda em paralelo e verifica cada achado; corrige, responde e resolve o que você aprovar. a frente de acessibilidade também roda sozinha como auditoria WCAG AA de uma pasta ou página rodando |
+| `/bb:maintain-repo` | tria PRs + dependabot/desatualizados, reporta o que dá pra mergear (nunca faz merge)                                                                                                                                                                                                                                           |
+| `/bb:review-setup`  | configura o workflow de code-review da Inspira no repo e escreve o `CODE_REVIEW_GUIDE.md`                                                                                                                                                                                                                                      |
 
 ### design — da ideia à surface em alta fidelidade
 

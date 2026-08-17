@@ -90,7 +90,7 @@ prototype_hosted:
   output_artifacts:
     - "<slug>/ — scaffolded folder"
     - "<slug>/HANDOFF-DEV.md — instructions for the dev to pick up"
-    - ".bb/tasks/<slug>/design.md (or design/<surface>.md) — visual direction"
+    - ".bb/<slug>/design.md (or design/<surface>.md) — visual direction"
   caveats: |
     The builder won't be able to run `pnpm install && pnpm dev` locally.
     brisar should say this explicitly: "this prototype is for the dev to pick up — you pass the link

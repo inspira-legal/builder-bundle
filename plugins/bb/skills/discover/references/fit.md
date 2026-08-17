@@ -41,15 +41,16 @@ came from a framed problem; otherwise run only the mode the user asked for.
 
 ## Capture
 
-Write into the same brief, accreting alongside `## problem` / `## hypothesis`:
+Write into the same spec, accreting alongside `## Problema` / `## Hipótese` —
+under the English names when the spec already carries them:
 
 ```
-## fit
+## Encaixe
 <worth-building verdict + the demand evidence, each claim evidence-tagged>
 - next_action: build-mvp | validate-first | pivot | persevere | shelve
 - confidence: med
 
-## cuts
+## Cortes
 Cut:
 - <feature> — <reason: out-of-appetite>
 Kept, in priority order:
@@ -57,8 +58,8 @@ Kept, in priority order:
 2. <feature>
 ```
 
-And refine the `## hypothesis` section in place into the testable form. Keep cut
+And refine the `## Hipótese` section in place into the testable form. Keep cut
 ideas worth revisiting as plain bullets marked _revisit_ — never checkboxes.
 
-A legal-sensitive bet deserves `/bb:legal-lens` over the brief before committing
+A legal-sensitive bet deserves `/bb:legal-lens` over the spec before committing
 — mention it in the report when it applies.

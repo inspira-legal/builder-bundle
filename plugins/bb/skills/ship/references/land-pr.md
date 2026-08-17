@@ -7,7 +7,7 @@ already done and the gate is green.
 
 1. Gather context: `python ${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py` → JSON with `branch`, `upstream`, `base_branch`, `commit_log`, `diff_stat`, `uncommitted_changes`, `pr_template`.
 2. If the branch has no upstream, note that `gh pr create` pushes automatically.
-3. Draft from the commits + diff (and a matching task brief if present — it's the intended scope):
+3. Draft from the commits + diff (and a matching spec if present — it's the intended scope):
    - **Title**: conventional commit style `<type>(<scope>): <description>` (≤70 chars).
    - **Body**: follow `.github/pull_request_template.md` if it exists (fill every section; mark N/A where not applicable). Otherwise: Context (why) → Changes (grouped by purpose, not file) → Breaking Changes (only if any).
 4. Present title + body, get approval/edits, then create:

@@ -22,7 +22,7 @@ improvement, and a "fix" that isn't justified against its finding is a guess.
   evaluation / short-circuit order; truthiness or coercion shifts when collapsing
   conditionals; removing "dead" code that actually has side effects; merging
   error handling so different errors now propagate the same; altering async
-  timing/ordering; off-by-one when refactoring a loop or slice.
+  timing/ordering; off-by-one when refactoring a loop or an index range.
 - **When in doubt, leave it and flag it.** A missed cleanup costs nothing; a
   regression costs trust.
 
@@ -36,7 +36,7 @@ improvement, and a "fix" that isn't justified against its finding is a guess.
      behavior, it stops being a mechanical fix — treat it as a correctness fix
      and justify it as one.
    - A **contract gap** is closed by building the missing behavior or the missing
-     test, not by editing the brief. When the brief itself turns out to be wrong,
+     test, not by editing the spec. When the spec itself turns out to be wrong,
      that's a `/bb:spec` conversation, not a review edit.
 2. Scope stays the code this branch already changed — no refactoring untouched
    code "while at it" (the scope rule in the plugin-root

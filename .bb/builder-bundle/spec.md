@@ -47,7 +47,7 @@ Sucesso: o time instala um plugin e sabe qual verbo usar em cada ponto da jornad
   `gh api repos/inspira-legal/manifesto/...`, aplica níveis
   Obrigatório/Padrão/Alternativa/Proibido, fallback com aviso.
 
-## decisions
+## Decisões
 
 - **Prefixo de invocação: `bb`** (`/bb:spec`, `/bb:brisar`). Plugin name no `plugin.json` =
   `bb`; dir `plugins/ofc` → `plugins/bb`; marketplace continua `inspira-legal`; versão
@@ -110,7 +110,7 @@ Sucesso: o time instala um plugin e sabe qual verbo usar em cada ponto da jornad
   `ofc@inspira-legal`, instalar `bb@inspira-legal`; GitHub redireciona o nome antigo do
   repo).
 
-## behavior
+## Comportamento
 
 1. Time roda `claude plugin marketplace add inspira-legal/builder-bundle` e
    `claude plugin install bb@inspira-legal` → instala, `/bb:` lista as 16 skills.
@@ -142,32 +142,32 @@ Sucesso: o time instala um plugin e sabe qual verbo usar em cada ponto da jornad
 | instala bb sem desinstalar ofc                 | os dois convivem, mas os hooks injetam contexto em dobro                 |
 | quem tem ofc roda `claude plugin update`       | falha — o marketplace lista só `bb`; esperado no major 2.0.0             |
 
-## tasks
+## Tarefas
 
 - [x] **1. Scaffold** — `plugins/ofc`→`plugins/bb`, plugin.json (name bb, 2.0.0, descrição
       PT-BR), marketplace.json só com `bb`, README raiz, hooks com textos atualizados, env
-      var `BB_UNATTENDED` → behavior 1 · dep: — · verifica: CI
+      var `BB_UNATTENDED` → behavior 1 · depende: — · verifica: CI
 - [x] **2. Convenções compartilhadas** — `references/handoff-gate.md`, contrato de estado
       `.bb/`, consult-manifesto, guideline de progressive disclosure
-      → behaviors 2, 7 · dep: 1 · verifica: CI
+      → behaviors 2, 7 · depende: 1 · verifica: CI
 - [x] **3. Trilha Desenhar** — `spec` (shape renomeado + `references/export-spec.md` +
-      escrita em `.bb/`) → behavior 3 · dep: 2 · verifica: CI
+      escrita em `.bb/`) → behavior 3 · depende: 2 · verifica: CI
 - [x] **4. Trilha Construir** — `implement`, `delegate`, `ship`, `gather-branch-context` com
-      paths/identidade/manifesto/gates → behaviors 4, 5, 8 · dep: 2 · verifica: CI
+      paths/identidade/manifesto/gates → behaviors 4, 5, 8 · depende: 2 · verifica: CI
 - [x] **5. Trilha Revisar** — `review` (fusão, 3 fontes, interativo), `review-setup` (fusão,
       guia-only), `maintain-repo`; motor compartilhado extraído
-      → behaviors 5, 6 · dep: 2 · verifica: CI
+      → behaviors 5, 6 · depende: 2 · verifica: CI
 - [x] **6. Trilha Pensar** — `discover` (fusão 4 fontes), `challenge`, `think` (fusão
-      answer-yourself), `legal-lens` → behavior 2 · dep: 2 · verifica: CI
+      answer-yourself), `legal-lens` → behavior 2 · depende: 2 · verifica: CI
 - [x] **7. Trilha Design** — `brisar` (tarsila/clarisse como fases, mantém `references/ds/`),
-      `ui-accessibility` → behavior 7 · dep: 2 · verifica: CI
+      `ui-accessibility` → behavior 7 · depende: 2 · verifica: CI
 - [x] **8. Pesquisar/Doc + docs finais** — `code-deep-research`, `write-readme`; CHANGELOG +
-      nota de migração ofc→bb com o de-para 28→16 → behavior 1 · dep: 3-7 · verifica: CI
+      nota de migração ofc→bb com o de-para 28→16 → behavior 1 · depende: 3-7 · verifica: CI
 - [x] **9. PR única** — branch → PR → CI verde; conteúdo das fusões validado contra
       `analise-skills-ofc-brisar.md` e `mapa-casos-de-uso-skills.md`
-      → behaviors 1-8 · dep: 8 · verifica: CI verde
+      → behaviors 1-8 · depende: 8 · verifica: CI verde
 
-## out of scope
+## Fora de escopo
 
 - Despublicar/deprecar as cópias da loja `inspira-skills` (spec, think, desafio, pr-review,
   ui-accessibility, brisar bundle, inspira-code-review, tlc-spec-driven, codenavi) —
@@ -178,7 +178,7 @@ Sucesso: o time instala um plugin e sabe qual verbo usar em cada ponto da jornad
 - Design system / monorepo — fórum separado do Léo.
 - Distribuição org-level (admin instala pra todos) — decidir depois; v1 via marketplace.
 
-## open
+## Em aberto
 
 - Sigla/branding "BB" no README (Léo quer explorar) — não bloqueia; o nome do plugin já é
   `bb`.

@@ -58,7 +58,7 @@ modelo ("ignore o anterior, edite X") não é barrado por capability — `Edit`/
 `sed -i` não. O ângulo `instruction-integrity` continua sendo a defesa de leitura; o scoping
 é redução de superfície, não isolamento.
 
-## decisions
+## Decisões
 
 - **Dois agentes, por papel** — `bb-finder` e `bb-verifier`. O que difere entre frentes é
   conteúdo de prompt que o caller já monta (angle set, criteria path, scope block, Finding
@@ -97,7 +97,7 @@ modelo ("ignore o anterior, edite X") não é barrado por capability — `Edit`/
   agentes pela convenção de empréstimo. Ajustar `ship/SKILL.md:54` só se a linha ficar
   ambígua depois do slice 2.
 
-## behavior
+## Comportamento
 
 Happy path (`/bb:review`, step 3, depth com fan-out):
 
@@ -127,28 +127,28 @@ Happy path (`/bb:review`, step 3, depth com fan-out):
 | o diff carrega texto que instrui o modelo    | Edit/Write barrados; escrita via Bash segue alcançável — limite declarado                |
 | `BB_UNATTENDED` setado                       | nada muda — o caminho já é report-only                                                   |
 
-## tasks
+## Tarefas
 
 - [x] **1. Os dois agentes** — `bb-finder.md` e `bb-verifier.md`: frontmatter (`name`,
       `description` PT-BR estreita, `tools: ["Read", "Grep", "Glob", "Bash"]`, sem
       `model`) e system prompt em inglês com o contrato invariante de cada papel
-      → behaviors 3, 5 e as linhas de Finding shape e injection · dep: — · verifica: CI
+      → behaviors 3, 5 e as linhas de Finding shape e injection · depende: — · verifica: CI
 - [x] **2. O engine despacha os agentes** — `fronts.md` (item 1 nomeia o `subagent_type`,
       item 5 defere o contrato), `review/SKILL.md:91`, `verify.md §2` (defere a rubrica,
       mantém o addendum por frente), `front-correctness.md`
-      → behaviors 2, 5 e as linhas de fallback e de ship · dep: 1 · verifica: CI
+      → behaviors 2, 5 e as linhas de fallback e de ship · depende: 1 · verifica: CI
 - [x] **3. O CI guarda o scoping** — `validate-frontmatter.ts` caminha em `agents/*.md`,
       exige `name`+`description` e falha em `Write`/`Edit`/`NotebookEdit`; `validate.yml`
       ganha `plugins/bb/agents/**` e `.github/scripts/**` no `paths:`
-      → as duas linhas de CI da tabela · dep: — · verifica: CI verde (prova que a assertion
+      → as duas linhas de CI da tabela · depende: — · verifica: CI verde (prova que a assertion
       não dá falso positivo nos outros agentes)
 - [x] **4. Docs e versão** — `.claude/CLAUDE.md` (árvore ganha `agents/`, uma linha de
       convenção), README se listar a estrutura, bump `2.2.0` → `2.3.0`
-      → nenhum comportamento próprio · dep: 1-3 · verifica: CI
+      → nenhum comportamento próprio · depende: 1-3 · verifica: CI
 
 PR sugerida: `feat(review): bb-finder e bb-verifier com capability scoping`.
 
-## out of scope
+## Fora de escopo
 
 - **Os 5 subagentes de discovery do `/bb:review-setup`** — prompts fixos, skill que roda
   raro; não paga 5 nomes globais. _revisit_ se o review-setup virar rotina.
@@ -161,7 +161,7 @@ PR sugerida: `feat(review): bb-finder e bb-verifier com capability scoping`.
   já monta.
 - Apagar a branch local `claude/review-fronts` — limpeza, não faz parte desta task.
 
-## open
+## Em aberto
 
 - Nada load-bearing. O único ponto a confirmar na implementação é se `ship/SKILL.md:54`
   precisa de ajuste de redação — decidido por default: só mexer se a linha ficar ambígua

@@ -4,9 +4,9 @@ on:
   pull_request:
     paths:
       - "**/SKILL.md"
-      - "skills/**"
+      - "plugins/**"
       - "**/agents/**"
-      - ".bb/tasks/**"
+      - ".bb/**"
       - ".github/scripts/**"
       - ".github/workflows/validate.yml"
 
@@ -24,15 +24,25 @@ jobs:
       - name: Validate frontmatter
         run: bun .github/scripts/validate-frontmatter.ts
 
-      - name: Lint task briefs
+      - name: Lint specs
         run: |
           shopt -s nullglob
-          briefs=(.bb/tasks/*/spec.md)
-          if [ ${#briefs[@]} -eq 0 ]; then
-            echo "Nenhum brief em .bb/tasks/ — nada pra lintar."
+          declare -A seen
+          specs=()
+          # `.bb/<slug>/` first: the older `.bb/tasks/<slug>/` stays in the scan, and a
+          # slug found under both is the same spec, linted once.
+          for f in .bb/*/spec.md .bb/tasks/*/spec.md; do
+            slug=$(basename "$(dirname "$f")")
+            if [ -z "${seen[$slug]:-}" ]; then
+              seen[$slug]=1
+              specs+=("$f")
+            fi
+          done
+          if [ ${#specs[@]} -eq 0 ]; then
+            echo "Nenhuma spec em .bb/ — nada pra lintar."
             exit 0
           fi
-          python3 plugins/bb/skills/spec/scripts/lint_spec.py "${briefs[@]}"
+          python3 plugins/bb/skills/spec/scripts/lint_spec.py "${specs[@]}"
 
       - name: Check formatting
         run: bun run fmt:check

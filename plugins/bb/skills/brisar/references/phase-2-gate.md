@@ -75,9 +75,9 @@ gate:
 
 Print to the user, seeding discover with the intake already collected:
 
-> ✓ Bootstrap salvo em `.brisar/session.yaml`. Roda `/bb:discover <sua ideia em 1 frase>` agora — ele enquadra problema, fit e hipótese e grava o brief em `.bb/tasks/<slug>/spec.md`. Quando terminar, chama `/bb:brisar` de novo na mesma pasta — eu detecto o bootstrap, leio o brief e prossigo da pesquisa (o enquadramento é justamente o que a pesquisa vai testar).
+> ✓ Bootstrap salvo em `.brisar/session.yaml`. Roda `/bb:discover <sua ideia em 1 frase>` agora — ele enquadra problema, fit e hipótese e grava a spec em `.bb/<slug>/spec.md`. Quando terminar, chama `/bb:brisar` de novo na mesma pasta — eu detecto o bootstrap, leio a spec e prossigo da pesquisa (o enquadramento é justamente o que a pesquisa vai testar).
 
-**STOP.** Do not scaffold and do not invoke /bb:discover — the builder crosses on purpose. End the turn here. (On return, Step 0.1 of SKILL.md handles the resume: locate the brief, record `gate.discover_brief`, resume at the Research phase.)
+**STOP.** Do not scaffold and do not invoke /bb:discover — the builder crosses on purpose. End the turn here. (On return, Step 0.1 of SKILL.md handles the resume: locate the spec, record `gate.discover_brief`, resume at the Research phase.)
 
 ### No — going straight
 
@@ -125,7 +125,7 @@ Continue to the Research phase.
 
 Print informative response (plain text):
 
-> `/bb:discover` enquadra o problema antes do código: com quem dói e como dói, se vale resolver (fit), a hipótese (Se X, esperamos Y porque Z), a métrica de sucesso e o apetite (quanto vale investir, em estilo Shaping). Demora ~10 minutos e grava um brief em `.bb/tasks/`. Eu, brisar, capturo só os 3 dados que viram pasta de projeto. Sem o enquadramento, o scaffold sai pronto mas você não sabe o que conta como sucesso.
+> `/bb:discover` enquadra o problema antes do código: com quem dói e como dói, se vale resolver (fit), a hipótese (Se X, esperamos Y porque Z), a métrica de sucesso e o apetite (quanto vale investir, em estilo Shaping). Demora ~10 minutos e grava uma spec em `.bb/`. Eu, brisar, capturo só os 3 dados que viram pasta de projeto. Sem o enquadramento, o scaffold sai pronto mas você não sabe o que conta como sucesso.
 >
 > Em produto-real ou commitment isso costuma valer. Em exploração descartável é overkill.
 

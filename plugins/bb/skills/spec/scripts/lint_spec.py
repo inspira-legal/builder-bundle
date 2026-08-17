@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check the mechanical shape of a spec brief.
+"""Check the mechanical shape of a spec.
 
 Judgment — is it too long, does it repeat itself, is it recounting the conversation —
 belongs to the independent reviewer. This only catches what is decidable by reading
@@ -12,17 +12,34 @@ Output: `path:line CODE mensagem` on stdout. Exit 1 when any E-code fired.
 import re
 import sys
 
-REQUIRED_SECTIONS = ("decisions", "open")
-RECOMMENDED_SECTIONS = {
-    "behavior": ("W001", "sem `## behavior` — o mapa de comportamento é o contrato de aceite"),
-    "tasks": ("W002", "sem `## tasks` — sem slices o build não tem o que consumir"),
+# (nome em português, nome em inglês) — as duas grafias valem; a mensagem cita a portuguesa.
+REQUIRED_SECTIONS = (("Decisões", "decisions"), ("Em aberto", "open"))
+RECOMMENDED_SECTIONS = (
+    ("Comportamento", "behavior", "W001", "o mapa de comportamento é o contrato de aceite"),
+    ("Tarefas", "tasks", "W002", "sem tarefas o build não tem o que consumir"),
+    ("Fora de escopo", "out of scope", "W004", "é a fronteira que o build fica dentro"),
+)
+# An English section still parses; W003 carries the Portuguese name to write instead.
+TRANSLATED_SECTIONS = {
+    "decisions": "Decisões",
+    "behavior": "Comportamento",
+    "tasks": "Tarefas",
+    "out of scope": "Fora de escopo",
+    "open": "Em aberto",
+    "problem": "Problema",
+    "hypothesis": "Hipótese",
+    "fit": "Encaixe",
+    "cuts": "Cortes",
+    "legal": "Jurídico",
 }
+# `{raw}` recebe o heading como está escrito no arquivo, pra mensagem citar a grafia
+# que o autor vai procurar.
 DEAD_SECTIONS = {
     "design": (
-        "`## design` é nome morto — no bb `design` é desenho de tela (`/bb:brisar`). "
+        "`## {raw}` é nome morto — no bb `design` é desenho de tela (`/bb:brisar`). "
         "Arquitetura vai pra metade de cima, com o nome que ela tem neste problema."
     ),
-    "still open": "seção `## still open` — o nome é `## open`.",
+    "still open": "seção `## {raw}` — o nome é `## Em aberto`.",
 }
 VALID_STATUS = ("pending", "in-progress", "done", "blocked")
 MAX_CELL = 100
@@ -46,7 +63,7 @@ def split_row(line):
 
 
 def check_frontmatter(lines):
-    """Yield problems with the `---` block the task-state contract requires."""
+    """Yield problems with the `---` block the spec-state contract requires."""
     if not lines or lines[0].strip() != "---":
         yield 1, "E001", "frontmatter ausente — o bloco `---` com status/created/slug abre o arquivo"
         return
@@ -88,15 +105,24 @@ def check_body(lines):
             return
         header_no, header = rows[0]
         width = len(header)
-        body = rows[2:] if all(SEPARATOR_CELL.match(c) for c in rows[1][1]) else rows[1:]
-        for line_no, cells in [rows[0]] + body:
+        is_separator = all(SEPARATOR_CELL.match(c) for c in rows[1][1])
+        body = rows[2:] if is_separator else rows[1:]
+        # The delimiter row is width-checked like any other: GFM needs it to match the
+        # header, and a short one turns the whole table back into a paragraph of pipes.
+        for line_no, cells in rows:
             if len(cells) != width:
+                remedy = (
+                    "a separadora precisa das mesmas células do cabeçalho, senão o GFM "
+                    "não lê a tabela"
+                    if is_separator and line_no == rows[1][0]
+                    else "um `|` literal precisa virar `\\|`"
+                )
                 yield (
                     line_no,
                     "E005",
-                    f"row com {len(cells)} células contra {width} do cabeçalho — "
-                    "um `|` literal precisa virar `\\|`",
+                    f"row com {len(cells)} células contra {width} do cabeçalho — {remedy}",
                 )
+        for line_no, cells in [rows[0]] + body:
             for cell in cells:
                 if len(cell) > MAX_CELL:
                     yield (
@@ -126,21 +152,27 @@ def check_body(lines):
 
         match = HEADING.match(line)
         if match:
-            name = match.group(1).strip().lower()
+            raw = match.group(1).strip()
+            name = raw.lower()
             seen.add(name)
             if name in DEAD_SECTIONS:
-                yield i, "E003", DEAD_SECTIONS[name]
+                yield i, "E003", DEAD_SECTIONS[name].format(raw=raw)
+            elif name in TRANSLATED_SECTIONS:
+                yield i, "W003", (
+                    f"`## {raw}` em inglês — em português é "
+                    f"`## {TRANSLATED_SECTIONS[name]}`; o arquivo continua válido"
+                )
 
     if table:
         yield from flush(table)
 
-    for name in REQUIRED_SECTIONS:
-        if name not in seen:
-            yield 1, "E002", f"sem `## {name}` — a espinha precisa dela"
+    for pt, en in REQUIRED_SECTIONS:
+        if pt.lower() not in seen and en not in seen:
+            yield 1, "E002", f"sem `## {pt}` — a espinha precisa dela"
 
-    for name, (code, message) in RECOMMENDED_SECTIONS.items():
-        if name not in seen:
-            yield 1, code, message
+    for pt, en, code, why in RECOMMENDED_SECTIONS:
+        if pt.lower() not in seen and en not in seen:
+            yield 1, code, f"sem `## {pt}` — {why}"
 
 
 def lint(path):

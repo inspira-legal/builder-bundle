@@ -13,13 +13,13 @@ phase builds directions from it, Develop builds against it, Deliver reviews agai
 Beside the task contract, as its sibling:
 
 ```
-.bb/tasks/<slug>/spec.md          ← the execution contract (/bb:spec)
-.bb/tasks/<slug>/brief-design.md  ← this file's output
+.bb/<slug>/spec.md          ← the execution contract (/bb:spec)
+.bb/<slug>/brief-design.md  ← this file's output
 ```
 
 **Resolve `.bb/` the way the contract says** — the nearest ancestor of the cwd that already has
 one, and only create it in the cwd when no ancestor does (plugin-level
-`references/task-state.md`). Never resolve it as a bare relative path: after Phase 3 the session
+`references/spec-state.md`). Never resolve it as a bare relative path: after Phase 3 the session
 runs from **inside** the project folder, so a relative `.bb/` would mint a second root one level
 down, and the brief would land in a different tree than its sibling `design.md` — which is exactly
 what the folder contract exists to prevent.
@@ -33,10 +33,10 @@ canonical target**. The Edit tool refuses to write through a symlink on purpose 
 is what stops a copy from being born inside the repo. Record the real path in the brief's own
 frontmatter (`canonical:`) so the instruction travels inside the artifact and nobody has to
 remember it. **Leave the in-repo path in place as the symlink**: the resumption glob and every
-reader below name `.bb/tasks/<slug>/brief-design.md`, and they have to keep finding it.
+reader below name `.bb/<slug>/brief-design.md`, and they have to keep finding it.
 
 If there is no task contract yet (pocket mode, no spec), write to
-`$BB/tasks/<slug>/brief-design.md` anyway and create the dir — the brief can precede the spec.
+`$BB/<slug>/brief-design.md` anyway and create the dir — the brief can precede the spec.
 
 ## Authority — say this once and never blur it
 
@@ -92,7 +92,7 @@ Two rules about the findings section:
 ## Step 2 — Reconciliation against the upstream framing (mandatory)
 
 The step that stops a beautiful screen from answering the wrong question. Compare the research
-against the discover brief's `## problem` / `## hypothesis` / `## fit` / `## cuts` and write
+against the spec's `## Problema` / `## Hipótese` / `## Encaixe` / `## Cortes` and write
 **three blocks**. All three, even when one is short.
 
 - **Confirma** — where the research supports the hypothesis, **and with what**: the reference,
@@ -115,12 +115,12 @@ against the discover brief's `## problem` / `## hypothesis` / `## fit` / `## cut
 
 That third question is the one nobody asks, and it is where the expensive findings live.
 
-If there is no discover brief, say so in one line and continue — the reconciliation degrades,
+If there is no spec, say so in one line and continue — the reconciliation degrades,
 it does not block. Same non-blocking stance the Deliver phase already takes.
 
 ### Legibility bites hardest here
 
-This section naturally pulls cross-references (`## cuts`, "restriction 2", "D7") and turns into
+This section naturally pulls cross-references (`## Cortes`, "restriction 2", "D7") and turns into
 alphabet soup. **Every item states what the framing said, in your own words, before judging
 it.** Not:
 
@@ -219,8 +219,8 @@ result: "monto caminhos pra você escolher", not "divergir em direções".
 
 1. **An internal pointer carries its meaning on first use.** Never a bare `D7`, `P6`,
    "restriction 2", "axis 2" — always `D7 (a decisão de que o bloco de valor carrega a
-persuasão)`. The ruler: _a reader who has opened neither the spec nor the discover brief
-   understands the sentence._
+persuasão)`. The ruler: _a reader who has not opened the spec understands the
+   sentence._
 2. **A design concept gets a 5–10 word gloss on first use.** "reactância (a defesa que a pessoa
    levanta quando sente que estão vendendo pra ela)", "efeito de dotação (a mesma coisa vale
    mais depois que já é sua)". One short gloss, then use the term freely.
@@ -253,7 +253,7 @@ brief:
   path: <canonical path to brief-design.md>
   round: 1 # increments on every update
   reconciliation:
-    upstream: <path to the discover brief, or null>
+    upstream: <path to the spec, or null>
     confirms: <n>
     contradicts: <n> # >0 means the framing needs a decision
     unreachable: <n>
@@ -263,7 +263,7 @@ brief:
 
 Also record the path under `gate.design_brief` — that is the slot Develop and Deliver read,
 the same way `gate.discover_brief` carries the upstream framing. **The two coexist; the design
-brief never replaces the discover brief.**
+brief never replaces the spec.**
 
 ### Gate
 
@@ -324,10 +324,10 @@ pre-loading the answer.
 
 ## Cooperation contract
 
-| Artifact                                                                     | Produced by                               | Consumed by                                     |
-| ---------------------------------------------------------------------------- | ----------------------------------------- | ----------------------------------------------- |
-| `.brisar/session.yaml` (`research:` section)                                 | Research                                  | Brief (Step 1 — the material)                   |
-| `.bb/tasks/<slug>/spec.md` (`## problem`/`## hypothesis`/`## fit`/`## cuts`) | `/bb:discover`, `/bb:spec`                | Brief (Step 2 — reconciliation)                 |
-| `.bb/tasks/<slug>/brief-design.md`                                           | **Brief** (and updated every later round) | Diverge, Develop, Deliver, the implementing dev |
-| `.brisar/session.yaml` (`brief:` + `gate.design_brief`)                      | Brief                                     | Diverge, Develop, Deliver, re-entry             |
-| Delta back into `spec.md`                                                    | Deliver (material from here)              | `/bb:implement`, `/bb:spec`                     |
+| Artifact                                                                    | Produced by                               | Consumed by                                     |
+| --------------------------------------------------------------------------- | ----------------------------------------- | ----------------------------------------------- |
+| `.brisar/session.yaml` (`research:` section)                                | Research                                  | Brief (Step 1 — the material)                   |
+| `.bb/<slug>/spec.md` (`## Problema`/`## Hipótese`/`## Encaixe`/`## Cortes`) | `/bb:discover`, `/bb:spec`                | Brief (Step 2 — reconciliation)                 |
+| `.bb/<slug>/brief-design.md`                                                | **Brief** (and updated every later round) | Diverge, Develop, Deliver, the implementing dev |
+| `.brisar/session.yaml` (`brief:` + `gate.design_brief`)                     | Brief                                     | Diverge, Develop, Deliver, re-entry             |
+| Delta back into `spec.md`                                                   | Deliver (material from here)              | `/bb:implement`, `/bb:spec`                     |

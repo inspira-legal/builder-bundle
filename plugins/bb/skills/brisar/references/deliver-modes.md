@@ -12,7 +12,7 @@ execution of the wrong question.
 
 ### Inputs
 
-- `.brisar/session.yaml` — `gate.discover_brief` (→ `.bb/tasks/<slug>/spec.md`: hypothesis, cuts, appetite), `gate.design_brief` (→ `.bb/tasks/<slug>/brief-design.md`: research, chosen direction with its five parts, base block, token limits read from source, open tension), `tarsila.surfaces[]` (locator + `variants[]` + `states_covered[]` + `deviations[]`), `medium.chosen`
+- `.brisar/session.yaml` — `gate.discover_brief` (→ `.bb/<slug>/spec.md`: hypothesis, cuts, appetite), `gate.design_brief` (→ `.bb/<slug>/brief-design.md`: research, chosen direction with its five parts, base block, token limits read from source, open tension), `tarsila.surfaces[]` (locator + `variants[]` + `states_covered[]` + `deviations[]`), `medium.chosen`
 - `.brisar/config.yaml` — `design_path` + `surfaces[].file`, the visual direction in the same task folder. **Only on medium `código`** — on a canvas or `claude-design` medium there is no config, and the direction comes from `gate.design_brief` instead. That is the normal path there, not a degradation.
 - **The artifact, opened through the reader for its medium** — files, preview, or Paper/Figma/Pencil MCP. Resolved in Step 0.1 of `phase-deliver.md`. On a canvas, read structure and computed values through the MCP; a screenshot judges composition and **never** supplies numbers.
 - Design context: `<design_context_path>/tokens.md` + `components.md` when the medium is `código`; otherwise the DS section of the design brief, which read the same source.
@@ -45,7 +45,7 @@ significant.
 
 **2. Hypothesis fit**
 
-- Read the hypothesis from the discover brief.
+- Read the hypothesis from the spec.
 - "If a user enters this screen, does their path lead to the behavior this hypothesis predicts?"
 - Flag if: primary CTA below the fold, primary action not visually dominant, unnecessary friction in
   the critical path.
@@ -140,8 +140,8 @@ conceito de design em 5–10 palavras. Um review que ninguém consegue ler não 
 # Design review — <projeto>
 
 > Gerado pela fase Deliver do /bb:brisar em <ISO date>
-> Confrontado contra: **problema** (.bb/tasks/<slug>/spec.md) × **pesquisa**
-> (.bb/tasks/<slug>/brief-design.md) × **construído** (<meio>)
+> Confrontado contra: **problema** (.bb/<slug>/spec.md) × **pesquisa**
+> (.bb/<slug>/brief-design.md) × **construído** (<meio>)
 > Apetite: <small|medium|large> — rigor do review proporcional
 > Lido via: <arquivos | preview | MCP do Paper/Figma/Pencil>
 
@@ -359,7 +359,7 @@ clarisse:
 ### Inputs
 
 - `<design_context_path>/tokens.md` + `components.md` — or, on a canvas medium, the DS section of the design brief (same source, read one step earlier)
-- `<design_path>/<surfaces[].file>` (visual direction written by brisar Phase 4, in `.bb/tasks/<slug>/`) and/or the chosen direction in `gate.design_brief` — **the brief is the richer input when both exist**
+- `<design_path>/<surfaces[].file>` (visual direction written by brisar Phase 4, in `.bb/<slug>/`) and/or the chosen direction in `gate.design_brief` — **the brief is the richer input when both exist**
 - The artifact, via the reader for `medium.chosen`
 - `.brisar/session.yaml` (all sections — uses recorded decisions and `tarsila.deviations[]`)
 
@@ -408,7 +408,7 @@ it.
 
 ## Contexto rápido
 
-- **Hipótese (do brief em .bb/tasks/<slug>/spec.md):** <statement>
+- **Hipótese (da spec em .bb/<slug>/spec.md):** <statement>
 - **Apetite (do brief):** <small|medium|large>
 - **Surfaces no escopo:** <lista>
 - **Cortes registrados:** <lista de cortes do brief — pra evitar implementar o que foi cortado>

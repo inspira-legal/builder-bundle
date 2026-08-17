@@ -4,7 +4,7 @@ The missing piece. Without this, brisar would end without concrete direction to 
 
 This phase produces the visual direction for each confirmed surface, with enough brief for the builder (or the Develop phase) to start designing. Each file has 5 fixed sections: Visual hierarchy, DS components, States, First sketch direction, Notes.
 
-**Where it lands:** inside the task's folder, next to the brief — the plugin-level `references/task-state.md` owns that contract. One surface writes `.bb/tasks/<slug>/design.md`; two or more write `.bb/tasks/<slug>/design/<surface>.md` plus an index. The project folder scaffolded in Phase 3 holds code and design-context, not design direction.
+**Where it lands:** inside the task's folder, next to the spec — the plugin-level `references/spec-state.md` owns that contract. One surface writes `.bb/<slug>/design.md`; two or more write `.bb/<slug>/design/<surface>.md` plus an index. The project folder scaffolded in Phase 3 holds code and design-context, not design direction.
 
 ## Step 1 — Confirm surfaces
 
@@ -19,7 +19,7 @@ Phase 1 inferred provisional surfaces from the initial prompt (e.g.: `[busca, re
       "options": [
         {
           "label": "Confirma a lista",
-          "description": "Vou gerar a direção visual de cada uma em .bb/tasks/<slug>/"
+          "description": "Vou gerar a direção visual de cada uma em .bb/<slug>/"
         },
         { "label": "Ajustar / adicionar", "description": "Texto livre — separe por vírgula" },
         {
@@ -39,11 +39,11 @@ Slugify each surface: lowercase, kebab-case, ASCII (`Tela de busca` → `busca`,
 
 ## Step 2 — Resolve the task folder, then the index
 
-Resolve `.bb/` per the task-state contract (nearest ancestor with one, else create it in the cwd) and use `.bb/tasks/<slug>/` — the same `<slug>` as the project. If a brief already sits there (`spec.md`, from `/bb:discover`), the folder exists; otherwise `mkdir -p` it.
+Resolve `.bb/` per the spec-state contract (nearest ancestor with one, else create it in the cwd) and use `.bb/<slug>/` — the same `<slug>` as the project. If a spec already sits there (`spec.md`, from `/bb:discover`), the folder exists; otherwise `mkdir -p` it.
 
-With **one** confirmed surface, write `.bb/tasks/<slug>/design.md` with the Step 3 template and skip the index — an index of one is ceremony.
+With **one** confirmed surface, write `.bb/<slug>/design.md` with the Step 3 template and skip the index — an index of one is ceremony.
 
-With **two or more**, write `.bb/tasks/<slug>/design/<surface>.md` for each plus `.bb/tasks/<slug>/design/README.md`:
+With **two or more**, write `.bb/<slug>/design/<surface>.md` for each plus `.bb/<slug>/design/README.md`:
 
 ```markdown
 # Design — <slug>
@@ -158,7 +158,7 @@ Max 3 items. If the list grows, it's a sign that this surface needs more shaping
 `design_path` is the absolute path of the task folder; each `file` is relative to it. Three surfaces:
 
 ```yaml
-design_path: "<absolute path of .bb/tasks/<slug>/>"
+design_path: "<absolute path of .bb/<slug>/>"
 
 surfaces:
   - name: busca
@@ -178,7 +178,7 @@ surfaces:
 One surface:
 
 ```yaml
-design_path: "<absolute path of .bb/tasks/<slug>/>"
+design_path: "<absolute path of .bb/<slug>/>"
 
 surfaces:
   - name: busca

@@ -1,13 +1,13 @@
 # Draft-first — propose, then react to alignment
 
 The move: don't ask the user to fill a blank. Read the one-liner, glance at the
-codebase, and **write a draft brief with your decisions already made.** Hand them
+codebase, and **write a draft spec with your decisions already made.** Hand them
 something concrete to react to — people correct a proposal far faster, and more
 accurately, than they answer open questions cold.
 
 ## What the draft must cover
 
-The brief's form belongs to `spec-format.md` — the free top half, then the spine.
+The spec's form belongs to `spec-format.md` — the free top half, then the spine.
 The draft's job is to arrive with those already filled from your best read of the goal
 and the codebase, so the user reacts to a proposal instead of completing a blank. Mark
 anything you're guessing so it reads as a guess rather than a fact.
@@ -41,28 +41,28 @@ Ask the forks through the **`AskUserQuestion` tool** — concrete options the us
 - After each round, **fold the answers into the draft and show only what
   changed** — the diff, not the whole document again.
 - **When the gray areas run dry, run the adversarial completeness pass** — the
-  skill's step 5 (generators + the behavior→slice→test trace), not a casual
+  skill's step 5 (generators + the behavior→task→test trace), not a casual
   re-read. It hunts open load-bearing decisions, unmapped behavior, and material
   contradictions, and loops anything it surfaces back into the questions.
 - **Then the check, step 6** — the lint, then an independent reviewer in fresh
   context. Medium and up, every time, before the gate ever opens.
 - **The gate blocks on open load-bearing decisions.** Never offer a clean "build"
   while one is unresolved — the user must resolve it or defer it explicitly
-  ("decide at build time", recorded in the brief). No silent "build anyway".
+  ("decide at build time", recorded in the spec). No silent "build anyway".
 - **Reflect back:** "So we're building X, for Y, and NOT doing Z — right?"
 - **Alignment is active, not silent.** It's confirmed when the user restates the
-  idea in their own words or explicitly approves the written brief — never by the
+  idea in their own words or explicitly approves the written spec — never by the
   mere absence of objections. No reaction usually means they checked out, not that
   they agree; prompt for the explicit nod.
-- **The validated brief is the checkpoint.** When the user approves (or sends last
-  edits), that `.bb/tasks/<slug>/spec.md` is the artifact. The gate then offers to
+- **The validated spec is the checkpoint.** When the user approves (or sends last
+  edits), that `.bb/<slug>/spec.md` is the artifact. The gate then offers to
   build (or build and ship) — and an explicit build pick is the user affirmatively
   starting execution, not the spec silently rolling into it. Never start building
   off the back of a re-read; only off that explicit pick.
 - Keep **deferred decisions visible** — anything handed back to you ("your call")
   gets noted, so it's not silently assumed.
 - When a good idea surfaces that's **out of scope**, don't drop it and don't build
-  it — park it in the brief's out-of-scope bucket as a plain bullet (never a
+  it — park it in the spec's out-of-scope bucket as a plain bullet (never a
   checkbox — the task selector would mistake it for work).
 - If a fork can't be settled without facts, go check (codebase → docs → web) and
   come back with the options, rather than guessing.

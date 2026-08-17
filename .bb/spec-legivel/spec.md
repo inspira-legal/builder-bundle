@@ -74,7 +74,7 @@ Arquitetura, quando o caso pede, mora
 na metade de cima com o nome que ela tem naquele problema — "o seam entre agente e
 caller" diz mais que "design".
 
-## decisions
+## Decisões
 
 - **Espinha fixa, topo livre** — `decisions`, `behavior`, `tasks`, `out of scope` e
   `open` nesta ordem no fim; acima delas, abertura e quantas seções o problema pedir.
@@ -110,7 +110,7 @@ caller" diz mais que "design".
 - **Versão** — `plugin.json` `2.3.0` → `2.4.0`. Cada SKILL.md tocado incrementa a versão
   **dele** (`spec` vai de `2.0.0` a `2.1.0`); os dois números são independentes.
 
-## behavior
+## Comportamento
 
 1. `/bb:spec <ideia>` roda draft-first — fork de maior aposta primeiro, zonas cinzentas
    em batch pelo question tool — e o draft já nasce na forma nova.
@@ -137,37 +137,37 @@ caller" diz mais que "design".
 | o trabalho é Tiny                         | nada de spec — segue a regra de auto-size que já existe             |
 | o brief foi seedado pelo `/bb:discover`   | as seções upstream ficam no topo, que é livre                       |
 
-## tasks
+## Tarefas
 
 - [x] **1. Formato e lint** — `references/spec-format.md` (as duas metades, a espinha, o
       critério descreve-vs-reconta) e `scripts/lint_spec.py` (stdlib, `path:line CODE msg`,
-      exit 1 no erro) → behaviors 2, 3, 5 · dep: — · verifica: CI
+      exit 1 no erro) → behaviors 2, 3, 5 · depende: — · verifica: CI
 - [x] **2. Poda do prompt** — deleta do `SKILL.md` o parágrafo do `## design`,
       "meticulously" e "Don't abbreviate"; mata a lista de 7 do `draft-first.md`; os dois
-      passam a apontar pro `spec-format.md` → behaviors 1, 2 · dep: 1 · verifica: CI
+      passam a apontar pro `spec-format.md` → behaviors 1, 2 · depende: 1 · verifica: CI
 - [x] **3. Revisor como passo próprio** — passo dedicado no `SKILL.md`, obrigatório em
       Medium+, com duplicação e arqueologia no mandato; veredito de uma linha no gate
-      → behaviors 4, 6 · dep: 2 · verifica: leitura
+      → behaviors 4, 6 · depende: 2 · verifica: leitura
 - [x] **4. Slice pronta pra workflow** — `dep:` e `verifica:` no `spec-format.md`;
-      `implement` e `delegate` leem os dois → behavior 3 · dep: 1 · verifica: leitura
+      `implement` e `delegate` leem os dois → behavior 3 · depende: 1 · verifica: leitura
 - [x] **5. Justificativa no commit** — linha no `SKILL.md` e na seção Commits do
-      `.claude/CLAUDE.md` → behavior 2 · dep: — · verifica: leitura
+      `.claude/CLAUDE.md` → behavior 2 · depende: — · verifica: leitura
 - [x] **6. Rename shape→spec** — `task-state.md`, `delegate`, `implement`, `discover`,
       `brisar`, `operating-context.md`, `routines.md`, `spec/SKILL.md`, README
-      → behavior 7 · dep: — · verifica: CI
+      → behavior 7 · depende: — · verifica: CI
 - [x] **7. Migrar as 3 specs e ligar o CI** — reescreve `builder-bundle`, `ship-lexflow` e
       `review-agents` na forma nova; passo `python3` e `.bb/tasks/**` no `validate.yml`
-      → behavior 5 · dep: 1, 6 · verifica: CI verde
+      → behavior 5 · depende: 1, 6 · verifica: CI verde
 - [x] **8. Versão e docs** — `plugin.json` `2.4.0`, `spec/SKILL.md` `2.1.0`, CHANGELOG,
-      `.claude/CLAUDE.md` → behavior 7 · dep: 1-7 · verifica: CI
+      `.claude/CLAUDE.md` → behavior 7 · depende: 1-7 · verifica: CI
 
-## out of scope
+## Fora de escopo
 
 - Workflow no `implement`/`delegate` pra construir as slices — brief próprio, logo depois
   deste. Aqui entra só o que a spec precisa entregar pra ele.
 - `Finding shape` e `return shape` no review — outro sentido da palavra.
 - Modo export (`references/export-spec.md`) — documento externo, não é o brief.
 
-## open
+## Em aberto
 
 - Nada.
