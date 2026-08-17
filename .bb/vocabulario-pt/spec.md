@@ -207,4 +207,12 @@ Caminho principal:
 
 ## Em aberto
 
-- Nada.
+- O `verifica: CI` das tarefas 5, 9 e 10 passa trivialmente neste repo. O segundo glob do
+  `validate.yml` (`.bb/tasks/*/spec.md`) expande vazio porque não existe `.bb/tasks/` aqui,
+  então a deduplicação por slug nunca roda; e as 7 specs em disco já estão na espinha em
+  português, então o W003 nunca dispara. O check verde prova que o lint roda, não que o par
+  português/inglês funciona. A prova de verdade é a primeira spec de outro repo ainda no
+  caminho antigo — ou um fixture, que se decidiu não construir.
+- A troca do filtro de `paths:` no `validate.yml` (`skills/**` → `plugins/**`) é carona
+  consciente: nenhuma tarefa pediu, mas sem ela o workflow não dispara nos arquivos que este
+  PR move. Fica no mesmo commit em vez de branch própria.
