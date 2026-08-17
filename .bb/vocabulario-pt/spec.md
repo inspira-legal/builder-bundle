@@ -90,8 +90,8 @@ artefato escrito e o vocabulário dela é o que o builder vai repetir depois.
 - **O nível de cima é `spec`** nas duas línguas: o arquivo é `spec.md`, o comando é
   `/bb:spec`. "a task pendente" vira "a spec pendente"; "the brief" vira "the spec". O
   `references/task-state.md` passa a se chamar `spec-state.md`.
-- **Dentro do `skills/brisar/**` a palavra "brief" fica**, porque lá ela é o
-  `brief-design.md` — outro artefato, com arquivo e nome próprios. São 207 das 423
+- **A palavra "brief" fica dentro do `/bb:brisar`** — em `skills/brisar/**` ela é o
+  `brief-design.md`, outro artefato, com arquivo e nome próprios. São 207 das 423
   ocorrências. A exceção é onde o texto aponta explicitamente pro `spec.md` ou pro brief do
   `/bb:discover`: essas viram "spec".
 - **A pasta perde um nível: `.bb/<slug>/`.** O `.bb/` não guarda nada além de `tasks/`
