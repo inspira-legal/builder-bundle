@@ -93,4 +93,4 @@ and hides a setting the user may not know is on.
   pre-invoke checklist at the end of that file, invoke `Workflow`. When it returns,
   pick up the caller's own contract from its result.
 - **Context** — build the tasks as implement's steps 3–7 describe. Nothing about
-  the spec, the gate or the commits changes.
+  the spec, the project's checks or the commits changes.

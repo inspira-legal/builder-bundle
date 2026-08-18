@@ -1,8 +1,8 @@
 # Front: quality — one finder, all cleanup lenses
 
-The criteria are the plugin-root `references/quality-checklist.md` — the single
-source of truth shared with `/bb:ship`, so a diff is judged identically wherever
-it's reviewed. This front is **strictly behavior-preserving**: same inputs, same
+The criteria are its sibling `quality-checklist.md` — the single source of truth
+for what a quality finding is, so a diff is judged identically on every run. This
+front is **strictly behavior-preserving**: same inputs, same
 outputs, same side effects. Bugs belong to `front-correctness.md`.
 
 One finder covers all six lenses (they overlap heavily; splitting them into six

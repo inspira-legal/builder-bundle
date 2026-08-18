@@ -1,7 +1,7 @@
 # Land it → Deploy on LexFlow
 
 Reached from ship's Step 1 when the destination is a LexFlow app. Load this right
-after Step 1 — it carries the gate and the lens set for Step 2, not just the landing.
+after Step 1 — it carries this path's checks and its review lens set, not just the landing.
 
 LexFlow is Inspira's declarative workflow platform: an app is a `lexflow.toml`
 manifest plus workflow YAMLs, deployed with the `lexflow` CLI. Three facts shape this
@@ -18,7 +18,7 @@ whole path:
 - **`lexflow deploy --ref <sha>` deploys exactly that commit**, fetched from the git
   host, and records the `git_sha` on the deployment.
 
-So ship does the reversible half — review, commit, push — and hands over the deploy.
+So ship does the reversible half — check, commit, push — and hands over the deploy.
 
 ## Deploy mechanics belong to `lexflow-builder`
 
@@ -26,16 +26,18 @@ The platform team's own skill (`inspira-legal/lexflow-automacoes/skills/lexflow-
 owns how to build a manifest, the `--url` flag, and the publish URL — and already
 decided not to auto-deploy. Point at it; restating it here drifts as the platform moves.
 
-## The gate — three layers, one authority each
+## The checks — three layers, one authority each
 
-Run layers 1 and 3 always; layer 2 whenever the CLI is usable.
+These are Step 2's checks for a LexFlow app: the repo has no lint, no tests and no
+CI, so this is what "green" means here. Run layers 1 and 3 always; layer 2 whenever
+the CLI is usable.
 
 **1. Local pre-check** — `python scripts/check_lexflow_manifest.py -d <app-dir> --changed <files…>`
 Parses `lexflow.toml` with `tomllib`, requires `[app]`, and checks every declared
 `source` (deployments, workflows, middlewares) resolves to a real file. Milliseconds,
 no network, works logged out. It also reports `secrets_declared`, `has_datastores`, and
 maps the changed files onto affected deployment slugs. Exit 1 = findings; **fix them
-before the quality pass** — a missing `source` makes every later check noise.
+first** — a missing `source` makes every later check noise.
 
 **2. `lexflow deploy --dry-run`** — the authority on the manifest. Classify the outcome:
 
@@ -52,9 +54,13 @@ touched and confirm each opcode exists and its parameters match. The YAMLs are s
 and declarative, so read them directly — no YAML parser is involved. Logged out, this
 degrades to reading the YAMLs alone; report the inventory check as skipped.
 
-## Quality pass — the lens set for this artifact
+## Reviewing a LexFlow app — the lens set
 
-Keep Step 2's shape. The **depth table in
+Ship doesn't run this; `/bb:review` does, when you pick it at ship's Step 4 gate or
+run it yourself. It lives here
+because the lenses are this artifact's, and the review engine has no LexFlow chapter.
+
+The **depth table in
 `${CLAUDE_PLUGIN_ROOT}/skills/review/references/fronts.md` sizes the fan-out** here
 too — a three-file manifest change is a tiny diff whatever it's made of — and every
 candidate goes through the verify pass in
@@ -73,8 +79,10 @@ matter as much as anywhere; `a11y` only if the app ships an `html_page` deployme
 - `queries-data` — correctness of SQL/queries and the shape they return to the
   workflow, cost and result-size surprises
 
-This is the review these apps do not otherwise get: their repos carry no CI, and the
-generating skill only validates the syntax of YAML it just wrote.
+Worth actually running here: these apps get no other review. Their repos carry no
+CI, and the generating skill only validates the syntax of the YAML it just wrote —
+so the three checks above are syntax and existence, and nothing reads the logic
+unless a review does.
 
 ## Land it
 
@@ -83,9 +91,8 @@ generating skill only validates the syntax of YAML it just wrote.
    auth transparent). This publishes code and changes **no** deploy state.
 3. Read the sha: `git rev-parse HEAD`.
 4. Decide whether a deploy hand-off is even warranted. Re-run the pre-check with the
-   **committed** file list (`git diff --name-only <merge_base>...HEAD`, the range the
-   probe resolved) — the quality pass may
-   have touched files the first run never saw — and read its `changed` block:
+   **committed** file list (`git diff --name-only <merge_base>...HEAD`) — fixing a red
+   check may have touched files the first run never saw — and read its `changed` block:
    - `affects_deploy: true` → hand over the command.
    - `affects_deploy: "unknown"` → no declared source references these files, which is
      weak evidence rather than a verdict. Read the YAMLs and call it: a workflow that
@@ -102,12 +109,14 @@ Landed no repo do app — deploy é seu.
 App: <name> (<team>/<slug>)
 Commits: <n> · sha <short-sha>
 Deployments afetados: <slug (type), …>
-Gate: pré-check <ok|N findings> · dry-run <plano computado|pulado: motivo|erro de plataforma> · opcodes <conferidos|pulado: motivo>
-Review: <n> findings aplicados, <n> deixados no relatório
+Checagens: pré-check <ok|N findings> · dry-run <plano computado|pulado: motivo|erro de plataforma> · opcodes <conferidos|pulado: motivo>
 
 Pra deployar exatamente esse commit:
   lexflow deploy --ref <sha>
 ```
+
+The review line only appears when a review ran — i.e. when you picked it at the
+gate: `Review: <n> findings aplicados, <n> deixados no relatório`.
 
 When a new `$secret` shows up in `[env]`, name it and add
 `lexflow secret set <app> <KEY> …` — the deploy will ask for it. When the diff touches

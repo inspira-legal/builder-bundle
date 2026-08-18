@@ -7,7 +7,8 @@ keeps the report worth reading.
 
 Runs for the fan-out depths. At the tiny-diff depth there are no finder agents, so
 the "verify" step is a self-check in the main context: re-read each candidate
-against the file before keeping it.
+against the file before keeping it. Verifiers dispatch on Sonnet like the finders,
+and go to Opus on the same condition they do — a deep run (`fronts.md`, "Model").
 
 ## 1. Pool and group
 
@@ -32,22 +33,36 @@ page) the file set the audit enumerated. There is always a list to canonicalize
 against; a review with no diff is not a review with no scope.
 
 Grouping is not dedup — every candidate keeps its own verdict; candidates at the
-same line are often distinct issues. Cross-finder location collisions are common,
-and one verifier agent per location costs far fewer agents than one per candidate
-with no loss. Candidates with no line (a whole-file or cross-file claim) group by
-`file`.
+same line are often distinct issues, and cross-finder collisions on one line are
+common. Candidates with no line (a whole-file or cross-file claim) group by `file`.
 
-## 2. One verifier per location
+So grouping is what keeps two candidates on one line from collapsing into one
+verdict. It is **not** what decides how many agents go out: locations are cheap to
+make and agents are not, and four finders returning 25 candidates across 20 locations
+would otherwise fund 20 agents to produce a report that keeps 10.
 
-Each verifier goes out as `subagent_type: "bb-verifier"`
-(`plugins/bb/agents/bb-verifier.md`), which owns the rubric: the three verdicts, the
+**The dispatch unit is the file, and at most 4 agents go out** — 6 on a deep run. A
+verifier that opens `src/a.ts` once can judge every candidate in it: the file's
+locations ride along in one prompt, each still labeled, each still judged on its own
+claim. When the pooled candidates touch more files than the cap allows, bundle the
+files across the calls — every file holding a `correctness` candidate placed first,
+then `rules` and `contract`, then the rest — so the heaviest files get the most
+attention and the cheap ones share. Nothing is dropped and no verdict changes; what
+changes is that one agent reads a file once for five candidates instead of five
+agents reading it five times.
+
+## 2. One verifier per file, up to 4 agents
+
+Each verifier goes out as `subagent_type: "bb-review-verifier"`
+(`plugins/bb/agents/bb-review-verifier.md`), which owns the rubric: the three verdicts, the
 PLAUSIBLE default and what makes a REFUTED constructible from the code all live in
 that prompt, so both callers of this engine judge the same way without a second copy
 to keep in sync — and without the fan-out having to re-send it.
 
-What this pass hands it: the scope block, the candidates at that location labeled
-`[0]`, `[1]`, …, and the addendum below when the front calls for one. Back comes one
-verdict per index, each judged independently on its own claim, with evidence.
+What this pass hands it: the scope block, the candidates in its file (or files)
+labeled `[0]`, `[1]`, … with the `file:line` each index sits at, and the addendum
+below when the front calls for one. Back comes one verdict per index, each judged
+independently on its own claim, with evidence.
 
 A candidate the verifier rendered no verdict on (agent died, index omitted) is
 **dropped** — never promoted to PLAUSIBLE on the strength of the finder alone. It
@@ -74,9 +89,11 @@ the finding. A criterion number that doesn't match the criterion's real content 
 REFUTED. Contrast claims are checked by recomputing the ratio from the resolved
 colors.
 
-## 3. Sweep (large diffs only)
+## 3. Sweep (deep runs only)
 
-One fresh finder gets the verified list and hunts **only for gaps** — no
+Only the deep tier funds this pass — a large diff on the default tier doesn't get
+it (`fronts.md`, depth table). One fresh finder gets the verified list and hunts
+**only for gaps** — no
 re-deriving, no re-confirming. Focus it on what a first pass misses: moved or
 extracted code that dropped a guard or anchor; second-tier footguns (a default
 evaluated once at definition, non-deterministic hashing, a lock scope that shrank,

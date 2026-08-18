@@ -119,7 +119,7 @@ Rule detail block, one per rule:
 
 - The **Categoria** field tags the kind of concern the rule is (`correctness`,
   `contracts`, `security`, `a11y`, `quality` — the vocabulary of the shared
-  `references/review-checklist.md` and the review fronts). `/bb:review`'s `rules`
+  the review skill's `references/review-checklist.md` and the review fronts). `/bb:review`'s `rules`
   front reads every rule regardless of category; the tag is what lets a finding say
   _what kind_ of deviation it is, and it groups the guide for a human reader. Older
   guides carry the field as **Lens**, and some carry the earlier values

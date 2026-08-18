@@ -1,10 +1,10 @@
 ---
 name: review
-description: Revisa a mudança de ponta a ponta — você escolhe as frentes, ela roda em paralelo. Detecta quais frentes fazem sentido (correção, qualidade, regras do projeto, contrato da spec, acessibilidade da UI, threads da PR, CI), pergunta quais rodar, despacha agentes de só leitura em paralelo, um por ângulo, verifica cada achado com um agente independente (CONFIRMED/PLAUSIBLE/REFUTED) e reporta ranqueado. Desvios de regra vêm com a regra citada ao lado da linha que a quebra, direto do CODE_REVIEW_GUIDE.md do repo. Fecha dizendo o que checou e passou, não só o que falhou — a frente de regras entrega checklist PASS/FAIL/SKIP por regra. Depois você escolhe item por item entre corrigir e comentar na PR — ela corrige com guarda de regressão, posta os achados que você preferiu deixar registrados, responde/resolve threads e re-reporta. Também revisa uma PR externa por número e posta o review. Use quando o usuário disser "revisa minhas mudanças", "revisa a PR", "revisa esse diff", "tem bug nisso?", "responde os comentários da PR", "o CI quebrou", "conserta o CI", "limpa esse código", "simplifica o diff", "checa se seguiu as regras do projeto", "revisa a acessibilidade do que eu mudei", "auditoria de acessibilidade", "checa acessibilidade dessa pasta/página", "WCAG", "a11y", "contraste", "leitor de tela", ou "revisa a PR #42 do repo X". A frente de acessibilidade também roda sozinha em escopo de superfície — pasta, arquivos ou página rodando, sem diff. NÃO use pra abrir/finalizar uma PR e acompanhar até o fim (use /bb:ship), nem pra triagem de todas as PRs abertas do repo (use /bb:maintain-repo).
+description: Revisa a mudança de ponta a ponta — você escolhe as frentes, ela roda em paralelo. Detecta quais frentes fazem sentido (correção, qualidade, regras do projeto, contrato da spec, acessibilidade da UI, threads da PR, CI), pergunta quais rodar, despacha agentes de só leitura em paralelo, um por ângulo, verifica cada achado com um agente independente (CONFIRMED/PLAUSIBLE/REFUTED) e reporta ranqueado. Desvios de regra vêm com a regra citada ao lado da linha que a quebra, direto do CODE_REVIEW_GUIDE.md do repo. Fecha dizendo o que checou e passou, não só o que falhou — a frente de regras entrega checklist PASS/FAIL/SKIP por regra. Depois você escolhe item por item entre corrigir e comentar na PR — ela corrige com guarda de regressão, posta os achados que você preferiu deixar registrados, responde/resolve threads e re-reporta. Roda em profundidade padrão (barata, agentes em Sonnet); `/bb:review profundo` ou "revisa a fundo" liga o conjunto inteiro de ângulos, a varredura final e os agentes em Opus. Também revisa uma PR externa por número e posta o review. Use quando o usuário disser "revisa minhas mudanças", "revisa a PR", "revisa esse diff", "tem bug nisso?", "responde os comentários da PR", "o CI quebrou", "conserta o CI", "limpa esse código", "simplifica o diff", "checa se seguiu as regras do projeto", "revisa a acessibilidade do que eu mudei", "auditoria de acessibilidade", "checa acessibilidade dessa pasta/página", "WCAG", "a11y", "contraste", "leitor de tela", ou "revisa a PR #42 do repo X". A frente de acessibilidade também roda sozinha em escopo de superfície — pasta, arquivos ou página rodando, sem diff. NÃO use pra abrir/finalizar uma PR e acompanhar até o fim (use /bb:ship), nem pra triagem de todas as PRs abertas do repo (use /bb:maintain-repo).
 license: Apache-2.0
 metadata:
   author: Athena Briana - github.com/athenabriana; quality-pass material adapted from Claude Code's /simplify, angle/verify architecture adapted from Claude Code's /code-review (Anthropic, Apache-2.0), a11y front absorbed from rafael's ui-accessibility skill (loja inspira-skills, MIT)
-  version: 2.4.0
+  version: 2.5.0
 ---
 
 # Review
@@ -55,6 +55,19 @@ scope is the one path that needs neither a repo nor a diff.
   fronts, no git repository required — and stop at its own gate.
 - **Otherwise**: current branch, all fronts on the table.
 
+Then resolve the **depth**, a separate axis from the fronts and decided here, not by
+the size of the diff:
+
+- **padrão** — the default, whatever the branch looks like. Three correctness
+  angles, one agent per other front, no sweep, and the whole fan-out on Sonnet.
+- **profundo** — only when it was asked for: the argument (`/bb:review profundo`,
+  `a fundo`, `deep`), the phrase ("revisa a fundo", "revisão profunda"), or the deep
+  option picked at step 2's question. It runs the full angle set, the sweep pass, the
+  larger report cap, and dispatches **every** finder and verifier with `model: "opus"`.
+
+Carry the resolved depth into the scope block — `fronts.md` reads it as a flag and
+sizes the fan-out from it, and the report has to name which one ran.
+
 ## Step 2 — Probe the fronts, then ask which ones
 
 Load `references/fronts.md`: it carries the front catalog, the availability probe
@@ -68,14 +81,19 @@ front will look for and roughly what it costs:
 ```
 question: "Achei <N> frentes possíveis nessa branch. Quais eu reviso?"
 options:
-  - "Tudo que se aplica (Recomendado)" — roda as N frentes disponíveis em paralelo.
+  - "Tudo que se aplica (Recomendado)" — roda as N frentes disponíveis em paralelo, profundidade padrão.
   - "Correção + Regras" — bugs no diff e desvios do CODE_REVIEW_GUIDE.md.
   - "Só <frente específica>" — <o que ela cobre>.
+  - "Tudo, revisão profunda" — mesmas frentes com o set inteiro de ângulos, sweep e agentes em Opus; custa bem mais.
   - "Nenhuma — encerrar" — nada roda.
 ```
 
-Say the depth the diff resolved to in one line, with the numbers the resolution
-actually produced — how many angles are in the diff's set, how many the tier funds,
+Offer the deep option only when the run isn't already deep (the argument or the
+phrase settled it at step 1), and say in its line that it's the expensive one — the
+user paying for it should know that's what they picked.
+
+Say the depth in one line — which of the two ran and why (`padrão` unless it was
+asked for), with the numbers the resolution actually produced — how many angles are in the diff's set, how many the tier funds,
 which ones were dropped and why, and whether the sweep runs (`markdown: 4 ângulos
 no set, 3 rodam, wrapper-boundary fora — sem sweep`). Every number in that line comes
 from the resolution that just ran, which is what makes it match the stats line at the
@@ -87,7 +105,7 @@ The catalog in `fronts.md` maps each picked front to its `references/front-*.md`
 that mapping is the list, so a front added to the engine reaches this router with no
 edit here. Load only the picked fronts' references, build the shared scope block
 (the resolved diff range included), and send every finder agent in **one message**
-(Agent tool, `subagent_type: bb-finder`, which carries the finder contract in its
+(Agent tool, `subagent_type: bb-review-finder`, which carries the finder contract in its
 own prompt; the main context is the only writer). `threads` and `ci` don't fan out: script/`gh` reads plus
 judgment here.
 
@@ -163,7 +181,9 @@ priority order — unfinished work on this report outranks the next skill:
    regions) → **"Auditar a UI rodando"** (loops to `front-a11y.md`, surface scope)
 4. guide drift or missing guide reported → **"Gerar/atualizar o guia — rodo
    /bb:review-setup"**
-5. no open PR and everything clean/handled → **"Abrir a PR — rodo /bb:ship"**
+5. no open PR and everything clean/handled → **"Abrir a PR — rodo /bb:ship"** (not
+   offered when this run _came from_ ship's post-landing gate — the branch just landed,
+   and offering to land it again is a loop)
 
 Lead with the highest-priority one and suffix its label `(Recomendado)`. The states
 that didn't fit go in one line of prose above the question, so nothing is hidden —
@@ -189,6 +209,7 @@ offered, which needs no row here. What this table covers is everything else:
 | user picks nothing at curation               | no edits; go to the gate                                                                                              |
 | a verifier dies or omits an index            | that candidate is `sem veredito`, reported as its own line, never promoted                                            |
 | CI still red after 3 diagnose→fix cycles     | stop editing, report the remaining failure and the evidence                                                           |
+| deep asked for on a ≲2-file diff             | deep is honored — the full angle set with fan-out, sweep included; say the diff is small and that deep was asked for  |
 
 ## Bundled Resources
 
@@ -217,13 +238,14 @@ Actions and modes:
 - `references/act-comment-findings.md` — leaving findings on the PR instead of fixing: anchoring and approval.
 - `references/mode-external-pr.md` — reviewing a PR in another repo and posting the review.
 
-Pipeline agents (plugin root, dispatched by the fan-out — same two for `/bb:ship`):
+Pipeline agents (plugin root, dispatched by the fan-out):
 
-- `${CLAUDE_PLUGIN_ROOT}/agents/bb-finder.md` — the finder's contract, and the narrowed `tools:` list.
-- `${CLAUDE_PLUGIN_ROOT}/agents/bb-verifier.md` — the CONFIRMED / PLAUSIBLE / REFUTED rubric.
+- `${CLAUDE_PLUGIN_ROOT}/agents/bb-review-finder.md` — the finder's contract, and the narrowed `tools:` list.
+- `${CLAUDE_PLUGIN_ROOT}/agents/bb-review-verifier.md` — the CONFIRMED / PLAUSIBLE / REFUTED rubric.
 
-Shared engine (plugin root, same criteria as `/bb:ship`):
+- `references/review-checklist.md`, `references/quality-checklist.md` — the correctness and quality criteria the fronts operationalize.
 
-- `${CLAUDE_PLUGIN_ROOT}/references/review-checklist.md`, `${CLAUDE_PLUGIN_ROOT}/references/quality-checklist.md` — the correctness and quality criteria.
+Scripts (plugin root):
+
 - `${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py` — branch, base + merge-base, diff stat, changed files, full diff, uncommitted changes. Resolves the review's diff range for the probe.
 - `${CLAUDE_PLUGIN_ROOT}/scripts/fetch_comments.py`, `${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py` — thread I/O via `gh api graphql`.

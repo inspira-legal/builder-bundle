@@ -1,5 +1,58 @@
 # Changelog
 
+## 2.10.0 — 2026-08-18
+
+**Revisar ficou barato, e o `/bb:ship` parou de revisar.** Um `/bb:review` de
+rotina disparava dez agentes em Opus: os dois agentes do fan-out não declaravam
+`model:`, então herdavam o modelo da sessão, e a tabela de profundidade escalava
+sozinha pro tier mais caro assim que o diff crescia. Revisar custava mais que a
+mudança revisada. Do outro lado, o `ship` rodava a engine inteira antes de landar,
+sem perguntar — a passada mais cara do bundle acontecia toda vez que alguém queria
+subir uma branch.
+
+### Mudou
+
+- **Os dois agentes declaram `model: sonnet`.** Sem a declaração, um agente herda
+  o modelo da sessão — que é Opus. O profundo continua podendo pedir Opus, mas
+  agora é uma escolha, não um default silencioso.
+- **A profundidade virou um eixo que você decide**, não uma função do tamanho do
+  diff. **Padrão**: três ângulos de correção, um agente por frente, sem varredura,
+  fan-out inteiro em Sonnet — é o que roda em qualquer diff, grande ou pequeno.
+  **Profundo**: só sob pedido (`/bb:review profundo`, "revisa a fundo", ou a opção
+  na pergunta de frentes) — conjunto inteiro de ângulos, varredura final, cap
+  maior e os agentes em Opus.
+- **O verify ganhou teto e mudou de unidade de despacho.** Ele mandava um agente
+  por local, e os locais vêm dos candidatos crus — 25 candidatos em 20 locais
+  financiavam 20 agentes pra entregar um relatório que fica com 10. Agora são **no
+  máximo 4 agentes** (6 no profundo), despachados **por arquivo** em vez de por
+  local: um agente abre `src/a.ts` uma vez e julga os cinco candidatos que estão
+  nele. Acima do teto os arquivos vão em lote, os de correção primeiro; nenhum
+  candidato deixa de ser julgado.
+- **`bb-finder` e `bb-verifier` viraram `bb-review-finder` e
+  `bb-review-verifier`.** O prefixo diz de que pipeline eles são e tira do caminho
+  o risco de um agente ser escolhido no lugar do `/bb:review`, que é a porta de
+  entrada de verdade.
+- **A frente de acessibilidade parou de disparar por extensão.** Um `.tsx` que só
+  mexeu em handler, hook, tipo ou import não é mudança de UI — a disponibilidade
+  agora lê o conteúdo dos hunks (markup, atributo que decide semântica, CSS de
+  foco/contraste) e a frente simplesmente não é oferecida quando não há o que ler.
+- **O `/bb:ship` landa; revisar é uma pergunta depois.** Ship faz só a metade
+  mecânica: esverdeia as **checagens do projeto** (lint, format, typecheck,
+  testes — o que o CI roda), commita e landa pelo destino escolhido. Depois de
+  landar, um gate de duas vias: **"Revisar agora"** (invoca o `/bb:review`, que
+  pergunta as frentes como sempre) ou **"Encerrar aqui"**.
+- **"Gate local" saiu do vocabulário.** A palavra já era o gate de handoff, o gate
+  do brisar e o gate do LexFlow; lint e testes agora se chamam **checagens do
+  projeto** em toda a trilha Construir.
+- **`review-checklist.md` e `quality-checklist.md` mudaram de casa**, de
+  `references/` no topo do plugin pra `skills/review/references/`. Eram
+  compartilhados porque o ship revisava; com o ship fora, os critérios são de
+  quem os usa. **O ship parou de ler a engine inteira** — inclusive o
+  `act-apply-fixes.md`, cuja metade útil pra ele (uma mudança por vez, código sem
+  teste fica trivial ou flagado) agora são duas linhas no próprio passo 2. Ler 55
+  linhas de ordenação de achados pra consertar um lint vermelho custava mais do
+  que economizava.
+
 ## 2.9.0 — 2026-08-15
 
 **Uma palavra por coisa, em português.** O item do `## Tarefas` é uma **tarefa**,
