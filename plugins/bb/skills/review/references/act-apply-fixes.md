@@ -1,5 +1,11 @@
 # Action: apply findings — the regression guard
 
+Two halves with different audiences. **`## The guard`** is about editing code
+without breaking it, and holds for any fix — it's the half `/bb:ship` borrows when
+a project check comes back red. **`## Order of operations`** is about applying
+_findings_, so it belongs to a run that has them: fronts, severities and a
+re-report.
+
 Applying a review finding is where a review can _cause_ the next bug. This pass
 is deliberately conservative: a cleanup that changes behavior is a defect, not an
 improvement, and a "fix" that isn't justified against its finding is a guess.
@@ -39,8 +45,8 @@ improvement, and a "fix" that isn't justified against its finding is a guess.
      test, not by editing the spec. When the spec itself turns out to be wrong,
      that's a `/bb:spec` conversation, not a review edit.
 2. Scope stays the code this branch already changed — no refactoring untouched
-   code "while at it" (the scope rule in the plugin-root
-   `quality-checklist.md`).
+   code "while at it" (the scope rule in `quality-checklist.md`, next to this
+   file).
 3. Match the surrounding naming, error envelopes, and patterns.
 4. Commit in logical units (conventional style, no AI attribution). With an open
    PR, push to the PR branch; thread replies happen after the push so the sha is
