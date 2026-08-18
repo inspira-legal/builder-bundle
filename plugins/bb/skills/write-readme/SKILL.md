@@ -7,7 +7,7 @@ metadata:
   version: 2.1.0
 ---
 
-# README Generator
+# README generator
 
 Write READMEs that respect the reader: a centered identity block, then copy-paste commands. Prose only where a command can't speak for itself.
 

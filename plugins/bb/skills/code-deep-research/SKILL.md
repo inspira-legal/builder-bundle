@@ -7,11 +7,11 @@ metadata:
   version: 2.0.0
 ---
 
-# Code Deep Research
+# Code deep research
 
 Find, clone, and explore real repositories to understand implementation patterns and architectures — then **verify every load-bearing claim against the actual source** before it reaches the report. The depth comes from the loop: plan → fan out → verify → synthesize, repeated until the open questions run dry.
 
-## How It Works
+## How it works
 
 Two query types, two entry paths:
 
@@ -24,7 +24,7 @@ Both paths converge on the same verify-and-synthesize back half.
 
 ## Workflow
 
-### 1. Plan the Research
+### 1. Plan the research
 
 Before searching, turn the request into a concrete plan:
 
@@ -34,7 +34,7 @@ Before searching, turn the request into a concrete plan:
 - **Why** — comparing options, learning patterns, finding reference implementations
 - **Constraints** — language, framework, license, activity level
 
-### 2a. Discovery Path: Scout
+### 2a. Discovery path: scout
 
 Generate **2-3 search queries** from different angles, plus **1-2 GitHub topic slugs** (kebab-case tags like `state-management`, `orm`, `cli`), then run the bundled script (path relative to this skill's directory):
 
@@ -48,7 +48,7 @@ Keyword queries match repo name/description. Topic searches find repos tagged wi
 
 Returns a JSON list with: `fullName`, `description`, `stargazersCount`, `updatedAt`, `language`, `url`.
 
-### 2b. Targeted Path: Resolve Repo
+### 2b. Targeted path: resolve the repo
 
 The user is asking about a specific project. Resolve the repo:
 
@@ -56,7 +56,7 @@ The user is asking about a specific project. Resolve the repo:
 - If ambiguous, run a quick search: `python scripts/search_repos.py "project name" --min-stars 0` and pick the top match
 - Skip straight to **Step 4: Explore**
 
-### 3. Evaluate & Select (discovery path only)
+### 3. Evaluate and select (discovery path only)
 
 From the script output:
 
@@ -73,7 +73,7 @@ Found [N] relevant repos. Top picks for deep dive:
 Cloning and exploring these now...
 ```
 
-### 4. Explore (Parallel)
+### 4. Explore (parallel)
 
 Launch all agents in parallel:
 
@@ -102,7 +102,7 @@ For each, find: official docs, blog posts, architecture discussions, design deci
 Focus on: [the planned claims]. Return findings grouped by repo, with source URLs. Under 300 words per repo.
 ```
 
-### 5. Verify (Adversarial)
+### 5. Verify (adversarial)
 
 The explorers can be confidently wrong. For each **load-bearing claim** (one that drives a recommendation or comparison-table cell), spawn an independent verifier that **tries to refute it** against the cloned source it already has on disk:
 
@@ -118,7 +118,7 @@ Default to "refuted" if the cited evidence doesn't support it.
 
 Keep the claims that hold, rewrite the partial ones to what the code actually shows, drop the refuted ones. A refuted load-bearing claim sends you back to Step 4 (explore deeper) or Step 2 (scout a better repo) — that's the loop.
 
-### 6. Synthesize & Report
+### 6. Synthesize and report
 
 Combine the **verified** findings — every claim traces to `file:path:line` and carries a confidence:
 
@@ -160,7 +160,7 @@ Combine the **verified** findings — every claim traces to `file:path:line` and
 - `/tmp/research-repos/owner-repo2`
 ```
 
-### 7. Loop or Offer Next Steps
+### 7. Loop or offer next steps
 
 If a planned claim is still unanswered or a load-bearing claim was refuted, run another round (scout more / explore deeper) until the open questions dry up. Once they do, offer:
 

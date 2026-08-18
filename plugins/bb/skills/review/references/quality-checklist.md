@@ -1,4 +1,4 @@
-# Quality Checklist
+# Quality checklist
 
 The canonical quality pass over the code a branch changed — the single source of
 truth behind `/bb:review`'s quality lens and its apply step, so a diff is judged

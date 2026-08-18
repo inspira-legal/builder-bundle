@@ -7,13 +7,13 @@ metadata:
   version: 2.0.0
 ---
 
-# Branch Context
+# Branch context
 
 Gather all changes on the current branch relative to the base branch (main/master) and present a structured summary.
 
 ## Workflow
 
-### 1. Gather Context
+### 1. Gather context
 
 Run the shared plugin-root script:
 
@@ -30,7 +30,7 @@ Returns JSON with: `branch`, `base_branch`, `merge_base`, `commit_log`, `commit_
 
 If the script returns an `error` field, report it and stop.
 
-### 2. Present Summary
+### 2. Present the summary
 
 Show a structured overview:
 
@@ -58,7 +58,7 @@ Deleted:
 
 **Uncommitted changes** — if any, list them separately with a warning.
 
-### 3. Analyze the Diff
+### 3. Analyze the diff
 
 Read through the full diff and provide:
 

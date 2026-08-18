@@ -44,7 +44,7 @@ plugins/bb/
     └── Pesquisar/Doc: code-deep-research, write-readme
 ```
 
-### Naming Conventions
+### Naming conventions
 
 - Skills live in `plugins/bb/skills/<name>/SKILL.md`. Names are **verb-led** where
   possible — invoked as `/bb:<name>` (`/bb:ship`). No trilha prefix in the name;
@@ -103,7 +103,7 @@ format and journey map in `plugins/bb/references/handoff-gate.md`. Gates suggest
 never auto-invoke (exceptions documented there). Skills without a natural next
 step just report and stop.
 
-### Scripting Principle
+### Scripting principle
 
 Skills are folders — they can contain scripts alongside the SKILL.md. **Prefer
 Python scripts for deterministic operations** (parsing, formatting, data
@@ -111,7 +111,7 @@ transformation, file manipulation, JSON processing) over having the LLM do it
 inline. Reserve LLM reasoning for judgment calls, synthesis, and creative
 decisions.
 
-### Writing Guidelines
+### Writing guidelines
 
 - The English prose of this repo, and every English document a skill generates,
   follows `plugins/bb/references/doc-style.md`: the Google developer documentation

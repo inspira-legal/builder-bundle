@@ -110,7 +110,7 @@ one PT-BR question with two options:
 resident, watching the PR; the gate goes right after the PR is open and its checks
 are handled, and the watch resumes after whichever option was picked.
 
-## Bundled Resources
+## Bundled resources
 
 ### references/land-branch.md
 

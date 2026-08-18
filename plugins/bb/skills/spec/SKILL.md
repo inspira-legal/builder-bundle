@@ -113,7 +113,7 @@ spec always ends at a validated `.bb/<slug>/spec.md`; the spec is the durable as
 
 **Safety valve:** if building later reveals the idea was underspecified (surprises pile up), STOP and re-spec — that's the signal alignment was incomplete, not a license to improvise.
 
-## Bundled Resources
+## Bundled resources
 
 ### references/spec-format.md
 

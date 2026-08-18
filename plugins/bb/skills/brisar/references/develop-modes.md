@@ -33,7 +33,7 @@ every medium, but the target and the tooling change:
 
 ---
 
-## Mode 1: Full surface (`full-surface`)
+## Mode 1: full surface (`full-surface`)
 
 **Why it exists:** building 1 screen end-to-end is the most common case. It reads the contract (tokens + components + visual direction) and produces React/HTML code applying everything.
 
@@ -186,7 +186,7 @@ tarsila:
 
 ---
 
-## Mode 2: Isolated component (`component`)
+## Mode 2: isolated component (`component`)
 
 **Why it exists:** sometimes it is not a surface — it is a component that goes to the DS or to the project. A lean mode to build 1 component in isolation.
 
@@ -238,7 +238,7 @@ tarsila:
 
 ---
 
-## Mode 3: Iteration on existing (`iteration`)
+## Mode 3: iteration on existing (`iteration`)
 
 **Why it exists:** a second pass on code that already exists. Read first, propose diff, apply with consent.
 

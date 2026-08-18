@@ -7,7 +7,7 @@ metadata:
   version: 2.3.0
 ---
 
-# Repo Maintenance
+# Repo maintenance
 
 Triage a repo's open PRs and dependency updates, then tell the user **what is safe to merge** — to Slack, as a sticky PR comment, or both. Merge is **never** performed by this skill; it is decision-support that ends with the human clicking merge.
 
@@ -49,7 +49,7 @@ The verdict per PR is one of:
 
 Every delivery ends on the explicit line: **mergeable verdicts are decision-support — you merge.**
 
-## Bundled Resources
+## Bundled resources
 
 ### scripts/scan_repo.py
 

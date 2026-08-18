@@ -7,7 +7,7 @@ metadata:
   version: 2.3.0
 ---
 
-# Review Setup
+# Review setup
 
 Produce the repo's `CODE_REVIEW_GUIDE.md` — the single source of truth for what
 "good" means in this codebase: rules with IDs, severities, and evidence, validated
@@ -68,7 +68,7 @@ No handoff gate — report and stop:
 | legacy `.claude/skills/code-review/` present     | flag as superseded; never regenerate it                               |
 | not a git repo                                   | report the error, stop                                                |
 
-## Bundled Resources
+## Bundled resources
 
 - `references/discovery.md` — the 5 discovery subagent prompts + rule extraction format.
 - `references/interview.md` — the `AskUserQuestion` validation protocol (setup and update variants).

@@ -1,4 +1,4 @@
-# Diff Review Checklist
+# Diff review checklist
 
 Two passes over the review's diff range, in this order. The range is resolved once by the caller and handed down in the scope block (`<merge_base>...HEAD`, per the probe in `fronts.md`) — don't re-resolve a base here. Read every hunk with its surrounding context (open the file, not just the diff) before judging it.
 

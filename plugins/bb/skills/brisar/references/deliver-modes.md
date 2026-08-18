@@ -4,7 +4,7 @@ Lazy load: read only the section of the mode chosen in Step 1 of `phase-deliver.
 
 ---
 
-## Mode 1: Design review (`design-review`)
+## Mode 1: design review (`design-review`)
 
 **Why it exists:** confronts what was built with **the problem and the research**. Without that
 confrontation design becomes opinion — and with only half of it, design becomes a faithful
@@ -237,7 +237,7 @@ de token, não erro de prancha.
 
 ---
 
-## Mode 2: Accessibility audit (`accessibility`)
+## Mode 2: accessibility audit (`accessibility`)
 
 **Why it exists:** WCAG AA isn't optional for an Inspira product. Accessibility is part of the Deliver contract.
 

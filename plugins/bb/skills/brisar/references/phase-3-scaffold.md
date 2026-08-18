@@ -311,7 +311,7 @@ Short synthesis extracted from `<DS_PATH>/<brand.design_md_path>`. Don't copy th
 - Default body: `<--text-body>` (`<size>`)
 - Default heading: `<--text-title-sm>` (`<size>`)
 
-## Radius / Spacing
+## Radius / spacing
 
 - Default radius: `<--radius-md>`
 - Default control height: `<--size-md>`

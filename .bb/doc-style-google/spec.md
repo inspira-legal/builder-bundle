@@ -142,7 +142,7 @@ Caminho principal:
       no `write-readme/SKILL.md` e no `review-setup/references/guide-template.md`; o
       write-readme fica só com as regras da casa
       → behaviors 1, 3, 4, 5, 13 · depende: 1 · verifica: leitura
-- [ ] **3. Triagem dos headings**: os 37 em title case declarado fora de `ds/`, mais os
+- [x] **3. Triagem dos headings**: os 37 em title case declarado fora de `ds/`, mais os
       candidatos onde a caixa depende de nome próprio ou de template → behaviors 2, 11 ·
       depende: 1 · verifica: leitura
 - [ ] **4. Travessão no `brisar`**: 784 em 18 arquivos, com `ds/` fora
