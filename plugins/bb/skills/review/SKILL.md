@@ -209,7 +209,7 @@ offered, which needs no row here. What this table covers is everything else:
 | user picks nothing at curation               | no edits; go to the gate                                                                                              |
 | a verifier dies or omits an index            | that candidate is `sem veredito`, reported as its own line, never promoted                                            |
 | CI still red after 3 diagnose→fix cycles     | stop editing, report the remaining failure and the evidence                                                           |
-| deep asked for on a ≲2-file diff             | deep is honored — the full angle set with fan-out, sweep included; say the diff is small and that deep was asked for                     |
+| deep asked for on a ≲2-file diff             | deep is honored — the full angle set with fan-out, sweep included; say the diff is small and that deep was asked for  |
 
 ## Bundled Resources
 

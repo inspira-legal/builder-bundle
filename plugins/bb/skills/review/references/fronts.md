@@ -66,11 +66,11 @@ run. `gh` unauthenticated makes both unavailable — say so once, with
 
 ## Depth — two tiers by default, a third only when asked
 
-| Diff                                | Correctness angles                                | Quality | Rules      | Contract | A11y    | Verify                           | Sweep   | Report cap |
-| ----------------------------------- | ------------------------------------------------- | ------- | ---------- | -------- | ------- | -------------------------------- | ------- | ---------- |
-| ≲2 arquivos / ≲100 linhas           | os 2 primeiros do angle set, inline (sem fan-out) | inline  | inline     | inline   | inline  | self-check no contexto principal | —       | 6          |
-| **qualquer diff maior — o padrão**  | os 3 primeiros do angle set (3 agents)            | 1 agent | 1 agent    | 1 agent  | 1 agent | 1-vote agrupado por local        | —       | 10         |
-| **profundo — só sob pedido**        | o angle set inteiro (até 5 agents)                | 1 agent | 1–2 agents | 1 agent  | 1 agent | 1-vote agrupado por local        | 1 agent | 15         |
+| Diff                               | Correctness angles                                | Quality | Rules      | Contract | A11y    | Verify                           | Sweep   | Report cap |
+| ---------------------------------- | ------------------------------------------------- | ------- | ---------- | -------- | ------- | -------------------------------- | ------- | ---------- |
+| ≲2 arquivos / ≲100 linhas          | os 2 primeiros do angle set, inline (sem fan-out) | inline  | inline     | inline   | inline  | self-check no contexto principal | —       | 6          |
+| **qualquer diff maior — o padrão** | os 3 primeiros do angle set (3 agents)            | 1 agent | 1 agent    | 1 agent  | 1 agent | 1-vote agrupado por local        | —       | 10         |
+| **profundo — só sob pedido**       | o angle set inteiro (até 5 agents)                | 1 agent | 1–2 agents | 1 agent  | 1 agent | 1-vote agrupado por local        | 1 agent | 15         |
 
 **Size alone never reaches the third row.** A big diff runs the middle tier — the
 same three angles a medium one gets, no sweep — because a review that silently
