@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.11.0 — 2026-08-18
+
+**As `description:` das skills emagreceram.** Toda `description:` do bundle entra
+no contexto de toda sessão — é o texto que o Claude lê pra decidir qual skill
+chamar, e ele paga por ele mesmo quando nenhuma skill é usada. Dez delas tinham
+virado resumo da SKILL.md: o `/bb:review` listava as sete frentes, a rubrica de
+veredito e o modo de superfície; o `/bb:brisar` narrava as quatro fases. Nada
+disso ajuda a rotear — a skill já explica tudo isso depois de carregada.
+
+### Mudou
+
+- **~2.000 caracteres a menos no preâmbulo de cada sessão.** As descriptions
+  somavam 11.431 caracteres; agora somam 9.460. O que saiu foi detalhe de
+  execução (quais agentes despacha, em que ordem, com que rubrica); o que ficou
+  foi o que decide roteamento — o que a skill faz numa frase, as frases-gatilho
+  do usuário, e o `NÃO use pra … (use /bb:outra)`.
+- **Skills tocadas**: `review` (1780 → 1087), `brisar` (1203 → 779), `discover`,
+  `spec`, `legal-lens`, `maintain-repo`, `review-setup`, `think`, `challenge` e
+  `write-readme`. As outras cinco já cabiam no orçamento e ficaram como estavam.
+
 ## 2.10.0 — 2026-08-18
 
 **Revisar ficou barato, e o `/bb:ship` parou de revisar.** Um `/bb:review` de

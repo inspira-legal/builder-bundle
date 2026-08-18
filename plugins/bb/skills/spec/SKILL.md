@@ -1,10 +1,10 @@
 ---
 name: spec
-description: Alinhar a ideia antes de construir — desenvolve um draft, itera as zonas cinzentas com você via question tool (decisões técnicas estruturantes E um mapa de comportamento meticuloso — happy path + edges com outcome esperado), roda um passe adversarial de completude (geradores + revisor independente + rastreabilidade comportamento↔tarefa) e fecha num gate de 3 vias implement / delegate / parar. Auto-dimensiona por complexidade. Lê as seções upstream `## Problema` / `## Hipótese` / `## Encaixe` do /bb:discover quando presentes. Use quando o usuário disser "faz o spec", "especifica isso", "vamos planejar", "shape this", "o que a gente deveria construir", "discutir antes de construir", ou começar uma feature não-trivial. NÃO use pra mudanças mecânicas pequenas (só faça), nem pra achar bugs (use /bb:review).
+description: Alinhar a ideia antes de construir — desenvolve um draft, itera as zonas cinzentas com você via question tool, mapeia o comportamento esperado (happy path + edges), roda um passe adversarial de completude e fecha num gate de 3 vias implement / delegate / parar. Lê o enquadramento do /bb:discover quando presente. Use quando o usuário disser "faz o spec", "especifica isso", "vamos planejar", "shape this", "o que a gente deveria construir", "discutir antes de construir", ou começar uma feature não-trivial. NÃO use pra mudanças mecânicas pequenas (só faça), nem pra achar bugs (use /bb:review).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 # Spec

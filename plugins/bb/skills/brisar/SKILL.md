@@ -1,10 +1,10 @@
 ---
 name: brisar
-description: Trilha de design ponta a ponta — duplo diamante inteiro, do "tenho uma ideia" à entrega revisada, pra designer e não-designer. Pesquisa antes do pixel (referências de mercado, o design system lido da fonte, o que o produto já tem), consolida num design brief que é contrato vivo, diverge em direções tratadas em pé de igualdade, e pergunta onde explorar — código, Claude design, Figma, Paper ou Pencil, oferecendo só o que está instalado. Depois constrói (Develop) e critica (Deliver — review que lê copy, calcula contraste, varre cada variante e pode discordar do contrato com argumento) + acessibilidade + handoff + delta pro spec. Calibra o perfil do builder, detecta produto pelo cwd, escala o esforço (pocket/full) e declara o que pulou. Aplica maturity gate (sugere /bb:discover ou /bb:spec) quando o sinal é production/will-scale. Use quando o builder disser "quero começar", "novo projeto", "criar tela em <marca>", "monta protótipo", "pesquisa antes de desenhar", "quero ver direções", "constrói a superfície", "revisa o protótipo", "handoff de design", "tenho uma ideia de interface". NÃO use pra enquadrar problema de produto (use /bb:discover) nem pra spec formal de execução (use /bb:spec).
+description: Trilha de design ponta a ponta — duplo diamante inteiro, do "tenho uma ideia" à entrega revisada, pra designer e não-designer. Pesquisa antes do pixel, consolida num design brief que é contrato vivo, diverge em direções e pergunta onde explorar (código, Claude design, Figma, Paper ou Pencil); depois constrói, critica, e fecha com acessibilidade, handoff e delta pro spec. Escala o esforço e declara o que pulou. Use quando o builder disser "quero começar", "novo projeto", "criar tela em <marca>", "monta protótipo", "pesquisa antes de desenhar", "quero ver direções", "constrói a superfície", "revisa o protótipo", "handoff de design", "tenho uma ideia de interface". NÃO use pra enquadrar problema de produto (use /bb:discover) nem pra spec formal de execução (use /bb:spec).
 license: MIT
 metadata:
   author: Inspira
-  version: 2.6.0
+  version: 2.7.0
 ---
 
 # Brisar

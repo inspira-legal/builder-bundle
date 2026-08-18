@@ -1,10 +1,10 @@
 ---
 name: maintain-repo
-description: Faz a triagem de manutenção do repo e reporta o que é seguro mergear — nunca mergeia. Escaneia PRs abertas, alertas de segurança do Dependabot e dependências desatualizadas; prioriza; computa um veredito de mergeabilidade fail-closed por PR; e entrega um digest deduplicado no Slack e/ou como sticky comment na PR. O merge fica com o humano. Use quando o usuário disser "o que dá pra mergear", "triagem das minhas PRs", "revisa as PRs abertas", "checa o Dependabot", "os updates de dependência estão seguros?", ou "configura um digest de manutenção". NÃO use pra consertar uma PR específica (use /bb:review ou /bb:ship), nem pra abrir uma PR (use /bb:ship).
+description: Faz a triagem de manutenção do repo e reporta o que é seguro mergear — nunca mergeia. Escaneia PRs abertas, alertas de segurança do Dependabot e dependências desatualizadas, prioriza, e entrega um digest no Slack e/ou como sticky comment na PR. O merge fica com o humano. Use quando o usuário disser "o que dá pra mergear", "triagem das minhas PRs", "revisa as PRs abertas", "checa o Dependabot", "os updates de dependência estão seguros?", ou "configura um digest de manutenção". NÃO use pra consertar uma PR específica (use /bb:review ou /bb:ship), nem pra abrir uma PR (use /bb:ship).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 # Repo Maintenance
