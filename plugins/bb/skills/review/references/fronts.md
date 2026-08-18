@@ -119,9 +119,9 @@ change it reviewed.
 2. **Each finder gets the same scope block** — the resolved diff range
    (`<merge_base>...HEAD`, the sha the probe returned, not a `<base>` the finder
    has to guess), changed files, one paragraph of what changed, the repo's
-   `CODE_REVIEW_GUIDE.md` when there is one, the criteria path its front points at (plugin-root
-   `review-checklist.md` or `quality-checklist.md`), and the
-   spec when there is one — plus ONE angle/lens set and its candidate cap.
+   `CODE_REVIEW_GUIDE.md` when there is one, the criteria path its front points at
+   (`review-checklist.md` or `quality-checklist.md`, siblings of this file), and
+   the spec when there is one — plus ONE angle/lens set and its candidate cap.
 3. **Barrier before verify.** Pool every finder's candidates first: verification
    groups them by `file:line`, which needs all of them (`verify.md`).
 4. **`threads` and `ci` don't fan out** — they're script/`gh` reads followed by

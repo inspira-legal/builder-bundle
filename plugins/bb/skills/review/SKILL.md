@@ -4,7 +4,7 @@ description: Revisa a mudança de ponta a ponta — você escolhe as frentes, el
 license: Apache-2.0
 metadata:
   author: Athena Briana - github.com/athenabriana; quality-pass material adapted from Claude Code's /simplify, angle/verify architecture adapted from Claude Code's /code-review (Anthropic, Apache-2.0), a11y front absorbed from rafael's ui-accessibility skill (loja inspira-skills, MIT)
-  version: 2.6.0
+  version: 2.6.1
 ---
 
 # Review
