@@ -11,10 +11,14 @@ are the single gate between it and the report.
 
 ## What the caller gives you
 
-The scope block and the candidates at **one** location — or, when the caller
-batched them, at a handful of locations — labeled `[0]`, `[1]`, … with the
-`file:line` each index sits at, plus an addendum that says what verification means
-on this front when the front calls for one.
+The scope block and the candidates in **one file** — sometimes a handful of files,
+when the caller bundled them — labeled `[0]`, `[1]`, … with the `file:line` each
+index sits at, plus an addendum that says what verification means on this front when
+the front calls for one.
+
+Open each file once and work every index in it. Sharing an agent is a cost decision
+and nothing else: it changes no verdict, and a candidate never inherits credibility
+from the one judged before it.
 
 Return one verdict per index, each judged **independently on its own claim**. Same
 location does not mean same issue: two candidates on one line are often two

@@ -33,21 +33,25 @@ page) the file set the audit enumerated. There is always a list to canonicalize
 against; a review with no diff is not a review with no scope.
 
 Grouping is not dedup — every candidate keeps its own verdict; candidates at the
-same line are often distinct issues. Cross-finder location collisions are common,
-and one verifier agent per location costs far fewer agents than one per candidate
-with no loss. Candidates with no line (a whole-file or cross-file claim) group by
-`file`.
+same line are often distinct issues, and cross-finder collisions on one line are
+common. Candidates with no line (a whole-file or cross-file claim) group by `file`.
 
-**The fan-out stops at 8 verifier agents** — 12 on a deep run. Locations are cheap
-to make and agents are not: four finders returning 25 candidates across 20 locations
-would fund 20 agents to produce a report that keeps 10. When the grouping returns
-more locations than the cap, order them — every location holding a `correctness`
-candidate first, then `rules` and `contract`, then the rest — and hand the overflow
-out in batches of locations, several per agent, until the cap is full. Nothing is
-dropped and no verdict changes: a batched location gets the same prompt and the same
-per-candidate judgement, it just shares an agent with its neighbours.
+So grouping is what keeps two candidates on one line from collapsing into one
+verdict. It is **not** what decides how many agents go out: locations are cheap to
+make and agents are not, and four finders returning 25 candidates across 20 locations
+would otherwise fund 20 agents to produce a report that keeps 10.
 
-## 2. One verifier per location, up to the cap
+**The dispatch unit is the file, and at most 4 agents go out** — 6 on a deep run. A
+verifier that opens `src/a.ts` once can judge every candidate in it: the file's
+locations ride along in one prompt, each still labeled, each still judged on its own
+claim. When the pooled candidates touch more files than the cap allows, bundle the
+files across the calls — every file holding a `correctness` candidate placed first,
+then `rules` and `contract`, then the rest — so the heaviest files get the most
+attention and the cheap ones share. Nothing is dropped and no verdict changes; what
+changes is that one agent reads a file once for five candidates instead of five
+agents reading it five times.
+
+## 2. One verifier per file, up to 4 agents
 
 Each verifier goes out as `subagent_type: "bb-review-verifier"`
 (`plugins/bb/agents/bb-review-verifier.md`), which owns the rubric: the three verdicts, the
@@ -55,10 +59,10 @@ PLAUSIBLE default and what makes a REFUTED constructible from the code all live 
 that prompt, so both callers of this engine judge the same way without a second copy
 to keep in sync — and without the fan-out having to re-send it.
 
-What this pass hands it: the scope block, the candidates at that location — or at
-each location in its batch — labeled `[0]`, `[1]`, … with the `file:line` each index
-belongs to, and the addendum below when the front calls for one. Back comes one
-verdict per index, each judged independently on its own claim, with evidence.
+What this pass hands it: the scope block, the candidates in its file (or files)
+labeled `[0]`, `[1]`, … with the `file:line` each index sits at, and the addendum
+below when the front calls for one. Back comes one verdict per index, each judged
+independently on its own claim, with evidence.
 
 A candidate the verifier rendered no verdict on (agent died, index omitted) is
 **dropped** — never promoted to PLAUSIBLE on the strength of the finder alone. It

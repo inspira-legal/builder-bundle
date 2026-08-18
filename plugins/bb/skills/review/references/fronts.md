@@ -78,8 +78,9 @@ triples its own cost on a big branch is the review nobody can afford to run twic
 The deep tier is opt-in and the router is what sets it (`SKILL.md`, step 1: the
 `profundo` argument, "revisa a fundo", or the deep option at the fronts question).
 This engine only reads the flag it was handed. The verify pass has a ceiling of its
-own — 8 verifier agents, 12 deep — so a finder pool that returns many locations
-batches them instead of dispatching one agent apiece (`verify.md`, §1).
+own — 4 verifier agents, 6 deep — and dispatches by file rather than by location, so
+a pool that lands on many locations bundles them instead of spending an agent apiece
+(`verify.md`, §1).
 
 The table sizes the fan-out. **Which** angles fill it comes from what the diff is
 made of (`front-correctness.md`) — a diff of prompts or manifests swaps the
