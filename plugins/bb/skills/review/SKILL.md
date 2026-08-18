@@ -182,7 +182,7 @@ priority order — unfinished work on this report outranks the next skill:
 4. guide drift or missing guide reported → **"Gerar/atualizar o guia — rodo
    /bb:review-setup"**
 5. no open PR and everything clean/handled → **"Abrir a PR — rodo /bb:ship"** (not
-   offered when this run *came from* ship's post-landing gate — the branch just landed,
+   offered when this run _came from_ ship's post-landing gate — the branch just landed,
    and offering to land it again is a loop)
 
 Lead with the highest-priority one and suffix its label `(Recomendado)`. The states

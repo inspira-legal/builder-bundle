@@ -53,6 +53,7 @@ batch of cheap read-only calls (parallel background where possible):
   front is unavailable and the report doesn't mention it. A `.js` that builds a
   dialog does activate it. When the grep is ambiguous, read the hunks before
   offering the front, not after.
+
 - `gh pr view --json number,url` — is there an open PR.
 - failing checks: `gh pr checks <n>` when a PR exists, otherwise
   `gh run list --branch <branch> --limit 1` — the branch's last run is evidence
