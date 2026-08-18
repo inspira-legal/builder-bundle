@@ -3,7 +3,10 @@
 Write the guide at the repo root with the Write tool, filled from the validated
 rules. The guide is self-contained — anyone reading it understands every rule
 without external context. Guide prose in PT-BR; rule IDs, code examples, and
-technical terms in English.
+technical terms in English. Portuguese prose takes its words from the plugin-level
+`references/vocabulario.md`, and the plugin-level `references/doc-style.md` still
+governs the punctuation and the shape of the document: no dash, sentence case in a
+heading, one idea per list item, a header row on every table.
 
 Required content:
 

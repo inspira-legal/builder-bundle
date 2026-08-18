@@ -138,7 +138,7 @@ Caminho principal:
 - [x] **1. `references/doc-style.md`**: o guia destilado em forma positiva, cobrindo tom e
       voz, heading, formatação de texto, lista e tabela, link, data e número, mais as duas
       exceções e a precedência → behaviors 1, 2, 11, 13, 17, 18 · depende: nada · verifica: leitura
-- [ ] **2. Os quatro leitores**: ponteiro no `.claude/CLAUDE.md`, no `hooks/operating-context.md`,
+- [x] **2. Os quatro leitores**: ponteiro no `.claude/CLAUDE.md`, no `hooks/operating-context.md`,
       no `write-readme/SKILL.md` e no `review-setup/references/guide-template.md`; o
       write-readme fica só com as regras da casa
       → behaviors 1, 3, 4, 5, 13 · depende: 1 · verifica: leitura

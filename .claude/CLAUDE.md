@@ -24,6 +24,7 @@ plugins/bb/
 │   └── operating-context.md            # the injected operating frame (edit to tune)
 ├── references/                        # plugin-level docs (not skill-scoped)
 │   ├── vocabulario.md                  # one name per thing, in Portuguese (table + capitalization)
+│   ├── doc-style.md                    # the Google style guide as bb writes English prose
 │   ├── handoff-gate.md                 # the one convention for end-of-skill gates (+ AskUserQuestion rationale)
 │   ├── confidence-and-steelman.md      # shared reasoning protocols (think, challenge)
 │   ├── spec-state.md                   # the .bb/<slug>/ folder contract
@@ -112,6 +113,10 @@ decisions.
 
 ### Writing Guidelines
 
+- The English prose of this repo, and every English document a skill generates,
+  follows `plugins/bb/references/doc-style.md`: the Google developer documentation
+  style guide as bb writes it, plus the two places bb diverges. Its dash rule is
+  punctuation rather than vocabulary, so it holds for the Portuguese lines too.
 - Keep SKILL.md focused on the workflow and decision-making logic
 - Keep guidance positive and lean by default — enforce irreversible hazards with
   capability scoping, not prose. Don't write catalogs of anti-patterns / "DO NOT"
