@@ -150,7 +150,7 @@ Caminho principal:
 - [x] **5. Travessão no `review` e no `review-setup`**: 331 em 21 arquivos, incluindo os
       templates de relatório e o `guide-template.md`
       → behaviors 7, 9, 10, 12 · depende: 1 · verifica: grep zerado
-- [ ] **6. Travessão no `spec` e no `ship`**: 234 em 13 arquivos, incluindo os templates de
+- [x] **6. Travessão no `spec` e no `ship`**: 234 em 13 arquivos, incluindo os templates de
       relatório e a espinha que o `/bb:spec` escreve
       → behaviors 5, 7, 12 · depende: 1 · verifica: grep zerado
 - [ ] **7. Travessão nas outras 9 skills**: 220 em 15 arquivos: `discover` 44, `challenge`

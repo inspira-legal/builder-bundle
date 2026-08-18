@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Check the mechanical shape of a spec.
 
-Judgment — is it too long, does it repeat itself, is it recounting the conversation —
+Judgment (is it too long, does it repeat itself, is it recounting the conversation)
 belongs to the independent reviewer. This only catches what is decidable by reading
 the bytes: the spine, dead section names, frontmatter, and malformed tables.
 
@@ -12,7 +12,7 @@ Output: `path:line CODE mensagem` on stdout. Exit 1 when any E-code fired.
 import re
 import sys
 
-# (nome em português, nome em inglês) — as duas grafias valem; a mensagem cita a portuguesa.
+# (nome em português, nome em inglês): as duas grafias valem; a mensagem cita a portuguesa.
 REQUIRED_SECTIONS = (("Decisões", "decisions"), ("Em aberto", "open"))
 RECOMMENDED_SECTIONS = (
     ("Comportamento", "behavior", "W001", "o mapa de comportamento é o contrato de aceite"),
@@ -36,10 +36,10 @@ TRANSLATED_SECTIONS = {
 # que o autor vai procurar.
 DEAD_SECTIONS = {
     "design": (
-        "`## {raw}` é nome morto — no bb `design` é desenho de tela (`/bb:brisar`). "
+        "`## {raw}` é nome morto: no bb `design` é desenho de tela (`/bb:brisar`). "
         "Arquitetura vai pra metade de cima, com o nome que ela tem neste problema."
     ),
-    "still open": "seção `## {raw}` — o nome é `## Em aberto`.",
+    "still open": "seção `## {raw}`: o nome é `## Em aberto`.",
 }
 VALID_STATUS = ("pending", "in-progress", "done", "blocked")
 MAX_CELL = 100
@@ -65,7 +65,7 @@ def split_row(line):
 def check_frontmatter(lines):
     """Yield problems with the `---` block the spec-state contract requires."""
     if not lines or lines[0].strip() != "---":
-        yield 1, "E001", "frontmatter ausente — o bloco `---` com status/created/slug abre o arquivo"
+        yield 1, "E001", "frontmatter ausente: o bloco `---` com status/created/slug abre o arquivo"
         return
 
     end = next((i for i, line in enumerate(lines[1:], start=1) if line.strip() == "---"), None)
@@ -86,7 +86,7 @@ def check_frontmatter(lines):
     if "status" in fields:
         line_no, value = fields["status"]
         if value not in VALID_STATUS:
-            yield line_no, "E001", f"status `{value}` inválido — use {', '.join(VALID_STATUS)}"
+            yield line_no, "E001", f"status `{value}` inválido: use {', '.join(VALID_STATUS)}"
 
     if "created" in fields:
         line_no, value = fields["created"]
@@ -120,7 +120,7 @@ def check_body(lines):
                 yield (
                     line_no,
                     "E005",
-                    f"row com {len(cells)} células contra {width} do cabeçalho — {remedy}",
+                    f"row com {len(cells)} células contra {width} do cabeçalho: {remedy}",
                 )
         for line_no, cells in [rows[0]] + body:
             for cell in cells:
@@ -128,12 +128,12 @@ def check_body(lines):
                     yield (
                         line_no,
                         "E004",
-                        f"célula de {len(cell)} caracteres (teto {MAX_CELL}) — "
+                        f"célula de {len(cell)} caracteres (teto {MAX_CELL}): "
                         "conteúdo desse tamanho é prosa ou bullet, não tabela",
                     )
 
     for i, line in enumerate(lines, start=1):
-        # A fence ends the current run of rows — two tables around a code block are
+        # A fence ends the current run of rows; two tables around a code block are
         # two tables, not one with a mismatched header.
         if FENCE.match(line) or in_fence:
             if table:
@@ -159,7 +159,7 @@ def check_body(lines):
                 yield i, "E003", DEAD_SECTIONS[name].format(raw=raw)
             elif name in TRANSLATED_SECTIONS:
                 yield i, "W003", (
-                    f"`## {raw}` em inglês — em português é "
+                    f"`## {raw}` em inglês: em português é "
                     f"`## {TRANSLATED_SECTIONS[name]}`; o arquivo continua válido"
                 )
 
@@ -168,11 +168,11 @@ def check_body(lines):
 
     for pt, en in REQUIRED_SECTIONS:
         if pt.lower() not in seen and en not in seen:
-            yield 1, "E002", f"sem `## {pt}` — a espinha precisa dela"
+            yield 1, "E002", f"sem `## {pt}`: a espinha precisa dela"
 
     for pt, en, code, why in RECOMMENDED_SECTIONS:
         if pt.lower() not in seen and en not in seen:
-            yield 1, code, f"sem `## {pt}` — {why}"
+            yield 1, code, f"sem `## {pt}`: {why}"
 
 
 def lint(path):

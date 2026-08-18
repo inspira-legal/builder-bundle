@@ -26,8 +26,9 @@ badge per verifiable fact.
 1. **Dashes.** The guide allows an em dash without surrounding spaces. Here, where a dash
    would go, write a comma, a colon, a period, or rewrite the sentence. A colon fits when the
    second half explains the first, and a period fits when it stands on its own. Two things
-   keep the character: a functional token (inside a command, a regex, a path, or a string
-   compared in code), and a verbatim quote from an outside source, which keeps the
+   keep the character: a functional token (inside a command, a regex, a path, a string
+   compared in code, or a value a format reserves, like the `depende: —` a task line carries
+   when nothing blocks it), and a verbatim quote from an outside source, which keeps the
    punctuation of its source.
 2. **Figurative language.** The guide avoids metaphor because it travels badly in
    translation. Here it stays: the metaphor is what makes an instruction stick to the agent
@@ -58,15 +59,15 @@ badge per verifiable fact.
 
 ## Text formatting
 
-| what | how |
-| --- | --- |
-| filename, path, command, flag, class, method, field, value, console output | code font |
-| HTTP status code, environment variable, literal value | code font |
-| placeholder inside a command or path | code font, ALL CAPS |
-| UI element the reader clicks | bold |
-| run-in heading at the start of a list item | bold |
-| a term the first time you introduce it | italic |
-| a link | underline |
+| what                                                                       | how                 |
+| -------------------------------------------------------------------------- | ------------------- |
+| filename, path, command, flag, class, method, field, value, console output | code font           |
+| HTTP status code, environment variable, literal value                      | code font           |
+| placeholder inside a command or path                                       | code font, ALL CAPS |
+| UI element the reader clicks                                               | bold                |
+| run-in heading at the start of a list item                                 | bold                |
+| a term the first time you introduce it                                     | italic              |
+| a link                                                                     | underline           |
 
 ## Lists and tables
 
