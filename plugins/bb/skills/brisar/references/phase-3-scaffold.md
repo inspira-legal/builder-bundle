@@ -1,13 +1,13 @@
-# Phase 3 — Scaffold (write real files)
+# Phase 3: scaffold (write real files)
 
-This is the phase that delivers. Everything before was conversation; here you write files to disk. If something fails, surface the error — don't simulate success.
+This is the phase that delivers. Everything before was conversation; here you write files to disk. If something fails, surface the error. Don't simulate success.
 
 ## When to run
 
 - Coming out of Phase 2 with `gate.resolution: not-applicable` or `override`.
-- OR coming from a subsequent /bb:brisar invocation resumed by Step 0.1 of SKILL.md after a `status: bootstrapped-to-discover` session (the builder ran /bb:discover and came back — the spec informs scope and fidelity here).
+- OR coming from a subsequent /bb:brisar invocation resumed by Step 0.1 of SKILL.md after a `status: bootstrapped-to-discover` session (the builder ran /bb:discover and came back. The spec informs scope and fidelity here).
 
-## Step 1 — Confirm slug and location
+## Step 1: confirm slug and location
 
 Phase 1 derived a slug (e.g. `lexflow-busca-semantica`). Before creating files, confirm:
 
@@ -21,11 +21,11 @@ Phase 1 derived a slug (e.g. `lexflow-busca-semantica`). Before creating files, 
         { "label": "OK, criar aqui", "description": "Pasta vai ser ./<slug>/ no diretório atual" },
         {
           "label": "Quero ajustar o slug",
-          "description": "Texto livre — me dá o nome que prefere"
+          "description": "Texto livre, me dá o nome que prefere"
         },
         {
           "label": "Quero criar em outra pasta",
-          "description": "Texto livre — caminho relativo ou absoluto"
+          "description": "Texto livre, caminho relativo ou absoluto"
         }
       ],
       "multiSelect": false
@@ -38,7 +38,7 @@ If the slug or path changed, update session.yaml.
 
 Additional check: if the destination folder already exists and is not empty, ask if it's OK to overwrite or if they want another name.
 
-## Step 2 — Directory structure
+## Step 2: directory structure
 
 Create:
 
@@ -55,7 +55,7 @@ Create:
 │   ├── App.tsx
 │   ├── index.css
 │   └── components/
-│       └── (empty for now — surfaces will populate)
+│       └── (empty for now; surfaces will populate)
 ├── design-context/
 │   ├── tokens.md
 │   └── components.md
@@ -63,7 +63,7 @@ Create:
     └── config.yaml
 ```
 
-The visual direction does **not** live here — Phase 4 writes it into the task folder, `.bb/<slug>/`, next to the spec (plugin-level `references/spec-state.md`).
+The visual direction does **not** live here: Phase 4 writes it into the task folder, `.bb/<slug>/`, next to the spec (plugin-level `references/spec-state.md`).
 
 Command:
 
@@ -71,9 +71,9 @@ Command:
 mkdir -p <slug>/src/components <slug>/design-context <slug>/.brisar
 ```
 
-## Step 3 — File templates
+## Step 3: file templates
 
-The templates below assume Vite + React + TS + Tailwind v4 stack (the stack BRISA DS V0 uses). For `Storybook only`, adjust — see subsection at the end.
+The templates below assume Vite + React + TS + Tailwind v4 stack (the stack BRISA DS V0 uses). For `Storybook only`, adjust. See subsection at the end.
 
 ### package.json
 
@@ -221,13 +221,13 @@ For custom-from-inspira / custom-from-lexflow, use the base with a note in the c
 ```css
 @import "tailwindcss";
 
-/* Brand tokens — copied from <design_md_path> on <date> */
+/* Brand tokens, copied from <design_md_path> on <date> */
 @import "./tokens-brand.css";
 ```
 
 ### src/tokens-brand.css
 
-**Content:** copy from `<DS_PATH>/<brand.design_md_path>` the entire "Quick Start — Tailwind v4" block (the `@theme { ... }` block). For Inspira, read `<DS_PATH>/brand/DESIGN.md`. For Lexflow, read `<DS_PATH>/brand/lexflow/DESIGN.md`. For custom-from-X, copy from brand-base + add comment at the top: `/* Custom: start here and adjust — inherited from <base brand>. */`.
+**Content:** copy from `<DS_PATH>/<brand.design_md_path>` the entire "Quick Start: Tailwind v4" block (the `@theme { ... }` block). For Inspira, read `<DS_PATH>/brand/DESIGN.md`. For Lexflow, read `<DS_PATH>/brand/lexflow/DESIGN.md`. For custom-from-X, copy from brand-base + add comment at the top: `/* Custom: start here and adjust, inherited from <base brand>. */`.
 
 If DS not-found, write a minimal `@theme` stub with Tailwind defaults + comment asking the builder to edit.
 
@@ -245,7 +245,7 @@ dist
 ````markdown
 # <slug>
 
-Scaffolded by /bb:brisar — <data>.
+Scaffolded by /bb:brisar, <data>.
 
 ## Stack
 
@@ -262,29 +262,29 @@ pnpm dev
 
 ## O que está aqui
 
-- `src/` — código React. Ainda vazio; surfaces vão preencher.
-- `design-context/` — fonte para a fase Develop do /bb:brisar. Não edite à mão a menos que saiba o que está fazendo.
-- `.brisar/config.yaml` — config do brisar. A fase Develop lê esse arquivo para saber onde estão os tokens e a direção visual.
+- `src/`: código React. Ainda vazio; surfaces vão preencher.
+- `design-context/`: fonte para a fase Develop do /bb:brisar. Não edite à mão a menos que saiba o que está fazendo.
+- `.brisar/config.yaml`: config do brisar. A fase Develop lê esse arquivo para saber onde estão os tokens e a direção visual.
 
 A direção visual de cada surface fica em `.bb/<slug>/`, junto do brief. Leia antes de desenhar.
 
 ## Próximos passos
 
-Rode `/bb:brisar` de novo nesta pasta — ele detecta o projeto e oferece a fase Develop, que lê `design-context/tokens.md` e `design-context/components.md`, mais a direção visual da surface, e te ajuda a construir cada surface.
+Rode `/bb:brisar` de novo nesta pasta. Ele detecta o projeto e oferece a fase Develop, que lê `design-context/tokens.md` e `design-context/components.md`, mais a direção visual da surface, e te ajuda a construir cada surface.
 
 Para shaping mais profundo: `/bb:discover`.
 Para spec formal: `/bb:spec`.
 
 ````
 
-## Step 4 — design-context/ (contract with the Develop phase)
+## Step 4: design-context/ (contract with the Develop phase)
 
 ### design-context/tokens.md
 
-Short synthesis extracted from `<DS_PATH>/<brand.design_md_path>`. Don't copy the entire file — extract the essential. Structure:
+Short synthesis extracted from `<DS_PATH>/<brand.design_md_path>`. Don't copy the entire file, extract the essential. Structure:
 
 ```markdown
-# Tokens — <brand>
+# Tokens: <brand>
 
 > Fonte: <DS_PATH>/<brand.design_md_path>
 > Sintetizado por /bb:brisar em <data>.
@@ -325,14 +325,14 @@ Short synthesis extracted from `<DS_PATH>/<brand.design_md_path>`. Don't copy th
 ````
 
 For Lexflow, adapt the tokens to the dark equivalents.
-For custom, copy from the base but add `> ⚠ Custom — ajuste valores conforme a identidade evolui.` at the top.
+For custom, copy from the base but add `> ⚠ Custom, ajuste valores conforme a identidade evolui.` at the top.
 
 ### design-context/components.md
 
-Synthesis of the "Components — In Scope" and "Components — Out of Scope" sections of the brand's DESIGN.md:
+Synthesis of the "Components: In Scope" and "Components: Out of Scope" sections of the brand's DESIGN.md:
 
 ```markdown
-# Components — <brand>
+# Components: <brand>
 
 > Fonte: <DS_PATH>/<brand.design_md_path>
 > Sintetizado por /bb:brisar em <data>.
@@ -345,7 +345,7 @@ Synthesis of the "Components — In Scope" and "Components — Out of Scope" sec
 - Feedback Banner (info, success, warning, critical)
 - (...lista da DESIGN.md...)
 
-## Out of scope (não tem ainda — sinalize gap se precisar)
+## Out of scope (não tem ainda: sinalize gap se precisar)
 
 - Data table
 - Combobox / Multi-select
@@ -358,7 +358,7 @@ Edite este arquivo adicionando `## Custom adicionado neste projeto` com o compon
 Quando rodar `/bb:brisar` em modo feedback (futuro), os adicionais viram seeds para o DS.
 ```
 
-## Step 5 — .brisar/config.yaml
+## Step 5: .brisar/config.yaml
 
 ```yaml
 version: 1
@@ -372,19 +372,19 @@ brand:
   source: "<brand.source>"
   design_md_path: "<brand.design_md_path absolute, or null>"
 
-# Path of design-context — THIS IS WHERE THE DEVELOP PHASE WILL LOOK.
+# Path of design-context: THIS IS WHERE THE DEVELOP PHASE WILL LOOK.
 design_context_path: "<slug>/design-context/"
 
-# Task folder (.bb/<slug>/) — Phase 4 fills it in when it writes the direction.
+# Task folder (.bb/<slug>/): Phase 4 fills it in when it writes the direction.
 design_path: null
 
-# Surface tracking — one entry per surface file generated in Phase 4.
+# Surface tracking: one entry per surface file generated in Phase 4.
 surfaces: []
 ```
 
-## Step 6 — Update .brisar/session.yaml
+## Step 6: update .brisar/session.yaml
 
-Move from `current_phase: phase-3` to `current_phase: phase-4` (which will generate design directions). Don't mark `completed` yet — only after Phase 4.
+Move from `current_phase: phase-3` to `current_phase: phase-4` (which will generate design directions). Don't mark `completed` yet, only after Phase 4.
 
 ## Stack variants
 
@@ -407,11 +407,11 @@ Don't create a new folder. Instead:
 
 Warning: embedded is riskier. Confirm with the builder before touching any file of the existing app.
 
-### Prototype-hosted (static HTML — executive persona)
+### Prototype-hosted (static HTML: executive persona)
 
 **When to run:** `profile.persona_id == executive` OR `artifact.fidelity == prototype-hosted`. Output is HTML + CSS without a build step. Builder opens the file directly in the browser (`file://` or drag-and-drop).
 
-**Why HTML, not Vite?** Executive doesn't have an npm/node/git environment. Vite requires `pnpm install && pnpm dev` running locally — friction that blocks the path. Static HTML opens in any browser, any machine, without dependencies. When the eng team picks it up, they can rewrite it in Vite/React by reading the `HANDOFF-DEV.md`.
+**Why HTML, not Vite?** Executive doesn't have an npm/node/git environment. Vite requires `pnpm install && pnpm dev` running locally: friction that blocks the path. Static HTML opens in any browser, any machine, without dependencies. When the eng team picks it up, they can rewrite it in Vite/React by reading the `HANDOFF-DEV.md`.
 
 **DON'T confuse with Framer.** Framer is the specific path for the institutional site (persona `content`). Static HTML is the path for the executive building a new internal tool.
 
@@ -425,7 +425,7 @@ Warning: embedded is riskier. Confirm with the builder before touching any file 
 ├── <surface-3>.html
 ├── styles.css                       ← brand tokens in :root + inline components
 ├── HANDOFF-DEV.md                   ← instructions for the technical team to continue
-├── README.md                        ← executive language — how to open, how to show
+├── README.md                        ← executive language. How to open, how to show
 └── .brisar/
     ├── config.yaml
     └── session.yaml
@@ -435,19 +435,19 @@ The written direction for each screen lands in `.bb/<slug>/` (Phase 4), same as 
 
 DO NOT create: `package.json`, `vite.config.ts`, `tsconfig.json`, `src/`, `node_modules/`.
 
-#### Step 1 — Confirm slug (same as normal variant)
+#### Step 1: confirm slug (same as normal variant)
 
 Same Step 1 as the standard scaffold. Confirms slug and where to create the folder.
 
-#### Step 2 — Create directories
+#### Step 2: create directories
 
 ```bash
 mkdir -p <slug>/.brisar
 ```
 
-#### Step 3 — HTML templates
+#### Step 3: HTML templates
 
-##### `<slug>/index.html` — landing
+##### `<slug>/index.html`: landing
 
 ```html
 <!doctype html>
@@ -455,21 +455,21 @@ mkdir -p <slug>/.brisar
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><slug> — Protótipo</title>
+    <title><slug>, Protótipo</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="landing">
       <header>
         <h1><slug></h1>
-        <p class="subtitle">Protótipo clicável — gerado por /bb:brisar em <data>.</p>
+        <p class="subtitle">Protótipo clicável, gerado por /bb:brisar em <data>.</p>
       </header>
 
       <section class="surfaces">
         <h2>Telas</h2>
         <ul>
-          <li><a href="<surface-1>.html"><surface-1 — descrição curta></a></li>
-          <li><a href="<surface-2>.html"><surface-2 — descrição curta></a></li>
+          <li><a href="<surface-1>.html"><surface-1, descrição curta></a></li>
+          <li><a href="<surface-2>.html"><surface-2, descrição curta></a></li>
           <!-- one <li> per surface -->
         </ul>
       </section>
@@ -483,7 +483,7 @@ mkdir -p <slug>/.brisar
 </html>
 ```
 
-##### `<slug>/<surface>.html` — one per surface (generated in Phase 4 + scaffold base here)
+##### `<slug>/<surface>.html`: one per surface (generated in Phase 4 + scaffold base here)
 
 Phase 3 creates empty stubs; Phase 4 populates with content from the visual direction. Stub:
 
@@ -493,13 +493,13 @@ Phase 3 creates empty stubs; Phase 4 populates with content from the visual dire
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><surface> — <slug></title>
+    <title><surface>, <slug></title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <nav class="back"><a href="index.html">← Voltar</a></nav>
     <main class="surface" id="<surface-id>">
-      <h1><surface — título></h1>
+      <h1><surface, título></h1>
       <!-- Phase 4 will populate this block with the visual direction of the surface -->
       <p class="placeholder">Conteúdo desta tela vai aqui (gerado em Phase 4 do /bb:brisar).</p>
     </main>
@@ -512,9 +512,9 @@ Phase 3 creates empty stubs; Phase 4 populates with content from the visual dire
 Brand tokens in `:root` (extracted from DESIGN.md, same as the standard scaffold extracts for Tailwind), BUT here they are pure CSS vars (no Tailwind):
 
 ```css
-/* Brand tokens — copied from <design_md_path> on <date> */
+/* Brand tokens, copied from <design_md_path> on <date> */
 :root {
-  /* Extract from the "Quick Start — Tailwind v4" block of DESIGN.md, mapping @theme → :root */
+  /* Extract from the "Quick Start: Tailwind v4" block of DESIGN.md, mapping @theme → :root */
   --color-bg-primary: <value>;
   --color-bg-secondary: <value>;
   --color-text-primary: <value>;
@@ -614,14 +614,14 @@ a {
 }
 ```
 
-##### `<slug>/HANDOFF-DEV.md` — delivery for the technical team
+##### `<slug>/HANDOFF-DEV.md`: delivery for the technical team
 
 ```markdown
-# HANDOFF — <slug>
+# HANDOFF: <slug>
 
 **Status:** protótipo HTML estático. Foi gerado por `/bb:brisar` em <data> pra <pessoa> (perfil executive) validar a ideia com stakeholders.
 
-**Esta pasta NÃO é o produto.** É um clicável pra mostrar a direção. Pegue o conceito, NÃO o código — re-escreva no stack apropriado.
+**Esta pasta NÃO é o produto.** É um clicável pra mostrar a direção. Pegue o conceito, NÃO o código, re-escreva no stack apropriado.
 
 ---
 
@@ -632,7 +632,7 @@ a {
 - **Problema que resolve:** <intent.problem_statement>
 - **Marca:** <brand.name> (tokens em [styles.css](styles.css))
 - **Apetite original:** <shaping.appetite>
-- **Continua como produto?:** <intent.scale_signal == will-scale ? "sim — virar produto de verdade" : "não — só validação">
+- **Continua como produto?:** <intent.scale_signal == will-scale ? "sim, virar produto de verdade" : "não, só validação">
 
 ## Telas / surfaces
 
@@ -641,7 +641,7 @@ a {
 | <surface-1> | [<surface-1>.html](<surface-1>.html) | `../.bb/<slug>/design/<surface-1>.md` |
 | <surface-2> | [<surface-2>.html](<surface-2>.html) | `../.bb/<slug>/design/<surface-2>.md` |
 
-A direção visual de cada tela mora em `.bb/<slug>/`, junto do brief — leia ANTES do HTML. O HTML é mockado; o brief tem a intenção.
+A direção visual de cada tela mora em `.bb/<slug>/`, junto do brief. Leia ANTES do HTML. O HTML é mockado; o brief tem a intenção.
 
 ## Stack recomendada pra produção
 
@@ -651,7 +651,7 @@ Esta ferramenta é candidata a virar app interno. Stack alinhada com o resto da 
 - **Estilo:** Tailwind v4 com tokens da marca <brand>
 - **Design system:** Brisa DS (tokens em `BRISA DS V0/brand/<brand>/DESIGN.md`)
 - **Para iniciar a versão real:**
-  1. Rode `/bb:brisar` na pasta-raiz da Inspira (não nesta pasta — esta é só protótipo).
+  1. Rode `/bb:brisar` na pasta-raiz da Inspira (não nesta pasta. Esta é só protótipo).
   2. Quando perguntar perfil, marque "Sei mexer em código".
   3. Quando perguntar produto/marca: marque <brand>.
   4. /bb:brisar scaffolda Vite. Use a direção visual em `.bb/<slug>/` como input pra fase Develop no projeto novo.
@@ -659,17 +659,17 @@ Esta ferramenta é candidata a virar app interno. Stack alinhada com o resto da 
 ## O que NÃO fazer
 
 - Não copie HTML/CSS direto. Re-escreva como componentes React tipados, usando o DS.
-- Não use as cores hardcoded em `styles.css` — use os tokens semânticos do Tailwind v4 do scaffold real.
-- Não precise pedir aprovação a cada tela — a direção visual já tá em `.bb/<slug>/`.
+- Não use as cores hardcoded em `styles.css`. Use os tokens semânticos do Tailwind v4 do scaffold real.
+- Não precise pedir aprovação a cada tela. A direção visual já tá em `.bb/<slug>/`.
 
 ## Quem fez o protótipo
 
-<pessoa> (executive). Use <pessoa> como stakeholder de validação — não como cliente final do código.
+<pessoa> (executive). Use <pessoa> como stakeholder de validação. Não como cliente final do código.
 ```
 
-Fill the "Direção visual" column from what Phase 4 recorded (`design_path` + `surfaces[].file`), one row per surface — with a single surface that path is `../.bb/<slug>/design.md`.
+Fill the "Direção visual" column from what Phase 4 recorded (`design_path` + `surfaces[].file`), one row per surface, with a single surface that path is `../.bb/<slug>/design.md`.
 
-##### `<slug>/README.md` — executive language
+##### `<slug>/README.md`: executive language
 
 ```markdown
 # <slug>
@@ -680,16 +680,16 @@ Protótipo clicável da sua ideia. Gerado por /bb:brisar em <data>.
 
 1. Abra a pasta `<slug>/` no Finder.
 2. Dê dois cliques em `index.html`.
-3. Vai abrir no seu navegador (Chrome/Safari/Edge — qualquer um).
+3. Vai abrir no seu navegador (Chrome/Safari/Edge, qualquer um).
 4. Os links levam pra cada tela do protótipo.
 
 Não precisa instalar nada. Funciona offline.
 
 ## Como mostrar pro time
 
-Opção 1 — Compartilhar a pasta inteira: zipe `<slug>/` e mande. Cada pessoa abre o `index.html`.
+Opção 1. Compartilhar a pasta inteira: zipe `<slug>/` e mande. Cada pessoa abre o `index.html`.
 
-Opção 2 — Hospedar pra link: jogue a pasta no Vercel/Netlify (ou peça pro time de eng). Aí vira um link normal.
+Opção 2. Hospedar pra link: jogue a pasta no Vercel/Netlify (ou peça pro time de eng). Aí vira um link normal.
 
 ## E o produto de verdade?
 
@@ -697,15 +697,15 @@ Esse protótipo é pra validar a ideia. **Não é o produto final.** O time téc
 
 ## O que tem em cada pasta
 
-- `index.html` — tela inicial (lista todas as telas)
-- `<surface>.html` — uma por tela do protótipo
-- `styles.css` — visual (cores, fontes, espaçamentos da marca <brand>)
-- `HANDOFF-DEV.md` — pacote pro time técnico (não precisa abrir, mas se for passar adiante, manda esse arquivo)
+- `index.html`: tela inicial (lista todas as telas)
+- `<surface>.html`: uma por tela do protótipo
+- `styles.css`: visual (cores, fontes, espaçamentos da marca <brand>)
+- `HANDOFF-DEV.md`: pacote pro time técnico (não precisa abrir, mas se for passar adiante, manda esse arquivo)
 
 O brief de cada tela (texto explicando o que ela faz) fica em `.bb/<slug>/`, uma pasta acima.
 ```
 
-#### Step 4 — `.brisar/config.yaml` (variant)
+#### Step 4: `.brisar/config.yaml` (variant)
 
 ```yaml
 version: 1
@@ -720,21 +720,21 @@ brand:
   source: "<brand.source>"
   design_md_path: "<absolute path, or null>"
 
-# The Develop phase is NOT used on this path — no canonical design_context_path needed.
+# The Develop phase is NOT used on this path: no canonical design_context_path needed.
 # But we keep it for compatibility in case the builder regenerates later in Vite mode.
 design_context_path: null
 
-# Task folder — filled by Phase 4, same as the standard variant.
+# Task folder: filled by Phase 4, same as the standard variant.
 design_path: null
 
 surfaces:
   - name: <surface-1>
-    file: null # filled by Phase 4 — it decides design.md vs design/<name>.md
+    file: null # filled by Phase 4. It decides design.md vs design/<name>.md
     html: <surface-1>.html # relative to the prototype folder
     state: drafted
 ```
 
-#### Step 5 — Update session.yaml
+#### Step 5: update session.yaml
 
 Add:
 
@@ -756,7 +756,7 @@ profile:
 - `package.json`, `vite.config.ts`, `tsconfig.json`
 - `src/` or React structure
 - Tailwind (use pure CSS vars)
-- The Develop phase (no React code to orchestrate — design goes straight to HTML in Phase 4)
+- The Develop phase (no React code to orchestrate. Design goes straight to HTML in Phase 4)
 
 #### Phase 4 in this variant
 
@@ -764,7 +764,7 @@ Phase 4 populates the `<surface>.html` stubs with HTML markup aligned to the sur
 
 #### Phase 5 in this variant
 
-Terminal handoff varies: does NOT suggest `pnpm dev` — suggests opening `index.html`. Does NOT offer the Develop phase. See `phase-5-handoff.md` prototype-hosted variant.
+Terminal handoff varies: does NOT suggest `pnpm dev`. Suggests opening `index.html`. Does NOT offer the Develop phase. See `phase-5-handoff.md` prototype-hosted variant.
 
 ## How to surface errors
 
@@ -774,4 +774,4 @@ If `mkdir`, `Write`, or any operation fails:
 2. Print the exact error and the problematic path to the user.
 3. Ask if they want to (a) try another path, (b) archive the session and abort, (c) resume manually from the current state.
 
-Don't simulate success. Don't try to "fix" silently paths with `:` or other special characters — surface the problem.
+Don't simulate success. Don't try to "fix" silently paths with `:` or other special characters, surface the problem.

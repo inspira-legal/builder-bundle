@@ -1,14 +1,14 @@
-# Phase 5 — Handoff + gate
+# Phase 5: handoff + gate
 
-After Phase 4 writes the visual direction of each surface into `.bb/<slug>/`, the journey-map part of brisar is done. This phase prints the handoff summary (persona-shaped) and ends with the **handoff gate** — a single `AskUserQuestion` offering the natural next steps. The gate suggests, never auto-invokes (per `plugins/bb/references/handoff-gate.md`).
+After Phase 4 writes the visual direction of each surface into `.bb/<slug>/`, the journey-map part of brisar is done. This phase prints the handoff summary (persona-shaped) and ends with the **handoff gate**. A single `AskUserQuestion` offering the natural next steps. The gate suggests, never auto-invokes (per `plugins/bb/references/handoff-gate.md`).
 
 **Read the medium before writing the summary.** Everything below that names `design-context/`,
 `.brisar/config.yaml` or the scaffolded project folder assumes medium `código`. On a canvas or
-`claude-design` medium Phase 3 was skipped (`medium.scaffold: skipped`) and none of those exist —
+`claude-design` medium Phase 3 was skipped (`medium.scaffold: skipped`) and none of those exist:
 report the design brief and the canvas artifact instead. Telling the builder to open a folder that
 was never created is the kind of error that reads as the tool being confused about its own state.
 
-## Output shape (default — senior/standard)
+## Output shape (default: senior/standard)
 
 Plain text, in pt-BR. Structure:
 
@@ -36,7 +36,7 @@ Para rodar:
   pnpm dev
 ```
 
-With a single surface, that last block is one line — `.bb/<slug>/design.md`.
+With a single surface, that last block is one line, `.bb/<slug>/design.md`.
 
 Then the gate:
 
@@ -67,14 +67,14 @@ Then the gate:
 ```
 
 - **Develop:** load `references/phase-develop.md` and continue in this same session. Update `current_phase: develop`.
-- **/bb:discover:** suggest the command (`/bb:discover <ideia em 1 frase>`) and STOP — never invoke it.
+- **/bb:discover:** suggest the command (`/bb:discover <ideia em 1 frase>`) and STOP, never invoke it.
 - **Stop:** print one line saying the re-entry works (`/bb:brisar` in this folder resumes) and end.
 
 ## Conditional variants
 
 ### If persona = executive (path prototype-hosted)
 
-**Replaces the whole default terminal** — executive doesn't run `pnpm dev` and the Develop phase doesn't apply (design goes straight to HTML in Phase 4).
+**Replaces the whole default terminal**: executive doesn't run `pnpm dev` and the Develop phase doesn't apply (design goes straight to HTML in Phase 4).
 
 ```
 ✓ /bb:brisar terminou. Protótipo HTML criado em ./<slug>/
@@ -99,7 +99,7 @@ Não precisa instalar nada. Funciona offline.
 
 Como mostrar pro time:
   - Compartilhe a pasta zipada (cada pessoa abre o index.html)
-  - Ou peça pro time de eng hospedar (Vercel/Netlify) — vira um link
+  - Ou peça pro time de eng hospedar (Vercel/Netlify). Vira um link
 
 Pra virar produto de verdade:
   Passe a pasta + HANDOFF-DEV.md pro time técnico. Eles re-escrevem
@@ -111,11 +111,11 @@ If the builder marked `intent.scale_signal == will-scale`, add at the end:
 
 ```
 ⚠ Você marcou que esse protótipo VAI virar produto. Antes do time técnico
-pegar, considere rodar /bb:discover — deixa problema, hipótese e métrica
+pegar, considere rodar /bb:discover, deixa problema, hipótese e métrica
 claros, e economiza retrabalho depois.
 ```
 
-No Develop gate here — end with a simple report. Mention `/bb:discover` as the optional next step (as above) and stop.
+No Develop gate here. End with a simple report. Mention `/bb:discover` as the optional next step (as above) and stop.
 
 ### If persona = junior (explicit narration)
 
@@ -133,16 +133,16 @@ Same default terminal, but with narration before the gate:
 
 3. Rode o servidor de desenvolvimento:
        pnpm dev
-   Vai aparecer um link tipo http://localhost:5173 — abra no navegador.
+   Vai aparecer um link tipo http://localhost:5173, abra no navegador.
 
-Se algo der errado em qualquer passo, me avise — eu ajudo a debugar.
+Se algo der errado em qualquer passo, me avise. Eu ajudo a debugar.
 ```
 
 Then the same gate as the default variant (Develop / /bb:discover / stop). In the Develop option description, add that each step will be narrated.
 
 ### If path Framer (`brand.workflow == framer-harpa`)
 
-**Replaces the whole default terminal** — the builder doesn't have a `<slug>/` to cd into. The path is to open Claude Code inside `harpa-lpbuilder/`. See `phase-framer-handoff.md` for the terminal it prints. No Develop gate — the Develop phase is not used on the Framer path.
+**Replaces the whole default terminal**: the builder doesn't have a `<slug>/` to cd into. The path is to open Claude Code inside `harpa-lpbuilder/`. See `phase-framer-handoff.md` for the terminal it prints. No Develop gate. The Develop phase is not used on the Framer path.
 
 ### If Phase 2 fired and the builder chose override
 
@@ -151,7 +151,7 @@ Add before the gate:
 ```
 ⚠ Heads up: você marcou "<scale_signal>" mas pulou o gate de maturidade.
 Override registrado em .brisar/session.yaml com a razão "<override_reason>".
-Se em algum momento sentir que faltou fundamentação, rode /bb:discover —
+Se em algum momento sentir que faltou fundamentação, rode /bb:discover,
 é onde isso resolve.
 ```
 
@@ -181,7 +181,7 @@ Add:
 ```
 ⚠ Design system não foi encontrado neste ambiente. Tokens do scaffold são
 Tailwind defaults com placeholders. Aponte BRISAR_DS_PATH ou configure
-ds_path em .brisar/config.yaml — o bundle também traz uma cópia em
+ds_path em .brisar/config.yaml. O bundle também traz uma cópia em
 references/ds/ dentro da própria skill.
 ```
 
@@ -195,14 +195,14 @@ Add:
   - ...
 
 Esses ficaram registrados em .brisar/session.yaml como ds_feedback_seeds.
-Revise/promova quando quiser — são candidatos a componentes novos do DS.
+Revise/promova quando quiser. São candidatos a componentes novos do DS.
 ```
 
 ## Critical behavior
 
 - **Do not execute `cd`, `pnpm install`, or the dev server.** The user runs them. Auto-execution violates the builder's expectation and creates side effects without confirmation.
 - **Surface errors explicitly.** If any file from Phase 3/4 failed to be written, mention it instead of simulating success.
-- **Always include the path on the first line** (`./<slug>/` is relative — good; `<slug>` alone is ambiguous). The builder may be following logs; ambiguity here costs time.
+- **Always include the path on the first line** (`./<slug>/` is relative. Good; `<slug>` alone is ambiguous). The builder may be following logs; ambiguity here costs time.
 
 ## When to run /bb:brisar again in the same project
 

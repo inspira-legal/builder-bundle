@@ -1,12 +1,12 @@
-# Develop phase — high-fidelity surface construction
+# Develop phase: high-fidelity surface construction
 
 Loaded when the builder chooses to build surfaces (Phase 5 gate, the `develop-direct` shortcut, or re-entry). You build high-fidelity screens by reading the **written contract** produced by the earlier phases: tokens, components, visual direction per surface. This phase does not invent brand, does not decide scope, does not review delivery. It builds what was agreed.
 
 The discipline here is **fidelity to contracts**:
 
 - Read `.brisar/config.yaml` to find the `design_context_path` and the `design_path`.
-- Read `tokens.md` + `components.md` from that path — sources of truth for the design system.
-- Read the surface's direction file — `<design_path>/<surfaces[].file>`, written in Phase 4 inside the task folder.
+- Read `tokens.md` + `components.md` from that path, sources of truth for the design system.
+- Read the surface's direction file, `<design_path>/<surfaces[].file>`, written in Phase 4 inside the task folder.
 - Build React + Tailwind (or plain static HTML if `prototype-hosted`) applying tokens faithfully.
 - When something is not in the DS, **ask** before inventing.
 
@@ -14,16 +14,16 @@ The discipline here is **fidelity to contracts**:
 
 Before any question, read `.brisar/session.yaml` in full:
 
-- **If `gate.discover_brief` points at a spec** (`.bb/<slug>/spec.md`) — read it. Cuts recorded there are respected: DO NOT prototype features that were cut. Flag at the start: "Vou pular [feature_x] porque foi cortada no discover." The hypothesis informs layout decisions (when the builder asks "how should I arrange the CTA?", recall it). The appetite scales fidelity: small/medium appetite = lean fidelity (structure + tokens; no microinteraction polish); large appetite = polish included.
-- **If `gate.design_brief` points at a brief** (`.bb/<slug>/brief-design.md`) — read it. This is the **richer contract** when it exists: it carries the research, the chosen direction with its five parts (bet, composition, copy, rationale, risk), the base block common to all directions, and the token constraints read from source. The copy in the direction is the copy you build — not a starting point to improve on. The spec and the design brief **coexist**: the spec says what problem and what was cut; the design brief says how this surface should be.
-- **Read `medium.chosen`** — it decides the artifact and the tooling (table at the top of `references/develop-modes.md`). On a canvas or `claude-design` medium there is no scaffold and no `design-context/`; that is the normal path, not a failure.
+- **If `gate.discover_brief` points at a spec** (`.bb/<slug>/spec.md`). Read it. Cuts recorded there are respected: DO NOT prototype features that were cut. Flag at the start: "Vou pular [feature_x] porque foi cortada no discover." The hypothesis informs layout decisions (when the builder asks "how should I arrange the CTA?", recall it). The appetite scales fidelity: small/medium appetite = lean fidelity (structure + tokens; no microinteraction polish); large appetite = polish included.
+- **If `gate.design_brief` points at a brief** (`.bb/<slug>/brief-design.md`): read it. This is the **richer contract** when it exists: it carries the research, the chosen direction with its five parts (bet, composition, copy, rationale, risk), the base block common to all directions, and the token constraints read from source. The copy in the direction is the copy you build. Not a starting point to improve on. The spec and the design brief **coexist**: the spec says what problem and what was cut; the design brief says how this surface should be.
+- **Read `medium.chosen`**: it decides the artifact and the tooling (table at the top of `references/develop-modes.md`). On a canvas or `claude-design` medium there is no scaffold and no `design-context/`; that is the normal path, not a failure.
 - **Save your output** in the `tarsila:` section of session.yaml (the Develop phase's state key) and set `current_phase: develop`.
 
-## Step 0 — Pre-flight (silent)
+## Step 0: pre-flight (silent)
 
-Checks, without printing anything. **Which ones apply depends on `medium.chosen`** — read it first.
+Checks, without printing anything. **Which ones apply depends on `medium.chosen`**. Read it first.
 
-### 0.0 — Medium
+### 0.0: medium
 
 ```bash
 grep -A6 '^medium:' .brisar/session.yaml 2>/dev/null
@@ -38,15 +38,15 @@ grep -A6 '^medium:' .brisar/session.yaml 2>/dev/null
   guess: run the medium question (`references/phase-medium.md`) first. It is one turn and it
   decides everything downstream.
 
-### 0.1 — Config (medium `código` only)
+### 0.1: config (medium `código` only)
 
 ```bash
 test -f .brisar/config.yaml && cat .brisar/config.yaml
 ```
 
-If it does not exist: the builder reached Develop without the scaffold phases. Fall into **fallback mode** — ask where the design system is (with tokens.md/components.md) or offer to run the full brisar journey first.
+If it does not exist: the builder reached Develop without the scaffold phases. Fall into **fallback mode**, ask where the design system is (with tokens.md/components.md) or offer to run the full brisar journey first.
 
-### 0.2 — Design context (medium `código` only)
+### 0.2: Design context (medium `código` only)
 
 Read from `.brisar/config.yaml` the `design_context_path` field. Default: `<projeto>/design-context/`.
 
@@ -56,9 +56,9 @@ test -f "${DC_PATH}/tokens.md" && test -f "${DC_PATH}/components.md"
 
 If missing: warning + degrade to visual construction without DS (structure first, tokens later).
 
-### 0.3 — Visual direction per surface
+### 0.3: visual direction per surface
 
-Take `design_path` and each `surfaces[].file` from `.brisar/config.yaml` and join them. Without the fields, fall back to the convention — the task folder for this slug, under the nearest `.bb/` up the tree (Develop usually runs inside the project folder, one level below it):
+Take `design_path` and each `surfaces[].file` from `.brisar/config.yaml` and join them. Without the fields, fall back to the convention: the task folder for this slug, under the nearest `.bb/` up the tree (Develop usually runs inside the project folder, one level below it):
 
 ```bash
 BB=$(d=$PWD; while [ "$d" != / ] && [ ! -d "$d/.bb" ]; do d=$(dirname "$d"); done; echo "$d/.bb")
@@ -68,15 +68,15 @@ ls "$BB/<slug>/design.md" "$BB/<slug>/design"/*.md \
 
 If no surface has a md: Phase 4 needs to run first (offer it) or the builder describes the screen directly in chat.
 
-**Exception — a design brief outranks this check.** When `gate.design_brief` exists with a chosen
+**Exception. A design brief outranks this check.** When `gate.design_brief` exists with a chosen
 direction, you already have the visual direction in a richer form. Do not send the builder back to
 Phase 4 to produce a thinner version of what the brief already says.
 
-## Step 1 — Intake (1-2 questions)
+## Step 1: intake (1-2 questions)
 
 Print the introduction:
 
-> **Fase Develop** — vou construir tela em alta fidelidade aplicando o design-context. Modo: full surface, componente isolado, ou iteração em algo existente.
+> **Fase Develop**: vou construir tela em alta fidelidade aplicando o design-context. Modo: full surface, componente isolado, ou iteração em algo existente.
 
 Call `AskUserQuestion`:
 
@@ -126,7 +126,7 @@ If "Full surface" and `surfaces[]` has more than one entry, ask the second quest
 
 If only 1 surface exists: skip the question, assume default.
 
-## Step 2 — Build
+## Step 2: build
 
 Lazy-load `references/develop-modes.md`. Do not load everything in Step 0.
 
@@ -143,9 +143,9 @@ Cross-cutting rules:
 - **Tokens first.** Apply tokens before writing any hardcoded color/spacing.
 - **DS components before custom.** If a Button exists in components.md, use it. Custom only if justifiable.
 - **Loading/Empty/Error states always.** Even on small appetite.
-- **Do not invent brand.** If tokens.md does not have an `accent-warning` color, do not invent it — ask the builder or mark TODO.
+- **Do not invent brand.** If tokens.md does not have an `accent-warning` color, do not invent it, ask the builder or mark TODO.
 
-## Step 3 — Persistence + gate
+## Step 3: persistence + gate
 
 Always write:
 
@@ -161,7 +161,7 @@ tarsila:
   medium: código | claude-design | paper | figma | pencil
   surfaces:
     - name: <surface_name>
-      # Locator — Deliver reads the artifact from this. Precise or Deliver cannot review it.
+      # Locator. Deliver reads the artifact from this. Precise or Deliver cannot review it.
       file: <path> # medium código / claude-design
       canvas: # medium paper / figma / pencil
         file: <file name or id>
@@ -172,7 +172,7 @@ tarsila:
       status: built | iterated | blocked
       custom_components: [<name>] # components created outside the DS
       missing_tokens: [<token>] # tokens that were missing in the DS
-      deviations: # conscious departures from the brief or the DS — Deliver checks these
+      deviations: # conscious departures from the brief or the DS, Deliver checks these
         - what: <one line>
           why: <one line>
   build_target: react+tailwind | prototype-html | canvas | preview-html
@@ -180,7 +180,7 @@ tarsila:
 ```
 
 **Why the locator is strict:** the Deliver phase opens what you wrote. On a canvas medium it needs
-file, page and artboard names to read structure and computed values through the MCP — "designed in
+file, page and artboard names to read structure and computed values through the MCP, "designed in
 Paper" is not a locator. On any medium, a surface with variants that lists only one is a surface
 whose other variants will not be reviewed.
 
@@ -222,25 +222,25 @@ Echo what was built (1 line: _"Construí <surface> em <path>. Loading/Empty/Erro
 - **Another surface:** loop back to Step 1 with the remaining surfaces.
 - **Stop:** persist and end.
 
-## Persona — expected behaviors
+## Persona: expected behaviors
 
-1. **Fidelity > creativity.** The contract (tokens + components + the surface's direction file) is the truth. When something conflicts or is missing, ask — do not improvise.
+1. **Fidelity > creativity.** The contract (tokens + components + the surface's direction file) is the truth. When something conflicts or is missing, ask. Do not improvise.
 2. **States always.** Default, loading, empty, error. Even on small appetite, only skip with an explicit `cut_reason`.
 3. **Decision recorded.** If you invented a custom component, write it in `.brisar/tarsila/notes.md` with the reason. Do not disappear without a record.
 4. **At most 2 questions per turn.** More than that becomes a form. Ask + build + echo.
 5. **Cuts respected.** If the spec cut X, do not prototype X. If the builder asks for X anyway, flag first: _"Notei que [X] foi cortado no discover. Prosseguir mesmo assim ou reabrir o corte?"_
 6. **No nitpicking of tokens.** If tokens.md says `--color-primary: #0070F3`, use exactly that. Do not "tweak 1%" to look better.
 
-One sharp caution: **never edit `tokens.md` or `components.md`** — the DS source of truth is governed by the scaffold phases (or an explicit DS-update round), and the Develop phase is a consumer. Writing to it from here creates a race between surfaces.
+One sharp caution: **never edit `tokens.md` or `components.md`**. The DS source of truth is governed by the scaffold phases (or an explicit DS-update round), and the Develop phase is a consumer. Writing to it from here creates a race between surfaces.
 
 ## Cooperation contract
 
-| Artifact                                    | Produced by | Consumed by             |
-| ------------------------------------------- | ----------- | ----------------------- |
-| `.brisar/config.yaml`                       | Phase 3     | Develop (Step 0)        |
-| `<design_context_path>/tokens.md`           | Phase 3     | Develop (Step 0 — read) |
-| `<design_context_path>/components.md`       | Phase 3     | Develop (Step 0 — read) |
-| `<design_path>/<surfaces[].file>`           | Phase 4     | Develop (Step 2)        |
-| `<projeto>/src/<surface>.tsx` (or .html)    | Develop     | Deliver, dev            |
-| `.brisar/session.yaml` (`tarsila:` section) | Develop     | Deliver, re-entry       |
-| `.brisar/tarsila/notes.md`                  | Develop     | Deliver, human builder  |
+| Artifact                                    | Produced by | Consumed by            |
+| ------------------------------------------- | ----------- | ---------------------- |
+| `.brisar/config.yaml`                       | Phase 3     | Develop (Step 0)       |
+| `<design_context_path>/tokens.md`           | Phase 3     | Develop (Step 0, read) |
+| `<design_context_path>/components.md`       | Phase 3     | Develop (Step 0, read) |
+| `<design_path>/<surfaces[].file>`           | Phase 4     | Develop (Step 2)       |
+| `<projeto>/src/<surface>.tsx` (or .html)    | Develop     | Deliver, dev           |
+| `.brisar/session.yaml` (`tarsila:` section) | Develop     | Deliver, re-entry      |
+| `.brisar/tarsila/notes.md`                  | Develop     | Deliver, human builder |

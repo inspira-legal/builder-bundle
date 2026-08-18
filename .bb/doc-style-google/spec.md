@@ -145,7 +145,7 @@ Caminho principal:
 - [x] **3. Triagem dos headings**: os 37 em title case declarado fora de `ds/`, mais os
       candidatos onde a caixa depende de nome próprio ou de template → behaviors 2, 11 ·
       depende: 1 · verifica: leitura
-- [ ] **4. Travessão no `brisar`**: 784 em 18 arquivos, com `ds/` fora
+- [x] **4. Travessão no `brisar`**: 784 em 18 arquivos, com `ds/` fora
       → behaviors 7, 12, 16 · depende: 1 · verifica: grep zerado
 - [ ] **5. Travessão no `review` e no `review-setup`**: 331 em 21 arquivos, incluindo os
       templates de relatório e o `guide-template.md`
