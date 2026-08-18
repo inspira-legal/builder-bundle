@@ -37,7 +37,7 @@ Don't ask reflexively. If the landing is already settled by signal, **take it an
 - **Abrir / finalizar PR** — full flow: create the PR if none exists, auto-handle review comments (reply / fix / push / resolve), watch CI until green, then stay watching it until you stop.
 - **Push pra feature branch** — commit and push to a non-protected branch (the current one, or a new name you give). No PR. Reversible, so ship runs it.
 - **Push pra main (ou outra branch protegida)** — ship greens the checks and commits, then **hands you the exact push command** and stops. Protected-branch landing stays your call (and branch protection typically enforces it server-side); ship never runs it.
-- **Deploy no LexFlow** — only offered when `project_kind: lexflow`. Reviews the workflows, commits, pushes the app repo (which changes no deploy state), then **hands you `lexflow deploy --ref <sha>`** for the reviewed commit. Ship never deploys.
+- **Deploy no LexFlow** — only offered when `project_kind: lexflow`. Validates the manifest and the workflows' opcodes, commits, pushes the app repo (which changes no deploy state), then **hands you `lexflow deploy --ref <sha>`** for the landed commit. Ship never deploys.
 
 The destinations are **exclusive** — one landing per run. Someone who wants a PR _and_ a LexFlow deploy runs ship twice.
 
@@ -70,9 +70,8 @@ clean commit.
    blocker: it gets fixed or it stops the landing. Where the failing code has **no
    test covering it**, keep the edit trivial and obvious or leave it and report it —
    reworking untested logic to green a check trades a red build for a silent one.
-   When a failure
-   turns on a **stack choice** the diff introduced (a new dependency, tool or
-   framework), consult the manifesto (plugin-level `references/consult-manifesto.md`)
+   When a failure turns on a **stack choice** the diff introduced (a new dependency,
+   tool or framework), consult the manifesto (plugin-level `references/consult-manifesto.md`)
    before calling it wrong. A check still red after **3 focused attempts** stops the
    landing — report what's failing, with the output, and let the user call it.
 
@@ -98,7 +97,8 @@ Load the reference for the destination Step 1 settled, and follow it:
 Landing ends ship, not the flow. Per the plugin-root `references/handoff-gate.md`,
 one PT-BR question with two options:
 
-- **"Revisar agora"** — invoke `/bb:review` over what just landed. It probes the
+- **"Revisar agora"** — invoke `/bb:review` over what ship just produced (the
+  commits, whether they were pushed or are waiting on the command ship handed you). It probes the
   fronts, asks which to run, and applies what you pick; on the PR path its fixes are
   follow-up commits on the same branch, pushed like any other. Lead with this one
   (`(Recomendado)`) whenever the landing carried code.
