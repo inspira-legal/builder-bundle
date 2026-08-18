@@ -1,10 +1,10 @@
 ---
 name: legal-lens
-description: Passa uma lente jurídica sobre qualquer artefato — ideia, feature, fluxo ou documento — pra levantar implicações legais e regulatórias, gaps de compliance, risco e o que um advogado exigiria antes do lançamento. Default direito brasileiro (LGPD, CDC, Marco Civil…), sobrescrevível pra qualquer jurisdição. Grounded — cita a norma quando conhece, sinaliza incerteza em vez de inventar lei, e faz triagem pra revisão jurídica humana em vez de dar parecer. Reporta só o significativo, cada issue com mitigação; anexa `## Jurídico` à spec quando roda sobre uma. Use quando o usuário disser "revisão jurídica", "isso é legal?", "implicações legais", "checa compliance", "LGPD", "risco regulatório", ou "o que um advogado objetaria". NÃO use como substituto de um advogado qualificado.
+description: Passa uma lente jurídica sobre qualquer artefato — ideia, feature, fluxo ou documento — pra levantar implicações legais e regulatórias, gaps de compliance, risco e o que um advogado exigiria antes do lançamento. Default direito brasileiro (LGPD, CDC, Marco Civil…), sobrescrevível pra qualquer jurisdição. Sinaliza incerteza em vez de inventar lei e faz triagem pra revisão jurídica humana em vez de dar parecer. Use quando o usuário disser "revisão jurídica", "isso é legal?", "implicações legais", "checa compliance", "LGPD", "risco regulatório", ou "o que um advogado objetaria". NÃO use como substituto de um advogado qualificado.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 # Legal lens

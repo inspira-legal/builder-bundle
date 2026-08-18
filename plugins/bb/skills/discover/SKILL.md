@@ -1,10 +1,10 @@
 ---
 name: discover
-description: Roda o primeiro diamante inteiro antes de qualquer design — enquadra o problema (problema, quem sente, hipótese, sinal de sucesso, apetite) e pressure-testa o encaixe (vale construir?, o que cortar, em que ordem, qual aposta testável). Draft-first, entrevista via question tool, nunca formulário. Escreve `## Problema`/`## Hipótese`/`## Encaixe`/`## Cortes` na spec que o /bb:spec lê como intenção. Use quando o usuário disser "qual problema estamos resolvendo", "enquadra o problema", "vale a pena construir", "valida o mercado", "o que cortar pra caber", "prioriza essas features", "roda o trio", "shapeia essa ideia", "pivot ou persevere", ou chegar com uma dor difusa em vez de uma feature pronta. NÃO use pra desenhar a solução (use /bb:spec), pra estressar uma tese já formada (use /bb:challenge), nem pra uma mudança mecânica pequena.
+description: Roda o primeiro diamante inteiro antes de qualquer design — enquadra o problema (problema, quem sente, hipótese, sinal de sucesso, apetite) e pressure-testa o encaixe (vale construir?, o que cortar, em que ordem, qual aposta testável). Escreve o enquadramento na spec que o /bb:spec lê como intenção. Use quando o usuário disser "qual problema estamos resolvendo", "enquadra o problema", "vale a pena construir", "valida o mercado", "o que cortar pra caber", "prioriza essas features", "roda o trio", "shapeia essa ideia", "pivot ou persevere", ou chegar com uma dor difusa em vez de uma feature pronta. NÃO use pra desenhar a solução (use /bb:spec), pra estressar uma tese já formada (use /bb:challenge), nem pra uma mudança mecânica pequena.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 # Discover
