@@ -15,18 +15,18 @@ report and nothing is sent.
 - **Location inside the diff** → one review comment per item, anchored to the line:
   `gh api repos/<owner>/<repo>/pulls/<n>/comments` with `path`, `line` and
   `commit_id` (the head sha).
-- **Location outside the diff** — a correctness finding in an untouched line of a
+- **Location outside the diff**: a correctness finding in an untouched line of a
   function the diff moved (`front-correctness.md` puts that in scope), a whole-file
-  rule deviation, a candidate that grouped by `file` with no line — has no anchor and
-  the API rejects it. Those go into the summary comment with `file:line` written into
+  rule deviation, a candidate that grouped by `file` with no line. None of those
+  has an anchor, so the API rejects it. Those go into the summary comment with `file:line` written into
   the text, and the re-report says which items landed as summary instead of inline.
 - Items that are about the change as a whole (a contract gap, the rules checklist)
   are summary comments by nature: `gh pr comment <n> --body-file -`.
 
 ## 3. On a PR that already carries a review comment
 
-Before posting, read what's already there — `gh pr view <n> --json comments` plus
-`gh api repos/<owner>/<repo>/pulls/<n>/comments` — and match this round's items
+Before posting, read what's already there (`gh pr view <n> --json comments` plus
+`gh api repos/<owner>/<repo>/pulls/<n>/comments`), and match this round's items
 against the findings already raised (by `file:line` + what the point is, not by
 wording). Each point then lands exactly once:
 
@@ -42,8 +42,8 @@ thread reads as a history.
 
 ## 4. Keep the shape the report gave it
 
-Each item carries over what it had — rule ID and quoted rule, WCAG criterion,
-trigger, suggested fix, **and its verdict** — so the comment stands on its own for
+Each item carries over what it had: rule ID and quoted rule, WCAG criterion,
+trigger, suggested fix, **and its verdict**, so the comment stands on its own for
 whoever reads the PR without this transcript. A PLAUSIBLE posted as if it were
 CONFIRMED is how the next comment stops being read.
 

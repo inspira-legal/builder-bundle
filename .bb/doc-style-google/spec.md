@@ -147,7 +147,7 @@ Caminho principal:
       depende: 1 · verifica: leitura
 - [x] **4. Travessão no `brisar`**: 784 em 18 arquivos, com `ds/` fora
       → behaviors 7, 12, 16 · depende: 1 · verifica: grep zerado
-- [ ] **5. Travessão no `review` e no `review-setup`**: 331 em 21 arquivos, incluindo os
+- [x] **5. Travessão no `review` e no `review-setup`**: 331 em 21 arquivos, incluindo os
       templates de relatório e o `guide-template.md`
       → behaviors 7, 9, 10, 12 · depende: 1 · verifica: grep zerado
 - [ ] **6. Travessão no `spec` e no `ship`**: 234 em 13 arquivos, incluindo os templates de

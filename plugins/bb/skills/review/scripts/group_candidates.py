@@ -3,7 +3,7 @@
 
 Deterministic half of verify.md step 1: finders return the same file as an
 absolute path, a repo-relative one, or with backslashes, and an un-canonicalized
-path splits one location into several groups — which is what the grouping exists
+path splits one location into several groups, which is what the grouping exists
 to prevent. Reads one JSON object on stdin, writes one on stdout.
 
 Input:

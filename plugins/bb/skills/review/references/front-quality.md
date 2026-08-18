@@ -1,17 +1,17 @@
-# Front: quality — one finder, all cleanup lenses
+# Front: quality, one finder, all cleanup lenses
 
-The criteria are its sibling `quality-checklist.md` — the single source of truth
+The criteria are its sibling `quality-checklist.md`, the single source of truth
 for what a quality finding is, so a diff is judged identically on every run. This
 front is **strictly behavior-preserving**: same inputs, same
 outputs, same side effects. Bugs belong to `front-correctness.md`.
 
 One finder covers all six lenses (they overlap heavily; splitting them into six
 agents buys duplicate candidates, not coverage). Cap: 10 candidates, prioritizing
-the highest-cost ones across lenses — no obligation to produce a finding per lens.
+the highest-cost ones across lenses, no obligation to produce a finding per lens.
 
 ## How to read the lenses
 
-The six — reuse, simplification, dead weight, efficiency, altitude, consistency —
+The six (reuse, simplification, dead weight, efficiency, altitude, consistency)
 are defined in the shared checklist; read them there rather than from a copy here.
 What this front adds is how to _hunt_ with them:
 
@@ -19,7 +19,7 @@ What this front adds is how to _hunt_ with them:
   the shared/utility modules and the files adjacent to the change, then name the
   existing helper to call instead.
 - **Name the replacement, not the complaint.** Every candidate says what the simpler
-  form is — the helper to call, the flattened conditional, the param to drop.
+  form is: the helper to call, the flattened conditional, the param to drop.
 - **Only what the diff introduced.** The checklist's scope rule is the filter:
   untouched code the branch merely sits next to isn't this front's work.
 
