@@ -67,11 +67,10 @@ clean commit.
 
 2. **Fix what they report**, in the main context, one change at a time, re-running
    the failing check after each. A red check is not a finding to be curated — it's a
-   blocker: it gets fixed or it stops the landing. The regression guard is the review
-   engine's and still applies here — read its `## The guard` section:
-   `${CLAUDE_PLUGIN_ROOT}/skills/review/references/act-apply-fixes.md`. The rest of
-   that file orders _findings_ by front and severity, which a red check doesn't
-   have. When a failure
+   blocker: it gets fixed or it stops the landing. Where the failing code has **no
+   test covering it**, keep the edit trivial and obvious or leave it and report it —
+   reworking untested logic to green a check trades a red build for a silent one.
+   When a failure
    turns on a **stack choice** the diff introduced (a new dependency, tool or
    framework), consult the manifesto (plugin-level `references/consult-manifesto.md`)
    before calling it wrong. A check still red after **3 focused attempts** stops the
@@ -112,10 +111,6 @@ resident, watching the PR; the gate goes right after the PR is open and its chec
 are handled, and the watch resumes after whichever option was picked.
 
 ## Bundled Resources
-
-### The review engine (`skills/review/references/`, read via `${CLAUDE_PLUGIN_ROOT}`)
-
-Ship reads one section of one file: `act-apply-fixes.md` → `## The guard`, for the regression guard when fixing a red check. The ordering half of that file is review's own. The rest of the engine — `fronts.md`, `verify.md` and the `front-*.md` set — belongs to `/bb:review`, which the Step 4 gate invokes and hands the flow to.
 
 ### references/land-branch.md
 

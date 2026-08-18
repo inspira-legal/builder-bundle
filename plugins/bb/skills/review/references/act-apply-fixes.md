@@ -1,11 +1,5 @@
 # Action: apply findings — the regression guard
 
-Two halves with different audiences. **`## The guard`** is about editing code
-without breaking it, and holds for any fix — it's the half `/bb:ship` borrows when
-a project check comes back red. **`## Order of operations`** is about applying
-_findings_, so it belongs to a run that has them: fronts, severities and a
-re-report.
-
 Applying a review finding is where a review can _cause_ the next bug. This pass
 is deliberately conservative: a cleanup that changes behavior is a defect, not an
 improvement, and a "fix" that isn't justified against its finding is a guess.

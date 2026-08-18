@@ -132,11 +132,12 @@ decisions.
   say in both skills who owns it. Reading a reference is not invoking a skill —
   the borrower still orchestrates its own run, which is why borrowing beats
   invoking when the owner's router would ask questions the borrower answers by
-  policy. Today: `/bb:ship` reads one section this way,
-  `skills/review/references/act-apply-fixes.md` → `## The guard`, for the
-  regression guard when it fixes a red check. The rest of the review engine — the fronts, the verify pass
-  and the `{review,quality}-checklist.md` criteria they point at — is `/bb:review`'s
-  alone and lives under `skills/review/references/`.
+  policy. Today nothing is borrowed. The review engine — the fronts, the verify pass, the
+  apply guard and the `{review,quality}-checklist.md` criteria they point at — is
+  `/bb:review`'s alone and lives under `skills/review/references/`; `/bb:ship`
+  stopped reading it when it stopped reviewing. The one guard it still needs (one
+  change at a time, untested code left flagged) is two lines in its own Step 2,
+  which beats a cross-skill read for a principle that short.
 
 ## Scripts
 

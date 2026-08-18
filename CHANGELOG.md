@@ -47,9 +47,11 @@ subir uma branch.
 - **`review-checklist.md` e `quality-checklist.md` mudaram de casa**, de
   `references/` no topo do plugin pra `skills/review/references/`. Eram
   compartilhados porque o ship revisava; com o ship fora, os critérios são de
-  quem os usa. O ship continua lendo um arquivo da engine — o
-  `act-apply-fixes.md`, pela guarda de regressão quando corrige uma checagem
-  vermelha.
+  quem os usa. **O ship parou de ler a engine inteira** — inclusive o
+  `act-apply-fixes.md`, cuja metade útil pra ele (uma mudança por vez, código sem
+  teste fica trivial ou flagado) agora são duas linhas no próprio passo 2. Ler 55
+  linhas de ordenação de achados pra consertar um lint vermelho custava mais do
+  que economizava.
 
 ## 2.9.0 — 2026-08-15
 
