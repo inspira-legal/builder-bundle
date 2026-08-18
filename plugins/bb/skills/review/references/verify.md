@@ -7,7 +7,8 @@ keeps the report worth reading.
 
 Runs for the fan-out depths. At the tiny-diff depth there are no finder agents, so
 the "verify" step is a self-check in the main context: re-read each candidate
-against the file before keeping it.
+against the file before keeping it. Verifiers dispatch on Sonnet like the finders,
+and go to Opus on the same condition they do — a deep run (`fronts.md`, "Model").
 
 ## 1. Pool and group
 
@@ -37,16 +38,26 @@ and one verifier agent per location costs far fewer agents than one per candidat
 with no loss. Candidates with no line (a whole-file or cross-file claim) group by
 `file`.
 
-## 2. One verifier per location
+**The fan-out stops at 8 verifier agents** — 12 on a deep run. Locations are cheap
+to make and agents are not: four finders returning 25 candidates across 20 locations
+would fund 20 agents to produce a report that keeps 10. When the grouping returns
+more locations than the cap, order them — every location holding a `correctness`
+candidate first, then `rules` and `contract`, then the rest — and hand the overflow
+out in batches of locations, several per agent, until the cap is full. Nothing is
+dropped and no verdict changes: a batched location gets the same prompt and the same
+per-candidate judgement, it just shares an agent with its neighbours.
 
-Each verifier goes out as `subagent_type: "bb-verifier"`
-(`plugins/bb/agents/bb-verifier.md`), which owns the rubric: the three verdicts, the
+## 2. One verifier per location, up to the cap
+
+Each verifier goes out as `subagent_type: "bb-review-verifier"`
+(`plugins/bb/agents/bb-review-verifier.md`), which owns the rubric: the three verdicts, the
 PLAUSIBLE default and what makes a REFUTED constructible from the code all live in
 that prompt, so both callers of this engine judge the same way without a second copy
 to keep in sync — and without the fan-out having to re-send it.
 
-What this pass hands it: the scope block, the candidates at that location labeled
-`[0]`, `[1]`, …, and the addendum below when the front calls for one. Back comes one
+What this pass hands it: the scope block, the candidates at that location — or at
+each location in its batch — labeled `[0]`, `[1]`, … with the `file:line` each index
+belongs to, and the addendum below when the front calls for one. Back comes one
 verdict per index, each judged independently on its own claim, with evidence.
 
 A candidate the verifier rendered no verdict on (agent died, index omitted) is
@@ -74,9 +85,11 @@ the finding. A criterion number that doesn't match the criterion's real content 
 REFUTED. Contrast claims are checked by recomputing the ratio from the resolved
 colors.
 
-## 3. Sweep (large diffs only)
+## 3. Sweep (deep runs only)
 
-One fresh finder gets the verified list and hunts **only for gaps** — no
+Only the deep tier funds this pass — a large diff on the default tier doesn't get
+it (`fronts.md`, depth table). One fresh finder gets the verified list and hunts
+**only for gaps** — no
 re-deriving, no re-confirming. Focus it on what a first pass misses: moved or
 extracted code that dropped a guard or anchor; second-tier footguns (a default
 evaluated once at definition, non-deterministic hashing, a lock scope that shrank,

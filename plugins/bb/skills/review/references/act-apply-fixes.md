@@ -40,12 +40,12 @@ improvement, and a "fix" that isn't justified against its finding is a guess.
      that's a `/bb:spec` conversation, not a review edit.
 2. Scope stays the code this branch already changed — no refactoring untouched
    code "while at it" (the scope rule in the plugin-root
-   `references/quality-checklist.md`).
+   `quality-checklist.md`).
 3. Match the surrounding naming, error envelopes, and patterns.
 4. Commit in logical units (conventional style, no AI attribution). With an open
    PR, push to the PR branch; thread replies happen after the push so the sha is
    real.
-5. At the end, re-run the full local gate (reuse the project's check commands —
+5. At the end, re-run the project's checks in full (reuse the same check commands —
    CLAUDE.md / CI workflows / package scripts) and include the result in the
    re-report.
 

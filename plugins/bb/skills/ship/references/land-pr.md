@@ -1,7 +1,7 @@
 # Land it → Open / finish a PR
 
-Reached from ship's Step 1 when the destination is a pull request. The quality pass is
-already done and the gate is green.
+Reached from ship's Step 1 when the destination is a pull request. Step 2 is done —
+the project's checks are green and the work is committed.
 
 ## Create the PR (only if none exists)
 
@@ -19,11 +19,11 @@ already done and the gate is green.
    ```
    Add `--base`, `--draft`, `--label`, `--reviewer`, `--assignee` as requested. Output the PR URL.
 
-## Triage comments → fix → push → reply (automatic, no gate)
+## Triage comments → fix → push → reply (automatic, sem pedir aprovação)
 
 1. **Fetch comments** (background): `python ${CLAUDE_PLUGIN_ROOT}/scripts/fetch_comments.py` — conversation comments, reviews, and review threads (with `id` and `isResolved`) as JSON.
 2. **Triage** each **unresolved** thread into **fix** (implement the change), **answer** (a short reply, no code), or **unclear** (genuinely needs your call — can't be resolved by guessing).
-3. **Handle fix + answer threads automatically.** No approval gate: apply fix-thread code changes in the main context, re-run the gate, commit in logical units, and push to the PR branch. Then reply + resolve per thread:
+3. **Handle fix + answer threads automatically.** Nothing to approve first: apply fix-thread code changes in the main context, re-run the project's checks, commit in logical units, and push to the PR branch. Then reply + resolve per thread:
    - **fix** threads: reply with what was done + the commit sha and resolve — `python ${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py --thread-id <id> --body "Fixed in <sha>: <one-liner>"`
    - **answer** threads: reply but do NOT resolve (the reviewer closes it) — `python ${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py --thread-id <id> --body "..." --no-resolve`
 4. **Unclear threads are the only pause** — surface each with the question it raises and wait for your call; never auto-resolve one by guessing.

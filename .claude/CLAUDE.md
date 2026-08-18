@@ -14,8 +14,8 @@ auto-active when the plugin is enabled.
 plugins/bb/
 ├── .claude-plugin/plugin.json
 ├── agents/                            # pipeline roles (auto-discovered, no plugin.json entry)
-│   ├── bb-finder.md                    # review fan-out: finds candidates, read-only by `tools:`
-│   └── bb-verifier.md                  # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
+│   ├── bb-review-finder.md             # review fan-out: finds candidates, read-only by `tools:`
+│   └── bb-review-verifier.md           # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
 ├── hooks/                             # session infra (auto-active, no skill)
 │   ├── hooks.json                      # SessionStart context injection
 │   ├── enter_worktree.py               # worktree isolation for local autonomous runs
@@ -28,8 +28,6 @@ plugins/bb/
 │   ├── confidence-and-steelman.md      # shared reasoning protocols (think, challenge)
 │   ├── spec-state.md                   # the .bb/<slug>/ folder contract
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
-│   ├── quality-checklist.md            # canonical quality criteria — the six lenses (review engine)
-│   ├── review-checklist.md             # canonical correctness criteria — Pass 1 rows (review engine)
 │   ├── build-mode.md                   # workflow-or-context: the per-run build choice (implement, delegate)
 │   └── build-tasks-workflow.md         # contract the generated one-agent-per-task script meets
 ├── scripts/                           # shared executables (2+ skills) — ref via ${CLAUDE_PLUGIN_ROOT}/scripts/
@@ -134,10 +132,11 @@ decisions.
   say in both skills who owns it. Reading a reference is not invoking a skill —
   the borrower still orchestrates its own run, which is why borrowing beats
   invoking when the owner's router would ask questions the borrower answers by
-  policy. Today: `/bb:ship` reads
-  `skills/review/references/{fronts,verify,front-*,act-apply-fixes}.md`, and
-  `skills/review` reads the plugin-root `references/{review,quality}-checklist.md`
-  as the criteria its fronts point at.
+  policy. Today: `/bb:ship` reads one file this way,
+  `skills/review/references/act-apply-fixes.md`, for the regression guard when it
+  fixes a red check. The rest of the review engine — the fronts, the verify pass
+  and the `{review,quality}-checklist.md` criteria they point at — is `/bb:review`'s
+  alone and lives under `skills/review/references/`.
 
 ## Scripts
 

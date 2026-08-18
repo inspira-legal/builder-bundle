@@ -1,15 +1,14 @@
 # Front: correctness — the angle set over the diff
 
-Operationalizes Pass 1 of the plugin-root `references/quality-checklist.md`'s
-sibling, `references/review-checklist.md`: the checklist says _what counts as a
-bug_, this says _how to go looking for one_. Each angle is a different way of
+Operationalizes Pass 1 of its sibling `review-checklist.md`: the checklist says
+_what counts as a bug_, this says _how to go looking for one_. Each angle is a different way of
 reading the same diff, so two angles flagging the same line for different reasons
 both get recorded — one angle's conclusion never suppresses another's.
 
 Every candidate carries `file`, `line`, a one-line `summary`, and a concrete
 `failure_scenario`. What makes a consequence worth reporting — and why a
 half-believed candidate goes through anyway — is the finder's own contract, in
-`plugins/bb/agents/bb-finder.md`.
+`plugins/bb/agents/bb-review-finder.md`.
 
 Read hunks with their enclosing function open, not just the diff. Bugs on
 unchanged lines of a touched function are in scope — the branch re-exposes them
@@ -74,7 +73,7 @@ falsy-zero treated as absent, wrong-variable copy-paste, an error swallowed in a
 `catch` that should propagate, unescaped regex metacharacters.
 
 This angle owns the checklist's **security** and **type safety** rows
-(`references/review-checklist.md`, Pass 1), which are line-local the same way:
+(`review-checklist.md`, Pass 1), which are line-local the same way:
 untrusted input reaching a query, shell, path or template without validation or
 escaping; a secret landing in code or a log line; a cast, `any` or `type: ignore`
 covering a mismatch the compiler was right about.

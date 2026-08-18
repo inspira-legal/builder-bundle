@@ -4,7 +4,7 @@ description: Roda uma spec de ponta a ponta — seleciona uma spec não-concluí
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.4.0
+  version: 2.5.0
 ---
 
 # Delegate
@@ -51,7 +51,7 @@ and stop.
 4. **Build — follow `/bb:implement`'s workflow (steps 1–7), then return here.** Load
    the spec, honor its reuse notes and `## Comportamento` contract, build every
    unchecked task in the order its `depende:` fields imply, run each task's
-   `verifica:`, keep the gate green, and commit per task ticking its box. A spec
+   `verifica:`, keep the project's checks green, and commit per task ticking its box. A spec
    written before the rename says `## behavior` and `dep:` and is read the same.
    **Do not run implement's step-8 ship hand-off** — delegate owns the transition to landing, so
    the chain lives here, not split across skills. If implement's **safety valve** fires
@@ -62,14 +62,16 @@ and stop.
    script per the plugin-level `references/build-tasks-workflow.md`, run its
    pre-invoke checklist, and invoke `Workflow`. Its result is the build report. A
    non-null `stopped` — a stage-zero blocker (a reuse note pointing at code that's
-   gone, a gate the run can't execute, a tree already red), a red task, a lost
+   gone, a check the run can't execute, a tree already red), a red task, a lost
    agent, or a spec the agent found underspecified — lands the same place the safety
    valve does: flip `status: blocked`, name the blocker, exit without landing. What
    came back green is already committed and ticked.
 
-5. **Land — follow `/bb:ship`'s workflow.** Run the quality pass and land per ship's
-   own destination logic — ship settles the destination, asking only on real doubt;
-   delegate adds no destination logic of its own. If ship hits an unrecoverable stop,
+5. **Land — follow `/bb:ship`'s workflow.** Green the project's checks, commit and
+   land per ship's own destination logic — ship settles the destination, asking only
+   on real doubt; delegate adds no destination logic of its own. **Ship doesn't
+   review on the way in**: its post-landing gate offers `/bb:review` and the answer
+   is the user's, so delegate adds no review logic of its own either. If ship hits an unrecoverable stop,
    flip `status: blocked`, and land the blocker where the run can be found again: the
    PR description when there is a PR, otherwise the spec's own `## Em aberto` on the
    pushed branch. Report it, then exit.
@@ -80,8 +82,7 @@ and stop.
    checkboxes already pass through; delegate never writes status to a protected branch
    directly.
 
-7. **Report.** Name the slug, the build mode it ran in, what landed (tasks, gate
-   result), and the destination (branch / PR URL / the hand-off command for a
+7. **Report.** Name the slug, the build mode it ran in, what landed (tasks, check results), and the destination (branch / PR URL / the hand-off command for a
    protected branch).
 
 ## Edge cases
