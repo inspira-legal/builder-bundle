@@ -200,7 +200,7 @@ one spec: making every build fresh is what makes the review necessary.
       documentation, with the compaction argument moved in from `build-mode.md`, the `args`
       shape, and the checklist split into CI, PR review and the skill's three per-run items
       → behaviors 2, 6, 12 · dep: 1 · verify: reading
-- [ ] **3. implement**: step 3 loses the question and gains the path resolution, the
+- [x] **3. implement**: step 3 loses the question and gains the path resolution, the
       invocation and the three fallbacks; steps 4 to 6 shrink to the in-context path, keeping
       the checks authority chain the build step now needs for `checksHint`; the `## Tasfas`
       typo goes with them
