@@ -87,21 +87,21 @@ and stop.
 
 ## Edge cases
 
-| WHEN                                             | THEN                                                                                                                                                 |
-| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:delegate <slug>`, slug exists, not done     | run it end to end                                                                                                                                    |
-| `/bb:delegate <slug>`, slug not found            | report the error, list available pending slugs, stop                                                                                                 |
-| `/bb:delegate <slug>`, status `done`             | report it's done, ask whether to re-run                                                                                                              |
-| bare `/bb:delegate`, one+ pending                | pick smallest `created` (tie-break slug alpha), run it                                                                                               |
-| bare `/bb:delegate`, none pending                | report "no pending specs", stop                                                                                                                      |
-| selected spec already `in-progress`              | resume: implement skips checked tasks; status stays `in-progress` until landing                                                                      |
-| spec has no frontmatter                          | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                                 |
-| implement safety valve fires (underspecified)    | flip `status: blocked`, point back to `/bb:spec`, stop; do not improvise                                                                             |
-| workflow mode stops (stage zero or a task)       | flip `status: blocked`, exit without landing                                                                                                         |
+| WHEN                                             | THEN                                                                                                                                            |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:delegate <slug>`, slug exists, not done     | run it end to end                                                                                                                               |
+| `/bb:delegate <slug>`, slug not found            | report the error, list available pending slugs, stop                                                                                            |
+| `/bb:delegate <slug>`, status `done`             | report it's done, ask whether to re-run                                                                                                         |
+| bare `/bb:delegate`, one+ pending                | pick smallest `created` (tie-break slug alpha), run it                                                                                          |
+| bare `/bb:delegate`, none pending                | report "no pending specs", stop                                                                                                                 |
+| selected spec already `in-progress`              | resume: implement skips checked tasks; status stays `in-progress` until landing                                                                 |
+| spec has no frontmatter                          | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                            |
+| implement safety valve fires (underspecified)    | flip `status: blocked`, point back to `/bb:spec`, stop; do not improvise                                                                        |
+| workflow mode stops (stage zero or a task)       | flip `status: blocked`, exit without landing                                                                                                    |
 | ship hits an unrecoverable stop / blocker        | flip `status: blocked`; write the blocker into the PR description, or into the spec's `## Open` when the destination has no PR; report it; exit |
-| slug sits under both `.bb/` layouts              | one candidate; the `.bb/<slug>/` copy is the one read                                                                                                |
-| spec only under `.bb/tasks/<slug>/`              | found by the second glob, run as usual                                                                                                               |
-| not in a git repo / no `.bb/` dir in either root | report the error, stop                                                                                                                               |
+| slug sits under both `.bb/` layouts              | one candidate; the `.bb/<slug>/` copy is the one read                                                                                           |
+| spec only under `.bb/tasks/<slug>/`              | found by the second glob, run as usual                                                                                                          |
+| not in a git repo / no `.bb/` dir in either root | report the error, stop                                                                                                                          |
 
 The hard line holds throughout: delegate never merges, never approves, never
 force-pushes; landing on a protected branch stays a human action.

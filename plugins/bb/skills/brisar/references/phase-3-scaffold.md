@@ -18,7 +18,10 @@ Phase 1 derived a slug (e.g. `lexflow-semantic-search`). Before creating files, 
       "question": "Project slug: '<slug>'. I'll create the folder `./<slug>/` here (`pwd`). OK?",
       "header": "Slug",
       "options": [
-        { "label": "OK, create it here", "description": "The folder will be ./<slug>/ in the current directory" },
+        {
+          "label": "OK, create it here",
+          "description": "The folder will be ./<slug>/ in the current directory"
+        },
         {
           "label": "I want to adjust the slug",
           "description": "Free text, give me the name you prefer"

@@ -91,7 +91,7 @@ Record:
 
 | `medium.chosen` | Reader                                                                                           |
 | --------------- | ------------------------------------------------------------------------------------------------ |
-| `code`        | Read the files at `tarsila.surfaces[].file`                                                      |
+| `code`          | Read the files at `tarsila.surfaces[].file`                                                      |
 | `claude-design` | Read the preview file at `tarsila.surfaces[].file`                                               |
 | `paper`         | Paper MCP, structure, computed styles and text content from `canvas.file` / `page` / `artboards` |
 | `figma`         | Figma MCP, design context and variables for the named frames                                     |

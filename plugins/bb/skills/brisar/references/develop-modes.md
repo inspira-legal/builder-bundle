@@ -10,7 +10,7 @@ every medium, but the target and the tooling change:
 
 | `medium.chosen` | Target artifact                             | Tooling    | Notes                                                                                                   |
 | --------------- | ------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------- |
-| `code`        | `.tsx` / `.html` in the project             | Write/Edit | The templates below. Uses `design-context/` from Phase 3.                                               |
+| `code`          | `.tsx` / `.html` in the project             | Write/Edit | The templates below. Uses `design-context/` from Phase 3.                                               |
 | `claude-design` | one self-contained HTML preview per surface | Write      | Inline all CSS; no external fetches. No scaffold exists; token values come from the research (Front B). |
 | `paper`         | artboards in a Paper file                   | Paper MCP  | Read the tool's own guide before the first write. Values set explicitly, never eyeballed.               |
 | `figma`         | frames in a Figma file                      | Figma MCP  | Reuse the file's components and variables before creating new nodes.                                    |

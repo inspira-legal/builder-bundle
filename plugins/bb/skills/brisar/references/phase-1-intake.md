@@ -464,7 +464,10 @@ When the builder chose "Institutional site (Framer)", the fidelity/hosting quest
           "label": "Edit to content already live",
           "description": "Change copy, images, or fine-tune without a structural change"
         },
-        { "label": "I don't know the scope yet", "description": "I'll explore, start by sketching" }
+        {
+          "label": "I don't know the scope yet",
+          "description": "I'll explore, start by sketching"
+        }
       ],
       "multiSelect": false
     },
