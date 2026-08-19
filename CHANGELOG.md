@@ -1,5 +1,63 @@
 # Changelog
 
+## 2.12.0 (2026-08-18)
+
+**A prosa em inglês do bb ganhou régua, e o travessão saiu.** Os documentos que o
+bb gera pra fora e a instrução que os agentes leem não tinham padrão nenhum:
+`## How It Works` ficava ao lado de `## Style contract`, e o travessão aparecia
+1737 vezes em 84 arquivos, mesmo com o `/bb:write-readme` proibindo o dele desde
+a primeira versão. Agora o [guia de documentação do
+Google](https://developers.google.com/style) é a régua, destilado numa reference
+que quem escreve lê antes de escrever.
+
+### Novo
+
+- **`plugins/bb/references/doc-style.md`**, nível plugin e não escopo de skill,
+  porque governa a prosa de todas as skills e a do repo. Cobre tom e voz,
+  heading, formatação de texto, lista e tabela, link, número, data e pontuação,
+  tudo em forma positiva: sem par recommended/not recommended, porque escrever o
+  errado ao lado do certo prima o errado.
+- **Duas divergências, registradas na abertura** pra ninguém achar que é
+  esquecimento. Travessão nunca, que é mais forte que a Google (ela permite o
+  travessão sem espaço). E a voz figurativa fica: a Google evita metáfora porque
+  ela atravessa mal a tradução, mas aqui a metáfora é o que faz a instrução colar
+  no agente que lê o `SKILL.md`.
+- **Precedência escrita**: regra da casa primeiro, guia depois, que é a
+  hierarquia que a própria Google publica. Onde o `/bb:write-readme` já tem
+  contrato (tudo minúsculo, quatro blocos, badge por fato verificável), o
+  contrato ganha, e o `SKILL.md` dele aponta pra reference em vez de repetir a
+  regra.
+
+### Mudou
+
+- **O travessão saiu de 87 arquivos.** Cada remoção foi julgamento por frase, não
+  `sed`: onde ele ia, entrou vírgula, dois-pontos, ponto, ou a frase foi
+  reescrita. Onde o par de travessões era aparte, virou parênteses.
+- **Os headings em title case declarado fora de `ds/` viraram sentence case**, com
+  nome próprio e identificador mantendo a caixa.
+- **A régua alcança qualquer sessão**: o `hooks/operating-context.md` aponta pra
+  reference junto com o `vocabulario.md`, e o `.claude/CLAUDE.md`, o
+  `write-readme/SKILL.md` e o `review-setup/references/guide-template.md` também.
+- **A regra do travessão atravessa as duas línguas**, porque é pontuação e não
+  vocabulário: os 22 travessões que moravam em `description:` são linha em
+  português e caíram junto. O resto do português continua governado pelo
+  `vocabulario.md`.
+
+### Fica como está
+
+- **O `references/ds/` fica intocado.** É o brand package da Inspira,
+  conteúdo de marca com voz própria: 383 travessões e 70 headings em title
+  case que continuam lá.
+- **As entradas antigas deste CHANGELOG e as 7 specs em `.bb/`.** São registro
+  landado; reescrever muda o que já foi publicado.
+- **O travessão que é token funcional.** As 5 ocorrências do `depende: —` que uma
+  linha de tarefa carrega quando nada a bloqueia ficam: ali o caractere é valor
+  que um formato reserva, e tirar seria mudança de comportamento. Meia-risca de
+  intervalo numérico (`3–5 bullets`) fica pelo mesmo motivo.
+- **Sem check no CI e sem script.** O enforcement é a reference ser lida: um
+  detector de travessão em prosa mista PT/EN acusa token funcional e citação, e o
+  falso positivo custa mais que o desvio.
+
 ## 2.11.0 — 2026-08-18
 
 **As `description:` das skills emagreceram.** Toda `description:` do bundle entra

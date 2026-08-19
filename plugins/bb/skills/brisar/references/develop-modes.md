@@ -1,50 +1,50 @@
-# Develop modes — templates for the 3 build modes
+# Develop modes: templates for the 3 build modes
 
 Load lazily: only read the section of the mode chosen in Step 1 of `phase-develop.md`.
 
 ## Medium comes before mode
 
 `medium.chosen` (from `references/phase-medium.md`) decides **what kind of artifact** is produced;
-the mode below decides **how much** of it. Read the medium first — the three modes apply within
+the mode below decides **how much** of it. Read the medium first. The three modes apply within
 every medium, but the target and the tooling change:
 
-| `medium.chosen` | Target artifact                             | Tooling    | Notes                                                                                                    |
-| --------------- | ------------------------------------------- | ---------- | -------------------------------------------------------------------------------------------------------- |
-| `código`        | `.tsx` / `.html` in the project             | Write/Edit | The templates below. Uses `design-context/` from Phase 3.                                                |
-| `claude-design` | one self-contained HTML preview per surface | Write      | Inline all CSS; no external fetches. No scaffold exists — token values come from the research (Front B). |
-| `paper`         | artboards in a Paper file                   | Paper MCP  | Read the tool's own guide before the first write. Values set explicitly, never eyeballed.                |
-| `figma`         | frames in a Figma file                      | Figma MCP  | Reuse the file's components and variables before creating new nodes.                                     |
-| `pencil`        | nodes in a `.pen` file                      | Pencil MCP | `.pen` files are only reachable through the MCP — never Read/Grep them.                                  |
+| `medium.chosen` | Target artifact                             | Tooling    | Notes                                                                                                   |
+| --------------- | ------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------- |
+| `código`        | `.tsx` / `.html` in the project             | Write/Edit | The templates below. Uses `design-context/` from Phase 3.                                               |
+| `claude-design` | one self-contained HTML preview per surface | Write      | Inline all CSS; no external fetches. No scaffold exists; token values come from the research (Front B). |
+| `paper`         | artboards in a Paper file                   | Paper MCP  | Read the tool's own guide before the first write. Values set explicitly, never eyeballed.               |
+| `figma`         | frames in a Figma file                      | Figma MCP  | Reuse the file's components and variables before creating new nodes.                                    |
+| `pencil`        | nodes in a `.pen` file                      | Pencil MCP | `.pen` files are only reachable through the MCP, never Read/Grep them.                                  |
 
 **Rules that hold in every medium:**
 
-- **Tokens first, from the source.** On a canvas medium there is no `design-context/tokens.md` —
-  the values come from the research's DS front, which read the real source. Same authority, one
+- **Tokens first, from the source.** On a canvas medium there is no `design-context/tokens.md`; the values
+  come from the research's DS front, which read the real source. Same authority, one
   step earlier.
 - **The chosen direction is the contract.** Same five parts (bet, composition, copy, rationale,
-  risk) whatever the medium. If the medium makes a part awkward, say so — do not quietly drop it.
+  risk) whatever the medium. If the medium makes a part awkward, say so. Do not quietly drop it.
 - **The copy is the copy.** The direction's strings go in as written. Placeholder text on a canvas
   becomes a decision nobody made.
 - **States always** (see the per-surface checklist). A canvas represents them as separate
   artboards; code as separate states.
 - **Deliver has to read this back.** Name the artifact and its location precisely in
-  `session.yaml` — file path, or file + page + artboard names for a canvas. A review that cannot
+  `session.yaml`: file path, or file + page + artboard names for a canvas. A review that cannot
   find the artifact is not a review.
 
 ---
 
-## Mode 1: Full surface (`full-surface`)
+## Mode 1: full surface (`full-surface`)
 
 **Why it exists:** building 1 screen end-to-end is the most common case. It reads the contract (tokens + components + visual direction) and produces React/HTML code applying everything.
 
 ### Inputs
 
-- `.brisar/config.yaml` — `design_context_path`, `design_path`, `brand.name`, `surfaces[]`
-- `<design_context_path>/tokens.md` — colors, spacing, type-scale
-- `<design_context_path>/components.md` — components available in the DS
-- `<design_path>/<surfaces[].file>` — visual direction written by brisar Phase 4 in the task folder (hierarchy, components, states, sketch)
-- `.brisar/session.yaml` — `gate.discover_brief` (cuts, hypothesis, appetite), `gate.design_brief`
-  (the research and the chosen direction — **the richer input when it exists**), `medium.chosen`
+- `.brisar/config.yaml`: `design_context_path`, `design_path`, `brand.name`, `surfaces[]`
+- `<design_context_path>/tokens.md`: colors, spacing, type-scale
+- `<design_context_path>/components.md`: components available in the DS
+- `<design_path>/<surfaces[].file>`: visual direction written by brisar Phase 4 in the task folder (hierarchy, components, states, sketch)
+- `.brisar/session.yaml`: `gate.discover_brief` (cuts, hypothesis, appetite), `gate.design_brief`
+  (the research and the chosen direction; **the richer input when it exists**), `medium.chosen`
 - On a canvas or `claude-design` medium, `.brisar/config.yaml` and `design-context/` **do not
   exist**. Fall back to `gate.design_brief` + the research DS values. That is not degraded mode;
   it is the normal path for those mediums.
@@ -85,10 +85,10 @@ For each surface chosen in Step 1:
 
 **4. States (always)**
 
-- `default` — the happy state
-- `loading` — skeleton or spinner aligned with the DS
-- `empty` — when there is no data to show, with a CTA to fill in
-- `error` — recoverable (message + retry) and non-recoverable (message + support)
+- `default`: the happy state
+- `loading`: skeleton or spinner aligned with the DS
+- `empty`: when there is no data to show, with a CTA to fill in
+- `error`: recoverable (message + retry) and non-recoverable (message + support)
 
 **5. Responsiveness (if hosting != storybook)**
 
@@ -140,7 +140,7 @@ export default function <SurfaceName>() {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><Brand> — <surface></title>
+    <title><Brand>, <surface></title>
     <link rel="stylesheet" href="design-context/tokens.css" />
     <link rel="stylesheet" href="design-context/components.css" />
   </head>
@@ -171,24 +171,24 @@ tarsila:
 - If there were custom_components or missing_tokens: write `.brisar/tarsila/notes.md`:
 
 ```markdown
-# Develop phase — build notes
+# Develop phase: build notes
 
 > Generated on <ISO date>
 
 ## Custom components (created outside the DS)
 
-- <Name> in <surface> — reason: <brief> — suggestion: <add to DS | keep local>
+- <Name> in <surface>, reason: <brief>, suggestion: <add to DS | keep local>
 
 ## Missing tokens
 
-- <token_name> needed in <surface> — used fallback: <value> — flag for a DS-update round on tokens.md? (TODO)
+- <token_name> needed in <surface>, used fallback: <value>, flag for a DS-update round on tokens.md? (TODO)
 ```
 
 ---
 
-## Mode 2: Isolated component (`component`)
+## Mode 2: isolated component (`component`)
 
-**Why it exists:** sometimes it is not a surface — it is a component that goes to the DS or to the project. A lean mode to build 1 component in isolation.
+**Why it exists:** sometimes it is not a surface. It is a component that goes to the DS or to the project. A lean mode to build 1 component in isolation.
 
 ### Minimum inputs
 
@@ -206,7 +206,7 @@ tarsila:
       "options": [
         {
           "label": "Adicionar ao DS",
-          "description": "Vai virar parte do Brisa DS — output em <DS_path>/components/. Sugere PR ao DS."
+          "description": "Vai virar parte do Brisa DS, output em <DS_path>/components/. Sugere PR ao DS."
         },
         {
           "label": "Custom local",
@@ -226,9 +226,9 @@ tarsila:
 ### Minimum structure
 
 - The component itself (.tsx)
-- 1 story (Storybook or MDX) — optional if hosting != storybook
+- 1 story (Storybook or MDX), optional if hosting != storybook
 - Props documented with TypeScript
-- States (minimum: default, hover, focus, disabled — when applicable)
+- States (minimum: default, hover, focus, disabled, when applicable)
 
 ### Output
 
@@ -238,7 +238,7 @@ tarsila:
 
 ---
 
-## Mode 3: Iteration on existing (`iteration`)
+## Mode 3: iteration on existing (`iteration`)
 
 **Why it exists:** a second pass on code that already exists. Read first, propose diff, apply with consent.
 
@@ -277,11 +277,11 @@ Ask:
 
 **3. Show the diff before applying**
 
-Use the Edit tool with specific `old_string`/`new_string`. DO NOT overwrite the whole file — only the blocks that change.
+Use the Edit tool with specific `old_string`/`new_string`. DO NOT overwrite the whole file. Only the blocks that change.
 
 **4. Short echo after applying**
 
-> "Atualizei <surface>: <resumo de 1 linha do que mudou>. Loading/empty/error já estavam — não toquei."
+> "Atualizei <surface>: <resumo de 1 linha do que mudou>. Loading/empty/error já estavam, não toquei."
 
 **5. Update session.yaml**
 
@@ -295,7 +295,7 @@ tarsila:
       iteration_reason: <short summary>
 ```
 
-One sharp caution for iteration: touching `tokens.md`/`components.md` "in passing" during a surface iteration is a separate decision — record it in `.brisar/tarsila/notes.md` and leave the DS files alone.
+One sharp caution for iteration: touching `tokens.md`/`components.md` "in passing" during a surface iteration is a separate decision, record it in `.brisar/tarsila/notes.md` and leave the DS files alone.
 
 ---
 
@@ -303,4 +303,4 @@ One sharp caution for iteration: touching `tokens.md`/`components.md` "in passin
 
 - Always update `session.yaml` `tarsila:` section.
 - If there were custom or missing_tokens, write `.brisar/tarsila/notes.md`.
-- End at the Step 3 gate of `phase-develop.md` (Deliver / another surface / stop) — suggest, never invoke.
+- End at the Step 3 gate of `phase-develop.md` (Deliver / another surface / stop), suggest, never invoke.

@@ -1,25 +1,25 @@
-# Export mode — the shareable product/UX spec
+# Export mode: the shareable product/UX spec
 
 Load this only when exporting. The converged spec in `.bb/<slug>/spec.md`
 stays the source of truth; the export is a **rendering** of it for an audience
-without the spec's context — a designer picking it up in Figma, a dev team, a
+without the spec's context: a designer picking it up in Figma, a dev team, a
 stakeholder deck. Everything below comes from the alignment already reached in
 the loop; the export never introduces new decisions.
 
 ## The trio rule (hypothesis · OKR · metric)
 
 The export carries the minimum shaping of the product team's modus operandi. The
-hypothesis, OKR, and metric fields are **inseparable** — they come together or
+hypothesis, OKR, and metric fields are **inseparable**. They come together or
 not at all.
 
 **Test:** "Will the user change any behavior because of this?"
 
 - **Yes** → `Hypothesis` required → trio (`Connected OKR` + `Expected Impact` +
   `Metric`) required. If the spec's `## Hipótese` (from `/bb:discover`)
-  exists, render it here; if the trio can't be filled from the spec, ask —
+  exists, render it here; if the trio can't be filled from the spec, ask;
   don't invent.
-- **No** (internal feature, design pattern, compliance) → trio omitted entirely
-  — no placeholder, no "N/A".
+- **No** (internal feature, design pattern, compliance) → trio omitted entirely,
+  no placeholder, no "N/A".
 
 ## Auto-sizing the export
 
@@ -34,12 +34,12 @@ When in doubt, export the smallest set and expand on request. Name the files
 where the user wants them (default: alongside the spec in
 `.bb/<slug>/`).
 
-## spec.md — the definition document
+## spec.md: the definition document
 
 Map from the spec: the opening and the free top half → context and framing;
 `## Decisões` → Decision rationale; `## Fora de escopo` → Out of scope; `## Comportamento` → Behaviors;
 the behavior map's `WHEN … THEN …` rows → Definition of done criteria. A spec written before
-the rename spells those `## decisions`, `## out of scope` and `## behavior` — same sections,
+the rename spells those `## decisions`, `## out of scope` and `## behavior`, same sections,
 mapped the same way (the whole pairing is in the plugin-level `references/spec-state.md`).
 
 ```markdown
@@ -55,13 +55,13 @@ mapped the same way (the whole pairing is in the plugin-level `references/spec-s
 <!-- Trio below: only if the feature changes user behavior (see trio rule). -->
 
 **Hypothesis:** If we deliver X, we expect to see Y in metric Z
-**Connected OKR:** [metric name] — [how this initiative moves that indicator]
+**Connected OKR:** [metric name]: [how this initiative moves that indicator]
 **Expected Impact:** [baseline → target]
 **Metric:** [how to measure]
 
 ## Product
 
-- **User:** [who experiences this problem — be specific]
+- **User:** [who experiences this problem, be specific]
 - **Business objective:** [what the product gains beyond the metric]
 
 ## Scope
@@ -78,11 +78,11 @@ mapped the same way (the whole pairing is in the plugin-level `references/spec-s
 
 ### Main flow
 
-[step by step of the normal journey — from the spec's happy path]
+[step by step of the normal journey, from the spec's happy path]
 
 ### States and variations
 
-[loading, empty, error, relevant edge cases — from the edge→outcome table]
+[loading, empty, error, relevant edge cases, from the edge→outcome table]
 
 ### Constraints
 
@@ -90,7 +90,7 @@ mapped the same way (the whole pairing is in the plugin-level `references/spec-s
 
 ## Definition of done
 
-- [ ] [verifiable criterion — each maps to a WHEN/THEN row]
+- [ ] [verifiable criterion; each maps to a WHEN/THEN row]
 
 ## Decision rationale
 
@@ -101,7 +101,7 @@ mapped the same way (the whole pairing is in the plugin-level `references/spec-s
 [who needs what, in what order]
 ```
 
-## content.md — canonical UI texts
+## content.md: canonical UI texts
 
 Generate when UI content is involved. Drafts to guide visual exploration; final
 copy is validated in the visual stage. Follow the product's voice guide when one
@@ -124,10 +124,10 @@ product's language (PT-BR for Inspira products).
 - **Error message:**
 ```
 
-## tasks.md — implementation breakdown
+## tasks.md: implementation breakdown
 
 Generate for Large scope or non-trivial technical dependencies. Render from the
-spec's `## Tarefas` (or `## tasks`) items — same work, table form with explicit dependencies and
+spec's `## Tarefas` (or `## tasks`) items. Same work, table form with explicit dependencies and
 verification criteria.
 
 ```markdown
@@ -148,7 +148,7 @@ verification criteria.
 - [question / validation point]
 ```
 
-## Voice — copy rules (for `content.md`)
+## Voice: copy rules (for `content.md`)
 
 Apply the product's established voice and tone; these are the defaults when no
 brand guide exists:
@@ -157,7 +157,7 @@ brand guide exists:
   specific to the action.
 - **Labels and navigation:** direct nouns, no articles, only first letter
   capitalized.
-- **Empty states:** guide with a CTA — tell the user what to do next, not just
+- **Empty states:** guide with a CTA. Tell the user what to do next, not just
   that nothing is there.
 - **Errors:** explain what happened + what to do, empathetic tone.
 - **Loading:** contextual to the operation ("Buscando…", "Gerando relatório…").
@@ -171,12 +171,12 @@ After exporting, emit:
 Spec exportada. O que levar para cada destino:
 
 → Exploração visual: use spec.md + content.md como insumo (Figma / /bb:brisar)
-→ Implementação: compartilhe spec.md [+ tasks.md se houver] com o time — ou rode /bb:implement direto da spec
+→ Implementação: compartilhe spec.md [+ tasks.md se houver] com o time, ou rode /bb:implement direto da spec
 → Próximo passo: [ação específica mais importante agora]
 ```
 
 ## Don't invent
 
 Every field renders from the spec or from an answer the user gave. A field the
-spec doesn't settle gets asked (one round, batched) or left blank — blank beats
+spec doesn't settle gets asked (one round, batched) or left blank; blank beats
 invented.

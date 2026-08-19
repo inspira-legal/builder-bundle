@@ -90,7 +90,7 @@ function validateAgentTools(tools: unknown): ValidationIssue[] {
     return [
       {
         level: "error",
-        message: 'Missing "tools" field — an agent without it inherits every tool',
+        message: 'Missing "tools" field: an agent without it inherits every tool',
       },
     ];
   }
@@ -118,7 +118,7 @@ function validateAgentTools(tools: unknown): ValidationIssue[] {
     return [
       {
         level: "error",
-        message: `Write-capable tools in "tools": ${list} — bb agents are read-only roles`,
+        message: `Write-capable tools in "tools": ${list}; bb agents are read-only roles`,
       },
     ];
   }

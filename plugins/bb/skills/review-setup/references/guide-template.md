@@ -1,31 +1,34 @@
-# CODE_REVIEW_GUIDE.md — template and generation rules
+# CODE_REVIEW_GUIDE.md: template and generation rules
 
 Write the guide at the repo root with the Write tool, filled from the validated
-rules. The guide is self-contained — anyone reading it understands every rule
+rules. The guide is self-contained; anyone reading it understands every rule
 without external context. Guide prose in PT-BR; rule IDs, code examples, and
-technical terms in English.
+technical terms in English. Portuguese prose takes its words from the plugin-level
+`references/vocabulario.md`, and the plugin-level `references/doc-style.md` still
+governs the punctuation and the shape of the document: no dash, sentence case in a
+heading, one idea per list item, a header row on every table.
 
 Required content:
 
-1. **Propósito** — reference before opening PRs + the rule source `/bb:review`
+1. **Propósito**: reference before opening PRs + the rule source `/bb:review`
    reads fresh on every run.
-2. **Severidades** — the HIGH/MEDIUM/LOW ladder and its verdict impact.
-3. **Pre-PR checklist** — numbered, actionable, derived from the HIGH and MEDIUM
+2. **Severidades**: the HIGH/MEDIUM/LOW ladder and its verdict impact.
+3. **Pre-PR checklist**: numbered, actionable, derived from the HIGH and MEDIUM
    rules (concrete commands: the repo's own test/lint invocations).
-4. **Rules by severity** — every rule with ID, título, categoria, descrição,
+4. **Rules by severity**: every rule with ID, título, categoria, descrição,
    evidência (real paths), and Do/Don't examples from the repo.
-5. **Categorização de arquivos** — file patterns → categories, so a reviewer
+5. **Categorização de arquivos**: file patterns → categories, so a reviewer
    knows which rules apply to which files.
-6. **Padrões do repositório** — sections only for what was actually discovered
+6. **Padrões do repositório**: sections only for what was actually discovered
    (commits, organização, testes, error handling, observabilidade, segurança,
    domínios custom).
-7. **Arquivos de referência** — canonical examples of each major pattern.
-8. **Histórico de alterações** — one row per generation/update.
+7. **Arquivos de referência**: canonical examples of each major pattern.
+8. **Histórico de alterações**: one row per generation/update.
 
 ## Template
 
 ```markdown
-# Code Review Guide — {{PROJECT_NAME}}
+# Code Review Guide: {{PROJECT_NAME}}
 
 > **Última atualização**: {{DATE}}
 > **Gerado por**: /bb:review-setup
@@ -39,11 +42,11 @@ está documentada aqui com evidência.
 
 ## Severidades
 
-| Nível      | Significado                                                         | Impacto no review                             |
-| ---------- | ------------------------------------------------------------------- | --------------------------------------------- |
-| **HIGH**   | Não negociável — quebra de contrato, teste ausente, vulnerabilidade | Veredito: CHANGES REQUESTED                   |
-| **MEDIUM** | Requer julgamento; 3+ num PR indica degradação                      | 1–2: NEEDS DISCUSSION / 3+: CHANGES REQUESTED |
-| **LOW**    | Informativo, nit                                                    | Nunca afeta o veredito                        |
+| Nível      | Significado                                                        | Impacto no review                             |
+| ---------- | ------------------------------------------------------------------ | --------------------------------------------- |
+| **HIGH**   | Não negociável: quebra de contrato, teste ausente, vulnerabilidade | Veredito: CHANGES REQUESTED                   |
+| **MEDIUM** | Requer julgamento; 3+ num PR indica degradação                     | 1–2: NEEDS DISCUSSION / 3+: CHANGES REQUESTED |
+| **LOW**    | Informativo, nit                                                   | Nunca afeta o veredito                        |
 
 ## Pre-PR Checklist
 
@@ -96,7 +99,7 @@ está documentada aqui com evidência.
 Rule detail block, one per rule:
 
 ````markdown
-#### {{ID}} — {{TITLE}}
+#### {{ID}}: {{TITLE}}
 
 - **Categoria**: correctness | contracts | security | a11y | quality
 - **Severidade**: HIGH | MEDIUM | LOW
@@ -118,14 +121,14 @@ Rule detail block, one per rule:
 ## Generation rules
 
 - The **Categoria** field tags the kind of concern the rule is (`correctness`,
-  `contracts`, `security`, `a11y`, `quality` — the vocabulary of the shared
-  the review skill's `references/review-checklist.md` and the review fronts). `/bb:review`'s `rules`
+  `contracts`, `security`, `a11y`, `quality`): the vocabulary shared by the review
+  skill's `references/review-checklist.md` and the review fronts. `/bb:review`'s `rules`
   front reads every rule regardless of category; the tag is what lets a finding say
   _what kind_ of deviation it is, and it groups the guide for a human reader. Older
   guides carry the field as **Lens**, and some carry the earlier values
   (`logic-edges`, `async-state`, `contracts-security`); read them as-is and map on
   the next delta update rather than rewriting the guide for the tag alone.
-- Every example is real (from the repo) — never invent code to illustrate a
+- Every example is real (from the repo); never invent code to illustrate a
   rule; a rule without a real example gets evidence paths only.
 - Only rules the maintainer accepted in the interview enter the guide.
 - Sections with nothing discovered are omitted, not filled with boilerplate.

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """SessionStart hook: re-establish the toolkit's operating frame at session start
-and after a context compaction — exactly when the model has lost the thread.
+and after a context compaction, exactly when the model has lost the thread.
 Emits operating-context.md as `additionalContext`.
 
 Deliberately light and principle-level (not a procedure): it loads on EVERY

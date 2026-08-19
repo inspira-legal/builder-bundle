@@ -39,7 +39,7 @@ jobs:
             fi
           done
           if [ ${#specs[@]} -eq 0 ]; then
-            echo "Nenhuma spec em .bb/ — nada pra lintar."
+            echo "Nenhuma spec em .bb/: nada pra lintar."
             exit 0
           fi
           python3 plugins/bb/skills/spec/scripts/lint_spec.py "${specs[@]}"

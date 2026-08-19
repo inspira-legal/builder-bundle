@@ -1,12 +1,12 @@
-# Phase 4 — Design direction (per surface)
+# Phase 4: design direction (per surface)
 
 The missing piece. Without this, brisar would end without concrete direction to start designing. The builder opens the editor, sees an empty App.tsx, and now what?
 
 This phase produces the visual direction for each confirmed surface, with enough brief for the builder (or the Develop phase) to start designing. Each file has 5 fixed sections: Visual hierarchy, DS components, States, First sketch direction, Notes.
 
-**Where it lands:** inside the task's folder, next to the spec — the plugin-level `references/spec-state.md` owns that contract. One surface writes `.bb/<slug>/design.md`; two or more write `.bb/<slug>/design/<surface>.md` plus an index. The project folder scaffolded in Phase 3 holds code and design-context, not design direction.
+**Where it lands:** inside the task's folder, next to the spec. The plugin-level `references/spec-state.md` owns that contract. One surface writes `.bb/<slug>/design.md`; two or more write `.bb/<slug>/design/<surface>.md` plus an index. The project folder scaffolded in Phase 3 holds code and design-context, not design direction.
 
-## Step 1 — Confirm surfaces
+## Step 1: confirm surfaces
 
 Phase 1 inferred provisional surfaces from the initial prompt (e.g.: `[busca, resultados, vazio]`). Confirm before generating files:
 
@@ -21,10 +21,10 @@ Phase 1 inferred provisional surfaces from the initial prompt (e.g.: `[busca, re
           "label": "Confirma a lista",
           "description": "Vou gerar a direção visual de cada uma em .bb/<slug>/"
         },
-        { "label": "Ajustar / adicionar", "description": "Texto livre — separe por vírgula" },
+        { "label": "Ajustar / adicionar", "description": "Texto livre, separe por vírgula" },
         {
           "label": "Só uma surface principal",
-          "description": "Texto livre — só a que importa agora"
+          "description": "Texto livre, só a que importa agora"
         }
       ],
       "multiSelect": false
@@ -33,53 +33,53 @@ Phase 1 inferred provisional surfaces from the initial prompt (e.g.: `[busca, re
 }
 ```
 
-If the builder answers "adjust" or "only one", parse the response. Limit to 5 surfaces per session (more than that turns into noise — additional surfaces enter in re-runs).
+If the builder answers "adjust" or "only one", parse the response. Limit to 5 surfaces per session (more than that turns into noise, additional surfaces enter in re-runs).
 
 Slugify each surface: lowercase, kebab-case, ASCII (`Tela de busca` → `busca`, `Resultado vazio` → `vazio`, etc).
 
-## Step 2 — Resolve the task folder, then the index
+## Step 2: resolve the task folder, then the index
 
-Resolve `.bb/` per the spec-state contract (nearest ancestor with one, else create it in the cwd) and use `.bb/<slug>/` — the same `<slug>` as the project. If a spec already sits there (`spec.md`, from `/bb:discover`), the folder exists; otherwise `mkdir -p` it.
+Resolve `.bb/` per the spec-state contract (nearest ancestor with one, else create it in the cwd) and use `.bb/<slug>/`: the same `<slug>` as the project. If a spec already sits there (`spec.md`, from `/bb:discover`), the folder exists; otherwise `mkdir -p` it.
 
-With **one** confirmed surface, write `.bb/<slug>/design.md` with the Step 3 template and skip the index — an index of one is ceremony.
+With **one** confirmed surface, write `.bb/<slug>/design.md` with the Step 3 template and skip the index. An index of one is ceremony.
 
 With **two or more**, write `.bb/<slug>/design/<surface>.md` for each plus `.bb/<slug>/design/README.md`:
 
 ```markdown
-# Design — <slug>
+# Design: <slug>
 
 > Gerado por /bb:brisar em <data>. Marca: <brand>.
 
-Surfaces nesta sessão (ordem sugerida — desenhe de cima para baixo):
+Surfaces nesta sessão (ordem sugerida, desenhe de cima para baixo):
 
-1. [<surface-1>](./<surface-1>.md) — <breve descrição inferida>
-2. [<surface-2>](./<surface-2>.md) — ...
+1. [<surface-1>](./<surface-1>.md), <breve descrição inferida>
+2. [<surface-2>](./<surface-2>.md), ...
 3. ...
 
 ## Por que essa ordem
 
 A regra geral:
 
-1. **Começo pelas surfaces de "default state"** — telas que o usuário vê na maior parte do tempo.
-2. **Depois empty/loading** — estados frequentes mas não-default.
-3. **Depois error/edge** — críticos mas raros.
+1. **Começo pelas surfaces de "default state"**: telas que o usuário vê na maior parte do tempo.
+2. **Depois empty/loading**: estados frequentes mas não-default.
+3. **Depois error/edge**: críticos mas raros.
 4. **Por último, transições e overlays** (modais, drawers, sheets).
 
-Se sua estrutura é diferente, edite este README à vontade — é seu projeto.
+Se sua estrutura é diferente, edite este README à vontade. É seu projeto.
 
 ## Como construir
 
-Rode `/bb:brisar` de novo na pasta do projeto — ele detecta o projeto e oferece a fase Develop. A fase lê `design-context/` para tokens/componentes, e o arquivo desta pasta para o brief da surface específica. Recomendo desenhar uma surface por vez.
+Rode `/bb:brisar` de novo na pasta do projeto. Ele detecta o projeto e oferece a fase Develop. A fase lê `design-context/` para tokens/componentes, e o arquivo desta pasta para o brief da surface específica. Recomendo desenhar uma surface por vez.
 ```
 
-## Step 3 — Generate one file per surface
+## Step 3: generate one file per surface
 
 Template:
 
 ```markdown
 # <Surface name title-cased>
 
-> Surface de <slug> — gerado por /bb:brisar.
+> Surface de <slug>, gerado por /bb:brisar.
 > Marca: <brand> · Fidelidade: <fidelity>
 
 ## Hierarquia visual
@@ -96,29 +96,29 @@ Examples:
 - "vazio" → anchor: illustration + heading · secondary: primary CTA · tertiary: docs link
 - "resultados" → anchor: results list · secondary: side filters · tertiary: pagination
 
-Each bullet in one sentence. Do not write more than 5 bullets — if you need to, rethink the surface.]
+Each bullet in one sentence. Do not write more than 5 bullets. If you need to, rethink the surface.]
 
 ## Componentes do DS a usar
 
-[List 3-7 components from `design-context/components.md` that fit here. For each, say "for X" or "for Y" — do not blindly copy the list.
+[List 3-7 components from `design-context/components.md` that fit here. For each, say "for X" or "for Y". Do not blindly copy the list.
 
 Examples:
 
-- `Text Input` — for the main search field
-- `Button (Primary)` — "Search" CTA
-- `Tag / Pill` — for the recent searches history
-- `Feedback Banner (info)` — for tip of the day (optional)
+- `Text Input`: for the main search field
+- `Button (Primary)`: "search" CTA
+- `Tag / Pill`: for the recent searches history
+- `Feedback Banner (info)`: for tip of the day (optional)
 
 If any component that fits is NOT in scope (see `components.md`), list it in "Notes → DS gaps" below, not here.]
 
 ## Estados a desenhar
 
-[Always 4 minimum states — adapt to the context. Each on a single line:
+[Always 4 minimum states, adapt to the context. Each on a single line:
 
-- **Default** — [what appears when the surface is healthy and has data]
-- **Loading** — [what appears while loading; skeleton or spinner]
-- **Empty** — [what appears when there's no data; "how to start" CTA]
-- **Error** — [what appears when it fails; clear message + recovery path]
+- **Default**: [what appears when the surface is healthy and has data]
+- **Loading**: [what appears while loading; skeleton or spinner]
+- **Empty**: [what appears when there's no data; "how to start" CTA]
+- **Error**: [what appears when it fails; clear message + recovery path]
 
 For critical surfaces, also consider: focused, hover, disabled, selected.]
 
@@ -151,9 +151,9 @@ These 3 bullets are enough to break the blank page. The Develop phase and the bu
 Max 3 items. If the list grows, it's a sign that this surface needs more shaping.]
 ```
 
-## Step 4 — Update .brisar/config.yaml and session.yaml
+## Step 4: update .brisar/config.yaml and session.yaml
 
-### config.yaml — fill in `design_path` and `surfaces`
+### config.yaml: fill in `design_path` and `surfaces`
 
 `design_path` is the absolute path of the task folder; each `file` is relative to it. Three surfaces:
 
@@ -187,7 +187,7 @@ surfaces:
     last_updated: <ISO>
 ```
 
-### session.yaml — mark final phase
+### session.yaml: mark final phase
 
 ```yaml
 current_phase: done
@@ -201,7 +201,7 @@ surfaces_confirmed:
   - vazio
 ```
 
-## Inference — how to make decent surfaces.md without being robotic
+## Inference: how to make decent surfaces.md without being robotic
 
 The difference between a useful design.md and a generic one is the **specificity of the original prompt**. Use `intent.raw_prompt` from Phase 1 and `brand.design_md_path` to enrich:
 
@@ -211,8 +211,8 @@ The difference between a useful design.md and a generic one is the **specificity
 
 If the builder asked for "search screen" and the brand is Lexflow, the busca file MUST reflect the composer dark gradient as reference (not Inspira's white input).
 
-When you're lost about what to write in "Visual hierarchy" or "First sketch direction" for a surface, read the brand's entire DESIGN.md once — there will be a concept (DarkGradientCard, HeroTitle two-line accent-split, etc.) that serves as an anchor.
+When you're lost about what to write in "Visual hierarchy" or "First sketch direction" for a surface, read the brand's entire DESIGN.md once. There will be a concept (DarkGradientCard, HeroTitle two-line accent-split, etc.) that serves as an anchor.
 
 ## When a surface does not fit the template
 
-If a surface is fundamentally different (e.g.: API debug surface, command palette, login splash), don't force the template. Adapt design.md to what makes sense. But keep the 5 sections (Hierarchy / Components / States / Sketch / Notes) — they work for 95% of cases and giving them as a backbone avoids a totally improvised design.md.
+If a surface is fundamentally different (e.g.: API debug surface, command palette, login splash), don't force the template. Adapt design.md to what makes sense. But keep the 5 sections (Hierarchy / Components / States / Sketch / Notes). They work for 95% of cases and giving them as a backbone avoids a totally improvised design.md.

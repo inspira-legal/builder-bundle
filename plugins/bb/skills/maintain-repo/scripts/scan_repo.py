@@ -8,7 +8,7 @@ verdict for each PR. Emits ONE schema-versioned JSON object to stdout.
 This script is strictly READ-ONLY: it only calls `gh api` GETs / `gh pr checks`
 and (optionally) `bun outdated`. It never runs `bun install`, never executes a
 package lifecycle script, never writes, and NEVER merges. It carries no merge
-field at all — merge is a human action.
+field at all; merge is a human action.
 
 Usage:
   python scan_repo.py                       # current repo (resolved via gh)
@@ -165,7 +165,7 @@ def classify_title(title: str) -> dict[str, Any]:
 # data collection (read-only)
 # --------------------------------------------------------------------------- #
 def list_open_prs(slug: str, cwd: str | None, max_prs: int) -> list[dict[str, Any]]:
-    # REST list — user.login is reliable for bots here (unlike GraphQL author).
+    # REST list: user.login is reliable for bots here (unlike GraphQL author).
     prs = gh_json(
         ["api", "--paginate", f"/repos/{slug}/pulls?state=open&per_page=100"],
         cwd=cwd,
@@ -319,7 +319,7 @@ def mergeability_verdict(pr: dict[str, Any]) -> dict[str, Any]:
         return {
             "merge_safe": "needs-human",
             "reasons": ["major-version-bump"],
-            "risk_notes": ["breaking; needs local sandboxed test before merge — not auto-tested"],
+            "risk_notes": ["breaking; needs local sandboxed test before merge, not auto-tested"],
         }
 
     # Async / unknown -> needs-human (never collapse to safe/blocked).

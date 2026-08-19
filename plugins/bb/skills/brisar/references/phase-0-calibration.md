@@ -1,4 +1,4 @@
-# Phase 0 — Calibration (1 question)
+# Phase 0: calibration (1 question)
 
 Before the lightning intake (Phase 1), brisar needs to understand WHO is building. A 1-question calibration determines:
 
@@ -16,7 +16,7 @@ Right after the Step 0 pre-flight (session, DS, tooling, detected product), befo
 
 Print a short intro before:
 
-> **/bb:brisar** — antes de começar, me ajuda a calibrar pra te atender melhor.
+> **/bb:brisar**: antes de começar, me ajuda a calibrar pra te atender melhor.
 
 Then `AskUserQuestion`:
 
@@ -28,11 +28,11 @@ Then `AskUserQuestion`:
       "header": "Perfil",
       "options": [
         {
-          "label": "Não tenho repertório técnico — quero protótipo",
+          "label": "Não tenho repertório técnico, quero protótipo",
           "description": "Não conheço git/npm. Quero algo clicável pra validar com stakeholders. Outro time pega o código depois."
         },
         {
-          "label": "Sei mexer em código — vou direto",
+          "label": "Sei mexer em código, vou direto",
           "description": "Tenho git, ambiente configurado, conheço o stack. Quero o mínimo de fricção."
         },
         {
@@ -41,7 +41,7 @@ Then `AskUserQuestion`:
         },
         {
           "label": "Vou mexer em conteúdo/site (Framer)",
-          "description": "Site institucional, copy, design — não código. Não importa se tenho git ou não."
+          "description": "Site institucional, copy, design; não código. Não importa se tenho git ou não."
         }
       ],
       "multiSelect": false
@@ -81,13 +81,13 @@ profile:
   - "Quando precisa estar pronto?"
   - "Você tem noção do visual (Inspira / Lexflow / outro / não sei)?"
   - "Você precisa que o time técnico continue depois? (sim/não)"
-- **Phase 2 (gate) skipped.** Executive doesn't decide on shaping — brisar can SUGGEST /bb:discover as a next step, but doesn't block.
+- **Phase 2 (gate) skipped.** Executive doesn't decide on shaping; brisar can SUGGEST /bb:discover as a next step, but doesn't block.
 - **Phase 3 does NOT scaffold locally with `pnpm install`.** Goes to `prototype-hosted` (generates folder + HANDOFF-DEV.md, makes it explicit that dev picks up later).
 - **Terminal handoff** always includes instruction to pass the prototype + handoff markdown to someone in engineering.
 - **Banned vocabulary in messages:** scaffold, embed, npm, MCP, repo, branch, slug. Use: "pasta", "projeto", "instalar", "ambiente", "nome do projeto".
   - **This binds on every phase that prints, not only the intake.** The first diamond adds its own
-    method names to the list — `divergência`/`divergir`, `reconciliação`, `piso` da pesquisa,
-    `pocket`/`full` — and they get replaced by what they mean ("os caminhos que montei", "a pesquisa
+    method names to the list: `divergência`/`divergir`, `reconciliação`, `piso` da pesquisa,
+    `pocket`/`full`, and they get replaced by what they mean ("os caminhos que montei", "a pesquisa
     mínima"), never annotated. `references/brief.md` carries the mechanical self-check.
 
 ### `builder-senior`
@@ -104,7 +104,7 @@ profile:
 - **Each handoff becomes narrated instruction.** Instead of "run `pnpm install && pnpm dev`", prints:
   > 1. Abra o terminal nessa pasta: `cd <slug>`
   > 2. Instale dependências (vai demorar 1-2min): `pnpm install`
-  > 3. Espere terminar — vai aparecer "done" no final.
+  > 3. Espere terminar. Vai aparecer "done" no final.
   > 4. Inicie o dev server: `pnpm dev`
   > 5. Abra http://localhost:5173 no navegador.
 - **Maturity gate runs normally.**
@@ -113,8 +113,8 @@ profile:
 ### `content`
 
 - **Forces Framer path.** Regardless of detected product, if calibration = content, goes to `references/phase-framer-handoff.md`.
-- **Step 0.4 should have already detected** whether the unframer MCP is present. If missing: falls into `fallback_path: framer-handoff-no-mcp` — generates markdown in cwd that the dev/designer picks up (and mention the builder can add the MCP to their Claude config for the canvas path next time).
-- **Visual direction is GIVEN, not asked.** Content persona does not formulate design — brisar proposes based on product/brand.
+- **Step 0.4 should have already detected** whether the unframer MCP is present. If missing: falls into `fallback_path: framer-handoff-no-mcp`, which generates markdown in cwd that the dev/designer picks up (and mention the builder can add the MCP to their Claude config for the canvas path next time).
+- **Visual direction is GIVEN, not asked.** Content persona does not formulate design; brisar proposes based on product/brand.
 - **Vocabulary:** marketing/design, not dev. Use: "página", "seção", "bloco", "publicar". Avoid: "deploy", "merge", "branch".
 
 ## Cross-validation with preflight
@@ -124,9 +124,9 @@ After the answer, brisar cross-references with what `preflight-tooling.md` detec
 | Answer           | Detected tooling     | What brisar does                                                                                                       |
 | ---------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `builder-senior` | git missing          | "Você marcou que sabe mexer em código mas git não tá instalado aqui. Quer que eu instale, ou prefere outro caminho?"   |
-| `builder-senior` | gh without auth      | "Repos da Inspira são privados — você precisa de `gh auth login`. Faço junto?"                                         |
+| `builder-senior` | gh without auth      | "Repos da Inspira são privados; você precisa de `gh auth login`. Faço junto?"                                          |
 | `content`        | unframer MCP missing | Notes it silently; the Framer phase uses the markdown fallback and tells the builder how to add the MCP for next time. |
-| `executive`      | (any state)          | Doesn't check anything git/MCP — path doesn't require it.                                                              |
+| `executive`      | (any state)          | Doesn't check anything git/MCP; path doesn't require it.                                                               |
 
 ## Fallback
 
@@ -137,4 +137,4 @@ If builder doesn't respond clearly OR free response is ambiguous:
    > "Pra calibrar: você vai mexer no código direto, ou só em conteúdo/protótipo?"
 3. If still uncertain: persists as `builder-junior` and continues. Builder can ask to recalibrate at any time.
 
-One sharp caution: **never guess the persona from the initial prompt** — an executive may write "preciso de uma plataforma X" exactly like a senior. Always run the calibration (ONE question; a second one turns it into a form).
+One sharp caution: **never guess the persona from the initial prompt**. An executive may write "preciso de uma plataforma X" exactly like a senior. Always run the calibration (ONE question; a second one turns it into a form).

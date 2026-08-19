@@ -1,5 +1,5 @@
 ---
-# Product registry — Inspira products that brisar recognizes
+# Product registry: Inspira products that brisar recognizes
 #
 # brisar uses this file to:
 # 1. Detect whether the cwd matches a known product (stateful mode)
@@ -10,7 +10,7 @@
 #
 # Principles:
 # - Brand ≠ product. Inspira (SaaS) and Client Portal share the Inspira brand but are distinct products.
-# - Detection is always by filesystem marker (not by folder name — the folder can have any name in the builder's clone).
+# - Detection is always by filesystem marker (not by folder name; the folder can have any name in the builder's clone).
 # - There is always a fallback_path for builders without permission/git/account.
 #
 # ===== BETA NOTE =====
@@ -30,7 +30,7 @@ products:
     name: "New project (Vite scaffold)"
     type: scaffold
     audience: any
-    detection: [] # never detected — only chosen explicitly
+    detection: [] # never detected, only chosen explicitly
     brand: any # builder chooses in Phase 1
     ds_source: "brisa-ds:any"
     mode_default: scaffold
@@ -58,7 +58,7 @@ detection_logic: |
   Step 0.5 of SKILL.md:
   1. For each product in products[], evaluate `detection[]` against cwd.
   2. Match = ALL markers of the product matching (AND, not OR).
-  3. First match wins — registry order is priority.
+  3. First match wins: registry order is priority.
   4. If no match: log `product: unknown` and proceed to profile calibration.
   5. If unlikely multiple matches: warn in silent log, use the first.
 
@@ -88,12 +88,12 @@ prototype_hosted:
     brisar generates a scaffolded Vite prototype BUT runs it in sandbox/hosted (does not try local npm install).
     Output: link to the prototype + handoff .md written for a dev to take over later.
   output_artifacts:
-    - "<slug>/ — scaffolded folder"
-    - "<slug>/HANDOFF-DEV.md — instructions for the dev to pick up"
-    - ".bb/<slug>/design.md (or design/<surface>.md) — visual direction"
+    - "<slug>/: scaffolded folder"
+    - "<slug>/HANDOFF-DEV.md: instructions for the dev to pick up"
+    - ".bb/<slug>/design.md (or design/<surface>.md): visual direction"
   caveats: |
     The builder won't be able to run `pnpm install && pnpm dev` locally.
-    brisar should say this explicitly: "this prototype is for the dev to pick up — you pass the link
+    brisar should say this explicitly: "this prototype is for the dev to pick up; you pass the link
     + HANDOFF-DEV.md."
 
 # === Adding a new product ===
@@ -106,4 +106,4 @@ how_to_add_product: |
   5. List requires_mcp if any.
   6. Update last_updated.
 
-  brisar reads the registry at every Step 0 — no restart needed.
+  brisar reads the registry at every Step 0; no restart needed.

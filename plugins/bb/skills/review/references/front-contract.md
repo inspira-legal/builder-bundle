@@ -1,27 +1,27 @@
-# Front: contract — the diff against the spec that specified it
+# Front: contract, the diff against the spec that specified it
 
 Available only when a spec matches this branch (resolve per the plugin-root
-`references/spec-state.md` — `.bb/<slug>/spec.md`). It's the one front that
+`references/spec-state.md`: `.bb/<slug>/spec.md`). It's the one front that
 can catch a diff where every line is correct and the wrong thing got built.
 
 ## The two questions
 
-1. **Did it build the specified thing?** Walk the spec's `## Comportamento` map —
-   `## behavior` on a spec written before the rename, same map. Each
+1. **Did it build the specified thing?** Walk the spec's `## Comportamento` map
+   (`## behavior` on a spec written before the rename, same map). Each
    `WHEN … THEN …` row is an acceptance row: find the code that implements it and
    the test that pins it. A mapped row with no corresponding code **or** no test
-   is a finding — cite the row verbatim and say which half is missing.
+   is a finding: cite the row verbatim and say which half is missing.
 2. **Did it build only that?** Anything in the diff that no spec section asked
    for is scope drift: name it, and say whether it looks like a necessary
    dependency of the specified work (fine, mention once) or an unrelated ride-along
-   (a finding — it belongs in its own branch).
+   (a finding: it belongs in its own branch).
 
 ## Also read the upstream sections when present
 
 `## Problema`, `## Hipótese`, `## Encaixe`, and `## Cortes` (written by
-`/bb:discover`) bound the work too — `## problem`, `## hypothesis`, `## fit` and
+`/bb:discover`) bound the work too: `## problem`, `## hypothesis`, `## fit` and
 `## cuts` on a spec written before the rename, same sections. A diff that implements something `## Cortes`
-explicitly deferred is a finding with a strong citation — the decision to leave it
+explicitly deferred is a finding with a strong citation. The decision to leave it
 out was already made.
 
 ## Finding shape

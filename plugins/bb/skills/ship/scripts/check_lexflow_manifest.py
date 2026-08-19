@@ -3,13 +3,13 @@
 
 Covers only the stable subset that is worth checking outside the platform CLI:
 that ``lexflow.toml`` parses, declares ``[app]``, and that every ``source`` it
-references resolves to a real file. Everything deeper — slug format, duplicate
-slugs, connection kinds, secret scope — is validated by ``lexflow deploy``
+references resolves to a real file. Everything deeper (slug format, duplicate
+slugs, connection kinds, secret scope) is validated by ``lexflow deploy``
 itself (``manifest.py``/``load_manifest``, which runs before any network call);
 reimplementing it here would only drift from upstream.
 
 The value this adds over the CLI: it runs in milliseconds, needs no network,
-and works while logged out — so ship has something to gate on even when the
+and works while logged out, so ship has something to gate on even when the
 platform is unreachable.
 
 With ``--changed``, it also maps changed files onto the deployments they affect.
@@ -20,7 +20,7 @@ that matches neither is reported as ``unmatched`` and ``affects_deploy`` becomes
 ``"unknown"``: absence of a text reference is weak evidence, so the call of
 whether a deploy is warranted stays with the caller reading the YAMLs.
 
-Every exit prints the same envelope — ``ok``, ``findings``, and the rest —
+Every exit prints the same envelope (``ok``, ``findings``, and the rest),
 so the caller reads one shape whatever happened.
 Exit codes: 0 clean, 1 findings in the app, 2 cannot check.
 """
@@ -166,7 +166,7 @@ def main() -> int:
 
     if tomllib is None:
         return _emit(
-            {"ok": False, "error": "tomllib requires Python 3.11+ — cannot pre-check locally."}, 2
+            {"ok": False, "error": "tomllib requires Python 3.11+; cannot pre-check locally."}, 2
         )
 
     app_dir = Path(args.dir)

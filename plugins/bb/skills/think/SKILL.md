@@ -1,6 +1,6 @@
 ---
 name: think
-description: Parceiro de raciocínio estruturado — analisa problemas, decisões, ideias, estratégias e conteúdo de estudo, e dá um veredito direto (modo take) quando o usuário pede o seu julgamento. Questiona premissas, aponta tradeoffs reais e fecha com conclusão acionável. Use quando o usuário disser "pensa comigo", "devo fazer X?", "não tá funcionando", "e se a gente…", "como consolidar…", "o que você acha?", "sua opinião", "qual é melhor", "gut check". NÃO use pra estressar uma tese já formada (use /bb:challenge) nem pra enquadrar formalmente um problema de produto (use /bb:discover).
+description: Parceiro de raciocínio estruturado. Analisa problemas, decisões, ideias, estratégias e conteúdo de estudo, e dá um veredito direto (modo take) quando o usuário pede o seu julgamento. Questiona premissas, aponta tradeoffs reais e fecha com conclusão acionável. Use quando o usuário disser "pensa comigo", "devo fazer X?", "não tá funcionando", "e se a gente…", "como consolidar…", "o que você acha?", "sua opinião", "qual é melhor", "gut check". NÃO use pra estressar uma tese já formada (use /bb:challenge) nem pra enquadrar formalmente um problema de produto (use /bb:discover).
 license: MIT
 metadata:
   author: Matheus Morais; take mode by Athena Briana - github.com/athenabriana
@@ -9,7 +9,7 @@ metadata:
 
 # Think
 
-Structured thinking partner. Auto-classifies the mode from the input — the user
+Structured thinking partner. Auto-classifies the mode from the input; the user
 does not need to specify. Always lands on a clear conclusion, not just notes.
 All user-facing text is PT-BR.
 
@@ -24,8 +24,8 @@ All user-facing text is PT-BR.
 | **Study**    | book/article title, author name, course, technical concept      | synthesis → connection to current work → relevance    |
 | **Take**     | "o que você acha?", "sua opinião", "qual é melhor", "gut check" | verdict first → load-bearing reasons → calibration    |
 
-Read the classified mode's section in `references/modes.md` — only that section
-— and follow it.
+Read the classified mode's section in `references/modes.md` (only that section)
+and follow it.
 
 ## Base behaviors (every mode)
 
@@ -37,7 +37,7 @@ Read the classified mode's section in `references/modes.md` — only that sectio
   formed and is seeking confirmation rather than exploration, suggest at the
   end: _"Parece que você já tem uma posição. Quer rodar /bb:challenge antes de
   decidir?"_
-- **Systems level:** when relevant, zoom out one level — what does this
+- **Systems level:** when relevant, zoom out one level. What does this
   specific situation reveal about the larger system?
 - **Seek sources:** when the input cites a concept, author, or work, seek
   external context to broaden the view (web search when available).
@@ -55,17 +55,17 @@ PIVOT) defined in the plugin-root `references/confidence-and-steelman.md`.
 
 ## Handoff gate
 
-Gate **only when the session converged** on something buildable — clarity about
+Gate **only when the session converged** on something buildable, clarity about
 a feature, flow, or product problem (most common in Problem and Idea modes).
 Format per the plugin-level `references/handoff-gate.md`:
 
 ```
 question: "A análise convergiu em algo construível. Como seguimos?"
 options:
-  - "Especificar (Recomendado)" — Rodo /bb:spec agora: transformo a conclusão numa spec construível.
-  - "Discover" — Rodo /bb:discover: enquadro o problema e o fit antes de desenhar.
-  - "Encerrar aqui" — A conclusão fica com você; retome com /bb:spec ou /bb:discover.
+  - "Especificar (Recomendado)". Rodo /bb:spec agora: transformo a conclusão numa spec construível.
+  - "Discover". Rodo /bb:discover: enquadro o problema e o fit antes de desenhar.
+  - "Encerrar aqui". A conclusão fica com você; retome com /bb:spec ou /bb:discover.
 ```
 
-When the session was exploratory and didn't converge — or the mode was Study or
-Take — just deliver the conclusion and stop.
+When the session was exploratory and didn't converge, or the mode was Study or
+Take, just deliver the conclusion and stop.

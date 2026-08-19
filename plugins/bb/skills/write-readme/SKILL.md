@@ -7,16 +7,15 @@ metadata:
   version: 2.1.0
 ---
 
-# README Generator
+# README generator
 
 Write READMEs that respect the reader: a centered identity block, then copy-paste commands. Prose only where a command can't speak for itself.
 
 ## Typography
 
-Two rules apply to every line of output:
+A README is English prose this plugin writes outward, so the plugin-level `references/doc-style.md` governs it: voice, the dash rule, code font, lists and tables. One house rule sits on top and wins where the two meet:
 
 - **All lowercase**: headings, lead-ins, taglines, badge labels, table text. Verbatim tokens (commands, filenames, flags) and acronyms (PR, CI, CLI) keep their casing.
-- **Commas, not em dashes**: where an em dash would go, write a comma (or a colon before an expansion).
 
 ## Style contract
 
