@@ -44,6 +44,11 @@ contract, the schema and the reading rules live in the plugin-level
    Checked is `true`, unchecked is `false`. Nothing checked is a valid answer, and it is
    the most careful profile there is.
 
+   **Pre-fill from an old profile when there is one.** A project that brisar ran before the
+   config existed carries `profile.persona_id` in its `.brisar/session.yaml`. Derive the
+   four flags from it (the table in `references/bb-config.md`), pre-check them, and say in
+   one line where they came from so the person corrects instead of re-answering.
+
 5. **Write the file.** Create `~/.claude` if it is missing. `version: 1`, the four flags,
    and `calibrated_at` as today's ISO date. Write the whole file; never merge into a
    shape you did not read.
@@ -61,6 +66,7 @@ contract, the schema and the reading rules live in the plugin-level
 | the file is malformed                    | treat as no profile, say the old file will be replaced, calibrate                  |
 | `~/.claude/` cannot be written           | say where it failed and that the session runs uncalibrated; never retry elsewhere  |
 | the person checks nothing                | valid; write all four `false`                                                      |
+| an old `profile.persona_id` in the project | derived into the four flags, pre-checked; the person confirms and the file is written |
 | called by another skill mid task         | calibrate, write, and hand back; the answers apply to the rest of this session too |
 
 The last row is the one to get right: the hook cannot re-run mid session, so after

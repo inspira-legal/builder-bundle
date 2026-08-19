@@ -255,7 +255,7 @@ Happy path, first time:
 - [x] **9. Resume reads the brief**: the resume globs `.bb/*/brief-design.md` and reads
       `phase` from the frontmatter; a `.brisar/` found on the way is read once
       → behaviors 13, 14, 16 · dep: 8 · verify: reading
-- [ ] **10. Derive an old persona**: a `.brisar/session.yaml` with `profile.persona_id`
+- [x] **10. Derive an old persona**: a `.brisar/session.yaml` with `profile.persona_id`
       and no config is turned into the four flags once
       → behavior 15 · dep: 1, 9 · verify: reading
 - [x] **11. The machine paths find their owner**: `surfaces[]` moves into `design.md`'s

@@ -67,3 +67,27 @@ and authenticated is the preflight's question, detected and never asked.
 `step_by_step` decides how a command is written, never what runs. `pnpm install && pnpm
 dev` on one side; on the other the same commands as numbered steps, each with where to
 run it, how long it takes, and what success prints.
+
+## Deriving an old profile
+
+Before the config existed, brisar kept a `profile.persona_id` inside a project's
+`.brisar/session.yaml`. A person who answered it once should not have to answer again, so
+the first bb run that finds one and has no config derives the four flags from it:
+
+| the old id       | `reads_code` | `uses_terminal` | `step_by_step` | `technical_vocabulary` |
+| ---------------- | ------------ | --------------- | -------------- | ---------------------- |
+| `builder-senior` | true         | true            | false          | true                   |
+| `builder-junior` | true         | true            | true           | true                   |
+| `executive`      | false        | false           | true           | false                  |
+
+`content` was never a person, it was the Framer output path (`brand.workflow ==
+framer-harpa`, a project fact). It derives nothing: the checklist gets asked.
+
+Three rules bound the derivation:
+
+- **Only when there is no config.** A config on disk is the person's own answer and always
+  wins; an old id in a project is never read over it.
+- **Derived once.** The derivation pre-fills the `/bb:config` checklist, the person
+  confirms or corrects, and `/bb:config` writes the file, which is what makes it stop being
+  derived. `/bb:config` stays the only writer.
+- **The old file is left alone.** `.brisar/` is read, never written and never deleted.

@@ -135,7 +135,10 @@ over a brief that already exists is the most expensive mistake available here, a
 the record of rounds the brief was keeping.
 
 A `.brisar/` folder from an older run may still be sitting in the project. Read it once for
-whatever context it holds, and leave it where it is. Nothing is written back to it.
+whatever context it holds, and leave it where it is. Nothing is written back to it. If its
+`session.yaml` carries a `profile.persona_id` and there is no `~/.claude/bb.config.json`,
+that is an answer the person already gave: derive the four flags from it (the table in the
+plugin-level `references/bb-config.md`) and offer `/bb:config` to write them down.
 
 ### 0.2: detect Brisa DS
 
