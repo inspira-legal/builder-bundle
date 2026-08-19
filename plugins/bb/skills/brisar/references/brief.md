@@ -245,12 +245,12 @@ to choose from", instead of "diverge into directions".
 
 This is the list, and it is the one every phase that prints user-facing text reads:
 
-| Banned                                                       | Say instead                       |
-| ------------------------------------------------------------ | --------------------------------- |
-| `scaffold`, `embed`, `repo`, `branch`, `slug`, `npm`, `MCP`  | folder, project, install, page    |
-| `divergence`, `diverge`                                      | the paths I put together          |
-| `reconciliation`                                             | what the research changed         |
-| the research floor, `pocket`, `full`                         | the minimum research              |
+| Banned                                                      | Say instead                    |
+| ----------------------------------------------------------- | ------------------------------ |
+| `scaffold`, `embed`, `repo`, `branch`, `slug`, `npm`, `MCP` | folder, project, install, page |
+| `divergence`, `diverge`                                     | the paths I put together       |
+| `reconciliation`                                            | what the research changed      |
+| the research floor, `pocket`, `full`                        | the minimum research           |
 
 Each hit gets replaced by what it means for the reader, never annotated.
 

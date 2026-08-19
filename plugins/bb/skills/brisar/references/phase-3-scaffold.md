@@ -265,7 +265,7 @@ pnpm dev
 
 - `src/`: React code. Still empty; the surfaces will fill it.
 - `design-context/`: the source for /bb:brisar's Develop phase. Don't edit it by hand unless you know what you're doing.
-The Develop phase finds both by convention: `design-context/` at this folder's root, and the visual direction in the task folder.
+  The Develop phase finds both by convention: `design-context/` at this folder's root, and the visual direction in the task folder.
 
 The visual direction for each surface lives in `.bb/<slug>/`, next to the spec. Read it before designing.
 

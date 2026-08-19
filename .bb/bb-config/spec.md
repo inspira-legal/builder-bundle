@@ -58,11 +58,11 @@ asks today:
 }
 ```
 
-| key                    | what `/bb:config` asks                                     | the hint beside it       |
-| ---------------------- | ---------------------------------------------------------- | ------------------------ |
-| `reads_code`           | Você abre e edita o código, ou quer só o resultado?        | quem só quer o resultado |
-| `uses_terminal`        | Você roda comandos e git no dia a dia?                     | quem nunca abriu um      |
-| `step_by_step`         | Quer que as partes técnicas sejam descritas passo a passo? | ideal para não técnicas  |
+| key                    | what `/bb:config` asks                                     | the hint beside it        |
+| ---------------------- | ---------------------------------------------------------- | ------------------------- |
+| `reads_code`           | Você abre e edita o código, ou quer só o resultado?        | quem só quer o resultado  |
+| `uses_terminal`        | Você roda comandos e git no dia a dia?                     | quem nunca abriu um       |
+| `step_by_step`         | Quer que as partes técnicas sejam descritas passo a passo? | ideal para não técnicas   |
 | `technical_vocabulary` | Termos como `scaffold` e `branch` passam sem tradução?     | quem prefere em português |
 
 Every option carries that hint beside it. The question names a habit and the hint names
@@ -202,28 +202,28 @@ Happy path, first time:
 5. Phase 1 confirms the slug. The first write is `.bb/<slug>/brief-design.md`, whose
    frontmatter says which phase is open.
 
-| WHEN                                            | THEN                                                          |
-| ----------------------------------------------- | ------------------------------------------------------------- |
-| no config file                                  | frame carries the invitation naming `/bb:config`              |
-| config with a valid profile                     | frame carries the behavior the four answers imply             |
-| config unreadable or malformed                  | treated as missing; the session is never blocked              |
-| a flag absent from the file                     | reads as `false`                                              |
-| `/bb:config` with no file                       | calibrates, writes the file, prints what it wrote             |
-| `/bb:config` with a file                        | shows the current profile, offers recalibrate or keep         |
-| brisar with a config                            | no profile question; each phase reads the flag it needs       |
-| brisar with no config                           | calls the `/bb:config` calibration, then continues            |
-| `step_by_step` is true at a handoff             | commands print as numbered steps with what they print         |
-| `technical_vocabulary` is false in any phase    | `scaffold`, `embed`, `MCP`, `branch` are replaced, not glossed |
-| the plugin updates to a new version             | the config survives; it lives outside the install path        |
-| intake runs before the slug is confirmed        | nothing is written to disk yet                                |
-| a project has `.brisar/` and no brief           | read it once for the phase, then write only the brief         |
-| a project has both                              | the brief's frontmatter is the one read                       |
-| `.brisar/session.yaml` carries an old persona   | derived into the four flags once, written to the config       |
-| a completed session restarts                    | the brief gains round `N+1`; earlier rounds stay readable     |
-| `~/.claude/` cannot be written                  | `/bb:config` says so and the session runs uncalibrated        |
-| the config changes while a session is open      | it applies from the next session; `/bb:config` says so        |
-| a front is skipped or a direction discarded     | it lands in the brief's `## Left out` with its reason         |
-| Develop finishes a surface                      | it lands in `design.md`'s frontmatter, not in a state file    |
+| WHEN                                          | THEN                                                           |
+| --------------------------------------------- | -------------------------------------------------------------- |
+| no config file                                | frame carries the invitation naming `/bb:config`               |
+| config with a valid profile                   | frame carries the behavior the four answers imply              |
+| config unreadable or malformed                | treated as missing; the session is never blocked               |
+| a flag absent from the file                   | reads as `false`                                               |
+| `/bb:config` with no file                     | calibrates, writes the file, prints what it wrote              |
+| `/bb:config` with a file                      | shows the current profile, offers recalibrate or keep          |
+| brisar with a config                          | no profile question; each phase reads the flag it needs        |
+| brisar with no config                         | calls the `/bb:config` calibration, then continues             |
+| `step_by_step` is true at a handoff           | commands print as numbered steps with what they print          |
+| `technical_vocabulary` is false in any phase  | `scaffold`, `embed`, `MCP`, `branch` are replaced, not glossed |
+| the plugin updates to a new version           | the config survives; it lives outside the install path         |
+| intake runs before the slug is confirmed      | nothing is written to disk yet                                 |
+| a project has `.brisar/` and no brief         | read it once for the phase, then write only the brief          |
+| a project has both                            | the brief's frontmatter is the one read                        |
+| `.brisar/session.yaml` carries an old persona | derived into the four flags once, written to the config        |
+| a completed session restarts                  | the brief gains round `N+1`; earlier rounds stay readable      |
+| `~/.claude/` cannot be written                | `/bb:config` says so and the session runs uncalibrated         |
+| the config changes while a session is open    | it applies from the next session; `/bb:config` says so         |
+| a front is skipped or a direction discarded   | it lands in the brief's `## Left out` with its reason          |
+| Develop finishes a surface                    | it lands in `design.md`'s frontmatter, not in a state file     |
 
 ## Tasks
 

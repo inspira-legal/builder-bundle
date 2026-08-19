@@ -432,12 +432,12 @@ There is no state file to fill. What the research produced goes into
 | What the research holds                                 | Where it lands in the brief                    |
 | ------------------------------------------------------- | ---------------------------------------------- |
 | the findings of each front that ran                     | findings by front, one block per front         |
-| the mode line (`pocket` or `full`) and which fronts ran  | the round's opening line                       |
+| the mode line (`pocket` or `full`) and which fronts ran | the round's opening line                       |
 | a front skipped, and why                                | `## Left out`, one row with the reason         |
-| a front degraded, and which conclusions weaken           | `## Left out`, with what it invalidates        |
-| the DS source actually read, its path and its authority  | findings, Front B, with the path and the value |
-| the bench's route and corpus size                        | findings, Front A                              |
-| a path worth recording for next time                     | the suggestion, said out loud to the builder   |
+| a front degraded, and which conclusions weaken          | `## Left out`, with what it invalidates        |
+| the DS source actually read, its path and its authority | findings, Front B, with the path and the value |
+| the bench's route and corpus size                       | findings, Front A                              |
+| a path worth recording for next time                    | the suggestion, said out loud to the builder   |
 
 Set the frontmatter `phase: brief`.
 

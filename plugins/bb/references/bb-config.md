@@ -29,7 +29,7 @@ and `json` is stdlib; a hook that must never fail cannot carry a dependency.
 ```
 
 | flag                   | true means                                              |
-| ---------------------- | -------------------------------------------------------- |
+| ---------------------- | ------------------------------------------------------- |
 | `reads_code`           | opens and edits the code, wants the reasoning behind it |
 | `uses_terminal`        | runs commands and git without being walked through them |
 | `step_by_step`         | wants the technical parts described one step at a time  |
@@ -55,11 +55,11 @@ Each flag answers one question, and a reader reads the one it needs rather than
 inferring a whole person from a single id.
 
 | flag                   | who reads it                                                    |
-| ---------------------- | ----------------------------------------------------------------- |
-| `reads_code`           | the intake's depth, the medium's lean, how a decision is argued  |
-| `uses_terminal`        | scaffold or hosted, and whether the preflight walks through git  |
-| `step_by_step`         | whether a command prints as one line or as numbered steps        |
-| `technical_vocabulary` | whether `scaffold`, `embed`, `MCP` and `branch` are replaced     |
+| ---------------------- | --------------------------------------------------------------- |
+| `reads_code`           | the intake's depth, the medium's lean, how a decision is argued |
+| `uses_terminal`        | scaffold or hosted, and whether the preflight walks through git |
+| `step_by_step`         | whether a command prints as one line or as numbered steps       |
+| `technical_vocabulary` | whether `scaffold`, `embed`, `MCP` and `branch` are replaced    |
 
 `uses_terminal` is about knowing how, not about having it installed. What is installed
 and authenticated is the preflight's question, detected and never asked.

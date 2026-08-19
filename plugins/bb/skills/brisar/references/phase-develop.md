@@ -234,10 +234,10 @@ One sharp caution: **never edit `tokens.md` or `components.md`**. The DS source 
 
 ## Cooperation contract
 
-| Artifact                                    | Produced by | Consumed by            |
-| ------------------------------------------- | ----------- | ---------------------- |
-| `<project>/design-context/tokens.md`        | Phase 3     | Develop (Step 0, read) |
-| `<project>/design-context/components.md`    | Phase 3     | Develop (Step 0, read) |
-| `.bb/<slug>/design.md` (or `design/*.md`)   | Phase 4     | Develop (Step 2)       |
-| `<project>/src/<surface>.tsx` (or .html)    | Develop     | Deliver, dev           |
-| `.bb/<slug>/develop-notes.md`               | Develop     | Deliver, human builder |
+| Artifact                                  | Produced by | Consumed by            |
+| ----------------------------------------- | ----------- | ---------------------- |
+| `<project>/design-context/tokens.md`      | Phase 3     | Develop (Step 0, read) |
+| `<project>/design-context/components.md`  | Phase 3     | Develop (Step 0, read) |
+| `.bb/<slug>/design.md` (or `design/*.md`) | Phase 4     | Develop (Step 2)       |
+| `<project>/src/<surface>.tsx` (or .html)  | Develop     | Deliver, dev           |
+| `.bb/<slug>/develop-notes.md`             | Develop     | Deliver, human builder |

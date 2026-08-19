@@ -23,8 +23,8 @@ one plugin, `bb`; 15 skills in 6 trilhas, plus `/bb:config`.
 
 ### configurar: who is on the other side
 
-| skill        | description                                                                                                                                       |
-| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| skill        | description                                                                                                                                                                                                                                                            |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/bb:config` | asks four questions once (do you read the code, do you run commands, do you want the technical parts step by step, does technical vocabulary read fine) and writes `~/.claude/bb.config.json`. the hook carries the answers into every session, so no skill asks again |
 
 ### pensar: frame and decide before building
@@ -61,8 +61,8 @@ one plugin, `bb`; 15 skills in 6 trilhas, plus `/bb:config`.
 
 ### design: from the idea to a high-fidelity surface
 
-| skill        | description                                                                                                                                                                                        |
-| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| skill        | description                                                                                                                                                                |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/bb:brisar` | end-to-end design journey: scaffolds with the brand DS, writes a visual direction per surface, then builds (Develop) and reviews or hands off (Deliver) as internal phases |
 
 ### pesquisar and document

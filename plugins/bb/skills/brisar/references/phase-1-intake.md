@@ -10,12 +10,12 @@ It reads what the builder typed + `preflight.product.detected` + whether the rep
 
 ### Shortcut matrix
 
-| Signal in raw_prompt                                                                                                                       | Cwd                                                 | Shortcut          | Target                   | What brisar does                                                                                                                         |
-| ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- | ----------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| "one screen", "design only", "quick prototype", "design X", "build screen Y"                                                               | already-scaffolded repo (has `design-context/`)     | `develop-direct`  | Develop phase (internal) | Skips intake. After confirmation, jumps to `references/phase-develop.md`.                                                                |
-| "review this design", "I need docs for the dev", "before merging", "close the deliver", "prepare the PR"                                   | repo with surfaces in `src/` or `<surface>.html`    | `deliver-direct`  | Deliver phase (internal) | Skips intake. After confirmation, jumps to `references/phase-deliver.md`.                                                                |
-| "shape it", "mature the problem", "is it worth it", "validate the market", "is there demand", "I need to cut scope", "prioritize features" | any                                                 | `discover-direct` | `/bb:discover`           | Skips intake. Suggests `/bb:discover` (it runs its own intake) and STOPS, never auto-invokes.                                            |
-| "I want to start", "new project", "scaffold it", "screen X in brand Y" (default)                                                           | any                                                 | none              | (follows normal flow)    | Variant branch below.                                                                                                                    |
+| Signal in raw_prompt                                                                                                                       | Cwd                                              | Shortcut          | Target                   | What brisar does                                                                              |
+| ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------ | ----------------- | ------------------------ | --------------------------------------------------------------------------------------------- |
+| "one screen", "design only", "quick prototype", "design X", "build screen Y"                                                               | already-scaffolded repo (has `design-context/`)  | `develop-direct`  | Develop phase (internal) | Skips intake. After confirmation, jumps to `references/phase-develop.md`.                     |
+| "review this design", "I need docs for the dev", "before merging", "close the deliver", "prepare the PR"                                   | repo with surfaces in `src/` or `<surface>.html` | `deliver-direct`  | Deliver phase (internal) | Skips intake. After confirmation, jumps to `references/phase-deliver.md`.                     |
+| "shape it", "mature the problem", "is it worth it", "validate the market", "is there demand", "I need to cut scope", "prioritize features" | any                                              | `discover-direct` | `/bb:discover`           | Skips intake. Suggests `/bb:discover` (it runs its own intake) and STOPS, never auto-invokes. |
+| "I want to start", "new project", "scaffold it", "screen X in brand Y" (default)                                                           | any                                              | none              | (follows normal flow)    | Variant branch below.                                                                         |
 
 ### When the shortcut fires
 
@@ -610,4 +610,3 @@ artifact will live, the appetite, and whether this is exploration or something e
 picks up later. The provisional surfaces go in the same opening, as a list inferred from the
 prompt, not confirmed: Phase 4 refines it, and the gate reads it to decide how much context
 it needs.
-

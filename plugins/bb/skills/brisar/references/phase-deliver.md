@@ -155,11 +155,11 @@ If `ci_code_review_present: false` and the chosen mode includes the handoff doc,
 
 Lazy-load `references/deliver-modes.md`. Do not load all modes in Step 0.
 
-| Mode                | Loads                                 | Output                                        |
-| ------------------- | ------------------------------------- | --------------------------------------------- |
-| Design review       | when chosen                           | `.bb/<slug>/design-review.md`                 |
-| Accessibility audit | when chosen or after design review    | `.bb/<slug>/accessibility-checklist.md`       |
-| Handoff doc         | when chosen or at end of the pipeline | `.bb/<slug>/handoff.md`                       |
+| Mode                | Loads                                 | Output                                  |
+| ------------------- | ------------------------------------- | --------------------------------------- |
+| Design review       | when chosen                           | `.bb/<slug>/design-review.md`           |
+| Accessibility audit | when chosen or after design review    | `.bb/<slug>/accessibility-checklist.md` |
+| Handoff doc         | when chosen or at end of the pipeline | `.bb/<slug>/handoff.md`                 |
 
 ### Stance per mode
 
@@ -285,13 +285,13 @@ And a second: **do not turn the review into a redesign.** The strongest failure 
 
 ## Cooperation contract
 
-| Artifact                                      | Produced by                           | Consumed by                                                                                       |
-| --------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `.bb/<slug>/brief-design.md`                  | Brief (updated here, living contract) | Human, the implementing dev, later rounds                                                         |
-| `.bb/<slug>/spec.md`                          | `/bb:spec` (delta proposed here)      | `/bb:implement`, `/bb:delegate`                                                                   |
-| `.bb/<slug>/design-review.md`                 | Deliver                               | Human (responds to issues), `/bb:review`, Develop phase (re-prototype if blockers)                |
-| `.bb/<slug>/accessibility-checklist.md`       | Deliver                               | Human (resolves before merge), CI (reference)                                                     |
-| `.bb/<slug>/handoff.md`                       | Deliver                               | Developer / agent who implements, `/bb:spec`, `/bb:review`                                        |
+| Artifact                                | Produced by                           | Consumed by                                                                        |
+| --------------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------- |
+| `.bb/<slug>/brief-design.md`            | Brief (updated here, living contract) | Human, the implementing dev, later rounds                                          |
+| `.bb/<slug>/spec.md`                    | `/bb:spec` (delta proposed here)      | `/bb:implement`, `/bb:delegate`                                                    |
+| `.bb/<slug>/design-review.md`           | Deliver                               | Human (responds to issues), `/bb:review`, Develop phase (re-prototype if blockers) |
+| `.bb/<slug>/accessibility-checklist.md` | Deliver                               | Human (resolves before merge), CI (reference)                                      |
+| `.bb/<slug>/handoff.md`                 | Deliver                               | Developer / agent who implements, `/bb:spec`, `/bb:review`                         |
 
 ### Related skills (suggest, never invoke)
 
