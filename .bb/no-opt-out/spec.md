@@ -213,7 +213,7 @@ one spec: making every build fresh is what makes the review necessary.
       `tools` and no `model`, carrying the omission, contradiction and surplus mandate, the
       reuse-note check, the buildable-by-a-fresh-agent question, and the weighed return
       → behaviors 9, 10 · dep: — · verify: reading
-- [ ] **6. spec**: step 6 dispatches the agent unconditionally in place of the
+- [x] **6. spec**: step 6 dispatches the agent unconditionally in place of the
       "Medium-and-up" qualifier, with the one-load-bearing-finding trigger for round two and
       the two-round ceiling; step 7's gate states the review's status every time and blocks
       on a surviving `load-bearing` finding in `## Open` the way it blocks on a decision
