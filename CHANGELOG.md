@@ -31,23 +31,41 @@ which the skill can read for itself.
   one returned a `load-bearing` finding, and two rounds is the ceiling; a survivor
   goes to `## Open` and the gate blocks on it.
 - **`.github/scripts/validate-workflow-script.ts`**, the guard that replaces most of
-  the old pre-invoke checklist: the script parses, `export const meta` is a pure
-  literal, there is exactly one `parallel()`, and `Date.now()`, `new Date()` and
-  `Math.random()` appear nowhere. It runs inside `package.json`'s `validate`, which is
-  what lefthook's pre-commit job runs, and as its own step in `validate.yml`.
+  the old pre-invoke checklist. It blanks comment, string, template and regex bodies
+  first, so every check reads code and not text, then asks: the script parses;
+  `export const meta` is present and a pure literal (no interpolation, no spread, and no
+  bare word other than `true`, `false`, `null`, `undefined`); `meta.phases`, when
+  declared, has one entry per `phase()` call; there is exactly one `parallel()` and it
+  precedes the task loop; and `Date.now()`, `new Date()` and `Math.random()` appear
+  nowhere. It runs inside `package.json`'s `validate`, which is what lefthook's
+  pre-commit job runs, and as its own step in `validate.yml`.
+- **`.github/scripts/lib/validate-common.ts`**, the tree walk, the argv resolution and
+  the report tail both validators had a copy of. Two argv bugs died with the
+  duplication: a mixed `dir file.js` call inferred its branch from the extension and ran
+  `readdir` on a file, and a path the validator does not read was dropped silently,
+  printing the same `0 errors` a clean run prints.
 
 ### Changed
 
 - **`/bb:implement`** (2.5.0) keeps its 8 steps, and step 3 no longer asks. It builds
   `args` by reading the spec, confirms the three items that are genuinely per-run,
-  proves the script with one `Bash` call, and invokes `Workflow` with `scriptPath`.
-  Three fallbacks, one attempt each: `scriptPath` refused becomes an inline `script`
-  off the same file; that refused too, no `Workflow` tool in the session, or a `Bash`
-  call that cannot read the file, becomes the in-context build **with the reason named
-  in one line**.
+  proves the script with one `Bash` call, and invokes `Workflow` with `scriptPath`. The
+  fallback chain lives in `build-tasks-workflow.md` and step 3 points at it instead of
+  restating it; what the step keeps is the rule that the downgrade **names its reason in
+  one line**, so it doesn't read as a preference. With every task already ticked there
+  is nothing to dispatch: the step says so and goes to step 8, and the script returns
+  the empty report before stage zero for a caller that invoked anyway.
 - **`/bb:delegate`** (2.6.0) lost 2.7.0's step 3 entirely, and the rest renumbered.
   Nothing about how to build is asked at either end of the chain, and the report no
-  longer names a mode; a run that fell back to this context says so instead.
+  longer names a mode; a run that fell back to this context says so instead. A blocked
+  run now records **why**: the blocker goes into the spec's own `## Open` with the
+  status flip, which is the line bare `/bb:delegate` reads back when it skips that spec,
+  and the skip names where the blocker sends it instead of pointing everything at
+  `/bb:spec`.
+- **The task loop has a fourth exit.** A task that returns `green` with a missing
+  `verify` result, or with `failed`, stops the build instead of landing in `built`:
+  `verify:` is what makes a task done, so green over an absent proof is a task the
+  caller and ship would both read as proven.
 - **`/bb:spec`** (2.4.0) dispatches the reviewer over every spec it writes, and the
   gate states the review's status in one line **always**: the verdict, or that it did
   not run and why. The old wording scaled the review by size, which exempted exactly
