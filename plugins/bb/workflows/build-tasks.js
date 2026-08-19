@@ -222,8 +222,23 @@ if (!stopped) {
       stopped = r;
       break;
     }
+    // A task whose `verify:` did not run is not done, so green over a missing or failed
+    // verify is a contradiction the caller cannot see: `built` would name the task and
+    // ship would read it as proven.
+    const proven = r.verify && (r.verify.result === "passed" || r.verify.result === "pending");
+    if (!proven) {
+      stopped = {
+        n: r.n,
+        status: "red",
+        blocker: r.verify
+          ? `task ${r.n} returned green with verify ${r.verify.result}`
+          : `task ${r.n} returned green with no verify result`,
+      };
+      break;
+    }
+
     conventions = r.conventions;
-    if (r.verify && r.verify.result === "pending") pendingVerify.push(r.n);
+    if (r.verify.result === "pending") pendingVerify.push(r.n);
     built.push(r.n);
   }
 }

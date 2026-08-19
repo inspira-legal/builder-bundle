@@ -117,12 +117,15 @@ hint the skill passes, says the project exposes nothing this run may execute.
 
 ## The task loop
 
-Three exits, and each needs its own line. A `null` return (the user skipped the agent,
+Four exits, and each needs its own line. A `null` return (the user skipped the agent,
 or it died on a terminal API error) is a failed task that carries no blocker of its
 own, so the script writes one. Assigning `stopped = r` there would hand the caller a
 `null` `stopped`, which reads as a clean run over a half-built spec. A `skipped` task
 was already ticked before the run: count it and move on, keeping the conventions the
-loop already had. Anything else stops the loop and keeps what is green.
+loop already had. A `green` task whose `verify` is missing, or whose `verify.result` is
+`failed`, stops the loop too: `verify:` is what makes a task done, so green over an
+absent proof is a task the caller would read as proven. Anything else stops the loop and
+keeps what is green.
 
 ## What the task agent is told to do
 
