@@ -1,6 +1,6 @@
 ---
 name: review-setup
-description: Gera ou atualiza o CODE_REVIEW_GUIDE.md do repositório. Faz descoberta automática com subagentes paralelos, entrevista o mantenedor pra validar cada regra, e escreve o guia na raiz como fonte de verdade que o /bb:review consome. Gera do zero quando não há guia; quando já existe, atualiza cirurgicamente só o que mudou. Use quando o usuário disser "configura o code review", "gera o guia de review", "cria o CODE_REVIEW_GUIDE", "atualiza o guia de review", "o guia de review tá desatualizado", ou quando /bb:review apontar drift. NÃO use pra revisar código (use /bb:review).
+description: Generates or updates the repository's CODE_REVIEW_GUIDE.md. Runs automatic discovery with parallel subagents, interviews the maintainer to validate every rule, and writes the guide at the root as the source of truth /bb:review consumes. Generates from scratch when there is no guide; when one exists, it updates surgically, only what changed. Use when the user says "set up code review", "generate the review guide", "create the CODE_REVIEW_GUIDE", "update the review guide", "the review guide is stale", or when /bb:review reports drift. Don't use it to review code (use /bb:review).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -33,7 +33,7 @@ domain.
    quality, security & contracts), then rule extraction into
    Confirmed/Candidate tables with IDs, severities, and evidence.
 2. **Interview** → `references/interview.md`: the maintainer validates via
-   `AskUserQuestion` (PT-BR): confirmed rules in one batch, candidates one at a
+   `AskUserQuestion`: confirmed rules in one batch, candidates one at a
    time. Every rule in the guide was accepted by a human, none slipped in.
 3. **Generate** → `references/guide-template.md`: write `CODE_REVIEW_GUIDE.md`
    at the repo root from the validated rules.
@@ -51,8 +51,8 @@ No handoff gate, report and stop:
 
 - Name what was written/changed: rule counts per severity, new/updated/removed
   IDs (update mode).
-- Remind: "O guia entra em vigor no próximo `/bb:review`. Ele lê o
-  CODE_REVIEW_GUIDE.md fresh a cada run."
+- Remind: "The guide takes effect on the next `/bb:review`. It reads
+  CODE_REVIEW_GUIDE.md fresh on every run."
 - If a legacy generated skill exists at `.claude/skills/code-review/SKILL.md`,
   flag it as superseded by `/bb:review` and suggest the user delete it (their
   action, not yours).
@@ -62,7 +62,7 @@ No handoff gate, report and stop:
 
 | WHEN                                             | THEN                                                                  |
 | ------------------------------------------------ | --------------------------------------------------------------------- |
-| update mode, no changes detected by any subagent | report "sem mudanças significativas desde a última atualização", stop |
+| update mode, no changes detected by any subagent | report "no significant changes since the last update", stop           |
 | repo > 1000 files                                | sample representative files per directory instead of exhaustive scans |
 | maintainer rejects every candidate               | guide ships with confirmed rules only; thin is fine, invented is not  |
 | legacy `.claude/skills/code-review/` present     | flag as superseded; never regenerate it                               |

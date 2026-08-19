@@ -1,6 +1,6 @@
 ---
 name: legal-lens
-description: Passa uma lente jurídica sobre qualquer artefato (ideia, feature, fluxo ou documento) pra levantar implicações legais e regulatórias, gaps de compliance, risco e o que um advogado exigiria antes do lançamento. Default direito brasileiro (LGPD, CDC, Marco Civil…), sobrescrevível pra qualquer jurisdição. Sinaliza incerteza em vez de inventar lei e faz triagem pra revisão jurídica humana em vez de dar parecer. Use quando o usuário disser "revisão jurídica", "isso é legal?", "implicações legais", "checa compliance", "LGPD", "risco regulatório", ou "o que um advogado objetaria". NÃO use como substituto de um advogado qualificado.
+description: Puts a legal lens over any artifact (an idea, a feature, a flow or a document) to surface legal and regulatory implications, compliance gaps, risk, and what a lawyer would demand before launch. Brazilian law by default (LGPD, CDC, Marco Civil), overridable for any jurisdiction. Flags uncertainty instead of inventing law, and triages for human legal review instead of issuing an opinion. Use when the user says "legal review", "is this legal", "legal implications", "check compliance", "LGPD", "regulatory risk", or "what would a lawyer object to". Don't use it as a substitute for a qualified lawyer.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -13,7 +13,6 @@ A juridical pass over whatever you point it at, surfacing where it touches the
 law, the risk that carries, and what a lawyer would require before it ships. It
 **triages for human legal review; it is not legal advice** and does not replace
 counsel. Default jurisdiction is **Brazilian law**; pass another to override.
-All user-facing text (findings, the report, the `## Jurídico` section) is PT-BR.
 
 ## Input
 
@@ -71,14 +70,15 @@ fix is half a finding. Rank by severity:
 
 Always report the findings in the conversation, grouped by severity. **If the
 artifact is a spec** (resolved via the spec-state contract), also append
-or update a `## Jurídico` section so the spec carries the legal context
+or update a `## Legal` section so the spec carries the legal context
 downstream; for an arbitrary document outside the spec folders, report only;
-don't write into it. A spec that already carries a `## legal` section from before
-the rename is read and updated under the name it has, and one line of the report
-says the Portuguese name is `## Jurídico`, the same answer the lint's `W003` gives.
+don't write into it. A spec that already carries a `## Jurídico` section from
+before the rename is read and updated under the name it has, and one line of the
+report says the written name is `## Legal`, the same answer the lint's `W003`
+gives.
 
 ```
-## Jurídico
+## Legal
 jurisdiction: Brazil (default)
 - [blocker] <issue>; <norm, cited or flagged as uncertain>; <mitigation>
 - [significant] <issue>; <norm>; <mitigation>  [confidence: med]

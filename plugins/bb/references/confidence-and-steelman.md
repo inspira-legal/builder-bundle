@@ -7,7 +7,8 @@ This file owns both protocols; the skills link here instead of restating them.
 
 Before evaluating or challenging a position, reformulate it as the **strongest
 possible version** of the argument, stronger than the user stated it. Confirm:
-_"É uma leitura justa, ou você ajustaria algo?"_ If the position is vague, ask
+_"Is that a fair reading, or would you adjust something?"_ If the position is
+vague, ask
 one clarifying question before proceeding; never fabricate a thesis. The
 steelman always comes before any critique.
 

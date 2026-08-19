@@ -30,12 +30,12 @@ Before posting, read what's already there (`gh pr view <n> --json comments` plus
 against the findings already raised (by `file:line` + what the point is, not by
 wording). Each point then lands exactly once:
 
-- **already raised and still true** → one line under `ainda aberto`, referencing the
+- **already raised and still true** → one line under `still open`, referencing the
   point instead of re-explaining it. A reader who saw the first comment gets the
   status, not the essay again.
-- **raised for the first time** → under `novo`, with the full shape from section 4.
+- **raised for the first time** → under `new`, with the full shape from section 4.
 - **already raised and now fixed** → out of the body; it survives as a count in the
-  opening line ("2 dos 3 pontos anteriores resolvidos").
+  opening line ("2 of the 3 earlier points resolved").
 
 The new comment is a new comment: the earlier one stays on the PR as posted, so the
 thread reads as a history.

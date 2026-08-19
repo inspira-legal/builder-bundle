@@ -6,7 +6,7 @@ can catch a diff where every line is correct and the wrong thing got built.
 
 ## The two questions
 
-1. **Did it build the specified thing?** Walk the spec's `## Comportamento` map
+1. **Did it build the specified thing?** Walk the spec's `## Behavior` map
    (`## behavior` on a spec written before the rename, same map). Each
    `WHEN … THEN …` row is an acceptance row: find the code that implements it and
    the test that pins it. A mapped row with no corresponding code **or** no test
@@ -18,22 +18,22 @@ can catch a diff where every line is correct and the wrong thing got built.
 
 ## Also read the upstream sections when present
 
-`## Problema`, `## Hipótese`, `## Encaixe`, and `## Cortes` (written by
-`/bb:discover`) bound the work too: `## problem`, `## hypothesis`, `## fit` and
-`## cuts` on a spec written before the rename, same sections. A diff that implements something `## Cortes`
-explicitly deferred is a finding with a strong citation. The decision to leave it
-out was already made.
+`## Problem`, `## Hypothesis`, `## Fit`, and `## Cuts` (written by
+`/bb:discover`) bound the work too: `## Problema`, `## Hipótese`, `## Encaixe`
+and `## Cortes` on a spec written before the rename, same sections. A diff that
+implements something `## Cuts` explicitly deferred is a finding with a strong
+citation. The decision to leave it out was already made.
 
 ## Finding shape
 
 ```
-# | linha da spec citada | file:line (ou "ausente") | o que falta ou sobra | severidade
+# | spec line cited | file:line (or "missing") | what is missing or extra | severity
 ```
 
 Severity: a missing happy path is HIGH; a missing mapped edge or a missing test
 for a built behavior is MEDIUM; scope drift is MEDIUM; a stylistic divergence from
 the spec's wording is not a finding at all.
 
-Cap: 8. When the spec has neither `## Comportamento` nor `## behavior` (a small spec
+Cap: 8. When the spec has neither `## Behavior` nor `## Comportamento` (a small spec
 that skipped the map), say so and fall back to question 2 alone rather than inventing
 acceptance rows.

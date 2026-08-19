@@ -1,6 +1,6 @@
 ---
 name: brisar
-description: Trilha de design ponta a ponta. Duplo diamante inteiro, do "tenho uma ideia" à entrega revisada, pra designer e não-designer. Pesquisa antes do pixel, consolida num design brief que é contrato vivo, diverge em direções e pergunta onde explorar (código, Claude design, Figma, Paper ou Pencil); depois constrói, critica, e fecha com acessibilidade, handoff e delta pro spec. Escala o esforço e declara o que pulou. Use quando o builder disser "quero começar", "novo projeto", "criar tela em <marca>", "monta protótipo", "pesquisa antes de desenhar", "quero ver direções", "constrói a superfície", "revisa o protótipo", "handoff de design", "tenho uma ideia de interface". NÃO use pra enquadrar problema de produto (use /bb:discover) nem pra spec formal de execução (use /bb:spec).
+description: End to end design trilha. The whole double diamond, from the raw idea to a reviewed delivery, for designers and non designers alike. Research before pixels, consolidated into a design brief that stays a live contract, diverges into directions and asks where to explore (code, Claude design, Figma, Paper or Pencil); then it builds, critiques, and closes with accessibility, handoff and the delta back to the spec. Scales the effort and states what it skipped. Use when the builder says "let's start", "new project", "design a screen in <brand>", "build a prototype", "research before drawing", "show me directions", "build the surface", "review the prototype", "design handoff", "I have an interface idea". Don't use it to frame a product problem (that is /bb:discover) or to write a formal execution spec (that is /bb:spec).
 license: MIT
 metadata:
   author: Inspira
@@ -35,8 +35,7 @@ changes: code, Claude design, Figma, Paper or Pencil (`references/phase-medium.m
 
 Each stage is entered explicitly (the builder asks, a shortcut routes there, or
 the previous stage's gate suggests it). The skill never rolls from one stage to
-the next silently. All user-facing text (questions, option labels, echoes,
-error messages) is **PT-BR**; instruction bodies are English.
+the next silently.
 
 ## Execution principles
 
@@ -77,7 +76,7 @@ error messages) is **PT-BR**; instruction bodies are English.
     on purpose. The one exception inside this skill: Research flows straight into
     Brief, because the research is the brief's input and does not stand alone.
 12. **The review may disagree with the contract.** With the argument, as a
-    `divergência`, never as a blocker and never as a silent rewrite. Disagreeing
+    `divergence`, never as a blocker and never as a silent rewrite. Disagreeing
     is the job; deciding belongs to the owner.
 13. **Never block due to missing tooling.** git missing → manual instructions.
     MCP missing → markdown handoff, or a medium that needs no MCP. There's always
@@ -110,7 +109,7 @@ a new surface, or (c) start from scratch archiving the old session.
 If `status: bootstrapped-to-discover`: the maturity gate fired earlier and the
 builder went to /bb:discover. Look for the resulting spec (the spec-state
 contract, plugin-level `references/spec-state.md`: `.bb/<slug>/spec.md`
-carrying `## Problema` / `## Encaixe`, or the English names on an older spec);
+carrying `## Problem` / `## Fit`, or the older names on a previous spec);
 confirm with the builder which spec it is if
 more than one matches. Record its path under `gate.discover_brief`, let the
 appetite and cuts inform fidelity/scope, and resume at the **Research phase**.
@@ -168,7 +167,7 @@ via `gh` (`references/phase-research.md`, Front B).
 
 If DS found, glob `brand/DESIGN.md` (base) + `brand/*/DESIGN.md` (sub-brands).
 Read the first line of each (`# {Brand}. Style Reference`) for the canonical
-name. Always add `Sem marca / custom` and `Ainda não sei` as final options.
+name. Always add `No brand / custom` and `I do not know yet` as final options.
 
 ### 0.4: tooling preflight
 
@@ -216,7 +215,7 @@ in Step 0**, open only what the current phase needs.
 | **Brief, the design contract**                                             | Straight after Research (no gate between them) and again on **every later round** that changes a decision                                                                                                                | `references/brief.md`                                                    |
 | **Diverge, directions in equal standing**                                  | After the Brief gate, when the builder chooses to diverge                                                                                                                                                                | `references/phase-diverge.md`                                            |
 | **Medium, where to explore**                                               | After Diverge, before Phase 3. Also when Develop is reached by shortcut with no `medium` recorded.                                                                                                                       | `references/phase-medium.md`                                             |
-| Phase 3, Scaffold (real files)                                             | After the medium question, and **only** when `medium.chosen == código`. Variant by persona: senior/junior = normal scaffold; executive = `prototype-hosted`                                                              | `references/phase-3-scaffold.md`                                         |
+| Phase 3, Scaffold (real files)                                             | After the medium question, and **only** when `medium.chosen == code`. Variant by persona: senior/junior = normal scaffold; executive = `prototype-hosted`                                                                | `references/phase-3-scaffold.md`                                         |
 | Phase 4, Design direction                                                  | After Phase 3. **Skip only the per-surface prose** when a design brief already carries the chosen direction, but Step 4 (recording `design_path` + `surfaces[]`) always runs, because four readers join those two fields | `references/phase-4-design-direction.md`                                 |
 | **Phase Framer-handoff** (replaces Phase 2+3+4 on the Framer/content path) | When `brand.workflow == framer-harpa` OR `persona_id == content`                                                                                                                                                         | `references/phase-framer-handoff.md`                                     |
 | Phase 5, Terminal report                                                   | Always, last phase of the direction stage.                                                                                                                                                                               | `references/phase-5-handoff.md`                                          |
@@ -232,8 +231,8 @@ in Step 0**, open only what the current phase needs.
 | ------------------------------------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `.brisar/session.yaml`                                                    | every phase; each writes its own section                                   | all phases (each reads the whole YAML in its Step 0), re-runs                                                               |
 | **`.bb/<slug>/brief-design.md`**                                          | **Brief**, and updated by every later round, including Deliver             | Diverge, Develop, Deliver, the implementing dev, later rounds                                                               |
-| `.brisar/config.yaml`                                                     | Phase 3 (medium `código` only)                                             | Develop (tokens.md/components.md path), future invocations                                                                  |
-| `<slug>/design-context/tokens.md` + `components.md`                       | Phase 3 (medium `código` only)                                             | Develop (Step 0). On canvas mediums the DS values come from the Research instead                                            |
+| `.brisar/config.yaml`                                                     | Phase 3 (medium `code` only)                                               | Develop (tokens.md/components.md path), future invocations                                                                  |
+| `<slug>/design-context/tokens.md` + `components.md`                       | Phase 3 (medium `code` only)                                               | Develop (Step 0). On canvas mediums the DS values come from the Research instead                                            |
 | `.bb/<slug>/design.md` (or `design/<surface>.md`)                         | Phase 4                                                                    | builder, Develop, complements the design brief (brief = chosen direction; this = per-surface hierarchy, states, components) |
 | `<slug>/...` (vite, package.json, src/)                                   | Phase 3                                                                    | builder (`pnpm install && pnpm dev`), Develop                                                                               |
 | `<slug>/HANDOFF-DEV.md`                                                   | Phase 3 (persona = executive)                                              | dev who picks up the prototype later                                                                                        |
@@ -277,10 +276,10 @@ resumes at the **Research phase** with the framing carried over.
 
 Two slots in `session.yaml`, two different questions, and later phases read both:
 
-| Slot                  | File                                                                        | Answers                                              | Written by                 |
-| --------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------- |
-| `gate.discover_brief` | `.bb/<slug>/spec.md` (`## Problema`/`## Hipótese`/`## Encaixe`/`## Cortes`) | Is it worth building, for whom, and what did we cut? | `/bb:discover`, `/bb:spec` |
-| `gate.design_brief`   | `.bb/<slug>/brief-design.md`                                                | How should this surface be, and why?                 | the Brief phase here       |
+| Slot                  | File                                                                   | Answers                                              | Written by                 |
+| --------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------- |
+| `gate.discover_brief` | `.bb/<slug>/spec.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | Is it worth building, for whom, and what did we cut? | `/bb:discover`, `/bb:spec` |
+| `gate.design_brief`   | `.bb/<slug>/brief-design.md`                                           | How should this surface be, and why?                 | the Brief phase here       |
 
 **Never substitute one for the other.** Reviewing against the research alone loses the
 problem; reviewing against the hypothesis alone loses everything the research learned.
@@ -323,7 +322,7 @@ Phase 2: Maturity gate (senior/junior only)
   → production/will-scale → suggest /bb:discover or /bb:spec (bootstrap protocol)
 
 ╭─ FIRST DIAMOND ─────────────────────────────────────────────────────────────╮
-│ Research: Pesquisa antes do pixel                                           │
+│ Research: research before the pixel                                         │
 │   → declare the mode (pocket|full): what runs, what was skipped, why,       │
 │     and what any degraded front invalidates                                 │
 │   → floor, always: bench · DS read from source · new component?             │
@@ -333,28 +332,28 @@ Phase 2: Maturity gate (senior/junior only)
 │   → fan-out in parallel subagents; only the distillate returns              │
 │   → NO GATE, flows straight into Brief                                      │
 │                                                                             │
-│ Brief: O contrato de design                                                 │
+│ Brief: the design contract                                                  │
 │   → .bb/<slug>/brief-design.md, recorded at gate.design_brief               │
-│   → reconcile vs the framing: confirma · contradiz · não alcança            │
+│   → reconcile vs the framing: confirms · contradicts · does not reach       │
 │   → close on an unresolved tension (none found = research was shallow)      │
 │   → present it in chat: findings · references · directions · tension        │
 │     (round ≥2 = the delta only; each block must enable a decision)          │
-│   → gate: montar caminhos / resolver a contradição / encerrar               │
+│   → gate: build the paths / resolve the contradiction / stop here           │
 │                                                                             │
-│ Diverge: direções em pé de igualdade                                        │
+│ Diverge: directions on equal footing                                        │
 │   → declare the base common to all directions first                         │
-│   → ≥2 directions, each with all 5 parts (aposta·composição·copy·           │
-│     racional·risco); equal-treatment check BLOCKS the gate                  │
+│   → ≥2 directions, each with all 5 parts (bet·composition·copy·             │
+│     rationale·risk); equal-treatment check BLOCKS the gate                  │
 │   → converge: chosen + runner-up + discarded + pivot condition              │
 │   → recommendation MANDATORY for executive/content personas                 │
-│   → gate: construir / trocar caminho / buscar mais / encerrar               │
+│   → gate: build / switch path / search further / stop here                  │
 ╰─────────────────────────────────────────────────────────────────────────────╯
 
-Medium: onde explorar (1 question, offers only what's detected)
-  → código | claude design | paper | figma | pencil
+Medium: where to explore (1 question, offers only what's detected)
+  → code | claude design | paper | figma | pencil
   → canvas mediums set scaffold: skipped
 
-Phase 3: Scaffold OR prototype-hosted     [medium == código only]
+Phase 3: Scaffold OR prototype-hosted     [medium == code only]
   → senior + detected product = embed (clone via gh)
   → senior/junior + greenfield = local Vite scaffold
   → executive = prototype-hosted (folder + HANDOFF-DEV.md, no local npm install)
@@ -380,10 +379,10 @@ Phase 5: Terminal report + gate
 │   → review surface × VARIANT through 7 lenses: fidelity · hypothesis ·      │
 │     hierarchy · DS+states · COPY word-by-word · CONTRAST computed ·         │
 │     TRIANGULATION (problem × research × built)                              │
-│   → severity: blocker · significant · DIVERGÊNCIA · minor                   │
+│   → severity: blocker · significant · DIVERGENCE · minor                    │
 │   → accessibility + handoff doc + DELTA back into the spec                  │
-│   → gate: decidir divergências / construir em código / /bb:review (a11y)    │
-│     / /bb:spec / encerrar                                                   │
+│   → gate: settle the divergences / build in code / /bb:review (a11y)        │
+│     / /bb:spec / stop here                                                  │
 ╰─────────────────────────────────────────────────────────────────────────────╯
 ```
 

@@ -59,7 +59,7 @@ Concretely, keeping it alive means three things:
    gains a section for what changed and what stayed out **on purpose**. The reader needs to see
    the path, not just the destination.
 2. **Record reversals as reversals.** When a later decision revokes an earlier one, say so
-   explicitly, _"revoga a decisão de 28/07"_. A brief that silently rewrites its own past
+   explicitly, _"revokes the July 28 decision"_. A brief that silently rewrites its own past
    cannot be trusted as a record, and someone will ask why the screen contradicts it.
 3. **Mark what is still in review.** Copy pending a brand pass, a claim pending confirmation, a
    permission question pending a legal answer. Unmarked, they read as settled.
@@ -72,36 +72,36 @@ comes from here, which is exactly why the record has to be complete.
 
 Sections, in order. **Bold = mandatory in every mode**, including pocket.
 
-| Section                                   | What it holds                                                     | Pocket            |
-| ----------------------------------------- | ----------------------------------------------------------------- | ----------------- |
-| **Sumário executivo**                     | The N things the research changed, ranked by how much they matter | 3–5 bullets       |
-| **Reconciliação com o enquadramento**     | confirma · contradiz · não alcança (Step 2)                       | yes, short        |
-| **Achados por frente**                    | The research, organized by decision, not by tool                  | floor fronts only |
-| **As direções**                           | Filled by the Diverge phase; leave the heading                    | yes               |
-| **A tensão que a pesquisa não resolveu**  | Step 3                                                            | yes               |
-| **Registro de decisões sobre este brief** | Dated table, grows over the rounds                                | starts empty      |
-| Rodadas de exploração                     | One block per round after the first (living-contract rule)        | as they happen    |
+| Section                                      | What it holds                                                     | Pocket            |
+| -------------------------------------------- | ----------------------------------------------------------------- | ----------------- |
+| **Executive summary**                        | The N things the research changed, ranked by how much they matter | 3-5 bullets       |
+| **Reconciliation with the framing**          | confirms · contradicts · does not reach (Step 2)                  | yes, short        |
+| **Findings by front**                        | The research, organized by decision, not by tool                  | floor fronts only |
+| **The directions**                           | Filled by the Diverge phase; leave the heading                    | yes               |
+| **The tension the research did not resolve** | Step 3                                                            | yes               |
+| **Decision log for this brief**              | Dated table, grows over the rounds                                | starts empty      |
+| Exploration rounds                           | One block per round after the first (living-contract rule)        | as they happen    |
 
 Two rules about the findings section:
 
 - **Organize by the decision at stake, never by the tool that found it.** "Where the price
   goes, and at what cost" is a section; "Mobbin results" is a dump.
 - **Every constraint carries its number and its source.** A value read from disk gets the path;
-  a study gets author and year; an unverifiable claim gets `[não verificado]`.
+  a study gets author and year; an unverifiable claim gets `[unverified]`.
 
 ## Step 2: reconciliation against the upstream framing (mandatory)
 
 The step that stops a beautiful screen from answering the wrong question. Compare the research
-against the spec's `## Problema` / `## Hipótese` / `## Encaixe` / `## Cortes` and write
+against the spec's `## Problem` / `## Hypothesis` / `## Fit` / `## Cuts` and write
 **three blocks**. All three, even when one is short.
 
-- **Confirma**: where the research supports the hypothesis, **and with what**: the reference,
+- **Confirms**: where the research supports the hypothesis, **and with what**: the reference,
   the source, the real value. "Confirmed" without evidence is just agreement.
-- **Contradiz**: where the research disproves the framing, a cut, or a constraint the briefing
+- **Contradicts**: where the research disproves the framing, a cut, or a constraint the briefing
   asserted. Goes with the argument, not as a complaint. **A wrong cut is a legitimate
   finding**. The whole point of researching after framing is that framing can be wrong, and
   the person who wrote it wants to know.
-- **Não alcança**: what the hypothesis claims that the research could **neither** support
+- **Does not reach**: what the hypothesis claims that the research could **neither** support
   **nor** knock down. This is the honest block, and it is usually the most useful one: it tells
   the builder what the first round of real data is allowed to prove.
 
@@ -120,17 +120,17 @@ it does not block. Same non-blocking stance the Deliver phase already takes.
 
 ### Legibility bites hardest here
 
-This section naturally pulls cross-references (`## Cortes`, "restriction 2", "D7") and turns into
+This section naturally pulls cross-references (`## Cuts`, "restriction 2", "D7") and turns into
 alphabet soup. **Every item states what the framing said, in your own words, before judging
 it.** Not:
 
-> ❌ contradiz o corte 2
+> ❌ contradicts cut 2
 
 But:
 
-> ✅ O briefing cortou a prova social alegando que a curadoria de marketing ainda não tinha
-> acontecido. **Aconteceu**, está pública no site, com 19 logos de banca e um depoimento
-> nomeado com cargo. O slot pode ser desenhado pra conteúdo forte, não magro.
+> ✅ The briefing cut the social proof, claiming the marketing curation had not happened yet.
+> **It happened**, it is public on the site, with 19 law-firm logos and a named testimonial
+> with a job title. The slot can be designed for strong content, not thin content.
 
 The second is longer and it is the only one that reads on its own.
 
@@ -153,13 +153,13 @@ makes it usable. Assume the reader has not read it, because they have not.
 
 In chat, in this order:
 
-1. **Os principais achados**: what changed, and what it means for the screen. Not a section
+1. **The main findings**: what changed, and what it means for the screen. Not a section
    index.
-2. **As principais referências e o que cada uma ensina**: a name is not a reference; say what
+2. **The main references and what each one teaches**: a name is not a reference; say what
    it does and why we care.
-3. **As direções mapeadas**: each with its rationale and **roughly what it will look like**.
+3. **The directions mapped**: each with its rationale and **roughly what it will look like**.
    Enough that the reader can form an opinion without opening the file.
-4. **A tensão aberta**: plainly, as a question needing a decision.
+4. **The open tension**: plainly, as a question needing a decision.
 
 Not ornate, not long-winded, but enough that someone can read it, understand it, and not need
 the full document to have a view. That is the bar.
@@ -181,11 +181,11 @@ tests are the counterweight, and they cut length **without** cutting content:
 
 1. **Each block earns its place by enabling a decision or an opinion.** A sentence that changes
    nothing the reader will decide comes out, however true it is.
-2. **The finding travels with its consequence, not with its path.** "A escala para em 32px, então
-   manchete grande sai do sistema", not the story of how it was discovered. The reader wants the
+2. **The finding travels with its consequence, not with its path.** "The scale stops at 32px, so a
+   large headline leaves the system", not the story of how it was discovered. The reader wants the
    constraint, not the search.
 3. **Evidence lives in the document; the chat carries the conclusion.** The citation rules above
-   (path and value, author and year, `[não verificado]`) govern the artifact. In chat, name the
+   (path and value, author and year, `[unverified]`) govern the artifact. In chat, name the
    source once and point at the document. A chat block that reproduces the evidence has become
    the document, and then nobody reads either.
 
@@ -213,31 +213,31 @@ not read.
 
 Read `profile.persona_id` before writing: for `executive` and `content`, Phase 0's banned
 vocabulary binds here (`phase-0-calibration.md`). And it binds on **the skill's own words**, not
-only on design concepts: "divergência", "reconciliação", "piso da pesquisa" are our method's
+only on design concepts: "divergence", "reconciliation", "the research floor" are our method's
 names, and a builder without design repertoire has no reason to know them. Name the phase by its
-result: "monto caminhos pra você escolher", not "divergir em direções".
+result: "I put together paths for you to choose from", instead of "diverge into directions".
 
 1. **An internal pointer carries its meaning on first use.** Never a bare `D7`, `P6`,
-   "restriction 2", "axis 2", always `D7 (a decisão de que o bloco de valor carrega a
-persuasão)`. The ruler: _a reader who has not opened the spec understands the
+   "restriction 2", "axis 2", always `D7 (the decision that the value block carries the
+persuasion)`. The test: _a reader who has not opened the spec understands the
    sentence._
-2. **A design concept gets a 5–10 word gloss on first use.** "reactância (a defesa que a pessoa
-   levanta quando sente que estão vendendo pra ela)", "efeito de dotação (a mesma coisa vale
-   mais depois que já é sua)". One short gloss, then use the term freely.
+2. **A design concept gets a 5-10 word gloss on first use.** "reactance (the defense a person
+   raises when they feel they are being sold to)", "endowment effect (the same thing is worth
+   more once it is yours)". One short gloss, then use the term freely.
 3. **Dense is not the same as illegible.** A long, meticulous brief is a good brief, density is
    how much content is there. Illegibility is the reader needing a decoder. Cut the decoder,
    keep the content.
 
 Self-check before presenting, two passes, both target **zero**:
 
-1. **Bare pointers**: `D\d+`, `P\d+`, "restrição N", "eixo N" with no gloss at first occurrence.
+1. **Bare pointers**: `D\d+`, `P\d+`, "restriction N", "axis N" with no gloss at first occurrence.
 2. **Banned vocabulary, when `persona_id` is `executive` or `content`**: scan for `scaffold`,
-   `embed`, `npm`, `MCP`, `repo`, `branch`, `slug`, plus the method's own names (`divergência`,
-   `divergir`, `reconciliação`, `piso`, `pocket`, `full`). Each hit gets replaced by what it means
-   for the reader, not annotated: "o projeto do produto", "os caminhos que montei", "a pesquisa
-   mínima". The list from Phase 0 was written for the intake and it binds on every phase that
-   prints. A phase that honours it in the questions and breaks it in the findings has not honoured
-   it.
+   `embed`, `npm`, `MCP`, `repo`, `branch`, `slug`, plus the method's own names (`divergence`,
+   `diverge`, `reconciliation`, the research floor, `pocket`, `full`). Each hit gets replaced by
+   what it means for the reader, not annotated: "the product project", "the paths I put together",
+   "the minimum research". The list from Phase 0 was written for the intake and it binds on every
+   phase that prints. A phase that honours it in the questions and breaks it in the findings has
+   not honoured it.
 
 Both passes are mechanical on purpose. A rule with a check gets followed and a rule with an
 adjective gets drifted, which is exactly how the vocabulary contract went unenforced through four
@@ -274,20 +274,20 @@ a decision the builder owns, and it is cheaper to settle now than after the scre
 {
   "questions": [
     {
-      "question": "Brief fechado e salvo em <path>. <N> ponto(s) da pesquisa contradizem o enquadramento. Como seguimos?",
-      "header": "Próximo",
+      "question": "Brief closed and saved at <path>. <N> point(s) of the research contradict the framing. How do we go on?",
+      "header": "Next",
       "options": [
         {
-          "label": "Montar caminhos pra você escolher (Recomendado)",
-          "description": "Monto 2 ou 3 caminhos diferentes pra essa tela, todos descritos no mesmo nível de detalhe, e você escolhe. Cada um aposta num motivo diferente pra pessoa não agir hoje."
+          "label": "Put together paths for you to choose from (Recommended)",
+          "description": "I put together 2 or 3 different paths for this screen, all described at the same level of detail, and you choose. Each one bets on a different reason for the person not to act today."
         },
         {
-          "label": "Resolver a contradição primeiro",
-          "description": "Paro aqui pra você decidir os pontos onde a pesquisa discorda do enquadramento. Se mudar o contrato, o spec muda antes das telas."
+          "label": "Resolve the contradiction first",
+          "description": "I stop here for you to decide the points where the research disagrees with the framing. If the contract changes, the spec changes before the screens."
         },
         {
-          "label": "Encerrar aqui",
-          "description": "Brief fica salvo e vivo. Retome depois com /bb:brisar. Ele detecta o brief e oferece a divergência."
+          "label": "Stop here",
+          "description": "The brief stays saved and alive. Pick it up later with /bb:brisar. It detects the brief and offers the divergence."
         }
       ],
       "multiSelect": false
@@ -303,10 +303,10 @@ When nothing was contradicted, drop the second option and simplify the question.
 1. **The brief is a contract, so it gets maintained like one.** Update every round, without
    being asked. A brief that stops at v1 while the design reaches v8 is worse than no brief:
    people trust it and it is wrong.
-2. **Record reversals out loud.** "Revoga a decisão de 28/07" is a sentence that saves an
+2. **Record reversals out loud.** "Revokes the July 28 decision" is a sentence that saves an
    argument later.
 3. **Evidence or a mark, never a confident guess.** Path and value for anything read from disk;
-   author and year for anything from literature; `[não verificado]` for anything you cannot
+   author and year for anything from literature; `[unverified]` for anything you cannot
    trace. This is what makes the document quotable.
 4. **A wrong cut is a finding, not insubordination.** Report it with the argument and let the
    owner decide. Never design on top of a cut without saying so.
@@ -324,10 +324,10 @@ pre-loading the answer.
 
 ## Cooperation contract
 
-| Artifact                                                                    | Produced by                               | Consumed by                                     |
-| --------------------------------------------------------------------------- | ----------------------------------------- | ----------------------------------------------- |
-| `.brisar/session.yaml` (`research:` section)                                | Research                                  | Brief (Step 1, the material)                    |
-| `.bb/<slug>/spec.md` (`## Problema`/`## Hipótese`/`## Encaixe`/`## Cortes`) | `/bb:discover`, `/bb:spec`                | Brief (Step 2, reconciliation)                  |
-| `.bb/<slug>/brief-design.md`                                                | **Brief** (and updated every later round) | Diverge, Develop, Deliver, the implementing dev |
-| `.brisar/session.yaml` (`brief:` + `gate.design_brief`)                     | Brief                                     | Diverge, Develop, Deliver, re-entry             |
-| Delta back into `spec.md`                                                   | Deliver (material from here)              | `/bb:implement`, `/bb:spec`                     |
+| Artifact                                                               | Produced by                               | Consumed by                                     |
+| ---------------------------------------------------------------------- | ----------------------------------------- | ----------------------------------------------- |
+| `.brisar/session.yaml` (`research:` section)                           | Research                                  | Brief (Step 1, the material)                    |
+| `.bb/<slug>/spec.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | `/bb:discover`, `/bb:spec`                | Brief (Step 2, reconciliation)                  |
+| `.bb/<slug>/brief-design.md`                                           | **Brief** (and updated every later round) | Diverge, Develop, Deliver, the implementing dev |
+| `.brisar/session.yaml` (`brief:` + `gate.design_brief`)                | Brief                                     | Diverge, Develop, Deliver, re-entry             |
+| Delta back into `spec.md`                                              | Deliver (material from here)              | `/bb:implement`, `/bb:spec`                     |

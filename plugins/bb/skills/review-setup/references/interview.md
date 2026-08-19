@@ -1,16 +1,15 @@
 # Interview: the maintainer validates every rule
 
-Every interaction goes through `AskUserQuestion` (question text and option
-labels in PT-BR): rationale and the "Other" convention in the plugin-root
-`references/handoff-gate.md`.
+Every interaction goes through `AskUserQuestion`: rationale and the "Other"
+convention in the plugin-root `references/handoff-gate.md`.
 
 Processing each answer, always in this order:
 
 1. Read the selected option from the tool result.
-2. Confirm it in one printed line, `"Regra {ID}: você escolheu [{opção}]."`,
-   so the user sees it registered.
-3. Apply the decision **before** presenting the next item. "Confirmar como
-   MEDIUM" means the rule enters the guide as MEDIUM; "Ignorar" means it's gone.
+2. Confirm it in one printed line, `"Rule {ID}: you picked [{option}]."`, so the
+   user sees it registered.
+3. Apply the decision **before** presenting the next item. "Confirm as MEDIUM"
+   means the rule enters the guide as MEDIUM; "Ignore" means it's gone.
 4. Free-text via "Other" gets interpreted and applied (severity change,
    rewording, merge, skip).
 
@@ -18,33 +17,34 @@ Processing each answer, always in this order:
 
 ### Confirmed rules: one batch
 
-Print the confirmed rules as an informational table (ID, título, severidade,
-categoria), context only, no questions in the text. Then immediately ask:
+Print the confirmed rules as an informational table (ID, title, severity,
+category), context only, no questions in the text. Then immediately ask:
 
 ```
-question: "Revisou as regras confirmadas acima. Sigo com todas ou ajusta alguma?"
-header: "Confirmadas"
+question: "You reviewed the confirmed rules above. Do I go with all of them, or adjust some?"
+header: "Confirmed"
 options:
-  - "Confirmar todas": entram no guia como listadas.
-  - "Ajustar algumas": quero mudar severidade, remover ou reformular alguma.
+  - "Confirm all": they enter the guide as listed.
+  - "Adjust some": I want to change a severity, remove one or reword one.
 ```
 
-"Ajustar algumas" (or free text) → interpret and apply; ask a follow-up
+"Adjust some" (or free text) → interpret and apply; ask a follow-up
 `AskUserQuestion` if the request is vague.
 
 ### Candidate rules: one at a time, never grouped
 
-For EACH candidate: print ID, título, o que foi observado no repo (com paths),
-a inferência proposta, evidência, severidade sugerida, then immediately ask:
+For EACH candidate: print the ID, the title, what was observed in the repo (with
+paths), the proposed inference, the evidence and the suggested severity, then
+immediately ask:
 
 ```
-question: "Regra {ID}, {Title} (sugestão: {SEVERITY}). Confirma, ajusta ou ignora?"
+question: "Rule {ID}, {Title} (suggested: {SEVERITY}). Confirm, adjust or ignore?"
 header: "{ID}"
 options:
-  - "Confirmar {SEVERITY}": aceitar com a severidade sugerida.
-  - "Confirmar como HIGH": não negociável, sempre seguida.
-  - "Confirmar como MEDIUM": importante, mas com julgamento.
-  - "Ignorar": não é uma regra válida pra este repo.
+  - "Confirm {SEVERITY}": accept it at the suggested severity.
+  - "Confirm as HIGH": non-negotiable, always followed.
+  - "Confirm as MEDIUM": important, but a judgment call.
+  - "Ignore": not a valid rule for this repo.
 ```
 
 Only after confirming the answer does the next candidate appear.
@@ -53,12 +53,12 @@ Only after confirming the answer does the next candidate appear.
 
 Never re-ask about rules that didn't change. Three question shapes:
 
-- **New pattern detected:** "Novo padrão detectado: {descrição}. Criar regra?", options: "Sim, HIGH" / "Sim, MEDIUM" / "Sim, LOW" / "Não, ignorar".
-- **Drifted rule:** "A regra {ID} parece desatualizada: {evidência}. O que
-  fazer?", options: "Atualizar com o novo padrão" / "Remover do guia" /
-  "Manter como está".
-- **Obsolete pattern:** "O padrão da regra {ID} não aparece mais no codebase.
-  Remover?", options: "Remover" / "Manter (pode voltar)".
+- **New pattern detected:** "New pattern detected: {description}. Create a rule?", options: "Yes, HIGH" / "Yes, MEDIUM" / "Yes, LOW" / "No, ignore".
+- **Drifted rule:** "Rule {ID} looks out of date: {evidence}. What do we do?",
+  options: "Update it with the new pattern" / "Remove it from the guide" / "Keep
+  it as it is".
+- **Obsolete pattern:** "Rule {ID}'s pattern no longer appears in the codebase.
+  Remove it?", options: "Remove" / "Keep it (it may come back)".
 
 ## Priorities
 

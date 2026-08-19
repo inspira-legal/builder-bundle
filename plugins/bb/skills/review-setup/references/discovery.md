@@ -83,7 +83,7 @@ Consolidate the findings into candidate rules. Each rule gets:
 | Field        | Meaning                                                                                                                                                          |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **ID**       | `{DOMAIN}-{NUMBER}`: `CMT` commits, `PAT` patterns, `TST` tests, `SEC` security, `DEP` dependencies, `ERR` errors, `API` contracts, plus detected custom domains |
-| **Title**    | short descriptive name, English                                                                                                                                  |
+| **Title**    | short descriptive name                                                                                                                                           |
 | **Severity** | suggested `HIGH` / `MEDIUM` / `LOW`                                                                                                                              |
 | **Category** | the kind of concern the rule is: `correctness`, `contracts`, `security`, `a11y`, or `quality`                                                                    |
 | **Evidence** | file paths / snippets supporting the rule                                                                                                                        |

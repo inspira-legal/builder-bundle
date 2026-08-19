@@ -1,50 +1,55 @@
-# Documentation style: the Google guide as bb writes it
+# Documentation style
 
 ## Where this applies
 
-Every English sentence this plugin writes. That is two bodies of prose: the instruction
+Every sentence this plugin writes. That is two bodies of prose: the instruction
 agents read (`SKILL.md` bodies, `references/`, the repo `README.md`, `.claude/CLAUDE.md`) and
 the documents a skill generates for another repo (the README from `/bb:write-readme`, the
 CODE_REVIEW_GUIDE from `/bb:review-setup`, the report templates that live inside fenced
 blocks). A fenced block that is an output template is prose bb writes outward, so it follows
 this page too.
 
-The Portuguese layer belongs to `vocabulario.md`: the `description:` field, gate questions,
-option labels, reports, and plain chat. This page is English, which is where American
-spelling and the word choices below apply. One rule crosses both languages, the dash rule,
-because it is punctuation rather than vocabulary.
+This page states every rule bb writes by, so writing to it is a local read, never a fetch.
+The rules govern how a sentence is built, so they hold in whatever language the sentence
+is written in.
 
 ## Precedence
 
-A project guideline first, this page second, and https://developers.google.com/style for
-anything neither settles. That order is the guide's own. Where a skill states its own
-contract, the contract wins: `/bb:write-readme` keeps all lowercase, its four blocks, and one
-badge per verifiable fact.
+A project guideline first, this page second. Where a skill states its own contract, the
+contract wins: `/bb:write-readme` keeps all lowercase, its four blocks, and one badge per
+verifiable fact. What neither settles goes to the closest rule on this page.
 
-## Two places bb differs from the guide
+## Dashes
 
-1. **Dashes.** The guide allows an em dash without surrounding spaces. Here, where a dash
-   would go, write a comma, a colon, a period, or rewrite the sentence. A colon fits when the
-   second half explains the first, and a period fits when it stands on its own. Two things
-   keep the character: a functional token (inside a command, a regex, a path, a string
-   compared in code, or a value a format reserves, like the `depende: —` a task line carries
-   when nothing blocks it), and a verbatim quote from an outside source, which keeps the
-   punctuation of its source.
-2. **Figurative language.** The guide avoids metaphor because it travels badly in
-   translation. Here it stays: the metaphor is what makes an instruction stick to the agent
-   reading the `SKILL.md`. The rest of the tone chapter applies as written.
+Where a dash would go, write a comma, a colon, a period, or rewrite the sentence. A colon
+fits when the second half explains the first, and a period fits when it stands on its own.
+Two things keep the character: a functional token (inside a command, a regex, a path, a
+string compared in code, or a value a format reserves, like the `dep: —` a task line
+carries when nothing blocks it), and a verbatim quote from an outside source, which keeps the
+punctuation of its source.
+
+Inside YAML frontmatter the colon is unavailable: a `: ` in an unquoted value reads as a
+nested mapping and fails the parse. A dash in a `description:` becomes a period, parentheses,
+or a comma.
 
 ## Voice and tone
 
-- Address the reader as "you", and name who acts. "Run the script", "the hook injects the
-  context".
+- Address the reader in the second person, and name who acts. "Run the script", "the hook
+  injects the context".
 - Put the condition before the instruction: "To land on a protected branch, open a PR."
 - Write for a reader in their second language: short sentences, one idea each, ordinary words
   in place of jargon.
 - Keep every sentence carrying something the reader can act on. A step reads as an
   instruction and its outcome, and how fast or how simple it is comes across from the step
   itself.
-- Use American spelling, and call each thing by the name the code gives it.
+- Name each thing by what it does, and write the literal sentence. A figure of speech holds
+  only where it names a mechanism the code has, like the safety valve `/bb:implement` fires,
+  and a reader who does not know the figure still has to know what to do.
+- Call each thing by the name it already has in the code or in the repo: the file, the
+  function, the branch, the PR, the `x` field. Quote that name exactly as written, because
+  half of what a name is worth is that a search finds it.
+- Where the thing has no name anywhere yet, say in three words what happens ("the agent
+  that only reads") rather than coining a word the plugin then has to teach.
 
 ## Headings
 
@@ -55,7 +60,10 @@ badge per verifiable fact.
 - One h1 per document, and each level follows the one above it.
 - Write headings in plain words: a heading is what a search matches and what a table of
   contents shows.
-- Where a section introduces its subsections, refer to them as "the following sections".
+- Where a section introduces its subsections, open it with a line that points at them.
+- Sentence case reaches past headings: an option label, a gate question, and a report
+  line all run in it, and identifiers keep the case the code gives them wherever they
+  sit, including the first word.
 
 ## Text formatting
 
@@ -89,17 +97,18 @@ badge per verifiable fact.
 
 - Spell out zero through nine in prose. Use numerals from 10 up, and for every version,
   count, and measurement.
-- Write a date unambiguously: `2026-08-18`, or "August 18, 2026".
+- Write a date in the form that reads the same everywhere: `2026-08-18`.
 - Put a space between a number and its unit, and use the unit the tool prints.
 - A number range keeps its en dash: `3–5 bullets`, `0.1–0.3`, `rungs 1–3`.
 
 ## Punctuation
 
-- Serial comma in a list of three or more: "the finder, the verifier, and the gate".
+- Punctuate a list of three or more so the last two members do not read as one:
+  "the finder, the verifier, and the gate".
 - A colon introduces what explains the clause before it. A semicolon joins two clauses that
   could stand alone.
 - Quotation marks go around a phrase quoted verbatim, with the source named.
-- The dash rule above holds everywhere on this page's reach.
+- Dashes follow their own section above.
 
 ## Accessibility
 

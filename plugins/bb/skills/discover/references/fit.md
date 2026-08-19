@@ -31,8 +31,8 @@ came from a framed problem; otherwise run only the mode the user asked for.
   Tagging `none` is the most valuable mark on the page. It's where the risk is.
 - **Auto-size from signals, don't ask depth.** Read the frame's appetite and
   confidence: a small appetite with a confident problem doesn't need a full
-  TAM/SAM/SOM. A back-of-envelope is enough. You decide the depth; asking "quer
-  um TAM completo?" just shifts the cost to the user.
+  TAM/SAM/SOM. A back-of-envelope is enough. You decide the depth; asking "do you
+  want a full TAM?" just shifts the cost to the user.
 - **Check facts you'd otherwise guess** (market size, competitors, prior art):
   search the web rather than inventing numbers, and tag the confidence of what
   you find.
@@ -41,16 +41,16 @@ came from a framed problem; otherwise run only the mode the user asked for.
 
 ## Capture
 
-Write into the same spec, accreting alongside `## Problema` / `## Hipótese`,
-under the English names when the spec already carries them:
+Write into the same spec, accreting alongside `## Problem` / `## Hypothesis`,
+keeping the older names when the spec already carries them:
 
 ```
-## Encaixe
+## Fit
 <worth-building verdict + the demand evidence, each claim evidence-tagged>
 - next_action: build-mvp | validate-first | pivot | persevere | shelve
 - confidence: med
 
-## Cortes
+## Cuts
 Cut:
 - <feature>, <reason: out-of-appetite>
 Kept, in priority order:
@@ -58,7 +58,7 @@ Kept, in priority order:
 2. <feature>
 ```
 
-And refine the `## Hipótese` section in place into the testable form. Keep cut
+And refine the `## Hypothesis` section in place into the testable form. Keep cut
 ideas worth revisiting as plain bullets marked _revisit_, never checkboxes.
 
 A legal-sensitive bet deserves `/bb:legal-lens` over the spec before committing;

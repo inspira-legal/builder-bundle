@@ -11,15 +11,15 @@ door as any other run.
 
 ## The catalog
 
-| id            | Rótulo (PT-BR)    | O que cobre                                                                                        | Disponível quando                                  | Referência             |
-| ------------- | ----------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ---------------------- |
-| `correctness` | Correção          | bugs no diff, lógica, edges, contratos, concorrência, segurança                                    | o diff não está vazio                              | `front-correctness.md` |
-| `quality`     | Qualidade         | limpeza behavior-preserving, reuso, simplificação, eficiência, dead weight, altitude, consistência | o diff não está vazio                              | `front-quality.md`     |
-| `rules`       | Regras do projeto | desvios do `CODE_REVIEW_GUIDE.md` do repo                                                          | existe `CODE_REVIEW_GUIDE.md` no root              | `front-rules.md`       |
-| `contract`    | Contrato da spec  | o diff construiu o que foi combinado, e só isso                                                    | existe spec da branch (`.bb/<slug>/spec.md`)       | `front-contract.md`    |
-| `a11y`        | Acessibilidade    | WCAG AA no que o diff mexeu na UI, semântica, nome acessível, teclado, foco, contraste             | o diff toca arquivo de UI                          | `front-a11y.md`        |
-| `threads`     | Threads da PR     | comentários de review não resolvidos                                                               | há PR aberta pra branch                            | `front-threads.md`     |
-| `ci`          | CI                | checks vermelhos, evidência, diagnóstico, causa raiz                                               | há check falhando na PR ou no último run da branch | `front-ci.md`          |
+| id            | Label         | What it covers                                                                                     | Available when                                           | Reference              |
+| ------------- | ------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | ---------------------- |
+| `correctness` | Correctness   | bugs in the diff, logic, edges, contracts, concurrency, security                                   | the diff is not empty                                    | `front-correctness.md` |
+| `quality`     | Quality       | behavior-preserving cleanup, reuse, simplification, efficiency, dead weight, altitude, consistency | the diff is not empty                                    | `front-quality.md`     |
+| `rules`       | Project rules | deviations from the repo's `CODE_REVIEW_GUIDE.md`                                                  | there is a `CODE_REVIEW_GUIDE.md` at the root            | `front-rules.md`       |
+| `contract`    | Spec contract | the diff built what was agreed, and only that                                                      | the branch has a spec (`.bb/<slug>/spec.md`)             | `front-contract.md`    |
+| `a11y`        | Accessibility | WCAG AA on the UI the diff touched, semantics, accessible name, keyboard, focus, contrast          | the diff touches a UI file                               | `front-a11y.md`        |
+| `threads`     | PR threads    | unresolved review comments                                                                         | there is an open PR for the branch                       | `front-threads.md`     |
+| `ci`          | CI            | red checks, evidence, diagnosis, root cause                                                        | a check is failing on the PR or on the branch's last run | `front-ci.md`          |
 
 ## Probe availability before asking
 
@@ -67,17 +67,17 @@ run. `gh` unauthenticated makes both unavailable. Say so once, with
 
 ## Depth: two tiers by default, a third only when asked
 
-| Diff                              | Correctness angles                                | Quality | Rules      | Contract | A11y    | Verify                           | Sweep   | Report cap |
-| --------------------------------- | ------------------------------------------------- | ------- | ---------- | -------- | ------- | -------------------------------- | ------- | ---------- |
-| ≲2 arquivos / ≲100 linhas         | os 2 primeiros do angle set, inline (sem fan-out) | inline  | inline     | inline   | inline  | self-check no contexto principal | nenhum  | 6          |
-| **qualquer diff maior, o padrão** | os 3 primeiros do angle set (3 agents)            | 1 agent | 1 agent    | 1 agent  | 1 agent | 1-vote agrupado por local        | nenhum  | 10         |
-| **profundo, só sob pedido**       | o angle set inteiro (até 5 agents)                | 1 agent | 1–2 agents | 1 agent  | 1 agent | 1-vote agrupado por local        | 1 agent | 15         |
+| Diff                             | Correctness angles                                | Quality | Rules      | Contract | A11y    | Verify                         | Sweep   | Report cap |
+| -------------------------------- | ------------------------------------------------- | ------- | ---------- | -------- | ------- | ------------------------------ | ------- | ---------- |
+| ≲2 files / ≲100 lines            | the first 2 of the angle set, inline (no fan-out) | inline  | inline     | inline   | inline  | self-check in the main context | none    | 6          |
+| **any larger diff, the default** | the first 3 of the angle set (3 agents)           | 1 agent | 1 agent    | 1 agent  | 1 agent | 1-vote grouped by location     | none    | 10         |
+| **deep, only on request**        | the whole angle set (up to 5 agents)              | 1 agent | 1–2 agents | 1 agent  | 1 agent | 1-vote grouped by location     | 1 agent | 15         |
 
 **Size alone never reaches the third row.** A big diff runs the middle tier: the
 same three angles a medium one gets, no sweep, because a review that silently
 triples its own cost on a big branch is the review nobody can afford to run twice.
 The deep tier is opt-in and the router is what sets it (`SKILL.md`, step 1: the
-`profundo` argument, "revisa a fundo", or the deep option at the fronts question).
+`deep` argument, "review deeply", or the deep option at the fronts question).
 This engine only reads the flag it was handed. The verify pass has a ceiling of its
 own (4 verifier agents, 6 deep) and dispatches by file rather than by location, so
 a pool that lands on many locations bundles them instead of spending an agent apiece
@@ -87,7 +87,7 @@ The table sizes the fan-out. **Which** angles fill it comes from what the diff i
 made of (`front-correctness.md`). A diff of prompts or manifests swaps the
 language-pitfalls angle for one that grips there and drops the wrapper angle, so an
 agent is never spent on a lens with nothing to read. The sets there are written in
-priority order, which is what "os 2 primeiros" resolves against: a tier that funds
+priority order, which is what "the first 2" resolves against: a tier that funds
 fewer angles than the set has takes them from the left and names the ones it
 dropped.
 

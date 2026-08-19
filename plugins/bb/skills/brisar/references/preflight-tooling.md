@@ -175,7 +175,7 @@ never authenticate silently, and never clone on brisar's own initiative.
 Claude design require no MCP and are always available, so there is always at least one path, the
 question can never dead-end.
 
-Missing mediums are **named, not hidden**: "não detectei o MCP do Figma aqui" tells the builder
+Missing mediums are **named, not hidden**: "I did not detect Figma connected here" tells the builder
 something actionable. Silently offering three options where they expected four reads as the tool
 deciding for them. brisar never edits `~/.claude.json`. It says what would enable the path.
 
@@ -185,10 +185,10 @@ Common cases and what to do:
 
 | Detected                                                                      | Response                                                                                                                                                                                       |
 | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `gh_authed: false` but builder is in a folder of an Inspira product (private) | Warn: "esse produto é privado. Quer autenticar?"                                                                                                                                               |
+| `gh_authed: false` but builder is in a folder of an Inspira product (private) | Warn: "this product is private. Want to authenticate?"                                                                                                                                         |
 | MCP unframer present but builder didn't choose Framer                         | Don't mention it, only used when relevant                                                                                                                                                      |
 | Multiple matches in the product registry                                      | Silent log (debug). Take the first one from the registry.                                                                                                                                      |
-| `git_installed: false` AND persona = builder-senior                           | "Você marcou senior mas git não tá aqui. Atualizar perfil ou instalar git?"                                                                                                                    |
+| `git_installed: false` AND persona = builder-senior                           | "You marked senior but git is not here. Update the profile, or install git?"                                                                                                                   |
 | `git_installed: false` AND persona = executive                                | Don't mention it; the executive path doesn't require git.                                                                                                                                      |
 | `scope_read: global-only` (no python3)                                        | A project-scoped MCP may exist and be invisible. Before naming a medium as missing, say the check was partial, never report a clean absence you did not verify.                                |
 | No canvas MCP at all                                                          | Don't treat it as a gap. Code and Claude design cover the medium question; mention the canvas paths once, without nagging.                                                                     |

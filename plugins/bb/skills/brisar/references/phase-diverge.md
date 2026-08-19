@@ -59,25 +59,25 @@ oversight.
 usually means 2; it does **not** mean one direction plus decoration.
 
 Each direction is **dynamic to the problem**, never a fixed label set. Derive them from the
-readings of the problem the research surfaced ("falta caminho", "falta ver o que existe",
-"falta validação institucional"), not from a template of names.
+readings of the problem the research surfaced ("there is no path forward", "there is no way to see
+what exists", "the institutional validation is missing"), not from a template of names.
 
 ### The five mandatory parts: every direction, all five
 
-1. **A aposta**: which reading of the problem it assumes, in one or two sentences. State the
+1. **The bet**: which reading of the problem it assumes, in one or two sentences. State the
    mechanism: _what does this direction believe is blocking the person, and what does it do about
    it?_ Two directions with the same bet are one direction.
-2. **Composição**: the structure, concrete enough to start drawing: what anchors the frame, what
+2. **Composition**: the structure, concrete enough to start drawing: what anchors the frame, what
    supports it, what is demoted or dropped. Say which blocks from the inventory it uses **and
    which it deliberately leaves out**. How much is on screen at once is itself a design
    variable, not a checklist to fill.
-3. **Copy prevista**: actual strings, not intentions. "A persuasive headline" is not copy;
+3. **The copy it plans**: actual strings, not intentions. "A persuasive headline" is not copy;
    the sentence is. Include the primary action's label. Copy is where a direction's tone becomes
    falsifiable, and it is the part most often skipped, which is exactly why it is mandatory.
-4. **Racional ancorado na pesquisa**: which findings support this direction, cited: the
+4. **A rationale anchored in the research**: which findings support this direction, cited: the
    reference and what it does, the source with its year, the real token value. A direction whose
    rationale cites nothing is a preference wearing research clothes.
-5. **Risco e custo**: how it fails, and an honest read of what it costs against the appetite.
+5. **Risk and cost**: how it fails, and an honest read of what it costs against the appetite.
    Include the failure mode the research already exposed when there is one. A reference that
    shows the pattern degrading is worth more than a hypothetical.
 
@@ -101,8 +101,8 @@ cannot honor.
 
 Print the base block, then the directions, then a comparison table:
 
-| #   | Direção | Leitura do problema | Dependência externa | Custo |
-| --- | ------- | ------------------- | ------------------- | ----- |
+| #   | Direction | Reading of the problem | External dependency | Cost |
+| --- | --------- | ---------------------- | ------------------- | ---- |
 
 Then, in chat, the same discipline the brief phase requires: **what each direction is betting,
 and roughly what it will look like**. Enough for someone who has not read the document to have
@@ -132,18 +132,18 @@ point of the phase is that the choice is real, and an incomplete direction is a 
 itself.
 
 The one legitimate exception: a direction whose part is genuinely **not applicable** (a
-composition with no primary action has no primary-action label). Say `não se aplica` with the
+composition with no primary action has no primary-action label). Say `not applicable` with the
 reason. That is information. Silence is not.
 
 ## Step 5: converge
 
 Convergence picks **one** direction and keeps the rest traceable:
 
-- **A escolhida**: and why, against the bet, not against taste.
-- **A runner-up**: and **when it would be better**. This is the useful part: it names the
+- **The chosen one**: and why, against the bet, not against taste.
+- **The runner-up**: and **when it would be better**. This is the useful part: it names the
   condition under which the choice was wrong.
-- **As descartadas**: why not now. "Not now" and "never" are different; say which.
-- **A condição de pivot**: the signal that would make you switch. Without it, a wrong direction
+- **The discarded ones**: why not now. "Not now" and "never" are different; say which.
+- **The pivot condition**: the signal that would make you switch. Without it, a wrong direction
   gets defended instead of changed.
 
 Record all four in the brief (the living-contract rule) and in session.yaml. The discarded
@@ -177,24 +177,24 @@ diverge:
 {
   "questions": [
     {
-      "question": "<N> caminhos montados no mesmo nível de detalhe, e o escolhido é <nome>. Como seguimos?",
-      "header": "Próximo",
+      "question": "<N> paths put together at the same level of detail, and the chosen one is <name>. How do we go on?",
+      "header": "Next",
       "options": [
         {
-          "label": "Construir o caminho escolhido (Recomendado)",
-          "description": "Pergunto onde você quer ver isso de pé e sigo pra construção."
+          "label": "Build the chosen path (Recommended)",
+          "description": "I ask where you want to see it standing up and go on to the build."
         },
         {
-          "label": "Trocar o caminho escolhido",
-          "description": "Você escolhe outro, todos estão descritos no mesmo nível pra isso. Registro a troca no brief."
+          "label": "Switch the chosen path",
+          "description": "You pick another one, they are all described at the same level for exactly this. I record the switch in the brief."
         },
         {
-          "label": "Buscar mais caminhos",
-          "description": "Só vale se houver uma ideia genuinamente nova. Senão é a mesma coisa redesenhada. Digo o que eu buscaria antes de você decidir."
+          "label": "Look for more paths",
+          "description": "Only worth it if there is a genuinely new idea. Otherwise it is the same thing redrawn. I say what I would look for before you decide."
         },
         {
-          "label": "Encerrar aqui",
-          "description": "Os caminhos e a escolha ficam salvos no brief. Retome depois com /bb:brisar."
+          "label": "Stop here",
+          "description": "The paths and the choice stay saved in the brief. Pick it up later with /bb:brisar."
         }
       ],
       "multiSelect": false

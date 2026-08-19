@@ -3,43 +3,57 @@
 
 Judgment (is it too long, does it repeat itself, is it recounting the conversation)
 belongs to the independent reviewer. This only catches what is decidable by reading
-the bytes: the spine, dead section names, frontmatter, and malformed tables.
+the bytes: the required sections, dead names, frontmatter, and malformed tables.
 
 Usage: lint_spec.py <path>...
-Output: `path:line CODE mensagem` on stdout. Exit 1 when any E-code fired.
+Output: `path:line CODE message` on stdout. Exit 1 when any E-code fired.
 """
 
 import re
 import sys
 
-# (nome em português, nome em inglês): as duas grafias valem; a mensagem cita a portuguesa.
-REQUIRED_SECTIONS = (("Decisões", "decisions"), ("Em aberto", "open"))
-RECOMMENDED_SECTIONS = (
-    ("Comportamento", "behavior", "W001", "o mapa de comportamento é o contrato de aceite"),
-    ("Tarefas", "tasks", "W002", "sem tarefas o build não tem o que consumir"),
-    ("Fora de escopo", "out of scope", "W004", "é a fronteira que o build fica dentro"),
+# (name to write, the spellings that resolve): a spec written before the rename still
+# parses, and the message cites the name to write.
+REQUIRED_SECTIONS = (
+    ("Decisions", ("decisions", "decisões")),
+    ("Open", ("open", "em aberto")),
 )
-# An English section still parses; W003 carries the Portuguese name to write instead.
-TRANSLATED_SECTIONS = {
-    "decisions": "Decisões",
-    "behavior": "Comportamento",
-    "tasks": "Tarefas",
-    "out of scope": "Fora de escopo",
-    "open": "Em aberto",
-    "problem": "Problema",
-    "hypothesis": "Hipótese",
-    "fit": "Encaixe",
-    "cuts": "Cortes",
-    "legal": "Jurídico",
+RECOMMENDED_SECTIONS = (
+    (
+        "Behavior",
+        ("behavior", "comportamento"),
+        "W001",
+        "the behavior map is the acceptance contract",
+    ),
+    ("Tasks", ("tasks", "tarefas"), "W002", "with no tasks the build has nothing to consume"),
+    (
+        "Out of scope",
+        ("out of scope", "fora de escopo"),
+        "W004",
+        "it is the boundary the build stays inside",
+    ),
+)
+# An older section name still parses; W003 carries the name to write instead.
+RENAMED_SECTIONS = {
+    "decisões": "Decisions",
+    "comportamento": "Behavior",
+    "tarefas": "Tasks",
+    "fora de escopo": "Out of scope",
+    "em aberto": "Open",
+    "problema": "Problem",
+    "hipótese": "Hypothesis",
+    "encaixe": "Fit",
+    "cortes": "Cuts",
+    "jurídico": "Legal",
 }
-# `{raw}` recebe o heading como está escrito no arquivo, pra mensagem citar a grafia
-# que o autor vai procurar.
+# `{raw}` takes the heading as the file spells it, so the message quotes the string the
+# author will search for.
 DEAD_SECTIONS = {
     "design": (
-        "`## {raw}` é nome morto: no bb `design` é desenho de tela (`/bb:brisar`). "
-        "Arquitetura vai pra metade de cima, com o nome que ela tem neste problema."
+        "`## {raw}` is a dead name: in bb `design` is screen design (`/bb:brisar`). "
+        "Architecture belongs in the free top half, under the name it has in this problem."
     ),
-    "still open": "seção `## {raw}`: o nome é `## Em aberto`.",
+    "still open": "section `## {raw}`: the name is `## Open`.",
 }
 VALID_STATUS = ("pending", "in-progress", "done", "blocked")
 MAX_CELL = 100
@@ -65,12 +79,12 @@ def split_row(line):
 def check_frontmatter(lines):
     """Yield problems with the `---` block the spec-state contract requires."""
     if not lines or lines[0].strip() != "---":
-        yield 1, "E001", "frontmatter ausente: o bloco `---` com status/created/slug abre o arquivo"
+        yield 1, "E001", "no frontmatter: the `---` block with status/created/slug opens the file"
         return
 
     end = next((i for i, line in enumerate(lines[1:], start=1) if line.strip() == "---"), None)
     if end is None:
-        yield 1, "E001", "frontmatter sem fechamento `---`"
+        yield 1, "E001", "frontmatter never closed with `---`"
         return
 
     fields = {}
@@ -81,17 +95,17 @@ def check_frontmatter(lines):
 
     for key in ("status", "created", "slug"):
         if key not in fields:
-            yield 1, "E001", f"frontmatter sem `{key}`"
+            yield 1, "E001", f"frontmatter without `{key}`"
 
     if "status" in fields:
         line_no, value = fields["status"]
         if value not in VALID_STATUS:
-            yield line_no, "E001", f"status `{value}` inválido: use {', '.join(VALID_STATUS)}"
+            yield line_no, "E001", f"status `{value}` is invalid: use {', '.join(VALID_STATUS)}"
 
     if "created" in fields:
         line_no, value = fields["created"]
         if not DATE.match(value):
-            yield line_no, "E001", f"created `{value}` fora do formato YYYY-MM-DD"
+            yield line_no, "E001", f"created `{value}` is not in YYYY-MM-DD format"
 
 
 def check_body(lines):
@@ -112,15 +126,15 @@ def check_body(lines):
         for line_no, cells in rows:
             if len(cells) != width:
                 remedy = (
-                    "a separadora precisa das mesmas células do cabeçalho, senão o GFM "
-                    "não lê a tabela"
+                    "the delimiter row needs the same cells as the header, or GFM stops "
+                    "reading it as a table"
                     if is_separator and line_no == rows[1][0]
-                    else "um `|` literal precisa virar `\\|`"
+                    else "a literal `|` has to become `\\|`"
                 )
                 yield (
                     line_no,
                     "E005",
-                    f"row com {len(cells)} células contra {width} do cabeçalho: {remedy}",
+                    f"row with {len(cells)} cells against the header's {width}: {remedy}",
                 )
         for line_no, cells in [rows[0]] + body:
             for cell in cells:
@@ -128,8 +142,8 @@ def check_body(lines):
                     yield (
                         line_no,
                         "E004",
-                        f"célula de {len(cell)} caracteres (teto {MAX_CELL}): "
-                        "conteúdo desse tamanho é prosa ou bullet, não tabela",
+                        f"cell of {len(cell)} characters (ceiling {MAX_CELL}): "
+                        "content that long is prose or a bullet, not a table",
                     )
 
     for i, line in enumerate(lines, start=1):
@@ -157,35 +171,35 @@ def check_body(lines):
             seen.add(name)
             if name in DEAD_SECTIONS:
                 yield i, "E003", DEAD_SECTIONS[name].format(raw=raw)
-            elif name in TRANSLATED_SECTIONS:
+            elif name in RENAMED_SECTIONS:
                 yield i, "W003", (
-                    f"`## {raw}` em inglês: em português é "
-                    f"`## {TRANSLATED_SECTIONS[name]}`; o arquivo continua válido"
+                    f"`## {raw}` is the older name for this section: the name to write "
+                    f"is `## {RENAMED_SECTIONS[name]}`; the file stays valid"
                 )
 
     if table:
         yield from flush(table)
 
-    for pt, en in REQUIRED_SECTIONS:
-        if pt.lower() not in seen and en not in seen:
-            yield 1, "E002", f"sem `## {pt}`: a espinha precisa dela"
+    for name, spellings in REQUIRED_SECTIONS:
+        if not any(spelling in seen for spelling in spellings):
+            yield 1, "E002", f"no `## {name}`: the format requires it"
 
-    for pt, en, code, why in RECOMMENDED_SECTIONS:
-        if pt.lower() not in seen and en not in seen:
-            yield 1, code, f"sem `## {pt}`: {why}"
+    for name, spellings, code, why in RECOMMENDED_SECTIONS:
+        if not any(spelling in seen for spelling in spellings):
+            yield 1, code, f"no `## {name}`: {why}"
 
 
 def lint(path):
     try:
         lines = open(path, encoding="utf-8").read().splitlines()
     except OSError as err:
-        return [(1, "E001", f"não deu pra ler o arquivo: {err}")]
+        return [(1, "E001", f"could not read the file: {err}")]
     return sorted([*check_frontmatter(lines), *check_body(lines)], key=lambda p: (p[0], p[1]))
 
 
 def main(argv):
     if not argv:
-        print("uso: lint_spec.py <caminho>...", file=sys.stderr)
+        print("usage: lint_spec.py <path>...", file=sys.stderr)
         return 2
 
     failed = False

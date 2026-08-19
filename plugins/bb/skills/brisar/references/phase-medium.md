@@ -24,14 +24,14 @@ Read `preflight.mcps`, `preflight.product` and `profile.persona_id`:
 
 | Option            | Offered when  | Needs                                     |
 | ----------------- | ------------- | ----------------------------------------- |
-| **Código**        | always        | the repo (embed) or a scaffold            |
+| **Code**          | always        | the repo (embed) or a scaffold            |
 | **Claude design** | always        | nothing, rendered preview, no local setup |
 | **Paper**         | `mcps.paper`  | Paper MCP                                 |
 | **Figma**         | `mcps.figma`  | Figma MCP                                 |
 | **Pencil**        | `mcps.pencil` | Pencil MCP                                |
 
 Cap the list at four options (the question tool's limit). When more than four qualify, keep
-**Código** and **Claude design** and the canvas tools in registry order, and mention the
+**Code** and **Claude design** and the canvas tools in registry order, and mention the
 remainder in the intro line rather than dropping them silently.
 
 If `preflight.mcps.scope_read` is `global-only`, the check was partial: a project-scoped server
@@ -41,12 +41,12 @@ may exist and be invisible. Say the check was partial instead of asserting a cle
 
 Print one intro line naming the chosen direction and what is missing, if anything:
 
-> **Caminho escolhido: <nome>.** Onde você quer ver isso de pé? _(Não detectei o Figma conectado
-> aqui. Se quiser esse caminho, é só configurar e eu ofereço na próxima.)_
+> **Chosen direction: <name>.** Where do you want to see this standing up? _(I did not detect Figma
+> connected here. If you want that path, just configure it and I offer it next time.)_
 
 **Lead each description with the outcome, not the tool.** Someone without design repertoire is not
-choosing between Paper and Figma. They are choosing between "quero ver rápido", "quero mostrar e
-receber comentário" and "isso vai pra produção". The tool name stays as the label; the description
+choosing between Paper and Figma. They are choosing between "I want to see it fast", "I want to show
+it and get comments" and "this goes to production". The tool name stays as the label; the description
 sells the consequence. Drop `MCP` from user-facing text entirely, for `executive` and `content` it
 is banned vocabulary, and for everyone else it is an implementation detail of our side.
 
@@ -54,24 +54,24 @@ is banned vocabulary, and for everyone else it is an implementation detail of ou
 {
   "questions": [
     {
-      "question": "Onde você quer ver <nome> de pé?",
-      "header": "Meio",
+      "question": "Where do you want to see <name> standing up?",
+      "header": "Medium",
       "options": [
         {
           "label": "Claude design",
-          "description": "Vejo de pé em minutos, aqui na conversa, sem instalar nada. Melhor pra formar opinião rápido e mostrar pra alguém."
+          "description": "I stand it up in minutes, right here in the conversation, with nothing to install. Best for forming an opinion fast and showing it to someone."
         },
         {
           "label": "Paper",
-          "description": "Desenho as pranchas no Paper. Melhor quando há composições pra comparar lado a lado e nada está decidido ainda."
+          "description": "I draw the boards in Paper. Best when there are compositions to compare side by side and nothing is decided yet."
         },
         {
           "label": "Figma",
-          "description": "Desenho no Figma. Melhor quando outras pessoas vão comentar no seu tempo, ou quando o arquivo tem a biblioteca do time."
+          "description": "I draw in Figma. Best when other people will comment in their own time, or when the file carries the team library."
         },
         {
-          "label": "Código",
-          "description": "Construo dentro do projeto de verdade. Melhor quando o destino já é produção e você quer sair daqui com isso encaminhado."
+          "label": "Code",
+          "description": "I build inside the real project. Best when production is already the destination and you want to leave here with it underway."
         }
       ],
       "multiSelect": false
@@ -82,16 +82,16 @@ is banned vocabulary, and for everyone else it is an implementation detail of ou
 
 Order the options by fit, not alphabetically, and put the best fit first. The order above is a
 default for an unresolved visual direction, not a fixed list. Signals: a detected product with a
-real repo leans **Código**; several compositions to compare leans a **canvas**; no local toolchain,
+real repo leans **Code**; several compositions to compare leans a **canvas**; no local toolchain,
 or `persona_id: executive`, leans **Claude design**.
 
-Do **not** add an "Outro" option. The tool provides free text.
+Do **not** add an "Other" option. The tool provides free text.
 
 ## Step 2: what each medium changes downstream
 
 | Medium            | Phase 3 (scaffold)                                        | Develop builds                           | Deliver reads via                           |
 | ----------------- | --------------------------------------------------------- | ---------------------------------------- | ------------------------------------------- |
-| **Código**        | yes, embed into the repo, or Vite scaffold for greenfield | `.tsx` / `.html` in the project          | the files on disk                           |
+| **Code**          | yes, embed into the repo, or Vite scaffold for greenfield | `.tsx` / `.html` in the project          | the files on disk                           |
 | **Claude design** | no                                                        | a rendered preview (self-contained HTML) | the preview file on disk                    |
 | **Paper**         | no                                                        | artboards in a Paper file                | the Paper MCP (structure + computed values) |
 | **Figma**         | no                                                        | frames in a Figma file                   | the Figma MCP (design context + variables)  |
@@ -116,10 +116,10 @@ Three consequences worth stating explicitly:
 The most common real path is **canvas first, code after**: explore compositions where iteration
 is cheap, converge, then implement. Support it as a first-class flow rather than a restart.
 
-- **Record the medium per round**, not per session. `mediums: [paper, código]` is a normal
+- **Record the medium per round**, not per session. `mediums: [paper, code]` is a normal
   history, not a conflict.
 - When the exploration converges on a canvas and the work is going to production, the Deliver
-  gate offers **"construir em código a partir daqui"**, carrying the brief, the chosen
+  gate offers **"build it in code from here"**, carrying the brief, the chosen
   direction and the design decisions forward. The canvas becomes the design source of truth and
   the handoff names it as such, including which values the implementer must read from the MCP.
 - When switching medium, **do not re-run the first diamond.** Research, brief and directions are
@@ -130,7 +130,7 @@ is cheap, converge, then implement. Support it as a first-class flow rather than
 
 ```yaml
 medium:
-  chosen: código | claude-design | paper | figma | pencil
+  chosen: code | claude-design | paper | figma | pencil
   offered: [<options presented>]
   unavailable: [<medium>: <missing mcp>]
   reason: <one line. Why this one fits>
@@ -148,8 +148,8 @@ straight to Phase 3 when `scaffold: required`, or to Develop when it is skipped.
    deciding for the builder.
 2. **Never dead-end.** Code and Claude design always work. If every canvas MCP is missing, that is
    not a blocker and should not be presented as one.
-3. **Recommend by fit, and say why in one line.** "Paper porque há três composições pra comparar
-   e nenhuma decidida" is useful; a bare recommendation is not.
+3. **Recommend by fit, and say why in one line.** "Paper, because there are three compositions to
+   compare and none is decided" is useful; a bare recommendation is not.
 4. **The brief does not change with the medium.** If you find yourself re-running the research
    because the medium changed, stop. That is the first diamond and it is done.
 5. **Read values from the source.** Never measure a canvas from a screenshot.

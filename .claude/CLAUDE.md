@@ -23,8 +23,7 @@ plugins/bb/
 │   ├── inject_operating_context.py     # SessionStart hook script
 │   └── operating-context.md            # the injected operating frame (edit to tune)
 ├── references/                        # plugin-level docs (not skill-scoped)
-│   ├── vocabulario.md                  # one name per thing, in Portuguese (table + capitalization)
-│   ├── doc-style.md                    # the Google style guide as bb writes English prose
+│   ├── doc-style.md                    # the style rules for every sentence bb writes
 │   ├── handoff-gate.md                 # the one convention for end-of-skill gates (+ AskUserQuestion rationale)
 │   ├── confidence-and-steelman.md      # shared reasoning protocols (think, challenge)
 │   ├── spec-state.md                   # the .bb/<slug>/ folder contract
@@ -56,15 +55,15 @@ plugins/bb/
 - Agents live in `plugins/bb/agents/<name>.md`, auto-discovered (no `plugin.json`
   entry). What an agent buys is a **system prompt the harness delivers**: the
   invariant half of a role travels with it instead of being re-composed into every
-  prompt by the context that fans out, which is the half that gets shortened first.
+  prompt by the context that fans out, which is the half a caller trims first.
   That single ownership is the reason to reach for an agent; the skill references
   defer to it rather than restating it. The `tools:` list narrows the surface on top
   of that (CI fails a bb agent that lists a write tool), but with `Bash` on the list
-  it is a smaller door, not a closed one, so don't write it up as a guarantee. Name
+  it narrows the surface without closing it, so don't write it up as a guarantee. Name
   agents by **role in the pipeline**, not by front or phase: what varies between
-  fronts is prompt content the caller already assembles. The `description` is PT-BR
-  and sits in context globally, so keep it narrow and name the skill that is the real
-  entry point.
+  fronts is prompt content the caller already assembles. The `description` sits in
+  context globally, so keep it narrow and name the skill that is the real entry
+  point.
 - The plugin ships hooks in `plugins/bb/hooks/hooks.json` (auto-activate when the
   plugin is enabled). Hook commands reference files via `${CLAUDE_PLUGIN_ROOT}/...`.
 
@@ -74,19 +73,6 @@ Each skill is a folder with a `SKILL.md` containing YAML frontmatter (`name`,
 `description`, `license`, `metadata`) followed by Markdown instructions. The
 `description` field doubles as the trigger. It tells the agent when to invoke
 the skill.
-
-### Language (hybrid)
-
-Instruction bodies are written in **English** (the method); everything the user
-sees is **PT-BR**: frontmatter `description`/triggers, handoff-gate questions and
-option labels, report templates, error messages addressed to the user.
-
-Which Portuguese word each concept gets, and how it is capitalized, is
-`plugins/bb/references/vocabulario.md`, pointed at by the SessionStart hook so it
-holds for a plain chat too. The item of `## Tarefas` is a **tarefa**; the artifact
-at `.bb/<slug>/spec.md` is a **spec**. The reference bodies stay English: the page
-governs the Portuguese sentence, and its table is what you reach for when the
-document you just read is English and the answer you are about to give is not.
 
 ### Progressive disclosure (mandatory for fused skills)
 
@@ -113,10 +99,10 @@ decisions.
 
 ### Writing guidelines
 
-- The English prose of this repo, and every English document a skill generates,
-  follows `plugins/bb/references/doc-style.md`: the Google developer documentation
-  style guide as bb writes it, plus the two places bb diverges. Its dash rule is
-  punctuation rather than vocabulary, so it holds for the Portuguese lines too.
+- The prose of this repo, and every document a skill generates, follows
+  `plugins/bb/references/doc-style.md`, which states every rule it asks for instead of
+  pointing at a guide on the web. The rules name no language: they govern how a
+  sentence is built, in whatever language the reader arrived in.
 - Keep SKILL.md focused on the workflow and decision-making logic
 - Keep guidance positive and lean by default; enforce irreversible hazards with
   capability scoping, not prose. Don't write catalogs of anti-patterns / "DO NOT"
@@ -125,7 +111,6 @@ decisions.
 - Use `references/` for static context the LLM needs (per-phase material,
   checklists, formats)
 - Trigger descriptions should be specific; list exact phrases the user might say
-  (in PT-BR)
 - Skill workflows reference their **own** scripts relatively (e.g.
   `scripts/foo.py`). Scripts shared by 2+ skills live at the plugin root in
   `plugins/bb/scripts/` and are referenced with
@@ -162,10 +147,10 @@ alone. Skills reference that file instead of restating the contract.
 
 The spec's **form** belongs to `plugins/bb/skills/spec/references/spec-format.md`:
 a free top half (opening plus whatever sections the problem asks for) over a fixed
-spine (`Decisões`, `Comportamento`, `Tarefas`, `Fora de escopo`, `Em aberto`),
-fixed because each member has a reader. A spec written before the rename keeps its
-English spine and still builds: both names resolve everywhere, and the lint answers
-`W003` naming the Portuguese one. `skills/spec/scripts/lint_spec.py` enforces the
+set (`Decisions`, `Behavior`, `Tasks`, `Out of scope`, `Open`), fixed because each
+member has a reader. A spec written before the rename keeps its older section
+names and still builds: both names resolve everywhere, and the lint answers `W003`
+naming the current one. `skills/spec/scripts/lint_spec.py` enforces the
 mechanical half of that and runs in CI over every `.bb/*/spec.md`.
 
 ## Commits

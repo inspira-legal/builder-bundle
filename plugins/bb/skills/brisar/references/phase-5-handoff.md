@@ -3,33 +3,33 @@
 After Phase 4 writes the visual direction of each surface into `.bb/<slug>/`, the journey-map part of brisar is done. This phase prints the handoff summary (persona-shaped) and ends with the **handoff gate**. A single `AskUserQuestion` offering the natural next steps. The gate suggests, never auto-invokes (per `plugins/bb/references/handoff-gate.md`).
 
 **Read the medium before writing the summary.** Everything below that names `design-context/`,
-`.brisar/config.yaml` or the scaffolded project folder assumes medium `código`. On a canvas or
+`.brisar/config.yaml` or the scaffolded project folder assumes medium `code`. On a canvas or
 `claude-design` medium Phase 3 was skipped (`medium.scaffold: skipped`) and none of those exist:
 report the design brief and the canvas artifact instead. Telling the builder to open a folder that
 was never created is the kind of error that reads as the tool being confused about its own state.
 
 ## Output shape (default: senior/standard)
 
-Plain text, in pt-BR. Structure:
+Plain text. Structure:
 
 ```
-✓ /bb:brisar terminou o scaffold. Projeto em ./<slug>/
+✓ /bb:brisar finished the scaffold. Project at ./<slug>/
 
-Estrutura criada:
+Structure created:
   <slug>/
   ├── package.json, vite.config.ts, tsconfig.json
   ├── src/{main.tsx, App.tsx, index.css, tokens-brand.css}
-  ├── design-context/{tokens.md, components.md}     ← a fase Develop lê isto
+  ├── design-context/{tokens.md, components.md}     ← the Develop phase reads this
   └── .brisar/{config.yaml, session.yaml}
 
-  .bb/<slug>/                                        ← junto do brief
-  └── design/                                        ← brief de cada surface
-      ├── README.md (ordem sugerida)
+  .bb/<slug>/                                        ← next to the spec
+  └── design/                                        ← the brief for each surface
+      ├── README.md (suggested order)
       ├── <surface-1>.md
       ├── <surface-2>.md
       └── <surface-3>.md
 
-Para rodar:
+To run it:
 
   cd <slug>
   pnpm install
@@ -44,20 +44,20 @@ Then the gate:
 {
   "questions": [
     {
-      "question": "Scaffold pronto. Próximo passo?",
-      "header": "Próximo",
+      "question": "Scaffold ready. Next step?",
+      "header": "Next",
       "options": [
         {
-          "label": "Construir as surfaces agora (fase Develop)",
-          "description": "Continuo nesta sessão: leio a direção escolhida no brief de design + a direção visual em .bb/<slug>/ + design-context/ e construo tela a tela"
+          "label": "Build the surfaces now (Develop phase)",
+          "description": "I continue in this session: I read the chosen direction in the design brief + the visual direction in .bb/<slug>/ + design-context/ and build screen by screen"
         },
         {
-          "label": "Rodar /bb:discover antes",
-          "description": "Aprofundar o enquadramento (problema, fit, hipótese, apetite) antes de desenhar"
+          "label": "Run /bb:discover first",
+          "description": "Deepen the framing (problem, fit, hypothesis, appetite) before designing"
         },
         {
-          "label": "Parar por aqui",
-          "description": "Projeto fica pronto; rode /bb:brisar de novo nesta pasta quando quiser construir"
+          "label": "Stop here",
+          "description": "The project stays ready; run /bb:brisar again in this folder whenever you want to build"
         }
       ],
       "multiSelect": false
@@ -67,7 +67,7 @@ Then the gate:
 ```
 
 - **Develop:** load `references/phase-develop.md` and continue in this same session. Update `current_phase: develop`.
-- **/bb:discover:** suggest the command (`/bb:discover <ideia em 1 frase>`) and STOP, never invoke it.
+- **/bb:discover:** suggest the command (`/bb:discover <the idea in 1 sentence>`) and STOP, never invoke it.
 - **Stop:** print one line saying the re-entry works (`/bb:brisar` in this folder resumes) and end.
 
 ## Conditional variants
@@ -77,42 +77,42 @@ Then the gate:
 **Replaces the whole default terminal**: executive doesn't run `pnpm dev` and the Develop phase doesn't apply (design goes straight to HTML in Phase 4).
 
 ```
-✓ /bb:brisar terminou. Protótipo HTML criado em ./<slug>/
+✓ /bb:brisar finished. HTML prototype created at ./<slug>/
 
-O que tem aqui:
+What's here:
   <slug>/
-  ├── index.html              ← abra esse arquivo no navegador (dois cliques)
-  ├── <surface-1>.html        ← uma página por tela
+  ├── index.html              ← open this file in the browser (double-click)
+  ├── <surface-1>.html        ← one page per screen
   ├── <surface-2>.html
-  ├── styles.css              ← visual da marca <brand>
-  ├── README.md               ← como mostrar pro time
-  └── HANDOFF-DEV.md          ← pacote pro time técnico continuar
+  ├── styles.css              ← the visuals of the <brand> brand
+  ├── README.md               ← how to show it to the team
+  └── HANDOFF-DEV.md          ← the package for the technical team to carry on
 
-  .bb/<slug>/                 ← o brief escrito de cada tela fica aqui
+  .bb/<slug>/                 ← the written brief for each screen lives here
 
-Como abrir:
-  1. Vá na pasta <slug>/ no Finder
-  2. Dê dois cliques em index.html
-  3. Vai abrir no navegador. Os links na página levam pra cada tela.
+How to open it:
+  1. Go to the <slug>/ folder in Finder
+  2. Double-click index.html
+  3. It opens in the browser. The links on the page take you to each screen.
 
-Não precisa instalar nada. Funciona offline.
+You don't need to install anything. It works offline.
 
-Como mostrar pro time:
-  - Compartilhe a pasta zipada (cada pessoa abre o index.html)
-  - Ou peça pro time de eng hospedar (Vercel/Netlify). Vira um link
+How to show it to the team:
+  - Share the zipped folder (each person opens the index.html)
+  - Or ask the eng team to host it (Vercel/Netlify). It becomes a link
 
-Pra virar produto de verdade:
-  Passe a pasta + HANDOFF-DEV.md pro time técnico. Eles re-escrevem
-  no stack real (Vite + React + Tailwind v4 com os tokens da marca).
-  HANDOFF-DEV.md tem todas as instruções.
+To turn it into a real product:
+  Pass the folder + HANDOFF-DEV.md to the technical team. They rewrite it
+  in the real stack (Vite + React + Tailwind v4 with the brand tokens).
+  HANDOFF-DEV.md carries every instruction.
 ```
 
 If the builder marked `intent.scale_signal == will-scale`, add at the end:
 
 ```
-⚠ Você marcou que esse protótipo VAI virar produto. Antes do time técnico
-pegar, considere rodar /bb:discover, deixa problema, hipótese e métrica
-claros, e economiza retrabalho depois.
+⚠ You marked that this prototype WILL become a product. Before the technical
+team picks it up, consider running /bb:discover, it leaves the problem, the
+hypothesis and the metric clear, and saves rework later.
 ```
 
 No Develop gate here. End with a simple report. Mention `/bb:discover` as the optional next step (as above) and stop.
@@ -122,20 +122,20 @@ No Develop gate here. End with a simple report. Mention `/bb:discover` as the op
 Same default terminal, but with narration before the gate:
 
 ```
-✓ /bb:brisar terminou o scaffold. Vou te guiar pelos próximos passos:
+✓ /bb:brisar finished the scaffold. I'll walk you through the next steps:
 
-1. Abra um terminal nessa pasta. Comando:
+1. Open a terminal in this folder. Command:
        cd <slug>
 
-2. Instale as dependências (vai demorar 1-2 minutos):
+2. Install the dependencies (this takes 1-2 minutes):
        pnpm install
-   Se você não tem pnpm: instale com `npm install -g pnpm` antes.
+   If you don't have pnpm: install it with `npm install -g pnpm` first.
 
-3. Rode o servidor de desenvolvimento:
+3. Run the development server:
        pnpm dev
-   Vai aparecer um link tipo http://localhost:5173, abra no navegador.
+   A link like http://localhost:5173 shows up, open it in the browser.
 
-Se algo der errado em qualquer passo, me avise. Eu ajudo a debugar.
+If anything goes wrong at any step, tell me. I help you debug it.
 ```
 
 Then the same gate as the default variant (Develop / /bb:discover / stop). In the Develop option description, add that each step will be narrated.
@@ -149,10 +149,10 @@ Then the same gate as the default variant (Develop / /bb:discover / stop). In th
 Add before the gate:
 
 ```
-⚠ Heads up: você marcou "<scale_signal>" mas pulou o gate de maturidade.
-Override registrado em .brisar/session.yaml com a razão "<override_reason>".
-Se em algum momento sentir que faltou fundamentação, rode /bb:discover,
-é onde isso resolve.
+⚠ Heads up: you marked "<scale_signal>" but skipped the maturity gate.
+The override is recorded in .brisar/session.yaml with the reason "<override_reason>".
+If at some point you feel the grounding is missing, run /bb:discover,
+that is where it gets resolved.
 ```
 
 ### If brand: deferred
@@ -160,8 +160,8 @@ Se em algum momento sentir que faltou fundamentação, rode /bb:discover,
 Add:
 
 ```
-⚠ Marca: ainda não decidida. Usei tokens da Inspira como fallback.
-Quando decidir, edite <slug>/design-context/tokens.md ou rode /bb:brisar de novo.
+⚠ Brand: not decided yet. I used the Inspira tokens as a fallback.
+When you decide, edit <slug>/design-context/tokens.md or run /bb:brisar again.
 ```
 
 ### If brand.source ∈ {custom-from-inspira, custom-from-lexflow, from-scratch, external-tokens}
@@ -169,9 +169,9 @@ Quando decidir, edite <slug>/design-context/tokens.md ou rode /bb:brisar de novo
 Add:
 
 ```
-⚠ Marca custom (<source>): tokens iniciais herdados de <base>.
-Edite <slug>/design-context/tokens.md conforme a identidade evoluir.
-Quando estabilizar, considere promover para um DESIGN.md próprio em <DS_PATH>/brand/<nome>/.
+⚠ Custom brand (<source>): the initial tokens are inherited from <base>.
+Edit <slug>/design-context/tokens.md as the identity evolves.
+When it stabilizes, consider promoting it to a DESIGN.md of its own at <DS_PATH>/brand/<name>/.
 ```
 
 ### If DS not-found
@@ -179,10 +179,10 @@ Quando estabilizar, considere promover para um DESIGN.md próprio em <DS_PATH>/b
 Add:
 
 ```
-⚠ Design system não foi encontrado neste ambiente. Tokens do scaffold são
-Tailwind defaults com placeholders. Aponte BRISAR_DS_PATH ou configure
-ds_path em .brisar/config.yaml. O bundle também traz uma cópia em
-references/ds/ dentro da própria skill.
+⚠ The design system was not found in this environment. The scaffold's tokens are
+Tailwind defaults with placeholders. Point BRISAR_DS_PATH at it, or set
+ds_path in .brisar/config.yaml. The bundle also carries a copy at
+references/ds/ inside the skill itself.
 ```
 
 ### If DS gaps were detected in Phase 4
@@ -190,12 +190,12 @@ references/ds/ dentro da própria skill.
 Add:
 
 ```
-🌱 Gaps de DS detectados nas surfaces:
-  - <surface>: <componente faltando>
+🌱 DS gaps detected in the surfaces:
+  - <surface>: <missing component>
   - ...
 
-Esses ficaram registrados em .brisar/session.yaml como ds_feedback_seeds.
-Revise/promova quando quiser. São candidatos a componentes novos do DS.
+These were recorded in .brisar/session.yaml as ds_feedback_seeds.
+Review or promote them whenever you want. They are candidates for new DS components.
 ```
 
 ## Critical behavior
@@ -211,14 +211,14 @@ If the builder returns to the same `<slug>/` and runs /bb:brisar:
 - Step 0 detects `.brisar/session.yaml` with `status: completed` + existing `.brisar/config.yaml`.
 - Asks:
   ```
-  Já existe um projeto Brisa aqui (<slug>, marca <brand>, <N> surfaces). O que fazer?
-  - Construir/iterar surfaces (fase Develop)
-  - Revisar/handoff do que existe (fase Deliver)
-  - Adicionar surface nova (vai pra Phase 4)
-  - Trocar marca (regrava design-context/, mantém src/)
-  - Re-enquadrar (sugiro /bb:discover)
-  - Recomeçar do zero (arquiva .brisar/session.archived-<ISO>.yaml antes)
+  A Brisa project already exists here (<slug>, brand <brand>, <N> surfaces). What do you want?
+  - Build/iterate the surfaces (Develop phase)
+  - Review/handoff what exists (Deliver phase)
+  - Add a new surface (goes to Phase 4)
+  - Switch brand (rewrites design-context/, keeps src/)
+  - Reframe it (I suggest /bb:discover)
+  - Start over from zero (archives .brisar/session.archived-<ISO>.yaml first)
   ```
-- Routes accordingly. "Re-enquadrar" suggests `/bb:discover` and stops; "Recomeçar" always archives the old session first.
+- Routes accordingly. "Reframe it" suggests `/bb:discover` and stops; "Start over" always archives the old session first.
 
 This is the re-entry contract. Not used on the first invocation, but keeps the skill useful in subsequent sessions.

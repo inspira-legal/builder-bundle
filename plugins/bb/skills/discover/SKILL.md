@@ -1,6 +1,6 @@
 ---
 name: discover
-description: Roda o primeiro diamante inteiro antes de qualquer design. Enquadra o problema (problema, quem sente, hipótese, sinal de sucesso, apetite) e pressure-testa o encaixe (vale construir?, o que cortar, em que ordem, qual aposta testável). Escreve o enquadramento na spec que o /bb:spec lê como intenção. Use quando o usuário disser "qual problema estamos resolvendo", "enquadra o problema", "vale a pena construir", "valida o mercado", "o que cortar pra caber", "prioriza essas features", "roda o trio", "shapeia essa ideia", "pivot ou persevere", ou chegar com uma dor difusa em vez de uma feature pronta. NÃO use pra desenhar a solução (use /bb:spec), pra estressar uma tese já formada (use /bb:challenge), nem pra uma mudança mecânica pequena.
+description: Runs the whole first diamond before any design. Frames the problem (the problem, who feels it, the hypothesis, the success signal, the appetite) and pressure tests the fit (is it worth building, what to cut, in what order, which testable bet). Writes the framing into the spec that /bb:spec reads as intent. Use when the user says "what problem are we solving", "frame the problem", "is this worth building", "validate the market", "what do we cut to fit", "prioritize these features", "run the trio", "shape this idea", "pivot or persevere", or arrives with a diffuse pain instead of a finished feature. Don't use it to design the solution (use /bb:spec), to stress a thesis already formed (use /bb:challenge), or for a small mechanical change.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -16,22 +16,22 @@ seeded with framing and fit that `/bb:spec` reads as upstream intent.
 
 Two phases, each with its own reference, load only the one that's running:
 
-| Phase                        | What it settles                                                                     | Reference             |
-| ---------------------------- | ----------------------------------------------------------------------------------- | --------------------- |
-| **1. Frame** (o problema)    | problem, who & impact, hypothesis, success signal, appetite; each confidence-tagged | `references/frame.md` |
-| **2. Fit** (o que sobrevive) | worth building? what to cut, in what order, the one testable hypothesis             | `references/fit.md`   |
+| Phase                      | What it settles                                                                     | Reference             |
+| -------------------------- | ----------------------------------------------------------------------------------- | --------------------- |
+| **1. Frame** (o problema)  | problem, who & impact, hypothesis, success signal, appetite; each confidence-tagged | `references/frame.md` |
+| **2. Fit** (what survives) | worth building? what to cut, in what order, the one testable hypothesis             | `references/fit.md`   |
 
 ## Entry decision
 
 Read the invocation and any existing spec before asking anything:
 
 - **Fresh pain or idea** → full pipeline, Phase 1 then Phase 2.
-- **Spec already carries `## Problema` / `## Hipótese`** (an earlier discover
-  run, or written by hand. The English `## problem` / `## hypothesis` counts the
+- **Spec already carries `## Problem` / `## Hypothesis`** (an earlier discover
+  run, or written by hand. The lowercase `## problem` / `## hypothesis` counts the
   same) → echo the trio in one line and go straight to Phase 2.
-- **A specific fit ask** ("o que cortar", "prioriza", "vale a pena construir")
+- **A specific fit ask** ("what do we cut", "prioritize this", "is it worth building")
   → Phase 2, that mode only; if no framed problem exists, suggest Phase 1 once
-  (non-blocking) and note `ran without a framed problem` in `## Encaixe` if declined.
+  (non-blocking) and note `ran without a framed problem` in `## Fit` if declined.
 - **Spec already complete** (all four sections) → confirm whether this is an
   audit/re-run before re-asking anything.
 
@@ -45,15 +45,13 @@ Read the invocation and any existing spec before asking anything:
   into a form, and forms get form-shaped answers), each with concrete options
   and your lean. Decide the obvious yourself.
 - **Echo before advancing.** One line after each turn ("Recebido. Problema: X,
-  hipótese: Y.") so a misread surfaces in seconds, not in sprint three.
+  hypothesis is Y.") so a misread surfaces in seconds, not in sprint three.
 - **Confidence-tag everything** `[low | med | high]`; **skip with a reason,
   never a silent blank** (`skipped: <reason>` is information; a blank is debt).
 - **Vagueness is data.** Clarify once; if still fuzzy, accept at `low`
   confidence and move on. Where you'd be guessing at a fact (market size,
   competitors, prior art), check (codebase, then docs, then web) and tag what
   you find.
-
-All user-facing text (echoes, question labels, reports) is PT-BR.
 
 ## Capture (on disk)
 
@@ -72,12 +70,12 @@ Lead with the pick the fit verdict supports: `next_action: build-mvp` → spec;
 `validate-first` or low confidence → challenge; design-led work → brisar.
 
 ```
-question: "Primeiro diamante fechado. Problema enquadrado e fit decidido em .bb/<slug>/spec.md. Como seguimos?"
+question: "First diamond closed. Problem framed and fit decided at .bb/<slug>/spec.md. Where do we go?"
 options:
-  - "Especificar (Recomendado)". Rodo /bb:spec agora: desenho a solução em cima do problema e do fit.
-  - "Design". Rodo /bb:brisar: direção visual e prototipagem pra trabalho design-led.
-  - "Desafiar". Rodo /bb:challenge: estresso a tese antes de investir na construção.
-  - "Encerrar aqui". A spec fica salva; retome depois com /bb:spec ou /bb:discover.
+  - "Spec it (Recommended)". I run /bb:spec now: I design the solution on top of the problem and the fit.
+  - "Design". I run /bb:brisar: visual direction and prototyping for design-led work.
+  - "Challenge it". I run /bb:challenge: I stress the thesis before investing in the build.
+  - "Stop here". The spec stays saved; pick it back up with /bb:spec or /bb:discover.
 ```
 
 When the fit verdict is `shelve` or `pivot`, there is nothing to hand off;

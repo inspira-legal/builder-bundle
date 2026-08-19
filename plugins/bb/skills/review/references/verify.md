@@ -104,7 +104,7 @@ sweep is a real answer.
 
 - **Dedupe by root cause**, across fronts: same defect, same reason → keep the
   entry with the most concrete failure scenario, and note the other locations on
-  it (`[mesma causa também em: …]`).
+  it (`[same cause also in: …]`).
 - **Rank**, most severe first:
   1. CONFIRMED correctness bugs, HIGH rule deviations, **Critical** a11y failures
      (something the diff shipped is unusable for someone)
@@ -118,8 +118,8 @@ sweep is a real answer.
   reports every verified failure (`front-a11y.md`), because a cap there would hide
   exactly what the audit was asked for.
 - **Nothing vanishes silently.** Every candidate that came out of a finder ends up
-  in exactly one of four places: reported, **refutados** (one line each at the end of
-  the report), **sem veredito** (the dropped ones, one line each with the location and
+  in exactly one of four places: reported, **refuted** (one line each at the end of
+  the report), **no verdict** (the dropped ones, one line each with the location and
   why the verdict is missing: dead agent, omitted index), or counted under the cap
-  ("+4 findings de qualidade fora do cap"). The stats line's `candidatos` has to add
+  ("+4 quality findings outside the cap"). The stats line's `candidates` has to add
   up across the four.

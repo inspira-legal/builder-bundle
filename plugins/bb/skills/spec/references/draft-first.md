@@ -7,7 +7,7 @@ accurately, than they answer open questions cold.
 
 ## What the draft must cover
 
-The spec's form belongs to `spec-format.md`: the free top half, then the spine.
+The spec's form belongs to `spec-format.md`: the free top half, then the fixed sections.
 The draft's job is to arrive with those already filled from your best read of the goal
 and the codebase, so the user reacts to a proposal instead of completing a blank. Mark
 anything you're guessing so it reads as a guess rather than a fact.
@@ -26,7 +26,7 @@ note it, move on. That filter is what keeps this from becoming an interrogation.
 Ask the forks through the **`AskUserQuestion` tool**: concrete options the user picks, not open prose. For each real fork:
 
 - Present **concrete options**: "card layout" vs "table", not "Option A / B".
-- State **your lean and why**, so the user can rubber-stamp it in one word.
+- State **your lean and why**, so the user can approve it in one word.
 - Make it a clean either/or; offer "your call" when you truly have no preference.
 - **Size the ask to the stakes:** cheap-to-reverse → lead with your pick and let
   them veto; expensive-to-undo → lay the options out and let them choose.

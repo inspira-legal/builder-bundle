@@ -1,6 +1,6 @@
 ---
 name: bb-review-verifier
-description: "Papel interno do pipeline de review do bb: o verificador independente que o /bb:review despacha depois da barreira, um por arquivo. Recebe os candidatos daquele arquivo e devolve um veredito por índice (CONFIRMED / PLAUSIBLE / REFUTED) com a evidência citada. Só leitura. Não é porta de entrada: pra revisar uma branch, um diff ou uma PR, use /bb:review."
+description: "Internal role in bb's review pipeline: the independent verifier that /bb:review dispatches after the barrier, one per file. It takes that file's candidates and returns a verdict per index (CONFIRMED / PLAUSIBLE / REFUTED) with the evidence cited. Read only. Not an entry point: to review a branch, a diff or a PR, use /bb:review."
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: sonnet
 ---

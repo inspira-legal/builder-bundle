@@ -13,9 +13,9 @@ execution of the wrong question.
 ### Inputs
 
 - `.brisar/session.yaml`: `gate.discover_brief` (→ `.bb/<slug>/spec.md`: hypothesis, cuts, appetite), `gate.design_brief` (→ `.bb/<slug>/brief-design.md`: research, chosen direction with its five parts, base block, token limits read from source, open tension), `tarsila.surfaces[]` (locator + `variants[]` + `states_covered[]` + `deviations[]`), `medium.chosen`
-- `.brisar/config.yaml`: `design_path` + `surfaces[].file`, the visual direction in the same task folder. **Only on medium `código`**: on a canvas or `claude-design` medium there is no config, and the direction comes from `gate.design_brief` instead. That is the normal path there, not a degradation.
+- `.brisar/config.yaml`: `design_path` + `surfaces[].file`, the visual direction in the same task folder. **Only on medium `code`**: on a canvas or `claude-design` medium there is no config, and the direction comes from `gate.design_brief` instead. That is the normal path there, not a degradation.
 - **The artifact, opened through the reader for its medium**: files, preview, or Paper/Figma/Pencil MCP. Resolved in Step 0.1 of `phase-deliver.md`. On a canvas, read structure and computed values through the MCP; a screenshot judges composition and **never** supplies numbers.
-- Design context: `<design_context_path>/tokens.md` + `components.md` when the medium is `código`; otherwise the DS section of the design brief, which read the same source.
+- Design context: `<design_context_path>/tokens.md` + `components.md` when the medium is `code`; otherwise the DS section of the design brief, which read the same source.
 
 ### The unit of review is surface × variant
 
@@ -51,7 +51,7 @@ significant.
   the critical path.
 - **And check the measurement**, which nobody checks: can this surface actually emit the success
   signal? A variant that cannot, by construction, is not a bug in the screen; it is a hole in the
-  contract. That is a `divergência`, not a design fix.
+  contract. That is a `divergence`, not a design fix.
 
 **3. Visual hierarchy + CTA**
 
@@ -74,10 +74,10 @@ Read every string in every variant. Not scanned, read.
 
 - **Grammar and typos** in what the user actually reads, especially the headline and the primary
   action. A duplicated preposition in the hero is not a nitpick.
-- **Labels naming a process that does not exist.** "Continuar contratação" where no contracting
+- **Labels naming a process that does not exist.** "Continue the contract" where no contracting
   started. The word promises a state the system is not in.
 - **Claims against their source.** When the brief cites a number or a fact, check the string against
-  it. "Junte-se a 14 mil advogados" where the source says "14.000 usuários ativos" is a _different
+  it. "Join 14 thousand lawyers" where the source says "14,000 active users" is a _different
   claim_, and on a commercial surface an unsupported claim is a liability, not a rounding error.
 - **Terms the product does not use with customers**: internal vocabulary leaking into the interface.
 - **Trailing/leading whitespace** in labels: invisible on the canvas, real in the string.
@@ -87,7 +87,7 @@ Read every string in every variant. Not scanned, read.
 
 Not "looks low". Compute the ratio for every text-on-background pair you can resolve and compare
 against the threshold for that size and weight (4.5:1 normal text, 3:1 large text and UI components).
-Report `<ratio> contra o mínimo de <minimum>` and name the token that fixes it.
+Report `<ratio> against the minimum of <minimum>` and name the token that fixes it.
 
 Give the smallest text particular attention, failures cluster there, and it is often the text
 carrying state information. When the same failure repeats across every variant, say it once and mark
@@ -104,7 +104,7 @@ The three questions from `phase-deliver.md`, answered explicitly:
 - Does the research honor the problem?
 - Where they disagree, **who is wrong**. The design, or the framing?
 
-When the answer is the framing, produce a `divergência`. Look specifically for: a cut the research
+When the answer is the framing, produce a `divergence`. Look specifically for: a cut the research
 disproved; a success metric a variant cannot emit; two constraints in the contract that contradict
 each other; a dependency the design needs and the system never promised.
 
@@ -118,7 +118,7 @@ Each issue receives **one** severity:
 - `blocker`: blocks merge. E.g.: violates WCAG AA, contradicts hypothesis, breaks DS.
 - `significant`: doesn't block, but worth resolving before PR. E.g.: missing state, ambiguous CTA, a
   claim the source does not support.
-- **`divergência`**: the build is faithful and you think **a decision in the brief or the spec is
+- **`divergence`**: the build is faithful and you think **a decision in the brief or the spec is
   wrong**. Never blocks. Carries three things: what the contract decided, what you would do instead,
   and the argument. Without the argument it is a preference. Leave it out.
 - `minor`: goes in "neighborhood". **Don't use for nitpicking**, only for real things worth noting.
@@ -133,106 +133,106 @@ Not cheerleading. Information. Identify 1 decision that worked and say _why_, so
 
 ### Output: `.brisar/clarisse/design-review.md`
 
-Escreva pra quem **não** é designer também: expanda ponteiro interno no primeiro uso, glose
-conceito de design em 5–10 palavras. Um review que ninguém consegue ler não muda nada.
+Write it for someone who is **not** a designer too: expand an internal pointer on first use, gloss
+a design concept in 5-10 words. A review nobody can read changes nothing.
 
 ```markdown
-# Design review: <projeto>
+# Design review: <project>
 
-> Gerado pela fase Deliver do /bb:brisar em <ISO date>
-> Confrontado contra: **problema** (.bb/<slug>/spec.md) × **pesquisa**
-> (.bb/<slug>/brief-design.md) × **construído** (<meio>)
-> Apetite: <small|medium|large>. Rigor do review proporcional
-> Lido via: <arquivos | preview | MCP do Paper/Figma/Pencil>
+> Generated by /bb:brisar's Deliver phase on <ISO date>
+> Confronted against: **problem** (.bb/<slug>/spec.md) × **research**
+> (.bb/<slug>/brief-design.md) × **built** (<medium>)
+> Appetite: <small|medium|large>. Review rigor proportional
+> Read through: <files | preview | Paper/Figma/Pencil MCP>
 
-## Resumo
+## Summary
 
-- Surface × variante revisadas: <N>, <lista>
-- Não alcançadas: <lista, ou "nenhuma">
-- Blockers: <N> · Significants: <N> · **Divergências: <N>** · Minors: <N>
-- Lentes puladas: <lista com razão, ou "nenhuma">
-- Pronto pra merge: sim | não | só após blockers
+- Surface × variant reviewed: <N>, <list>
+- Not reached: <list, or "none">
+- Blockers: <N> · Significants: <N> · **Divergences: <N>** · Minors: <N>
+- Lenses skipped: <list with reason, or "none">
+- Ready to merge: yes | no | only after the blockers
 
-## Triangulação
+## Triangulation
 
-| Pergunta                          | Veredito                           | Em uma linha |
-| --------------------------------- | ---------------------------------- | ------------ |
-| O construído honra a pesquisa?    | aligned/partial/misaligned         | <razão>      |
-| A pesquisa honra o problema?      | aligned/partial/misaligned         | <razão>      |
-| Onde discordam, quem está errado? | nada/desenho/enquadramento/os dois | <razão>      |
+| Question                                 | Verdict                     | In one line |
+| ---------------------------------------- | --------------------------- | ----------- |
+| Does the built thing honor the research? | aligned/partial/misaligned  | <reason>    |
+| Does the research honor the problem?     | aligned/partial/misaligned  | <reason>    |
+| Where they disagree, who is wrong?       | nothing/design/framing/both | <reason>    |
 
-## O que muda contrato ou dado (leia primeiro)
+## What changes contract or data (read this first)
 
-Itens que **não** se resolvem editando a tela: precisam de decisão de produto, dado novo, ou
-mudança no spec. Em ordem de gravidade.
+Items that do **not** get resolved by editing the screen: they need a product decision, new data,
+or a change in the spec. In order of gravity.
 
-| #   | Onde | O que está errado | Severidade |
-| --- | ---- | ----------------- | ---------- |
+| #   | Where | What is wrong | Severity |
+| --- | ----- | ------------- | -------- |
 
-## Divergências: onde eu discordo do contrato
+## Divergences: where I disagree with the contract
 
-Não bloqueiam. Cada uma é uma decisão tua.
+They don't block. Each one is a decision of yours.
 
-### [divergência] <título curto>
+### [divergence] <short title>
 
-- **O contrato decidiu:** <o que o brief ou o spec definiu, em palavras próprias>
-- **Eu faria:** <a alternativa, concreta>
-- **Por quê:** <o argumento: evidência da pesquisa, consequência observável, ou conflito interno
-  do contrato. Sem isto, é preferência e não entra.>
-- **Se procede:** <o que muda, spec primeiro, depois a tela>
+- **The contract decided:** <what the brief or the spec settled, in your own words>
+- **I would:** <the alternative, concrete>
+- **Why:** <the argument: research evidence, observable consequence, or an internal conflict in
+  the contract. Without this, it is a preference and it stays out.>
+- **If it holds:** <what changes, the spec first, then the screen>
 
-## Por surface × variante
+## By surface × variant
 
-### <surface_name> · <variante>
+### <surface_name> · <variant>
 
-#### Fidelidade à direção escolhida
+#### Fidelity to the chosen direction
 
-<frase: honra/desviou + o quê, em 1 linha>
+<sentence: honors/drifted + what, in 1 line>
 
 #### Issues
 
-##### [blocker] <título curto>
+##### [blocker] <short title>
 
-- **Onde:** <componente/seção · arquivo:linha, ou prancha/frame>
-- **Problema:** <1-2 frases>
-- **Por que importa:** <impacto observável>
-- **Sugestão:** <ação concreta>
+- **Where:** <component/section · file:line, or board/frame>
+- **Problem:** <1-2 sentences>
+- **Why it matters:** <observable impact>
+- **Suggestion:** <concrete action>
 
-##### [significant] <título curto>
+##### [significant] <short title>
 
-- **Onde:** ...
-- **Problema:** ...
-- **Sugestão:** ...
+- **Where:** ...
+- **Problem:** ...
+- **Suggestion:** ...
 
-##### [minor] <título curto>
+##### [minor] <short title>
 
-- <breve, em 1 linha>
+- <brief, in 1 line>
 
-#### O que ficou bem
+#### What went well
 
-- <decisão específica>, por que: <razão de manter esse padrão>
+- <specific decision>, why: <the reason to keep this pattern>
 
-## Copy: achados de texto
+## Copy: text findings
 
-| Variante | String | Problema | Sugestão |
-| -------- | ------ | -------- | -------- |
+| Variant | String | Problem | Suggestion |
+| ------- | ------ | ------- | ---------- |
 
-## Contraste: calculado
+## Contrast: computed
 
-| Elemento | Cor / fundo | Contraste | Mínimo | Correção |
-| -------- | ----------- | --------- | ------ | -------- |
+| Element | Color / background | Contrast | Minimum | Fix |
+| ------- | ------------------ | -------- | ------- | --- |
 
-Falha que repete em todas as variantes entra **uma vez**, marcada como **sistêmica**, é escolha
-de token, não erro de prancha.
+A failure that repeats across every variant goes in **once**, marked **systemic**, it is a token
+choice, not a board mistake.
 
-## Neighborhood (issues minor agrupados: não bloqueantes)
+## Neighborhood (minor issues grouped: non-blocking)
 
 - <item>
 - <item>
 
-## Decisão final
+## Final decision
 
-<ready-to-merge | fix-blockers-first | re-prototype | run-/bb:challenge-se-hipotese-fragil>
+<ready-to-merge | fix-blockers-first | re-prototype | run-/bb:challenge-if-the-hypothesis-is-fragile>
 ```
 
 ---
@@ -243,11 +243,11 @@ de token, não erro de prancha.
 
 ### Decision: inline or delegate?
 
-| Signal                                                     | Action                                                                                                                                                                    |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Builder asked for "deep audit" or "before merging to prod" | **Suggest `/bb:review`'s accessibility audit** (surface scope). Flag in handoff: "Rode `/bb:review`, auditoria de acessibilidade na pasta `<projeto>`, antes de mergear." |
-| Quick sanity check during design review                    | **Inline** (5 checks below)                                                                                                                                               |
-| Small appetite + hosted prototype                          | **Inline** is sufficient                                                                                                                                                  |
+| Signal                                                     | Action                                                                                                                                                                  |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Builder asked for "deep audit" or "before merging to prod" | **Suggest `/bb:review`'s accessibility audit** (surface scope). Flag in handoff: "Run `/bb:review`, the accessibility audit on the `<project>` folder, before merging." |
+| Quick sanity check during design review                    | **Inline** (5 checks below)                                                                                                                                             |
+| Small appetite + hosted prototype                          | **Inline** is sufficient                                                                                                                                                |
 
 ### Inline checks (only if decision = inline)
 
@@ -291,10 +291,10 @@ de token, não erro de prancha.
 ### Output: `.brisar/clarisse/accessibility-checklist.md`
 
 ````markdown
-# Accessibility checklist: <projeto>
+# Accessibility checklist: <project>
 
-> Gerado pela fase Deliver do /bb:brisar em <ISO date>
-> Modo: inline | delegated (sugerido /bb:review, auditoria de acessibilidade)
+> Generated by /bb:brisar's Deliver phase on <ISO date>
+> Mode: inline | delegated (suggested /bb:review, the accessibility audit)
 > WCAG target: AA
 
 ## Status
@@ -302,42 +302,42 @@ de token, não erro de prancha.
 - WCAG AA: pass | fail | partial | not-fully-assessed
 - Blockers: <N>
 
-## Resultados
+## Results
 
-### Contraste
+### Contrast
 
-- [pass | fail | not-assessed] <par cor X sobre Y>, ratio: <N:1>, target: <N:1>
+- [pass | fail | not-assessed] <color pair X over Y>, ratio: <N:1>, target: <N:1>
 
-### Teclado
+### Keyboard
 
-- [pass | fail | not-assessed] Tab order coerente
-- [pass | fail | not-assessed] Foco visível
-- [pass | fail | not-assessed] Esc/Enter funcionam
+- [pass | fail | not-assessed] Coherent tab order
+- [pass | fail | not-assessed] Visible focus
+- [pass | fail | not-assessed] Esc/Enter work
 
-### ARIA + semântica
+### ARIA + semantics
 
-- [pass | fail | not-assessed] Botões são `<button>`
-- [pass | fail | not-assessed] Ícones-only têm aria-label
-- [pass | fail | not-assessed] Form fields têm label
-- [pass | fail | not-assessed] Headings em ordem
+- [pass | fail | not-assessed] Buttons are `<button>`
+- [pass | fail | not-assessed] Icon-only buttons have aria-label
+- [pass | fail | not-assessed] Form fields have a label
+- [pass | fail | not-assessed] Headings in order
 
-### Leitor de tela
+### Screen reader
 
-- [pass | fail | not-assessed] Ordem do DOM coerente
-- [pass | fail | not-assessed] Alt texts presentes
-- [pass | fail | not-assessed] aria-live em estados dinâmicos
+- [pass | fail | not-assessed] Coherent DOM order
+- [pass | fail | not-assessed] Alt texts present
+- [pass | fail | not-assessed] aria-live on dynamic states
 
-### Movimento
+### Motion
 
-- [pass | fail | not-assessed] Sem autoplay disruptivo
-- [pass | fail | not-assessed] prefers-reduced-motion respeitado
+- [pass | fail | not-assessed] No disruptive autoplay
+- [pass | fail | not-assessed] prefers-reduced-motion respected
 
-## Blockers a resolver antes do merge
+## Blockers to resolve before merging
 
-- <item>, fix sugerido: <ação>
-- <item>, fix sugerido: <ação>
+- <item>, suggested fix: <action>
+- <item>, suggested fix: <action>
 
-## Para session.yaml
+## For session.yaml
 
 ```yaml
 clarisse:
@@ -386,11 +386,11 @@ For each surface, generate a section. Don't invent, only map what exists in the 
 Exploration changes decisions. The brief recorded them round by round (living-contract rule); the
 handoff is where they **go back into the contract**.
 
-Produce a `## Delta para o spec` section listing what the contract does not yet carry: decisions
+Produce a `## Spec delta` section listing what the contract does not yet carry: decisions
 taken during design, decisions **revoked**, new constraints discovered while drawing, and any
-`divergência` the builder accepted. Each item: what the spec says today, what it should say, and why.
+`divergence` the builder accepted. Each item: what the spec says today, what it should say, and why.
 
-**An empty delta is a valid outcome**: say "nenhum" rather than inventing changes. But an empty
+**An empty delta is a valid outcome**: say "none" rather than inventing changes. But an empty
 delta after eight rounds of exploration is a signal you did not look: the brief's round history is
 the checklist.
 
@@ -400,80 +400,80 @@ it.
 ### Output: `.brisar/clarisse/handoff.md`
 
 ```markdown
-# Handoff: <projeto>
+# Handoff: <project>
 
-> Gerado pela fase Deliver do /bb:brisar em <ISO date>
-> Audiência: developer ou agente que vai implementar
-> Confrontado contra: hipótese e cortes do brief
+> Generated by /bb:brisar's Deliver phase on <ISO date>
+> Audience: the developer or agent who will implement
+> Confronted against: the brief's hypothesis and cuts
 
-## Contexto rápido
+## Quick context
 
-- **Hipótese (da spec em .bb/<slug>/spec.md):** <statement>
-- **Apetite (do brief):** <small|medium|large>
-- **Surfaces no escopo:** <lista>
-- **Cortes registrados:** <lista de cortes do brief, pra evitar implementar o que foi cortado>
+- **Hypothesis (from the spec in .bb/<slug>/spec.md):** <statement>
+- **Appetite (from the brief):** <small|medium|large>
+- **Surfaces in scope:** <list>
+- **Recorded cuts:** <the brief's cuts, so nothing that was cut gets implemented>
 
-## Design tokens (referência)
+## Design tokens (reference)
 
 Path: `<design_context_path>/tokens.md`
 
-Resumo (auto-extraído):
-- Cores: <lista de tokens principais>
-- Spacing scale: <referência>
-- Type scale: <referência>
+Summary (auto-extracted):
+- Colors: <the main tokens>
+- Spacing scale: <reference>
+- Type scale: <reference>
 
-## Componentes do DS usados
+## DS components used
 
-| Componente | Onde                               | Variant            |
-| ---------- | ---------------------------------- | ------------------ |
-| Button     | <surface>.header, <surface>.footer | primary, secondary |
-| Card       | <surface>.list                     | default            |
-| ...        |                                    |                    |
+| Component | Where                              | Variant            |
+| --------- | ---------------------------------- | ------------------ |
+| Button    | <surface>.header, <surface>.footer | primary, secondary |
+| Card      | <surface>.list                     | default            |
+| ...       |                                    |                    |
 
-## Componentes custom (fora do DS)
+## Custom components (outside the DS)
 
-- **<nome>**: em `<surface>:<location>`, razão: <breve>, sugestão futura: <add ao DS | manter custom>
+- **<name>**: at `<surface>:<location>`, reason: <brief>, future suggestion: <add to the DS | keep custom>
 
-## Por surface
+## By surface
 
 ### <surface_name>
 
-**Intent:** <1 frase do que essa surface faz>
+**Intent:** <1 sentence on what this surface does>
 
 **Hierarchy (top-to-bottom):**
-1. <elemento>, token: <ref>, state: <default|hover|active|disabled>
-2. <elemento>
-3. <CTA primário>, destination/action: <onde leva>
+1. <element>, token: <ref>, state: <default|hover|active|disabled>
+2. <element>
+3. <primary CTA>, destination/action: <where it leads>
 
 **States:**
-- Default: descrição
-- Loading: descrição
-- Empty: descrição
-- Error: descrição
-- (outros relevantes)
+- Default: description
+- Loading: description
+- Empty: description
+- Error: description
+- (others that apply)
 
-**Edge cases tratados:**
-- <caso 1>
-- <caso 2>
+**Edge cases handled:**
+- <case 1>
+- <case 2>
 
-**Edge cases NÃO tratados (decidido cortar. Ver cortes do brief):**
-- <caso>, razão: <cut_reason>
+**Edge cases NOT handled (decided to cut. See the brief's cuts):**
+- <case>, reason: <cut_reason>
 
-**Decisões registradas:**
-- <decisão 1>, razão: <breve, do design review ou do brief>
+**Recorded decisions:**
+- <decision 1>, reason: <brief, from the design review or from the brief>
 
-## Acessibilidade
+## Accessibility
 
 - WCAG AA status: <pass|fail|partial>
-- Itens a garantir no merge: <lista de blockers da accessibility-checklist.md>
-- Doc de referência: `.brisar/clarisse/accessibility-checklist.md`
+- Items to guarantee at merge: <the blockers from accessibility-checklist.md>
+- Reference doc: `.brisar/clarisse/accessibility-checklist.md`
 
 ## CI / code-review
 
-- Workflow `inspira-legal/code-review` presente: <sim|não>
-- Se não: sugerimos rodar `/bb:review-setup` antes de mergear PRs deste repo.
+- Workflow `inspira-legal/code-review` present: <yes|no>
+- If not: we suggest running `/bb:review-setup` before merging PRs in this repo.
 
-## Para session.yaml
+## For session.yaml
 
 ```yaml
 clarisse:
@@ -490,5 +490,5 @@ clarisse:
 **Mental recap before closing the phase:**
 - Each mode generated its artifact.
 - session.yaml has `clarisse:` complete with `status`, `ran_modes`, `next_action`.
-- End at the Step 3 gate of `phase-deliver.md` (auditoria de acessibilidade / spec / encerrar), suggest, never invoke.
+- End at the Step 3 gate of `phase-deliver.md` (accessibility audit / spec / stop here), suggest, never invoke.
 ```

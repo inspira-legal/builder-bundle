@@ -39,10 +39,19 @@ jobs:
             fi
           done
           if [ ${#specs[@]} -eq 0 ]; then
-            echo "Nenhuma spec em .bb/: nada pra lintar."
+            echo "No specs in .bb/: nothing to lint."
             exit 0
           fi
           python3 plugins/bb/skills/spec/scripts/lint_spec.py "${specs[@]}"
 
       - name: Check formatting
+        id: fmt
         run: bun run fmt:check
+
+      # `--check` only names the files, so print the formatter's own diff: whoever
+      # reads a red run gets the fix instead of a file list.
+      - name: Show what the formatter would change
+        if: failure() && steps.fmt.outcome == 'failure'
+        run: |
+          bun run fmt
+          git --no-pager diff

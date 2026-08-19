@@ -21,7 +21,7 @@ sharpest failure scenario and say how many were cut.
 ## Finding shape
 
 ```
-# | file:line | o que quebra | cenário que dispara | fix sugerido | veredito
+# | file:line | what breaks | the scenario that triggers it | suggested fix | verdict
 ```
 
 The `veredito` column is filled by `verify.md`, not by the angle that found it.
