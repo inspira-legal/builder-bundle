@@ -92,7 +92,7 @@ Two rules about the findings section:
 ## Step 2: reconciliation against the upstream framing (mandatory)
 
 The step that stops a beautiful screen from answering the wrong question. Compare the research
-against the spec's `## Problema` / `## Hipótese` / `## Encaixe` / `## Cortes` and write
+against the spec's `## Problem` / `## Hypothesis` / `## Fit` / `## Cuts` and write
 **three blocks**. All three, even when one is short.
 
 - **Confirma**: where the research supports the hypothesis, **and with what**: the reference,
@@ -120,7 +120,7 @@ it does not block. Same non-blocking stance the Deliver phase already takes.
 
 ### Legibility bites hardest here
 
-This section naturally pulls cross-references (`## Cortes`, "restriction 2", "D7") and turns into
+This section naturally pulls cross-references (`## Cuts`, "restriction 2", "D7") and turns into
 alphabet soup. **Every item states what the framing said, in your own words, before judging
 it.** Not:
 
@@ -324,10 +324,10 @@ pre-loading the answer.
 
 ## Cooperation contract
 
-| Artifact                                                                    | Produced by                               | Consumed by                                     |
-| --------------------------------------------------------------------------- | ----------------------------------------- | ----------------------------------------------- |
-| `.brisar/session.yaml` (`research:` section)                                | Research                                  | Brief (Step 1, the material)                    |
-| `.bb/<slug>/spec.md` (`## Problema`/`## Hipótese`/`## Encaixe`/`## Cortes`) | `/bb:discover`, `/bb:spec`                | Brief (Step 2, reconciliation)                  |
-| `.bb/<slug>/brief-design.md`                                                | **Brief** (and updated every later round) | Diverge, Develop, Deliver, the implementing dev |
-| `.brisar/session.yaml` (`brief:` + `gate.design_brief`)                     | Brief                                     | Diverge, Develop, Deliver, re-entry             |
-| Delta back into `spec.md`                                                   | Deliver (material from here)              | `/bb:implement`, `/bb:spec`                     |
+| Artifact                                                               | Produced by                               | Consumed by                                     |
+| ---------------------------------------------------------------------- | ----------------------------------------- | ----------------------------------------------- |
+| `.brisar/session.yaml` (`research:` section)                           | Research                                  | Brief (Step 1, the material)                    |
+| `.bb/<slug>/spec.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | `/bb:discover`, `/bb:spec`                | Brief (Step 2, reconciliation)                  |
+| `.bb/<slug>/brief-design.md`                                           | **Brief** (and updated every later round) | Diverge, Develop, Deliver, the implementing dev |
+| `.brisar/session.yaml` (`brief:` + `gate.design_brief`)                | Brief                                     | Diverge, Develop, Deliver, re-entry             |
+| Delta back into `spec.md`                                              | Deliver (material from here)              | `/bb:implement`, `/bb:spec`                     |

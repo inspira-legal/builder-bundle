@@ -23,7 +23,7 @@ Always required: reach alignment, **close the load-bearing technical decisions, 
 
 ## Read upstream intent first
 
-If the spec for this slug already carries `## Problema` / `## Hipótese` / `## Encaixe` / `## Cortes` (seeded by `/bb:discover`, or under the English names on a spec written before the rename), **read them before drafting**: they're the intent this work serves. The problem and success signal anchor the `why`, the appetite bounds the scope, and `## Encaixe` / `## Cortes` already settle what's in and what was deliberately dropped, so don't re-litigate a cut the user made upstream, and don't ask gray-area questions discover already answered. Echo the framing in one line so the user sees it carried through, then develop the design on top of it. No upstream sections is fine; spec from the one-liner as usual.
+If the spec for this slug already carries `## Problem` / `## Hypothesis` / `## Fit` / `## Cuts` (seeded by `/bb:discover`, or under the Portuguese names on a spec written before the rename), **read them before drafting**: they're the intent this work serves. The problem and success signal anchor the `why`, the appetite bounds the scope, and `## Fit` / `## Cuts` already settle what's in and what was deliberately dropped, so don't re-litigate a cut the user made upstream, and don't ask gray-area questions discover already answered. Echo the framing in one line so the user sees it carried through, then develop the design on top of it. No upstream sections is fine; spec from the one-liner as usual.
 
 ## The loop
 
@@ -63,7 +63,7 @@ Size the ask to the stakes: cheap-to-reverse decisions lead with your pick (the 
 
 ## Decide the technical forks (required for Medium+)
 
-Before the gate, the load-bearing technical decisions must be **made or explicitly deferred**, not left implicit. Surface each that genuinely could go more than one way as a tool question (draft-first: your lean + the alternatives). Skip only what the codebase or goal already settles. Each fork closes as one bullet in `## Decisões`. When a fork is a **stack choice** (framework, package manager, tooling), consult the manifesto first (plugin-level `references/consult-manifesto.md`). The answer may already be settled company-wide.
+Before the gate, the load-bearing technical decisions must be **made or explicitly deferred**, not left implicit. Surface each that genuinely could go more than one way as a tool question (draft-first: your lean + the alternatives). Skip only what the codebase or goal already settles. Each fork closes as one bullet in `## Decisions`. When a fork is a **stack choice** (framework, package manager, tooling), consult the manifesto first (plugin-level `references/consult-manifesto.md`). The answer may already be settled company-wide.
 
 - **Reuse**: what existing code, patterns, or modules this builds on. Name them (the cheapest guard against reinventing).
 - **Data model / shape**: the entities, fields, and relationships, or the shape of the data flowing through.
@@ -81,7 +81,7 @@ The behaviors are what guarantee the built thing matches the idea. An unmapped b
 - **Happy path**: walk the main flow step by step and concretely: input → what happens → observable output. Every step the flow really takes gets a line.
 - **Edge cases**: every meaningful deviation, each with its **expected outcome**, phrased `WHEN <case> THEN <observable outcome>` so each row reads directly as a test: empty / zero / huge input, invalid input, first-run vs repeat, concurrent use, failure & rollback, denied permission/auth, partial or interrupted runs, migrating existing data. Map the _outcome_, not just that the case exists.
 
-Walking each behavior surfaces decisions you haven't made; those go back into the loop as gray areas, and each edge's outcome drives its handling in the technical forks. **A behavior with no decided outcome is an open item the gate blocks on.** Litmus for whether an edge's outcome is load-bearing (not just a minor case): **does its outcome contradict the `why`?** If choosing the wrong outcome would make the built thing betray its own reason for existing, it's load-bearing, and the gate blocks on it like any other fork. This map doubles as the acceptance criteria: each behavior is something `/bb:ship` and `/bb:review` check against, and each happy-path segment is a vertical task. Record it in a `## Comportamento` section for Large work (happy path + an edge→outcome table); inline for Medium.
+Walking each behavior surfaces decisions you haven't made; those go back into the loop as gray areas, and each edge's outcome drives its handling in the technical forks. **A behavior with no decided outcome is an open item the gate blocks on.** Litmus for whether an edge's outcome is load-bearing (not just a minor case): **does its outcome contradict the `why`?** If choosing the wrong outcome would make the built thing betray its own reason for existing, it's load-bearing, and the gate blocks on it like any other fork. This map doubles as the acceptance criteria: each behavior is something `/bb:ship` and `/bb:review` check against, and each happy-path segment is a vertical task. Record it in a `## Behavior` section for Large work (happy path + an edge→outcome table); inline for Medium.
 
 ## Capture the alignment (lightweight, on disk)
 

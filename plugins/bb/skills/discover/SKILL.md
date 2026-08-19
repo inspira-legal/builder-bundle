@@ -31,7 +31,7 @@ Read the invocation and any existing spec before asking anything:
   same) → echo the trio in one line and go straight to Phase 2.
 - **A specific fit ask** ("what do we cut", "prioritize this", "is it worth building")
   → Phase 2, that mode only; if no framed problem exists, suggest Phase 1 once
-  (non-blocking) and note `ran without a framed problem` in `## Encaixe` if declined.
+  (non-blocking) and note `ran without a framed problem` in `## Fit` if declined.
 - **Spec already complete** (all four sections) → confirm whether this is an
   audit/re-run before re-asking anything.
 

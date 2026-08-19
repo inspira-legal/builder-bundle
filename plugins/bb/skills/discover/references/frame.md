@@ -34,17 +34,17 @@ what still needs validation before it becomes code:
 
 ## Capture
 
-Write two sections into the spec (location per the spec-state contract), under
-the English names when the spec already carries them:
+Write two sections into the spec (location per the spec-state contract), keeping
+the Portuguese names when the spec already carries them:
 
 ```
-## Problema
+## Problem
 <one-paragraph statement>  [confidence: med]
 - who & impact: <who, how many, how badly>  [confidence: low]
-- appetite: <budget, e.g. "~2 semanas">
+- appetite: <budget, e.g. "~2 weeks">
 - success signal: <the one observable metric>  [confidence: med]
 
-## Hipótese
+## Hypothesis
 If <change>, the <success signal> moves, because <mechanism>.  [confidence: low]
 ```
 

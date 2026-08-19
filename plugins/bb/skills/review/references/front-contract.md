@@ -18,11 +18,11 @@ can catch a diff where every line is correct and the wrong thing got built.
 
 ## Also read the upstream sections when present
 
-`## Problema`, `## Hipótese`, `## Encaixe`, and `## Cortes` (written by
-`/bb:discover`) bound the work too: `## problem`, `## hypothesis`, `## fit` and
-`## cuts` on a spec written before the rename, same sections. A diff that implements something `## Cortes`
-explicitly deferred is a finding with a strong citation. The decision to leave it
-out was already made.
+`## Problem`, `## Hypothesis`, `## Fit`, and `## Cuts` (written by
+`/bb:discover`) bound the work too: `## Problema`, `## Hipótese`, `## Encaixe`
+and `## Cortes` on a spec written before the rename, same sections. A diff that
+implements something `## Cuts` explicitly deferred is a finding with a strong
+citation. The decision to leave it out was already made.
 
 ## Finding shape
 

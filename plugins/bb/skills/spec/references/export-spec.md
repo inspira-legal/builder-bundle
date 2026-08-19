@@ -15,7 +15,7 @@ not at all.
 **Test:** "Will the user change any behavior because of this?"
 
 - **Yes** → `Hypothesis` required → trio (`Connected OKR` + `Expected Impact` +
-  `Metric`) required. If the spec's `## Hipótese` (from `/bb:discover`)
+  `Metric`) required. If the spec's `## Hypothesis` (from `/bb:discover`)
   exists, render it here; if the trio can't be filled from the spec, ask;
   don't invent.
 - **No** (internal feature, design pattern, compliance) → trio omitted entirely,
