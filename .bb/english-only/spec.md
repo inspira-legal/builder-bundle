@@ -105,7 +105,7 @@ Happy path, one area at a time, each area a commit:
       rule, and `.claude/CLAUDE.md`, `operating-context.md`, `guide-template.md`,
       `spec/SKILL.md` point there
       → behavior 5 · dep: 4 · verify: `grep -rn "vocabulario"` outside `.bb/` and `CHANGELOG.md` returns nothing
-- [ ] **6. `README.md`**: the whole page, all lowercase kept
+- [x] **6. `README.md`**: the whole page, all lowercase kept
       → behavior 6 · dep: 1 · verify: the Portuguese line census on the file returns nothing
 - [ ] **7. Manifests**: `plugins/bb/.claude-plugin/plugin.json` and
       `.claude-plugin/marketplace.json`

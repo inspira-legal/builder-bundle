@@ -4,77 +4,77 @@
 
 [![github](https://img.shields.io/badge/github-inspira--legal%2Fbuilder--bundle-111111?style=flat-square&logo=github)](https://github.com/inspira-legal/builder-bundle)
 
-_Builder Bundle (`bb`): o plugin unificado de skills pra builders da Inspira: 15 skills em 6 trilhas, do problema ao PR._
+_Builder Bundle (`bb`): the unified skill set for Inspira builders, 15 skills across 6 trilhas, from the problem to the PR._
 
 </div>
 
-adicione o marketplace e instale o plugin único:
+add the marketplace and install the single plugin:
 
 ```bash
 claude plugin marketplace add inspira-legal/builder-bundle
 claude plugin install bb@inspira-legal
 ```
 
-traz um hook `SessionStart` de contexto operacional, auto-ativo na instalação, e dois agentes de só leitura (`bb-review-finder`, `bb-review-verifier`) que o review despacha em paralelo: papéis internos do pipeline, não portas de entrada. as skills são invocadas como `/bb:<skill>` (ex. `/bb:discover`, `/bb:spec`, `/bb:ship`). toda skill com próximo passo natural termina num gate que **sugere** a próxima trilha, nunca auto-invoca.
+it ships a `SessionStart` operating-context hook, auto-active on install, and two read-only agents (`bb-review-finder`, `bb-review-verifier`) that review dispatches in parallel: internal pipeline roles, not entry points. skills are invoked as `/bb:<skill>` (e.g. `/bb:discover`, `/bb:spec`, `/bb:ship`). every skill with a natural next step ends at a gate that **suggests** the next trilha, and never auto-invokes.
 
-## o que tem dentro
+## what is inside
 
-um plugin, `bb`; 15 skills organizadas em 6 trilhas.
+one plugin, `bb`; 15 skills in 6 trilhas.
 
-### pensar: enquadrar & decidir antes de construir
+### pensar: frame and decide before building
 
-| skill            | descrição                                                                                                                                    |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:discover`   | do incômodo à aposta que dá pra especificar: enquadra o problema, pressiona o fit (vale construir? o que cortar?) e fecha hipótese + apetite |
-| `/bb:challenge`  | pre-mortem adversarial de uma tese: tenta derrubar antes que a realidade derrube                                                             |
-| `/bb:think`      | pensa junto e se posiciona: recomendação honesta e decisiva, nomeia a tensão não vista, sem bajulação                                        |
-| `/bb:legal-lens` | passada jurídica sobre ideia, fluxo ou documento: risco legal & compliance, fundamentado em normas citadas (brasil por padrão)               |
+| skill            | description                                                                                                                                      |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/bb:discover`   | from the itch to a bet you can spec: frames the problem, presses the fit (is it worth building, what to cut) and closes hypothesis plus appetite |
+| `/bb:challenge`  | adversarial pre-mortem of a thesis: tries to break it before reality does                                                                        |
+| `/bb:think`      | thinks with you and takes a position: an honest, decisive recommendation that names the tension you have not seen, with no flattery              |
+| `/bb:legal-lens` | a legal pass over an idea, a flow or a document: legal and compliance risk, grounded in cited rules (Brazil by default)                          |
 
-### desenhar: alinhar a forma do que vai ser construído
+### desenhar: agree on the shape of what gets built
 
-| skill      | descrição                                                                                                                            |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `/bb:spec` | alinhe a ideia antes do código: desenvolve o draft, itera nas zonas cinzentas via perguntas, valida uma spec em `.bb/<slug>/spec.md` |
+| skill      | description                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:spec` | align on the idea before the code: develops the draft, iterates the gray areas as questions, validates a spec at `.bb/<slug>/spec.md` |
 
-### construir: escrever & entregar código
+### construir: write and land code
 
-| skill                       | descrição                                                                                                                                                                                                                     |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:implement`             | implementa uma spec validada: constrói as tarefas, mantém as checagens do projeto verdes, depois oferece entregar                                                                                                             |
-| `/bb:ship`                  | leva a branch ao fim do seu jeito. não revisa: deixa as checagens do projeto verdes, commita, então push, prepara pra main, abre um PR e cuida dele, ou prepara o deploy no LexFlow. depois de landar, oferece o `/bb:review` |
-| `/bb:delegate`              | roda uma spec de ponta a ponta: seleciona, constrói todas as tarefas e entrega (implement → ship), trilhando o `status`                                                                                                       |
-| `/bb:gather-branch-context` | resume todas as mudanças da branch vs main                                                                                                                                                                                    |
+| skill                       | description                                                                                                                                                                                                             |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:implement`             | builds a validated spec: builds the tasks, keeps the project's checks green, then offers to land it                                                                                                                     |
+| `/bb:ship`                  | takes the branch to landed, your way. it does not review: it greens the project's checks, commits, then pushes, preps main, opens a PR and tends it, or preps the LexFlow deploy. after landing, it offers `/bb:review` |
+| `/bb:delegate`              | runs a spec end to end: selects it, builds every task and lands it (implement then ship), tracking the `status`                                                                                                         |
+| `/bb:gather-branch-context` | summarizes every change on the branch against main                                                                                                                                                                      |
 
-### revisar: qualidade & manutenção
+### revisar: quality and maintenance
 
-| skill               | descrição                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:review`        | você escolhe as frentes (correção, qualidade, regras do projeto, contrato da spec, acessibilidade da UI, threads do PR, CI), ela roda em paralelo e verifica cada achado; corrige, responde e resolve o que você aprovar. roda em profundidade padrão barata (agentes em Sonnet); `/bb:review profundo` liga o conjunto inteiro de ângulos, a varredura final e os agentes em Opus. a frente de acessibilidade também roda sozinha como auditoria WCAG AA de uma pasta ou página rodando |
-| `/bb:maintain-repo` | tria PRs + dependabot/desatualizados, reporta o que dá pra mergear (nunca faz merge)                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `/bb:review-setup`  | configura o workflow de code-review da Inspira no repo e escreve o `CODE_REVIEW_GUIDE.md`                                                                                                                                                                                                                                                                                                                                                                                                |
+| skill               | description                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:review`        | you pick the fronts (correctness, quality, project rules, the spec contract, UI accessibility, PR threads, CI), it runs them in parallel and verifies every finding; it fixes, replies and resolves whatever you approve. runs at cheap standard depth (agents on Sonnet); `/bb:review deep` turns on the whole angle set, the closing sweep and agents on Opus. the accessibility front also runs alone, as a WCAG AA audit of a folder or a live page |
+| `/bb:maintain-repo` | triages PRs plus Dependabot and outdated deps, and reports what is safe to merge (it never merges)                                                                                                                                                                                                                                                                                                                                                      |
+| `/bb:review-setup`  | sets up Inspira's code-review workflow in the repo and writes the `CODE_REVIEW_GUIDE.md`                                                                                                                                                                                                                                                                                                                                                                |
 
-### design: da ideia à surface em alta fidelidade
+### design: from the idea to a high-fidelity surface
 
-| skill        | descrição                                                                                                                                                                                  |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `/bb:brisar` | jornada de design de ponta a ponta: calibra o perfil, scaffolda com o DS da marca, escreve direção visual por surface, e constrói (Develop) e revisa/entrega (Deliver) como fases internas |
+| skill        | description                                                                                                                                                                                        |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:brisar` | end-to-end design journey: calibrates the profile, scaffolds with the brand DS, writes a visual direction per surface, then builds (Develop) and reviews or hands off (Deliver) as internal phases |
 
-### pesquisar & documentar
+### pesquisar and document
 
-| skill                    | descrição                                                                                      |
-| ------------------------ | ---------------------------------------------------------------------------------------------- |
-| `/bb:code-deep-research` | acha, clona & explora repos, depois verifica adversarialmente os achados contra o código-fonte |
-| `/bb:write-readme`       | gera um README mínimo de cabeçalho centralizado a partir dos fatos do repo                     |
+| skill                    | description                                                                               |
+| ------------------------ | ----------------------------------------------------------------------------------------- |
+| `/bb:code-deep-research` | finds, clones and explores repos, then verifies the findings adversarially against source |
+| `/bb:write-readme`       | generates a minimal centered-header README out of the repo's own facts                    |
 
-## migrando do ofc?
+## migrating from ofc?
 
-veja o [CHANGELOG](CHANGELOG.md): de-para completo das 28 skills antigas pras novas, aviso de coexistência e como trocar o plugin.
+see the [CHANGELOG](CHANGELOG.md): the full mapping from the 28 old skills to the new ones, the coexistence notice, and how to swap the plugin.
 
-desenvolva localmente:
+develop locally:
 
 ```bash
 git clone git@github.com:inspira-legal/builder-bundle.git
-claude --plugin-dir ./builder-bundle/plugins/bb    # carrega o plugin do disco pra testar
+claude --plugin-dir ./builder-bundle/plugins/bb    # loads the plugin off disk to test it
 ```
 
-<sub>a passada de qualidade do `/bb:review` é adaptada do `/simplify` do Claude Code, a arquitetura de ângulos/verificação, do `/code-review` (Anthropic, Apache-2.0), e a frente de acessibilidade absorve a skill de rafael na loja inspira-skills. `/bb:brisar` incorpora as skills do bundle brisa-ds. componentes individuais mantêm suas licenças originais.</sub>
+<sub>the quality pass in `/bb:review` is adapted from Claude Code's `/simplify`, its angle and verification architecture from `/code-review` (Anthropic, Apache-2.0), and the accessibility front absorbs rafael's skill in the inspira-skills store. `/bb:brisar` incorporates the skills of the brisa-ds bundle. individual components keep their original licenses.</sub>
