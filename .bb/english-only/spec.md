@@ -107,7 +107,7 @@ Happy path, one area at a time, each area a commit:
       → behavior 5 · dep: 4 · verify: `grep -rn "vocabulario"` outside `.bb/` and `CHANGELOG.md` returns nothing
 - [x] **6. `README.md`**: the whole page, all lowercase kept
       → behavior 6 · dep: 1 · verify: the Portuguese line census on the file returns nothing
-- [ ] **7. Manifests**: `plugins/bb/.claude-plugin/plugin.json` and
+- [x] **7. Manifests**: `plugins/bb/.claude-plugin/plugin.json` and
       `.claude-plugin/marketplace.json`
       → behavior 7 · dep: — · verify: both descriptions read English
 - [ ] **8. `CHANGELOG.md`**: the 12 entries, headings and prose
