@@ -18,7 +18,7 @@ Every subagent returns the same structure:
 - [file paths and snippets supporting each finding]
 ```
 
-## Subagent 1: stack and structure
+## Subagent 1: Stack and structure
 
 > You are a codebase structure analyst. Discover the technology stack and
 > project structure. Investigate: (1) languages by extension distribution;
@@ -29,7 +29,7 @@ Every subagent returns the same structure:
 > workspaces, lerna.json, nx.json, turbo.json. Use Glob and Bash. Return the
 > Confirmed/Candidate/Evidence structure.
 
-## Subagent 2: patterns and conventions
+## Subagent 2: Patterns and conventions
 
 > You are a code patterns analyst. Sample 10–15 representative source files
 > across directories and identify: (1) naming conventions (files, variables,
@@ -41,7 +41,7 @@ Every subagent returns the same structure:
 > Confirmed = consistent across 80%+ of relevant files. Use Glob, Grep, Read.
 > Return the Confirmed/Candidate/Evidence structure.
 
-## Subagent 3: git history and PRs
+## Subagent 3: Git history and PRs
 
 > You are a git history and PR analyst. Investigate: (1) commit-message pattern
 > over the last 50 commits (conventional? scopes? ticket refs?); (2) branch
@@ -64,7 +64,7 @@ Every subagent returns the same structure:
 > not infra rules; (7) quality gates: Sonar, CodeClimate. Use Glob, Read, Bash.
 > Return the Confirmed/Candidate/Evidence structure.
 
-## Subagent 5: security, contracts and dependencies
+## Subagent 5: Security, contracts and dependencies
 
 > You are a security and API contracts analyst. Investigate: (1) auth patterns:
 > middleware, JWT, sessions, guards; (2) input validation libraries and where

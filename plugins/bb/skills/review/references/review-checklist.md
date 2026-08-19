@@ -2,7 +2,7 @@
 
 Two passes over the review's diff range, in this order. The range is resolved once by the caller and handed down in the scope block (`<merge_base>...HEAD`, per the probe in `fronts.md`). Don't re-resolve a base here. Read every hunk with its surrounding context (open the file, not just the diff) before judging it.
 
-## Pass 1: correctness (find bugs)
+## Pass 1: Correctness (find bugs)
 
 Every finding names a **concrete user-visible consequence** (wrong output, crash, data loss, hung request), with the line that causes it. A candidate with no nameable consequence isn't a finding; one whose trigger is uncertain still is, and the verdict on it belongs to the verify pass (`verify.md`), not to the pass that found it.
 
@@ -17,7 +17,7 @@ Every finding names a **concrete user-visible consequence** (wrong output, crash
 
 Report each finding as `file:line | summary | failure_scenario | suggested fix`. The verdict column is added by the verify pass, which is what makes CONFIRMED / PLAUSIBLE / REFUTED mean anything. A finder that grades its own candidates bypasses it. What happens next is the router's call: `/bb:review` reports first and applies only what the user picks at its curation step.
 
-## Pass 2: quality (simplify; no behavior changes)
+## Pass 2: Quality (simplify; no behavior changes)
 
 Apply the **quality checklist**: `quality-checklist.md`, its sibling here and the single source of truth for what a quality finding is. It covers the six criteria (reuse, simplification, dead weight, efficiency, altitude, consistency), the scope/behavior/clarity rules, and the over-simplification guard.
 

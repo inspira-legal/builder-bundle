@@ -25,7 +25,7 @@ Inside a git repository. `gh` authenticated (`gh auth status`) for anything
 PR/CI-related; the diff fronts need no `gh`. The accessibility audit in surface
 scope is the one path that needs neither a repo nor a diff.
 
-## Step 0: load the review context
+## Step 0: Load the review context
 
 - **Repo guide:** if `CODE_REVIEW_GUIDE.md` exists at the repo root, read it fresh
   (never cached): it's the `rules` front's whole rule source, and its severities
@@ -39,7 +39,7 @@ scope is the one path that needs neither a repo nor a diff.
   architecture), consult the manifesto per the plugin-root
   `references/consult-manifesto.md` before calling it wrong.
 
-## Step 1: resolve the mode
+## Step 1: Resolve the mode
 
 - **External PR** (user names a repo and/or PR number that isn't the current
   branch's): follow `references/mode-external-pr.md`, then stop. Read-only over
@@ -68,7 +68,7 @@ the size of the diff:
 Carry the resolved depth into the scope block; `fronts.md` reads it as a flag and
 sizes the fan-out from it, and the report has to name which one ran.
 
-## Step 2: probe the fronts, then ask which ones
+## Step 2: Probe the fronts, then ask which ones
 
 Load `references/fronts.md`: it carries the front catalog, the availability probe
 (one batch of cheap read-only calls), and the depth table that sizes the fan-out
@@ -99,7 +99,7 @@ no set, 3 rodam, wrapper-boundary fora, sem sweep`). Every number in that line c
 from the resolution that just ran, which is what makes it match the stats line at the
 end; on a small diff it's also why no agent shows up.
 
-## Step 3: run the picked fronts in parallel
+## Step 3: Run the picked fronts in parallel
 
 The catalog in `fronts.md` maps each picked front to its `references/front-*.md`;
 that mapping is the list, so a front added to the engine reaches this router with no
@@ -113,7 +113,7 @@ Then `references/verify.md`: pool everything at the barrier, group by `file:line
 one independent verifier per location (CONFIRMED / PLAUSIBLE / REFUTED), sweep on
 large diffs, then dedupe, rank and cap.
 
-## Step 4: report
+## Step 4: Report
 
 One unified report, numbered items across all fronts, most severe first. Each item
 carries its front, its verdict, and the columns of **its own front's Finding
@@ -140,7 +140,7 @@ Close with what didn't make it and what actually ran:
 
 Clean everywhere → say so and jump to the gate (step 7).
 
-## Step 5: curate (the user picks)
+## Step 5: Curate (the user picks)
 
 One `AskUserQuestion` (PT-BR, `multiSelect`): which numbered items to handle now,
 and **how**. Fixing is one outcome, leaving the finding on the PR is another.
@@ -149,7 +149,7 @@ threads", specific numbers via "Other"). "Comentar os itens na PR em vez de corr
 is offered when the probe found an open PR, and fix and comment can both be picked:
 fix 1–3, comment 4–6. "Nenhum, encerrar" is always an option.
 
-## Step 6: apply what was picked
+## Step 6: Apply what was picked
 
 Follow `references/act-apply-fixes.md`: one change at a time, justified, with the
 regression guard; quality edits are strictly behavior-preserving. Then:
@@ -169,7 +169,7 @@ regression guard; quality edits are strictly behavior-preserving. Then:
 Re-report as a table: `# | item | action taken | commit/status`: `corrigido`,
 `comentado (link)` and `deixado no relatório` are all valid outcomes.
 
-## Step 7: gate
+## Step 7: Gate
 
 Per the plugin-root `references/handoff-gate.md`, one PT-BR question with **2–4
 options**. Five states can qualify, so take the first three that apply in this

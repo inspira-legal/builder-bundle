@@ -16,7 +16,7 @@ Fire all 3 in one message. Each reads the guide first, then investigates, and
 returns JSON: `{new_patterns: [], changed_rules: [], removed_patterns: [],
 evidence: []}`.
 
-### Subagent 1: new patterns
+### Subagent 1: New patterns
 
 > You are a codebase analyst. Read CODE_REVIEW_GUIDE.md, then compare the
 > current repo against it. Find: (1) new directories/modules that fit no
@@ -24,7 +24,7 @@ evidence: []}`.
 > (3) new file patterns not covered by the current categorization; (4) moved or
 > reorganized structure. For each: `{pattern, evidence, suggested_category}`.
 
-### Subagent 2: drifted conventions
+### Subagent 2: Drifted conventions
 
 > You are a code conventions analyst. Read CODE_REVIEW_GUIDE.md, then verify
 > its rules still match reality. Find: (1) rules that no longer describe the
@@ -33,7 +33,7 @@ evidence: []}`.
 > each: `{rule_id, current_description, actual_state, evidence,
 recommendation: update|remove|keep}` with concrete example files.
 
-### Subagent 3: git history since the guide
+### Subagent 3: Git history since the guide
 
 > You are a git history analyst. Get the guide's last change date
 > (`git log -1 --format=%ai CODE_REVIEW_GUIDE.md`; fall back to the last 30
