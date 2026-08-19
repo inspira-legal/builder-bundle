@@ -163,7 +163,7 @@ Caminho principal:
 - [x] **9. Travessão na doc do repo**: 41 em 5 arquivos: `README.md` 18, `.claude/CLAUDE.md`
       20, a mensagem de echo do `validate.yml` e os 2 `.json` de plugin
       → behavior 7 · depende: 2 · verifica: grep zerado
-- [ ] **10. Meia-risca e travessão sem espaço**: as 33 e os 54 em escopo, com o token
+- [x] **10. Meia-risca e travessão sem espaço**: as 33 e os 54 em escopo, com o token
       funcional preservado → behaviors 8, 10 · depende: 4, 5, 6, 7, 8, 9 · verifica: grep
 - [ ] **11. Versão e CHANGELOG**: `plugin.json` em `2.12.0` e a entrada nova com heading
       `## 2.12.0 (2026-08-18)`, em prosa sem travessão

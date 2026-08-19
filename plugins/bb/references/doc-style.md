@@ -91,6 +91,7 @@ badge per verifiable fact.
   count, and measurement.
 - Write a date unambiguously: `2026-08-18`, or "August 18, 2026".
 - Put a space between a number and its unit, and use the unit the tool prints.
+- A number range keeps its en dash: `3–5 bullets`, `0.1–0.3`, `rungs 1–3`.
 
 ## Punctuation
 
