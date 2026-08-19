@@ -130,8 +130,9 @@ function validateAgentTools(tools: unknown): ValidationIssue[] {
 }
 
 async function main() {
-  const { baseDir, files, notes } = await resolveTargets(process.argv.slice(2), (p) =>
-    classify(p) !== null,
+  const { baseDir, files, notes } = await resolveTargets(
+    process.argv.slice(2),
+    (p) => classify(p) !== null,
   );
 
   const skills = files.filter((f) => classify(f) === "skill").length;
