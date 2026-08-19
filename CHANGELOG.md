@@ -45,8 +45,9 @@ que quem escreve lê antes de escrever.
 
 ### Fica como está
 
-- **`references/ds/**` intocado.** É o brand package da Inspira, conteúdo de marca
-  com voz própria: 383 travessões e 70 headings em title case que continuam lá.
+- **O `references/ds/` fica intocado.** É o brand package da Inspira,
+  conteúdo de marca com voz própria: 383 travessões e 70 headings em title
+  case que continuam lá.
 - **As entradas antigas deste CHANGELOG e as 7 specs em `.bb/`.** São registro
   landado; reescrever muda o que já foi publicado.
 - **O travessão que é token funcional.** As 5 ocorrências do `depende: —` que uma
