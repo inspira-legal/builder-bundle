@@ -46,9 +46,13 @@ read-only.
 
 ## How the skills invoke it
 
-The path is resolved and the file proved in one `Bash` call: a `cat` of
-`$CLAUDE_PLUGIN_ROOT/workflows/build-tasks.js` into `/dev/null`, then an `echo` of that
-same path. A non-zero exit is the missing-file case. The printed path is what goes into
+The path is resolved and the file proved in one `Bash` call:
+
+```bash
+cat "$CLAUDE_PLUGIN_ROOT/workflows/build-tasks.js" > /dev/null && echo "$CLAUDE_PLUGIN_ROOT/workflows/build-tasks.js"
+```
+
+A non-zero exit is the missing-file case. The printed path is what goes into
 `scriptPath`, already expanded, because the tool takes a literal path.
 
 Three fallbacks, one attempt each: `scriptPath` refused becomes an inline `script` read
@@ -93,9 +97,8 @@ Each reuse-note agent returns:
 { verdict: "intact" | "moved" | "gone", note: "<the note>", where: "<new path, if moved>" }
 ```
 
-The checks agent resolves the project's checks through implement's authority chain
-(CLAUDE.md and docs, then CI workflow files, then `package.json` / `justfile` /
-`Makefile` / `pyproject.toml`) and then **runs all of them once**. Running them is the
+The checks agent resolves the project's checks through implement's authority chain, the
+one its step 4 states, and then **runs all of them once**. Running them is the
 point: it proves the run has permission to execute each one, and it establishes the
 green baseline. It returns:
 

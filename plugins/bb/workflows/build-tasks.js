@@ -68,6 +68,9 @@ answers to it any more. Do not edit anything. A near-match under a different nam
 "moved", not "gone"; only nothing at all is "gone".`;
 }
 
+// The authority chain below restates implement's step 4 on purpose: this string is what the
+// agent reads at runtime, and it has no way to follow a pointer at a doc. Both copies change
+// together.
 function checksPrompt(hint) {
   return `Resolve this project's checks, then run all of them once.
 
