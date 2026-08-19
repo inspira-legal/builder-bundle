@@ -97,11 +97,11 @@ Happy path, one area at a time, each area a commit:
       `brisar/references/*`, `challenge/references/modes.md`,
       `review-setup/references/interview.md`
       → behavior 3 · dep: 1 · verify: reading, plus the Portuguese line census on the touched files
-- [ ] **4. The language mandate goes**: `.claude/CLAUDE.md` (the hybrid section),
+- [x] **4. The language mandate goes**: `.claude/CLAUDE.md` (the hybrid section),
       `hooks/operating-context.md`, `doc-style.md` (the Portuguese layer paragraph),
       and every "in PT-BR" instruction in the skills
-      → behavior 4 · dep: 3 · verify: `grep -rniE "PT-BR|português|portuguese"` outside `ds/` returns nothing
-- [ ] **5. `vocabulario.md` deleted**: the file goes, `doc-style.md` states the naming
+      → behavior 4 · dep: 3 · verify: `grep -rniE "PT-BR|português|portuguese"` outside `ds/` returns only the compat lines that name the Portuguese section spellings as the older ones, and the `lang="pt-BR"` a scaffold example writes into a page it builds
+- [x] **5. `vocabulario.md` deleted**: the file goes, `doc-style.md` states the naming
       rule, and `.claude/CLAUDE.md`, `operating-context.md`, `guide-template.md`,
       `spec/SKILL.md` point there
       → behavior 5 · dep: 4 · verify: `grep -rn "vocabulario"` outside `.bb/` and `CHANGELOG.md` returns nothing

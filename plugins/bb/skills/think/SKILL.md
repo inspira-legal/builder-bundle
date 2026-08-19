@@ -11,7 +11,6 @@ metadata:
 
 Structured thinking partner. Auto-classifies the mode from the input; the user
 does not need to specify. Always lands on a clear conclusion, not just notes.
-All user-facing text is PT-BR.
 
 ## Modes
 

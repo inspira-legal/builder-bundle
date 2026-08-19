@@ -33,7 +33,7 @@ domain.
    quality, security & contracts), then rule extraction into
    Confirmed/Candidate tables with IDs, severities, and evidence.
 2. **Interview** → `references/interview.md`: the maintainer validates via
-   `AskUserQuestion` (PT-BR): confirmed rules in one batch, candidates one at a
+   `AskUserQuestion`: confirmed rules in one batch, candidates one at a
    time. Every rule in the guide was accepted by a human, none slipped in.
 3. **Generate** → `references/guide-template.md`: write `CODE_REVIEW_GUIDE.md`
    at the repo root from the validated rules.

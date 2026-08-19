@@ -13,7 +13,6 @@ A juridical pass over whatever you point it at, surfacing where it touches the
 law, the risk that carries, and what a lawyer would require before it ships. It
 **triages for human legal review; it is not legal advice** and does not replace
 counsel. Default jurisdiction is **Brazilian law**; pass another to override.
-All user-facing text (findings, the report, the `## Jurídico` section) is PT-BR.
 
 ## Input
 

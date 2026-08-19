@@ -9,11 +9,6 @@ CODE_REVIEW_GUIDE from `/bb:review-setup`, the report templates that live inside
 blocks). A fenced block that is an output template is prose bb writes outward, so it follows
 this page too.
 
-The Portuguese layer belongs to `vocabulario.md`: the `description:` field, gate questions,
-option labels, reports, and plain chat. This page is English, which is where American
-spelling and the word choices below apply. One rule crosses both languages, the dash rule,
-because it is punctuation rather than vocabulary.
-
 This page states every rule bb writes by, so writing to it is a local read, never a fetch.
 
 ## Precedence
@@ -48,7 +43,12 @@ or a comma.
 - Name each thing by what it does, and write the literal sentence. A figure of speech holds
   only where it names a mechanism the code has, like the safety valve `/bb:implement` fires,
   and a reader who does not know the figure still has to know what to do.
-- Use American spelling, and call each thing by the name the code gives it.
+- Use American spelling.
+- Call each thing by the name it already has in the code or in the repo: the file, the
+  function, the branch, the PR, the `x` field. Quote that name exactly as written, because
+  half of what a name is worth is that a search finds it.
+- Where the thing has no name anywhere yet, say in three words what happens ("the agent
+  that only reads") rather than coining a word the plugin then has to teach.
 
 ## Headings
 
@@ -60,6 +60,9 @@ or a comma.
 - Write headings in plain words: a heading is what a search matches and what a table of
   contents shows.
 - Where a section introduces its subsections, refer to them as "the following sections".
+- Sentence case reaches past headings: an option label, a gate question, and a report
+  line all run in it, and identifiers keep the case the code gives them wherever they
+  sit, including the first word.
 
 ## Text formatting
 
@@ -103,7 +106,7 @@ or a comma.
 - A colon introduces what explains the clause before it. A semicolon joins two clauses that
   could stand alone.
 - Quotation marks go around a phrase quoted verbatim, with the source named.
-- Dashes follow their own section above, in English and in Portuguese.
+- Dashes follow their own section above.
 
 ## Accessibility
 

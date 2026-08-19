@@ -27,7 +27,7 @@ If the spec for this slug already carries `## Problem` / `## Hypothesis` / `## F
 
 ## The loop
 
-You bring the idea; Claude develops it, then loops with you through the **`AskUserQuestion` tool** until the picture is consistent and you sign off. Never interrogate from a blank page, and never decide silently; drive it through real questions. All question text the user sees is PT-BR.
+You bring the idea; Claude develops it, then loops with you through the **`AskUserQuestion` tool** until the picture is consistent and you sign off. Never interrogate from a blank page, and never decide silently; drive it through real questions.
 
 1. **Develop the draft (draft-first).** Read the one-liner, look at the codebase, and write a short draft spec with your best-guess decisions filled in: what/why, scope edges, reuse, the decisions you can already make. For Large work, also sketch the _how_ (next section) before breaking it into tasks. Bring something concrete to react to.
 

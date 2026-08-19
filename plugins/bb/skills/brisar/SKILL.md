@@ -35,8 +35,7 @@ changes: code, Claude design, Figma, Paper or Pencil (`references/phase-medium.m
 
 Each stage is entered explicitly (the builder asks, a shortcut routes there, or
 the previous stage's gate suggests it). The skill never rolls from one stage to
-the next silently. All user-facing text (questions, option labels, echoes,
-error messages) is **PT-BR**; instruction bodies are English.
+the next silently.
 
 ## Execution principles
 

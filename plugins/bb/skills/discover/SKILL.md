@@ -53,8 +53,6 @@ Read the invocation and any existing spec before asking anything:
   competitors, prior art), check (codebase, then docs, then web) and tag what
   you find.
 
-All user-facing text (echoes, question labels, reports) is PT-BR.
-
 ## Capture (on disk)
 
 Both phases accrete the same spec, resolved per the spec-state contract

@@ -106,7 +106,7 @@ mapped the same way (the whole pairing is in the plugin-level `references/spec-s
 Generate when UI content is involved. Drafts to guide visual exploration; final
 copy is validated in the visual stage. Follow the product's voice guide when one
 exists; the voice rules below are the fallback. UI copy is written in the
-product's language (PT-BR for Inspira products).
+product's language.
 
 ```markdown
 # Content: [Feature Name]

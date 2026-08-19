@@ -32,7 +32,7 @@ Don't ask reflexively. If the landing is already settled by signal, **take it an
 - the landing was **decided earlier this session or on this branch**,
 - the repo state is unambiguous: a PR already open for this branch → finish that PR.
 
-**Ask one `AskUserQuestion` only when** there's no such signal, or signals conflict (question text PT-BR, per the plugin-level `references/handoff-gate.md` format). Lead with the best-fit lean:
+**Ask one `AskUserQuestion` only when** there's no such signal, or signals conflict (per the plugin-level `references/handoff-gate.md` format). Lead with the best-fit lean:
 
 - **Open / finish the PR**: the full flow, create the PR if none exists, auto-handle review comments (reply / fix / push / resolve), watch CI until green, then stay watching it until you stop.
 - **Push to a feature branch**: commit and push to a non-protected branch (the current one, or a new name you give). No PR. Reversible, so ship runs it.
@@ -95,7 +95,7 @@ Load the reference for the destination Step 1 settled, and follow it:
 ## Step 4: The gate, review now or stop here
 
 Landing ends ship, not the flow. Per the plugin-root `references/handoff-gate.md`,
-one PT-BR question with two options:
+one question with two options:
 
 - **"Review now"**: invoke `/bb:review` over what ship just produced (the
   commits, whether they were pushed or are waiting on the command ship handed you). It probes the
