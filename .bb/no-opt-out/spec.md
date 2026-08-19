@@ -209,7 +209,7 @@ one spec: making every build fresh is what makes the review necessary.
       invokes and reads the return, with the same fallbacks; step 7 stops reporting "the
       build mode it ran in"; the edge row "workflow mode stops" loses the mode word
       → behaviors 1, 2, 6, 7, 8 · dep: 2 · verify: reading
-- [ ] **5. The reviewer agent**: `agents/bb-spec-reviewer.md` with `description` and
+- [x] **5. The reviewer agent**: `agents/bb-spec-reviewer.md` with `description` and
       `tools` and no `model`, carrying the omission, contradiction and surplus mandate, the
       reuse-note check, the buildable-by-a-fresh-agent question, and the weighed return
       → behaviors 9, 10 · dep: — · verify: reading
