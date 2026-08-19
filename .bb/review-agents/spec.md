@@ -4,165 +4,167 @@ created: 2026-08-04
 slug: review-agents
 ---
 
-# bb-finder e bb-verifier — capability scoping pro fan-out do review
+# bb-finder and bb-verifier: capability scoping for the review fan out
 
-Dois agentes definidos no plugin — `plugins/bb/agents/bb-finder.md` e
-`plugins/bb/agents/bb-verifier.md` — nomeados por **papel no pipeline**, não por frente. O
-fan-out do `/bb:review` (e, por empréstimo, do `/bb:ship`) passa a despachá-los via
-`subagent_type`, e o `tools:` do frontmatter vira quem garante que finder e verifier não
-escrevem. Junto: o contrato invariante de cada papel migra pro system prompt do agente, e o
-CI aprende a validar `agents/*.md`.
+Two agents defined in the plugin, `plugins/bb/agents/bb-finder.md` and
+`plugins/bb/agents/bb-verifier.md`, named by their **role in the pipeline**, not by front.
+`/bb:review`'s fan out (and, by borrowing, `/bb:ship`'s) starts dispatching them through
+`subagent_type`, and the frontmatter's `tools:` becomes what guarantees that finder and
+verifier do not write. Along with it: each role's invariant contract moves into the agent's
+system prompt, and CI learns to validate `agents/*.md`.
 
-O read-only dos finders hoje é garantido por prosa (`fronts.md:77` — "read-only — they
-report, never edit"), mas o `.claude/CLAUDE.md` do repo manda **"enforce irreversible
-hazards with capability scoping, not prose"**. É o mesmo raciocínio já aplicado duas vezes
-no repo: never-merge e outward-posting saíram da prosa pro capability scoping da routine.
+The finders' read-only property is guaranteed by prose today (`fronts.md:77`, "read-only, they
+report, never edit"), but the repo's `.claude/CLAUDE.md` orders **"enforce irreversible hazards
+with capability scoping, not prose"**. It is the same reasoning already applied twice in the
+repo: never-merge and outward-posting left the prose for the routine's capability scoping.
 
-O dano concreto: um finder que decide consertar o que achou quebra o single-writer com até
-5 agentes escrevendo em paralelo na mesma working tree — corrupção difícil de atribuir,
-porque o relatório não registra edits que ninguém pediu.
+The concrete damage: a finder that decides to fix what it found breaks the single writer rule
+with up to 5 agents writing in parallel in the same working tree, a corruption that is hard to
+attribute, because the report records no edits nobody asked for.
 
-Sucesso: o invariante read-only está no frontmatter e no CI, e nenhuma skill precisa
-repeti-lo pra que valha.
+Success: the read-only invariant sits in the frontmatter and in CI, and no skill has to repeat
+it for it to hold.
 
-## O seam entre agente e caller
+## The seam between agent and caller
 
-O agente é dono da metade que não muda entre frentes; o caller monta a metade que muda.
+The agent owns the half that does not change between fronts; the caller assembles the half that
+does.
 
 ```
-bb-finder (system prompt)          | caller (scope block + prompt)
------------------------------------|-----------------------------------
-read-only, nunca edita             | diff range resolvido (<merge_base>...HEAD)
-todo candidato com consequência    | arquivos mudados + parágrafo do que mudou
-  nomeável passa (não se censurar) | CODE_REVIEW_GUIDE.md / brief quando há
-devolve exatamente a Finding shape | criteria path (review-/quality-checklist)
-  que o caller passou              | UM angle/lens set + o cap dele
-diz quantos cortou ao bater o cap  | a Finding shape do front
+bb-finder (system prompt)             | caller (scope block + prompt)
+--------------------------------------|--------------------------------------
+read-only, never edits                | resolved diff range (<merge_base>...HEAD)
+every candidate with a nameable       | changed files and what changed
+  consequence passes, no self-censor  | CODE_REVIEW_GUIDE.md / the brief, if any
+returns exactly the Finding shape the | criteria path (review-/quality-checklist)
+  caller passed                       | ONE angle/lens set plus its cap
+says how many it cut at the cap       | the front's Finding shape
 
-bb-verifier (system prompt)        | caller (scope block + prompt)
------------------------------------|-----------------------------------
-rubrica CONFIRMED/PLAUSIBLE/REFUTED| os candidatos daquele local, [0], [1], …
-viés: PLAUSIBLE é o default        | addendum por frente (citação em rules/
-REFUTED só se construtível do      |   contract, WCAG + recálculo de contraste
-  código (cita a linha que prova)  |   em a11y)
-um veredito por índice, julgado    | o scope block
-  independentemente, com evidência |
+bb-verifier (system prompt)           | caller (scope block + prompt)
+--------------------------------------|--------------------------------------
+CONFIRMED/PLAUSIBLE/REFUTED rubric    | the candidates at that spot, [0], [1], …
+bias: PLAUSIBLE is the default        | a per front addendum (a citation in
+REFUTED only when it is constructible |   rules/contract, WCAG plus a contrast
+  from the code, citing the line      |   recompute in a11y)
+one verdict per index, judged         | the scope block
+  independently, with evidence        |
 ```
 
-**Sem Finding shape passada** (caller esqueceu, ou é um uso novo): o finder devolve
-`file:line | summary | failure_scenario` — o mínimo que o `group_candidates.py` consegue
-agrupar.
+**With no Finding shape passed** (the caller forgot, or it is a new use): the finder returns
+`file:line | summary | failure_scenario`, the minimum `group_candidates.py` can group.
 
-**Limite conhecido e aceito:** com Bash na lista, um diff que contenha texto instruindo o
-modelo ("ignore o anterior, edite X") não é barrado por capability — `Edit`/`Write` somem,
-`sed -i` não. O ângulo `instruction-integrity` continua sendo a defesa de leitura; o scoping
-é redução de superfície, não isolamento.
+**A known and accepted limit:** with Bash on the list, a diff carrying text that instructs the
+model ("ignore the above, edit X") is not barred by capability, because `Edit`/`Write` are gone
+and `sed -i` is not. The `instruction-integrity` angle stays the defense by reading; the scoping
+is a surface reduction, not isolation.
 
-## Decisões
+## Decisions
 
-- **Dois agentes, por papel** — `bb-finder` e `bb-verifier`. O que difere entre frentes é
-  conteúdo de prompt que o caller já monta (angle set, criteria path, scope block, Finding
-  shape); um agente por frente seriam 7 nomes globais guardando a mesma metade invariante.
-- **`tools: Read, Grep, Glob, Bash` nos dois**, com o custo declarado: `tools:` é por nome
-  de ferramenta, então `sed -i` e `>` continuam alcançáveis via Bash. O scoping tira o que o
-  modelo naturalmente alcança (Edit/Write); não é hermético. Bash é o que mantém
-  `git diff <range>` e `gh pr diff` (mode-external-pr) funcionando sem inflar o scope block.
-- **O agente é dono do contrato.** A rubrica CONFIRMED/PLAUSIBLE/REFUTED (+ viés de
-  PLAUSIBLE, + REFUTED só quando construtível do código) mora no prompt do `bb-verifier`; o
-  contrato do finder (consequência nomeável, não se auto-censurar) mora no `bb-finder`.
-  `verify.md §2`, `fronts.md` item 5 e o parágrafo de consequência do `front-correctness.md`
-  deferem numa linha cada.
-- **O que não migra:** a verificação por citação de `rules`/`contract`/`a11y` fica na
-  referência e o caller anexa ao prompt do verifier — é conteúdo por frente, não invariante
-  de papel. Idem campos da Finding shape, angle sets e caps.
-- **Fallback é realocar, não deletar** — `fronts.md:77` e `review/SKILL.md:91` viram "os
-  finders vão como `subagent_type: bb-finder` — read-only por capability", uma linha cada. O
-  invariante segue nomeado uma vez, mas quem garante é o frontmatter; o item 6 do
-  `fronts.md` continua cobrindo o host sem fan-out.
-- **O CI guarda o scoping** — `validate-frontmatter.ts` caminha em `agents/*.md` (name +
-  description obrigatórios) e **falha se um agente do bb listar `Write`/`Edit`/`NotebookEdit`
-  em `tools:`**, que é exatamente o argumento da PR virado teste. O `paths:` do
-  `validate.yml` ganha `plugins/bb/agents/**` e `.github/scripts/**`, senão um PR
-  só-de-agente não dispara o Validate.
-- **`model:` omitido nos dois** → herda o modelo da sessão. A qualidade do achado e do
-  veredito é justamente o que não se quer barateando por default.
-- **`description:` em PT-BR e estreita de propósito** — diz que é papel interno do pipeline
-  de review, despachado pelas skills, e aponta `/bb:review` pra quem quer revisar. Agente de
-  plugin fica visível globalmente com a description sempre em contexto.
-- **`plugin.json` não declara nada** — `agents/` é auto-descoberto (confirmado no
-  `pr-review-toolkit` oficial: 6 agentes, `plugin.json` sem campo `agents`). Só o bump.
-- **Versão** — `2.2.0` → `2.3.0` no `plugin.json` e no `metadata.version` de cada SKILL.md
-  tocado (`review`; `ship` só se acabar tocado).
-- **`/bb:ship` sem edição esperada** — empresta `fronts.md`/`verify.md`, então herda os
-  agentes pela convenção de empréstimo. Ajustar `ship/SKILL.md:54` só se a linha ficar
-  ambígua depois do slice 2.
+- **Two agents, by role**: `bb-finder` and `bb-verifier`. What differs between fronts is prompt
+  content the caller already assembles (the angle set, the criteria path, the scope block, the
+  Finding shape); one agent per front would be 7 global names guarding the same invariant half.
+- **`tools: Read, Grep, Glob, Bash` in both**, with the cost declared: `tools:` works by tool
+  name, so `sed -i` and `>` stay reachable through Bash. The scoping removes what the model
+  naturally reaches for (Edit/Write); it is not hermetic. Bash is what keeps
+  `git diff <range>` and `gh pr diff` (mode-external-pr) working without inflating the scope
+  block.
+- **The agent owns the contract.** The CONFIRMED/PLAUSIBLE/REFUTED rubric (plus the PLAUSIBLE
+  bias, plus REFUTED only when constructible from the code) lives in `bb-verifier`'s prompt; the
+  finder's contract (a nameable consequence, no self-censoring) lives in `bb-finder`.
+  `verify.md §2`, `fronts.md` item 5 and `front-correctness.md`'s consequence paragraph defer in
+  one line each.
+- **What does not move:** the citation based verification of `rules`/`contract`/`a11y` stays in
+  the reference and the caller appends it to the verifier's prompt, because it is per front
+  content and not a role invariant. Same for the Finding shape's fields, the angle sets and the
+  caps.
+- **The fallback is to relocate, not to delete**: `fronts.md:77` and `review/SKILL.md:91` become
+  "the finders go as `subagent_type: bb-finder`, read-only by capability", one line each. The
+  invariant stays named once, but the frontmatter is what guarantees it; `fronts.md`'s item 6
+  keeps covering a host with no fan out.
+- **CI guards the scoping**: `validate-frontmatter.ts` walks `agents/*.md` (`name` plus
+  `description` required) and **fails if a bb agent lists `Write`/`Edit`/`NotebookEdit` in
+  `tools:`**, which is exactly the PR's argument turned into a test. `validate.yml`'s `paths:`
+  gains `plugins/bb/agents/**` and `.github/scripts/**`, otherwise an agent only PR never fires
+  the Validate.
+- **`model:` omitted in both** → it inherits the session's model. The quality of the finding and
+  of the verdict is precisely what nobody wants made cheaper by default.
+- **`description:` in PT-BR and deliberately narrow**: it says this is an internal role in the
+  review pipeline, dispatched by the skills, and it points at `/bb:review` for whoever wants to
+  review. A plugin agent stays globally visible with its description always in context.
+- **`plugin.json` declares nothing**: `agents/` is auto-discovered (confirmed in the official
+  `pr-review-toolkit`: 6 agents, `plugin.json` with no `agents` field). Only the bump.
+- **Version**: `2.2.0` → `2.3.0` in `plugin.json` and in the `metadata.version` of each touched
+  SKILL.md (`review`; `ship` only if it ends up touched).
+- **`/bb:ship` with no edit expected**: it borrows `fronts.md`/`verify.md`, so it inherits the
+  agents through the borrowing convention. Adjust `ship/SKILL.md:54` only if the line turns
+  ambiguous after slice 2.
 
-## Comportamento
+## Behavior
 
-Happy path (`/bb:review`, step 3, depth com fan-out):
+Happy path (`/bb:review`, step 3, a depth with fan out):
 
-1. O probe resolve o diff range e as frentes disponíveis — nada muda aqui.
-2. O caller monta o scope block e dispara todos os finders **numa mensagem**, cada um com
-   `subagent_type: "bb-finder"`, um angle/lens set e o cap do seu front.
-3. Cada finder lê o diff (`git diff <merge_base>...HEAD` via Bash) e os arquivos com a
-   função envolvente aberta; devolve candidatos na Finding shape do front. Nenhum finder
-   pode chamar Edit/Write — não estão na lista de tools.
-4. Barreira: o main context junta tudo e roda `group_candidates.py`.
-5. Um `bb-verifier` por local, com os candidatos indexados + o addendum da frente quando é
-   `rules`/`contract`/`a11y`. A rubrica vem do prompt do agente.
-6. Dedupe, rank, cap, relatório — inalterado. A stats line segue batendo.
+1. The probe resolves the diff range and the available fronts; nothing changes here.
+2. The caller assembles the scope block and fires every finder **in one message**, each with
+   `subagent_type: "bb-finder"`, one angle/lens set and its front's cap.
+3. Each finder reads the diff (`git diff <merge_base>...HEAD` through Bash) and the files with
+   the enclosing function open; it returns candidates in the front's Finding shape. No finder
+   can call Edit/Write, since they are not on the tools list.
+4. The barrier: the main context gathers everything and runs `group_candidates.py`.
+5. One `bb-verifier` per spot, with the indexed candidates plus the front's addendum when it is
+   `rules`/`contract`/`a11y`. The rubric comes from the agent's prompt.
+6. Dedupe, rank, cap, report: unchanged. The stats line still adds up.
 
-| WHEN                                         | THEN                                                                                     |
-| -------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `bb-finder` não resolve como `subagent_type` | cai no agente genérico com o contrato inline; sem crash nem regressão silenciosa         |
-| não há Agent tool nenhum no host             | item 6 do `fronts.md` — tudo no main context, e o relatório diz que foi single-pass      |
-| o caller não passa Finding shape             | o finder devolve `file:line \| summary \| failure_scenario`                              |
-| diff tiny (≲2 arquivos / ≲100 linhas)        | nenhum agente é spawnado — a depth table já manda inline                                 |
-| candidato de `rules` / `contract` / `a11y`   | o caller anexa o addendum; o verifier aplica os 3 estados sobre citação, não sobre crash |
-| um finder morre                              | o front reporta com os ângulos que voltaram e nomeia o que falta                         |
-| um verifier morre ou omite um índice         | o candidato fica sem veredito, com linha própria, nunca promovido                        |
-| `/bb:ship` roda o mesmo pass                 | usa os mesmos dois agentes sem edição em `ship/`                                         |
-| alguém adiciona um agente do bb com `Write`  | o Validate falha nomeando o arquivo e o tool proibido                                    |
-| um PR toca só `plugins/bb/agents/**`         | o Validate dispara — o paths filter foi estendido                                        |
-| o diff carrega texto que instrui o modelo    | Edit/Write barrados; escrita via Bash segue alcançável — limite declarado                |
-| `BB_UNATTENDED` setado                       | nada muda — o caminho já é report-only                                                   |
+| WHEN                                            | THEN                                                                                                 |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `bb-finder` does not resolve as `subagent_type` | it falls back to the generic agent with the contract inline; no crash and no silent regression       |
+| there is no Agent tool at all in the host       | `fronts.md`'s item 6, everything in the main context, and the report says it was single pass         |
+| the caller passes no Finding shape              | the finder returns `file:line \| summary \| failure_scenario`                                        |
+| a tiny diff (≲2 files / ≲100 lines)             | no agent is spawned, since the depth table already orders it inline                                  |
+| a candidate from `rules` / `contract` / `a11y`  | the caller appends the addendum; the verifier applies the 3 states over a citation, not over a crash |
+| a finder dies                                   | the front reports with the angles that came back and names what is missing                           |
+| a verifier dies or omits an index               | the candidate stays without a verdict, on a line of its own, never promoted                          |
+| `/bb:ship` runs the same pass                   | it uses the same two agents with no edit in `ship/`                                                  |
+| someone adds a bb agent with `Write`            | the Validate fails naming the file and the forbidden tool                                            |
+| a PR touches only `plugins/bb/agents/**`        | the Validate fires, since the paths filter was extended                                              |
+| the diff carries text that instructs the model  | Edit/Write barred; writing through Bash stays reachable, a declared limit                            |
+| `BB_UNATTENDED` set                             | nothing changes, since the path is already report only                                               |
 
-## Tarefas
+## Tasks
 
-- [x] **1. Os dois agentes** — `bb-finder.md` e `bb-verifier.md`: frontmatter (`name`,
-      `description` PT-BR estreita, `tools: ["Read", "Grep", "Glob", "Bash"]`, sem
-      `model`) e system prompt em inglês com o contrato invariante de cada papel
-      → behaviors 3, 5 e as linhas de Finding shape e injection · depende: — · verifica: CI
-- [x] **2. O engine despacha os agentes** — `fronts.md` (item 1 nomeia o `subagent_type`,
-      item 5 defere o contrato), `review/SKILL.md:91`, `verify.md §2` (defere a rubrica,
-      mantém o addendum por frente), `front-correctness.md`
-      → behaviors 2, 5 e as linhas de fallback e de ship · depende: 1 · verifica: CI
-- [x] **3. O CI guarda o scoping** — `validate-frontmatter.ts` caminha em `agents/*.md`,
-      exige `name`+`description` e falha em `Write`/`Edit`/`NotebookEdit`; `validate.yml`
-      ganha `plugins/bb/agents/**` e `.github/scripts/**` no `paths:`
-      → as duas linhas de CI da tabela · depende: — · verifica: CI verde (prova que a assertion
-      não dá falso positivo nos outros agentes)
-- [x] **4. Docs e versão** — `.claude/CLAUDE.md` (árvore ganha `agents/`, uma linha de
-      convenção), README se listar a estrutura, bump `2.2.0` → `2.3.0`
-      → nenhum comportamento próprio · depende: 1-3 · verifica: CI
+- [x] **1. The two agents**: `bb-finder.md` and `bb-verifier.md`, the frontmatter (`name`, a
+      narrow PT-BR `description`, `tools: ["Read", "Grep", "Glob", "Bash"]`, no `model`) and an
+      English system prompt with each role's invariant contract
+      → behaviors 3, 5 and the Finding shape and injection rows · dep: — · verify: CI
+- [x] **2. The engine dispatches the agents**: `fronts.md` (item 1 names the `subagent_type`,
+      item 5 defers the contract), `review/SKILL.md:91`, `verify.md §2` (defers the rubric, keeps
+      the per front addendum), `front-correctness.md`
+      → behaviors 2, 5 and the fallback and ship rows · dep: 1 · verify: CI
+- [x] **3. CI guards the scoping**: `validate-frontmatter.ts` walks `agents/*.md`, requires
+      `name` plus `description` and fails on `Write`/`Edit`/`NotebookEdit`; `validate.yml` gains
+      `plugins/bb/agents/**` and `.github/scripts/**` in its `paths:`
+      → the table's two CI rows · dep: — · verify: CI green (which proves the assertion gives no
+      false positive on the other agents)
+- [x] **4. Docs and version**: `.claude/CLAUDE.md` (the tree gains `agents/`, plus one convention
+      line), the README if it lists the structure, the bump `2.2.0` → `2.3.0`
+      → no behavior of its own · dep: 1-3 · verify: CI
 
-PR sugerida: `feat(review): bb-finder e bb-verifier com capability scoping`.
+Suggested PR: `feat(review): bb-finder e bb-verifier com capability scoping`.
 
-## Fora de escopo
+## Out of scope
 
-- **Os 5 subagentes de discovery do `/bb:review-setup`** — prompts fixos, skill que roda
-  raro; não paga 5 nomes globais. _revisit_ se o review-setup virar rotina.
-- **Reusar o `Explore` nativo** — a description dele diz que localiza código e não revisa
-  nem audita; brigaria com a tarefa.
-- **O revisor independente do `/bb:spec`** (Agent tool, contexto fresco) — mesma forma
-  read-only, mas sem Finding shape e sem pipeline de verify; não é o mesmo papel. _revisit_
-  se ele passar a devolver achados estruturados.
-- **Um agente por frente** — as diferenças entre frentes são conteúdo de prompt que o caller
-  já monta.
-- Apagar a branch local `claude/review-fronts` — limpeza, não faz parte desta task.
+- **`/bb:review-setup`'s 5 discovery subagents**: fixed prompts, in a skill that runs rarely; it
+  does not pay for 5 global names. _revisit_ if review-setup becomes routine.
+- **Reusing the native `Explore`**: its description says it locates code and does not review or
+  audit, which would fight the task.
+- **`/bb:spec`'s independent reviewer** (the Agent tool, fresh context): the same read-only
+  shape, but with no Finding shape and no verify pipeline, so it is not the same role. _revisit_
+  if it starts returning structured findings.
+- **One agent per front**: the differences between fronts are prompt content the caller already
+  assembles.
+- Deleting the local `claude/review-fronts` branch: cleanup, not part of this task.
 
-## Em aberto
+## Open
 
-- Nada load-bearing. O único ponto a confirmar na implementação é se `ship/SKILL.md:54`
-  precisa de ajuste de redação — decidido por default: só mexer se a linha ficar ambígua
-  depois do slice 2.
+- Nothing load-bearing. The one point to confirm during the build is whether `ship/SKILL.md:54`
+  needs a wording adjustment, decided by default: touch it only if the line turns ambiguous
+  after slice 2.

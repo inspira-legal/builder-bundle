@@ -31,7 +31,7 @@ about output language is exactly what the model does on its own.
   name to write instead.
 - **The `references/ds/` package stays untouched.** It is the Inspira brand package, and its
   Portuguese voice is the asset itself.
-- **The record gets translated too**: the 12 `CHANGELOG.md` entries and the 7 landed
+- **The record gets translated too**: the 12 `CHANGELOG.md` entries and the 8 landed
   specs in `.bb/`. A bilingual archive is the same maintenance problem one directory
   down.
 - **Identifiers keep their names.** `/bb:brisar` stays `brisar`, the `.bb/<slug>/`
@@ -65,7 +65,7 @@ Happy path, one area at a time, each area a commit:
 6. `README.md` becomes English, keeping the all lowercase house style.
 7. The two manifests carry English descriptions.
 8. `CHANGELOG.md` becomes English, entry by entry.
-9. The 7 landed specs in `.bb/` become English, section names included.
+9. The 8 landed specs in `.bb/` become English, section names included.
 10. Every figure that names nothing is replaced by the literal name.
 11. The version goes to 2.13.0 with an English entry describing the change.
 
@@ -112,7 +112,7 @@ Happy path, one area at a time, each area a commit:
       → behavior 7 · dep: — · verify: both descriptions read English
 - [x] **8. `CHANGELOG.md`**: the 12 entries, headings and prose
       → behavior 8 · dep: 1 · verify: the Portuguese line census on the file returns only the tokens an entry quotes from the version it describes
-- [ ] **9. The 7 landed specs**: `.bb/*/spec.md`, prose and section names
+- [x] **9. The 8 landed specs**: `.bb/*/spec.md`, prose and section names
       → behaviors 9, table row 4 · dep: 1 · verify: the census returns nothing and the CI lint stays green
 - [x] **10. Literal names**: `spine` and `ruler` become the thing they name, the
       figures that name nothing go (rubber-stamp, "that bite", the smaller door), and

@@ -4,191 +4,196 @@ created: 2026-08-18
 slug: doc-style-google
 ---
 
-# estilo de documentação: o guia do Google no bb
+# documentation style: the Google guide inside bb
 
-O bb escreve prosa em inglês em dois lugares. Nos documentos que ele gera pra fora, o README
-do `/bb:write-readme` e o CODE_REVIEW_GUIDE do `/bb:review-setup`, e na instrução que os
-agentes leem: os `SKILL.md`, as `references/`, o `README.md` do repo, o `.claude/CLAUDE.md`.
-Nenhuma das duas tem régua hoje. `## How It Works` fica ao lado de `## Style contract`,
-`# Quality Checklist` ao lado de `## Bundled Resources`, e o travessão aparece 1737 vezes em
-84 arquivos, mesmo com o `/bb:write-readme` proibindo o dele desde a primeira versão.
+bb writes English prose in two places. In the documents it generates outward, the README from
+`/bb:write-readme` and the CODE_REVIEW_GUIDE from `/bb:review-setup`, and in the instruction
+the agents read: the `SKILL.md` files, the `references/`, the repo's `README.md`, the
+`.claude/CLAUDE.md`. Neither of the two has a rule today. `## How It Works` sits next to
+`## Style contract`, `# Quality Checklist` next to `## Bundled Resources`, and the em dash
+shows up 1737 times in 84 files, even with `/bb:write-readme` banning its own since the first
+version.
 
-O guia em https://developers.google.com/style preenche exatamente esse vazio: é o guia de
-documentação técnica mais testado que existe, escrito pra quem lê em segunda língua, e o bb
-já concorda com metade dele por instinto (segunda pessoa, voz ativa, condição antes da
-instrução). Esta spec destila o guia numa reference, registra as duas exceções que o bb
-mantém, e passa a régua no que já está escrito.
+The guide at https://developers.google.com/style fills exactly that gap: it is the most
+tested technical documentation guide there is, written for people reading in a second
+language, and bb already agrees with half of it by instinct (second person, active voice,
+condition before instruction). This spec distills the guide into a reference, records the two
+exceptions bb keeps, and runs the rule over what is already written.
 
-Sucesso: um agente que vai escrever prosa em inglês abre um arquivo e sabe o que fazer, e a
-prosa que ele lê em volta não contradiz esse arquivo.
+Success: an agent about to write English prose opens a file and knows what to do, and the
+prose it reads around that file does not contradict it.
 
-## A fronteira entre as duas línguas
+## The border between the two languages
 
-O guia é inglês: American spelling, word list, tom. Vale na prosa em inglês, que é a
-instrução do método e o que o bb gera pra fora. A camada em português (`description:`,
-pergunta de gate, rótulo de opção, relatório) continua governada pelo `vocabulario.md`, que
-já pede sentence case e já tem a tabela de termos.
+The guide is English: American spelling, word list, tone. It holds over the English prose,
+which is the method's instruction and what bb generates outward. The Portuguese layer
+(`description:`, a gate question, an option label, a report) stays governed by
+`vocabulario.md`, which already asks for sentence case and already carries the term table.
 
-A regra do travessão é a única que atravessa as duas línguas, porque é pontuação e não
-vocabulário: os 22 travessões que moram em `description:` são linha em português e caem
-junto.
+The em dash rule is the only one that crosses both languages, because it is punctuation and
+not vocabulary: the 22 em dashes living inside `description:` are Portuguese lines and they
+fall with the rest.
 
-## As duas exceções
+## The two exceptions
 
-O guia entra inteiro, com duas divergências decididas que a reference registra na abertura,
-pra quem lê saber que não é esquecimento:
+The guide comes in whole, with two decided divergences the reference records in its opening,
+so a reader knows it is not an oversight:
 
-1. **Travessão nunca.** Mais forte que a Google, que permite o travessão sem espaço. Onde ele
-   iria, vai vírgula, dois-pontos, ponto, ou a frase reescrita. É o contrato que o
-   `/bb:write-readme` já tem, promovido ao plugin inteiro.
-2. **Voz figurativa fica.** A Google proíbe metáfora porque ela atravessa mal a tradução. No
-   bb a metáfora é carga útil: é o que faz a instrução colar no agente que lê o `SKILL.md`. O
-   resto do capítulo de tom entra normalmente.
+1. **No em dash, ever.** Stronger than Google, which allows the em dash unspaced. Where one
+   would go, a comma goes, or a colon, or a period, or the sentence gets rewritten. It is the
+   contract `/bb:write-readme` already has, promoted to the whole plugin.
+2. **The figurative voice stays.** Google bans metaphor because it travels badly through
+   translation. In bb the metaphor is payload: it is what makes the instruction stick to the
+   agent reading the `SKILL.md`. The rest of the tone chapter comes in as written.
 
-## O tamanho da migração
+## The size of the migration
 
-O escopo é tudo fora de `references/ds/**`, do `CHANGELOG.md` e das specs em `.bb/`. Cada
-remoção é julgamento por frase, não `sed`, e por isso a coluna de arquivos importa tanto
-quanto a de ocorrências: o fatiamento por área existe pra que cada commit caiba numa leitura.
+The scope is everything outside `references/ds/**`, `CHANGELOG.md` and the specs in `.bb/`.
+Each removal is a judgment per sentence, not a `sed`, which is why the file column matters as
+much as the occurrence column: slicing by area exists so each commit fits in one reading.
 
-| área                                          | arquivos | travessões |
-| --------------------------------------------- | -------- | ---------- |
-| `skills/brisar/**`, sem `ds/`                 | 18       | 784        |
-| `skills/review/**` e `skills/review-setup/**` | 21       | 331        |
-| `skills/spec/**` e `skills/ship/**`           | 13       | 234        |
-| as outras 9 skills                            | 15       | 220        |
-| `plugins/bb/references/`, `hooks/`, `agents/` | 12       | 127        |
-| `README.md`, `CLAUDE.md`, CI e os 2 `.json`   | 5        | 41         |
-| total                                         | 84       | 1737       |
+| area                                            | files | em dashes |
+| ----------------------------------------------- | ----- | --------- |
+| `skills/brisar/**`, without `ds/`               | 18    | 784       |
+| `skills/review/**` and `skills/review-setup/**` | 21    | 331       |
+| `skills/spec/**` and `skills/ship/**`           | 13    | 234       |
+| the other 9 skills                              | 15    | 220       |
+| `plugins/bb/references/`, `hooks/`, `agents/`   | 12    | 127       |
+| `README.md`, `CLAUDE.md`, CI and the 2 `.json`  | 5     | 41        |
+| total                                           | 84    | 1737      |
 
-Fora do travessão, a varredura achou 33 meia-riscas, 54 travessões sem espaço e 37 headings
-em title case declarado (`### Naming Conventions`, `## Bundled Resources`,
-`# Quality Checklist`). Os 259 headings que contêm travessão são reescritos pela regra do
-travessão, não por uma tarefa de caixa.
+Beyond the em dash, the sweep found 33 en dashes, 54 unspaced em dashes and 37 headings in
+declared title case (`### Naming Conventions`, `## Bundled Resources`,
+`# Quality Checklist`). The 259 headings that contain an em dash are rewritten by the dash
+rule, not by a casing task.
 
-## Decisões
+## Decisions
 
-- A reference nova é `plugins/bb/references/doc-style.md`, nível plugin e não escopo de
-  skill, porque governa a prosa de todas as skills e a do repo. O `hooks/operating-context.md`
-  aponta pra ela junto com o `vocabulario.md`, que é como a régua alcança uma sessão em
-  qualquer repo, não só neste. Sem skill nova e sem lente de
-  docs no `/bb:review`: a régua é leitura de quem escreve, não passo de revisão.
-- Dentro dela, só forma positiva. Sem par recommended/not recommended e sem catálogo de
-  errado: escrever o errado ao lado do certo prima o errado, que é a regra de prompt do
-  `CLAUDE.md` global.
-- Precedência: regra da casa primeiro, guia depois. É a hierarquia que a própria Google
-  publica. Onde o `/bb:write-readme` já tem contrato (tudo minúsculo, quatro blocos, badge
-  por fato verificável), o contrato ganha, e o `SKILL.md` dele aponta pra reference em vez de
-  repetir a regra do travessão.
-- Travessão nunca, nas duas línguas. A meia-risca sai pelo mesmo caminho, e o travessão sem
-  espaço entra na mesma varredura.
-- Um travessão que é token funcional fica: quando o caractere está dentro de comando, regex,
-  path ou string comparada em código, tirar não é estilo, é mudança de comportamento.
-- Citação verbatim de fonte externa mantém a pontuação da fonte. É a única exceção à regra do
-  travessão.
-- Template gerado segue a regra. O bloco cercado que é modelo de saída, o
-  `review-setup/references/guide-template.md` e os templates de relatório, é prosa que o bb
-  escreve pra fora.
-- Heading em sentence case fora de `ds/`. Nome próprio e identificador mantêm a caixa:
+- The new reference is `plugins/bb/references/doc-style.md`, at plugin level and not scoped to
+  a skill, because it governs the prose of every skill and of the repo.
+  `hooks/operating-context.md` points at it alongside `vocabulario.md`, which is how the rule
+  reaches a session in any repo, not only in this one. No new skill and no docs lens in
+  `/bb:review`: the rule is reading for whoever writes, not a review step.
+- Inside it, positive form only. No recommended/not recommended pair and no catalog of the
+  wrong version: writing the wrong one next to the right one primes the wrong one, which is
+  the prompt rule from the global `CLAUDE.md`.
+- Precedence: the house rule first, the guide after. It is the hierarchy Google itself
+  publishes. Where `/bb:write-readme` already has a contract (all lowercase, four blocks, a
+  badge per verifiable fact), the contract wins, and its `SKILL.md` points at the reference
+  instead of repeating the dash rule.
+- No em dash ever, in both languages. The en dash leaves the same way, and the unspaced em
+  dash enters the same sweep.
+- A dash that is a functional token stays: when the character sits inside a command, a regex,
+  a path or a string compared in code, removing it is not style, it is a behavior change.
+- A verbatim quote from an external source keeps the source's punctuation. It is the only
+  exception to the dash rule.
+- A generated template follows the rule. The fenced block that is an output model, the
+  `review-setup/references/guide-template.md` and the report templates, is prose bb writes
+  outward.
+- Headings in sentence case outside `ds/`. A proper noun and an identifier keep their casing:
   `# Builder Bundle (bb)`, `Mobbin`, `Framer`, `LexFlow`, `Phase Framer`.
-- `references/ds/**` fica intocado. É o brand package da Inspira, conteúdo de marca com voz
-  própria.
-- No `CHANGELOG.md`, as entradas antigas ficam. A entrada nova troca o heading pra
-  `## 2.12.0 (2026-08-18)`, porque o formato atual separa versão e data com travessão.
-- As 7 specs em `.bb/` ficam como estão. São registro landado; só esta segue a regra nova.
-- O enforcement é a reference ser lida. Sem check no CI e sem script: um detector de
-  travessão em prosa mista PT/EN acusa token funcional e citação, e o falso positivo custa
-  mais que o desvio.
-- Landa numa PR só, com um commit por área.
-- Versão `2.12.0`.
+- `references/ds/**` stays untouched. It is the Inspira brand package, brand content with a
+  voice of its own.
+- In `CHANGELOG.md`, the old entries stay. The new entry switches its heading to
+  `## 2.12.0 (2026-08-18)`, because the current format separates version and date with an em
+  dash.
+- The 7 specs in `.bb/` stay as they are. They are a landed record; only this one follows the
+  new rule.
+- The enforcement is the reference being read. No CI check and no script: a dash detector over
+  mixed PT/EN prose flags a functional token and a quote, and the false positive costs more
+  than the drift.
+- Lands in a single PR, with one commit per area.
+- Version `2.12.0`.
 
-## Comportamento
+## Behavior
 
-Caminho principal:
+Happy path:
 
-1. Um agente vai escrever prosa em inglês → o `.claude/CLAUDE.md` aponta pro `doc-style.md` →
-   ele lê a reference antes de escrever.
-2. Ele escreve heading em sentence case, segunda pessoa, voz ativa, condição antes da
-   instrução, code font em filename, classe, método, status HTTP e placeholder, e nenhum
-   travessão.
-3. `/bb:write-readme` roda → mantém tudo minúsculo, os quatro blocos e a badge por fato
-   verificável → o README sai sem travessão e sem meia-risca.
-4. `/bb:review-setup` roda → o `guide-template.md` gera o CODE_REVIEW_GUIDE com heading em
-   sentence case e sem travessão.
-5. `/bb:spec` escreve uma spec → prosa em português pelo `vocabulario.md`, e sem travessão.
-6. O CI roda no PR → frontmatter, lint de spec e `fmt:check` verdes.
+1. An agent is about to write English prose → `.claude/CLAUDE.md` points at `doc-style.md` →
+   it reads the reference before writing.
+2. It writes headings in sentence case, second person, active voice, condition before the
+   instruction, code font on a filename, a class, a method, an HTTP status and a placeholder,
+   and no em dash.
+3. `/bb:write-readme` runs → it keeps everything lowercase, the four blocks and the badge per
+   verifiable fact → the README comes out with no em dash and no en dash.
+4. `/bb:review-setup` runs → `guide-template.md` generates the CODE_REVIEW_GUIDE with headings
+   in sentence case and no em dash.
+5. `/bb:spec` writes a spec → Portuguese prose per `vocabulario.md`, and no em dash.
+6. CI runs on the PR → frontmatter, the spec lint and `fmt:check` green.
 
-| #   | WHEN                                                     | THEN                                             |
-| --- | -------------------------------------------------------- | ------------------------------------------------ |
-| 7   | grep de travessão fora de `ds/`, `CHANGELOG.md` e `.bb/` | zero ocorrências                                 |
-| 8   | grep de meia-risca no mesmo escopo                       | zero, fora de token funcional                    |
-| 9   | a prosa cita verbatim uma fonte que usa travessão        | a citação mantém a pontuação da fonte            |
-| 10  | o caractere está em comando, regex, path ou string       | fica; remover mudaria comportamento              |
-| 11  | o heading tem nome próprio ou identificador              | a caixa original fica                            |
-| 12  | o heading combina rótulo e frase com travessão           | vira `## Phase 2: maturity gate`                 |
-| 13  | regra do guia bate com contrato do `/bb:write-readme`    | o contrato da casa ganha                         |
-| 14  | entrada nova no `CHANGELOG.md`                           | heading `## 2.12.0 (2026-08-18)`                 |
-| 15  | entrada antiga do CHANGELOG ou spec em `.bb/`            | intocada                                         |
-| 16  | arquivo dentro de `references/ds/**`                     | nada muda                                        |
-| 17  | linha em português: `description:`, gate, relatório      | `vocabulario.md` manda; daqui vem só o travessão |
-| 18  | a prosa em inglês usa metáfora                           | fica; a exceção está escrita na reference        |
+| #   | WHEN                                                     | THEN                                                  |
+| --- | -------------------------------------------------------- | ----------------------------------------------------- |
+| 7   | an em dash grep outside `ds/`, `CHANGELOG.md` and `.bb/` | zero occurrences                                      |
+| 8   | an en dash grep in the same scope                        | zero, outside a functional token                      |
+| 9   | the prose quotes verbatim a source that uses an em dash  | the quote keeps the source's punctuation              |
+| 10  | the character sits in a command, regex, path or string   | it stays; removing it would change behavior           |
+| 11  | the heading carries a proper noun or an identifier       | the original casing stays                             |
+| 12  | the heading joins a label and a phrase with an em dash   | it becomes `## Phase 2: maturity gate`                |
+| 13  | a guide rule meets a `/bb:write-readme` contract         | the house contract wins                               |
+| 14  | a new entry in `CHANGELOG.md`                            | the heading `## 2.12.0 (2026-08-18)`                  |
+| 15  | an old CHANGELOG entry or a spec in `.bb/`               | untouched                                             |
+| 16  | a file inside `references/ds/**`                         | nothing changes                                       |
+| 17  | a Portuguese line: `description:`, a gate, a report      | `vocabulario.md` rules; only the dash comes from here |
+| 18  | the English prose uses a metaphor                        | it stays; the exception is written in the reference   |
 
-## Tarefas
+## Tasks
 
-- [x] **1. `references/doc-style.md`**: o guia destilado em forma positiva, cobrindo tom e
-      voz, heading, formatação de texto, lista e tabela, link, data e número, mais as duas
-      exceções e a precedência → behaviors 1, 2, 11, 13, 17, 18 · depende: nada · verifica: leitura
-- [x] **2. Os quatro leitores**: ponteiro no `.claude/CLAUDE.md`, no `hooks/operating-context.md`,
-      no `write-readme/SKILL.md` e no `review-setup/references/guide-template.md`; o
-      write-readme fica só com as regras da casa
-      → behaviors 1, 3, 4, 5, 13 · depende: 1 · verifica: leitura
-- [x] **3. Triagem dos headings**: os 37 em title case declarado fora de `ds/`, mais os
-      candidatos onde a caixa depende de nome próprio ou de template → behaviors 2, 11 ·
-      depende: 1 · verifica: leitura
-- [x] **4. Travessão no `brisar`**: 784 em 18 arquivos, com `ds/` fora
-      → behaviors 7, 12, 16 · depende: 1 · verifica: grep zerado
-- [x] **5. Travessão no `review` e no `review-setup`**: 331 em 21 arquivos, incluindo os
-      templates de relatório e o `guide-template.md`
-      → behaviors 7, 9, 10, 12 · depende: 1 · verifica: grep zerado
-- [x] **6. Travessão no `spec` e no `ship`**: 234 em 13 arquivos, incluindo os templates de
-      relatório e a espinha que o `/bb:spec` escreve
-      → behaviors 5, 7, 12 · depende: 1 · verifica: grep zerado
-- [x] **7. Travessão nas outras 9 skills**: 220 em 15 arquivos: `discover` 44, `challenge`
+- [x] **1. `references/doc-style.md`**: the guide distilled in positive form, covering tone and
+      voice, headings, text formatting, lists and tables, links, dates and numbers, plus the
+      two exceptions and the precedence
+      → behaviors 1, 2, 11, 13, 17, 18 · dep: — · verify: reading
+- [x] **2. The four readers**: a pointer in `.claude/CLAUDE.md`, in
+      `hooks/operating-context.md`, in `write-readme/SKILL.md` and in
+      `review-setup/references/guide-template.md`; write-readme keeps only the house rules
+      → behaviors 1, 3, 4, 5, 13 · dep: 1 · verify: reading
+- [x] **3. Heading triage**: the 37 in declared title case outside `ds/`, plus the candidates
+      where the casing depends on a proper noun or on a template
+      → behaviors 2, 11 · dep: 1 · verify: reading
+- [x] **4. The em dash in `brisar`**: 784 across 18 files, with `ds/` out
+      → behaviors 7, 12, 16 · dep: 1 · verify: an empty grep
+- [x] **5. The em dash in `review` and `review-setup`**: 331 across 21 files, including the
+      report templates and `guide-template.md`
+      → behaviors 7, 9, 10, 12 · dep: 1 · verify: an empty grep
+- [x] **6. The em dash in `spec` and `ship`**: 234 across 13 files, including the report
+      templates and the fixed set `/bb:spec` writes
+      → behaviors 5, 7, 12 · dep: 1 · verify: an empty grep
+- [x] **7. The em dash in the other 9 skills**: 220 across 15 files: `discover` 44, `challenge`
       32, `code-deep-research` 27, `maintain-repo` 24, `implement` 23, `legal-lens` 23,
-      `delegate` 19, `think` 19, `gather-branch-context` 9; os 22 de `description:` moram
-      nesses arquivos → behaviors 7, 17 · depende: 1 · verifica: grep zerado
-- [x] **8. Travessão nas references do plugin, nos hooks e nos agents**: 127 em 12 arquivos,
-      incluindo o `vocabulario.md` e o `operating-context.md`
-      → behavior 7 · depende: 1 · verifica: grep zerado
-- [x] **9. Travessão na doc do repo**: 41 em 5 arquivos: `README.md` 18, `.claude/CLAUDE.md`
-      20, a mensagem de echo do `validate.yml` e os 2 `.json` de plugin
-      → behavior 7 · depende: 2 · verifica: grep zerado
-- [x] **10. Meia-risca e travessão sem espaço**: as 33 e os 54 em escopo, com o token
-      funcional preservado → behaviors 8, 10 · depende: 4, 5, 6, 7, 8, 9 · verifica: grep
-- [x] **11. Versão e CHANGELOG**: `plugin.json` em `2.12.0` e a entrada nova com heading
-      `## 2.12.0 (2026-08-18)`, em prosa sem travessão
-      → behaviors 6, 14, 15 · depende: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 · verifica: CI verde
+      `delegate` 19, `think` 19, `gather-branch-context` 9; the 22 from `description:` live in
+      those files → behaviors 7, 17 · dep: 1 · verify: an empty grep
+- [x] **8. The em dash in the plugin references, the hooks and the agents**: 127 across 12
+      files, including `vocabulario.md` and `operating-context.md`
+      → behavior 7 · dep: 1 · verify: an empty grep
+- [x] **9. The em dash in the repo docs**: 41 across 5 files: `README.md` 18,
+      `.claude/CLAUDE.md` 20, the echo message in `validate.yml` and the 2 plugin `.json`
+      → behavior 7 · dep: 2 · verify: an empty grep
+- [x] **10. The en dash and the unspaced em dash**: the 33 and the 54 in scope, with the
+      functional token preserved → behaviors 8, 10 · dep: 4, 5, 6, 7, 8, 9 · verify: a grep
+- [x] **11. Version and CHANGELOG**: `plugin.json` at `2.12.0` and the new entry with the
+      heading `## 2.12.0 (2026-08-18)`, in prose with no em dash
+      → behaviors 6, 14, 15 · dep: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 · verify: CI green
 
-## Fora de escopo
+## Out of scope
 
-- `references/ds/**`: 383 travessões, 74 headings com travessão e 70 em title case. É o brand
-  package da Inspira, conteúdo de marca com voz própria.
-- Entradas antigas do `CHANGELOG.md`, 122 travessões. Registro histórico: reescrever muda o
-  que já foi publicado.
-- As 7 specs em `.bb/`, 231 travessões. Estão landadas.
-- Check no CI ou script de detecção. _revisit_ se a régua escrita não segurar; a medida é um
-  grep novo depois de algumas semanas de uso.
-- Lente de docs no `/bb:review`, e uma skill `/bb:docs`.
-- American spelling e a word list na prosa em português. O `vocabulario.md` continua sozinho
-  ali.
-- Reescrever a voz figurativa do plugin.
-- Traduzir a prosa em inglês, inclusive a reference nova: ela é instrução de método, logo fica
-  em inglês.
+- `references/ds/**`: 383 em dashes, 74 headings with an em dash and 70 in title case. It is
+  the Inspira brand package, brand content with a voice of its own.
+- The old `CHANGELOG.md` entries, 122 em dashes. A historical record: rewriting it changes
+  what was already published.
+- The 7 specs in `.bb/`, 231 em dashes. They have landed.
+- A CI check or a detection script. _revisit_ if the written rule does not hold; the measure is
+  a fresh grep after a few weeks of use.
+- A docs lens in `/bb:review`, and a `/bb:docs` skill.
+- American spelling and the word list in the Portuguese prose. `vocabulario.md` stays alone
+  there.
+- Rewriting the plugin's figurative voice.
+- Translating the English prose, the new reference included: it is method instruction, so it
+  stays English.
 
-## Em aberto
+## Open
 
-- O `verifica: grep zerado` das tarefas 4 a 9 prova que o caractere saiu, não que a frase
-  ficou boa. A vírgula mecânica no lugar do travessão às vezes precisa virar dois-pontos ou
-  frase nova, e isso só a leitura pega. O commit por área existe pra que essa leitura caiba.
-- O `fmt:check` reformata tabela: uma reescrita que muda a largura de uma célula muda o
-  padding da coluna inteira. É ruído esperado no diff das tarefas 4 a 9, não defeito.
+- The `verify: an empty grep` of tasks 4 to 9 proves the character left, not that the sentence
+  came out well. The mechanical comma in the dash's place sometimes has to become a colon or a
+  new sentence, and only reading catches that. The per area commit exists so that reading
+  fits.
+- `fmt:check` reformats a table: a rewrite that changes one cell's width changes the padding
+  of the whole column. That is expected noise in the diff of tasks 4 to 9, not a defect.

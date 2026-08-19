@@ -4,23 +4,24 @@ created: 2026-07-23
 slug: builder-bundle
 ---
 
-# Builder Bundle — unificação das skills de builder num plugin só
+# Builder Bundle: the builder skills unified into a single plugin
 
-Transformar este repo (ex-`ofc-skills`, já renomeado no GitHub pra
-`inspira-legal/builder-bundle`) no **Builder Bundle**: o plugin unificado de skills pra
-builders da Inspira, aprovado em reunião de 23/07/2026. Consolida 28 skills (ofc 15 +
-brisar bundle + cópias soltas da loja `inspira-skills` + inspira-code-review) em **16
-skills** organizadas em 6 trilhas, invocadas como `/bb:<skill>`.
+Turn this repo (formerly `ofc-skills`, already renamed on GitHub to
+`inspira-legal/builder-bundle`) into the **Builder Bundle**: the unified skill set for
+Inspira builders, approved in the 2026-07-23 meeting. It consolidates 28 skills (ofc 15 +
+the brisar bundle + loose copies from the `inspira-skills` store + inspira-code-review)
+into **16 skills** organized in 6 trilhas, invoked as `/bb:<skill>`.
 
-Hoje há 4 lugares com skills sobrepostas (ofc, brisar, loja, inspira-code-review), com
-duplicação, coisas quebradas (codenavi) e desatualizadas. Quem está aprendendo não sabe o
-que usar. Um plugin só, opinativo, com uma skill por verbo e modos por variação, dá
-localização ("onde estou na jornada?") e faz qualquer extensão futura acontecer _dentro_
-do bundle em vez de virar mais um plugin.
+Today there are 4 places with overlapping skills (ofc, brisar, the store,
+inspira-code-review), with duplication, broken things (codenavi) and outdated ones.
+Whoever is learning does not know what to use. A single opinionated plugin, with one skill
+per verb and modes for the variations, gives location ("where am I in the journey?") and
+makes any future extension happen _inside_ the bundle instead of becoming one more plugin.
 
-Sucesso: o time instala um plugin e sabe qual verbo usar em cada ponto da jornada.
+Success: the team installs one plugin and knows which verb to use at each point of the
+journey.
 
-## As 6 trilhas
+## The 6 trilhas
 
 - **Pensar**: `discover`, `challenge`, `think`, `legal-lens`
 - **Desenhar**: `spec`
@@ -29,157 +30,165 @@ Sucesso: o time instala um plugin e sabe qual verbo usar em cada ponto da jornad
 - **Design**: `brisar`, `ui-accessibility`
 - **Pesquisar/Doc**: `code-deep-research`, `write-readme`
 
-## Como o bundle se organiza
+## How the bundle is organized
 
-- **Layout**: `plugins/bb/{skills/<16>/,references/,scripts/,hooks/}`. References
-  compartilhadas no nível do plugin (handoff-gate.md, quality/review checklists, motor de
-  review); references por skill dentro de cada `skills/<name>/references/` (fases do
-  brisar, modos do discover, export-spec).
-- **Fluxo da jornada** (o que os gates encadeiam): dor/ideia → `discover` (apoios:
-  challenge, think, legal-lens) → _é código_ → `spec` → `implement` → `ship` → `review` da
-  PR; _é design_ → `brisar` → volta pro `spec`. `think` só oferece gate quando convergiu;
-  `challenge` devolve pro dono da tese.
-- **Contrato do estado**: `.bb/tasks/<slug>/spec.md` com frontmatter `status/created/slug`.
-  Documentado num único lugar (reference compartilhada) e usado por **spec, implement e
-  delegate** (a Cloud Routine passa pelo delegate, então herda).
-- **Manifesto**: um reference compartilhado ("consult-manifesto") incluído pela lista
-  canônica (implement, ship, review, review-setup) — busca
-  `gh api repos/inspira-legal/manifesto/...`, aplica níveis
-  Obrigatório/Padrão/Alternativa/Proibido, fallback com aviso.
+- **Layout**: `plugins/bb/{skills/<16>/,references/,scripts/,hooks/}`. Shared references at
+  the plugin level (handoff-gate.md, the quality/review checklists, the review engine);
+  per-skill references inside each `skills/<name>/references/` (brisar's phases, discover's
+  modes, export-spec).
+- **The journey's flow** (what the gates chain): a pain or an idea → `discover` (with
+  challenge, think and legal-lens as support) → _it is code_ → `spec` → `implement` →
+  `ship` → `review` of the PR; _it is design_ → `brisar` → back to `spec`. `think` only
+  offers a gate once it has converged; `challenge` hands back to the thesis's owner.
+- **The state contract**: `.bb/tasks/<slug>/spec.md` with `status/created/slug`
+  frontmatter. Documented in a single place (a shared reference) and used by **spec,
+  implement and delegate** (the Cloud Routine goes through delegate, so it inherits).
+- **The manifesto**: one shared reference ("consult-manifesto") included by the canonical
+  list (implement, ship, review, review-setup). It fetches
+  `gh api repos/inspira-legal/manifesto/...`, applies the
+  Obrigatório/Padrão/Alternativa/Proibido levels, and falls back with a warning.
 
-## Decisões
+## Decisions
 
-- **Prefixo de invocação: `bb`** (`/bb:spec`, `/bb:brisar`). Plugin name no `plugin.json` =
-  `bb`; dir `plugins/ofc` → `plugins/bb`; marketplace continua `inspira-legal`; versão
-  **2.0.0**. O marketplace.json passa a listar **só `bb`** — a entrada `ofc` é removida
-  (quebra intencional de major; quem tem ofc instalado migra via nota no CHANGELOG, sem
-  entrada dupla de transição).
-- **Estado em disco: `.bb/tasks/<slug>/spec.md`** — caminho único, sem fallback legado.
-  Briefs antigos são migrados na mão (documentado no CHANGELOG).
-- **Idioma híbrido**: corpo das instruções em inglês (padrão ofc, base do método);
-  descriptions, triggers e todo texto visto pelo usuário (perguntas de gates, relatórios)
-  em PT-BR.
-- **Manifesto em runtime**: `implement`, `ship`, `review` e `review-setup` (lista canônica;
-  `delegate` herda via implement→ship) consultam `inspira-legal/manifesto` via `gh api`
-  quando precisam decidir stack. Fallback gracioso: sem acesso, segue padrões do repo atual
-  e **avisa** que não consultou o manifesto.
-- **6 fusões** (regra geral de conflito: método do ofc vence, conteúdo das outras fontes
-  vira reference):
-  1. `discover` ← frame-problem + assess-fit (ofc) + nise + esperanca (brisar). Primeiro
-     diamante inteiro. Contrato de saída: escreve as seções upstream
-     (`## problem`/`## hypothesis`/`## fit`/`## cuts`) em `.bb/tasks/<slug>/spec.md`, que o
-     `spec` lê como intenção.
-  2. `think` ← think (loja) + answer-yourself (ofc). Exceção nomeada à regra geral: a base
-     do método é o think da loja (parceiro de raciocínio); answer-yourself entra como modo
-     "take" (veredito direto quando pedem julgamento).
-  3. `review` ← review-changes + tidy + tidy-pr (ofc) + pr-review (loja) + fix-ci (loja,
-     `skills/github-management/fix-ci`). 3 fontes: diff + threads da PR + CI; lê
-     `CODE_REVIEW_GUIDE.md`; **modo interativo**: reporta, pergunta o que aplicar, aplica
-     os fixes escolhidos, responde/resolve threads e re-reporta.
-  4. `spec` ← shape (ofc) + spec (loja). Método do shape (mapa de comportamento, revisor
-     adversarial, gate 3-vias); nome do spec; formato de export do spec original vira
+- **The invocation prefix is `bb`** (`/bb:spec`, `/bb:brisar`). The plugin name in
+  `plugin.json` is `bb`; the dir `plugins/ofc` becomes `plugins/bb`; the marketplace stays
+  `inspira-legal`; the version is **2.0.0**. `marketplace.json` starts listing **only
+  `bb`**, and the `ofc` entry is removed (an intentional major break; whoever has ofc
+  installed migrates through the CHANGELOG note, with no double transition entry).
+- **State on disk: `.bb/tasks/<slug>/spec.md`**, one path, no legacy fallback. Old briefs
+  are migrated by hand (documented in the CHANGELOG).
+- **Hybrid language**: instruction bodies in English (the ofc standard, the base of the
+  method); descriptions, triggers and every text the user sees (gate questions, reports) in
+  PT-BR.
+- **The manifesto at runtime**: `implement`, `ship`, `review` and `review-setup` (the
+  canonical list; `delegate` inherits through implement→ship) consult
+  `inspira-legal/manifesto` through `gh api` when they need to decide the stack. A graceful
+  fallback: without access, follow the current repo's patterns and **say** the manifesto
+  was not consulted.
+- **6 fusions** (the general conflict rule: ofc's method wins, and the content of the other
+  sources becomes a reference):
+  1. `discover` ← frame-problem + assess-fit (ofc) + nise + esperanca (brisar). The whole
+     first diamond. The output contract: it writes the upstream sections
+     (`## problem`/`## hypothesis`/`## fit`/`## cuts`) into `.bb/tasks/<slug>/spec.md`,
+     which `spec` reads as the intent.
+  2. `think` ← think (store) + answer-yourself (ofc). A named exception to the general
+     rule: the base of the method is the store's think (a reasoning partner), and
+     answer-yourself comes in as the "take" mode (a direct verdict when a judgment is
+     asked for).
+  3. `review` ← review-changes + tidy + tidy-pr (ofc) + pr-review (store) + fix-ci (store,
+     `skills/github-management/fix-ci`). 3 sources: the diff + the PR's threads + CI; it
+     reads `CODE_REVIEW_GUIDE.md`; **interactive mode**: it reports, asks what to apply,
+     applies the chosen fixes, replies to and resolves threads, and re-reports.
+  4. `spec` ← shape (ofc) + spec (store). shape's method (the behavior map, the adversarial
+     reviewer, the 3-way gate); spec's name; the original spec's export format becomes
      `references/export-spec.md`.
-  5. `brisar` ← brisar + tarsila + clarisse (fases Develop/Deliver internas via references;
-     nise/esperanca foram pro discover). Mantém `references/ds/` da marca.
-  6. `review-setup` ← code-review-setup + code-review-update (inspira-code-review). Output
-     só o guia `CODE_REVIEW_GUIDE.md` — **não** gera mais skill customizada por repo.
+  5. `brisar` ← brisar + tarsila + clarisse (the Develop/Deliver phases internal, through
+     references; nise and esperanca went to discover). It keeps the brand's
+     `references/ds/`.
+  6. `review-setup` ← code-review-setup + code-review-update (inspira-code-review). The
+     output is only the `CODE_REVIEW_GUIDE.md` guide, and it **no longer** generates a
+     custom per-repo skill.
 - **2 renames**: desafio → `challenge`; shape → `spec`.
-- **Progressive disclosure obrigatório em skill fundida**: SKILL.md enxuto que roteia;
-  material de cada fase/modo em `references/`, carregado só quando a fase roda.
-- **Handoff-gate**: toda skill com próximo passo natural termina com `AskUserQuestion`
-  oferecendo a próxima; "encerrar aqui" sempre é opção; **sugere, nunca auto-invoca**
-  (exceção única: `delegate`, e o auto-chain implement→ship quando o ship já foi
-  autorizado). Formato único em `references/handoff-gate.md`. Sem gate: legal-lens,
-  maintain-repo, review-setup, write-readme, code-deep-research, gather-branch-context,
-  ui-accessibility.
-- **Motor de review compartilhado** entre `ship` e `review` em `references/` + `scripts/`
-  (2 passadas, régua de severidade, CI/threads) — papéis distintos (ship automático landa;
-  review interativo reporta), motor único pra evitar drift. Scripts existentes
-  (`fetch_comments.py`, `reply_resolve_thread.py`, `gather_context.py`) reutilizados.
-- **Reuso**: skills do ofc que seguem quase intactas — implement, ship, delegate,
-  gather-branch-context, legal-lens, maintain-repo, code-deep-research, write-readme
-  (ajustes: paths `.bb/`, referências shape→spec, manifesto, gates, identidade bb). Hooks
-  do ofc (SessionStart operating-context etc.) mantidos com textos atualizados.
-- **Fontes de importação**: repo `inspira-skills` local em
+- **Progressive disclosure is mandatory in a fused skill**: a lean SKILL.md that routes;
+  the material of each phase/mode in `references/`, loaded only when the phase runs.
+- **The handoff gate**: every skill with a natural next step ends with an
+  `AskUserQuestion` offering the next one; "stop here" is always an option; it **suggests,
+  never auto-invokes** (the single exception: `delegate`, and the implement→ship auto-chain
+  when ship was already authorized). One format, in `references/handoff-gate.md`. Without a
+  gate: legal-lens, maintain-repo, review-setup, write-readme, code-deep-research,
+  gather-branch-context, ui-accessibility.
+- **A review engine shared** between `ship` and `review` in `references/` + `scripts/` (2
+  passes, a severity scale, CI/threads). The roles are distinct (automatic ship lands,
+  interactive review reports), and the engine is single to avoid drift. The existing
+  scripts (`fetch_comments.py`, `reply_resolve_thread.py`, `gather_context.py`) are reused.
+- **Reuse**: the ofc skills that come through almost intact, implement, ship, delegate,
+  gather-branch-context, legal-lens, maintain-repo, code-deep-research and write-readme
+  (the adjustments: the `.bb/` paths, the shape→spec references, the manifesto, the gates,
+  the bb identity). ofc's hooks (the SessionStart operating context and the rest) are kept
+  with updated texts.
+- **Import sources**: the local `inspira-skills` repo at
   `C:\Users\PC\development\inspira-skills` (`skills/brisar/*`, skills/desafio, skills/think,
   skills/spec, skills/pr-review, skills/ui-accessibility, `skills/inspira-code-review/*`,
   skills/github-management/fix-ci).
-- **Validação só via CI/PR** (`gh pr checks --watch`) — nunca rodar checks localmente.
-  Lefthook/bun existentes mantidos.
-- **Migração documentada**: README + CHANGELOG com nota ofc→bb (desinstalar
-  `ofc@inspira-legal`, instalar `bb@inspira-legal`; GitHub redireciona o nome antigo do
-  repo).
+- **Validation only through CI/PR** (`gh pr checks --watch`), never running checks locally.
+  The existing lefthook/bun setup is kept.
+- **The migration is documented**: the README + CHANGELOG carry the ofc→bb note (uninstall
+  `ofc@inspira-legal`, install `bb@inspira-legal`; GitHub redirects the repo's old name).
 
-## Comportamento
+## Behavior
 
-1. Time roda `claude plugin marketplace add inspira-legal/builder-bundle` e
-   `claude plugin install bb@inspira-legal` → instala, `/bb:` lista as 16 skills.
-2. `/bb:discover` roda o primeiro diamante (frame + fit, com material nise/esperanca por
-   fase) → gate oferece spec / brisar / challenge / encerrar.
-3. `/bb:spec <ideia>` roda o método, escreve `.bb/tasks/<slug>/spec.md`, gate 3-vias
-   implement/delegate/parar.
-4. `/bb:implement` lê o brief, constrói por slices, oferece ship.
-5. `/bb:ship` quality pass (motor compartilhado), gate verde, landa, vigia CI e threads;
-   nunca merge.
-6. `/bb:review <PR|branch>` junta diff + threads + CI + CODE_REVIEW_GUIDE.md, reporta e
-   pergunta o que aplicar.
-7. `/bb:brisar` roteia fases Develop (tarsila) / Deliver (clarisse), carregando o reference
-   da fase; ao entregar, gate oferece ui-accessibility / spec.
-8. `implement`/`ship`/`review`/`review-setup` consultam o manifesto em runtime pra decisões
-   de stack.
+1. The team runs `claude plugin marketplace add inspira-legal/builder-bundle` and
+   `claude plugin install bb@inspira-legal` → it installs, and `/bb:` lists the 16 skills.
+2. `/bb:discover` runs the first diamond (frame + fit, with the nise/esperanca material per
+   phase) → the gate offers spec / brisar / challenge / stop here.
+3. `/bb:spec <idea>` runs the method, writes `.bb/tasks/<slug>/spec.md`, and its 3-way gate
+   offers implement/delegate/stop.
+4. `/bb:implement` reads the brief, builds slice by slice, and offers ship.
+5. `/bb:ship` runs the quality pass (the shared engine), greens the gate, lands, and
+   watches CI and the threads; it never merges.
+6. `/bb:review <PR|branch>` joins the diff + the threads + CI + `CODE_REVIEW_GUIDE.md`,
+   reports, and asks what to apply.
+7. `/bb:brisar` routes the Develop (tarsila) / Deliver (clarisse) phases, loading that
+   phase's reference; on delivery, the gate offers ui-accessibility / spec.
+8. `implement`/`ship`/`review`/`review-setup` consult the manifesto at runtime for stack
+   decisions.
 
-| WHEN                                           | THEN                                                                     |
-| ---------------------------------------------- | ------------------------------------------------------------------------ |
-| só há briefs no caminho antigo                 | `/bb:delegate` não acha nada; a migração manual está no CHANGELOG        |
-| manifesto inacessível (offline, sem `gh`)      | segue os padrões do repo atual e avisa que não consultou                 |
-| o usuário responde "encerrar aqui" num gate    | nada é auto-invocado                                                     |
-| `/bb:review` roda numa branch sem PR           | funciona só com a fonte diff, e reporta que só analisou o diff           |
-| `CODE_REVIEW_GUIDE.md` não existe              | review roda genérico e sugere `/bb:review-setup`; se existe, atualiza    |
-| o repo tem a skill customizada do setup antigo | ela segue funcionando isolada; a nota de migração recomenda remover      |
-| delegate roda sob `BB_UNATTENDED`              | nunca merge (capability scoping) e o auto-chain implement→ship se aplica |
-| o usuário tenta `/ofc:<skill>` após migrar     | não existe; README/CHANGELOG têm o de-para completo (15 ofc → bb)        |
-| uma skill fundida roda uma fase                | só o reference daquela fase é carregado                                  |
-| instala bb sem desinstalar ofc                 | os dois convivem, mas os hooks injetam contexto em dobro                 |
-| quem tem ofc roda `claude plugin update`       | falha — o marketplace lista só `bb`; esperado no major 2.0.0             |
+| WHEN                                            | THEN                                                                           |
+| ----------------------------------------------- | ------------------------------------------------------------------------------ |
+| there are only briefs on the old path           | `/bb:delegate` finds nothing; the manual migration is in the CHANGELOG         |
+| the manifesto is unreachable (offline, no `gh`) | it follows the current repo's patterns and says it did not consult             |
+| the user answers "stop here" at a gate          | nothing is auto-invoked                                                        |
+| `/bb:review` runs on a branch with no PR        | it works with the diff source only, and reports that                           |
+| `CODE_REVIEW_GUIDE.md` does not exist           | review runs generic and suggests `/bb:review-setup`; if it exists, it updates  |
+| the repo has the old setup's custom skill       | it keeps working in isolation; the migration note recommends removing it       |
+| delegate runs under `BB_UNATTENDED`             | it never merges (capability scoping) and the implement→ship auto-chain applies |
+| the user tries `/ofc:<skill>` after migrating   | it does not exist; README/CHANGELOG carry the full mapping (15 ofc → bb)       |
+| a fused skill runs one phase                    | only that phase's reference is loaded                                          |
+| bb is installed without uninstalling ofc        | the two coexist, but the hooks inject the context twice                        |
+| whoever has ofc runs `claude plugin update`     | it fails, because the marketplace lists only `bb`; expected in 2.0.0           |
 
-## Tarefas
+## Tasks
 
-- [x] **1. Scaffold** — `plugins/ofc`→`plugins/bb`, plugin.json (name bb, 2.0.0, descrição
-      PT-BR), marketplace.json só com `bb`, README raiz, hooks com textos atualizados, env
-      var `BB_UNATTENDED` → behavior 1 · depende: — · verifica: CI
-- [x] **2. Convenções compartilhadas** — `references/handoff-gate.md`, contrato de estado
-      `.bb/`, consult-manifesto, guideline de progressive disclosure
-      → behaviors 2, 7 · depende: 1 · verifica: CI
-- [x] **3. Trilha Desenhar** — `spec` (shape renomeado + `references/export-spec.md` +
-      escrita em `.bb/`) → behavior 3 · depende: 2 · verifica: CI
-- [x] **4. Trilha Construir** — `implement`, `delegate`, `ship`, `gather-branch-context` com
-      paths/identidade/manifesto/gates → behaviors 4, 5, 8 · depende: 2 · verifica: CI
-- [x] **5. Trilha Revisar** — `review` (fusão, 3 fontes, interativo), `review-setup` (fusão,
-      guia-only), `maintain-repo`; motor compartilhado extraído
-      → behaviors 5, 6 · depende: 2 · verifica: CI
-- [x] **6. Trilha Pensar** — `discover` (fusão 4 fontes), `challenge`, `think` (fusão
-      answer-yourself), `legal-lens` → behavior 2 · depende: 2 · verifica: CI
-- [x] **7. Trilha Design** — `brisar` (tarsila/clarisse como fases, mantém `references/ds/`),
-      `ui-accessibility` → behavior 7 · depende: 2 · verifica: CI
-- [x] **8. Pesquisar/Doc + docs finais** — `code-deep-research`, `write-readme`; CHANGELOG +
-      nota de migração ofc→bb com o de-para 28→16 → behavior 1 · depende: 3-7 · verifica: CI
-- [x] **9. PR única** — branch → PR → CI verde; conteúdo das fusões validado contra
-      `analise-skills-ofc-brisar.md` e `mapa-casos-de-uso-skills.md`
-      → behaviors 1-8 · depende: 8 · verifica: CI verde
+- [x] **1. Scaffold**: `plugins/ofc`→`plugins/bb`, plugin.json (name bb, 2.0.0, PT-BR
+      description), marketplace.json with `bb` only, the root README, the hooks with
+      updated texts, the `BB_UNATTENDED` env var → behavior 1 · dep: — · verify: CI
+- [x] **2. Shared conventions**: `references/handoff-gate.md`, the `.bb/` state contract,
+      consult-manifesto, the progressive disclosure guideline
+      → behaviors 2, 7 · dep: 1 · verify: CI
+- [x] **3. The Desenhar trilha**: `spec` (shape renamed + `references/export-spec.md` +
+      writing into `.bb/`) → behavior 3 · dep: 2 · verify: CI
+- [x] **4. The Construir trilha**: `implement`, `delegate`, `ship`,
+      `gather-branch-context`, with the paths/identity/manifesto/gates
+      → behaviors 4, 5, 8 · dep: 2 · verify: CI
+- [x] **5. The Revisar trilha**: `review` (fused, 3 sources, interactive), `review-setup`
+      (fused, guide only), `maintain-repo`; the shared engine extracted
+      → behaviors 5, 6 · dep: 2 · verify: CI
+- [x] **6. The Pensar trilha**: `discover` (4 sources fused), `challenge`, `think`
+      (answer-yourself fused), `legal-lens` → behavior 2 · dep: 2 · verify: CI
+- [x] **7. The Design trilha**: `brisar` (tarsila/clarisse as phases, keeping
+      `references/ds/`), `ui-accessibility` → behavior 7 · dep: 2 · verify: CI
+- [x] **8. Pesquisar/Doc + the final docs**: `code-deep-research`, `write-readme`; the
+      CHANGELOG + the ofc→bb migration note with the 28→16 mapping
+      → behavior 1 · dep: 3-7 · verify: CI
+- [x] **9. A single PR**: branch → PR → green CI; the content of the fusions validated
+      against `analise-skills-ofc-brisar.md` and `mapa-casos-de-uso-skills.md`
+      → behaviors 1-8 · dep: 8 · verify: green CI
 
-## Fora de escopo
+## Out of scope
 
-- Despublicar/deprecar as cópias da loja `inspira-skills` (spec, think, desafio, pr-review,
-  ui-accessibility, brisar bundle, inspira-code-review, tlc-spec-driven, codenavi) —
-  _revisit_: PR separado no repo inspira-skills depois que o bb publicar.
-- Gerenciador de tarefas / backlog compartilhado / session log→git — _revisit_ (v2).
-- Memória organizacional OKF (elephant) — _revisit_ (plugin irmão).
-- Mobbin MCP como modo do brisar — _revisit_ (Matheus explora).
-- Design system / monorepo — fórum separado do Léo.
-- Distribuição org-level (admin instala pra todos) — decidir depois; v1 via marketplace.
+- Unpublishing or deprecating the copies in the `inspira-skills` store (spec, think,
+  desafio, pr-review, ui-accessibility, the brisar bundle, inspira-code-review,
+  tlc-spec-driven, codenavi), _revisit_: a separate PR in the inspira-skills repo once bb
+  is published.
+- A task manager / a shared backlog / session log→git, _revisit_ (v2).
+- The OKF organizational memory (elephant), _revisit_ (a sibling plugin).
+- The Mobbin MCP as a brisar mode, _revisit_ (Matheus is exploring it).
+- The design system / the monorepo, a separate forum of Léo's.
+- Org-level distribution (an admin installs for everyone), to be decided later; v1 goes
+  through the marketplace.
 
-## Em aberto
+## Open
 
-- Sigla/branding "BB" no README (Léo quer explorar) — não bloqueia; o nome do plugin já é
-  `bb`.
-- Distribuição org-level — decidir fora deste trabalho.
+- The "BB" acronym and branding in the README (Léo wants to explore it), which does not
+  block, because the plugin's name is already `bb`.
+- Org-level distribution, to be decided outside this work.

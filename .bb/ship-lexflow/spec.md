@@ -4,173 +4,176 @@ created: 2026-07-30
 slug: ship-lexflow
 ---
 
-# ship — destino LexFlow
+# ship: the LexFlow destination
 
-O `/bb:ship` ganha **LexFlow** como 4º destino, ao lado de branch / main / PR. Quem constrói
-app LexFlow passa a ter o mesmo caminho de landing que todo mundo: quality pass → commit →
-push → e então o comando de deploy **entregue na mão**, nunca apertado pelo ship. Junto vem
-um refactor: os quatro landings saem do `SKILL.md` pra `references/land-*.md`, deixando o
-`SKILL.md` como router.
+`/bb:ship` gains **LexFlow** as a 4th destination, next to branch / main / PR. Whoever builds
+a LexFlow app gets the same landing path everyone else has: quality pass → commit → push →
+and then the deploy command **handed over**, never pressed by the ship. Along with it comes a
+refactor: the four landings leave `SKILL.md` for `references/land-*.md`, leaving `SKILL.md` as
+a router.
 
-O gap não é de conveniência: **ninguém revisa os YAMLs de workflow LexFlow hoje.** Os app
-repos (`data-magnifier`, `data-inspira-hm`, `data-chat-features-hm`) não têm `.github/`
-nenhum — zero CI — e o `lexflow-builder` só valida a sintaxe do YAML que ele mesmo acabou de
-gerar. O quality pass do ship é exatamente a substância que falta ali. E dá pra fazer sem
-inventar nada: esse cohort tem git, os apps são repos git, então a espinha do ship
-(diff → review → commit → push) já serve.
+The gap is not about convenience: **nobody reviews the LexFlow workflow YAMLs today.** The app
+repos (`data-magnifier`, `data-inspira-hm`, `data-chat-features-hm`) have no `.github/` at
+all, zero CI, and `lexflow-builder` only validates the syntax of the YAML it just generated
+itself. The ship's quality pass is exactly the substance missing there. And it can be done
+without inventing anything: this cohort has git, the apps are git repos, so the ship's
+sequence (diff → review → commit → push) already serves.
 
-Sucesso: um app LexFlow chega no deploy tendo passado por review de verdade, e o builder
-aperta o deploy sabendo qual sha está subindo.
+Success: a LexFlow app reaches the deploy having gone through a real review, and the builder
+presses the deploy knowing which sha is going up.
 
-## O que é um app LexFlow
+## What a LexFlow app is
 
-Fonte: `inspira-legal/lexflow-automacoes/lexflow-deploy-cli/` (README + `cli.py`,
+Source: `inspira-legal/lexflow-automacoes/lexflow-deploy-cli/` (README plus `cli.py`,
 `manifest.py`, `deploy.py`, `doctor.py`).
 
-- **O remote é a plataforma, não o GitHub.** `lexflow clone`/`init` instalam um credential
-  helper em `~/.config/lexflow/git-credentials-helper.py` que autentica via JWT do Firebase.
-  Um `git clone` cru da URL falha com `could not read Username` numa máquina que nunca rodou
-  `lexflow login`. Não existe mecanismo de PR nesse remote — daí o destino ser exclusivo.
-- **`push` ≠ `deploy`, por design.** A CLI é explícita: "Pushing to the git remote does NOT
-  trigger a deploy" — o bucket é storage versionado. E instrui LLMs diretamente: "prefer raw
-  git for read paths"; pedir "push" é VCS, pedir "deploy" é `lexflow deploy`. Push é seguro e
-  autorizado pra ferramenta agêntica; deploy é o ato irreversível.
-- **`manifest.py` já valida a coerência do `lexflow.toml`**: campos obrigatórios, formato de
-  slug, slugs duplicados (datastore/workflow/deployment) e existência de cada `source`,
-  inclusive de middleware.
-- **`load_manifest` roda antes da rede.** Em `deploy()`: auth → `load_manifest` →
-  (`ManifestError` → `Manifest error:` + exit 1) → só então fetch do estado da plataforma →
-  diff. É por isso que `--dry-run` é gate confiável de **manifest** e inútil como gate de
-  **plano**: a validação local acontece antes da chamada que pode dar 500.
-- **`lexflow deploy --ref <branch|tag|sha>`** busca a fonte naquele ref e deploya exatamente
-  aquele commit, gravando o `git_sha` no deployment.
-- Comandos que existem: `login/logout`, `deploy`, `refs`, `clone`, `sync`, `init`, `push`,
+- **The remote is the platform, not GitHub.** `lexflow clone`/`init` install a credential
+  helper in `~/.config/lexflow/git-credentials-helper.py` that authenticates through a Firebase
+  JWT. A raw `git clone` of the URL fails with `could not read Username` on a machine that
+  never ran `lexflow login`. There is no PR mechanism on that remote, which is why the
+  destination is exclusive.
+- **`push` is not `deploy`, by design.** The CLI is explicit: "Pushing to the git remote does
+  NOT trigger a deploy"; the bucket is versioned storage. And it instructs LLMs directly:
+  "prefer raw git for read paths". Asking for "push" is VCS, asking for "deploy" is
+  `lexflow deploy`. Push is safe and authorized for an agentic tool; deploy is the irreversible
+  act.
+- **`manifest.py` already validates the coherence of `lexflow.toml`**: required fields, slug
+  format, duplicate slugs (datastore/workflow/deployment) and the existence of every `source`,
+  middleware included.
+- **`load_manifest` runs before the network.** In `deploy()`: auth → `load_manifest` →
+  (`ManifestError` → `Manifest error:` plus exit 1) → only then a fetch of the platform state →
+  diff. That is why `--dry-run` is a reliable gate for the **manifest** and useless as a gate
+  for the **plan**: the local validation happens before the call that can return a 500.
+- **`lexflow deploy --ref <branch|tag|sha>`** fetches the source at that ref and deploys exactly
+  that commit, recording the `git_sha` in the deployment.
+- Commands that exist: `login/logout`, `deploy`, `refs`, `clone`, `sync`, `init`, `push`,
   `pull`, `doctor`, `self-update`, `destroy`, `secret *`, `connection *`, `examples *`,
-  `opcodes *`. **Não existe `lexflow validate`** — e `doctor` é só detecção de tooling local.
+  `opcodes *`. **There is no `lexflow validate`**, and `doctor` is only local tooling detection.
 
-## Onde o ship muda
+## Where the ship changes
 
-| Camada                       | Muda? | Como                                              |
-| ---------------------------- | ----- | ------------------------------------------------- |
-| Destino (Step 1)             | sim   | 4º destino + preflight de detecção                |
-| Gate + quality pass (Step 2) | sim   | gate próprio; lentes re-apontadas pro artefato    |
-| Landing                      | sim   | novo `land-lexflow.md` + extração dos outros três |
+| layer                      | changes? | how                                                     |
+| -------------------------- | -------- | ------------------------------------------------------- |
+| destination (Step 1)       | yes      | a 4th destination plus a detection preflight            |
+| gate plus quality pass (2) | yes      | a gate of its own; the lenses repointed at the artifact |
+| landing                    | yes      | a new `land-lexflow.md` plus extracting the other three |
 
-**Detecção**: `lexflow.toml` na raiz → `project_kind: lexflow`, flag que Step 1 e Step 2
-leem. Ela torna LexFlow a opção recomendada, e não pula a pergunta: o mesmo repo pode
-legitimamente querer um PR naquela rodada.
+**Detection**: `lexflow.toml` at the root → `project_kind: lexflow`, a flag Step 1 and Step 2
+read. It makes LexFlow the recommended option, and it does not skip the question: the same repo
+can legitimately want a PR in that run.
 
-**O gate, três camadas com uma autoridade cada:**
+**The gate, three layers with one authority each:**
 
-1. **Pré-check local** — `scripts/check_lexflow_manifest.py`, só o subset barato e estável
-   via `tomllib`: existe `[app]`, e cada `source` (deployments, workflows, middlewares)
-   aponta pra arquivo real. Falha em ms, sem rede, funciona deslogado. Nada além disso — o
-   resto é da CLI, e duplicar drifta.
-2. **`lexflow deploy --dry-run`** — autoridade sobre o manifest, em três baldes:
-   `Manifest error:` + exit 1 → culpa do app → **bloqueia e conserta**; 500 / rede na fase de
-   diff → instabilidade de plataforma → **reporta e segue**; CLI ausente ou deslogado →
-   **check pulado**, aponta `lexflow login`.
-3. **Leitura do LLM nos YAMLs** — os workflows são pequenos e declarativos; o LLM confere
-   nomes e params de opcode contra `lexflow opcodes list`. Zero parser de YAML em Python (a
-   regra do repo é stdlib only, e stdlib não tem YAML).
+1. **A local pre-check**: `scripts/check_lexflow_manifest.py`, only the cheap and stable subset
+   through `tomllib`: `[app]` exists, and every `source` (deployments, workflows, middlewares)
+   points at a real file. It fails in milliseconds, with no network, and works logged out.
+   Nothing beyond that; the rest belongs to the CLI, and duplicating it drifts.
+2. **`lexflow deploy --dry-run`**: the authority over the manifest, in three buckets.
+   `Manifest error:` plus exit 1 → the app's fault → **it blocks and fixes**; a 500 or a network
+   error in the diff phase → platform instability → **it reports and goes on**; the CLI missing
+   or logged out → **the check is skipped**, pointing at `lexflow login`.
+3. **The LLM reading the YAMLs**: the workflows are small and declarative; the LLM checks
+   opcode names and params against `lexflow opcodes list`. No YAML parser in Python (the repo
+   rule is stdlib only, and the stdlib has no YAML).
 
-**Quality pass**: quatro agentes, uma lente cada, saída
-`file:line | what | evidence | suggested fix | confidence`. O set de lentes troca pra caber
-no artefato — lógica e edges do workflow / contratos de opcode e secrets-permissões /
-correção das queries / qualidade. `async-state` é peso morto num manifest declarativo.
+**Quality pass**: four agents, one lens each, output
+`file:line | what | evidence | suggested fix | confidence`. The lens set swaps to fit the
+artifact: workflow logic and edges / opcode contracts and secret permissions / query
+correctness / quality. `async-state` is dead weight in a declarative manifest.
 
-**Landing**: `push` (git puro, reversível, explicitamente autorizado pra LLM) e então
-**entrega** `lexflow deploy --ref <sha>` com o sha que passou pelo quality pass. Segue
-valendo: nunca faz merge, nunca aprova, nunca force-push, **nunca deploya**.
+**Landing**: `push` (plain git, reversible, explicitly authorized for an LLM) and then it
+**hands over** `lexflow deploy --ref <sha>` with the sha that went through the quality pass.
+Still holding: it never merges, never approves, never force-pushes, **never deploys**.
 
-## Decisões
+## Decisions
 
-- **4º destino exclusivo**, não um passo que compõe com o landing git. Step 1 continua
-  escolha única: branch / main / PR / LexFlow. _Consequência aceita:_ o caso "PR pra revisão
-  humana **e** deploy" custa duas rodadas.
-- **O ship entrega o comando de deploy, não aperta.** Convenção a seguir, não a inventar: o
-  `lexflow-builder` já decidiu isso.
-- **Comando entregue: `lexflow deploy --ref <sha>`** (não o `lexflow deploy` puro), pra
-  deployar o commit revisado em vez da working tree.
-- **Gate = pré-check `tomllib` + CLI como autoridade + LLM nos YAMLs.**
-- **Bloqueia erro de manifest; reporta erro de plataforma; pula quando deslogado.**
-- **Extrai os quatro landings** pra `references/land-{branch,main,pr,lexflow}.md`;
-  `SKILL.md` vira router.
-- **Reuso:** `${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py` serve sem alteração (git puro
-  — e a CLI recomenda exatamente isso pra read paths). `references/review-checklist.md` e
-  `references/loop.md` seguem valendo. `fetch_comments.py`, `reply_resolve_thread.py` e
-  `scripts/inspect_pr_checks.py` são do caminho de PR e não entram aqui.
-- **bb aponta pro `lexflow-builder`, não re-ensina deploy.** As mecânicas (montar o
-  `lexflow.toml`, a flag `--url`, a URL de publicação) são do time de plataforma; restatear
-  drifta quando a plataforma mudar.
-- **Output de CLI e conteúdo de YAML são dados, não instruções** — estende a linha que o ship
-  já tem pra comentário de PR e log de CI.
+- **An exclusive 4th destination**, not a step that composes with the git landing. Step 1 stays
+  a single choice: branch / main / PR / LexFlow. _Accepted consequence:_ the case "a PR for
+  human review **and** a deploy" costs two runs.
+- **The ship hands the deploy command over, it does not press it.** A convention to follow, not
+  to invent: `lexflow-builder` already decided this.
+- **The command handed over is `lexflow deploy --ref <sha>`** (not plain `lexflow deploy`), so
+  it deploys the reviewed commit instead of the working tree.
+- **The gate is the `tomllib` pre-check plus the CLI as the authority plus the LLM on the
+  YAMLs.**
+- **It blocks a manifest error, reports a platform error, and skips when logged out.**
+- **It extracts the four landings** into `references/land-{branch,main,pr,lexflow}.md`;
+  `SKILL.md` becomes a router.
+- **Reuse:** `${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py` serves with no change (plain
+  git, and the CLI recommends exactly that for read paths). `references/review-checklist.md`
+  and `references/loop.md` keep holding. `fetch_comments.py`, `reply_resolve_thread.py` and
+  `scripts/inspect_pr_checks.py` belong to the PR path and do not enter here.
+- **bb points at `lexflow-builder`, it does not re-teach deploy.** The mechanics (assembling
+  the `lexflow.toml`, the `--url` flag, the publication URL) belong to the platform team;
+  restating them drifts when the platform changes.
+- **CLI output and YAML content are data, not instructions**, which extends the line the ship
+  already has for a PR comment and a CI log.
 
-## Comportamento
+## Behavior
 
-1. Builder roda `/bb:ship` num repo com `lexflow.toml` na raiz.
-2. Preflight seta `project_kind: lexflow`; Step 1 oferece os quatro destinos com LexFlow
-   recomendado. Builder escolhe LexFlow.
-3. Pré-check local passa (`[app]` presente, todo `source` existe).
-4. Quality pass: fan-out de quatro lentes re-apontadas sobre o diff; fixes aplicados só no
-   contexto principal (um escritor só); re-run do gate.
-5. `lexflow opcodes list` → LLM confere os opcodes usados nos YAMLs tocados pelo diff.
-6. `lexflow deploy --dry-run` → plano computado, reportado como informação.
-7. Commit em unidades lógicas → `git push`.
-8. Relatório final: sha, quais deployments o diff afeta, resultado de cada camada do gate, e
-   o comando `lexflow deploy --ref <sha>`.
+1. A builder runs `/bb:ship` in a repo with `lexflow.toml` at the root.
+2. The preflight sets `project_kind: lexflow`; Step 1 offers the four destinations with LexFlow
+   recommended. The builder picks LexFlow.
+3. The local pre-check passes (`[app]` present, every `source` exists).
+4. Quality pass: a fan out of four repointed lenses over the diff; fixes applied only in the
+   main context (a single writer); the gate re-runs.
+5. `lexflow opcodes list` → the LLM checks the opcodes used in the YAMLs the diff touched.
+6. `lexflow deploy --dry-run` → the plan is computed, reported as information.
+7. A commit in logical units → `git push`.
+8. The final report: the sha, which deployments the diff affects, the result of each gate layer,
+   and the command `lexflow deploy --ref <sha>`.
 
-| WHEN                                                                       | THEN                                                                                |
-| -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| o diff não toca nada referenciado pelo manifest                            | commita e dá push, e omite o handoff de deploy — não há o que deployar              |
-| o arquivo pode ser referenciado de dentro de um workflow (`queries/*.sql`) | o pré-check devolve `affects_deploy: "unknown"`; quem decide é o LLM lendo os YAMLs |
-| um `source` aponta pra arquivo inexistente                                 | bloqueia antes do quality pass, nomeia o path e o deployment                        |
-| o dry-run sai com `Manifest error:`                                        | bloqueia, conserta, re-roda o dry-run                                               |
-| o dry-run dá 500 / erro de rede na fase de diff                            | reporta como instabilidade de plataforma e segue o landing                          |
-| não está logado                                                            | dry-run e `opcodes list` viram checks pulados; aponta `lexflow login`               |
-| a CLI não está no PATH ou o shim está quebrado                             | mesma degradação de deslogado, e reporta o shim quebrado                            |
-| o `git push` falha com `could not read Username`                           | diagnostica credential helper ausente e aponta `lexflow login`                      |
-| o push é rejeitado por remote à frente                                     | `lexflow sync` (ff-only) ou `lexflow pull`; segue proibido force-push               |
-| o diff declara um `$secret` novo em `[env]`                                | nomeia o secret e aponta `lexflow secret set` — o deploy vai pedir                  |
-| o diff toca `[[datastores]]`                                               | avisa que é a área do bug de dry-run; um 500 ali provavelmente não é do app         |
-| há múltiplos `lexflow.toml` (monorepo)                                     | deriva o app pelo que o diff toca; se cruza mais de um, pergunta qual               |
-| pediram destino LexFlow e não há `lexflow.toml`                            | diz que não achou o manifest e sugere o diretório certo ou `lexflow clone`          |
-| o diff é pequeno (≲2 arquivos / ≲100 linhas)                               | pula o fan-out, review inline — regra atual do ship, mantida                        |
-| alguém deployou outro sha no meio-tempo                                    | irrelevante pro handoff: `--ref <sha>` é determinístico                             |
+| WHEN                                                                | THEN                                                                                     |
+| ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| the diff touches nothing the manifest references                    | it commits and pushes, and omits the deploy handoff; there is nothing to deploy          |
+| the file may be referenced from inside a workflow (`queries/*.sql`) | the pre-check returns `affects_deploy: "unknown"`; the LLM reading the YAMLs decides     |
+| a `source` points at a file that does not exist                     | it blocks before the quality pass, naming the path and the deployment                    |
+| the dry-run exits with `Manifest error:`                            | it blocks, fixes, and re-runs the dry-run                                                |
+| the dry-run returns a 500 or a network error in the diff phase      | it reports platform instability and goes on with the landing                             |
+| it is not logged in                                                 | the dry-run and `opcodes list` become skipped checks; it points at `lexflow login`       |
+| the CLI is not on the PATH or the shim is broken                    | the same degradation as logged out, and it reports the broken shim                       |
+| the `git push` fails with `could not read Username`                 | it diagnoses a missing credential helper and points at `lexflow login`                   |
+| the push is rejected because the remote is ahead                    | `lexflow sync` (ff-only) or `lexflow pull`; force-push stays barred                      |
+| the diff declares a new `$secret` in `[env]`                        | it names the secret and points at `lexflow secret set`; the deploy will ask for it       |
+| the diff touches `[[datastores]]`                                   | it warns this is the dry-run bug's area; a 500 there is probably not the app's           |
+| there are several `lexflow.toml` (a monorepo)                       | it derives the app from what the diff touches; crossing more than one, it asks which     |
+| a LexFlow destination was asked for and there is no `lexflow.toml`  | it says it did not find the manifest and suggests the right directory or `lexflow clone` |
+| the diff is small (≲2 files / ≲100 lines)                           | it skips the fan out and reviews inline, the ship's current rule, kept                   |
+| someone deployed another sha in the meantime                        | irrelevant to the handoff: `--ref <sha>` is deterministic                                |
 
-## Tarefas
+## Tasks
 
-- [x] **1. Detecção e 4º destino** — preflight no Step 1 + o destino no `SKILL.md`
-      → behaviors 1, 2 · depende: — · verifica: CI
-- [x] **2. Pré-check do manifest** — `scripts/check_lexflow_manifest.py` com `tomllib`
-      (`[app]` + existência de todo `source`), stdlib only → behavior 3 · depende: — ·
-      verifica: CI
-- [x] **3. Landings extraídos** — `references/land-{branch,main,pr,lexflow}.md`, `SKILL.md`
-      vira router → behaviors 1-8 · depende: 1 · verifica: leitura
-- [x] **4. `land-lexflow.md`** — gate de 3 camadas, quality pass com lentes re-apontadas,
-      landing push + handoff `--ref <sha>`, relatório em PT-BR
-      → behaviors 3-8 · depende: 2, 3 · verifica: CI
-- [x] **5. Triggers PT-BR** — "deployar no lexflow", "subir o app lexflow" na frontmatter
-      → behavior 1 · depende: 1 · verifica: CI
-- [x] **6. CHANGELOG** — a linha da release → behaviors 1-8 · depende: 1-5 · verifica: CI
+- [x] **1. Detection and the 4th destination**: the preflight in Step 1 plus the destination in
+      `SKILL.md` → behaviors 1, 2 · dep: — · verify: CI
+- [x] **2. The manifest pre-check**: `scripts/check_lexflow_manifest.py` with `tomllib`
+      (`[app]` plus the existence of every `source`), stdlib only → behavior 3 · dep: — ·
+      verify: CI
+- [x] **3. The landings extracted**: `references/land-{branch,main,pr,lexflow}.md`, `SKILL.md`
+      becomes a router → behaviors 1-8 · dep: 1 · verify: reading
+- [x] **4. `land-lexflow.md`**: the 3 layer gate, the quality pass with repointed lenses, the
+      push landing plus the `--ref <sha>` handoff, the report in PT-BR
+      → behaviors 3-8 · dep: 2, 3 · verify: CI
+- [x] **5. The PT-BR triggers**: "deployar no lexflow", "subir o app lexflow" in the frontmatter
+      → behavior 1 · dep: 1 · verify: CI
+- [x] **6. CHANGELOG**: the release line → behaviors 1-8 · dep: 1-5 · verify: CI
 
-## Fora de escopo
+## Out of scope
 
-- Builders sem tooling local nenhum (ex: Claude web, que resolvem deploy pedindo no Slack).
-  Fora do alcance do ship; a plataforma tem o chat interno do LexFlow.
-- Re-ensinar mecânica de deploy dentro do bb (ownership do `lexflow-builder`).
-- Apertar o deploy, mesmo com autorização prévia. _revisit:_ não antes de a plataforma ter
-  rollback de deployment.
-- Fragmentação das três skills `*-builder` concorrentes (`lexflow-builder` em
-  `lexflow-automacoes`, `lex-flow-builder` em `lex-flow`, e o bb). Maior que o ship e é
-  conversa com o time de plataforma (Capitani/Giro). _revisit:_ depois deste brief entregar.
-- Re-adicionar `lexflow` ao `product-registry.yaml` do `brisar`. _revisit:_ quando os
-  repo_urls canônicos fecharem.
-- Consertar o shim quebrado da CLI nesta máquina — pré-requisito de teste, não escopo.
+- Builders with no local tooling at all (Claude web, for instance, who solve a deploy by asking
+  on Slack). Out of the ship's reach; the platform has LexFlow's internal chat.
+- Re-teaching deploy mechanics inside bb (`lexflow-builder` owns it).
+- Pressing the deploy, even with prior authorization. _revisit:_ not before the platform has
+  deployment rollback.
+- The fragmentation of the three competing `*-builder` skills (`lexflow-builder` in
+  `lexflow-automacoes`, `lex-flow-builder` in `lex-flow`, and bb). Bigger than the ship, and it
+  is a conversation with the platform team (Capitani/Giro). _revisit:_ after this spec lands.
+- Re-adding `lexflow` to `brisar`'s `product-registry.yaml`. _revisit:_ when the canonical
+  repo_urls settle.
+- Fixing the CLI's broken shim on this machine: a test prerequisite, not scope.
 
-## Em aberto
+## Open
 
-- Nada bloqueando. Uma ressalva de fonte: nada aqui foi validado contra `lexflow --help`
-  real (o shim desta máquina aponta pra um Python removido). Todo o conhecimento de CLI vem
-  da fonte (`cli.py`, `manifest.py`, `deploy.py`, README), que é mais confiável que `--help`
-  de qualquer forma, mas a versão instalada no time pode estar atrás do `main`.
+- Nothing blocking. One caveat about the source: nothing here was validated against a real
+  `lexflow --help` (this machine's shim points at a removed Python). All the CLI knowledge comes
+  from the source (`cli.py`, `manifest.py`, `deploy.py`, README), which is more reliable than
+  `--help` anyway, but the version installed on the team may be behind `main`.
