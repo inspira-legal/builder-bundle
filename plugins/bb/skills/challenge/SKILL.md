@@ -1,6 +1,6 @@
 ---
 name: challenge
-description: Advogado do diabo estruturado: estressa posições, ideias, planos e decisões antes de agir, com steelman obrigatório. Cinco modos: Socrático, Falsificação, Dialético, Pre-mortem e Red Team. Use quando o usuário já tem uma posição formada e disser "me desafia", "desafia isso", "o que pode dar errado", "pre-mortem", "red team", "questiona minhas premissas", "o que tem de errado com", "testa minha hipótese". NÃO use quando a posição ainda não existe: pra explorar uma ideia crua, use /bb:think; pra enquadrar um problema de produto, /bb:discover.
+description: Advogado do diabo estruturado. Estressa posições, ideias, planos e decisões antes de agir, com steelman obrigatório. Cinco modos (Socrático, Falsificação, Dialético, Pre-mortem e Red Team). Use quando o usuário já tem uma posição formada e disser "me desafia", "desafia isso", "o que pode dar errado", "pre-mortem", "red team", "questiona minhas premissas", "o que tem de errado com", "testa minha hipótese". NÃO use quando a posição ainda não existe. Pra explorar uma ideia crua, use /bb:think; pra enquadrar um problema de produto, /bb:discover.
 license: MIT
 metadata:
   author: Matheus Morais; adapted for bb by Athena Briana - github.com/athenabriana

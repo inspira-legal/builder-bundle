@@ -1,6 +1,6 @@
 ---
 name: delegate
-description: Roda uma spec de ponta a ponta: seleciona uma spec não-concluída (`.bb/<slug>/spec.md`), constrói todas as tarefas e landa (`/bb:implement` → `/bb:ship`), rastreando o `status` da spec. `/bb:delegate <slug>` mira uma spec nomeada; `/bb:delegate` sem argumento pega a pendente mais antiga. O único verbo "roda tudo". Use quando o usuário disser "delega isso", "roda a task", "constrói e landa o brief", "faz tudo", "delegate <slug>", ou "roda tudo". NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra construir sem landar (use /bb:implement).
+description: Roda uma spec de ponta a ponta. Seleciona uma spec não-concluída (`.bb/<slug>/spec.md`), constrói todas as tarefas e landa (`/bb:implement` → `/bb:ship`), rastreando o `status` da spec. `/bb:delegate <slug>` mira uma spec nomeada; `/bb:delegate` sem argumento pega a pendente mais antiga. O único verbo "roda tudo". Use quando o usuário disser "delega isso", "roda a task", "constrói e landa o brief", "faz tudo", "delegate <slug>", ou "roda tudo". NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra construir sem landar (use /bb:implement).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
