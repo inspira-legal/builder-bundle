@@ -19,7 +19,7 @@ it ships a `SessionStart` operating-context hook, auto-active on install, which 
 
 ## what is inside
 
-one plugin, `bb`; 16 skills in 6 trilhas, plus `/bb:config`.
+one plugin, `bb`; 15 skills in 6 trilhas, plus `/bb:config`.
 
 ### configurar: who is on the other side
 
@@ -63,7 +63,7 @@ one plugin, `bb`; 16 skills in 6 trilhas, plus `/bb:config`.
 
 | skill        | description                                                                                                                                                                                        |
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:brisar` | end-to-end design journey: calibrates the profile, scaffolds with the brand DS, writes a visual direction per surface, then builds (Develop) and reviews or hands off (Deliver) as internal phases |
+| `/bb:brisar` | end-to-end design journey: scaffolds with the brand DS, writes a visual direction per surface, then builds (Develop) and reviews or hands off (Deliver) as internal phases |
 
 ### pesquisar and document
 

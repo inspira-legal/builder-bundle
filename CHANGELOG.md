@@ -1,5 +1,51 @@
 # Changelog
 
+## 2.14.0 (2026-08-19)
+
+**The profile is asked once, globally, and the journey lives in the brief.** Calibration
+used to be Phase 0 of `/bb:brisar`: every design journey opened by asking the same person
+the same four things, and the answer died with the project. It is now `/bb:config`, asked
+once, written to `~/.claude/bb.config.json` and carried into every session by the
+`SessionStart` hook. With the profile out of brisar, the last reason for a session file
+went with it, and `.brisar/` is gone: the brief carries the journey.
+
+### Added
+
+- **`/bb:config`**: a checklist of four things the person knows or wants, `reads_code`,
+  `uses_terminal`, `step_by_step` and `technical_vocabulary`, each option carrying a hint
+  of who it is for. It writes `~/.claude/bb.config.json`, shows the profile on disk and
+  recalibrates it. It is the only writer of that file. The contract, the JSON shape and
+  what each flag changes are in `references/bb-config.md`.
+- **The hook always injects.** `inject_operating_context.py` composes the frame with the
+  profile block when the config exists, and with an invitation naming `/bb:config` when it
+  does not, so a session is never silently uncalibrated. A missing flag reads `false`, and
+  a malformed file reads as no profile.
+- **An old persona is derived, not re-asked.** A project brisar ran before the config
+  carries `profile.persona_id` in its `.brisar/session.yaml`. When there is no config, the
+  four flags are derived from it once and pre-fill the `/bb:config` checklist, which the
+  person confirms. The old file is read, never written.
+
+### Changed
+
+- **brisar reads the profile instead of asking for it.** Each phase that changed its voice
+  by persona now reads the flag it actually needs: the intake and the scaffold read
+  `step_by_step`, the handoff reads `technical_vocabulary`. Tooling stays where it was, in
+  the preflight, and the output path stays a project decision.
+- **The brief carries the journey.** `brief-design.md` opens with `status`, `phase`,
+  `round`, `slug` and `created`, and the resume reads that block instead of a state file.
+  Phase 1 opens the brief, and every phase after it updates it where it hands off. The
+  Develop and Deliver artifacts, `develop-notes.md`, `design-review.md`,
+  `accessibility-checklist.md` and `handoff.md`, each summarize themselves in their own
+  frontmatter, and the surfaces list lives in `design.md`'s. `spec-state.md` states the
+  shape: no member of `.bb/<slug>/` is a state file.
+
+### Removed
+
+- **`.brisar/` entirely**, with `session.yaml` and `config.yaml`. Everything durable about
+  a journey lands in `.bb/<slug>/`, beside the spec it serves.
+- **`phase-0-calibration.md`** and the four personas it asked between, and
+  **`references/persistence.md`**, the page that described the state file.
+
 ## 2.13.0 (2026-08-18)
 
 **One language: the bundle writes English.** Since `vocabulario-pt` the plugin
