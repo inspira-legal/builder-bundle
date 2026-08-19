@@ -196,7 +196,7 @@ one spec: making every build fresh is what makes the review necessary.
       `verify:` is `reading`, invoked through `scriptPath` the way the skills invoke it, and
       the return carries that task as built
       → behaviors 3, 4, 5, 6 · dep: — · verify: command
-- [ ] **2. The reference documents the script**: `build-tasks-workflow.md` rewritten as
+- [x] **2. The reference documents the script**: `build-tasks-workflow.md` rewritten as
       documentation, with the compaction argument moved in from `build-mode.md`, the `args`
       shape, and the checklist split into CI, PR review and the skill's three per-run items
       → behaviors 2, 6, 12 · dep: 1 · verify: reading
