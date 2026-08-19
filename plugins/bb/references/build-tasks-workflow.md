@@ -137,39 +137,22 @@ keeps what is green.
 
 ## What the task agent is told to do
 
-The prompt carries the spec path, the task's own line, the behaviors it cites, the
-accumulated convention note, and the check commands stage zero resolved. Its steps, in
-the script's words:
+`taskPrompt()` in the script, and only there. It carries the spec path, the task's own
+line, the behaviors it cites, the accumulated convention note and the check commands
+stage zero resolved, then tells the agent what to do with them: build inside
+`## Out of scope`, satisfy `verify:`, keep the checks green, commit the files it touched
+together with its `- [x]`, return the result. Read the string when you need the wording.
+This file used to paraphrase it in six numbered steps, which is the second contract the
+opening says not to keep.
 
-1. **Re-read `## Tasks` on disk** (plus `## Tarefas`, the older spelling, and a
-   half-migrated spec carrying both headings gets **both** enumerated, in file order;
-   the whole pairing is in the plugin-level `references/spec-state.md`). If this task is
-   already `- [x]`, return `status: "skipped"` immediately: the run is resumable and
-   re-running a half-built spec must not redo what already landed.
-2. **Build the task**, staying inside the spec's `## Out of scope`. A **stack choice**
-   the spec left open (framework, package manager, tooling) is settled against the
-   manifesto first: the plugin-level `references/consult-manifesto.md`, whose path goes
-   into the prompt.
-3. **Satisfy `verify:`.** A command gets run: `result` is `passed` or `failed`.
-   `reading` means self-inspection, read what you produced against the behaviors this
-   task cites and return short evidence. `CI` is out of reach inside the run: return
-   `result: "pending"`, which is neither a pass nor a failure, and `/bb:ship` covers it.
-   Every `verify:` runs.
-4. **Run the project's checks** and fix what broke. A failed check is re-run at most
-   `RETRY_CAP` times (3), and only while no file changed between runs. A check that
-   fails and then passes with the tree untouched is the whole definition of a flake
-   here. Once a file changed, the failure is the task's to fix.
-5. **Commit** only the files this task touched, with its `- [ ]` to `- [x]` in the same
-   commit, on the branch the run is already on. **Conventional style, and no AI
-   attribution**. The agent starts with no memory of the target repo's habits, so the
-   convention travels in the prompt. The commit is the checkpoint: workflow resume is
-   same-session only and replays everything that started after the first unfinished
-   agent, and commits survive anything.
-6. **Return** the structured result. A red check after the retries, a `verify:` that
-   came back `failed`, or a spec too underspecified to build against all mean the same
-   thing: **do not commit, do not revert.** Leave the tree as it is for diagnosis and
-   return the blocker. A `verify:` still `pending` is a green task: it commits, and the
-   pending rides the script's return out to ship.
+Two of its rules reach the caller, because they show up in the return:
+
+- **A task already `- [x]` on disk returns `status: "skipped"` and builds nothing.** The
+  agent re-reads the checklist itself, so a resumed run does not redo what landed: `args`
+  is the plan, the file on disk is the truth.
+- **`verify: CI` cannot run inside the build**, so it returns `result: "pending"` on a
+  task that is otherwise green and committed, neither a pass nor a failure. That is what
+  `pendingVerify` collects and what `/bb:ship` closes.
 
 Return shape:
 
