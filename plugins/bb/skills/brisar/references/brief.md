@@ -68,6 +68,29 @@ At the end of the trilha the brief feeds the **delta back into the spec**. The c
 up with what the design learned. That handoff is the Deliver phase's business, but the material
 comes from here, which is exactly why the record has to be complete.
 
+## The frontmatter: the journey's state, and the only place it lives
+
+The brief opens with a frontmatter block. This is what tells a later session where the
+journey stopped, so there is no state file beside it to keep in sync.
+
+```yaml
+---
+status: in-progress | completed
+phase: research | brief | diverge | medium | develop | deliver | done
+round: 1
+slug: <slug>
+created: <ISO>
+canonical: <real path, only when .bb is a symlink into a store>
+---
+```
+
+`phase` is the phase that is **open**, not the last one finished, so a session that
+reads it knows what to do rather than what was done. Every phase updates it when it
+hands off, and `round` increments with each exploration round.
+
+A brief with no frontmatter reads as `phase: brief`, `round: 1`, `status: in-progress`.
+It is a brief written before this block existed, and it is not an error.
+
 ## Step 1: assemble the document
 
 Sections, in order. **Bold = mandatory in every mode**, including pocket.
@@ -79,6 +102,7 @@ Sections, in order. **Bold = mandatory in every mode**, including pocket.
 | **Findings by front**                        | The research, organized by decision, not by tool                  | floor fronts only |
 | **The directions**                           | Filled by the Diverge phase; leave the heading                    | yes               |
 | **The tension the research did not resolve** | Step 3                                                            | yes               |
+| **Left out, and why**                        | A front skipped, a front degraded, a direction discarded          | yes, short        |
 | **Decision log for this brief**              | Dated table, grows over the rounds                                | starts empty      |
 | Exploration rounds                           | One block per round after the first (living-contract rule)        | as they happen    |
 
@@ -245,25 +269,25 @@ phases.
 
 ## Step 5: persistence and gate
 
-Write the document, then `.brisar/session.yaml`:
+Write the document. Its frontmatter is the persistence: set `phase: diverge` (the phase
+now open), `status`, and `round`. There is no second file.
 
-```yaml
-brief:
-  status: completed | in-progress
-  path: <canonical path to brief-design.md>
-  round: 1 # increments on every update
-  reconciliation:
-    upstream: <path to the spec, or null>
-    confirms: <n>
-    contradicts: <n> # >0 means the framing needs a decision
-    unreachable: <n>
-  open_tension: <one line>
-  next_action: ready-for-diverge
-```
+The reconciliation counts and the open tension are **sections of the document**, not
+fields to copy somewhere: a contradicted point needs the sentence explaining it, which
+is exactly what a count loses. Develop and Deliver read this document by its path,
+`.bb/<slug>/brief-design.md`, and the spec is its sibling in the same folder. **The two
+coexist; the design brief never replaces the spec.**
 
-Also record the path under `gate.design_brief`. That is the slot Develop and Deliver read,
-the same way `gate.discover_brief` carries the upstream framing. **The two coexist; the design
-brief never replaces the spec.**
+### What goes in `## Left out, and why`
+
+The declared-never-silent rule, written down. One line each, and the reason is the point:
+
+- a research front not run, and what made it not worth its cost
+- a front run degraded, and which conclusions got weaker because of it
+- a direction discarded during divergence, and what killed it
+- an idea that never reached divergence at all
+
+A front skipped without a reason reads as a front nobody thought of.
 
 ### Gate
 

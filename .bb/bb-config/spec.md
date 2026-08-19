@@ -246,7 +246,7 @@ Happy path, first time:
 - [ ] **6. The Framer fork drops the profile**: `SKILL.md` and `product-registry.yaml`
       key it on `brand.workflow == framer-harpa`
       → behavior 7 · dep: 4 · verify: reading
-- [ ] **7. The brief carries the journey**: `brief.md` gains the frontmatter block
+- [x] **7. The brief carries the journey**: `brief.md` gains the frontmatter block
       (`status`, `phase`, `round`, `slug`, `created`) and the `## Left out` section
       → behaviors 5, 16, 19 · dep: — · verify: CI `validate-frontmatter`
 - [ ] **8. The state file is deleted**: `persistence.md` goes, and every phase that
