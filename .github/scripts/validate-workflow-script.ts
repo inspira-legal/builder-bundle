@@ -49,6 +49,17 @@ function findMetaBlock(source: string): string | null {
   return null;
 }
 
+/**
+ * A workflow script is neither a module nor a plain script: it carries `export const meta`
+ * and a top-level `return` with top-level `await`, which no single parse mode accepts. The
+ * platform runs the body inside an async function, so the parse gets the same shape: the
+ * `export` keyword dropped and the source wrapped. The prefix carries no newline, so a
+ * reported line number still points at the real line.
+ */
+function probeOf(source: string): string {
+  return `async function __probe() {${source.replace(/\bexport\s+const\b/g, "const")}\n}`;
+}
+
 function lineOf(source: string, index: number): number {
   return source.slice(0, index).split("\n").length;
 }
@@ -57,7 +68,7 @@ function validateSource(source: string): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
 
   try {
-    new Bun.Transpiler({ loader: "js" }).transformSync(source);
+    new Bun.Transpiler({ loader: "js" }).transformSync(probeOf(source));
   } catch (err) {
     issues.push({
       level: "error",
