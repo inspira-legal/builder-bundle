@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Constrói uma spec validada (`.bb/<slug>/spec.md`) na working tree. Implementa as tarefas, mantém as checagens do projeto verdes, commita por tarefa e oferece o ship no final (ou encadeia direto quando o ship já foi autorizado). O executor da trilha Construir. Use quando o usuário disser "implementa o brief", "constrói as tasks", "build it", "implementa isso", ou logo depois do /bb:spec. NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra abrir/esverdear uma PR sozinha (use /bb:ship).
+description: Builds a validated spec (`.bb/<slug>/spec.md`) in the working tree. Implements the tasks, keeps the project's checks green, commits per task and offers the ship at the end (or chains straight into it when ship was already authorized). The executor of the Construir trilha. Use when the user says "implement the spec", "build the tasks", "build it", "implement this", or right after /bb:spec. Don't use it to align on an idea first (use /bb:spec) or to open and green a PR on its own (use /bb:ship).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana

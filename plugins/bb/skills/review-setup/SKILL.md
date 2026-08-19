@@ -1,6 +1,6 @@
 ---
 name: review-setup
-description: Gera ou atualiza o CODE_REVIEW_GUIDE.md do repositório. Faz descoberta automática com subagentes paralelos, entrevista o mantenedor pra validar cada regra, e escreve o guia na raiz como fonte de verdade que o /bb:review consome. Gera do zero quando não há guia; quando já existe, atualiza cirurgicamente só o que mudou. Use quando o usuário disser "configura o code review", "gera o guia de review", "cria o CODE_REVIEW_GUIDE", "atualiza o guia de review", "o guia de review tá desatualizado", ou quando /bb:review apontar drift. NÃO use pra revisar código (use /bb:review).
+description: Generates or updates the repository's CODE_REVIEW_GUIDE.md. Runs automatic discovery with parallel subagents, interviews the maintainer to validate every rule, and writes the guide at the root as the source of truth /bb:review consumes. Generates from scratch when there is no guide; when one exists, it updates surgically, only what changed. Use when the user says "set up code review", "generate the review guide", "create the CODE_REVIEW_GUIDE", "update the review guide", "the review guide is stale", or when /bb:review reports drift. Don't use it to review code (use /bb:review).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana

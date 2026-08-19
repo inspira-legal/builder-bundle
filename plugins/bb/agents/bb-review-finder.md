@@ -1,6 +1,6 @@
 ---
 name: bb-review-finder
-description: "Papel interno do pipeline de review do bb: o finder de só leitura que o /bb:review despacha em paralelo, um por ângulo/lente. Quem despacha monta o contrato (escopo, intervalo de diff resolvido, critérios, conjunto de ângulos, teto de candidatos e o formato do achado); este agente lê, junta candidatos e devolve, sem editar nada. Não é porta de entrada: pra revisar uma branch, um diff ou uma PR, use /bb:review."
+description: "Internal role in bb's review pipeline: the read only finder that /bb:review dispatches in parallel, one per angle or lens. The caller assembles the contract (scope, the resolved diff range, criteria, the angle set, the candidate cap and the finding shape); this agent reads, gathers candidates and returns them, editing nothing. Not an entry point: to review a branch, a diff or a PR, use /bb:review."
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: sonnet
 ---

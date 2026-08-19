@@ -1,6 +1,6 @@
 ---
 name: write-readme
-description: Gera ou reescreve o README de um repositório num estilo minimalista de header centralizado. Inspeciona o repo pra derivar nome, badges e comandos de install/uso. Use quando o usuário disser "escreve um readme", "gera readme", "atualiza o readme", "documenta esse repo", ou pedir um README pra qualquer projeto.
+description: Generates or rewrites a repository's README in a minimal centered header style. Inspects the repo to derive the name, the badges and the install and usage commands. Use when the user says "write a readme", "generate a readme", "update the readme", "document this repo", or asks for a README for any project.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana

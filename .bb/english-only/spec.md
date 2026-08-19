@@ -90,7 +90,7 @@ Happy path, one area at a time, each area a commit:
       `phase-4-design-direction.md`, `doc-style.md`, `operating-context.md`,
       `.claude/CLAUDE.md`
       → behaviors 1, table rows 3 and 4 · dep: — · verify: `grep -rn "## Decisões\|## Comportamento\|## Tarefas\|## Fora de escopo\|## Em aberto\|depende:\|verifica:"` outside `.bb/` and `CHANGELOG.md` returns nothing
-- [ ] **2. Frontmatter descriptions**: 15 `SKILL.md` plus `bb-review-finder.md` and
+- [x] **2. Frontmatter descriptions**: 15 `SKILL.md` plus `bb-review-finder.md` and
       `bb-review-verifier.md`
       → behaviors 2, table rows 1 and 2 · dep: — · verify: the frontmatter sweep finds no `: ` and no ` #` in any plain scalar
 - [ ] **3. Gates, options, and report templates**: every skill, `handoff-gate.md`,

@@ -1,6 +1,6 @@
 ---
 name: think
-description: Parceiro de raciocínio estruturado. Analisa problemas, decisões, ideias, estratégias e conteúdo de estudo, e dá um veredito direto (modo take) quando o usuário pede o seu julgamento. Questiona premissas, aponta tradeoffs reais e fecha com conclusão acionável. Use quando o usuário disser "pensa comigo", "devo fazer X?", "não tá funcionando", "e se a gente…", "como consolidar…", "o que você acha?", "sua opinião", "qual é melhor", "gut check". NÃO use pra estressar uma tese já formada (use /bb:challenge) nem pra enquadrar formalmente um problema de produto (use /bb:discover).
+description: Structured reasoning partner. Analyzes problems, decisions, ideas, strategies and study material, and gives a direct verdict (take mode) when the user asks for your judgment. Questions assumptions, names the real tradeoffs and closes with an actionable conclusion. Use when the user says "think with me", "should I do X", "this is not working", "what if we", "how do I consolidate", "what do you think", "your opinion", "which is better", "gut check". Don't use it to stress a thesis already formed (use /bb:challenge) or to formally frame a product problem (use /bb:discover).
 license: MIT
 metadata:
   author: Matheus Morais; take mode by Athena Briana - github.com/athenabriana

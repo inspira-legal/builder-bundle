@@ -1,6 +1,6 @@
 ---
 name: legal-lens
-description: Passa uma lente jurídica sobre qualquer artefato (ideia, feature, fluxo ou documento) pra levantar implicações legais e regulatórias, gaps de compliance, risco e o que um advogado exigiria antes do lançamento. Default direito brasileiro (LGPD, CDC, Marco Civil…), sobrescrevível pra qualquer jurisdição. Sinaliza incerteza em vez de inventar lei e faz triagem pra revisão jurídica humana em vez de dar parecer. Use quando o usuário disser "revisão jurídica", "isso é legal?", "implicações legais", "checa compliance", "LGPD", "risco regulatório", ou "o que um advogado objetaria". NÃO use como substituto de um advogado qualificado.
+description: Puts a legal lens over any artifact (an idea, a feature, a flow or a document) to surface legal and regulatory implications, compliance gaps, risk, and what a lawyer would demand before launch. Brazilian law by default (LGPD, CDC, Marco Civil), overridable for any jurisdiction. Flags uncertainty instead of inventing law, and triages for human legal review instead of issuing an opinion. Use when the user says "legal review", "is this legal", "legal implications", "check compliance", "LGPD", "regulatory risk", or "what would a lawyer object to". Don't use it as a substitute for a qualified lawyer.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
