@@ -4,7 +4,7 @@ description: Builds a validated spec (`.bb/<slug>/spec.md`) in the working tree.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.4.0
+  version: 2.5.0
 ---
 
 # Implement

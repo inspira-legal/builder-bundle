@@ -4,7 +4,7 @@ description: Runs a spec end to end. Selects an unfinished spec (`.bb/<slug>/spe
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.5.0
+  version: 2.6.0
 ---
 
 # Delegate

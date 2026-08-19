@@ -1,5 +1,66 @@
 # Changelog
 
+## 2.14.0 (2026-08-19)
+
+**The build has one path, and the spec is always reviewed.** 2.7.0 gave
+`/bb:implement` and `/bb:delegate` a second build path and made it a question asked
+once per run. The question is gone: the build is one agent per task, dispatched as a
+workflow, and the in-context build survives only as the fallback for a session that
+cannot run it. `/bb:spec` stopped scaling its review by size: every spec it writes is
+read by an agent that did not write it.
+
+The mode question cost more than it bought. Both answers had to stay documented and
+both had to stay correct, so every change to the build loop was written twice, and the
+user was asked to pick between an argument they already agreed with (a spec of eight
+tasks built in one context hits compaction mid-build) and the path that argument
+rejects. What the answer never was is a preference: it was the session's capabilities,
+which the skill can read for itself.
+
+### New
+
+- **`plugins/bb/workflows/build-tasks.js`**, the script the run dispatches, fixed and
+  versioned instead of authored per run. `references/build-tasks-workflow.md` now
+  documents it, and **the script is the definition**: the task agent's contract is the
+  prompt string inside the file, not a paraphrase kept next to it. This reverses
+  2.7.0's `build-slices-workflow.md`, which was the contract a generated script had to
+  meet, re-derived by whoever ran the build.
+- **`agents/bb-spec-reviewer.md`**, the third read-only agent. What spec's step 6 used
+  to describe in prose (spawn a reviewer, give it only the spec, tell it what to hunt)
+  is a system prompt the harness delivers, so the invariant half of the role stops
+  being re-composed by the caller. Round one is mandatory, round two runs when round
+  one returned a `load-bearing` finding, and two rounds is the ceiling; a survivor
+  goes to `## Open` and the gate blocks on it.
+- **`.github/scripts/validate-workflow-script.ts`**, the guard that replaces most of
+  the old pre-invoke checklist: the script parses, `export const meta` is a pure
+  literal, there is exactly one `parallel()`, and `Date.now()`, `new Date()` and
+  `Math.random()` appear nowhere. It runs inside `package.json`'s `validate`, which is
+  what lefthook's pre-commit job runs, and as its own step in `validate.yml`.
+
+### Changed
+
+- **`/bb:implement`** (2.5.0) keeps its 8 steps, and step 3 no longer asks. It builds
+  `args` by reading the spec, confirms the three items that are genuinely per-run,
+  proves the script with one `Bash` call, and invokes `Workflow` with `scriptPath`.
+  Three fallbacks, one attempt each: `scriptPath` refused becomes an inline `script`
+  off the same file; that refused too, no `Workflow` tool in the session, or a `Bash`
+  call that cannot read the file, becomes the in-context build **with the reason named
+  in one line**.
+- **`/bb:delegate`** (2.6.0) lost 2.7.0's step 3 entirely, and the rest renumbered.
+  Nothing about how to build is asked at either end of the chain, and the report no
+  longer names a mode; a run that fell back to this context says so instead.
+- **`/bb:spec`** (2.4.0) dispatches the reviewer over every spec it writes, and the
+  gate states the review's status in one line **always**: the verdict, or that it did
+  not run and why. The old wording scaled the review by size, which exempted exactly
+  the specs whose author was most confident.
+- **oxfmt formats `js`** alongside `json` and `md` in the lefthook glob. CI already
+  formatted the file through `oxfmt --check .`; the hook did not.
+
+### Removed
+
+- **`references/build-mode.md`**: with the question deleted there is no reader left.
+  Its argument for why the build runs outside the main context moved into
+  `build-tasks-workflow.md`, which is where the build now lives.
+
 ## 2.13.0 (2026-08-18)
 
 **One language: the bundle writes English.** Since `vocabulario-pt` the plugin

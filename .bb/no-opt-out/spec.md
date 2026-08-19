@@ -224,7 +224,7 @@ one spec: making every build fresh is what makes the review necessary.
       added to `package.json`'s `validate` script (which is what lefthook runs) and to
       `validate.yml` as its own step; `js` added to the lefthook oxfmt glob
       → behavior 12 · dep: 1 · verify: CI
-- [ ] **8. Versions, docs, and the deletion**: `plugin.json` `2.14.0`, the three skill
+- [x] **8. Versions, docs, and the deletion**: `plugin.json` `2.14.0`, the three skill
       versions, the CHANGELOG entry naming which `build-via-workflow` decisions this
       reverses, `README.md`'s agent count going from two to three, `build-mode.md` deleted
       now that no reader is left, and `.claude/CLAUDE.md` (the tree, the new agent, the new
