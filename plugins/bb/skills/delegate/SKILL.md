@@ -41,14 +41,7 @@ and stop.
 2. **Open the run, flip `status: in-progress`.** Edit the spec's frontmatter and
    commit that edit (conventional style; no AI attribution).
 
-3. **Pick the build mode: workflow, or this context.** Ask once, per the
-   plugin-level `references/build-mode.md`: one agent per task dispatched as a
-   dynamic workflow, or the tasks built here as always. The answer goes into step 4,
-   and the implement loop it drives doesn't ask again. With no `Workflow` tool in the
-   session there's nothing to offer: build in context and name the reason, in step 7's
-   report too, so a silent downgrade doesn't pass for a choice.
-
-4. **Build: follow `/bb:implement`'s workflow (steps 1–7), then return here.** Load
+3. **Build: follow `/bb:implement`'s workflow (steps 1–7), then return here.** Load
    the spec, honor its reuse notes and `## Behavior` contract, build every
    unchecked task in the order its `dep:` fields imply, run each task's
    `verify:`, keep the project's checks green, and commit per task ticking its box. A spec
@@ -58,16 +51,22 @@ and stop.
    (the spec was underspecified), stop: flip `status: blocked`, point back to
    `/bb:spec` to re-spec it, and exit. Do not improvise past the spec.
 
-   **In workflow mode** the build is dispatched rather than run here: author the
-   script per the plugin-level `references/build-tasks-workflow.md`, run its
-   pre-invoke checklist, and invoke `Workflow`. Its result is the build report. A
-   non-null `stopped` (a stage-zero blocker such as a reuse note pointing at code
+   Nothing about how to build is asked, at either end of the chain. The build is
+   dispatched: implement's step 3 builds `args`, resolves and proves the script path in
+   one `Bash` call, and invokes `Workflow` with `scriptPath`. Its result is the build
+   report. The same three fallbacks apply here, each naming its reason in one line: a
+   refused `scriptPath` becomes an inline `script` off the same file, and no `Workflow`
+   tool, a `Bash` call that can't read the file, or both call shapes refused mean the
+   tasks get built in this context instead. What the script does with the run is the
+   plugin-level `references/build-tasks-workflow.md`.
+
+   A non-null `stopped` (a stage-zero blocker such as a reuse note pointing at code
    that's gone, a check the run can't execute, or a tree already red; a red task; a
    lost agent; or a spec the agent found underspecified) lands the same place the
    safety valve does: flip `status: blocked`, name the blocker, exit without
    landing. What came back green is already committed and ticked.
 
-5. **Land: follow `/bb:ship`'s workflow.** Green the project's checks, commit and
+4. **Land: follow `/bb:ship`'s workflow.** Green the project's checks, commit and
    land per ship's own destination logic; ship settles the destination, asking only
    on real doubt; delegate adds no destination logic of its own. **Ship doesn't
    review on the way in**: its post-landing gate offers `/bb:review` and the answer
@@ -76,14 +75,15 @@ and stop.
    PR description when there is a PR, otherwise the spec's own `## Open` on the
    pushed branch. Report it, then exit.
 
-6. **Close the run, flip `status: done`.** Once the chain lands cleanly, edit the
+5. **Close the run, flip `status: done`.** Once the chain lands cleanly, edit the
    frontmatter to `done` and commit. On a feature branch that commit only reaches the
    default branch when a human merges the PR, the same merge gate the `## Tasks`
    checkboxes already pass through; delegate never writes status to a protected branch
    directly.
 
-7. **Report.** Name the slug, the build mode it ran in, what landed (tasks, check results), and the destination (branch / PR URL / the hand-off command for a
-   protected branch).
+6. **Report.** Name the slug, what landed (tasks, check results), and the destination
+   (branch / PR URL / the hand-off command for a protected branch). A build that fell
+   back to this context says so here too.
 
 ## Edge cases
 
@@ -97,7 +97,8 @@ and stop.
 | selected spec already `in-progress`              | resume: implement skips checked tasks; status stays `in-progress` until landing                                                                 |
 | spec has no frontmatter                          | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                            |
 | implement safety valve fires (underspecified)    | flip `status: blocked`, point back to `/bb:spec`, stop; do not improvise                                                                        |
-| workflow mode stops (stage zero or a task)       | flip `status: blocked`, exit without landing                                                                                                    |
+| the build stops (stage zero or a task)            | flip `status: blocked`, exit without landing                                                                                                    |
+| the build falls back to this context             | it runs the same way; the reason is named in one line, and again in step 6                                                                       |
 | ship hits an unrecoverable stop / blocker        | flip `status: blocked`; write the blocker into the PR description, or into the spec's `## Open` when the destination has no PR; report it; exit |
 | slug sits under both `.bb/` layouts              | one candidate; the `.bb/<slug>/` copy is the one read                                                                                           |
 | spec only under `.bb/tasks/<slug>/`              | found by the second glob, run as usual                                                                                                          |

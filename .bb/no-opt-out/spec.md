@@ -205,7 +205,7 @@ one spec: making every build fresh is what makes the review necessary.
       the checks authority chain the build step now needs for `checksHint`; the `## Tasfas`
       typo goes with them
       → behaviors 1, 2, 7, 8 · dep: 2 · verify: reading
-- [ ] **4. delegate**: step 3 deleted and the rest renumbered; the build step resolves,
+- [x] **4. delegate**: step 3 deleted and the rest renumbered; the build step resolves,
       invokes and reads the return, with the same fallbacks; step 7 stops reporting "the
       build mode it ran in"; the edge row "workflow mode stops" loses the mode word
       → behaviors 1, 2, 6, 7, 8 · dep: 2 · verify: reading
