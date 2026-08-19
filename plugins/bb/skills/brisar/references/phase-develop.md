@@ -6,7 +6,7 @@ The discipline here is **fidelity to contracts**:
 
 - Find the two paths by convention: `design-context/` at the project root, and the task folder `.bb/<slug>/` for the direction.
 - Read `tokens.md` + `components.md` from that path, sources of truth for the design system.
-- Read the surface's direction file, `<design_path>/<surfaces[].file>`, written in Phase 4 inside the task folder.
+- Read the surface's direction file, `.bb/<slug>/<surfaces[].file>`, written in Phase 4 inside the task folder.
 - Build React + Tailwind (or plain static HTML if `prototype-hosted`) applying tokens faithfully.
 - When something is not in the DS, **ask** before inventing.
 
@@ -66,8 +66,8 @@ ls "$BB/<slug>/design.md" "$BB/<slug>/design"/*.md \
 
 If no surface has a md: Phase 4 needs to run first (offer it) or the builder describes the screen directly in chat.
 
-**Exception. A design brief outranks this check.** When `gate.design_brief` exists with a chosen
-direction, you already have the visual direction in a richer form. Do not send the builder back to
+**Exception. A design brief outranks this check.** When `.bb/<slug>/brief-design.md` already carries
+a chosen direction, you already have the visual direction in a richer form. Do not send the builder back to
 Phase 4 to produce a thinner version of what the brief already says.
 
 ## Step 1: intake (1-2 questions)
@@ -217,7 +217,7 @@ Echo what was built (1 line: _"Built <surface> at <path>. Loading/Empty/Error in
 }
 ```
 
-- **Deliver:** load `references/phase-deliver.md` and continue. Update `current_phase: deliver`.
+- **Deliver:** load `references/phase-deliver.md` and continue. Set the brief's `phase: deliver`.
 - **Another surface:** loop back to Step 1 with the remaining surfaces.
 - **Stop:** persist and end.
 

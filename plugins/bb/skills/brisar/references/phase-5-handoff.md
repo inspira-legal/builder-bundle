@@ -65,7 +65,7 @@ Then the gate:
 }
 ```
 
-- **Develop:** load `references/phase-develop.md` and continue in this same session. Update `current_phase: develop`.
+- **Develop:** load `references/phase-develop.md` and continue in this same session. Set the brief's `phase: develop`.
 - **/bb:discover:** suggest the command (`/bb:discover <the idea in 1 sentence>`) and STOP, never invoke it.
 - **Stop:** print one line saying the re-entry works (`/bb:brisar` in this folder resumes) and end.
 

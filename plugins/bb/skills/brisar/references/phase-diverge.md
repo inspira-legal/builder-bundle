@@ -33,7 +33,7 @@ From `.bb/<slug>/brief-design.md` and the spec next to it:
 - **`research.mode`** → pocket or full. It sets the count (Step 2), never the depth per
   direction.
 - **the profile** → who is choosing. It changes nothing about the directions themselves
-  and two things about the presentation: the vocabulary (Phase 0's banned list binds for
+  and two things about the presentation: the vocabulary (the banned list in `references/brief.md` binds for
   `technical_vocabulary` false), and whether the recommendation is optional (Step 3).
 
 ## Step 1: separate the base from what varies

@@ -42,14 +42,14 @@ the next silently.
 1. **Every question via `AskUserQuestion`**: rationale in the plugin-root
    `references/handoff-gate.md`.
 2. **The profile is already in the frame.** The SessionStart hook injects it
-   from `~/.claude/bb.profile.json`; brisar never asks who is building. With no
+   from `~/.claude/bb.config.json`; brisar never asks who is building. With no
    profile, run `/bb:profile` once and continue with the answers.
 3. **Adapt depth and vocabulary to the profile.** Each phase reads the flag it
    needs: `reads_code` sets how many questions and in what language,
    `technical_vocabulary` decides whether `scaffold`, `embed` and `MCP` appear
    at all, `uses_terminal` decides whether a path needs a command, and
    `step_by_step` decides how a command is written. The contract is the
-   plugin-level `references/bb-profile.md`.
+   plugin-level `references/bb-config.md`.
 4. **Detect > ask.** Step 0 cross-references cwd with the product registry; a
    match settles brand and hosting without asking. Tooling gaps are detected in
    preflight, not asked. **Exception: the medium is always asked**, assuming it
@@ -136,9 +136,9 @@ the record of rounds the brief was keeping.
 
 A `.brisar/` folder from an older run may still be sitting in the project. Read it once for
 whatever context it holds, and leave it where it is. Nothing is written back to it. If its
-`session.yaml` carries a `profile.persona_id` and there is no `~/.claude/bb.profile.json`,
+`session.yaml` carries a `profile.persona_id` and there is no `~/.claude/bb.config.json`,
 that is an answer the person already gave: derive the four flags from it (the table in the
-plugin-level `references/bb-profile.md`) and offer `/bb:profile` to write them down.
+plugin-level `references/bb-config.md`) and offer `/bb:profile` to write them down.
 
 ### 0.2: detect Brisa DS
 
@@ -198,23 +198,23 @@ never by folder name.
 Each phase lives in a separate file under `references/`. **Don't load all files
 in Step 0**, open only what the current phase needs.
 
-| Phase                                                              | When to load                                                                                                                                                                                                             | File                                                                     |
-| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| Pre-flight tooling                                                 | Step 0.4                                                                                                                                                                                                                 | `references/preflight-tooling.md`                                        |
-| Product registry                                                   | Step 0.5 + Phase 1                                                                                                                                                                                                       | `references/product-registry.yaml`                                       |
-| Phase 1, Lightning intake                                          | First phase. Depth adapts to `reads_code`.                                                                                                                                                                               | `references/phase-1-intake.md`                                           |
-| Phase 2, Maturity gate                                             | After Phase 1, EXCEPT when `brand.workflow == framer-harpa`                                                                                                                                                              | `references/phase-2-gate.md`                                             |
-| **Research, the first diamond**                                    | After Phase 2, before anything is drawn. Skip only for a trivial mechanical change.                                                                                                                                      | `references/phase-research.md`                                           |
-| **Brief, the design contract**                                     | Straight after Research (no gate between them) and again on **every later round** that changes a decision                                                                                                                | `references/brief.md`                                                    |
-| **Diverge, directions in equal standing**                          | After the Brief gate, when the builder chooses to diverge                                                                                                                                                                | `references/phase-diverge.md`                                            |
-| **Medium, where to explore**                                       | After Diverge, before Phase 3. Also when Develop is reached by shortcut with no `medium` recorded.                                                                                                                       | `references/phase-medium.md`                                             |
-| Phase 3, Scaffold (real files)                                     | After the medium question, and **only** when `medium.chosen == code`. `uses_terminal` picks the variant: true = normal scaffold; false = `prototype-hosted`                                                              | `references/phase-3-scaffold.md`                                         |
-| Phase 4, Design direction                                          | After Phase 3. **Skip only the per-surface prose** when a design brief already carries the chosen direction, but Step 4 (recording `design_path` + `surfaces[]`) always runs, because four readers join those two fields | `references/phase-4-design-direction.md`                                 |
-| **Phase Framer-handoff** (replaces Phase 2+3+4 on the Framer path) | When `brand.workflow == framer-harpa`                                                                                                                                                                                    | `references/phase-framer-handoff.md`                                     |
-| Phase 5, Terminal report                                           | Always, last phase of the direction stage.                                                                                                                                                                               | `references/phase-5-handoff.md`                                          |
-| **Develop**, hi-fi surface construction                            | Builder asks to build, a shortcut routes here, or the Phase 5 gate chose it                                                                                                                                              | `references/phase-develop.md` (+ `references/develop-modes.md` per mode) |
-| **Deliver**, review, accessibility, handoff                        | Builder asks to review/hand off, a shortcut routes here, or the Develop gate chose it                                                                                                                                    | `references/phase-deliver.md` (+ `references/deliver-modes.md` per mode) |
-| The brief's frontmatter, the journey's only state                  | When you need to know or record where the journey stopped                                                                                                                                                                | `references/brief.md`                                                    |
+| Phase                                                              | When to load                                                                                                                                                                                                                         | File                                                                     |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| Pre-flight tooling                                                 | Step 0.4                                                                                                                                                                                                                             | `references/preflight-tooling.md`                                        |
+| Product registry                                                   | Step 0.5 + Phase 1                                                                                                                                                                                                                   | `references/product-registry.yaml`                                       |
+| Phase 1, Lightning intake                                          | First phase. Depth adapts to `reads_code`.                                                                                                                                                                                           | `references/phase-1-intake.md`                                           |
+| Phase 2, Maturity gate                                             | After Phase 1, EXCEPT when `brand.workflow == framer-harpa`                                                                                                                                                                          | `references/phase-2-gate.md`                                             |
+| **Research, the first diamond**                                    | After Phase 2, before anything is drawn. Skip only for a trivial mechanical change.                                                                                                                                                  | `references/phase-research.md`                                           |
+| **Brief, the design contract**                                     | Straight after Research (no gate between them) and again on **every later round** that changes a decision                                                                                                                            | `references/brief.md`                                                    |
+| **Diverge, directions in equal standing**                          | After the Brief gate, when the builder chooses to diverge                                                                                                                                                                            | `references/phase-diverge.md`                                            |
+| **Medium, where to explore**                                       | After Diverge, before Phase 3. Also when Develop is reached by shortcut with no `medium` recorded.                                                                                                                                   | `references/phase-medium.md`                                             |
+| Phase 3, Scaffold (real files)                                     | After the medium question, and **only** when `medium.chosen == code`. `uses_terminal` picks the variant: true = normal scaffold; false = `prototype-hosted`                                                                          | `references/phase-3-scaffold.md`                                         |
+| Phase 4, Design direction                                          | After Phase 3. **Skip only the per-surface prose** when a design brief already carries the chosen direction, but Step 4 (recording `surfaces[]` in the direction's own frontmatter) always runs, because four readers join that list | `references/phase-4-design-direction.md`                                 |
+| **Phase Framer-handoff** (replaces Phase 2+3+4 on the Framer path) | When `brand.workflow == framer-harpa`                                                                                                                                                                                                | `references/phase-framer-handoff.md`                                     |
+| Phase 5, Terminal report                                           | Always, last phase of the direction stage.                                                                                                                                                                                           | `references/phase-5-handoff.md`                                          |
+| **Develop**, hi-fi surface construction                            | Builder asks to build, a shortcut routes here, or the Phase 5 gate chose it                                                                                                                                                          | `references/phase-develop.md` (+ `references/develop-modes.md` per mode) |
+| **Deliver**, review, accessibility, handoff                        | Builder asks to review/hand off, a shortcut routes here, or the Develop gate chose it                                                                                                                                                | `references/phase-deliver.md` (+ `references/deliver-modes.md` per mode) |
+| The brief's frontmatter, the journey's only state                  | When you need to know or record where the journey stopped                                                                                                                                                                            | `references/brief.md`                                                    |
 
 ---
 
@@ -322,7 +322,7 @@ Phase 2: Maturity gate (senior/junior only)
 │   → NO GATE, flows straight into Brief                                      │
 │                                                                             │
 │ Brief: the design contract                                                  │
-│   → .bb/<slug>/brief-design.md, recorded at gate.design_brief               │
+│   → .bb/<slug>/brief-design.md, the journey in its own frontmatter          │
 │   → reconcile vs the framing: confirms · contradicts · does not reach       │
 │   → close on an unresolved tension (none found = research was shallow)      │
 │   → present it in chat: findings · references · directions · tension        │

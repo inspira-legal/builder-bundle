@@ -647,7 +647,7 @@ This tool is a candidate to become an internal app. A stack aligned with the res
 <person>. Use <person> as the validation stakeholder. Not as the end client of the code.
 ```
 
-Fill the "Visual direction" column from what Phase 4 recorded (`design_path` + `surfaces[].file`), one row per surface, with a single surface that path is `../.bb/<slug>/design.md`.
+Fill the "Visual direction" column from the `surfaces[]` Phase 4 recorded, one row per surface, with a single surface that path is `../.bb/<slug>/design.md`.
 
 ##### `<slug>/README.md`: everyday language
 

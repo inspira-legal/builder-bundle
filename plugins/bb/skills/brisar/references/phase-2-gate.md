@@ -127,15 +127,9 @@ frontmatter stays as Phase 1 opened it.
 
 Print short echo: _"Exploratory appetite, scale=exploration, skipping the gate. Going to the research."_ Continue to the Research phase.
 
-## State at the end
+## What the brief carries at the end
 
-Regardless of the path:
-
-```yaml
-gate:
-  fired: true | false
-  resolution: bootstrap-to-discover | override | not-applicable
-  override_reason: <string or null>
-  discover_brief: <path or null> # filled on the bootstrap return (Step 0.1)
-current_phase: phase-3 # (unless it bootstrapped, which stops here)
-```
+The gate writes nothing of its own. On the bootstrap path the brief's frontmatter reads
+`status: bootstrapped-to-discover` with `phase: research`, and on both other paths it stays
+as Phase 1 opened it. A gate that fired leaves one dated row in the decision log, with the
+resolution and, on the override, the reason.

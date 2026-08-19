@@ -361,7 +361,7 @@ blockers: [<id1>, <id2>]
 ### Inputs
 
 - `<design_context_path>/tokens.md` + `components.md`, or, on a canvas medium, the DS section of the design brief (same source, read one step earlier)
-- `<design_path>/<surfaces[].file>` (visual direction written by brisar Phase 4, in `.bb/<slug>/`) and/or the chosen direction in `gate.design_brief`. **The brief is the richer input when both exist**
+- `.bb/<slug>/<surfaces[].file>` (visual direction written by brisar Phase 4) and/or the chosen direction in `.bb/<slug>/brief-design.md`. **The brief is the richer input when both exist**
 - The artifact, via the reader for `medium.chosen`
 - `.bb/<slug>/brief-design.md` (the decisions recorded through the journey) and `.bb/<slug>/develop-notes.md` (the `deviations[]`)
 

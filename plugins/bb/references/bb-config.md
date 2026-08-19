@@ -1,4 +1,4 @@
-# The person's profile: `~/.claude/bb.profile.json`
+# The person's profile: `~/.claude/bb.config.json`
 
 One question, asked once, that every bb skill reads. What the person does is a fact
 about the person, so it is not asked per project and it is not stored per project.
@@ -8,7 +8,7 @@ unasked; every other reader is a skill reading a flag it needs.
 
 ## Location
 
-`~/.claude/bb.profile.json`, expanded from `Path.home()`. Outside the plugin on purpose:
+`~/.claude/bb.config.json`, expanded from `Path.home()`. Outside the plugin on purpose:
 the install path carries the version (`plugins/cache/inspira-legal/bb/<version>`), so
 anything written inside it is lost on the next update. JSON because the hook is Python
 and `json` is stdlib; a hook that must never fail cannot carry a dependency.

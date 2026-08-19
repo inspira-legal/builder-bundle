@@ -8,8 +8,8 @@ session in every repo where the plugin is enabled, so it nudges the way of
 working, it does not force a mode. Edit operating-context.md to change the frame,
 and PROFILE_LINES below to change what a profile flag means.
 
-The profile lives at ~/.claude/bb.profile.json, written by /bb:profile; the
-contract is references/bb-profile.md. A missing, unreadable or malformed file
+The profile lives at ~/.claude/bb.config.json, written by /bb:profile; the
+contract is references/bb-config.md. A missing, unreadable or malformed file
 means no profile, never an error: this hook must never block a session.
 """
 
@@ -18,7 +18,7 @@ from __future__ import annotations
 import json
 import os
 
-PROFILE_PATH = os.path.join(os.path.expanduser("~"), ".claude", "bb.profile.json")
+PROFILE_PATH = os.path.join(os.path.expanduser("~"), ".claude", "bb.config.json")
 
 # What each answer means, in the words the frame carries. The flags themselves
 # are never injected: `reads_code: false` says nothing on its own.

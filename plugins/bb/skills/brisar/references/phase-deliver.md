@@ -250,7 +250,7 @@ Echo the final status in 1 line, e.g.: _"Design review: 2 issues significativos,
 }
 ```
 
-Each option that names a skill **suggests the command and stops**: never auto-invokes. On "Encerrar", set `status: completed`, `current_phase: done`, `completed_at`, and end.
+Each option that names a skill **suggests the command and stops**: never auto-invokes. On "Encerrar", set the brief's `status: completed` and `phase: done`, and end.
 
 If blockers exist (`design_review.blockers > 0` or `wcag_aa_status: fail`), prepend an option "Go back to Develop and fix them" (loads `phase-develop.md` in iteration mode) as the recommended pick.
 

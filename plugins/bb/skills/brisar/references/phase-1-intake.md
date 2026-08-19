@@ -1,6 +1,6 @@
 # Phase 1: lightning intake (depth adapts to the profile)
 
-The previous version asked 6-10 questions just to reach "now I'll frame it." This phase cuts that, but the number and language of the questions vary by the profile injected into the frame (`reads_code` and `step_by_step`; see `plugins/bb/references/bb-profile.md`). When the trade-off of skipping the framing isn't worth it (serious artifact, `reads_code` true), Phase 2 (maturity gate) pulls /bb:discover into the flow.
+The previous version asked 6-10 questions just to reach "now I'll frame it." This phase cuts that, but the number and language of the questions vary by the profile injected into the frame (`reads_code` and `step_by_step`; see `plugins/bb/references/bb-config.md`). When the trade-off of skipping the framing isn't worth it (serious artifact, `reads_code` true), Phase 2 (maturity gate) pulls /bb:discover into the flow.
 
 ## Step 0a: shortcut router (before the variant)
 

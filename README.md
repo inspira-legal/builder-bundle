@@ -23,9 +23,9 @@ one plugin, `bb`; 15 skills in 6 trilhas, plus `/bb:profile`.
 
 ### configurar: who is on the other side
 
-| skill         | description                                                                                                                                                                                                                                                             |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:profile` | asks four questions once (do you read the code, do you run commands, do you want the technical parts step by step, does technical vocabulary read fine) and writes `~/.claude/bb.profile.json`. the hook carries the answers into every session, so no skill asks again |
+| skill         | description                                                                                                                                                                                                                                                            |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:profile` | asks four questions once (do you read the code, do you run commands, do you want the technical parts step by step, does technical vocabulary read fine) and writes `~/.claude/bb.config.json`. the hook carries the answers into every session, so no skill asks again |
 
 ### pensar: frame and decide before building
 

@@ -75,7 +75,7 @@ journey stopped, so there is no state file beside it to keep in sync.
 
 ```yaml
 ---
-status: in-progress | completed
+status: in-progress | bootstrapped-to-discover | completed
 phase: research | brief | diverge | medium | develop | deliver | done
 round: 1
 slug: <slug>
@@ -83,6 +83,9 @@ created: <ISO>
 canonical: <real path, only when .bb is a symlink into a store>
 ---
 ```
+
+`status: bootstrapped-to-discover` is the one Phase 2 writes when the maturity gate sends the
+builder to `/bb:discover` first: the journey is open and waiting outside brisar.
 
 `phase` is the phase that is **open**, not the last one finished, so a session that
 reads it knows what to do rather than what was done. Every phase updates it when it

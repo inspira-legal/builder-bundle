@@ -81,7 +81,7 @@ first.
 
 ```yaml
 ---
-status: in-progress | completed
+status: in-progress | bootstrapped-to-discover | completed
 phase: research | brief | diverge | medium | develop | deliver | done
 round: 1
 slug: <kebab-slug>
