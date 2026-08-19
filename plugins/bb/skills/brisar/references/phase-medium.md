@@ -165,6 +165,6 @@ expressed, never what it is.
 | Artifact                                                       | Produced by                       | Consumed by                                            |
 | -------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------ |
 | `preflight.mcps`                                               | Step 0.4 (`preflight-tooling.md`) | Step 0 here; the option list                           |
-| `.brisar/session.yaml` (`diverge.directions[].status: chosen`) | Diverge                           | Step 1; what is being built                            |
-| `.brisar/session.yaml` (`medium:` section)                     | this step                         | Phase 3, Develop, Deliver, re-entry                    |
+| The chosen direction in `.bb/<slug>/brief-design.md`           | Diverge                           | Step 1; what is being built                            |
+| The medium, recorded in the same brief                         | this step                         | Phase 3, Develop, Deliver, re-entry                    |
 | Token values read from source                                  | Research (Front B)                | Develop on canvas mediums (no `design-context/` there) |

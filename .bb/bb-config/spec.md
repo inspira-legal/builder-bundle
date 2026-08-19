@@ -236,7 +236,7 @@ Happy path, first time:
 - [x] **3. The `/bb:config` skill**: `skills/config/SKILL.md`, calibrate, show,
       recalibrate, with its scope stated in the first line
       → behaviors 5, 6, 17, 18 · dep: 1 · verify: CI `validate-frontmatter`
-- [ ] **4. brisar stops asking**: `phase-0-calibration.md` is deleted, `SKILL.md` Step
+- [x] **4. brisar stops asking**: `phase-0-calibration.md` is deleted, `SKILL.md` Step
       0.1 and the phase table lose it
       → behaviors 7, 8 · dep: 3 · verify: `grep -rn persona` is empty inside brisar
 - [x] **5. Readers read their own flag**: `phase-1-intake`, `phase-3-scaffold`,
@@ -249,16 +249,16 @@ Happy path, first time:
 - [x] **7. The brief carries the journey**: `brief.md` gains the frontmatter block
       (`status`, `phase`, `round`, `slug`, `created`) and the `## Left out` section
       → behaviors 5, 16, 19 · dep: — · verify: CI `validate-frontmatter`
-- [ ] **8. The state file is deleted**: `persistence.md` goes, and every phase that
+- [x] **8. The state file is deleted**: `persistence.md` goes, and every phase that
       wrote a section of `session.yaml` writes its part of the brief instead
       → behaviors 12, 13, 19 · dep: 7 · verify: `grep -rn "session.yaml"` is empty
-- [ ] **9. Resume reads the brief**: the resume globs `.bb/*/brief-design.md` and reads
+- [x] **9. Resume reads the brief**: the resume globs `.bb/*/brief-design.md` and reads
       `phase` from the frontmatter; a `.brisar/` found on the way is read once
       → behaviors 13, 14, 16 · dep: 8 · verify: reading
 - [ ] **10. Derive an old persona**: a `.brisar/session.yaml` with `profile.persona_id`
       and no config is turned into the four flags once
       → behavior 15 · dep: 1, 9 · verify: reading
-- [ ] **11. The machine paths find their owner**: `surfaces[]` moves into `design.md`'s
+- [x] **11. The machine paths find their owner**: `surfaces[]` moves into `design.md`'s
       frontmatter, `ds_path` keeps its resolution order and stops being persisted
       → behavior 20 · dep: 8 · verify: reading
 - [ ] **12. `spec-state.md` states the shape**: `brief-design.md` and `design.md` carry

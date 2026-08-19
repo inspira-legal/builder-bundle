@@ -1,6 +1,6 @@
 # Pre-flight tooling: silent checks
 
-Runs as part of Step 0 of SKILL.md, before the profile calibration (Phase 0). Prints nothing to the user, just observes and persists to `.brisar/session.yaml`.
+Runs as part of Step 0 of SKILL.md, before the intake. Prints nothing to the user, just observes. What it finds stays in context for this session: it describes the machine, not the journey, so it is not part of the brief.
 
 Core principle: **never block due to missing tooling**. There is always a fallback. Surface the gap, offer to resolve it, and continue the path.
 
@@ -100,9 +100,9 @@ preflight:
     detection_basis: <list of markers that matched>
 ```
 
-## Full persistence
+## Everything it observes
 
-Goes to `.brisar/session.yaml` in Step 0:
+The full shape, held in context from Step 0 on:
 
 ```yaml
 preflight:
@@ -127,9 +127,8 @@ preflight:
     detection_basis: [<markers>]
 ```
 
-Does not re-run if filled within the last 24h AND the session is active. Re-runs when:
+Runs once per session. Re-runs when:
 
-- New session
 - The path changed (a Framer brand entered the picture, so the MCPs need re-checking)
 - Builder explicitly requested a refresh
 

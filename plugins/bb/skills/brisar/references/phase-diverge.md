@@ -22,11 +22,11 @@ unevenly specified (Step 4).
 
 ## Step 0: Read the space
 
-From `.brisar/session.yaml` and the brief:
+From `.bb/<slug>/brief-design.md` and the spec next to it:
 
-- **`gate.design_brief`** → the brief. The findings, the reconciliation, the open tension. This
+- **the brief** → The findings, the reconciliation, the open tension. This
   is the material; the directions are combinations of it.
-- **`gate.discover_brief`** → the hypothesis, the appetite and the cuts. **The appetite bounds
+- **the spec** → the hypothesis, the appetite and the cuts. **The appetite bounds
   every direction**. A gorgeous six-week direction inside a two-week appetite is a direction
   that does not exist. And no direction may solve for something that was cut, unless the brief's
   reconciliation already flagged the cut as wrong and the builder reopened it.
@@ -146,30 +146,19 @@ Convergence picks **one** direction and keeps the rest traceable:
 - **The pivot condition**: the signal that would make you switch. Without it, a wrong direction
   gets defended instead of changed.
 
-Record all four in the brief (the living-contract rule) and in session.yaml. The discarded
-directions stay in the document, deleting them destroys the record of what was considered.
+Record all four in the brief (the living-contract rule). The discarded directions stay in the
+document, deleting them destroys the record of what was considered.
 
 If the builder does not answer, proceed with an **explicit default**, say that you did, and
 record it as a default rather than a decision.
 
-## Step 6: persistence and gate
+## Step 6: write it into the brief, then gate
 
-```yaml
-diverge:
-  status: completed | in-progress
-  count: <n>
-  base_declared: true
-  directions:
-    - id: <short-name>
-      bet: <one line>
-      is_baseline: bool
-      cost: low | fits-appetite | over-appetite
-      status: chosen | runner-up | discarded
-      discard_reason: <only when discarded>
-  pivot_condition: <one line>
-  excluded: [<idea>: <reason>]
-  next_action: ready-for-medium
-```
+The directions go into the brief's round, one block each: its short name, the bet in one line,
+whether it is the baseline, what it costs against the appetite (low, fits, over) and where it
+landed (chosen, runner-up, discarded, with the reason when discarded). Under them, the pivot
+condition in one line, and what was excluded with why. `## Left out` takes the discarded ones.
+Set the frontmatter `phase: medium`.
 
 ### Gate
 
@@ -229,6 +218,6 @@ readings of the problem, never in variant count.
 | Artifact                                    | Produced by                                        | Consumed by                                               |
 | ------------------------------------------- | -------------------------------------------------- | --------------------------------------------------------- |
 | `.bb/<slug>/brief-design.md`                | Brief (updated here with directions + convergence) | Develop, Deliver, the implementing dev                    |
-| `.brisar/session.yaml` (`diverge:` section) | Diverge                                            | medium question, Develop, Deliver, re-entry               |
+| The directions and the convergence          | Diverge (written into the brief)                   | medium question, Develop, Deliver, re-entry               |
 | Chosen direction + base block               | Diverge                                            | Develop (what to build), Deliver (what to review against) |
 | Appetite and cuts                           | `/bb:discover` (upstream)                          | Diverge (Step 0, bounds every direction)                  |

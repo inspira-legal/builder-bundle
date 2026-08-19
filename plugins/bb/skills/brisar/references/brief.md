@@ -359,8 +359,7 @@ pre-loading the answer.
 
 | Artifact                                                               | Produced by                               | Consumed by                                     |
 | ---------------------------------------------------------------------- | ----------------------------------------- | ----------------------------------------------- |
-| `.brisar/session.yaml` (`research:` section)                           | Research                                  | Brief (Step 1, the material)                    |
+| The findings by front, in the brief's current round                    | Research                                  | Brief (Step 1, the material)                    |
 | `.bb/<slug>/spec.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | `/bb:discover`, `/bb:spec`                | Brief (Step 2, reconciliation)                  |
 | `.bb/<slug>/brief-design.md`                                           | **Brief** (and updated every later round) | Diverge, Develop, Deliver, the implementing dev |
-| `.brisar/session.yaml` (`brief:` + `gate.design_brief`)                | Brief                                     | Diverge, Develop, Deliver, re-entry             |
 | Delta back into `spec.md`                                              | Deliver (material from here)              | `/bb:implement`, `/bb:spec`                     |

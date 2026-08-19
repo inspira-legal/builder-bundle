@@ -28,11 +28,11 @@ drawn. Reading the repo reveals screenshots and page shells that already exist, 
 was standard appears in **zero** of 18 references. None of that comes from asking the
 builder.
 
-## Cross-awareness with the session
+## Cross-awareness with the journey
 
-Before any question, read `.brisar/session.yaml` in full:
+Before any question, read `.bb/<slug>/brief-design.md` in full, and with it:
 
-- **`gate.discover_brief`** (`.bb/<slug>/spec.md` with `## Problem` / `## Hypothesis` /
+- **`.bb/<slug>/spec.md`** (`## Problem` / `## Hypothesis` /
   `## Fit` / `## Cuts`, or the older names on a spec written before the rename).
   This is the **upstream contract**. The research answers _how should
   this be?_; the spec answered _is it worth building, and what did we cut?_ Load it:
@@ -52,8 +52,8 @@ Before any question, read `.brisar/session.yaml` in full:
 - If a project spec exists (a full behavior contract, not just the discover sections), read it
   too: variants, states and conditional blocks are the shape the research has to serve.
 
-Write your output to the `research:` section of session.yaml and set
-`current_phase: research`.
+Write your output into the brief, per Step 4 below, and set its frontmatter
+`phase: research`.
 
 ## Step 0: calibrate depth, and say it in one line
 
@@ -276,8 +276,8 @@ builder's call. Mention it as an option and move on.
 into the plugin makes the plugin wrong the day the repo is refactored, and it puts internal layout
 in a place that does not own it. Two better homes, in order: the **repo's own rules file** (the
 product repo states where its tokens are. It is the only thing that can keep that true), and
-`references/product-registry.yaml` (the `ds_source` field exists precisely for this) or a local
-`.brisar/config.yaml`/`BRISAR_DS_PATH` for a machine-specific override. When you spend real effort
+`references/product-registry.yaml` (the `ds_source` field exists precisely for this) or
+`BRISAR_DS_PATH` for a machine-specific override. When you spend real effort
 locating a source, **say so and suggest recording it** in one of those. The next run should not
 repeat the search.
 
@@ -423,33 +423,23 @@ Rules for the fan-out:
 - If a front fails on tooling (MCP absent, source unreadable), degrade and say which one.
   Never block, never fake it.
 
-## Step 4: persistence and handoff to the Brief
+## Step 4: write it into the brief, then hand off
 
-Write to `.brisar/session.yaml`:
+There is no state file to fill. What the research produced goes into
+`.bb/<slug>/brief-design.md`, in the sections that already exist for it
+(`references/brief.md`):
 
-```yaml
-research:
-  status: completed | partial | blocked
-  mode: pocket | full
-  ran: [bench, ds, new-component, biases, heuristics, mental-models, product-inventory]
-  skipped:
-    - front: biases
-      reason: <one line. Why it did not earn its cost>
-  ds_source:
-    path: <path actually read, or the gh coordinates>
-    authority: source | remote | brand-only # brand-only = rung 5, not a token source
-    found_via: cwd | disk-search | remote | registry | builder-told-us
-    record_suggestion: <path worth adding to product-registry/.brisar config, or null>
-  bench:
-    via: mobbin | galleries | builder-screenshots | product-precedent | browser | web-search
-    surface_access: public | behind-login # decides which rungs exist
-    corpus_size: <n or null> # null when the corpus was not systematically sampled
-  degraded:
-    - front: <name>
-      reason: <one line. What was missing>
-      invalidates: <one line, which conclusions got weaker>
-  next_action: ready-for-brief
-```
+| What the research holds                                 | Where it lands in the brief                    |
+| ------------------------------------------------------- | ---------------------------------------------- |
+| the findings of each front that ran                     | findings by front, one block per front         |
+| the mode line (`pocket` or `full`) and which fronts ran  | the round's opening line                       |
+| a front skipped, and why                                | `## Left out`, one row with the reason         |
+| a front degraded, and which conclusions weaken           | `## Left out`, with what it invalidates        |
+| the DS source actually read, its path and its authority  | findings, Front B, with the path and the value |
+| the bench's route and corpus size                        | findings, Front A                              |
+| a path worth recording for next time                     | the suggestion, said out loud to the builder   |
+
+Set the frontmatter `phase: brief`.
 
 Then **go straight into `references/brief.md`**. The research does not stand on its own and
 does not get its own gate. The brief is the artifact; this phase is its input. There is one
@@ -484,6 +474,6 @@ decorative ones.
 | Artifact                                                               | Produced by                                     | Consumed by                                                  |
 | ---------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
 | `.bb/<slug>/spec.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | `/bb:discover`, `/bb:spec` (outside this skill) | Research (Step 0, upstream contract), Brief (reconciliation) |
-| `.brisar/session.yaml` (`research:` section)                           | Research                                        | Brief, Diverge, Deliver (what was skipped, and why)          |
+| `.bb/<slug>/brief-design.md` (findings by front, `## Left out`)        | Research                                        | Brief, Diverge, Deliver (what was skipped, and why)          |
 | Distilled findings per front                                           | Research subagents                              | Brief (`references/brief.md`)                                |
 | Token source on disk + the repo's own token rules                      | the product repo                                | Research (Front B; read, never written)                      |

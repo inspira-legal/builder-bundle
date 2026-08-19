@@ -12,8 +12,10 @@ execution of the wrong question.
 
 ### Inputs
 
-- `.brisar/session.yaml`: `gate.discover_brief` (→ `.bb/<slug>/spec.md`: hypothesis, cuts, appetite), `gate.design_brief` (→ `.bb/<slug>/brief-design.md`: research, chosen direction with its five parts, base block, token limits read from source, open tension), `tarsila.surfaces[]` (locator + `variants[]` + `states_covered[]` + `deviations[]`), `medium.chosen`
-- `.brisar/config.yaml`: `design_path` + `surfaces[].file`, the visual direction in the same task folder. **Only on medium `code`**: on a canvas or `claude-design` medium there is no config, and the direction comes from `gate.design_brief` instead. That is the normal path there, not a degradation.
+- `.bb/<slug>/spec.md`: hypothesis, cuts, appetite
+- `.bb/<slug>/brief-design.md`: research, chosen direction with its five parts, base block, token limits read from source, open tension, and the medium
+- `.bb/<slug>/develop-notes.md`: the surfaces (locator + `variants[]` + `states_covered[]` + `deviations[]`)
+- `.bb/<slug>/design.md` (or each `design/<surface>.md`): the visual direction, with the surfaces listed in its frontmatter. **Only on medium `code`**: on a canvas or `claude-design` medium the direction comes from the brief instead. That is the normal path there, not a degradation.
 - **The artifact, opened through the reader for its medium**: files, preview, or Paper/Figma/Pencil MCP. Resolved in Step 0.1 of `phase-deliver.md`. On a canvas, read structure and computed values through the MCP; a screenshot judges composition and **never** supplies numbers.
 - Design context: `<design_context_path>/tokens.md` + `components.md` when the medium is `code`; otherwise the DS section of the design brief, which read the same source.
 
@@ -40,7 +42,7 @@ significant.
 - The direction's five parts (bet, composition, copy, rationale, risk) are the contract.
 - Flag when the composition drifted, when a block the direction excluded reappeared, or when the base
   block common to all directions was broken **without a declared exception**.
-- Check `tarsila.deviations[]`: a recorded deviation gets judged, not rediscovered. An **unrecorded**
+- Check the `deviations[]` in `develop-notes.md`: a recorded deviation gets judged, not rediscovered. An **unrecorded**
   one is itself the finding.
 
 **2. Hypothesis fit**
@@ -131,7 +133,7 @@ buries the expensive ones.
 
 Not cheerleading. Information. Identify 1 decision that worked and say _why_, so the builder maintains that pattern.
 
-### Output: `.brisar/clarisse/design-review.md`
+### Output: `.bb/<slug>/design-review.md`
 
 Write it for someone who is **not** a designer too: expand an internal pointer on first use, gloss
 a design concept in 5-10 words. A review nobody can read changes nothing.
@@ -288,7 +290,7 @@ choice, not a board mistake.
 - Is `prefers-reduced-motion` respected?
 - Are timeouts extensible (if any)?
 
-### Output: `.brisar/clarisse/accessibility-checklist.md`
+### Output: `.bb/<slug>/accessibility-checklist.md`
 
 ````markdown
 # Accessibility checklist: <project>
@@ -337,14 +339,14 @@ choice, not a board mistake.
 - <item>, suggested fix: <action>
 - <item>, suggested fix: <action>
 
-## For session.yaml
+## Its frontmatter
 
 ```yaml
-clarisse:
-  accessibility:
-    wcag_aa_status: <pass|fail|partial|not-assessed>
-    mode: inline | delegated
-    blockers: [<id1>, <id2>]
+---
+wcag_aa_status: <pass|fail|partial|not-assessed>
+mode: inline | delegated
+blockers: [<id1>, <id2>]
+---
 ```
 ````
 
@@ -361,7 +363,7 @@ clarisse:
 - `<design_context_path>/tokens.md` + `components.md`, or, on a canvas medium, the DS section of the design brief (same source, read one step earlier)
 - `<design_path>/<surfaces[].file>` (visual direction written by brisar Phase 4, in `.bb/<slug>/`) and/or the chosen direction in `gate.design_brief`. **The brief is the richer input when both exist**
 - The artifact, via the reader for `medium.chosen`
-- `.brisar/session.yaml` (all sections, uses recorded decisions and `tarsila.deviations[]`)
+- `.bb/<slug>/brief-design.md` (the decisions recorded through the journey) and `.bb/<slug>/develop-notes.md` (the `deviations[]`)
 
 ### Output structure
 
@@ -397,7 +399,7 @@ the checklist.
 The delta is a **proposal**, not an edit. Writing the spec is `/bb:spec`'s job, and the gate offers
 it.
 
-### Output: `.brisar/clarisse/handoff.md`
+### Output: `.bb/<slug>/handoff.md`
 
 ```markdown
 # Handoff: <project>
@@ -466,21 +468,21 @@ Summary (auto-extracted):
 
 - WCAG AA status: <pass|fail|partial>
 - Items to guarantee at merge: <the blockers from accessibility-checklist.md>
-- Reference doc: `.brisar/clarisse/accessibility-checklist.md`
+- Reference doc: `.bb/<slug>/accessibility-checklist.md`
 
 ## CI / code-review
 
 - Workflow `inspira-legal/code-review` present: <yes|no>
 - If not: we suggest running `/bb:review-setup` before merging PRs in this repo.
 
-## For session.yaml
+## Its frontmatter
 
 ```yaml
-clarisse:
-  handoff:
-    completeness: <high|med|low>
-    surfaces_documented: <N>
-    ci_code_review_present: <bool>
+---
+completeness: <high|med|low>
+surfaces_documented: <N>
+ci_code_review_present: <bool>
+---
 ````
 
 ```
@@ -489,6 +491,6 @@ clarisse:
 
 **Mental recap before closing the phase:**
 - Each mode generated its artifact.
-- session.yaml has `clarisse:` complete with `status`, `ran_modes`, `next_action`.
+- Each artifact carries its own frontmatter, and the brief says which modes ran and what the next action is.
 - End at the Step 3 gate of `phase-deliver.md` (accessibility audit / spec / stop here), suggest, never invoke.
 ```

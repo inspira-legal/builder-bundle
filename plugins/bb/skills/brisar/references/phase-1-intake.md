@@ -6,15 +6,15 @@ The previous version asked 6-10 questions just to reach "now I'll frame it." Thi
 
 Before branching by the profile, brisar checks whether the builder mentioned **specific intent for a later stage of the trilha**. When there's a clear signal, it shortens the pipeline: jumps to the right phase (or suggests /bb:discover) instead of running the full intake + scaffold.
 
-It reads `intent.raw_prompt` (what the builder typed) + `preflight.product.detected` + the presence of `.brisar/session.yaml` in the cwd.
+It reads what the builder typed + `preflight.product.detected` + whether the repo already carries a journey (`.bb/*/brief-design.md`).
 
 ### Shortcut matrix
 
 | Signal in raw_prompt                                                                                                                       | Cwd                                                 | Shortcut          | Target                   | What brisar does                                                                                                                         |
 | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- | ----------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| "one screen", "design only", "quick prototype", "design X", "build screen Y"                                                               | already-scaffolded repo (has `.brisar/config.yaml`) | `develop-direct`  | Develop phase (internal) | Skips intake. Writes `intent.shortcut: develop-direct` to session.yaml. After confirmation, jumps to `references/phase-develop.md`.      |
-| "review this design", "I need docs for the dev", "before merging", "close the deliver", "prepare the PR"                                   | repo with surfaces in `src/` or `<surface>.html`    | `deliver-direct`  | Deliver phase (internal) | Skips intake. Writes `intent.shortcut: deliver-direct`. After confirmation, jumps to `references/phase-deliver.md`.                      |
-| "shape it", "mature the problem", "is it worth it", "validate the market", "is there demand", "I need to cut scope", "prioritize features" | any                                                 | `discover-direct` | `/bb:discover`           | Skips intake. Writes `intent.shortcut: discover-direct`. Suggests `/bb:discover` (it runs its own intake) and STOPS, never auto-invokes. |
+| "one screen", "design only", "quick prototype", "design X", "build screen Y"                                                               | already-scaffolded repo (has `design-context/`)     | `develop-direct`  | Develop phase (internal) | Skips intake. After confirmation, jumps to `references/phase-develop.md`.                                                                |
+| "review this design", "I need docs for the dev", "before merging", "close the deliver", "prepare the PR"                                   | repo with surfaces in `src/` or `<surface>.html`    | `deliver-direct`  | Deliver phase (internal) | Skips intake. After confirmation, jumps to `references/phase-deliver.md`.                                                                |
+| "shape it", "mature the problem", "is it worth it", "validate the market", "is there demand", "I need to cut scope", "prioritize features" | any                                                 | `discover-direct` | `/bb:discover`           | Skips intake. Suggests `/bb:discover` (it runs its own intake) and STOPS, never auto-invokes.                                            |
 | "I want to start", "new project", "scaffold it", "screen X in brand Y" (default)                                                           | any                                                 | none              | (follows normal flow)    | Variant branch below.                                                                                                                    |
 
 ### When the shortcut fires
@@ -47,7 +47,7 @@ It reads `intent.raw_prompt` (what the builder typed) + `preflight.product.detec
    }
    ```
 
-3. If "Yes" → writes `intent.shortcut` and a minimal session.yaml. For `develop-direct`/`deliver-direct`, load the target phase file and continue there. For `discover-direct`, suggest `/bb:discover <idea>` and STOP.
+3. If "Yes" → the shortcut is taken. For `develop-direct`/`deliver-direct`, load the target phase file and continue there; the phase opens the brief when it needs one. For `discover-direct`, suggest `/bb:discover <idea>` and STOP.
 4. If "No" → continues normally to Step 0b (variant branch).
 
 ### Why confirmation is mandatory
@@ -56,7 +56,7 @@ A heuristic-detected shortcut may be wrong. Asking for confirmation costs 1 turn
 
 ### When NOT to fire the shortcut (even with a signal)
 
-- No `.brisar/config.yaml` in cwd AND signal is `develop-direct`: scaffold is a prerequisite for the Develop phase. Falls into the normal flow; the Phase 5 gate offers Develop at the end.
+- No `design-context/` in cwd AND signal is `develop-direct`: scaffold is a prerequisite for the Develop phase. Falls into the normal flow; the Phase 5 gate offers Develop at the end.
 - `reads_code` is false, or `brand.workflow == framer-harpa`: skip shortcuts. These paths have operational or brand-first intake that doesn't combine well with short-circuit.
 
 ---
@@ -299,14 +299,14 @@ Print a short intro:
 
 ### How to read (operational)
 
-Map to the session.yaml schema:
+What each answer settles:
 
-- Question #1 → `intent.raw_prompt` + derived `slug`
-- Question #2 → `intent.audience` (new field: `internal-team | internal-lawyers | client | mixed`)
-- Question #3 → `intent.problem_statement`
-- Question #4 → `brand.name` (or `deferred` if "not sure")
-- Question #5 → `shaping.appetite` mapped: "this week" → `1 week`, "~2 weeks" → `2 weeks`, "no set deadline" → `undefined`
-- Question #6 → `intent.scale_signal`: "yes, engineering picks it up" → `will-scale`, "no, only a demo" → `exploration`, "not sure" → `exploration`
+- Question #1 → the prompt in the builder's words, and the slug derived from it
+- Question #2 → the audience: internal team, internal lawyers, client, or mixed
+- Question #3 → the problem statement
+- Question #4 → the brand (or deferred, if "not sure")
+- Question #5 → the appetite: "this week" → 1 week, "~2 weeks" → 2 weeks, "no set deadline" → undefined
+- Question #6 → the scale signal: "yes, engineering picks it up" → will-scale, the other two → exploration
 
 **Always force:**
 
@@ -589,39 +589,25 @@ The combination `artifact.fidelity` + `intent.scale_signal` feeds Phase 2 (matur
 
 Brief echo with the 3 pieces of data together: _"Got it, hi-fi standalone prototype, 1 week of exploration. Going to the gate."_
 
-## State to persist
+## Open the brief
 
-At the end of Phase 1, write a partial `.brisar/session.yaml`:
+Phase 1 is where the slug gets confirmed, so it is where the first write happens. Everything
+answered above was held in context until here. Open `.bb/<slug>/brief-design.md`:
 
 ```yaml
-version: 1
+---
 status: in-progress
-created_at: <ISO>
-current_phase: phase-2
-
-intent:
-  type: new
-  confidence: high
-  scale_signal: exploration # exploration | will-scale | commitment
-  raw_prompt: "<what the builder typed in P1>"
-  slug: "<derived slug>"
-
-brand:
-  name: Lexflow
-  source: registry
-  design_md_path: brand/lexflow/DESIGN.md
-
-artifact:
-  fidelity: hi-fi
-  hosting: embedded
-
-shaping:
-  appetite: "1 week"
-
-surfaces_provisional:
-  - search
-  - results
-  - empty
+phase: research
+round: 1
+slug: <slug>
+created: <ISO>
+---
 ```
 
-`surfaces_provisional` is a list inferred from the prompt, not confirmed. Phase 4 will refine it. Useful for the gate to decide context.
+Under it, in prose (`references/brief.md` has the sections): what the builder asked for in
+their own words, who it is for, the brand and where it came from, the fidelity and where the
+artifact will live, the appetite, and whether this is exploration or something engineering
+picks up later. The provisional surfaces go in the same opening, as a list inferred from the
+prompt, not confirmed: Phase 4 refines it, and the gate reads it to decide how much context
+it needs.
+

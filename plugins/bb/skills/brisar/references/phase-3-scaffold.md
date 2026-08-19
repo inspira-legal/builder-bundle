@@ -37,7 +37,7 @@ Phase 1 derived a slug (e.g. `lexflow-semantic-search`). Before creating files, 
 }
 ```
 
-If the slug or path changed, update session.yaml.
+If the slug or path changed, rename the task folder and update the brief's `slug`.
 
 Additional check: if the destination folder already exists and is not empty, ask if it's OK to overwrite or if they want another name.
 
@@ -59,11 +59,9 @@ Create:
 │   ├── index.css
 │   └── components/
 │       └── (empty for now; surfaces will populate)
-├── design-context/
-│   ├── tokens.md
-│   └── components.md
-└── .brisar/
-    └── config.yaml
+└── design-context/
+    ├── tokens.md
+    └── components.md
 ```
 
 The visual direction does **not** live here: Phase 4 writes it into the task folder, `.bb/<slug>/`, next to the spec (plugin-level `references/spec-state.md`).
@@ -71,7 +69,7 @@ The visual direction does **not** live here: Phase 4 writes it into the task fol
 Command:
 
 ```bash
-mkdir -p <slug>/src/components <slug>/design-context <slug>/.brisar
+mkdir -p <slug>/src/components <slug>/design-context
 ```
 
 ## Step 3: file templates
@@ -267,7 +265,7 @@ pnpm dev
 
 - `src/`: React code. Still empty; the surfaces will fill it.
 - `design-context/`: the source for /bb:brisar's Develop phase. Don't edit it by hand unless you know what you're doing.
-- `.brisar/config.yaml`: brisar's config. The Develop phase reads this file to know where the tokens and the visual direction are.
+The Develop phase finds both by convention: `design-context/` at this folder's root, and the visual direction in the task folder.
 
 The visual direction for each surface lives in `.bb/<slug>/`, next to the spec. Read it before designing.
 
@@ -361,33 +359,15 @@ Edit this file, adding `## Custom added in this project` with the component.
 When you run `/bb:brisar` in feedback mode (future), the additions become seeds for the DS.
 ```
 
-## Step 5: .brisar/config.yaml
+## Step 5: record the scaffold in the brief
 
-```yaml
-version: 1
-brisar_version: "2.0.0"
-slug: "<slug>"
-created_at: <ISO>
+No config file: the paths are derived. `design-context/` is at the root of the folder
+this phase just created, and the visual direction is `.bb/<slug>/design.md`, from the
+slug. The brand and the DS path stay in context for this session, and the brief records
+which brand the scaffold was built on.
 
-ds_path: "<absolute path of the DS, or null if not-found>"
-brand:
-  name: "<brand.name>"
-  source: "<brand.source>"
-  design_md_path: "<brand.design_md_path absolute, or null>"
-
-# Path of design-context: THIS IS WHERE THE DEVELOP PHASE WILL LOOK.
-design_context_path: "<slug>/design-context/"
-
-# Task folder (.bb/<slug>/): Phase 4 fills it in when it writes the direction.
-design_path: null
-
-# Surface tracking: one entry per surface file generated in Phase 4.
-surfaces: []
-```
-
-## Step 6: update .brisar/session.yaml
-
-Move from `current_phase: phase-3` to `current_phase: phase-4` (which will generate design directions). Don't mark `completed` yet, only after Phase 4.
+Set the brief's frontmatter `phase: design-direction`. Don't mark `status: completed`
+yet, only after Phase 4.
 
 ## Stack variants
 
@@ -404,7 +384,7 @@ Instead of Vite + App.tsx, use:
 Don't create a new folder. Instead:
 
 - Ask which folder of the app is the entry point.
-- Create only `design-context/` and `.brisar/` at the root of the existing app (the design direction goes to `.bb/<slug>/` as usual).
+- Create only `design-context/` at the root of the existing app (the design direction goes to `.bb/<slug>/` as usual).
 - Create `src/components/<slug>/` for the feature's components.
 - Don't touch existing `package.json`, `vite.config`, `index.html`.
 
@@ -428,10 +408,7 @@ Warning: embedded is riskier. Confirm with the builder before touching any file 
 ├── <surface-3>.html
 ├── styles.css                       ← brand tokens in :root + inline components
 ├── HANDOFF-DEV.md                   ← instructions for the technical team to continue
-├── README.md                        ← everyday language. How to open, how to show
-└── .brisar/
-    ├── config.yaml
-    └── session.yaml
+└── README.md                        ← everyday language. How to open, how to show
 ```
 
 The written direction for each screen lands in `.bb/<slug>/` (Phase 4), same as the standard variant.
@@ -442,10 +419,10 @@ DO NOT create: `package.json`, `vite.config.ts`, `tsconfig.json`, `src/`, `node_
 
 Same Step 1 as the standard scaffold. Confirms slug and where to create the folder.
 
-#### Step 2: create directories
+#### Step 2: create the folder
 
 ```bash
-mkdir -p <slug>/.brisar
+mkdir -p <slug>
 ```
 
 #### Step 3: HTML templates
@@ -708,46 +685,15 @@ This prototype is for validating the idea. **It is not the final product.** The 
 The spec for each screen (the text explaining what it does) lives in `.bb/<slug>/`, one folder up.
 ```
 
-#### Step 4: `.brisar/config.yaml` (variant)
+#### Step 4: record the prototype in the brief
 
-```yaml
-version: 1
-brisar_version: "2.0.0"
-slug: "<slug>"
-created_at: <ISO>
-mode: prototype-hosted # <-- differentiates from the normal variant
+Same as the standard variant, with one difference to state in prose: this is a
+prototype-hosted artifact, so there is no `design-context/` and the Develop phase is not
+used on this path. Which HTML file each surface landed in is Phase 4's business, and it
+goes into `design.md`'s own frontmatter beside the direction it describes.
 
-ds_path: "<absolute path of the DS, or null>"
-brand:
-  name: "<brand.name>"
-  source: "<brand.source>"
-  design_md_path: "<absolute path, or null>"
-
-# The Develop phase is NOT used on this path: no canonical design_context_path needed.
-# But we keep it for compatibility in case the builder regenerates later in Vite mode.
-design_context_path: null
-
-# Task folder: filled by Phase 4, same as the standard variant.
-design_path: null
-
-surfaces:
-  - name: <surface-1>
-    file: null # filled by Phase 4. It decides design.md vs design/<name>.md
-    html: <surface-1>.html # relative to the prototype folder
-    state: drafted
-```
-
-#### Step 5: update session.yaml
-
-Add:
-
-```yaml
-artifact:
-  fidelity: prototype-hosted
-  hosting: prototype-hosted
-```
-
-`current_phase: phase-4` (same transition as the standard variant).
+Set the brief's frontmatter `phase: design-direction` (same transition as the standard
+variant).
 
 #### DO NOT use in this variant
 
