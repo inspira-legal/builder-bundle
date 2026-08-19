@@ -102,8 +102,8 @@ them. The format is
 
 ## Both names read the same
 
-The section names are English, and a spec written before the rename carries the
-Portuguese one. **Every reader takes both**, one pair per section:
+A spec written before the rename carries the older section names.
+**Every reader takes both**, one pair per section:
 
 | written           | older spelling      | written         | older spelling |
 | ----------------- | ------------------- | --------------- | -------------- |
@@ -116,9 +116,9 @@ Portuguese one. **Every reader takes both**, one pair per section:
 The task line's dependency field is one field under two spellings, `dep:` and
 `depende:`, and reads the same either way.
 
-**Writing is not symmetric.** A new section is written in English; a section already
-on disk keeps the spelling it has. The lint answers a Portuguese heading with `W003`
-and the English name to write, and the file stays valid.
+**Writing is not symmetric.** A new section is written under the name in the left
+column; a section already on disk keeps the spelling it has. The lint answers an older
+heading with `W003` and the name to write, and the file stays valid.
 
 A half-migrated spec can carry **both** names for the same thing, `## Tasks` and
 `## Tarefas` in one file. Read both and treat them as one section, in file order: the

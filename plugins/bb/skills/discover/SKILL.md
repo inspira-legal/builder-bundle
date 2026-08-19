@@ -27,7 +27,7 @@ Read the invocation and any existing spec before asking anything:
 
 - **Fresh pain or idea** → full pipeline, Phase 1 then Phase 2.
 - **Spec already carries `## Problem` / `## Hypothesis`** (an earlier discover
-  run, or written by hand. The English `## problem` / `## hypothesis` counts the
+  run, or written by hand. The lowercase `## problem` / `## hypothesis` counts the
   same) → echo the trio in one line and go straight to Phase 2.
 - **A specific fit ask** ("what do we cut", "prioritize this", "is it worth building")
   → Phase 2, that mode only; if no framed problem exists, suggest Phase 1 once

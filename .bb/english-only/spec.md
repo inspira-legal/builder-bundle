@@ -43,6 +43,15 @@ about output language is exactly what the model does on its own.
   ` #` inside it. Both break the parse or silently truncate the value.
 - **The new English prose follows `doc-style.md`**: no dash, sentence case in
   headings, one idea per list item.
+- **No instruction names a language.** A style rule describes how a sentence is built,
+  which holds in whatever language the sentence is written in, so `doc-style.md` drops
+  the spelling rule, scopes itself to every sentence bb writes, and states the outcome
+  where it used to prescribe a literal wording. `.claude/CLAUDE.md`,
+  `hooks/operating-context.md`, `write-readme/SKILL.md` and `review-setup`'s discovery
+  table stop qualifying the prose they govern. The compat rule keeps both spellings
+  and names them older and current, which is what the reader needs, so `lint_spec.py`
+  carries `RENAMED_SECTIONS`. The scaffold templates take `lang="<locale>"`, the same
+  placeholder form as the `<slug>` beside it.
 - **A figure of speech has to name a mechanism the code has.** `spine` for the fixed
   sections and `ruler` for this page name nothing, so they become what they are, and
   `doc-style.md` states the rule in that form. `safety valve`, `gate`, `front` and

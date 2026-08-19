@@ -24,6 +24,18 @@ and every line that ordered an output language was deleted instead of reversed.
   landed specs in `.bb/` are English now. What an entry quotes from the version it
   describes stays as written: an old section name, a deleted filename, an old option
   label, a trigger phrase the user types.
+- **A style rule names no language.** `doc-style.md` scoped itself to "every English
+  sentence" and carried a spelling rule for one language, which is not what the page
+  does: its rules are about how a sentence is built, so they hold in whatever language
+  the reader arrived in. The spelling rule is gone, the date format and the pointer to
+  a document's subsections became the outcome they buy instead of a literal wording,
+  and so did the serial comma. `.claude/CLAUDE.md`, `hooks/operating-context.md`,
+  `write-readme/SKILL.md` and the discovery table stopped qualifying the prose they
+  govern. The compat rule for the section names points at the older spelling and the
+  current one instead of at two languages, in `spec-state.md`, `spec-format.md` and in
+  `lint_spec.py` (`RENAMED_SECTIONS`, and the `W003` message with it). The scaffold
+  templates carry `lang="<locale>"`, a placeholder like the `<slug>` next to it, in
+  place of a locale nobody chose.
 - **A figure of speech has to name a mechanism the code has.** `spine` for the fixed
   sections and `ruler` for a style page named nothing, so they became what they are,
   and `doc-style.md` states the test. `safety valve`, `gate`, `front` and `trilha`

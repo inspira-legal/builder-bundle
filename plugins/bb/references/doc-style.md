@@ -2,7 +2,7 @@
 
 ## Where this applies
 
-Every English sentence this plugin writes. That is two bodies of prose: the instruction
+Every sentence this plugin writes. That is two bodies of prose: the instruction
 agents read (`SKILL.md` bodies, `references/`, the repo `README.md`, `.claude/CLAUDE.md`) and
 the documents a skill generates for another repo (the README from `/bb:write-readme`, the
 CODE_REVIEW_GUIDE from `/bb:review-setup`, the report templates that live inside fenced
@@ -10,6 +10,8 @@ blocks). A fenced block that is an output template is prose bb writes outward, s
 this page too.
 
 This page states every rule bb writes by, so writing to it is a local read, never a fetch.
+The rules govern how a sentence is built, so they hold in whatever language the sentence
+is written in.
 
 ## Precedence
 
@@ -32,8 +34,8 @@ or a comma.
 
 ## Voice and tone
 
-- Address the reader as "you", and name who acts. "Run the script", "the hook injects the
-  context".
+- Address the reader in the second person, and name who acts. "Run the script", "the hook
+  injects the context".
 - Put the condition before the instruction: "To land on a protected branch, open a PR."
 - Write for a reader in their second language: short sentences, one idea each, ordinary words
   in place of jargon.
@@ -43,7 +45,6 @@ or a comma.
 - Name each thing by what it does, and write the literal sentence. A figure of speech holds
   only where it names a mechanism the code has, like the safety valve `/bb:implement` fires,
   and a reader who does not know the figure still has to know what to do.
-- Use American spelling.
 - Call each thing by the name it already has in the code or in the repo: the file, the
   function, the branch, the PR, the `x` field. Quote that name exactly as written, because
   half of what a name is worth is that a search finds it.
@@ -59,7 +60,7 @@ or a comma.
 - One h1 per document, and each level follows the one above it.
 - Write headings in plain words: a heading is what a search matches and what a table of
   contents shows.
-- Where a section introduces its subsections, refer to them as "the following sections".
+- Where a section introduces its subsections, open it with a line that points at them.
 - Sentence case reaches past headings: an option label, a gate question, and a report
   line all run in it, and identifiers keep the case the code gives them wherever they
   sit, including the first word.
@@ -96,13 +97,14 @@ or a comma.
 
 - Spell out zero through nine in prose. Use numerals from 10 up, and for every version,
   count, and measurement.
-- Write a date unambiguously: `2026-08-18`, or "August 18, 2026".
+- Write a date in the form that reads the same everywhere: `2026-08-18`.
 - Put a space between a number and its unit, and use the unit the tool prints.
 - A number range keeps its en dash: `3–5 bullets`, `0.1–0.3`, `rungs 1–3`.
 
 ## Punctuation
 
-- Serial comma in a list of three or more: "the finder, the verifier, and the gate".
+- Punctuate a list of three or more so the last two members do not read as one:
+  "the finder, the verifier, and the gate".
 - A colon introduces what explains the clause before it. A semicolon joins two clauses that
   could stand alone.
 - Quotation marks go around a phrase quoted verbatim, with the source named.

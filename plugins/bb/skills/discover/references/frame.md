@@ -35,7 +35,7 @@ what still needs validation before it becomes code:
 ## Capture
 
 Write two sections into the spec (location per the spec-state contract), keeping
-the Portuguese names when the spec already carries them:
+the older names when the spec already carries them:
 
 ```
 ## Problem

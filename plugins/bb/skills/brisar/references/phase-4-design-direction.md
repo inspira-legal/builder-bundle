@@ -128,7 +128,7 @@ For critical surfaces, also consider: focused, hover, disabled, selected.]
 
 Examples:
 
-- Place the search input centered, taking 60% of the width, with a pt-BR placeholder.
+- Place the search input centered, taking 60% of the width, with a placeholder in the product's language.
 - Below the input, 3 chips with recent searches (use Tag / Pill), max-width 320px.
 - When focusing the input, expand height by 8px and show a tip line ("Try searching for...").
 

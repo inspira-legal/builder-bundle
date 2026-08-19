@@ -48,9 +48,9 @@ slot.
 `## Behavior` and `## Tasks` are what Large work needs; a Medium spec can carry those
 inline and skip them, which is why the lint only warns on their absence.
 
-A spec written before the rename keeps its Portuguese section names and still builds:
-both names resolve everywhere, and the lint answers with `W003` naming the English one
-to write.
+A spec written before the rename keeps its older section names and still builds: both
+names resolve everywhere, and the lint answers with `W003` naming the current one to
+write.
 
 ## The rule that does the most work
 
@@ -129,7 +129,7 @@ python3 plugins/bb/skills/spec/scripts/lint_spec.py .bb/<slug>/spec.md
 | E005 | error   | a row whose cell count differs from the header                      |
 | W001 | warning | no `## Behavior`                                                    |
 | W002 | warning | no `## Tasks`                                                       |
-| W003 | warning | a section named in Portuguese; the message carries the English name |
+| W003 | warning | a section under its older name; the message carries the current one |
 | W004 | warning | no `## Out of scope`                                                |
 
 Whether the document is too long, repeats itself, or recounts the conversation is not a

@@ -23,7 +23,7 @@ plugins/bb/
 │   ├── inject_operating_context.py     # SessionStart hook script
 │   └── operating-context.md            # the injected operating frame (edit to tune)
 ├── references/                        # plugin-level docs (not skill-scoped)
-│   ├── doc-style.md                    # the style rules for every English sentence bb writes
+│   ├── doc-style.md                    # the style rules for every sentence bb writes
 │   ├── handoff-gate.md                 # the one convention for end-of-skill gates (+ AskUserQuestion rationale)
 │   ├── confidence-and-steelman.md      # shared reasoning protocols (think, challenge)
 │   ├── spec-state.md                   # the .bb/<slug>/ folder contract
@@ -99,9 +99,10 @@ decisions.
 
 ### Writing guidelines
 
-- The English prose of this repo, and every English document a skill generates,
-  follows `plugins/bb/references/doc-style.md`, which states every rule it asks for
-  instead of pointing at a guide on the web.
+- The prose of this repo, and every document a skill generates, follows
+  `plugins/bb/references/doc-style.md`, which states every rule it asks for instead of
+  pointing at a guide on the web. The rules name no language: they govern how a
+  sentence is built, in whatever language the reader arrived in.
 - Keep SKILL.md focused on the workflow and decision-making logic
 - Keep guidance positive and lean by default; enforce irreversible hazards with
   capability scoping, not prose. Don't write catalogs of anti-patterns / "DO NOT"
@@ -147,9 +148,9 @@ alone. Skills reference that file instead of restating the contract.
 The spec's **form** belongs to `plugins/bb/skills/spec/references/spec-format.md`:
 a free top half (opening plus whatever sections the problem asks for) over a fixed
 set (`Decisions`, `Behavior`, `Tasks`, `Out of scope`, `Open`), fixed because each
-member has a reader. A spec written before the rename keeps its Portuguese section
+member has a reader. A spec written before the rename keeps its older section
 names and still builds: both names resolve everywhere, and the lint answers `W003`
-naming the English one. `skills/spec/scripts/lint_spec.py` enforces the
+naming the current one. `skills/spec/scripts/lint_spec.py` enforces the
 mechanical half of that and runs in CI over every `.bb/*/spec.md`.
 
 ## Commits

@@ -23,7 +23,7 @@ Always required: reach alignment, **close the load-bearing technical decisions, 
 
 ## Read upstream intent first
 
-If the spec for this slug already carries `## Problem` / `## Hypothesis` / `## Fit` / `## Cuts` (seeded by `/bb:discover`, or under the Portuguese names on a spec written before the rename), **read them before drafting**: they're the intent this work serves. The problem and success signal anchor the `why`, the appetite bounds the scope, and `## Fit` / `## Cuts` already settle what's in and what was deliberately dropped, so don't re-litigate a cut the user made upstream, and don't ask gray-area questions discover already answered. Echo the framing in one line so the user sees it carried through, then develop the design on top of it. No upstream sections is fine; spec from the one-liner as usual.
+If the spec for this slug already carries `## Problem` / `## Hypothesis` / `## Fit` / `## Cuts` (seeded by `/bb:discover`, or under the older names on a spec written before the rename), **read them before drafting**: they're the intent this work serves. The problem and success signal anchor the `why`, the appetite bounds the scope, and `## Fit` / `## Cuts` already settle what's in and what was deliberately dropped, so don't re-litigate a cut the user made upstream, and don't ask gray-area questions discover already answered. Echo the framing in one line so the user sees it carried through, then develop the design on top of it. No upstream sections is fine; spec from the one-liner as usual.
 
 ## The loop
 

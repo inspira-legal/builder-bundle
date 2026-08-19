@@ -33,7 +33,7 @@ builder.
 Before any question, read `.brisar/session.yaml` in full:
 
 - **`gate.discover_brief`** (`.bb/<slug>/spec.md` with `## Problem` / `## Hypothesis` /
-  `## Fit` / `## Cuts`, or the Portuguese names on a spec written before the rename).
+  `## Fit` / `## Cuts`, or the older names on a spec written before the rename).
   This is the **upstream contract**. The research answers _how should
   this be?_; the spec answered _is it worth building, and what did we cut?_ Load it:
   the hypothesis tells you what the research must test, and the cuts tell you what **not** to

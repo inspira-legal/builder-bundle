@@ -109,7 +109,7 @@ a new surface, or (c) start from scratch archiving the old session.
 If `status: bootstrapped-to-discover`: the maturity gate fired earlier and the
 builder went to /bb:discover. Look for the resulting spec (the spec-state
 contract, plugin-level `references/spec-state.md`: `.bb/<slug>/spec.md`
-carrying `## Problem` / `## Fit`, or the Portuguese names on an older spec);
+carrying `## Problem` / `## Fit`, or the older names on a previous spec);
 confirm with the builder which spec it is if
 more than one matches. Record its path under `gate.discover_brief`, let the
 appetite and cuts inform fidelity/scope, and resume at the **Research phase**.

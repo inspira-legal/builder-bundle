@@ -144,7 +144,7 @@ export default defineConfig({
 
 ```html
 <!doctype html>
-<html lang="pt-BR">
+<html lang="<locale>">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -454,7 +454,7 @@ mkdir -p <slug>/.brisar
 
 ```html
 <!doctype html>
-<html lang="pt-BR">
+<html lang="<locale>">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -492,7 +492,7 @@ Phase 3 creates empty stubs; Phase 4 populates with content from the visual dire
 
 ```html
 <!doctype html>
-<html lang="pt-BR">
+<html lang="<locale>">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

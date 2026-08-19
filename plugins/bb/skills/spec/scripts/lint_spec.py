@@ -13,7 +13,7 @@ import re
 import sys
 
 # (name to write, the spellings that resolve): a spec written before the rename still
-# parses, and the message cites the English name.
+# parses, and the message cites the name to write.
 REQUIRED_SECTIONS = (
     ("Decisions", ("decisions", "decisões")),
     ("Open", ("open", "em aberto")),
@@ -33,8 +33,8 @@ RECOMMENDED_SECTIONS = (
         "it is the boundary the build stays inside",
     ),
 )
-# A Portuguese section still parses; W003 carries the English name to write instead.
-TRANSLATED_SECTIONS = {
+# An older section name still parses; W003 carries the name to write instead.
+RENAMED_SECTIONS = {
     "decisões": "Decisions",
     "comportamento": "Behavior",
     "tarefas": "Tasks",
@@ -171,10 +171,10 @@ def check_body(lines):
             seen.add(name)
             if name in DEAD_SECTIONS:
                 yield i, "E003", DEAD_SECTIONS[name].format(raw=raw)
-            elif name in TRANSLATED_SECTIONS:
+            elif name in RENAMED_SECTIONS:
                 yield i, "W003", (
-                    f"`## {raw}` is Portuguese: the name to write is "
-                    f"`## {TRANSLATED_SECTIONS[name]}`; the file stays valid"
+                    f"`## {raw}` is the older name for this section: the name to write "
+                    f"is `## {RENAMED_SECTIONS[name]}`; the file stays valid"
                 )
 
     if table:

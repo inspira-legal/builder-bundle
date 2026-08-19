@@ -224,7 +224,7 @@ Old sessions may carry `nise:`/`esperanca:` sections, a `shaping:` block, and st
 
 ### Sessions written before 2.13.0
 
-The medium token used to be recorded in Portuguese. A `session.yaml` or `config.yaml` carrying
+The medium token used to be recorded under a different name. A `session.yaml` or `config.yaml` carrying
 `código` in `medium.chosen`, `medium.history`, `tarsila.medium` or `clarisse.medium` reads as
 `code`; write `code` back on the next save. Same for a `divergência`/`reconciliação` key: read it
 as `divergence`/`reconciliation`.
