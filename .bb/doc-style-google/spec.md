@@ -160,7 +160,7 @@ Caminho principal:
 - [x] **8. Travessão nas references do plugin, nos hooks e nos agents**: 127 em 12 arquivos,
       incluindo o `vocabulario.md` e o `operating-context.md`
       → behavior 7 · depende: 1 · verifica: grep zerado
-- [ ] **9. Travessão na doc do repo**: 41 em 5 arquivos: `README.md` 18, `.claude/CLAUDE.md`
+- [x] **9. Travessão na doc do repo**: 41 em 5 arquivos: `README.md` 18, `.claude/CLAUDE.md`
       20, a mensagem de echo do `validate.yml` e os 2 `.json` de plugin
       → behavior 7 · depende: 2 · verifica: grep zerado
 - [ ] **10. Meia-risca e travessão sem espaço**: as 33 e os 54 em escopo, com o token
