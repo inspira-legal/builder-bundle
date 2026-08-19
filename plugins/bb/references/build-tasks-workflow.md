@@ -76,6 +76,11 @@ stringified one):
 satisfies `dep:`. The agents re-read the spec anyway: `args` is the plan, the file on
 disk is the truth.
 
+An empty `tasks` is not a run. The skill sees it first and reports nothing to build
+without invoking; the script returns the empty report before stage zero, so a caller that
+invoked anyway does not pay for the project's checks and every reuse note to build no
+task.
+
 ## Stage zero: prove the ground before task 1
 
 One agent per reuse note, plus one checks agent, all inside a single `parallel()`. This

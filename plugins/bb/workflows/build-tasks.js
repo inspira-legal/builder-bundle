@@ -135,6 +135,21 @@ the tree as it is for diagnosis and return the blocker. A \`verify:\` still "pen
 green task: it commits, and the pending rides out to ship.`;
 }
 
+// Nothing unticked is nothing to build, and stage zero exists to prove the ground before
+// task 1: with no task 1 it would run the project's checks and re-read every reuse note for
+// a build that never happens. The skill checks this before invoking; the script holds the
+// line for a caller that did not.
+if (!args.tasks || args.tasks.length === 0) {
+  return {
+    slug: args.slug,
+    built: [],
+    skipped: [],
+    pendingVerify: [],
+    stopped: null,
+    conventions: "",
+  };
+}
+
 phase("Ground");
 
 const reuseNotes = args.reuseNotes || [];
