@@ -422,8 +422,14 @@ Use the registry built in Step 0.3. Construct the options dynamically:
         "question": "How should the identity start?",
         "header": "Custom",
         "options": [
-          { "label": "Start from Inspira", "description": "Clone Inspira's tokens, I adjust later" },
-          { "label": "Start from Lexflow", "description": "Clone Lexflow's tokens, I adjust later" },
+          {
+            "label": "Start from Inspira",
+            "description": "Clone Inspira's tokens, I adjust later"
+          },
+          {
+            "label": "Start from Lexflow",
+            "description": "Clone Lexflow's tokens, I adjust later"
+          },
           { "label": "Start from zero", "description": "Tailwind primitives only, no brand layer" },
           {
             "label": "I have external tokens",

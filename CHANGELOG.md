@@ -505,14 +505,15 @@ the floor ran and the result got worse without anybody knowing by how much.
   map pointed at. It solves the common case (`gh` authenticated, repo not here) and
   covers **tokens and live copy in the i18n**. What it does **not** cover: the
   component inventory with its traps (a component's real semantics needs a source
-  sweep, not two reads) and "how many places use this". **Don't use `gh search
-  code`:** it has a budget of **10 requests per minute**, a subagent fan-out
-  exhausts it in one round, the 403 comes back empty (exactly like "found
-  nothing"), and the `path:` qualifier takes no glob, so a reasonable query returns
-  zero and reads as absence. The tree stays in the normal 5,000/hour budget, comes
-  complete in one call and is greppable locally; when `truncated: false`, **the
-  absence of a path is conclusive**. brisar **does not clone on its own**, because
-  a company's private repo on somebody's computer is the builder's decision.
+  sweep, not two reads) and "how many places use this". **Don't use
+  `gh search code`:** it has a budget of **10 requests per minute**, a subagent
+  fan-out exhausts it in one round, the 403 comes back empty (exactly like "found
+  nothing"), and the `path:` qualifier takes no glob, so a reasonable query
+  returns zero and reads as absence. The tree stays in the normal 5,000/hour
+  budget, comes complete in one call and is greppable locally; when
+  `truncated: false`, **the absence of a path is conclusive**. brisar **does not
+  clone on its own**, because a company's private repo on somebody's computer is
+  the builder's decision.
 - **The packaged fallback stopped passing itself off as a design system.**
   `references/ds/brand/` is a **brand package**: voice, principles, the meaning of
   a color, logo usage. Its `tokens.json` is a brand artifact and is **not** the
