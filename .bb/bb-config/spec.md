@@ -227,7 +227,7 @@ Happy path, first time:
 
 ## Tasks
 
-- [ ] **1. The config contract**: `references/bb-config.md` with the location, the JSON
+- [x] **1. The config contract**: `references/bb-config.md` with the location, the JSON
       schema, the four flags, missing-reads-as-false and unreadable-reads-as-missing
       → behaviors 1, 3, 4, 11 · dep: — · verify: reading
 - [ ] **2. Hook reads and injects**: `inject_operating_context.py` composes the frame
