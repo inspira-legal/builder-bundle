@@ -1,4 +1,4 @@
-# Documentation style: the Google guide as bb writes it
+# Documentation style
 
 ## Where this applies
 
@@ -14,25 +14,27 @@ option labels, reports, and plain chat. This page is English, which is where Ame
 spelling and the word choices below apply. One rule crosses both languages, the dash rule,
 because it is punctuation rather than vocabulary.
 
+This page is the whole ruler. Every rule bb writes by is stated here, so writing to it is a
+local read, never a fetch.
+
 ## Precedence
 
-A project guideline first, this page second, and https://developers.google.com/style for
-anything neither settles. That order is the guide's own. Where a skill states its own
-contract, the contract wins: `/bb:write-readme` keeps all lowercase, its four blocks, and one
-badge per verifiable fact.
+A project guideline first, this page second. Where a skill states its own contract, the
+contract wins: `/bb:write-readme` keeps all lowercase, its four blocks, and one badge per
+verifiable fact. What neither settles goes to the closest rule on this page.
 
-## Two places bb differs from the guide
+## Dashes
 
-1. **Dashes.** The guide allows an em dash without surrounding spaces. Here, where a dash
-   would go, write a comma, a colon, a period, or rewrite the sentence. A colon fits when the
-   second half explains the first, and a period fits when it stands on its own. Two things
-   keep the character: a functional token (inside a command, a regex, a path, a string
-   compared in code, or a value a format reserves, like the `depende: —` a task line carries
-   when nothing blocks it), and a verbatim quote from an outside source, which keeps the
-   punctuation of its source.
-2. **Figurative language.** The guide avoids metaphor because it travels badly in
-   translation. Here it stays: the metaphor is what makes an instruction stick to the agent
-   reading the `SKILL.md`. The rest of the tone chapter applies as written.
+Where a dash would go, write a comma, a colon, a period, or rewrite the sentence. A colon
+fits when the second half explains the first, and a period fits when it stands on its own.
+Two things keep the character: a functional token (inside a command, a regex, a path, a
+string compared in code, or a value a format reserves, like the `depende: —` a task line
+carries when nothing blocks it), and a verbatim quote from an outside source, which keeps the
+punctuation of its source.
+
+Inside YAML frontmatter the colon is unavailable: a `: ` in an unquoted value reads as a
+nested mapping and fails the parse. A dash in a `description:` becomes a period, parentheses,
+or a comma.
 
 ## Voice and tone
 
@@ -44,6 +46,10 @@ badge per verifiable fact.
 - Keep every sentence carrying something the reader can act on. A step reads as an
   instruction and its outcome, and how fast or how simple it is comes across from the step
   itself.
+- Metaphor is welcome where it names a mechanism: the safety valve that fires, the gate that
+  blocks, a tool that is a smaller door and not a closed one. A figure that carries a
+  mechanism is what makes an instruction stick to the agent reading the `SKILL.md`. Where the
+  literal sentence is already short, write the literal sentence.
 - Use American spelling, and call each thing by the name the code gives it.
 
 ## Headings
@@ -99,7 +105,7 @@ badge per verifiable fact.
 - A colon introduces what explains the clause before it. A semicolon joins two clauses that
   could stand alone.
 - Quotation marks go around a phrase quoted verbatim, with the source named.
-- The dash rule above holds everywhere on this page's reach.
+- Dashes follow their own section above, in English and in Portuguese.
 
 ## Accessibility
 

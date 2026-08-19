@@ -1,5 +1,32 @@
 # Changelog
 
+## 2.12.1 (2026-08-18)
+
+**A régua de estilo virou autossuficiente.** O `doc-style.md` apontava a fonte na
+web como quem resolve o que a página não resolve, e isso põe uma leitura na nuvem
+no meio de uma escrita local. Agora a página carrega a régua inteira: quem escreve
+lê um arquivo do repo e nada mais.
+
+### Mudou
+
+- **A citação da fonte saiu**, do título, da precedência e do enquadramento. Não é
+  mais "o guia do Google como o bb escreve", é o estilo do bb, com as regras
+  escritas. A precedência ficou em dois degraus, contrato da skill primeiro e a
+  página depois, e o que nenhum dos dois resolve vai pra regra mais próxima ali
+  mesmo.
+- **As duas divergências viraram regra própria.** Travessão tem seção agora, em vez
+  de existir como diferença em relação a outro guia. A metáfora virou bullet de voz
+  e ganhou o teste que faltava: vale quando nomeia um mecanismo, como a válvula de
+  segurança que dispara ou a porta que é menor e não fechada. Onde a frase literal
+  já é curta, escreve a literal.
+
+### Novo
+
+- **O dois-pontos não serve dentro do frontmatter.** A seção de travessão registra
+  que um `: ` em valor YAML não citado é lido como mapa aninhado e reprova o
+  `validate-frontmatter.ts`. Ali o travessão vira ponto, parênteses ou vírgula. É a
+  regra que faltava por escrito quando a 2.12.0 quebrou o CI em 10 SKILL.md.
+
 ## 2.12.0 (2026-08-18)
 
 **A prosa em inglês do bb ganhou régua, e o travessão saiu.** Os documentos que o
