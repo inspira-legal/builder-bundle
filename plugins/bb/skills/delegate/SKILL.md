@@ -57,11 +57,9 @@ and stop.
    Nothing about how to build is asked, at either end of the chain. The build is
    dispatched: implement's step 3 builds `args`, resolves and proves the script path in
    one `Bash` call, and invokes `Workflow` with `scriptPath`. Its result is the build
-   report. The same three fallbacks apply here, each naming its reason in one line: a
-   refused `scriptPath` becomes an inline `script` off the same file, and no `Workflow`
-   tool, a `Bash` call that can't read the file, or both call shapes refused mean the
-   tasks get built in this context instead. What the script does with the run is the
-   plugin-level `references/build-tasks-workflow.md`.
+   report. The fallback chain, and what the script does with the run, are the
+   plugin-level `references/build-tasks-workflow.md`; it applies here unchanged, with the
+   reason named in one line and again in step 6.
 
    A non-null `stopped` (a stage-zero blocker such as a reuse note pointing at code
    that's gone, a check the run can't execute, or a tree already red; a red task; a
