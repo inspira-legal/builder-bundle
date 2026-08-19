@@ -41,13 +41,15 @@ the next silently.
 
 1. **Every question via `AskUserQuestion`**: rationale in the plugin-root
    `references/handoff-gate.md`.
-2. **Profile calibration BEFORE any content question.** Phase 0 is 1 question
-   with 4 clear options. Skip only if session.yaml already has `profile`.
-3. **Adapt depth and vocabulary to the profile.** Executive receives 5-6
-   questions in operational language, without "scaffold/embed/MCP". Senior
-   receives 2 technical questions. Junior receives 3 questions + narration of
-   each step. Content goes straight to the Framer path with visual direction
-   given (not asked). Persona is a path difference, not a capability ranking.
+2. **The profile is already in the frame.** The SessionStart hook injects it
+   from `~/.claude/bb.config.json`; brisar never asks who is building. With no
+   profile, run `/bb:config` once and continue with the answers.
+3. **Adapt depth and vocabulary to the profile.** Each phase reads the flag it
+   needs: `reads_code` sets how many questions and in what language,
+   `technical_vocabulary` decides whether `scaffold`, `embed` and `MCP` appear
+   at all, `uses_terminal` decides whether a path needs a command, and
+   `step_by_step` decides how a command is written. The contract is the
+   plugin-level `references/bb-config.md`.
 4. **Detect > ask.** Step 0 cross-references cwd with the product registry; a
    match settles brand and hosting without asking. Tooling gaps are detected in
    preflight, not asked. **Exception: the medium is always asked**, assuming it
@@ -143,8 +145,7 @@ Say in one line what you found and where you are resuming, then continue. Re-run
 research over a brief that already exists is the most expensive mistake available
 here, and it destroys the record of rounds the brief was keeping.
 
-If any other partial session exists: offer to resume. If the session has
-`profile.persona_id`: skip Phase 0 (calibration).
+If any other partial session exists: offer to resume.
 
 ### 0.2: detect Brisa DS
 
@@ -176,8 +177,8 @@ in `references/preflight-tooling.md`. Result goes to `session.yaml` under
 `preflight.tooling/mcps`.
 
 **Critical principle:** preflight informs the path, never blocks. If git is
-missing AND persona = senior later, warn and offer to resolve. If MCP unframer
-is missing AND persona = content, fall back to the markdown handoff.
+missing and `uses_terminal` is true, warn and offer to resolve. If MCP unframer
+is missing on the Framer path, fall back to the markdown handoff.
 
 ### 0.5: detect product by cwd
 
@@ -208,16 +209,15 @@ in Step 0**, open only what the current phase needs.
 | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
 | Pre-flight tooling                                                         | Step 0.4                                                                                                                                                                                                                 | `references/preflight-tooling.md`                                        |
 | Product registry                                                           | Step 0.5 + Phase 1                                                                                                                                                                                                       | `references/product-registry.yaml`                                       |
-| **Phase 0, Profile calibration**                                           | After Step 0, BEFORE Phase 1. Skip if session already has profile.                                                                                                                                                       | `references/phase-0-calibration.md`                                      |
-| Phase 1, Lightning intake                                                  | After Phase 0. Depth adapts to persona_id.                                                                                                                                                                               | `references/phase-1-intake.md`                                           |
-| Phase 2, Maturity gate                                                     | After Phase 1, EXCEPT: persona = executive/content, OR `brand.workflow == framer-harpa`                                                                                                                                  | `references/phase-2-gate.md`                                             |
+| Phase 1, Lightning intake                                                  | First phase. Depth adapts to `reads_code`.                                                                                                                                                                               | `references/phase-1-intake.md`                                           |
+| Phase 2, Maturity gate                                                     | After Phase 1, EXCEPT when `brand.workflow == framer-harpa`                                                                                                                                                              | `references/phase-2-gate.md`                                             |
 | **Research, the first diamond**                                            | After Phase 2, before anything is drawn. Skip only for a trivial mechanical change.                                                                                                                                      | `references/phase-research.md`                                           |
 | **Brief, the design contract**                                             | Straight after Research (no gate between them) and again on **every later round** that changes a decision                                                                                                                | `references/brief.md`                                                    |
 | **Diverge, directions in equal standing**                                  | After the Brief gate, when the builder chooses to diverge                                                                                                                                                                | `references/phase-diverge.md`                                            |
 | **Medium, where to explore**                                               | After Diverge, before Phase 3. Also when Develop is reached by shortcut with no `medium` recorded.                                                                                                                       | `references/phase-medium.md`                                             |
-| Phase 3, Scaffold (real files)                                             | After the medium question, and **only** when `medium.chosen == code`. Variant by persona: senior/junior = normal scaffold; executive = `prototype-hosted`                                                                | `references/phase-3-scaffold.md`                                         |
+| Phase 3, Scaffold (real files)                                             | After the medium question, and **only** when `medium.chosen == code`. `uses_terminal` picks the variant: true = normal scaffold; false = `prototype-hosted`                                                              | `references/phase-3-scaffold.md`                                         |
 | Phase 4, Design direction                                                  | After Phase 3. **Skip only the per-surface prose** when a design brief already carries the chosen direction, but Step 4 (recording `design_path` + `surfaces[]`) always runs, because four readers join those two fields | `references/phase-4-design-direction.md`                                 |
-| **Phase Framer-handoff** (replaces Phase 2+3+4 on the Framer/content path) | When `brand.workflow == framer-harpa` OR `persona_id == content`                                                                                                                                                         | `references/phase-framer-handoff.md`                                     |
+| **Phase Framer-handoff** (replaces Phase 2+3+4 on the Framer path)         | When `brand.workflow == framer-harpa`                                                                                                                                                                                    | `references/phase-framer-handoff.md`                                     |
 | Phase 5, Terminal report                                                   | Always, last phase of the direction stage.                                                                                                                                                                               | `references/phase-5-handoff.md`                                          |
 | **Develop**, hi-fi surface construction                                    | Builder asks to build, a shortcut routes here, or the Phase 5 gate chose it                                                                                                                                              | `references/phase-develop.md` (+ `references/develop-modes.md` per mode) |
 | **Deliver**, review, accessibility, handoff                                | Builder asks to review/hand off, a shortcut routes here, or the Develop gate chose it                                                                                                                                    | `references/phase-deliver.md` (+ `references/deliver-modes.md` per mode) |
@@ -235,7 +235,7 @@ in Step 0**, open only what the current phase needs.
 | `<slug>/design-context/tokens.md` + `components.md`                       | Phase 3 (medium `code` only)                                               | Develop (Step 0). On canvas mediums the DS values come from the Research instead                                            |
 | `.bb/<slug>/design.md` (or `design/<surface>.md`)                         | Phase 4                                                                    | builder, Develop, complements the design brief (brief = chosen direction; this = per-surface hierarchy, states, components) |
 | `<slug>/...` (vite, package.json, src/)                                   | Phase 3                                                                    | builder (`pnpm install && pnpm dev`), Develop                                                                               |
-| `<slug>/HANDOFF-DEV.md`                                                   | Phase 3 (persona = executive)                                              | dev who picks up the prototype later                                                                                        |
+| `<slug>/HANDOFF-DEV.md`                                                   | Phase 3 (when `uses_terminal` is false)                                    | dev who picks up the prototype later                                                                                        |
 | `.brisar/tarsila/notes.md`                                                | Develop (optional decisions log)                                           | Deliver, builder                                                                                                            |
 | `.brisar/clarisse/*.md` (design-review, accessibility-checklist, handoff) | Deliver                                                                    | builder, implementing dev                                                                                                   |
 | `.bb/<slug>/spec.md`                                                      | /bb:discover, /bb:spec (outside this skill); **delta proposed by Deliver** | Step 0.1 (bootstrap return), Research, Brief, Diverge, Develop, Deliver                                                     |
@@ -244,10 +244,10 @@ in Step 0**, open only what the current phase needs.
 Each phase reads the whole session.yaml in Step 0 and writes **only its
 section** at the end, cross-awareness without coupling.
 
-### Framer path (Site Institucional / content persona)
+### Framer path (Site Institucional)
 
-When the builder chooses "Site institucional (Framer)" on Question 2 OR
-`persona_id == content` in Phase 0, brisar forks: **does not scaffold**, **does
+When the builder chooses "Site institucional (Framer)" on Question 2, or the
+brand carries `brand.workflow == framer-harpa`, brisar forks: **does not scaffold**, **does
 not create the `<slug>/` folder**, **does not generate design-context/**.
 Instead, it generates `harpa-handoff-<slug>-<date>.md` in the cwd with intent +
 visual direction in Framer idiom + instructions to open Claude Code inside
@@ -311,12 +311,9 @@ Step 0: Pre-flight (silent)
   0.4 → tooling preflight (git, gh, MCPs, incl. paper/figma/pencil/mobbin, both scopes)
   0.5 → detect product by cwd (product-registry.yaml)
 
-Phase 0: Profile calibration (1 question)
-  → executive | builder-senior | builder-junior | content
-
-Phase 1: Lightning intake (max 3 questions, depth by persona)
+Phase 1: Lightning intake (max 3 questions, depth by reads_code)
   → shortcut router may jump straight to Develop, Deliver, or /bb:discover
-  → content: skips straight to Phase Framer
+  → brand.workflow == framer-harpa: skips straight to Phase Framer
 
 Phase 2: Maturity gate (senior/junior only)
   → production/will-scale → suggest /bb:discover or /bb:spec (bootstrap protocol)
@@ -345,7 +342,7 @@ Phase 2: Maturity gate (senior/junior only)
 │   → ≥2 directions, each with all 5 parts (bet·composition·copy·             │
 │     rationale·risk); equal-treatment check BLOCKS the gate                  │
 │   → converge: chosen + runner-up + discarded + pivot condition              │
-│   → recommendation MANDATORY for executive/content personas                 │
+│   → recommendation MANDATORY when reads_code is false                       │
 │   → gate: build / switch path / search further / stop here                  │
 ╰─────────────────────────────────────────────────────────────────────────────╯
 
@@ -365,7 +362,7 @@ Phase Framer (replaces Phase 2-4 on the Framer/content path)
   → harpa-handoff-<slug>-<date>.md, with or without MCP unframer
 
 Phase 5: Terminal report + gate
-  → report what was created, per persona
+  → report what was created, written for the profile
   → gate: continue to Develop / run /bb:discover / stop here
 
 ╭─ SECOND DIAMOND ────────────────────────────────────────────────────────────╮
