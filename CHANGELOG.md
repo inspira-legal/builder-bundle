@@ -1,5 +1,41 @@
 # Changelog
 
+## 2.13.0 (2026-08-18)
+
+**One language: the bundle writes English.** Since `vocabulario-pt` the plugin
+carried two, English instruction bodies over a Portuguese layer for everything the
+user sees. That layer existed to guarantee the user is answered in their language,
+which Claude already does by reading the user, so what the mandate actually bought
+was a second vocabulary to maintain, a reference to police it, and a bilingual
+document every time a gate question sat inside an English step. The layer is gone,
+and every line that ordered an output language was deleted instead of reversed.
+
+### Changed
+
+- **The fixed sections of a spec are English again**: `## Decisions`, `## Behavior`,
+  `## Tasks`, `## Out of scope`, `## Open`, with `dep:` and `verify:` as the task
+  fields. `lint_spec.py` still resolves the Portuguese spelling of every section and
+  of both fields, so a spec written before this still builds; `W003` now names the
+  English one to write instead.
+- **Every sentence the user reads is English**: the 15 skill descriptions, the 2 agent
+  descriptions, the gate questions, the option labels and the report templates, plus
+  the `README.md` (all lowercase kept) and both manifests.
+- **The record was translated with the code.** The 12 CHANGELOG entries and the 8
+  landed specs in `.bb/` are English now. What an entry quotes from the version it
+  describes stays as written: an old section name, a deleted filename, an old option
+  label, a trigger phrase the user types.
+- **A figure of speech has to name a mechanism the code has.** `spine` for the fixed
+  sections and `ruler` for a style page named nothing, so they became what they are,
+  and `doc-style.md` states the test. `safety valve`, `gate`, `front` and `trilha`
+  stay: each names a real mechanism.
+
+### Removed
+
+- **`plugins/bb/references/vocabulario.md`**, and with it the hybrid language policy
+  in `.claude/CLAUDE.md` and `hooks/operating-context.md`. The one rule that survives
+  it, call each thing by the name the code gives it, lives in `doc-style.md`, and its
+  four readers point there.
+
 ## 2.12.1 (2026-08-18)
 
 **The style rules became self-sufficient.** `doc-style.md` pointed at the source on

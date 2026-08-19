@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 created: 2026-08-18
 slug: english-only
 ---
@@ -118,7 +118,7 @@ Happy path, one area at a time, each area a commit:
       figures that name nothing go (rubber-stamp, "that bite", the smaller door), and
       `doc-style.md` states the rule
       → behavior 10 · dep: — · verify: `grep -rniE "spine|ruler|rubber-?stamp|that bite"` outside `.bb/`, `CHANGELOG.md` and `ds/` returns nothing
-- [ ] **11. 2.13.0**: version in the plugin manifest, English `CHANGELOG` entry, spec
+- [x] **11. 2.13.0**: version in the plugin manifest, English `CHANGELOG` entry, spec
       closed
       → behavior 11 · dep: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 · verify: `gh pr checks --watch` green
 
