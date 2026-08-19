@@ -21,7 +21,7 @@ JSON object to stdout:
 The content hash deliberately EXCLUDES the raw async mergeable/UNKNOWN fields and
 keys on the settled signals (verdict, ci state, head sha, priority) so that
 async-mergeability flapping cannot generate phantom "changed" rows. Merge is
-never invoked — every output ends on "you merge".
+never invoked; every output ends on "you merge".
 
 Usage:
   python scan_repo.py --repo owner/name | python render_digest.py --state state.json
@@ -66,8 +66,8 @@ def pr_line(pr: dict[str, Any]) -> str:
     why = "; ".join((verdict.get("reasons") or [])[:2])
     notes = "; ".join((verdict.get("risk_notes") or [])[:1])
     prio = pr.get("priority_label", "")
-    tail = " — ".join(x for x in [why, notes] if x)
-    return f"• <{url}|#{n}> *{pkg}* {delta} · {prio}{(' — ' + tail) if tail else ''}"
+    tail = "; ".join(x for x in [why, notes] if x)
+    return f"• <{url}|#{n}> *{pkg}* {delta} · {prio}{(' · ' + tail) if tail else ''}"
 
 
 def render_slack(scan: dict[str, Any], changed: set[int]) -> str:
@@ -78,7 +78,7 @@ def render_slack(scan: dict[str, Any], changed: set[int]) -> str:
     blocked = [p for p in prs if (p.get("verdict") or {}).get("merge_safe") == NO]
 
     lines: list[str] = []
-    lines.append(f"*{repo}* — maintenance digest ({len(changed)} changed since last run)")
+    lines.append(f"*{repo}*: maintenance digest ({len(changed)} changed since last run)")
     if scan.get("dependabot_alert_count"):
         lines.append(f"_{scan['dependabot_alert_count']} open dependabot security alert(s)_")
 
@@ -99,7 +99,7 @@ def render_slack(scan: dict[str, Any], changed: set[int]) -> str:
         lines.append("")
         lines.append("_no state changes since the last run._")
     lines.append("")
-    lines.append("_mergeable verdicts are decision-support. you merge — nothing here merges for you._")
+    lines.append("_mergeable verdicts are decision-support. you merge; nothing here merges for you._")
     return "\n".join(lines)
 
 
@@ -124,7 +124,7 @@ def render_comment(pr: dict[str, Any]) -> str:
     if notes:
         rows.append(f"- **notes:** {'; '.join(notes)}")
     rows.append("")
-    rows.append("_decision-support only — merge is a human action. ci-green reflects only what this PR's own workflows ran; major / maintainer-change updates still need a local sandboxed test._")
+    rows.append("_decision-support only; merge is a human action. ci-green reflects only what this PR's own workflows ran; major / maintainer-change updates still need a local sandboxed test._")
     return "\n".join(rows)
 
 

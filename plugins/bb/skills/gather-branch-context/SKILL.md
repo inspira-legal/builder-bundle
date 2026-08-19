@@ -1,6 +1,6 @@
 ---
 name: gather-branch-context
-description: Coleta e resume todas as mudanças da branch atual comparada com a main. Use quando o usuário disser "compara com a main", "contexto da branch", "o que mudou nessa branch", "resume minha branch", "diff contra a main", ou "o que eu fiz nessa branch". NÃO use pra julgar o diff por bugs ou qualidade (use /bb:review), consertar ou esverdear uma PR (use /bb:ship), nem abrir uma PR (use /bb:ship) — isso só resume, nunca edita.
+description: Coleta e resume todas as mudanças da branch atual comparada com a main. Use quando o usuário disser "compara com a main", "contexto da branch", "o que mudou nessa branch", "resume minha branch", "diff contra a main", ou "o que eu fiz nessa branch". NÃO use pra julgar o diff por bugs ou qualidade (use /bb:review), consertar ou esverdear uma PR (use /bb:ship), nem abrir uma PR (use /bb:ship). Isso só resume, nunca edita.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -40,9 +40,9 @@ Show a structured overview:
 Branch: feature/my-feature (12 commits ahead of main)
 ```
 
-**Commit history** — show the oneline log.
+**Commit history**: show the oneline log.
 
-**Files changed** — group by change type and directory:
+**Files changed**: group by change type and directory:
 
 ```
 Modified:
@@ -54,26 +54,26 @@ Deleted:
   src/legacy/      old-helper.ts
 ```
 
-**Diff stats** — show the stat summary (files changed, insertions, deletions).
+**Diff stats**: show the stat summary (files changed, insertions, deletions).
 
-**Uncommitted changes** — if any, list them separately with a warning.
+**Uncommitted changes**: if any, list them separately with a warning.
 
 ### 3. Analyze the diff
 
 Read through the full diff and provide:
 
-1. **Change summary** — what the branch does, grouped by purpose (not by file)
-2. **Potential issues** — anything that looks risky, incomplete, or inconsistent:
+1. **Change summary**: what the branch does, grouped by purpose (not by file)
+2. **Potential issues**: anything that looks risky, incomplete, or inconsistent:
    - TODO/FIXME comments added
    - Console.log / debug statements left in
    - Large files or binary additions
    - Missing test coverage for new code
    - Breaking API changes
-3. **Suggestions** — optional, only if something clearly stands out
+3. **Suggestions**: optional, only if something clearly stands out
 
 ### 4. Report and stop
 
-This skill summarizes — it has no handoff gate. Close the report by naming the natural next command in one line, without asking:
+This skill summarizes. It has no handoff gate. Close the report by naming the natural next command in one line, without asking:
 
 - Clean and ready: "Pra abrir a PR: `/bb:ship`."
 - Uncommitted changes: point them out with the warning above.

@@ -153,7 +153,7 @@ Caminho principal:
 - [x] **6. Travessão no `spec` e no `ship`**: 234 em 13 arquivos, incluindo os templates de
       relatório e a espinha que o `/bb:spec` escreve
       → behaviors 5, 7, 12 · depende: 1 · verifica: grep zerado
-- [ ] **7. Travessão nas outras 9 skills**: 220 em 15 arquivos: `discover` 44, `challenge`
+- [x] **7. Travessão nas outras 9 skills**: 220 em 15 arquivos: `discover` 44, `challenge`
       32, `code-deep-research` 27, `maintain-repo` 24, `implement` 23, `legal-lens` 23,
       `delegate` 19, `think` 19, `gather-branch-context` 9; os 22 de `description:` moram
       nesses arquivos → behaviors 7, 17 · depende: 1 · verifica: grep zerado

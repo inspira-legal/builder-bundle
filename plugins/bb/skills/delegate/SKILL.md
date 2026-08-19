@@ -1,6 +1,6 @@
 ---
 name: delegate
-description: Roda uma spec de ponta a ponta — seleciona uma spec não-concluída (`.bb/<slug>/spec.md`), constrói todas as tarefas e landa (`/bb:implement` → `/bb:ship`), rastreando o `status` da spec. `/bb:delegate <slug>` mira uma spec nomeada; `/bb:delegate` sem argumento pega a pendente mais antiga. O único verbo "roda tudo". Use quando o usuário disser "delega isso", "roda a task", "constrói e landa o brief", "faz tudo", "delegate <slug>", ou "roda tudo". NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra construir sem landar (use /bb:implement).
+description: Roda uma spec de ponta a ponta: seleciona uma spec não-concluída (`.bb/<slug>/spec.md`), constrói todas as tarefas e landa (`/bb:implement` → `/bb:ship`), rastreando o `status` da spec. `/bb:delegate <slug>` mira uma spec nomeada; `/bb:delegate` sem argumento pega a pendente mais antiga. O único verbo "roda tudo". Use quando o usuário disser "delega isso", "roda a task", "constrói e landa o brief", "faz tudo", "delegate <slug>", ou "roda tudo". NÃO use pra alinhar uma ideia primeiro (use /bb:spec) nem pra construir sem landar (use /bb:implement).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -9,7 +9,7 @@ metadata:
 
 # Delegate
 
-Take a specced idea all the way: select the spec, build every task, and land it — the
+Take a specced idea all the way: select the spec, build every task, and land it. That's the
 `/bb:implement` → `/bb:ship` chain defined in one place. delegate is the single
 "run everything" verb. It owns the spec's `status` lifecycle (contract in the
 plugin-level `references/spec-state.md`); the `## Tarefas` checkboxes inside it stay
@@ -30,45 +30,45 @@ and stop.
    - **Bare** (`/bb:delegate`): scan `.bb/*/spec.md` and `.bb/tasks/*/spec.md`,
      read each frontmatter block, keep those with `status ∈ {pending, in-progress}`,
      and pick the smallest `created` (tie-break: slug alphabetical). The folder's
-     `<slug>` is the key — a slug found under both paths is one candidate, read
+     `<slug>` is the key. A slug found under both paths is one candidate, read
      from `.bb/<slug>/`. A spec with no frontmatter counts as `pending` with
      unknown `created` (sorted last). If none qualify, report "no pending specs"
      and stop.
    - A spec already `done`: report it's done and ask whether to re-run. A `blocked`
-     spec is skipped in bare selection and reported, not silently dropped — name it
+     spec is skipped in bare selection and reported, not silently dropped; name it
      so the user can re-spec it.
 
-2. **Open the run — flip `status: in-progress`.** Edit the spec's frontmatter and
+2. **Open the run, flip `status: in-progress`.** Edit the spec's frontmatter and
    commit that edit (conventional style; no AI attribution).
 
-3. **Pick the build mode — workflow, or this context.** Ask once, per the
+3. **Pick the build mode: workflow, or this context.** Ask once, per the
    plugin-level `references/build-mode.md`: one agent per task dispatched as a
    dynamic workflow, or the tasks built here as always. The answer goes into step 4,
    and the implement loop it drives doesn't ask again. With no `Workflow` tool in the
    session there's nothing to offer: build in context and name the reason, in step 7's
    report too, so a silent downgrade doesn't pass for a choice.
 
-4. **Build — follow `/bb:implement`'s workflow (steps 1–7), then return here.** Load
+4. **Build: follow `/bb:implement`'s workflow (steps 1–7), then return here.** Load
    the spec, honor its reuse notes and `## Comportamento` contract, build every
    unchecked task in the order its `depende:` fields imply, run each task's
    `verifica:`, keep the project's checks green, and commit per task ticking its box. A spec
    written before the rename says `## behavior` and `dep:` and is read the same.
-   **Do not run implement's step-8 ship hand-off** — delegate owns the transition to landing, so
+   **Do not run implement's step-8 ship hand-off**: delegate owns the transition to landing, so
    the chain lives here, not split across skills. If implement's **safety valve** fires
    (the spec was underspecified), stop: flip `status: blocked`, point back to
-   `/bb:spec` to re-spec it, and exit — do not improvise past the spec.
+   `/bb:spec` to re-spec it, and exit. Do not improvise past the spec.
 
    **In workflow mode** the build is dispatched rather than run here: author the
    script per the plugin-level `references/build-tasks-workflow.md`, run its
    pre-invoke checklist, and invoke `Workflow`. Its result is the build report. A
-   non-null `stopped` — a stage-zero blocker (a reuse note pointing at code that's
-   gone, a check the run can't execute, a tree already red), a red task, a lost
-   agent, or a spec the agent found underspecified — lands the same place the safety
-   valve does: flip `status: blocked`, name the blocker, exit without landing. What
-   came back green is already committed and ticked.
+   non-null `stopped` (a stage-zero blocker such as a reuse note pointing at code
+   that's gone, a check the run can't execute, or a tree already red; a red task; a
+   lost agent; or a spec the agent found underspecified) lands the same place the
+   safety valve does: flip `status: blocked`, name the blocker, exit without
+   landing. What came back green is already committed and ticked.
 
-5. **Land — follow `/bb:ship`'s workflow.** Green the project's checks, commit and
-   land per ship's own destination logic — ship settles the destination, asking only
+5. **Land: follow `/bb:ship`'s workflow.** Green the project's checks, commit and
+   land per ship's own destination logic; ship settles the destination, asking only
    on real doubt; delegate adds no destination logic of its own. **Ship doesn't
    review on the way in**: its post-landing gate offers `/bb:review` and the answer
    is the user's, so delegate adds no review logic of its own either. If ship hits an unrecoverable stop,
@@ -76,9 +76,9 @@ and stop.
    PR description when there is a PR, otherwise the spec's own `## Em aberto` on the
    pushed branch. Report it, then exit.
 
-6. **Close the run — flip `status: done`.** Once the chain lands cleanly, edit the
+6. **Close the run, flip `status: done`.** Once the chain lands cleanly, edit the
    frontmatter to `done` and commit. On a feature branch that commit only reaches the
-   default branch when a human merges the PR — the same merge gate the `## Tarefas`
+   default branch when a human merges the PR, the same merge gate the `## Tarefas`
    checkboxes already pass through; delegate never writes status to a protected branch
    directly.
 
@@ -94,14 +94,14 @@ and stop.
 | `/bb:delegate <slug>`, status `done`             | report it's done, ask whether to re-run                                                                                                              |
 | bare `/bb:delegate`, one+ pending                | pick smallest `created` (tie-break slug alpha), run it                                                                                               |
 | bare `/bb:delegate`, none pending                | report "no pending specs", stop                                                                                                                      |
-| selected spec already `in-progress`              | resume — implement skips checked tasks; status stays `in-progress` until landing                                                                     |
+| selected spec already `in-progress`              | resume: implement skips checked tasks; status stays `in-progress` until landing                                                                      |
 | spec has no frontmatter                          | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                                 |
-| implement safety valve fires (underspecified)    | flip `status: blocked`, point back to `/bb:spec`, stop — do not improvise                                                                            |
+| implement safety valve fires (underspecified)    | flip `status: blocked`, point back to `/bb:spec`, stop; do not improvise                                                                             |
 | workflow mode stops (stage zero or a task)       | flip `status: blocked`, exit without landing                                                                                                         |
 | ship hits an unrecoverable stop / blocker        | flip `status: blocked`; write the blocker into the PR description, or into the spec's `## Em aberto` when the destination has no PR; report it; exit |
-| slug sits under both `.bb/` layouts              | one candidate — the `.bb/<slug>/` copy is the one read                                                                                               |
+| slug sits under both `.bb/` layouts              | one candidate; the `.bb/<slug>/` copy is the one read                                                                                                |
 | spec only under `.bb/tasks/<slug>/`              | found by the second glob, run as usual                                                                                                               |
 | not in a git repo / no `.bb/` dir in either root | report the error, stop                                                                                                                               |
 
 The hard line holds throughout: delegate never merges, never approves, never
-force-pushes — landing on a protected branch stays a human action.
+force-pushes; landing on a protected branch stays a human action.
