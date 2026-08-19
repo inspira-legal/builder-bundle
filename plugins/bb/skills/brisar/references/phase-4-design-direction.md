@@ -140,7 +140,7 @@ These 3 bullets are enough to break the blank page. The Develop phase and the bu
 
 [List any required component that does NOT exist in the current DS. It will become a seed for future DS feedback. If there are no gaps, write "Nenhum identificado nesta surface."]
 
-### Decisões a tomar antes de desenhar
+### Decisions to make before drawing
 
 [Things you need to decide but brisar cannot decide for you. E.g.:
 

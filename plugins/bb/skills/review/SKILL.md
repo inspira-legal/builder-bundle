@@ -223,7 +223,7 @@ Per-front method (loaded only when that front is picked):
 - `references/front-correctness.md`: the correctness angles over the diff, and how the diff's content picks which of them run.
 - `references/front-quality.md`: the cleanup lenses, one finder, behavior-preserving.
 - `references/front-rules.md`: `CODE_REVIEW_GUIDE.md` deviations, with the citation discipline.
-- `references/front-contract.md`: the spec's `## Comportamento` map as the acceptance contract.
+- `references/front-contract.md`: the spec's `## Behavior` map as the acceptance contract.
 - `references/front-a11y.md`: WCAG AA: diff scope (static) and surface scope (folder, files or a rendered page).
 - `references/front-threads.md`: PR review threads: fetch, triage, fix/answer, reply/resolve.
 - `references/front-ci.md`: CI failures: evidence → diagnosis → fix → verify.

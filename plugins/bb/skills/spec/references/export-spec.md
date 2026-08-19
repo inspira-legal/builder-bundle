@@ -37,7 +37,7 @@ where the user wants them (default: alongside the spec in
 ## spec.md: the definition document
 
 Map from the spec: the opening and the free top half → context and framing;
-`## Decisões` → Decision rationale; `## Fora de escopo` → Out of scope; `## Comportamento` → Behaviors;
+`## Decisions` → Decision rationale; `## Out of scope` → Out of scope; `## Behavior` → Behaviors;
 the behavior map's `WHEN … THEN …` rows → Definition of done criteria. A spec written before
 the rename spells those `## decisions`, `## out of scope` and `## behavior`, same sections,
 mapped the same way (the whole pairing is in the plugin-level `references/spec-state.md`).
@@ -127,7 +127,7 @@ product's language (PT-BR for Inspira products).
 ## tasks.md: implementation breakdown
 
 Generate for Large scope or non-trivial technical dependencies. Render from the
-spec's `## Tarefas` (or `## tasks`) items. Same work, table form with explicit dependencies and
+spec's `## Tasks` (or `## Tarefas`) items. Same work, table form with explicit dependencies and
 verification criteria.
 
 ```markdown

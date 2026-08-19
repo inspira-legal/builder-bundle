@@ -45,7 +45,7 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
 
 6. **Check the spec: the lint, then an independent reviewer. Every Medium-and-up spec, every time.** This is a step of its own because it's the one an author skips: you cannot see your own omissions, and the pass that would catch them is the pass that feels redundant.
 
-   First the lint (dead section names, malformed tables, a missing spine member), so the gate spends its attention on completeness instead:
+   First the lint (dead section names, malformed tables, a missing required section), so the gate spends its attention on completeness instead:
 
    ```bash
    python3 scripts/lint_spec.py .bb/<slug>/spec.md
@@ -93,7 +93,7 @@ The on-disk contract (location, frontmatter schema, status lifecycle) is the plu
 
 On finalize, open the spec with the frontmatter block (`status: pending`, `created: <today>`, `slug: <slug>`). If `/bb:discover` wrote the file first without the block, backfill it on finalize. Leave the lifecycle after this to delegate; spec only seeds `pending`.
 
-**Large** work carries `## Comportamento` and `## Tarefas` as their own sections: the acceptance contract and the vertical tasks the build side consumes. **Medium** work keeps both inline in the decisions.
+**Large** work carries `## Behavior` and `## Tasks` as their own sections: the acceptance contract and the vertical tasks the build side consumes. **Medium** work keeps both inline in the decisions.
 
 ## Export mode: a shareable product/UX spec
 
@@ -117,7 +117,7 @@ spec always ends at a validated `.bb/<slug>/spec.md`; the spec is the durable as
 
 ### references/spec-format.md
 
-The spec's format: the free top half and the fixed spine, what each spine section is read by, the describes-vs-recounts rule, tables, dead section names, and the task shape with its dependencies. Paired with `scripts/lint_spec.py`, which enforces the mechanical half.
+The spec's format: the free top half and the fixed sections, what each fixed section is read by, the describes-vs-recounts rule, tables, dead section names, and the task shape with its dependencies. Paired with `scripts/lint_spec.py`, which enforces the mechanical half.
 
 ### references/draft-first.md
 

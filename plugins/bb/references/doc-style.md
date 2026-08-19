@@ -28,7 +28,7 @@ verifiable fact. What neither settles goes to the closest rule on this page.
 Where a dash would go, write a comma, a colon, a period, or rewrite the sentence. A colon
 fits when the second half explains the first, and a period fits when it stands on its own.
 Two things keep the character: a functional token (inside a command, a regex, a path, a
-string compared in code, or a value a format reserves, like the `depende: —` a task line
+string compared in code, or a value a format reserves, like the `dep: —` a task line
 carries when nothing blocks it), and a verbatim quote from an outside source, which keeps the
 punctuation of its source.
 

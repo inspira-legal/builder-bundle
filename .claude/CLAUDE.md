@@ -83,7 +83,7 @@ option labels, report templates, error messages addressed to the user.
 
 Which Portuguese word each concept gets, and how it is capitalized, is
 `plugins/bb/references/vocabulario.md`, pointed at by the SessionStart hook so it
-holds for a plain chat too. The item of `## Tarefas` is a **tarefa**; the artifact
+holds for a plain chat too. The item of `## Tasks` is a **tarefa**; the artifact
 at `.bb/<slug>/spec.md` is a **spec**. The reference bodies stay English: the page
 governs the Portuguese sentence, and its table is what you reach for when the
 document you just read is English and the answer you are about to give is not.
@@ -162,10 +162,10 @@ alone. Skills reference that file instead of restating the contract.
 
 The spec's **form** belongs to `plugins/bb/skills/spec/references/spec-format.md`:
 a free top half (opening plus whatever sections the problem asks for) over a fixed
-spine (`Decisões`, `Comportamento`, `Tarefas`, `Fora de escopo`, `Em aberto`),
-fixed because each member has a reader. A spec written before the rename keeps its
-English spine and still builds: both names resolve everywhere, and the lint answers
-`W003` naming the Portuguese one. `skills/spec/scripts/lint_spec.py` enforces the
+set (`Decisions`, `Behavior`, `Tasks`, `Out of scope`, `Open`), fixed because each
+member has a reader. A spec written before the rename keeps its Portuguese section
+names and still builds: both names resolve everywhere, and the lint answers `W003`
+naming the English one. `skills/spec/scripts/lint_spec.py` enforces the
 mechanical half of that and runs in CI over every `.bb/*/spec.md`.
 
 ## Commits

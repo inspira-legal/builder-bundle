@@ -14,7 +14,7 @@ The mode choice itself (when it's offered and the question it asks) is
 - **No user input mid-run.** Only a permission prompt pauses a workflow. A task
   agent can _return_ "the spec is underspecified"; it can't ask. The script decides.
 - **The script has no shell and no filesystem.** Only agents read, write and run
-  commands. Every check, commit and `verifica:` happens inside an agent; the script
+  commands. Every check, commit and `verify:` happens inside an agent; the script
   coordinates and reads structured returns.
 - **Out-of-allowlist commands don't prompt.** A task agent runs under `claude -p`
   and the Agent SDK, where there is nobody to ask, so the call follows the configured
@@ -27,7 +27,7 @@ The mode choice itself (when it's offered and the question it asks) is
 
 The tasks run in a `for` loop with `await`, not `pipeline()`. `pipeline` runs each
 item through the stages independently and concurrently, which is the wrong primitive
-here: the tasks share one working tree, and `depende:` exists precisely to say that
+here: the tasks share one working tree, and `dep:` exists precisely to say that
 task 2 builds on what task 1 created. `parallel()` appears exactly once, in stage
 zero, which is read-only.
 
@@ -40,15 +40,15 @@ The skill passes a real JSON value (never a stringified one):
   slug: "<slug>",
   specPath: ".bb/<slug>/spec.md",
   checksHint: "<what the authority chain resolved, or null>",
-  reuseNotes: ["<one string per reuse note in ## Decisões>"],
+  reuseNotes: ["<one string per reuse note in ## Decisions>"],
   tasks: [
-    { n: 1, title: "...", delivers: "...", behaviors: [2, 3], dep: [], verifica: "..." }
+    { n: 1, title: "...", delivers: "...", behaviors: [2, 3], dep: [], verify: "..." }
   ]
 }
 ```
 
 `tasks` carries only the ones still unticked at invoke time, in an order that
-already satisfies `depende:`. The agents re-read the spec anyway; `args` is the
+already satisfies `dep:`. The agents re-read the spec anyway; `args` is the
 plan, the file on disk is the truth.
 
 ## Stage zero: prove the ground before task 1
@@ -118,22 +118,22 @@ conventions the loop already had. Anything else stops the loop and keeps what's 
 The prompt carries the spec path, the task's own line, the behaviors it cites, the
 accumulated convention note, and the check commands stage zero resolved. Its steps:
 
-1. **Re-read `## Tarefas` on disk**: plus `## tasks`, the English spelling, and a
+1. **Re-read `## Tasks` on disk**: plus `## Tarefas`, the older spelling, and a
    half-migrated spec carrying both headings gets **both** enumerated, in file order
    (the whole pairing is in the plugin-level `references/spec-state.md`). If this task
    is already `- [x]`, return immediately with
    `status: "skipped"`: the run is resumable and re-running a half-built spec
    must not redo what already landed.
-2. **Build the task**, staying inside the spec's `## Fora de escopo` (`## out of scope`
+2. **Build the task**, staying inside the spec's `## Out of scope` (`## Fora de escopo`
    on a spec written before the rename). A **stack
    choice** the spec didn't close (framework, package manager, tooling) is settled
    against the manifesto first: the plugin-level `references/consult-manifesto.md`,
    whose path goes into the prompt.
-3. **Satisfy `verifica:`.** A command gets run: `result` is `passed` or `failed`.
-   `leitura` means self-inspection. Read what you produced against the behaviors
+3. **Satisfy `verify:`.** A command gets run: `result` is `passed` or `failed`.
+   `reading` means self-inspection. Read what you produced against the behaviors
    this task cites and return short evidence. `CI` is out of reach inside the run:
    return `result: "pending"`, which is neither a pass nor a failure; `/bb:ship` is
-   what covers it. No `verifica:` is silently skipped.
+   what covers it. No `verify:` is silently skipped.
 4. **Run the project's checks** and fix what broke.
 5. **Commit**: only the files this task touched, with its `- [ ]` → `- [x]` in the
    same commit, on the branch the run is already on. **Conventional style, and no AI
@@ -141,10 +141,10 @@ accumulated convention note, and the check commands stage zero resolved. Its ste
    the convention travels in the prompt. The commit is the checkpoint (workflow
    resume is same-session only and replays everything that started after the first
    unfinished agent; commits survive anything).
-6. **Return** the structured result. A red check after the retries, a `verifica:` that
+6. **Return** the structured result. A red check after the retries, a `verify:` that
    came back `failed`, or a spec too underspecified to build against all mean:
    **don't commit, don't revert.** Leave the tree as it is for diagnosis and return
-   the blocker. A `verifica:` still `pending` is a green task. It commits, and the
+   the blocker. A `verify:` still `pending` is a green task. It commits, and the
    pending rides the script's return out to ship.
 
 Return shape:
@@ -153,7 +153,7 @@ Return shape:
 {
   n: 1,
   status: "green" | "red" | "skipped" | "underspecified",
-  verifica: { kind: "command" | "leitura" | "ci", result: "passed" | "failed" | "pending", evidence: "..." },
+  verify: { kind: "command" | "reading" | "ci", result: "passed" | "failed" | "pending", evidence: "..." },
   commit: "<sha, or null>",
   conventions: "<the accumulated note this task hands forward>",
   blocker: "<what stopped it, when not green>"
