@@ -1,10 +1,10 @@
-# Phase 1: lightning intake (depth adapts to persona_id)
+# Phase 1: lightning intake (depth adapts to the profile)
 
-The previous version asked 6-10 questions just to reach "now I'll frame it." This phase cuts that, but the number and language of the questions vary by the `profile.persona_id` captured in Phase 0. When the trade-off of skipping the framing isn't worth it (serious artifact, persona = senior/junior), Phase 2 (maturity gate) pulls /bb:discover into the flow.
+The previous version asked 6-10 questions just to reach "now I'll frame it." This phase cuts that, but the number and language of the questions vary by the profile injected into the frame (`reads_code` and `step_by_step`; see `plugins/bb/references/bb-config.md`). When the trade-off of skipping the framing isn't worth it (serious artifact, `reads_code` true), Phase 2 (maturity gate) pulls /bb:discover into the flow.
 
-## Step 0a: shortcut router (pre-persona)
+## Step 0a: shortcut router (before the variant)
 
-Before branching by persona, brisar checks whether the builder mentioned **specific intent for a later stage of the trilha**. When there's a clear signal, it shortens the pipeline: jumps to the right phase (or suggests /bb:discover) instead of running the full intake + scaffold.
+Before branching by the profile, brisar checks whether the builder mentioned **specific intent for a later stage of the trilha**. When there's a clear signal, it shortens the pipeline: jumps to the right phase (or suggests /bb:discover) instead of running the full intake + scaffold.
 
 It reads `intent.raw_prompt` (what the builder typed) + `preflight.product.detected` + the presence of `.brisar/session.yaml` in the cwd.
 
@@ -15,7 +15,7 @@ It reads `intent.raw_prompt` (what the builder typed) + `preflight.product.detec
 | "one screen", "design only", "quick prototype", "design X", "build screen Y"                                                               | already-scaffolded repo (has `.brisar/config.yaml`) | `develop-direct`  | Develop phase (internal) | Skips intake. Writes `intent.shortcut: develop-direct` to session.yaml. After confirmation, jumps to `references/phase-develop.md`.      |
 | "review this design", "I need docs for the dev", "before merging", "close the deliver", "prepare the PR"                                   | repo with surfaces in `src/` or `<surface>.html`    | `deliver-direct`  | Deliver phase (internal) | Skips intake. Writes `intent.shortcut: deliver-direct`. After confirmation, jumps to `references/phase-deliver.md`.                      |
 | "shape it", "mature the problem", "is it worth it", "validate the market", "is there demand", "I need to cut scope", "prioritize features" | any                                                 | `discover-direct` | `/bb:discover`           | Skips intake. Writes `intent.shortcut: discover-direct`. Suggests `/bb:discover` (it runs its own intake) and STOPS, never auto-invokes. |
-| "I want to start", "new project", "scaffold it", "screen X in brand Y" (default)                                                           | any                                                 | none              | (follows normal flow)    | Persona branch below.                                                                                                                    |
+| "I want to start", "new project", "scaffold it", "screen X in brand Y" (default)                                                           | any                                                 | none              | (follows normal flow)    | Variant branch below.                                                                                                                    |
 
 ### When the shortcut fires
 
@@ -48,7 +48,7 @@ It reads `intent.raw_prompt` (what the builder typed) + `preflight.product.detec
    ```
 
 3. If "Yes" → writes `intent.shortcut` and a minimal session.yaml. For `develop-direct`/`deliver-direct`, load the target phase file and continue there. For `discover-direct`, suggest `/bb:discover <idea>` and STOP.
-4. If "No" → continues normally to Step 0b (persona branch).
+4. If "No" → continues normally to Step 0b (variant branch).
 
 ### Why confirmation is mandatory
 
@@ -57,36 +57,37 @@ A heuristic-detected shortcut may be wrong. Asking for confirmation costs 1 turn
 ### When NOT to fire the shortcut (even with a signal)
 
 - No `.brisar/config.yaml` in cwd AND signal is `develop-direct`: scaffold is a prerequisite for the Develop phase. Falls into the normal flow; the Phase 5 gate offers Develop at the end.
-- Persona `executive` or `content` detected in Phase 0: skip shortcuts. These paths have operational/brand-first intake that doesn't combine well with short-circuit.
+- `reads_code` is false, or `brand.workflow == framer-harpa`: skip shortcuts. These paths have operational or brand-first intake that doesn't combine well with short-circuit.
 
 ---
 
-## Step 0b: branch by persona
+## Step 0b: branch by the profile
 
-Read `.brisar/session.yaml` field `profile.persona_id`. Route:
+Read `reads_code` and `step_by_step` from the profile in the frame. Route:
 
-| `persona_id`     | Goes to                                                                             | How many questions                                         |
-| ---------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `builder-senior` | [Senior variant](#senior-variant-2-questions)                                       | 2 (intent + brand, with brand skipped if product detected) |
-| `builder-junior` | [Standard flow](#question-1-what-are-you-building) below + narration                | 3                                                          |
-| `executive`      | [Executive variant](#executive-variant-operational-language)                        | 5-6 in operational language                                |
-| `content`        | **Does NOT enter Phase 1.** Jumps straight to `references/phase-framer-handoff.md`. | 0 (intake-Framer-variant)                                  |
+| The profile says                        | Goes to                                                             | How many questions                                         |
+| --------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `reads_code` true, `step_by_step` false | [Short variant](#short-variant-2-questions)                         | 2 (intent + brand, with brand skipped if product detected) |
+| `reads_code` true, `step_by_step` true  | [Narrated variant](#narrated-variant-standard-flow-step-by-step)    | 3                                                          |
+| `reads_code` false                      | [Operational variant](#operational-variant-no-technical-vocabulary) | 5-6 in everyday language                                   |
 
-If `persona_id` is missing: assumes `builder-junior` (Phase 0 fallback) and follows the standard flow.
+`brand.workflow == framer-harpa` **does NOT enter Phase 1.** It jumps straight to `references/phase-framer-handoff.md`, which runs its own intake.
 
-If `preflight.product.detected != unknown`: brand, hosting, and (sometimes) artifact are already derived from the product, skip those questions regardless of persona. Use [Shortcuts with product detected](#shortcuts-with-product-detected).
+With no profile in the frame every flag reads false, so the operational variant runs: the one that assumes the least.
+
+If `preflight.product.detected != unknown`: brand, hosting, and (sometimes) artifact are already derived from the product, skip those questions in every variant. Use [Shortcuts with product detected](#shortcuts-with-product-detected).
 
 ---
 
-## Senior variant (2 questions)
+## Short variant (2 questions)
 
-Senior dev, technical vocabulary OK, no narration of every `cd`. Path optimized for minimum friction.
+Reads code, technical vocabulary OK, no narration of every `cd`. Path optimized for minimum friction.
 
 Print a short intro:
 
-> **/bb:brisar**: senior profile detected. 2 questions and I drop you in the editor.
+> **/bb:brisar**: 2 questions and I drop you in the editor.
 
-### Senior question #1: intent
+### Short question #1: intent
 
 ```json
 {
@@ -108,44 +109,44 @@ Print a short intro:
 
 Derives slug + surface inference, same as the standard flow.
 
-### Senior question #2: brand/product (CONDITIONAL)
+### Short question #2: brand/product (CONDITIONAL)
 
 - If `preflight.product.detected != unknown`: SKIP. Brand + hosting are already known.
 - Otherwise: use the standard Question 2 (brand registry).
 
-Question 3 (artifact/hosting/appetite) **does not run for senior** when product is detected. The product's `mode_default` defines this. Senior in greenfield (product = `greenfield-vite`) gets the standard question 3.
+Question 3 (artifact/hosting/appetite) **does not run in this variant** when product is detected. The product's `mode_default` defines this. Greenfield (product = `greenfield-vite`) gets the standard question 3.
 
 Short echo + proceed to Phase 2 (gate runs as usual).
 
 ---
 
-## Junior variant (standard flow + narration)
+## Narrated variant (standard flow, step by step)
 
-Junior uses the 3 questions below (Question 1, 2, 3), exactly like senior in greenfield, but with **explicit narration** in each echo. Each echo needs to explain:
+With `step_by_step` true, use the 3 questions below (Question 1, 2, 3), the same ones the short variant asks in greenfield, but with **explicit narration** in each echo. Each echo needs to explain:
 
 - What's going to happen in the next step
 - How long it takes
 - What file/command to look at
 
-Example of junior echo (vs senior):
+Example of a narrated echo, next to the short one:
 
-| Senior                                    | Junior                                                                                                                      |
+| Short                                     | Narrated                                                                                                                    |
 | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | "Slug: `lexflow-search`. Going to brand." | "Derived slug: `lexflow-search`. I'll use it as the folder name. Next: the brand question, so I know which tokens to copy." |
 
-When in Phase 5 (handoff), junior receives narrated instructions for each command (see `phase-5-handoff.md`).
+In Phase 5 (handoff), `step_by_step` also narrates each command (see `phase-5-handoff.md`).
 
 ---
 
-## Executive variant (operational language)
+## Operational variant (no technical vocabulary)
 
-Executive doesn't have technical vocabulary. **NEVER use**: scaffold, embed, MCP, repo, branch, slug, hosting, fidelity, Shaping appetite, surface. **Use**: folder, project, install, environment, page, area.
+With `reads_code` false, technical vocabulary lands as noise. **NEVER use**: scaffold, embed, MCP, repo, branch, slug, hosting, fidelity, Shaping appetite, surface. **Use**: folder, project, install, environment, page, area.
 
 Print a short intro:
 
 > **/bb:brisar**: I'll help you get from "idea" to "a clickable prototype you can show the team". I'll ask 5 quick questions in everyday language.
 
-### Exec question #1: what
+### Operational question #1: what
 
 ```json
 {
@@ -165,7 +166,7 @@ Print a short intro:
 }
 ```
 
-### Exec question #2: who uses it
+### Operational question #2: who uses it
 
 ```json
 {
@@ -197,7 +198,7 @@ Print a short intro:
 }
 ```
 
-### Exec question #3: what problem it solves
+### Operational question #3: what problem it solves
 
 ```json
 {
@@ -217,7 +218,7 @@ Print a short intro:
 }
 ```
 
-### Exec question #4: visual
+### Operational question #4: visual
 
 ```json
 {
@@ -249,7 +250,7 @@ Print a short intro:
 }
 ```
 
-### Exec question #5: when
+### Operational question #5: when
 
 ```json
 {
@@ -271,7 +272,7 @@ Print a short intro:
 }
 ```
 
-### Exec question #6: next step (CONDITIONAL, only if answer to #1 implies a serious product)
+### Operational question #6: next step (CONDITIONAL, only if answer to #1 implies a serious product)
 
 ```json
 {
@@ -296,7 +297,7 @@ Print a short intro:
 }
 ```
 
-### How to read (executive)
+### How to read (operational)
 
 Map to the session.yaml schema:
 
@@ -311,11 +312,11 @@ Map to the session.yaml schema:
 
 - `artifact.fidelity: prototype-hosted` (HTML variant, not local Vite)
 - `artifact.hosting: prototype-hosted`
-- `intent.persona: executive`
+- `artifact.audience: no-code`
 
 Short echo in operational language. E.g.: _"Got it, project: 'financial management platform'. For an internal team. For this week. I'll put together a clickable HTML prototype you can open in the browser and show the team. It generates a `<slug>/` folder with the files ready plus a `HANDOFF-DEV.md` the technical team uses to carry on."_
 
-**Phase 2 (gate) does NOT run for executive.** Goes straight to Phase 3 prototype-hosted variant.
+**Phase 2 (gate) does NOT run when `reads_code` is false.** Goes straight to Phase 3 prototype-hosted variant.
 
 ---
 
@@ -333,7 +334,7 @@ When `preflight.product.detected` is a known product (inspira-saas, portal-clien
 What still needs to be asked:
 
 - **Question #1 (intent)**: always, without this there's nothing to build
-- **Appetite/scale_signal**: only for senior/junior (executive on detected product is rare; if it happens, force `will-scale` and continue)
+- **Appetite/scale_signal**: only when `reads_code` is true (a detected product with `reads_code` false is rare; if it happens, force `will-scale` and continue)
 
 Echo when product is detected: _"I detected you're in [Stillare/LexFlow/etc]. I skipped brand and hosting, I already know them. Next: [intent question]."_
 

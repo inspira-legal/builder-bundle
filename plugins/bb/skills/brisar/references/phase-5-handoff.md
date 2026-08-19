@@ -1,6 +1,6 @@
 # Phase 5: handoff + gate
 
-After Phase 4 writes the visual direction of each surface into `.bb/<slug>/`, the journey-map part of brisar is done. This phase prints the handoff summary (persona-shaped) and ends with the **handoff gate**. A single `AskUserQuestion` offering the natural next steps. The gate suggests, never auto-invokes (per `plugins/bb/references/handoff-gate.md`).
+After Phase 4 writes the visual direction of each surface into `.bb/<slug>/`, the journey-map part of brisar is done. This phase prints the handoff summary, shaped by the profile, and ends with the **handoff gate**. A single `AskUserQuestion` offering the natural next steps. The gate suggests, never auto-invokes (per `plugins/bb/references/handoff-gate.md`).
 
 **Read the medium before writing the summary.** Everything below that names `design-context/`,
 `.brisar/config.yaml` or the scaffolded project folder assumes medium `code`. On a canvas or
@@ -8,7 +8,7 @@ After Phase 4 writes the visual direction of each surface into `.bb/<slug>/`, th
 report the design brief and the canvas artifact instead. Telling the builder to open a folder that
 was never created is the kind of error that reads as the tool being confused about its own state.
 
-## Output shape (default: senior/standard)
+## Output shape (default: `step_by_step` false)
 
 Plain text. Structure:
 
@@ -72,9 +72,9 @@ Then the gate:
 
 ## Conditional variants
 
-### If persona = executive (path prototype-hosted)
+### If `uses_terminal` is false (path prototype-hosted)
 
-**Replaces the whole default terminal**: executive doesn't run `pnpm dev` and the Develop phase doesn't apply (design goes straight to HTML in Phase 4).
+**Replaces the whole default terminal**: nobody runs `pnpm dev` here and the Develop phase doesn't apply (design goes straight to HTML in Phase 4).
 
 ```
 ✓ /bb:brisar finished. HTML prototype created at ./<slug>/
@@ -117,7 +117,7 @@ hypothesis and the metric clear, and saves rework later.
 
 No Develop gate here. End with a simple report. Mention `/bb:discover` as the optional next step (as above) and stop.
 
-### If persona = junior (explicit narration)
+### If `step_by_step` is true (explicit narration)
 
 Same default terminal, but with narration before the gate:
 

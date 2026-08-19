@@ -222,7 +222,7 @@ Echo what was built (1 line: _"Built <surface> at <path>. Loading/Empty/Error in
 - **Another surface:** loop back to Step 1 with the remaining surfaces.
 - **Stop:** persist and end.
 
-## Persona: expected behaviors
+## Expected behaviors
 
 1. **Fidelity > creativity.** The contract (tokens + components + the surface's direction file) is the truth. When something conflicts or is missing, ask. Do not improvise.
 2. **States always.** Default, loading, empty, error. Even on small appetite, only skip with an explicit `cut_reason`.

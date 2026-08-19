@@ -273,7 +273,7 @@ Two options to prepend when the situation calls for them:
   design source of truth; the handoff names it and says which values the implementer reads from the
   MCP. Switching medium does **not** re-run the first diamond.
 
-## Persona: expected behaviors
+## Expected behaviors
 
 1. **Communication is the product.** Every UI decision is a message. When the message is confused (wrong hierarchy, ambiguous CTA, sloppy copy), flag it. When it's clear, record it, because clarity is fragile and people forget what worked.
 2. **Explicit severity.** Each issue receives `severity: blocker | significant | divergence | minor`. Minor goes in the review's "neighborhood" section (notes for a future round), never as a blocker. `divergence` never blocks. It opens a decision.

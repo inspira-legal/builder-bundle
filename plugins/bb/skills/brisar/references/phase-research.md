@@ -42,11 +42,11 @@ Before any question, read `.brisar/session.yaml` in full:
     legitimate finding and it goes in the brief's reconciliation section, with the argument.
     Never silently design on top of a cut.
 - **`preflight.product`**: settles where the design system lives (`ds_source`).
-- **`profile.persona_id`**: who is reading. It does not change **what** the floor researches; it
-  changes the vocabulary of everything printed. For `executive` and `content`, Phase 0 established
-  a banned vocabulary (`scaffold`, `embed`, `npm`, `MCP`, `repo`, `branch`, `slug`, see
-  `phase-0-calibration.md`) and it binds here too: the mode line and the findings are user-facing
-  text. Say "the product project is not on this computer", not "the repo is not in the cwd".
+- **the profile**: who is reading. It does not change **what** the floor researches; it
+  changes the vocabulary of everything printed. When `technical_vocabulary` is false, the banned
+  vocabulary in `references/brief.md` binds here too: the mode line and the findings are
+  user-facing text. Say "the product project is not on this computer", not "the repo is not in
+  the cwd".
 - **`intent.raw_prompt`**: the builder's own words. Often carries the constraint that matters
   most, phrased casually.
 - If a project spec exists (a full behavior contract, not just the discover sections), read it
@@ -455,7 +455,7 @@ Then **go straight into `references/brief.md`**. The research does not stand on 
 does not get its own gate. The brief is the artifact; this phase is its input. There is one
 gate, at the end of the brief, and that is where the builder gets to steer.
 
-## Persona: expected behaviors
+## Expected behaviors
 
 1. **The floor is the floor.** Pocket mode shrinks the discretionary fronts, never the three
    in Step 1. A short brief with real market and real tokens beats a long one built on memory.

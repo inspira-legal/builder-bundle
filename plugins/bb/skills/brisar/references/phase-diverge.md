@@ -32,9 +32,9 @@ From `.brisar/session.yaml` and the brief:
   reconciliation already flagged the cut as wrong and the builder reopened it.
 - **`research.mode`** → pocket or full. It sets the count (Step 2), never the depth per
   direction.
-- **`profile.persona_id`** → who is choosing. It changes nothing about the directions themselves
+- **the profile** → who is choosing. It changes nothing about the directions themselves
   and two things about the presentation: the vocabulary (Phase 0's banned list binds for
-  `executive` and `content`), and whether the recommendation is optional (Step 3).
+  `technical_vocabulary` false), and whether the recommendation is optional (Step 3).
 
 ## Step 1: separate the base from what varies
 
@@ -112,7 +112,7 @@ use, gloss design concepts in 5–10 words, and remember the audience is not onl
 A recommendation may be stated: clearly, as a recommendation, with the reason. It goes **after**
 all directions are described, never instead of describing them.
 
-**For `executive` and `content` the recommendation is mandatory.** Equal treatment is what makes
+**When `reads_code` is false the recommendation is mandatory.** Equal treatment is what makes
 the choice real, and for someone without design repertoire it also makes the choice hard: N paths
 at identical depth, no criterion to weigh them by. Withholding the recommendation there is not
 neutrality. It hands over the hardest judgement in the flow to the person least equipped to make
@@ -203,7 +203,7 @@ diverge:
 }
 ```
 
-## Persona: expected behaviors
+## Expected behaviors
 
 1. **Equal treatment is the deliverable.** A set where one direction is written and the others are
    sketched has not done this phase's job, however good the written one is.

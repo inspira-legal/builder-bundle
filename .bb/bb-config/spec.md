@@ -239,7 +239,7 @@ Happy path, first time:
 - [ ] **4. brisar stops asking**: `phase-0-calibration.md` is deleted, `SKILL.md` Step
       0.1 and the phase table lose it
       → behaviors 7, 8 · dep: 3 · verify: `grep -rn persona` is empty inside brisar
-- [ ] **5. Readers read their own flag**: `phase-1-intake`, `phase-3-scaffold`,
+- [x] **5. Readers read their own flag**: `phase-1-intake`, `phase-3-scaffold`,
       `phase-5-handoff`, `brief`, `phase-medium`, `phase-diverge`, `phase-research`,
       `preflight-tooling` each switch to the flag named in the table above
       → behaviors 9, 10 · dep: 4 · verify: reading
