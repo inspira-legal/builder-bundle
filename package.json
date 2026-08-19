@@ -4,7 +4,7 @@
   "scripts": {
     "fmt": "oxfmt --write .",
     "fmt:check": "oxfmt --check .",
-    "validate": "bun .github/scripts/validate-frontmatter.ts"
+    "validate": "bun .github/scripts/validate-frontmatter.ts && bun .github/scripts/validate-workflow-script.ts"
   },
   "devDependencies": {
     "lefthook": "latest",

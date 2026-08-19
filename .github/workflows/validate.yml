@@ -24,6 +24,9 @@ jobs:
       - name: Validate frontmatter
         run: bun .github/scripts/validate-frontmatter.ts
 
+      - name: Validate workflow scripts
+        run: bun .github/scripts/validate-workflow-script.ts
+
       - name: Lint specs
         run: |
           shopt -s nullglob

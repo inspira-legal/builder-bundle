@@ -218,7 +218,7 @@ one spec: making every build fresh is what makes the review necessary.
       the two-round ceiling; step 7's gate states the review's status every time and blocks
       on a surviving `load-bearing` finding in `## Open` the way it blocks on a decision
       → behaviors 9, 10, 11 · dep: 5 · verify: reading
-- [ ] **7. The guard around the script**:
+- [x] **7. The guard around the script**:
       `.github/scripts/validate-workflow-script.ts` parsing the file with `Bun.Transpiler`
       and failing the forbidden calls, the meta interpolation and a second `parallel()`;
       added to `package.json`'s `validate` script (which is what lefthook runs) and to
