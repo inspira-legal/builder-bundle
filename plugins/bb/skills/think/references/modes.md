@@ -13,7 +13,7 @@ Load only the section for the mode classified in SKILL.md.
 5. **Challenge the premise if necessary:** if the decision seems poorly framed,
    say so before answering.
 6. Issue a clear recommendation with justification. Take a position instead of
-   closing on "depende".
+   closing on "it depends".
 
 ## Problem
 

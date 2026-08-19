@@ -95,13 +95,13 @@ for (const t of args.tasks) {
     schema: TASK_RESULT,
   })
   if (!r) {
-    stopped = { n: t.n, status: "red", blocker: "agente perdido (retorno null)" }
+    stopped = { n: t.n, status: "red", blocker: "lost agent (null return)" }
     break
   }
   if (r.status === "skipped") { skipped.push(r.n); continue }
   if (r.status !== "green") { stopped = r; break }
   conventions = r.conventions
-  if (r.verifica.result === "pending") pendingVerifica.push(r.n)
+  if (r.verify.result === "pending") pendingVerify.push(r.n)
   results.push(r)
 }
 ```
@@ -180,13 +180,13 @@ model and effort; they're doing the same work the main context would have done.
 ## What the script returns
 
 ```
-{ slug, built: [<n>], skipped: [<n>], pendingVerifica: [<n>], stopped: <the failing result, or null>, conventions }
+{ slug, built: [<n>], skipped: [<n>], pendingVerify: [<n>], stopped: <the failing result, or null>, conventions }
 ```
 
 The caller reads that and follows its own contract: `/bb:implement` goes to its
 step 8, `/bb:delegate` to ship. A non-null `stopped` means neither proceeds to
 landing; delegate flips `status: blocked`, implement stops at its safety valve.
-`pendingVerifica` names the tasks whose proof is CI, which is ship's to close.
+`pendingVerify` names the tasks whose proof is CI, which is ship's to close.
 
 ## Before invoking: the checklist
 

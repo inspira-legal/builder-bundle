@@ -63,11 +63,11 @@ The front's section ends with a checklist over the rules it actually evaluated,
 the same rules a maintainer would go through by hand, so the silence is readable:
 
 ```
-| regra | status |
+| rule | status |
 | PAT-002 Service layer | PASS |
-| TST-001 Teste por comportamento novo | FAIL → item 3 |
+| TST-001 Test for new behavior | FAIL → item 3 |
 | SEC-004 No secret in code | PASS |
-SKIP (fora do escopo do diff): DEP-001, OBS-002, CMT-003; nenhum arquivo tocado ativa
+SKIP (outside the diff's scope): DEP-001, OBS-002, CMT-003; no touched file activates them
 ```
 
 - **PASS**: the rule reaches this diff and the diff holds it.

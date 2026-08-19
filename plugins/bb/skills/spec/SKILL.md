@@ -85,7 +85,7 @@ Walking each behavior surfaces decisions you haven't made; those go back into th
 
 ## Capture the alignment (lightweight, on disk)
 
-Write a single `.bb/<slug>/spec.md`, the converged draft itself, written as something a person will read: an opening that says what this is and why now, then whatever sections describe this particular problem, then the fixed spine the other skills consume. The format (the two halves, the spine and its readers, the table rule, the task shape) lives in `references/spec-format.md`; follow it. There's no separate write-up step; the draft you iterated _is_ the spec, and it survives a context reset so a fresh session reloads it.
+Write a single `.bb/<slug>/spec.md`, the converged draft itself, written as something a person will read: an opening that says what this is and why now, then whatever sections describe this particular problem, then the fixed sections the other skills consume. The format (the two halves, the fixed sections and their readers, the table rule, the task shape) lives in `references/spec-format.md`; follow it. There's no separate write-up step; the draft you iterated _is_ the spec, and it survives a context reset so a fresh session reloads it.
 
 **The prose describes what to build.** How the conversation got there (what you first assumed, what a later read corrected, which message settled it) goes in the commit body instead. A landed spec that gets rewritten gains the new decision in the file and the reason in the commit.
 

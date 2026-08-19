@@ -92,10 +92,10 @@ Offer the deep option only when the run isn't already deep (the argument or the
 phrase settled it at step 1), and say in its line that it's the expensive one; the
 user paying for it should know that's what they picked.
 
-Say the depth in one line: which of the two ran and why (`padrão` unless it was
+Say the depth in one line: which of the two ran and why (`standard` unless it was
 asked for), with the numbers the resolution actually produced: how many angles are in the diff's set, how many the tier funds,
-which ones were dropped and why, and whether the sweep runs (`markdown: 4 ângulos
-no set, 3 rodam, wrapper-boundary fora, sem sweep`). Every number in that line comes
+which ones were dropped and why, and whether the sweep runs (`markdown: 4 angles in
+the set, 3 run, wrapper-boundary dropped, no sweep`). Every number in that line comes
 from the resolution that just ran, which is what makes it match the stats line at the
 end; on a small diff it's also why no agent shows up.
 
@@ -166,8 +166,8 @@ regression guard; quality edits are strictly behavior-preserving. Then:
   comment, each point lands once: still-open prior points as status lines, first-time
   findings in full, fixed ones as a count.
 
-Re-report as a table: `# | item | action taken | commit/status`: `corrigido`,
-`comentado (link)` and `deixado no relatório` are all valid outcomes.
+Re-report as a table: `# | item | action taken | commit/status`: `fixed`,
+`commented (link)` and `left in the report` are all valid outcomes.
 
 ## Step 7: Gate
 
@@ -175,10 +175,10 @@ Per the plugin-root `references/handoff-gate.md`, one PT-BR question with **2–
 options**. Five states can qualify, so take the first three that apply in this
 priority order. Unfinished work on this report outranks the next skill:
 
-1. items still open → **"Aplicar mais"** (loops to step 5)
-2. fronts left unrun → **"Rodar as frentes que faltaram"** (loops to step 3)
+1. items still open → **"Apply more"** (loops to step 5)
+2. fronts left unrun → **"Run the fronts that were left out"** (loops to step 3)
 3. a11y findings that need a rendered page (runtime colors, real focus order, live
-   regions) → **"Auditar a UI rodando"** (loops to `front-a11y.md`, surface scope)
+   regions) → **"Audit the running UI"** (loops to `front-a11y.md`, surface scope)
 4. guide drift or missing guide reported → **"Generate or update the guide: I run
    /bb:review-setup"**
 5. no open PR and everything clean/handled → **"Open the PR: I run /bb:ship"** (not
@@ -207,7 +207,7 @@ offered, which needs no row here. What this table covers is everything else:
 | uncommitted changes present                  | include in diff scope, flagged separately                                                                             |
 | a finder agent dies                          | its front reports with the angles that returned, and says which angle is missing                                      |
 | user picks nothing at curation               | no edits; go to the gate                                                                                              |
-| a verifier dies or omits an index            | that candidate is `sem veredito`, reported as its own line, never promoted                                            |
+| a verifier dies or omits an index            | that candidate is `no verdict`, reported as its own line, never promoted                                              |
 | CI still red after 3 diagnose→fix cycles     | stop editing, report the remaining failure and the evidence                                                           |
 | deep asked for on a ≲2-file diff             | deep is honored; the full angle set with fan-out, sweep included; say the diff is small and that deep was asked for   |
 

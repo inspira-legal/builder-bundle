@@ -104,7 +104,7 @@ unless a review does.
 ## Report template
 
 ```
-Landed no repo do app. Deploy é seu.
+Landed in the app repo. The deploy is yours.
 
 App: <name> (<team>/<slug>)
 Commits: <n> · sha <short-sha>
@@ -116,7 +116,7 @@ To deploy exactly this commit:
 ```
 
 The review line only appears when a review ran, i.e. when you picked it at the
-gate: `Review: <n> findings aplicados, <n> deixados no relatório`.
+gate: `Review: <n> findings applied, <n> left in the report`.
 
 When a new `$secret` shows up in `[env]`, name it and add
 `lexflow secret set <app> <KEY> …`: the deploy will ask for it. When the diff touches

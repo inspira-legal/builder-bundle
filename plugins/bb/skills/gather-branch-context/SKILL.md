@@ -75,6 +75,6 @@ Read through the full diff and provide:
 
 This skill summarizes. It has no handoff gate. Close the report by naming the natural next command in one line, without asking:
 
-- Clean and ready: "Pra abrir a PR: `/bb:ship`."
+- Clean and ready: "To open the PR: `/bb:ship`."
 - Uncommitted changes: point them out with the warning above.
-- Issues found: "Pra revisar e corrigir: `/bb:review`."
+- Issues found: "To review and fix: `/bb:review`."

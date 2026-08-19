@@ -31,8 +31,8 @@ came from a framed problem; otherwise run only the mode the user asked for.
   Tagging `none` is the most valuable mark on the page. It's where the risk is.
 - **Auto-size from signals, don't ask depth.** Read the frame's appetite and
   confidence: a small appetite with a confident problem doesn't need a full
-  TAM/SAM/SOM. A back-of-envelope is enough. You decide the depth; asking "quer
-  um TAM completo?" just shifts the cost to the user.
+  TAM/SAM/SOM. A back-of-envelope is enough. You decide the depth; asking "do you
+  want a full TAM?" just shifts the cost to the user.
 - **Check facts you'd otherwise guess** (market size, competitors, prior art):
   search the web rather than inventing numbers, and tag the confidence of what
   you find.

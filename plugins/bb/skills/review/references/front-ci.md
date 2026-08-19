@@ -26,10 +26,10 @@ Finding shape:
 # | failing check (name plus run URL) | root cause | evidence | proposed fix
 ```
 
-- **causa raiz**: one sentence, specific ("test X asserts the old error message",
+- **root cause**: one sentence, specific ("test X asserts the old error message",
   not "tests fail")
-- **evidência**: the log lines that support it
-- **fix proposto**: what would change and where; or "flaky: re-run" when the
+- **evidence**: the log lines that support it
+- **proposed fix**: what would change and where; or "flaky: re-run" when the
   evidence shows a known-flake signature (same sha passed before, infra timeout)
 
 The diagnosis is reported before any edit either way; **who decides on the fix is

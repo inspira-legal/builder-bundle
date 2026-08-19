@@ -50,9 +50,9 @@ either way.
 # | file:line | WCAG criterion (name plus number) | what fails | who it blocks | priority | fix
 ```
 
-`quem é bloqueado` is this front's `failure_scenario`, the user-visible
-consequence, stated as the person and the block: "quem navega por teclado não
-reach the confirm button", "the screen reader announces 'button' without saying what for".
+`who it blocks` is this front's `failure_scenario`, the user-visible
+consequence, stated as the person and the block: "someone navigating by keyboard
+cannot reach the confirm button", "the screen reader announces 'button' without saying what for".
 A finding that can't name who loses access isn't one.
 
 Exactly one priority per finding: **Critical** (blocks access entirely),
@@ -64,7 +64,7 @@ scope.
 
 - Only elements the diff added or changed. Pre-existing a11y debt in a file the
   branch happens to touch is not this branch's finding. If it's severe, it goes
-  in one line at the end as "dívida existente, fora do diff", not as an item to
+  in one line at the end as "existing debt, outside the diff", not as an item to
   fix here.
 - A component that inherits its semantics from a design-system primitive is
   judged by what the diff passes it, not by the primitive's internals. Missing
@@ -77,8 +77,8 @@ scope.
 ## Auditing a whole surface
 
 When the ask names a **surface** instead of a branch (a folder, a file set, a URL,
-a running page: "auditoria de acessibilidade", "checa acessibilidade dessa
-pasta/página"), or the Deliver phase of `/bb:brisar` asks for depth, this front
+a running page: "accessibility audit", "check the accessibility of this
+folder/page"), or the Deliver phase of `/bb:brisar` asks for depth, this front
 runs standalone: no diff, no other fronts, no curation question. There may be no git
 repository and no branch; the scope is whatever the user pointed at.
 
@@ -99,6 +99,6 @@ repository and no branch; the scope is whatever the user pointed at.
    regions firing on a state change, reflow at 320px and at 200% zoom.
 4. **Report grouped by priority**, Critical first, each finding with where
    (file/element), the WCAG criterion that fails, who is blocked, and a concrete
-   fix. Close with `WCAG AA: passa | falha | parcial` plus the count per priority.
-5. **Gate** (per the plugin-root `references/handoff-gate.md`): "Corrigir os
-   Critical/Major (Recommended)" → `act-apply-fixes.md`, then "Stop here".
+   fix. Close with `WCAG AA: pass | fail | partial` plus the count per priority.
+5. **Gate** (per the plugin-root `references/handoff-gate.md`): "Fix the
+   Critical/Major ones (Recommended)" → `act-apply-fixes.md`, then "Stop here".

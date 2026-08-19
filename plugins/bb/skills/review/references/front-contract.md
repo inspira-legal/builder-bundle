@@ -27,7 +27,7 @@ citation. The decision to leave it out was already made.
 ## Finding shape
 
 ```
-# | linha da spec citada | file:line (ou "ausente") | o que falta ou sobra | severidade
+# | spec line cited | file:line (or "missing") | what is missing or extra | severity
 ```
 
 Severity: a missing happy path is HIGH; a missing mapped edge or a missing test

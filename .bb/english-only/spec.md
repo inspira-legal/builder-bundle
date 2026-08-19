@@ -83,17 +83,17 @@ Happy path, one area at a time, each area a commit:
 
 ## Tasks
 
-- [ ] **1. English section names**: `lint_spec.py` (canonical set, `W003` message, dead
+- [x] **1. English section names**: `lint_spec.py` (canonical set, `W003` message, dead
       section text), `spec-format.md`, `spec-state.md`, `export-spec.md`,
       `build-tasks-workflow.md`, `build-mode.md`, `delegate/SKILL.md`,
       `implement/SKILL.md`, `spec/SKILL.md`, `review/SKILL.md`, `front-contract.md`,
       `phase-4-design-direction.md`, `doc-style.md`, `operating-context.md`,
       `.claude/CLAUDE.md`
-      → behaviors 1, table rows 3 and 4 · dep: — · verify: `grep -rn "## Decisões\|## Comportamento\|## Tarefas\|## Fora de escopo\|## Em aberto\|depende:\|verifica:"` outside `.bb/` and `CHANGELOG.md` returns nothing
+      → behaviors 1, table rows 3 and 4 · dep: — · verify: `grep -rn "## Decisões\|## Comportamento\|## Tarefas\|## Fora de escopo\|## Em aberto\|depende:\|verifica:"` outside `.bb/` and `CHANGELOG.md` returns only the lines that name those as the older spelling, which the compat rule keeps
 - [x] **2. Frontmatter descriptions**: 15 `SKILL.md` plus `bb-review-finder.md` and
       `bb-review-verifier.md`
       → behaviors 2, table rows 1 and 2 · dep: — · verify: the frontmatter sweep finds no `: ` and no ` #` in any plain scalar
-- [ ] **3. Gates, options, and report templates**: every skill, `handoff-gate.md`,
+- [x] **3. Gates, options, and report templates**: every skill, `handoff-gate.md`,
       `brisar/references/*`, `challenge/references/modes.md`,
       `review-setup/references/interview.md`
       → behavior 3 · dep: 1 · verify: reading, plus the Portuguese line census on the touched files
@@ -114,10 +114,10 @@ Happy path, one area at a time, each area a commit:
       → behavior 8 · dep: 1 · verify: the Portuguese line census on the file returns nothing
 - [ ] **9. The 7 landed specs**: `.bb/*/spec.md`, prose and section names
       → behaviors 9, table row 4 · dep: 1 · verify: the census returns nothing and the CI lint stays green
-- [ ] **10. Literal names**: `spine` and `ruler` become the thing they name, the
+- [x] **10. Literal names**: `spine` and `ruler` become the thing they name, the
       figures that name nothing go (rubber-stamp, "that bite", the smaller door), and
       `doc-style.md` states the rule
-      → behavior 10 · dep: — · verify: `grep -rniE "spine|ruler|rubber-?stamp|that bite"` outside `.bb/` and `CHANGELOG.md` returns nothing
+      → behavior 10 · dep: — · verify: `grep -rniE "spine|ruler|rubber-?stamp|that bite"` outside `.bb/`, `CHANGELOG.md` and `ds/` returns nothing
 - [ ] **11. 2.13.0**: version in the plugin manifest, English `CHANGELOG` entry, spec
       closed
       → behavior 11 · dep: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 · verify: `gh pr checks --watch` green
