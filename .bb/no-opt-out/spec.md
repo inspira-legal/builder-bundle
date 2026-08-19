@@ -187,7 +187,7 @@ one spec: making every build fresh is what makes the review necessary.
 
 ## Tasks
 
-- [ ] **1. The fixed script, proven by a run**: `plugins/bb/workflows/build-tasks.js`,
+- [x] **1. The fixed script, proven by a run**: `plugins/bb/workflows/build-tasks.js`,
       carrying stage zero in one `parallel()`, the sequential task `for` with its three
       exits, the task agent's prompt inline with its six steps, the retry constant and the
       flake definition, the result schemas, the accumulating convention note with its
