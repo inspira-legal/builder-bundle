@@ -243,7 +243,7 @@ Happy path, first time:
       `phase-5-handoff`, `brief`, `phase-medium`, `phase-diverge`, `phase-research`,
       `preflight-tooling` each switch to the flag named in the table above
       → behaviors 9, 10 · dep: 4 · verify: reading
-- [ ] **6. The Framer fork drops the profile**: `SKILL.md` and `product-registry.yaml`
+- [x] **6. The Framer fork drops the profile**: `SKILL.md` and `product-registry.yaml`
       key it on `brand.workflow == framer-harpa`
       → behavior 7 · dep: 4 · verify: reading
 - [x] **7. The brief carries the journey**: `brief.md` gains the frontmatter block
