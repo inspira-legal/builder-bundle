@@ -8,8 +8,8 @@ session in every repo where the plugin is enabled, so it nudges the way of
 working, it does not force a mode. Edit operating-context.md to change the frame,
 and PROFILE_LINES below to change what a profile flag means.
 
-The profile lives at ~/.claude/bb.config.json, written by /bb:config; the
-contract is references/bb-config.md. A missing, unreadable or malformed file
+The profile lives at ~/.claude/bb.profile.json, written by /bb:profile; the
+contract is references/bb-profile.md. A missing, unreadable or malformed file
 means no profile, never an error: this hook must never block a session.
 """
 
@@ -18,7 +18,7 @@ from __future__ import annotations
 import json
 import os
 
-CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".claude", "bb.config.json")
+PROFILE_PATH = os.path.join(os.path.expanduser("~"), ".claude", "bb.profile.json")
 
 # What each answer means, in the words the frame carries. The flags themselves
 # are never injected: `reads_code: false` says nothing on its own.
@@ -48,7 +48,7 @@ PROFILE_LINES: dict[str, tuple[str, str]] = {
 
 INVITATION = (
     "- **No profile calibrated yet.** How much to spell out is a guess right now. "
-    "When a bb skill runs, offer `/bb:config`: it asks four questions once, and every "
+    "When a bb skill runs, offer `/bb:profile`: it asks four questions once, and every "
     "session after this one is calibrated."
 )
 
@@ -65,7 +65,7 @@ def read_frame(here: str, filename: str) -> str:
 def read_profile() -> dict | None:
     """The profile, or None. Malformed reads the same as missing, on purpose."""
     try:
-        with open(CONFIG_PATH, encoding="utf-8") as f:
+        with open(PROFILE_PATH, encoding="utf-8") as f:
             profile = json.load(f).get("profile")
     except (OSError, ValueError, AttributeError):
         return None

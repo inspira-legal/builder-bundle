@@ -1,14 +1,14 @@
-# The person's profile: `~/.claude/bb.config.json`
+# The person's profile: `~/.claude/bb.profile.json`
 
 One question, asked once, that every bb skill reads. What the person does is a fact
 about the person, so it is not asked per project and it is not stored per project.
 
-`/bb:config` is the only writer. The SessionStart hook is the only reader that runs
+`/bb:profile` is the only writer. The SessionStart hook is the only reader that runs
 unasked; every other reader is a skill reading a flag it needs.
 
 ## Location
 
-`~/.claude/bb.config.json`, expanded from `Path.home()`. Outside the plugin on purpose:
+`~/.claude/bb.profile.json`, expanded from `Path.home()`. Outside the plugin on purpose:
 the install path carries the version (`plugins/cache/inspira-legal/bb/<version>`), so
 anything written inside it is lost on the next update. JSON because the hook is Python
 and `json` is stdlib; a hook that must never fail cannot carry a dependency.
@@ -35,7 +35,7 @@ and `json` is stdlib; a hook that must never fail cannot carry a dependency.
 | `step_by_step`         | wants the technical parts described one step at a time  |
 | `technical_vocabulary` | reads `scaffold`, `branch` and `MCP` without a gloss    |
 
-`calibrated_at` is an ISO date, written by `/bb:config` and read by nobody. It is there
+`calibrated_at` is an ISO date, written by `/bb:profile` and read by nobody. It is there
 so a person can see how old the answers are.
 
 ## Reading it
@@ -43,7 +43,7 @@ so a person can see how old the answers are.
 Three rules, and they are what keep a hook from ever blocking a session:
 
 - **Missing file: no profile.** Not an error, not a warning. The frame carries the
-  invitation to run `/bb:config`.
+  invitation to run `/bb:profile`.
 - **Unreadable or malformed: no profile.** A truncated file, bad JSON, a `profile` that
   is not an object, all read the same as missing. Never raise, never print to stderr.
 - **A missing flag is `false`.** A file written by an older version stays valid, and the
@@ -70,9 +70,9 @@ run it, how long it takes, and what success prints.
 
 ## Deriving an old profile
 
-Before the config existed, brisar kept a `profile.persona_id` inside a project's
+Before the profile file existed, brisar kept a `profile.persona_id` inside a project's
 `.brisar/session.yaml`. A person who answered it once should not have to answer again, so
-the first bb run that finds one and has no config derives the four flags from it:
+the first bb run that finds one and has no profile derives the four flags from it:
 
 | the old id       | `reads_code` | `uses_terminal` | `step_by_step` | `technical_vocabulary` |
 | ---------------- | ------------ | --------------- | -------------- | ---------------------- |
@@ -85,9 +85,9 @@ framer-harpa`, a project fact). It derives nothing: the checklist gets asked.
 
 Three rules bound the derivation:
 
-- **Only when there is no config.** A config on disk is the person's own answer and always
+- **Only when there is no profile.** A profile on disk is the person's own answer and always
   wins; an old id in a project is never read over it.
-- **Derived once.** The derivation pre-fills the `/bb:config` checklist, the person
-  confirms or corrects, and `/bb:config` writes the file, which is what makes it stop being
-  derived. `/bb:config` stays the only writer.
+- **Derived once.** The derivation pre-fills the `/bb:profile` checklist, the person
+  confirms or corrects, and `/bb:profile` writes the file, which is what makes it stop being
+  derived. `/bb:profile` stays the only writer.
 - **The old file is left alone.** `.brisar/` is read, never written and never deleted.

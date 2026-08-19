@@ -4,25 +4,25 @@
 
 **The profile is asked once, globally, and the journey lives in the brief.** Calibration
 used to be Phase 0 of `/bb:brisar`: every design journey opened by asking the same person
-the same four things, and the answer died with the project. It is now `/bb:config`, asked
-once, written to `~/.claude/bb.config.json` and carried into every session by the
+the same four things, and the answer died with the project. It is now `/bb:profile`, asked
+once, written to `~/.claude/bb.profile.json` and carried into every session by the
 `SessionStart` hook. With the profile out of brisar, the last reason for a session file
 went with it, and `.brisar/` is gone: the brief carries the journey.
 
 ### Added
 
-- **`/bb:config`**: a checklist of four things the person knows or wants, `reads_code`,
+- **`/bb:profile`**: a checklist of four things the person knows or wants, `reads_code`,
   `uses_terminal`, `step_by_step` and `technical_vocabulary`, each option carrying a hint
-  of who it is for. It writes `~/.claude/bb.config.json`, shows the profile on disk and
+  of who it is for. It writes `~/.claude/bb.profile.json`, shows the profile on disk and
   recalibrates it. It is the only writer of that file. The contract, the JSON shape and
-  what each flag changes are in `references/bb-config.md`.
+  what each flag changes are in `references/bb-profile.md`.
 - **The hook always injects.** `inject_operating_context.py` composes the frame with the
-  profile block when the config exists, and with an invitation naming `/bb:config` when it
+  profile block when the file exists, and with an invitation naming `/bb:profile` when it
   does not, so a session is never silently uncalibrated. A missing flag reads `false`, and
   a malformed file reads as no profile.
-- **An old persona is derived, not re-asked.** A project brisar ran before the config
-  carries `profile.persona_id` in its `.brisar/session.yaml`. When there is no config, the
-  four flags are derived from it once and pre-fill the `/bb:config` checklist, which the
+- **An old persona is derived, not re-asked.** A project brisar ran before the profile
+  carries `profile.persona_id` in its `.brisar/session.yaml`. When there is no profile, the
+  four flags are derived from it once and pre-fill the `/bb:profile` checklist, which the
   person confirms. The old file is read, never written.
 
 ### Changed

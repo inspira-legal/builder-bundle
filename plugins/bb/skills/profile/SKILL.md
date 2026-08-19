@@ -1,26 +1,26 @@
 ---
-name: config
-description: Calibrate once who is on the other side, and every bb session after this one is calibrated. Asks four questions (do you read the code, do you run commands, do you want the technical parts step by step, does technical vocabulary read fine), writes ~/.claude/bb.config.json, and shows or recalibrates a profile that already exists. Use when the user says "/bb:config", "set my profile", "recalibrate", "bb is explaining too much" or "bb is explaining too little", or when a bb skill runs with no profile set.
+name: profile
+description: Calibrate once who is on the other side, and every bb session after this one is calibrated. Asks four questions (do you read the code, do you run commands, do you want the technical parts step by step, does technical vocabulary read fine), writes ~/.claude/bb.profile.json, and shows or recalibrates a profile that already exists. Use when the user says "/bb:profile", "set my profile", "recalibrate", "bb is explaining too much" or "bb is explaining too little", or when a bb skill runs with no profile set.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
   version: 1.0.0
 ---
 
-# Config
+# Profile
 
 **Scope: the person's profile, and nothing else.** How much to spell out, which words to
 use, and whether a command comes as one line or as numbered steps. Not the project, not
 the machine, not the ship destination.
 
 The profile is a fact about the person, so it is asked once and stored once, at
-`~/.claude/bb.config.json`. The SessionStart hook reads it into every session. The full
+`~/.claude/bb.profile.json`. The SessionStart hook reads it into every session. The full
 contract, the schema and the reading rules live in the plugin-level
-`references/bb-config.md`; read it before writing the file.
+`references/bb-profile.md`; read it before writing the file.
 
 ## Workflow
 
-1. **Read `~/.claude/bb.config.json`.** Missing, unreadable or malformed all mean the
+1. **Read `~/.claude/bb.profile.json`.** Missing, unreadable or malformed all mean the
    same thing: no profile. Never report a malformed file as an error the person has to
    fix; offer to calibrate over it.
 
@@ -34,19 +34,19 @@ contract, the schema and the reading rules live in the plugin-level
    and these four options. Every option carries the hint of who it is for, so nobody has
    to know the term to answer:
 
-   | option label                           | description                                                                                                         |
-   | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-   | Abro e edito o código                  | Você mexe no código, não só no resultado. Quem só quer o resultado, deixa em branco.                                |
-   | Rodo comandos e git                    | Terminal faz parte do seu dia. Quem nunca abriu um, deixa em branco.                                                |
-   | Quero as partes técnicas passo a passo | Cada comando com onde rodar e o que ele mostra quando dá certo. Ideal para pessoas não técnicas.                    |
-   | Termos técnicos passam sem tradução    | `scaffold`, `branch`, `MCP` e `embed` você lê sem precisar de tradução. Quem prefere em português, deixa em branco. |
+   | option label                  | description                                                                                                   |
+   | ----------------------------- | ------------------------------------------------------------------------------------------------------------- |
+   | I open and edit the code      | You work in the code, not only in the result. Leave it blank if you only want the result.                     |
+   | I run commands and git        | The terminal is part of your day. Leave it blank if you have never opened one.                                |
+   | Spell out the technical parts | Every command with where to run it and what it prints when it works. Made for non technical people.           |
+   | Technical terms read fine     | `scaffold`, `branch`, `MCP` and `embed` land without a translation. Leave it blank if you prefer plain words. |
 
    Checked is `true`, unchecked is `false`. Nothing checked is a valid answer, and it is
    the most careful profile there is.
 
    **Pre-fill from an old profile when there is one.** A project that brisar ran before the
-   config existed carries `profile.persona_id` in its `.brisar/session.yaml`. Derive the
-   four flags from it (the table in `references/bb-config.md`), pre-check them, and say in
+   profile file existed carries `profile.persona_id` in its `.brisar/session.yaml`. Derive the
+   four flags from it (the table in `references/bb-profile.md`), pre-check them, and say in
    one line where they came from so the person corrects instead of re-answering.
 
 5. **Write the file.** Create `~/.claude` if it is missing. `version: 1`, the four flags,

@@ -8,5 +8,5 @@ Re-establish how this work runs, especially right after a context compaction, wh
 - **Irreversible actions stay manual.** Merging, force-push, and deploys are never automated. The intent is yours to keep.
 - **Be honest, not agreeable.** Commit to a decisive recommendation and name the tension the user may not see: no fence-sitting, no flattery.
 - **The prose follows one set of style rules.** The plugin-level `references/doc-style.md` states them whole, for every sentence bb writes, in its own files and in the documents it generates. One of them is punctuation: where a dash would go, write a comma, a colon, or a period, or rewrite the sentence.
-- **Calibrate the explaining to the person named below.** How much to spell out, which words to use, and whether a command comes as one line or as steps: that is the section that closes this frame, and it is set once by `/bb:config`.
+- **Calibrate the explaining to the person named below.** How much to spell out, which words to use, and whether a command comes as one line or as steps: that is the section that closes this frame, and it is set once by `/bb:profile`.
 - **One name per thing.** Call each thing by the name it has in the code or in the repo. The item of `## Tasks` is a **task**, the file at `.bb/<slug>/spec.md` is a **spec**. The plugin-level `references/doc-style.md` carries the rule.

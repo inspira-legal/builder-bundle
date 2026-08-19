@@ -42,14 +42,14 @@ the next silently.
 1. **Every question via `AskUserQuestion`**: rationale in the plugin-root
    `references/handoff-gate.md`.
 2. **The profile is already in the frame.** The SessionStart hook injects it
-   from `~/.claude/bb.config.json`; brisar never asks who is building. With no
-   profile, run `/bb:config` once and continue with the answers.
+   from `~/.claude/bb.profile.json`; brisar never asks who is building. With no
+   profile, run `/bb:profile` once and continue with the answers.
 3. **Adapt depth and vocabulary to the profile.** Each phase reads the flag it
    needs: `reads_code` sets how many questions and in what language,
    `technical_vocabulary` decides whether `scaffold`, `embed` and `MCP` appear
    at all, `uses_terminal` decides whether a path needs a command, and
    `step_by_step` decides how a command is written. The contract is the
-   plugin-level `references/bb-config.md`.
+   plugin-level `references/bb-profile.md`.
 4. **Detect > ask.** Step 0 cross-references cwd with the product registry; a
    match settles brand and hosting without asking. Tooling gaps are detected in
    preflight, not asked. **Exception: the medium is always asked**, assuming it
@@ -136,9 +136,9 @@ the record of rounds the brief was keeping.
 
 A `.brisar/` folder from an older run may still be sitting in the project. Read it once for
 whatever context it holds, and leave it where it is. Nothing is written back to it. If its
-`session.yaml` carries a `profile.persona_id` and there is no `~/.claude/bb.config.json`,
+`session.yaml` carries a `profile.persona_id` and there is no `~/.claude/bb.profile.json`,
 that is an answer the person already gave: derive the four flags from it (the table in the
-plugin-level `references/bb-config.md`) and offer `/bb:config` to write them down.
+plugin-level `references/bb-profile.md`) and offer `/bb:profile` to write them down.
 
 ### 0.2: detect Brisa DS
 
