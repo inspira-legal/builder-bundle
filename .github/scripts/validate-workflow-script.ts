@@ -222,6 +222,71 @@ function lineOf(source: string, index: number): number {
   return source.slice(0, index).split("\n").length;
 }
 
+/** The bare words a literal may contain; every other identifier is a reference. */
+const META_LITERAL_WORDS = new Set(["true", "false", "null", "undefined"]);
+const IDENTIFIER_REGEX = /[A-Za-z_$][A-Za-z0-9_$]*/g;
+const PHASES_KEY_REGEX = /\bphases\s*:\s*\[/;
+const PHASE_CALL_REGEX = /\bphase\s*\(/g;
+
+/**
+ * The platform reads `meta` before the script runs, so a variable, a call or a spread there
+ * has nothing to resolve against: it has to be a pure literal, which the interpolation check
+ * alone does not prove. Inside the block every identifier is either a property key, which a
+ * `:` follows, or a value, and a value that is a bare word is one of the four above.
+ */
+function metaLiteralIssues(code: string, meta: { start: number; end: number }): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
+  const block = code.slice(meta.start, meta.end);
+
+  for (const hit of block.matchAll(IDENTIFIER_REGEX)) {
+    if (hit.index === undefined) continue;
+    // The exponent of `1e3` and the digits of `0x1f` match as identifiers; a digit before
+    // the match is what tells them apart from a word standing on its own.
+    if (hit.index > 0 && /[0-9]/.test(block[hit.index - 1])) continue;
+    if (META_LITERAL_WORDS.has(hit[0])) continue;
+    if (/^\s*:/.test(block.slice(hit.index + hit[0].length))) continue;
+
+    issues.push({
+      level: "error",
+      message: `"${hit[0]}" on line ${lineOf(code, meta.start + hit.index)} inside "export const meta": it must be a pure literal, so no variables and no calls`,
+    });
+  }
+
+  const spread = block.indexOf("...");
+  if (spread !== -1) {
+    issues.push({
+      level: "error",
+      message: `Spread on line ${lineOf(code, meta.start + spread)} inside "export const meta": it must be a pure literal`,
+    });
+  }
+
+  return issues;
+}
+
+/** How many entries `meta.phases` declares, or null when the block declares no `phases`. */
+function countPhaseEntries(block: string): number | null {
+  const key = block.match(PHASES_KEY_REGEX);
+  if (!key || key.index === undefined) return null;
+
+  let depth = 0;
+  let braces = 0;
+  let entries = 0;
+
+  for (let i = key.index + key[0].length - 1; i < block.length; i++) {
+    const ch = block[i];
+    if (ch === "[") depth++;
+    else if (ch === "]") {
+      depth--;
+      if (depth === 0) break;
+    } else if (ch === "{") {
+      if (depth === 1 && braces === 0) entries++;
+      braces++;
+    } else if (ch === "}" && braces > 0) braces--;
+  }
+
+  return entries;
+}
+
 function validateSource(source: string): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
 
@@ -248,6 +313,17 @@ function validateSource(source: string): ValidationIssue[] {
       level: "error",
       message: 'Interpolation inside "export const meta": it must be a pure literal',
     });
+  } else {
+    issues.push(...metaLiteralIssues(code, meta));
+
+    const declared = countPhaseEntries(code.slice(meta.start, meta.end));
+    const calls = (code.slice(0, meta.start) + code.slice(meta.end)).match(PHASE_CALL_REGEX) ?? [];
+    if (declared !== null && declared !== calls.length) {
+      issues.push({
+        level: "error",
+        message: `meta.phases declares ${declared} entries against ${calls.length} phase() calls: the platform matches them by title, so a stale declaration is a progress display that lies`,
+      });
+    }
   }
 
   const parallels = code.match(PARALLEL_REGEX) ?? [];
