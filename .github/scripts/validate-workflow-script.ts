@@ -9,8 +9,16 @@
  *   bun validate-workflow-script.ts a.js b.js         # validate specific files
  */
 
-import { readdir, readFile } from "fs/promises";
-import { basename, dirname, join, relative, resolve } from "path";
+import { readFile } from "fs/promises";
+import { basename, dirname } from "path";
+
+import {
+  type FileIssues,
+  type ValidationIssue,
+  reportAndExit,
+  resolveTargets,
+  runMain,
+} from "./lib/validate-common";
 
 /**
  * These break `resumeFromRunId`: a resumed run replays the script and would take a
@@ -25,11 +33,6 @@ const FORBIDDEN_CALLS = [
 
 const META_REGEX = /export\s+const\s+meta\s*=\s*\{/;
 const PARALLEL_REGEX = /\bparallel\s*\(/g;
-
-interface ValidationIssue {
-  level: "error" | "warning";
-  message: string;
-}
 
 /** The block from `export const meta = {` to its matching brace, or null when absent. */
 function findMetaBlock(source: string): string | null {
@@ -115,67 +118,19 @@ function isWorkflowScript(filePath: string): boolean {
   return filePath.endsWith(".js") && basename(dirname(filePath)) === "workflows";
 }
 
-async function findWorkflowScripts(baseDir: string): Promise<string[]> {
-  const results: string[] = [];
-
-  async function walk(dir: string) {
-    const entries = await readdir(dir, { withFileTypes: true });
-    for (const entry of entries) {
-      const fullPath = join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (entry.name === "node_modules" || entry.name === ".git") continue;
-        await walk(fullPath);
-      } else if (isWorkflowScript(fullPath)) {
-        results.push(fullPath);
-      }
-    }
-  }
-
-  await walk(baseDir);
-  return results;
-}
-
 async function main() {
-  const args = process.argv.slice(2);
-
-  let files: string[];
-  let baseDir: string;
-
-  if (args.length > 0 && args.every((a) => a.endsWith(".js"))) {
-    baseDir = process.cwd();
-    files = args.map((a) => resolve(a)).filter(isWorkflowScript);
-  } else {
-    baseDir = args[0] || process.cwd();
-    files = await findWorkflowScripts(baseDir);
-  }
-
-  let totalErrors = 0;
+  const { baseDir, files, notes } = await resolveTargets(process.argv.slice(2), isWorkflowScript);
 
   console.log(`Validating ${files.length} workflow scripts...\n`);
 
-  for (const filePath of files) {
-    const rel = relative(baseDir, filePath);
-    const source = await readFile(filePath, "utf-8");
-    const issues = validateSource(source);
+  const reports: FileIssues[] = [];
 
-    if (issues.length > 0) {
-      console.log(rel);
-      for (const issue of issues) {
-        const prefix = issue.level === "error" ? "  ERROR" : "  WARN ";
-        console.log(`${prefix}: ${issue.message}`);
-        if (issue.level === "error") totalErrors++;
-      }
-      console.log();
-    }
+  for (const path of files) {
+    const source = await readFile(path, "utf-8");
+    reports.push({ path, issues: validateSource(source) });
   }
 
-  console.log("---");
-  console.log(`Validated ${files.length} workflow scripts: ${totalErrors} errors`);
-
-  if (totalErrors > 0) process.exit(1);
+  reportAndExit(baseDir, reports, notes, "workflow scripts");
 }
 
-main().catch((err) => {
-  console.error("Fatal error:", err);
-  process.exit(2);
-});
+runMain(main);
