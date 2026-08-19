@@ -101,17 +101,17 @@ unless a review does.
      was the whole landing. Either way, say which way you called it and why.
 5. Report, then hand over the command. Never run it.
 
-## Report template (PT-BR)
+## Report template
 
 ```
 Landed no repo do app. Deploy é seu.
 
 App: <name> (<team>/<slug>)
 Commits: <n> · sha <short-sha>
-Deployments afetados: <slug (type), …>
-Checagens: pré-check <ok|N findings> · dry-run <plano computado|pulado: motivo|erro de plataforma> · opcodes <conferidos|pulado: motivo>
+Deployments affected: <slug (type), …>
+Checks: pre-check <ok|N findings> · dry-run <plan computed|skipped: reason|platform error> · opcodes <checked|skipped: reason>
 
-Pra deployar exatamente esse commit:
+To deploy exactly this commit:
   lexflow deploy --ref <sha>
 ```
 

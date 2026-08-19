@@ -97,13 +97,13 @@ Load the reference for the destination Step 1 settled, and follow it:
 Landing ends ship, not the flow. Per the plugin-root `references/handoff-gate.md`,
 one PT-BR question with two options:
 
-- **"Revisar agora"**: invoke `/bb:review` over what ship just produced (the
+- **"Review now"**: invoke `/bb:review` over what ship just produced (the
   commits, whether they were pushed or are waiting on the command ship handed you). It probes the
   fronts, asks which to run, and applies what you pick; on the PR path its fixes are
   follow-up commits on the same branch, pushed like any other. Lead with this one
-  (`(Recomendado)`) whenever the landing carried code.
-- **"Encerrar aqui"**: what landed stays landed; nothing else runs. Retome depois
-  com `/bb:review`. Lead with this one when the landing was docs, a manifest or a
+  (`(Recommended)`) whenever the landing carried code.
+- **"Stop here"**: what landed stays landed; nothing else runs. Come back to
+  `/bb:review` later. Lead with this one when the landing was docs, a manifest or a
   config edit with no code in it. A review there spends the agents to find nothing.
 
 **On the PR path, ask before the watch settles in.** `references/land-pr.md` ends

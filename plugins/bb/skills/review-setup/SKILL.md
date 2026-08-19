@@ -51,8 +51,8 @@ No handoff gate, report and stop:
 
 - Name what was written/changed: rule counts per severity, new/updated/removed
   IDs (update mode).
-- Remind: "O guia entra em vigor no próximo `/bb:review`. Ele lê o
-  CODE_REVIEW_GUIDE.md fresh a cada run."
+- Remind: "The guide takes effect on the next `/bb:review`. It reads
+  CODE_REVIEW_GUIDE.md fresh on every run."
 - If a legacy generated skill exists at `.claude/skills/code-review/SKILL.md`,
   flag it as superseded by `/bb:review` and suggest the user delete it (their
   action, not yours).
@@ -62,7 +62,7 @@ No handoff gate, report and stop:
 
 | WHEN                                             | THEN                                                                  |
 | ------------------------------------------------ | --------------------------------------------------------------------- |
-| update mode, no changes detected by any subagent | report "sem mudanças significativas desde a última atualização", stop |
+| update mode, no changes detected by any subagent | report "no significant changes since the last update", stop           |
 | repo > 1000 files                                | sample representative files per directory instead of exhaustive scans |
 | maintainer rejects every candidate               | guide ships with confirmed rules only; thin is fine, invented is not  |
 | legacy `.claude/skills/code-review/` present     | flag as superseded; never regenerate it                               |

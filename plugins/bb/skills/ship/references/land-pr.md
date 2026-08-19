@@ -18,7 +18,7 @@ Reached from ship's Step 1 when the destination is a pull request. Step 2 is don
    ```
    Add `--base`, `--draft`, `--label`, `--reviewer`, `--assignee` as requested. Output the PR URL.
 
-## Triage comments → fix → push → reply (automatic, sem pedir aprovação)
+## Triage comments → fix → push → reply (automatic, no approval asked)
 
 1. **Fetch comments** (background): `python ${CLAUDE_PLUGIN_ROOT}/scripts/fetch_comments.py`: conversation comments, reviews, and review threads (with `id` and `isResolved`) as JSON.
 2. **Triage** each **unresolved** thread into **fix** (implement the change), **answer** (a short reply, no code), or **unclear** (genuinely needs your call, not resolvable by guessing).

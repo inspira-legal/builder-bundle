@@ -47,12 +47,12 @@ either way.
 ## Finding shape
 
 ```
-# | file:line | critério WCAG (nome + número) | o que falha | quem é bloqueado | prioridade | fix
+# | file:line | WCAG criterion (name plus number) | what fails | who it blocks | priority | fix
 ```
 
 `quem é bloqueado` is this front's `failure_scenario`, the user-visible
 consequence, stated as the person and the block: "quem navega por teclado não
-alcança o botão de confirmar", "leitor de tela anuncia 'botão' sem dizer o quê".
+reach the confirm button", "the screen reader announces 'button' without saying what for".
 A finding that can't name who loses access isn't one.
 
 Exactly one priority per finding: **Critical** (blocks access entirely),
@@ -101,4 +101,4 @@ repository and no branch; the scope is whatever the user pointed at.
    (file/element), the WCAG criterion that fails, who is blocked, and a concrete
    fix. Close with `WCAG AA: passa | falha | parcial` plus the count per priority.
 5. **Gate** (per the plugin-root `references/handoff-gate.md`): "Corrigir os
-   Critical/Major (Recomendado)" → `act-apply-fixes.md`, then "Encerrar aqui".
+   Critical/Major (Recommended)" → `act-apply-fixes.md`, then "Stop here".

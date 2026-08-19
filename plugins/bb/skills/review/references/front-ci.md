@@ -23,7 +23,7 @@ Collect, read-only:
 Finding shape:
 
 ```
-# | check que falha (nome + URL do run) | causa raiz | evidência | fix proposto
+# | failing check (name plus run URL) | root cause | evidence | proposed fix
 ```
 
 - **causa raiz**: one sentence, specific ("test X asserts the old error message",

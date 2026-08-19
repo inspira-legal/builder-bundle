@@ -30,21 +30,21 @@ with the user before any challenge.
 Ask via `AskUserQuestion`:
 
 ```
-question: "Como você quer desafiar essa tese?"
+question: "How do you want this thesis challenged?"
 options:
-  - "Questionar premissas". Sonda o que está sendo tomado como verdade sem evidência.
-  - "Construir contra-argumento". Defende a posição oposta com força máxima.
-  - "Encontrar pontos de falha". Antecipa como isso pode falhar ou ser explorado.
-  - "Você decide". Eu recomendo o modo mais útil pro contexto.
+  - "Question the premises". Probes what is being taken as true with no evidence behind it.
+  - "Build the counter-argument". Defends the opposite position at full strength.
+  - "Find the failure points". Anticipates how this breaks or gets exploited.
+  - "You decide". I recommend the mode that serves this context best.
 ```
 
 Two picks need one follow-up question (also via `AskUserQuestion`):
 
-- **Questionar premissas** → _"Explorar as premissas (Socrático) ou auditar as
-  evidências (Falsificação)?"_
-- **Encontrar pontos de falha** → _"Projetar como falha (Pre-mortem) ou atacar
-  adversarialmente (Red Team)?"_
-- **Você decide** → evaluate the context, recommend the mode, and say briefly
+- **Question the premises** → _"Explore the premises (Socratic) or audit the
+  evidence (Falsification)?"_
+- **Find the failure points** → _"Project how it fails (Pre-mortem) or attack it
+  adversarially (Red Team)?"_
+- **You decide** → evaluate the context, recommend the mode, and say briefly
   why.
 
 ### Step 3: Apply the mode
@@ -57,7 +57,7 @@ Apply the frameworks without naming them out loud.
 ### Step 4: Present the challenges
 
 Present the **3–5 strongest challenges**, quality over quantity. Each challenge
-must be specific and concrete (never a generic "e se X?"), grounded in real
+must be specific and concrete (never a generic "what if X?"), grounded in real
 reasoning, and point toward improvement. Attack the steelmanned version, and let
 the strongest objections carry the weight rather than stacking minor ones.
 
@@ -81,10 +81,10 @@ when the thesis **survived** (HIGH or MEDIUM) **and** is something buildable;
 format per the plugin-level `references/handoff-gate.md`:
 
 ```
-question: "Desafio fechado. A tese saiu fortalecida (confidence <X>). Como seguimos?"
+question: "Challenge closed. The thesis came out stronger (confidence <X>). Where do we go?"
 options:
-  - "Especificar (Recomendado)". Rodo /bb:spec agora: transformo a tese numa spec construível.
-  - "Encerrar aqui". A síntese fica com você; retome com /bb:spec quando quiser construir.
+  - "Spec it (Recommended)". I run /bb:spec now: I turn the thesis into a buildable spec.
+  - "Stop here". The synthesis is yours; come back to /bb:spec whenever you want to build.
 ```
 
 On LOW, report the synthesis and stop. The smallest experiment comes before any

@@ -15,14 +15,14 @@ All user-facing text is PT-BR.
 
 ## Modes
 
-| Mode         | Input signals                                                   | Shape of the output                                   |
-| ------------ | --------------------------------------------------------------- | ----------------------------------------------------- |
-| **Decision** | "devo…", "vale a pena", "qual caminho", "escolhendo entre"      | criteria + tradeoffs → explicit recommendation        |
-| **Problem**  | "não tá funcionando", "travado", "não entendo por quê"          | diagnosis → root-cause hypotheses → next steps        |
-| **Idea**     | "e se…", "tava pensando", "seria legal", "uma ideia"            | expansion → viability → what validates or invalidates |
-| **Strategy** | "como consolidar", "próximos meses", "longo prazo", "carreira"  | time framework + levers + risks + review criterion    |
-| **Study**    | book/article title, author name, course, technical concept      | synthesis → connection to current work → relevance    |
-| **Take**     | "o que você acha?", "sua opinião", "qual é melhor", "gut check" | verdict first → load-bearing reasons → calibration    |
+| Mode         | Input signals                                                        | Shape of the output                                   |
+| ------------ | -------------------------------------------------------------------- | ----------------------------------------------------- |
+| **Decision** | "should I…", "is it worth it", "which path", "choosing between"      | criteria + tradeoffs → explicit recommendation        |
+| **Problem**  | "this is not working", "stuck", "I do not get why"                   | diagnosis → root-cause hypotheses → next steps        |
+| **Idea**     | "what if…", "I was thinking", "it would be nice", "an idea"          | expansion → viability → what validates or invalidates |
+| **Strategy** | "how do I consolidate", "the next months", "long term", "career"     | time framework + levers + risks + review criterion    |
+| **Study**    | book/article title, author name, course, technical concept           | synthesis → connection to current work → relevance    |
+| **Take**     | "what do you think?", "your opinion", "which is better", "gut check" | verdict first → load-bearing reasons → calibration    |
 
 Read the classified mode's section in `references/modes.md` (only that section)
 and follow it.
@@ -35,7 +35,7 @@ and follow it.
   proceeding.
 - **Suggest `/bb:challenge`:** if the user arrives with a position already
   formed and is seeking confirmation rather than exploration, suggest at the
-  end: _"Parece que você já tem uma posição. Quer rodar /bb:challenge antes de
+  end: _"Sounds like you already hold a position. Want to run /bb:challenge before
   decidir?"_
 - **Systems level:** when relevant, zoom out one level. What does this
   specific situation reveal about the larger system?
@@ -60,11 +60,11 @@ a feature, flow, or product problem (most common in Problem and Idea modes).
 Format per the plugin-level `references/handoff-gate.md`:
 
 ```
-question: "A análise convergiu em algo construível. Como seguimos?"
+question: "The analysis converged on something buildable. Where do we go?"
 options:
-  - "Especificar (Recomendado)". Rodo /bb:spec agora: transformo a conclusão numa spec construível.
-  - "Discover". Rodo /bb:discover: enquadro o problema e o fit antes de desenhar.
-  - "Encerrar aqui". A conclusão fica com você; retome com /bb:spec ou /bb:discover.
+  - "Spec it (Recommended)". I run /bb:spec now: I turn the conclusion into a buildable spec.
+  - "Discover". I run /bb:discover: I frame the problem and its fit before any design.
+  - "Stop here". The conclusion is yours; come back with /bb:spec or /bb:discover.
 ```
 
 When the session was exploratory and didn't converge, or the mode was Study or

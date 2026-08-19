@@ -50,8 +50,8 @@ Load only the section for the mode classified in SKILL.md.
    insights, and what contradicts common intuitions.
 3. If it is a technical concept: explain with an analogy before the formal
    definition. The user learns through connections.
-4. Filter explicitly: "o que disso se aplica ao seu contexto agora" vs. "o que é
-   interessante mas não urgente".
+4. Filter explicitly: "what of this applies to your context now" vs. "what is
+   interesting but not urgent".
 5. Suggest connections with other concepts already mentioned when relevant.
 6. Seek external sources to complement when the input cites an author or work.
 
@@ -62,7 +62,7 @@ thing a model is structurally bad at: saying what's true over what's
 comfortable.
 
 - **Verdict first.** Open with one clear recommendation, not a survey, not
-  "ambos têm méritos".
+  "both have their merits".
 - **Earn it, tight.** Two to four load-bearing reasons; cut the rest.
 - **Name the tension they don't see.** The flaw in the framing, or the
   non-obvious trade-off they didn't ask about but need. This is the

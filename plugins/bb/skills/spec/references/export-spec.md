@@ -160,19 +160,19 @@ brand guide exists:
 - **Empty states:** guide with a CTA. Tell the user what to do next, not just
   that nothing is there.
 - **Errors:** explain what happened + what to do, empathetic tone.
-- **Loading:** contextual to the operation ("Buscando…", "Gerando relatório…").
+- **Loading:** contextual to the operation ("Searching…", "Generating the report…").
 - **Language:** active voice, present tense, numbers written out in body text.
 
-## Handoff (PT-BR, shown to the user)
+## Handoff, shown to the user
 
 After exporting, emit:
 
 ```
-Spec exportada. O que levar para cada destino:
+Spec exported. What to carry to each destination:
 
-→ Exploração visual: use spec.md + content.md como insumo (Figma / /bb:brisar)
-→ Implementação: compartilhe spec.md [+ tasks.md se houver] com o time, ou rode /bb:implement direto da spec
-→ Próximo passo: [ação específica mais importante agora]
+→ Visual exploration: use spec.md plus content.md as the input (Figma / /bb:brisar)
+→ Implementation: share spec.md [plus tasks.md when there is one] with the team, or run /bb:implement straight from the spec
+→ Next step: [the single most important concrete action right now]
 ```
 
 ## Don't invent

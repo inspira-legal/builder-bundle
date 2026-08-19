@@ -48,7 +48,7 @@ the project exercising its own escape hatch. Leave it.
 ## 3. Finding shape
 
 ```
-# | regra (ID ou path§seção) | "texto da regra" | file:line | linha que desvia | severidade | fix
+# | rule (ID or path§section) | "the rule's text" | file:line | the deviating line | severity | fix
 ```
 
 Severity comes from the guide's ladder. An in-code deviation ranks **MEDIUM** unless
@@ -66,7 +66,7 @@ the same rules a maintainer would go through by hand, so the silence is readable
 | regra | status |
 | PAT-002 Service layer | PASS |
 | TST-001 Teste por comportamento novo | FAIL → item 3 |
-| SEC-004 Sem segredo em código | PASS |
+| SEC-004 No secret in code | PASS |
 SKIP (fora do escopo do diff): DEP-001, OBS-002, CMT-003; nenhum arquivo tocado ativa
 ```
 

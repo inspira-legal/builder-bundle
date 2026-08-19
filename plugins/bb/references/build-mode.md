@@ -32,20 +32,18 @@ This is a mid-skill question, not the handoff gate. The gate convention in
 `handoff-gate.md` still applies to the one at the end of the skill. What carries over
 from it: the question goes through `AskUserQuestion` (a question printed as text has
 no response path), the tool supplies "Other" on its own, and the recommended option
-leads and is suffixed `(Recomendado)`.
+leads and is suffixed `(Recommended)`.
 
 ## The question
 
-All of it in PT-BR:
-
 ```
-question: "A spec tem N tarefas. Construir via workflow (um agente por tarefa) ou no contexto desta sessão?"
+question: "The spec has N tasks. Build via workflow (one agent per task) or in this session's context?"
 options:
-  - "Via workflow (Recomendado)". Um agente por tarefa, em sequência, na mesma árvore. Cada um começa com contexto limpo; as convenções passam adiante numa nota. Você acompanha em /workflows.
-  - "Neste contexto". Construo as tarefas aqui mesmo, como sempre. Numa spec grande o build bate compactação no meio e começa a derivar da spec.
+  - "Via workflow (Recommended)". One agent per task, in sequence, in the same tree. Each one starts on clean context; the conventions travel forward in a note. You follow along in /workflows.
+  - "In this context". I build the tasks right here, as always. On a big spec the build hits compaction halfway and starts drifting from the spec.
 ```
 
-Swap the `(Recomendado)` suffix per the rule below; the option text itself doesn't
+Swap the `(Recommended)` suffix per the rule below; the option text itself doesn't
 change.
 
 ## Which one leads: how self-sufficient the spec is
@@ -83,8 +81,8 @@ on, when org-managed settings turn it off, or when the client predates the versi
 that shipped dynamic workflows. Check before asking: an option that can't be executed
 isn't a choice.
 
-Absent, both skills build in context and **say why in one line**: "workflows
-desligados nesta sessão, construindo aqui". A silent downgrade reads as a preference
+Absent, both skills build in context and **say why in one line**: "workflows are off
+in this session, building here". A silent downgrade reads as a preference
 and hides a setting the user may not know is on.
 
 ## After the pick

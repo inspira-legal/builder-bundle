@@ -9,7 +9,8 @@ what usually comes next") without ever deciding for them.
 
 Anything expecting an answer goes through `AskUserQuestion`. A question printed
 as plain text has no response path, so the flow stalls. The tool auto-provides
-an "Other" free-text option; a manual "Outro"/"Modificar" option is redundant.
+an "Other" free-text option; a manual "Other"/"Change something" option is
+redundant.
 
 ## The rule
 
@@ -17,7 +18,7 @@ an "Other" free-text option; a manual "Outro"/"Modificar" option is redundant.
   exceptions: `/bb:delegate` (the explicit "run everything" verb; chaining is its
   job), and the `implement → ship` auto-chain when shipping was already authorized
   up front (a delegate run).
-- **"Encerrar aqui" is always an option.** Picking it ends the turn; nothing is
+- **"Stop here" is always an option.** Picking it ends the turn; nothing is
   invoked, no follow-up question. The user is never trapped in the flow.
 - **One gate per skill, at the end.** Mid-skill questions are the skill's own
   business (gray areas, confirmations); the handoff gate is the last interaction.
@@ -27,32 +28,32 @@ an "Other" free-text option; a manual "Outro"/"Modificar" option is redundant.
 
 ## The format
 
-Ask one question, in PT-BR (all gate text the user sees is PT-BR):
+Ask one question:
 
 - `question`: one sentence naming what just finished and asking how to follow.
 - `options`: 2–4, each a next skill (or action) with a one-line description of
   what invoking it will do **now**. Lead with the recommended pick and suffix its
-  label with `(Recomendado)`.
-- Last option: **"Encerrar aqui"**. Description says what stays saved and how to
+  label with `(Recommended)`.
+- Last option: **"Stop here"**. Description says what stays saved and how to
   pick the flow back up later (the exact `/bb:<skill>` command).
 
 Example (spec's exit gate, 3-way):
 
 ```
-question: "Spec validada e salva em .bb/<slug>/spec.md. Como seguimos?"
+question: "Spec validated and saved at .bb/<slug>/spec.md. Where do we go?"
 options:
-  - "Implementar (Recomendado)". Rodo /bb:implement agora: construo as tarefas e paro pronto pra ship.
-  - "Delegar". Rodo /bb:delegate <slug>: implement + ship de ponta a ponta.
-  - "Encerrar aqui". A spec fica salva; retome depois com /bb:implement ou /bb:delegate <slug>.
+  - "Implement (Recommended)". I run /bb:implement now: I build the tasks and stop ready to ship.
+  - "Delegate". I run /bb:delegate <slug>: implement plus ship, end to end.
+  - "Stop here". The spec stays saved; pick it back up with /bb:implement or /bb:delegate <slug>.
 ```
 
 ## Journey map (what gates typically offer)
 
-- `discover` → spec (é código) / brisar (é design) / challenge (testar a tese) / encerrar
-- `spec` → implement / delegate / encerrar
-- `implement` → ship / encerrar
-- `ship` → review (da PR aberta) / encerrar
-- `review` → aplicar mais itens / rodar as frentes que faltaram / auditar a UI rodando / review-setup / ship (quando não há PR) · no máximo três, por prioridade, + encerrar
-- `brisar` (ao entregar) → review (auditoria de acessibilidade) / spec / encerrar
-- `think` (quando convergiu) → spec / discover / encerrar
-- `challenge` → devolve a tese ao dono; oferece spec quando a tese sobreviveu e é construível
+- `discover` → spec (it's code) / brisar (it's design) / challenge (test the thesis) / stop
+- `spec` → implement / delegate / stop
+- `implement` → ship / stop
+- `ship` → review (of the PR it opened) / stop
+- `review` → apply more items / run the fronts that were skipped / audit the running UI / review-setup / ship (when there is no PR) · three at most, by priority, plus stop
+- `brisar` (on delivery) → review (accessibility audit) / spec / stop
+- `think` (once it converged) → spec / discover / stop
+- `challenge` → hands the thesis back to its owner; offers spec when the thesis survived and is buildable

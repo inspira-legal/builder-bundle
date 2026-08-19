@@ -46,10 +46,10 @@ recommendation: update|remove|keep}` with concrete example files.
 ## 3. Consolidate and short-circuit
 
 Merge the three results, dedupe, group by type (new / drifted / obsolete). If
-**nothing** was found, report "sem mudanças significativas desde a última
-atualização do guia" and stop, no interview, no edits.
+**nothing** was found, report "no significant changes since the guide was last
+updated" and stop, no interview, no edits.
 
-Otherwise print the summary (novos padrões / regras a revisar / padrões
+Otherwise print the summary (new patterns / rules to revisit / patterns
 obsoletos, each with evidence) and run the **update-mode interview**
 (`interview.md`). One item at a time, only on changed items.
 
@@ -65,5 +65,5 @@ Use the **Edit** tool, never rewrite the whole file:
   **preserve the original ID**, never renumber.
 - **Remove** rules the maintainer approved for removal.
 - **Preserve** everything else exactly as-is.
-- Update the "Última atualização" date and append a row to Histórico de
-  Alterações.
+- Update the "Last updated" date and append a row to the change history
+  table.

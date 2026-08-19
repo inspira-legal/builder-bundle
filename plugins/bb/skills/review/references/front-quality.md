@@ -33,7 +33,7 @@ What this front adds is how to _hunt_ with them:
 
 The `failure_scenario` field states the **concrete cost** instead of a crash:
 what exactly is duplicated (and where the existing helper is), what work is
-wasted per call, what a future editor has to keep in sync. "Poderia ser mais
+wasted per call, what a future editor has to keep in sync. "This could be more
 limpo" is not a cost.
 
 ## Hold back when the cleanup hurts

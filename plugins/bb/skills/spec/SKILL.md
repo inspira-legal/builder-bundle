@@ -51,13 +51,13 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
    python3 scripts/lint_spec.py .bb/<slug>/spec.md
    ```
 
-   Then spawn a reviewer (Agent tool, fresh context) given ONLY the spec and this mandate: _"você não escreveu isto. Ache o que está faltando, o que não está mapeado, o que se contradiz, e o que sobra: fato repetido em mais de uma seção, prosa que reconta a conversa em vez de descrever o que construir."_ A reviewer with no memory of the conversation that produced the spec reads it the way the builder will. Fold what it finds back into step 3, and carry its verdict to the gate in one line.
+   Then spawn a reviewer (Agent tool, fresh context) given ONLY the spec and this mandate: _"you did not write this. Find what is missing, what is unmapped, what contradicts itself, and what is surplus: a fact repeated in more than one section, prose that retells the conversation instead of describing what to build."_ A reviewer with no memory of the conversation that produced the spec reads it the way the builder will. Fold what it finds back into step 3, and carry its verdict to the gate in one line.
 
    Without an Agent tool in this context, say so at the gate rather than showing a verdict that never ran.
 
 7. **The exit gate: blocks on open load-bearing decisions.** Don't gate blind: first **show the artifact the user is signing off on**, a tight recap of the happy path, the full edge→outcome table, the **coverage table** (behavior → task → test) with `⚠️` on any unmapped row plus a one-line counter (`N behaviors, M mapped, K open`), and (Medium+) the **independent reviewer's verdict** in one line (clean, or what it flagged and how it was resolved), so "is this complete?" is answerable at a glance instead of forcing them to reopen the file. Then list what's **still open** (unresolved load-bearing decisions + parked questions). Then ask one `AskUserQuestion` (a handoff gate, with the format in the plugin-level `references/handoff-gate.md`):
    - **If any load-bearing decision is still open:** do NOT offer a clean "build". The only options are **resolve it now** or **defer explicitly** ("decide at build time", recorded as such in the spec). Never a silent "build anyway".
-   - **If nothing load-bearing is open:** finalize `.bb/<slug>/spec.md` (with its frontmatter block; see "Capture the alignment"), then offer three paths: **Implementar** (invoke `/bb:implement` now: build every task and stop ready to ship, where it offers `/bb:ship`), **Delegar** (invoke `/bb:delegate <slug>` now: build every task _and_ land it, the full `implement → ship` run), or **Encerrar aqui** (leave the spec; the user picks up later). Choosing to adjust instead is always available. That loops back into the question tool; an Implementar or Delegar pick is the affirmative start, not a silent roll-through.
+   - **If nothing load-bearing is open:** finalize `.bb/<slug>/spec.md` (with its frontmatter block; see "Capture the alignment"), then offer three paths: **Implement** (invoke `/bb:implement` now: build every task and stop ready to ship, where it offers `/bb:ship`), **Delegate** (invoke `/bb:delegate <slug>` now: build every task _and_ land it, the full `implement → ship` run), or **Stop here** (leave the spec; the user picks up later). Choosing to adjust instead is always available. That loops back into the question tool; an Implement or Delegate pick is the affirmative start, not a silent roll-through.
 
 Size the ask to the stakes: cheap-to-reverse decisions lead with your pick (the user vetoes if wrong); expensive-to-undo ones lay the options out and let them choose. Full playbook in `references/draft-first.md`.
 
@@ -107,9 +107,9 @@ Before asserting how something works: check the codebase, then its docs, then th
 
 spec always ends at a validated `.bb/<slug>/spec.md`; the spec is the durable asset either way. What changes is what happens next, and the gate's 3-way pick (above) decides it. The step from speccing to building is a checkpoint the user crosses on purpose, not a stop.
 
-- **Implementar:** invoke `/bb:implement` now. It loads this spec as the intent, builds every task, and stops ready to ship, where it offers `/bb:ship`. The "build it, I'll decide on shipping after" path.
-- **Delegar:** invoke `/bb:delegate <slug>` now. It loads this spec as the intent, builds every task, _and_ lands it (the full `/bb:implement` → `/bb:ship` run). The "I'm happy, run the whole thing" path.
-- **Encerrar aqui:** leave the spec and say the next step plainly: "Spec salva em `.bb/<slug>/spec.md`. Pra construir depois: `/bb:implement` (constrói, depois oferece ship), ou `/bb:delegate <slug>` pra construir + landar de uma vez."
+- **Implement:** invoke `/bb:implement` now. It loads this spec as the intent, builds every task, and stops ready to ship, where it offers `/bb:ship`. The "build it, I'll decide on shipping after" path.
+- **Delegate:** invoke `/bb:delegate <slug>` now. It loads this spec as the intent, builds every task, _and_ lands it (the full `/bb:implement` → `/bb:ship` run). The "I'm happy, run the whole thing" path.
+- **Stop here:** leave the spec and say the next step plainly: "Spec saved at `.bb/<slug>/spec.md`. To build it later: `/bb:implement` (builds, then offers ship), or `/bb:delegate <slug>` to build and land in one run."
 
 **Safety valve:** if building later reveals the idea was underspecified (surprises pile up), STOP and re-spec. That's the signal alignment was incomplete, not a license to improvise.
 
