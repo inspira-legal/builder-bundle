@@ -35,8 +35,11 @@ and stop.
      unknown `created` (sorted last). If none qualify, report "no pending specs"
      and stop.
    - A spec already `done`: report it's done and ask whether to re-run. A `blocked`
-     spec is skipped in bare selection and reported, not silently dropped; name it
-     so the user can re-spec it.
+     spec is skipped in bare selection and reported, not silently dropped: name it
+     with the blocker its `## Open` carries, and where that blocker sends it. The
+     spec's own gap is `/bb:spec`'s to close; a check the run had no permission to
+     execute, a tree already red, and a stop on the way to landing all predate the
+     spec and get fixed where they live, after which delegate runs again.
 
 2. **Open the run, flip `status: in-progress`.** Edit the spec's frontmatter and
    commit that edit (conventional style; no AI attribution).
@@ -63,8 +66,15 @@ and stop.
    A non-null `stopped` (a stage-zero blocker such as a reuse note pointing at code
    that's gone, a check the run can't execute, or a tree already red; a red task; a
    lost agent; or a spec the agent found underspecified) lands the same place the
-   safety valve does: flip `status: blocked`, name the blocker, exit without
-   landing. What came back green is already committed and ticked.
+   safety valve does: flip `status: blocked`, exit without landing. What came back
+   green is already committed and ticked.
+
+   **A blocked run records why, not just that.** `status: blocked` alone tells the next
+   run nothing, and by then the context that read the blocker is gone. Write it into the
+   spec's own `## Open`, one line naming the blocker and what it needs, and commit that
+   with the status flip; step 4 does the same for a stop on the way to landing, into the
+   PR description when there is a PR. That's the line step 1 reads back when it skips a
+   blocked spec.
 
 4. **Land: follow `/bb:ship`'s workflow.** Green the project's checks, commit and
    land per ship's own destination logic; ship settles the destination, asking only
@@ -96,8 +106,9 @@ and stop.
 | bare `/bb:delegate`, none pending                | report "no pending specs", stop                                                                                                                 |
 | selected spec already `in-progress`              | resume: implement skips checked tasks; status stays `in-progress` until landing                                                                 |
 | spec has no frontmatter                          | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                            |
-| implement safety valve fires (underspecified)    | flip `status: blocked`, point back to `/bb:spec`, stop; do not improvise                                                                        |
-| the build stops (stage zero or a task)           | flip `status: blocked`, exit without landing                                                                                                    |
+| implement safety valve fires (underspecified)    | flip `status: blocked`, write the blocker into the spec's `## Open`, point back to `/bb:spec`, stop; do not improvise                           |
+| the build stops (stage zero or a task)           | flip `status: blocked`, write the blocker into the spec's `## Open`, exit without landing                                                       |
+| bare `/bb:delegate`, the oldest spec is blocked  | skipped, and reported with the blocker its `## Open` carries and where that blocker sends it                                                    |
 | the build falls back to this context             | it runs the same way; the reason is named in one line, and again in step 6                                                                      |
 | ship hits an unrecoverable stop / blocker        | flip `status: blocked`; write the blocker into the PR description, or into the spec's `## Open` when the destination has no PR; report it; exit |
 | slug sits under both `.bb/` layouts              | one candidate; the `.bb/<slug>/` copy is the one read                                                                                           |
