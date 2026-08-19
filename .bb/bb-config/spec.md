@@ -233,7 +233,7 @@ Happy path, first time:
 - [x] **2. Hook reads and injects**: `inject_operating_context.py` composes the frame
       with the behavior block or the invitation; `operating-context.md` grows the slot
       → behaviors 1, 2, 3 · dep: 1 · verify: running the hook on both shapes
-- [ ] **3. The `/bb:config` skill**: `skills/config/SKILL.md`, calibrate, show,
+- [x] **3. The `/bb:config` skill**: `skills/config/SKILL.md`, calibrate, show,
       recalibrate, with its scope stated in the first line
       → behaviors 5, 6, 17, 18 · dep: 1 · verify: CI `validate-frontmatter`
 - [ ] **4. brisar stops asking**: `phase-0-calibration.md` is deleted, `SKILL.md` Step

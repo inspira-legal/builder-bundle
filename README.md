@@ -15,11 +15,17 @@ claude plugin marketplace add inspira-legal/builder-bundle
 claude plugin install bb@inspira-legal
 ```
 
-it ships a `SessionStart` operating-context hook, auto-active on install, and two read-only agents (`bb-review-finder`, `bb-review-verifier`) that review dispatches in parallel: internal pipeline roles, not entry points. skills are invoked as `/bb:<skill>` (e.g. `/bb:discover`, `/bb:spec`, `/bb:ship`). every skill with a natural next step ends at a gate that **suggests** the next trilha, and never auto-invokes.
+it ships a `SessionStart` operating-context hook, auto-active on install, which also carries the profile set by `/bb:config`, and two read-only agents (`bb-review-finder`, `bb-review-verifier`) that review dispatches in parallel: internal pipeline roles, not entry points. skills are invoked as `/bb:<skill>` (e.g. `/bb:discover`, `/bb:spec`, `/bb:ship`). every skill with a natural next step ends at a gate that **suggests** the next trilha, and never auto-invokes.
 
 ## what is inside
 
-one plugin, `bb`; 15 skills in 6 trilhas.
+one plugin, `bb`; 16 skills in 6 trilhas, plus `/bb:config`.
+
+### configurar: who is on the other side
+
+| skill        | description                                                                                                                                       |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:config` | asks four questions once (do you read the code, do you run commands, do you want the technical parts step by step, does technical vocabulary read fine) and writes `~/.claude/bb.config.json`. the hook carries the answers into every session, so no skill asks again |
 
 ### pensar: frame and decide before building
 
