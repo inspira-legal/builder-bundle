@@ -2,798 +2,809 @@
 
 ## 2.12.1 (2026-08-18)
 
-**A régua de estilo virou autossuficiente.** O `doc-style.md` apontava a fonte na
-web como quem resolve o que a página não resolve, e isso põe uma leitura na nuvem
-no meio de uma escrita local. Agora a página carrega a régua inteira: quem escreve
-lê um arquivo do repo e nada mais.
+**The style rules became self-sufficient.** `doc-style.md` pointed at the source on
+the web as the thing that settles what the page does not, which puts a read in the
+cloud in the middle of a local write. The page now carries every rule: whoever
+writes reads one file in the repo and nothing else.
 
-### Mudou
+### Changed
 
-- **A citação da fonte saiu**, do título, da precedência e do enquadramento. Não é
-  mais "o guia do Google como o bb escreve", é o estilo do bb, com as regras
-  escritas. A precedência ficou em dois degraus, contrato da skill primeiro e a
-  página depois, e o que nenhum dos dois resolve vai pra regra mais próxima ali
-  mesmo.
-- **As duas divergências viraram regra própria.** Travessão tem seção agora, em vez
-  de existir como diferença em relação a outro guia. A metáfora virou bullet de voz
-  e ganhou o teste que faltava: vale quando nomeia um mecanismo, como a válvula de
-  segurança que dispara ou a porta que é menor e não fechada. Onde a frase literal
-  já é curta, escreve a literal.
+- **The citation of the source is gone**, from the title, the precedence and the
+  framing. It is no longer "Google's guide as the way bb writes", it is bb's style,
+  with the rules written out. Precedence came down to two steps, the skill's
+  contract first and the page second, and what neither settles goes to the closest
+  rule right there.
+- **The two divergences became rules of their own.** The dash has its own section
+  now, instead of existing as a difference from another guide. The figure of speech
+  became a voice bullet and got the test it was missing: it holds when it names a
+  mechanism, like the safety valve that fires. Where the literal sentence is already
+  short, write the literal one.
 
-### Novo
+### New
 
-- **O dois-pontos não serve dentro do frontmatter.** A seção de travessão registra
-  que um `: ` em valor YAML não citado é lido como mapa aninhado e reprova o
-  `validate-frontmatter.ts`. Ali o travessão vira ponto, parênteses ou vírgula. É a
-  regra que faltava por escrito quando a 2.12.0 quebrou o CI em 10 SKILL.md.
+- **A colon does not work inside frontmatter.** The dash section records that a `: `
+  in an unquoted YAML value reads as a nested mapping and fails
+  `validate-frontmatter.ts`. There a dash becomes a period, parentheses or a comma.
+  This is the rule that was missing in writing when 2.12.0 broke CI in 10 SKILL.md
+  files.
 
 ## 2.12.0 (2026-08-18)
 
-**A prosa em inglês do bb ganhou régua, e o travessão saiu.** Os documentos que o
-bb gera pra fora e a instrução que os agentes leem não tinham padrão nenhum:
-`## How It Works` ficava ao lado de `## Style contract`, e o travessão aparecia
-1737 vezes em 84 arquivos, mesmo com o `/bb:write-readme` proibindo o dele desde
-a primeira versão. Agora o [guia de documentação do
-Google](https://developers.google.com/style) é a régua, destilado numa reference
-que quem escreve lê antes de escrever.
+**bb's English prose got style rules, and the dash is gone.** The documents bb
+generates outward and the instruction agents read had no standard at all:
+`## How It Works` sat next to `## Style contract`, and the dash showed up 1737 times
+in 84 files, even with `/bb:write-readme` banning its own since the first version.
+Now [Google's documentation guide](https://developers.google.com/style) is the rule,
+distilled into a reference whoever writes reads before writing.
 
-### Novo
+### New
 
-- **`plugins/bb/references/doc-style.md`**, nível plugin e não escopo de skill,
-  porque governa a prosa de todas as skills e a do repo. Cobre tom e voz,
-  heading, formatação de texto, lista e tabela, link, número, data e pontuação,
-  tudo em forma positiva: sem par recommended/not recommended, porque escrever o
-  errado ao lado do certo prima o errado.
-- **Duas divergências, registradas na abertura** pra ninguém achar que é
-  esquecimento. Travessão nunca, que é mais forte que a Google (ela permite o
-  travessão sem espaço). E a voz figurativa fica: a Google evita metáfora porque
-  ela atravessa mal a tradução, mas aqui a metáfora é o que faz a instrução colar
-  no agente que lê o `SKILL.md`.
-- **Precedência escrita**: regra da casa primeiro, guia depois, que é a
-  hierarquia que a própria Google publica. Onde o `/bb:write-readme` já tem
-  contrato (tudo minúsculo, quatro blocos, badge por fato verificável), o
-  contrato ganha, e o `SKILL.md` dele aponta pra reference em vez de repetir a
-  regra.
+- **`plugins/bb/references/doc-style.md`**, plugin level rather than skill scoped,
+  because it governs the prose of every skill and of the repo. It covers tone and
+  voice, headings, text formatting, lists and tables, links, numbers, dates and
+  punctuation, all in positive form: no recommended/not recommended pair, because
+  writing the wrong one next to the right one primes the wrong one.
+- **Two divergences, recorded in the opening** so nobody reads them as oversights.
+  Never a dash, which is stronger than Google (it allows the dash without spaces).
+  And the figurative voice stays: Google avoids metaphor because it travels badly
+  through translation, but here the metaphor is what makes the instruction stick to
+  the agent reading the `SKILL.md`.
+- **Precedence written down**: the house rule first, the guide second, which is the
+  hierarchy Google itself publishes. Where `/bb:write-readme` already has a contract
+  (all lowercase, four blocks, one badge per verifiable fact), the contract wins,
+  and its `SKILL.md` points at the reference instead of repeating the rule.
 
-### Mudou
+### Changed
 
-- **O travessão saiu de 87 arquivos.** Cada remoção foi julgamento por frase, não
-  `sed`: onde ele ia, entrou vírgula, dois-pontos, ponto, ou a frase foi
-  reescrita. Onde o par de travessões era aparte, virou parênteses.
-- **Os headings em title case declarado fora de `ds/` viraram sentence case**, com
-  nome próprio e identificador mantendo a caixa.
-- **A régua alcança qualquer sessão**: o `hooks/operating-context.md` aponta pra
-  reference junto com o `vocabulario.md`, e o `.claude/CLAUDE.md`, o
-  `write-readme/SKILL.md` e o `review-setup/references/guide-template.md` também.
-- **A regra do travessão atravessa as duas línguas**, porque é pontuação e não
-  vocabulário: os 22 travessões que moravam em `description:` são linha em
-  português e caíram junto. O resto do português continua governado pelo
-  `vocabulario.md`.
+- **The dash left 87 files.** Every removal was a judgment per sentence, not `sed`:
+  where it went, a comma, a colon or a period went in, or the sentence was
+  rewritten. Where a pair of dashes was an aside, it became parentheses.
+- **The headings in declared title case outside `ds/` became sentence case**, with
+  proper nouns and identifiers keeping their case.
+- **The rules reach any session**: `hooks/operating-context.md` points at the
+  reference alongside `vocabulario.md`, and so do `.claude/CLAUDE.md`,
+  `write-readme/SKILL.md` and `review-setup/references/guide-template.md`.
+- **The dash rule crosses both languages**, because it is punctuation rather than
+  vocabulary: the 22 dashes that lived in a `description:` are Portuguese lines and
+  fell with the rest. The remaining Portuguese stays governed by `vocabulario.md`.
 
-### Fica como está
+### Unchanged
 
-- **O `references/ds/` fica intocado.** É o brand package da Inspira,
-  conteúdo de marca com voz própria: 383 travessões e 70 headings em title
-  case que continuam lá.
-- **As entradas antigas deste CHANGELOG e as 7 specs em `.bb/`.** São registro
-  landado; reescrever muda o que já foi publicado.
-- **O travessão que é token funcional.** As 5 ocorrências do `depende: —` que uma
-  linha de tarefa carrega quando nada a bloqueia ficam: ali o caractere é valor
-  que um formato reserva, e tirar seria mudança de comportamento. Meia-risca de
-  intervalo numérico (`3–5 bullets`) fica pelo mesmo motivo.
-- **Sem check no CI e sem script.** O enforcement é a reference ser lida: um
-  detector de travessão em prosa mista PT/EN acusa token funcional e citação, e o
-  falso positivo custa mais que o desvio.
+- **`references/ds/` stays untouched.** It is Inspira's brand package, brand content
+  with a voice of its own: 383 dashes and 70 title-case headings that stay where
+  they are.
+- **The older entries in this CHANGELOG and the 7 specs in `.bb/`.** They are a
+  landed record; rewriting changes what was already published.
+- **The dash that is a functional token.** The 5 occurrences of `depende: —` a task
+  line carries when nothing blocks it stay: there the character is a value the
+  format reserves, and removing it would be a change in behavior. An en dash in a
+  numeric range (`3–5 bullets`) stays for the same reason.
+- **No CI check and no script.** The enforcement is the reference being read: a dash
+  detector over mixed Portuguese and English prose flags functional tokens and
+  quotations, and the false positive costs more than the drift.
 
-## 2.11.0 — 2026-08-18
+## 2.11.0 (2026-08-18)
 
-**As `description:` das skills emagreceram.** Toda `description:` do bundle entra
-no contexto de toda sessão — é o texto que o Claude lê pra decidir qual skill
-chamar, e ele paga por ele mesmo quando nenhuma skill é usada. Dez delas tinham
-virado resumo da SKILL.md: o `/bb:review` listava as sete frentes, a rubrica de
-veredito e o modo de superfície; o `/bb:brisar` narrava as quatro fases. Nada
-disso ajuda a rotear — a skill já explica tudo isso depois de carregada.
+**The skills' `description:` fields got leaner.** Every `description:` in the bundle
+enters the context of every session: it is the text Claude reads to decide which
+skill to call, and it is paid for even when no skill is used. Ten of them had turned
+into a summary of the SKILL.md: `/bb:review` listed the seven fronts, the verdict
+rubric and the surface mode; `/bb:brisar` narrated the four phases. None of that
+helps routing, because the skill explains all of it once loaded.
 
-### Mudou
+### Changed
 
-- **~2.000 caracteres a menos no preâmbulo de cada sessão.** As descriptions
-  somavam 11.431 caracteres; agora somam 9.460. O que saiu foi detalhe de
-  execução (quais agentes despacha, em que ordem, com que rubrica); o que ficou
-  foi o que decide roteamento — o que a skill faz numa frase, as frases-gatilho
-  do usuário, e o `NÃO use pra … (use /bb:outra)`.
-- **Skills tocadas**: `review` (1780 → 1087), `brisar` (1203 → 779), `discover`,
-  `spec`, `legal-lens`, `maintain-repo`, `review-setup`, `think`, `challenge` e
-  `write-readme`. As outras cinco já cabiam no orçamento e ficaram como estavam.
+- **~2,000 characters less in every session's preamble.** The descriptions added up
+  to 11,431 characters; they now add up to 9,460. What left was execution detail
+  (which agents it dispatches, in what order, under which rubric); what stayed is
+  what decides routing: what the skill does in one sentence, the user's trigger
+  phrases, and the "don't use it for … (use /bb:other)".
+- **Skills touched**: `review` (1780 to 1087), `brisar` (1203 to 779), `discover`,
+  `spec`, `legal-lens`, `maintain-repo`, `review-setup`, `think`, `challenge` and
+  `write-readme`. The other five already fit the budget and stayed as they were.
 
-## 2.10.0 — 2026-08-18
+## 2.10.0 (2026-08-18)
 
-**Revisar ficou barato, e o `/bb:ship` parou de revisar.** Um `/bb:review` de
-rotina disparava dez agentes em Opus: os dois agentes do fan-out não declaravam
-`model:`, então herdavam o modelo da sessão, e a tabela de profundidade escalava
-sozinha pro tier mais caro assim que o diff crescia. Revisar custava mais que a
-mudança revisada. Do outro lado, o `ship` rodava a engine inteira antes de landar,
-sem perguntar — a passada mais cara do bundle acontecia toda vez que alguém queria
-subir uma branch.
+**Reviewing got cheap, and `/bb:ship` stopped reviewing.** A routine `/bb:review`
+fired ten agents on Opus: the two fan-out agents declared no `model:`, so they
+inherited the session's model, and the depth table escalated to the most expensive
+tier on its own as soon as the diff grew. Reviewing cost more than the change under
+review. On the other side, `ship` ran the whole engine before landing, without
+asking, so the most expensive pass in the bundle happened every time someone wanted
+to push a branch.
 
-### Mudou
+### Changed
 
-- **Os dois agentes declaram `model: sonnet`.** Sem a declaração, um agente herda
-  o modelo da sessão — que é Opus. O profundo continua podendo pedir Opus, mas
-  agora é uma escolha, não um default silencioso.
-- **A profundidade virou um eixo que você decide**, não uma função do tamanho do
-  diff. **Padrão**: três ângulos de correção, um agente por frente, sem varredura,
-  fan-out inteiro em Sonnet — é o que roda em qualquer diff, grande ou pequeno.
-  **Profundo**: só sob pedido (`/bb:review profundo`, "revisa a fundo", ou a opção
-  na pergunta de frentes) — conjunto inteiro de ângulos, varredura final, cap
-  maior e os agentes em Opus.
-- **O verify ganhou teto e mudou de unidade de despacho.** Ele mandava um agente
-  por local, e os locais vêm dos candidatos crus — 25 candidatos em 20 locais
-  financiavam 20 agentes pra entregar um relatório que fica com 10. Agora são **no
-  máximo 4 agentes** (6 no profundo), despachados **por arquivo** em vez de por
-  local: um agente abre `src/a.ts` uma vez e julga os cinco candidatos que estão
-  nele. Acima do teto os arquivos vão em lote, os de correção primeiro; nenhum
-  candidato deixa de ser julgado.
-- **`bb-finder` e `bb-verifier` viraram `bb-review-finder` e
-  `bb-review-verifier`.** O prefixo diz de que pipeline eles são e tira do caminho
-  o risco de um agente ser escolhido no lugar do `/bb:review`, que é a porta de
-  entrada de verdade.
-- **A frente de acessibilidade parou de disparar por extensão.** Um `.tsx` que só
-  mexeu em handler, hook, tipo ou import não é mudança de UI — a disponibilidade
-  agora lê o conteúdo dos hunks (markup, atributo que decide semântica, CSS de
-  foco/contraste) e a frente simplesmente não é oferecida quando não há o que ler.
-- **O `/bb:ship` landa; revisar é uma pergunta depois.** Ship faz só a metade
-  mecânica: esverdeia as **checagens do projeto** (lint, format, typecheck,
-  testes — o que o CI roda), commita e landa pelo destino escolhido. Depois de
-  landar, um gate de duas vias: **"Revisar agora"** (invoca o `/bb:review`, que
-  pergunta as frentes como sempre) ou **"Encerrar aqui"**.
-- **"Gate local" saiu do vocabulário.** A palavra já era o gate de handoff, o gate
-  do brisar e o gate do LexFlow; lint e testes agora se chamam **checagens do
-  projeto** em toda a trilha Construir.
-- **`review-checklist.md` e `quality-checklist.md` mudaram de casa**, de
-  `references/` no topo do plugin pra `skills/review/references/`. Eram
-  compartilhados porque o ship revisava; com o ship fora, os critérios são de
-  quem os usa. **O ship parou de ler a engine inteira** — inclusive o
-  `act-apply-fixes.md`, cuja metade útil pra ele (uma mudança por vez, código sem
-  teste fica trivial ou flagado) agora são duas linhas no próprio passo 2. Ler 55
-  linhas de ordenação de achados pra consertar um lint vermelho custava mais do
-  que economizava.
+- **Both agents declare `model: sonnet`.** Without the declaration an agent inherits
+  the session's model, which is Opus. Deep can still ask for Opus, but it is a choice
+  now, not a silent default.
+- **Depth became an axis you decide**, not a function of the diff's size.
+  **Standard**: three correctness angles, one agent per front, no sweep, the whole
+  fan-out on Sonnet, which is what runs on any diff, large or small. **Deep**: only
+  on request (`/bb:review deep`, "review it deeply", or the option in the fronts
+  question), with the whole angle set, the closing sweep, a larger cap and the agents
+  on Opus.
+- **Verify got a cap and changed its dispatch unit.** It used to send one agent per
+  location, and locations come from the raw candidates, so 25 candidates in 20
+  locations funded 20 agents to deliver a report that keeps 10. Now it is **at most 4
+  agents** (6 on deep), dispatched **per file** instead of per location: one agent
+  opens `src/a.ts` once and judges the five candidates in it. Above the cap the files
+  go in batches, correctness first; no candidate goes unjudged.
+- **`bb-finder` and `bb-verifier` became `bb-review-finder` and
+  `bb-review-verifier`.** The prefix says which pipeline they belong to and clears
+  the risk of an agent being picked in place of `/bb:review`, which is the real entry
+  point.
+- **The accessibility front stopped firing by extension.** A `.tsx` that only touched
+  a handler, a hook, a type or an import is not a UI change, so availability now
+  reads the content of the hunks (markup, an attribute that decides semantics, focus
+  or contrast CSS) and the front is simply not offered when there is nothing to read.
+- **`/bb:ship` lands; reviewing is a question afterward.** Ship does only the
+  mechanical half: it greens the **project's checks** (lint, format, typecheck,
+  tests, whatever CI runs), commits, and lands through the chosen destination. After
+  landing, a two-way gate: **"Review now"** (invokes `/bb:review`, which asks about
+  the fronts as always) or **"Stop here"**.
+- **"Local gate" left the vocabulary.** The word already meant the handoff gate, the
+  brisar gate and the LexFlow gate; lint and tests are now called the **project's
+  checks** across the whole Construir trilha.
+- **`review-checklist.md` and `quality-checklist.md` changed homes**, from
+  `references/` at the plugin root to `skills/review/references/`. They were shared
+  because ship reviewed; with ship out, the criteria belong to whoever uses them.
+  **Ship stopped reading the whole engine**, including `act-apply-fixes.md`, whose
+  useful half for ship (one change at a time, untested code left trivial or flagged)
+  is now two lines in its own step 2. Reading 55 lines of finding ordering to fix a
+  red lint cost more than it saved.
 
-## 2.9.0 — 2026-08-15
+## 2.9.0 (2026-08-15)
 
-**Uma palavra por coisa, em português.** O item do `## Tarefas` é uma **tarefa**,
-o artefato de topo é a **spec**, a espinha da spec passou a ser escrita em
-português e a pasta em disco perdeu um nível. Junto vai a regra que impede o
-próximo batismo: `references/vocabulario.md`.
+**One word per thing, in Portuguese.** The item of `## Tarefas` is a **tarefa**, the
+top-level artifact is the **spec**, the spec's fixed sections became Portuguese and
+the folder on disk lost a level. Along with it comes the rule that prevents the next
+coinage: `references/vocabulario.md`.
 
-O sintoma era o plugin escrever `slice` 125 vezes e a sessão devolver "fatia" —
-uma palavra que não existe nem no código nem na conversa, com o gênero oscilando
-na mesma sessão. Quando o nome é o conceito, trocar o nome mata o vazamento na
-origem. Quando é inglês normal num documento inglês — `load-bearing`, `fan-out`,
-`seam` — o documento fica como está e a tabela diz o que escrever quando a frase
-é portuguesa. Duas causas, dois remédios.
+The symptom was the plugin writing `slice` 125 times and the session answering
+"fatia", a word that exists neither in the code nor in the conversation, with its
+gender shifting inside one session. When the name is the concept, changing the name
+kills the leak at the source. When it is ordinary English in an English document,
+like `load-bearing`, `fan-out` or `seam`, the document stays as it is and the table
+says what to write when the sentence is Portuguese. Two causes, two remedies.
 
-### Novo
+### New
 
-- **`references/vocabulario.md`** — o princípio (chamar cada coisa pelo nome que
-  ela tem no código ou no repo), a tabela `chave`→`escreva` e a capitalização:
-  português em caixa de sentença, nome próprio e identificador com o caso exato.
-  Escrito em instrução positiva — a coluna é "escreva", e o termo em inglês entra
-  só como chave de busca. O ponteiro vive no `hooks/operating-context.md`, que é
-  injetado no início da sessão **e depois de cada compactação**, então vale pra
-  toda skill e pra conversa solta; o `spec/references/spec-format.md` ganha uma
-  linha própria, porque a spec é o texto que o builder repete depois.
-- **`W003` no `lint_spec.py`** — seção em inglês continua válida e ganha um aviso
-  com a tradução ao lado. Spec escrita antes do rename, em qualquer repo, continua
-  construível.
+- **`references/vocabulario.md`**, carrying the principle (call each thing by the
+  name it has in the code or in the repo), the `chave`→`escreva` table and the
+  capitalization: Portuguese in sentence case, proper nouns and identifiers with
+  their exact case. Written as a positive instruction: the column is "escreva", and
+  the English term enters only as a search key. The pointer lives in
+  `hooks/operating-context.md`, which is injected at the start of the session **and
+  after every compaction**, so it holds for every skill and for a plain chat;
+  `spec/references/spec-format.md` gets a line of its own, because the spec is the
+  text the builder repeats afterward.
+- **`W003` in `lint_spec.py`**, so an English section stays valid and gains a warning
+  with the translation next to it. A spec written before the rename, in any repo,
+  still builds.
 
-### Mudou
+### Changed
 
-- **`slice` → tarefa (task em inglês).** São cognatos, então o conceito tem um nome
-  só e nenhuma terceira palavra entra. 12 arquivos, incluindo a mensagem `W002` do
-  `lint_spec.py`; `references/build-slices-workflow.md` virou
-  `build-tasks-workflow.md`.
-- **`brief` → spec** no nível de cima, nas duas línguas — o arquivo é `spec.md`, o
-  comando é `/bb:spec`, e `references/task-state.md` virou `spec-state.md`. Dentro
-  de `skills/brisar/**` a palavra "brief" fica: lá ela é o `brief-design.md`,
-  outro artefato, com arquivo e nome próprios. A exceção da exceção é onde o
-  texto do brisar aponta pro `spec.md`.
-- **A pasta perde um nível: `.bb/<slug>/`.** O `.bb/` não guardava nada além de
-  `tasks/`, e o nível intermediário só repetia a palavra que está sendo
-  aposentada. O glob de varredura virou `.bb/*/spec.md`, o `validate.yml` junto —
-  e `.bb/tasks/*/spec.md` continua na varredura, pra spec que mora em outro repo.
-  O slug da pasta é a chave, então a mesma spec nos dois lugares conta uma vez. As
-  7 specs deste repo já migraram.
-- **A espinha da spec em português:** `## Decisões`, `## Comportamento`,
-  `## Tarefas`, `## Fora de escopo`, `## Em aberto` — mais `## Problema`,
-  `## Hipótese`, `## Encaixe` e `## Cortes`, semeadas pelo `/bb:discover`, e
-  `## Jurídico`, do `/bb:legal-lens`. `dep:` virou `depende:`. Os leitores aceitam
-  os dois nomes, e o pareamento EN↔PT mora num lugar só, o
-  `references/spec-state.md`; os outros citam esse arquivo em vez de repetir a
-  lista. O frontmatter fica em inglês — `status`, `created`, `slug` são chaves de
-  dado, validadas pelo `E001` e escritas pelo `/bb:delegate`.
-- **`description:` de `bb-finder` e `bb-verifier`** reescrita pela tabela: "só
-  leitura", "despacha em paralelo", "veredito", "ângulo/lente", "formato do
-  achado". As frases-gatilho das skills continuam intactas — "landa essa branch",
-  "esverdeia a PR" e "shapeia essa ideia" são como o usuário fala e são o que
-  roteia.
+- **`slice` to tarefa (task in English).** They are cognates, so the concept has one
+  name and no third word enters. 12 files, including `lint_spec.py`'s `W002` message;
+  `references/build-slices-workflow.md` became `build-tasks-workflow.md`.
+- **`brief` to spec** at the top level, in both languages: the file is `spec.md`, the
+  command is `/bb:spec`, and `references/task-state.md` became `spec-state.md`.
+  Inside `skills/brisar/**` the word "brief" stays: there it is `brief-design.md`,
+  another artifact, with a file and a name of its own. The exception to the exception
+  is where brisar's text points at `spec.md`.
+- **The folder loses a level: `.bb/<slug>/`.** `.bb/` held nothing but `tasks/`, and
+  the intermediate level only repeated the word being retired. The scan glob became
+  `.bb/*/spec.md`, and `validate.yml` with it, while `.bb/tasks/*/spec.md` stays in
+  the scan for a spec that lives in another repo. The folder's slug is the key, so
+  the same spec in both places counts once. The 7 specs in this repo already
+  migrated.
+- **The spec's fixed sections in Portuguese:** `## Decisões`, `## Comportamento`,
+  `## Tarefas`, `## Fora de escopo`, `## Em aberto`, plus `## Problema`,
+  `## Hipótese`, `## Encaixe` and `## Cortes`, seeded by `/bb:discover`, and
+  `## Jurídico`, from `/bb:legal-lens`. `dep:` became `depende:`. The readers take
+  both names, and the EN/PT pairing lives in one place, `references/spec-state.md`;
+  the others cite that file instead of repeating the list. The frontmatter stays
+  English: `status`, `created` and `slug` are data keys, validated by `E001` and
+  written by `/bb:delegate`.
+- **The `description:` of `bb-finder` and `bb-verifier`** rewritten from the table:
+  "só leitura", "despacha em paralelo", "veredito", "ângulo/lente", "formato do
+  achado". The skills' trigger phrases stay intact: "landa essa branch", "esverdeia a
+  PR" and "shapeia essa ideia" are how the user speaks and are what routes.
 
-### Não mudou
+### Unchanged
 
-- A prosa em inglês dos documentos de referência e das SKILL.md. Um documento em
-  inglês escrever "load-bearing decision" é inglês normal; trocar por "decisão
-  estruturante" no meio da frase produz texto quebrado.
-- A capitalização do texto em português já estava certa — a varredura achou duas
-  linhas em Title Case fora do design system, e as duas se defendem. O que
-  faltava era a regra escrita, não um passe de correção.
+- The English prose of the reference documents and the SKILL.md files. An English
+  document writing "load-bearing decision" is ordinary English; swapping it for
+  "decisão estruturante" mid-sentence produces broken text.
+- The capitalization of the Portuguese text was already right: the sweep found two
+  lines in Title Case outside the design system, and both defend themselves. What was
+  missing was the written rule, not a correction pass.
 
-## 2.8.0 — 2026-08-11
+## 2.8.0 (2026-08-11)
 
-O **caminho unattended sai do plugin**. `BB_UNATTENDED` e o guia de Cloud
-Routines não existem mais: o bb agora tem uma forma só de rodar, a supervisionada.
+**The unattended path left the plugin.** `BB_UNATTENDED` and the Cloud Routines
+guide no longer exist: bb now has one way to run, the supervised one.
 
-O caminho nunca foi ligado — nenhuma routine chegou a rodar um `/bb:delegate` —
-mas ele cobrava pedágio em quase toda skill da trilha Construir. Todo o debate de
-onde o blocker aparece (descrição da PR ou `## open` do brief), o destino fixo do
-`ship`, a régua "unattended sempre workflow" do build-mode, o cap de retry das
-slices, a linha `claude/<slug>` repetida em três skills e as quatro linhas de
-"sob `BB_UNATTENDED` não há pergunta" espalhadas pelo `review` existiam só por
-causa dele. Um ramo que ninguém percorre é um ramo que ninguém corrige: o passo 4
-do `/bb:implement` já carregava um cap de retry que contradizia o próprio gate
-logo acima.
+The path was never switched on, no routine ever ran a `/bb:delegate`, but it
+charged a toll in almost every skill of the Construir trilha. The whole debate
+about where the blocker appears (the PR description or the brief's `## open`),
+`ship`'s fixed destination, build-mode's "unattended is always workflow" rule, the
+retry cap on the slices, the `claude/<slug>` line repeated in three skills and the
+four "under `BB_UNATTENDED` there is no question" lines scattered through `review`
+existed only because of it. A branch nobody walks is a branch nobody fixes: step 4
+of `/bb:implement` already carried a retry cap that contradicted the gate right
+above it.
 
-### Removido
+### Removed
 
-- **`hooks/unattended-context.md`** e o `is_unattended()` do
-  `inject_operating_context.py` — o hook injeta um frame só, o mesmo em toda
-  sessão.
-- **`references/routines.md`** e **`references/scripts/scaffold_routine.py`** — o
-  guia da Cloud Routine e o scaffold do prompt de routine.
-- **`skills/maintain-repo/references/routines-setup.md`** e a seção de setup de
-  routine da skill: a triagem continua sendo decision-support, agora só como run
-  supervisionada.
-- A linha da Cloud Routine no `hooks/scheduling-decision.md` — e, com ela, a
-  coluna `Survives laptop closed?`, que só separava routine de tudo o mais.
-- A seção `## Unattended` do `references/build-mode.md` e o bullet de gate do
+- **`hooks/unattended-context.md`** and `inject_operating_context.py`'s
+  `is_unattended()`: the hook injects one frame, the same one in every session.
+- **`references/routines.md`** and **`references/scripts/scaffold_routine.py`**:
+  the Cloud Routine guide and the scaffold of the routine prompt.
+- **`skills/maintain-repo/references/routines-setup.md`** and the skill's routine
+  setup section: triage is still decision support, now only as a supervised run.
+- The Cloud Routine line in `hooks/scheduling-decision.md`, and with it the
+  `Survives laptop closed?` column, which only separated routine from everything
+  else.
+- The `## Unattended` section of `references/build-mode.md` and the gate bullet of
   `references/handoff-gate.md`.
-- A seção "rodar sem supervisão" do README.
+- The "run without supervision" section of the README.
 
-### Mudou
+### Changed
 
-- **`/bb:delegate`** (2.4.0), **`/bb:implement`** (2.3.0) e **`/bb:ship`** (2.3.0)
-  perderam os ramos duplos: um destino, uma pergunta de branch, um comportamento
-  por passo. O `references/land-pr.md` perde o cap de rodadas de comentário e a
-  vigília AFK — a tenda da PR é um loop que vive e morre com a sessão, e pra ir
-  além dela existem Channels ou uma tarefa agendada no Desktop.
-- **Nunca-merge continua valendo, ancorado no que sobrou.** Antes a garantia era
-  capability scoping na routine; agora é o que sempre foi verdade também no desk:
-  as skills não têm passo de merge e a branch protegida é o backstop server-side.
-- **O estágio zero segue justificado.** O fato que o sustentava não era o
-  unattended e sim o runtime: um agente de slice roda sob `claude -p` e o Agent
-  SDK, onde não há a quem perguntar, então comando fora da allowlist falha em vez
-  de pausar. Isso está agora dito no `references/build-slices-workflow.md` sem
-  passar pela routine.
-- **`/bb:review`** (2.4.0) dedupa contra comentário de review anterior. Numa PR que
-  já carrega um, cada ponto aparece uma vez: os ainda abertos como linha de status,
-  os inéditos por inteiro, os resolvidos como contagem
-  (`references/act-comment-findings.md` §3, que o `mode-external-pr.md` agora
-  também aponta).
+- **`/bb:delegate`** (2.4.0), **`/bb:implement`** (2.3.0) and **`/bb:ship`**
+  (2.3.0) lost the double branches: one destination, one branch question, one
+  behavior per step. `references/land-pr.md` loses the cap on comment rounds and
+  the AFK watch, because the PR loop lives and dies with the session, and to go
+  past it there are Channels or a scheduled task on the Desktop.
+- **Never-merge still holds, anchored in what is left.** The guarantee used to be
+  capability scoping in the routine; now it is what was always true at the desk
+  too: the skills have no merge step and the protected branch is the server-side
+  backstop.
+- **Stage zero is still justified.** The fact holding it up was not the unattended
+  path, it was the runtime: a slice agent runs under `claude -p` and the Agent SDK,
+  where there is nobody to ask, so a command outside the allowlist fails instead of
+  pausing. That is now said in `references/build-slices-workflow.md` without going
+  through the routine.
+- **`/bb:review`** (2.4.0) dedupes against an earlier review comment. On a PR that
+  already carries one, each point appears once: the still-open ones as a status
+  line, the new ones in full, the resolved ones as a count
+  (`references/act-comment-findings.md` §3, which `mode-external-pr.md` now points
+  at too).
 
-## 2.7.0 — 2026-08-06
+## 2.7.0 (2026-08-06)
 
-O `/bb:implement` e o `/bb:delegate` ganham um **segundo caminho de build**:
-despachar um dynamic workflow com um agente por slice, em vez de construir o
-brief inteiro no contexto principal. O caminho antigo continua exatamente como
-era, e a escolha é do usuário, uma vez por run.
+`/bb:implement` and `/bb:delegate` gain a **second build path**: dispatching a
+dynamic workflow with one agent per slice, instead of building the whole brief in
+the main context. The old path stays exactly as it was, and the choice is the
+user's, once per run.
 
-O problema não era velocidade. Um brief de oito slices construído num contexto só
-bate compactação no meio do build, e é ali que o loop degrada: o `## behavior`
-cai do contexto e a construção começa a derivar das `## decisions`. Um agente por
-slice começa com orçamento limpo carregando só o brief e a sua fatia; o que se
-perde de contexto tácito é pago por uma nota de convenções que atravessa os
-estágios — lossy de propósito em vez de lossy por acidente.
+The problem was not speed. An eight-slice brief built in a single context hits
+compaction mid-build, and that is where the loop degrades: the `## behavior` falls
+out of context and the build starts drifting from the `## decisions`. One agent per
+slice starts on a clean budget carrying only the brief and its own piece; what gets
+lost of the tacit context is paid for by a conventions note that crosses the
+stages, lossy on purpose instead of lossy by accident.
 
-### Novo
+### New
 
-- **`references/build-mode.md`** — a escolha entre workflow e contexto: quando é
-  perguntada (uma vez, no início de toda run supervisionada, sem limiar de
-  tamanho), a pergunta em PT-BR, a regra unattended (sempre workflow, sem
-  perguntar) e o fallback quando o `Workflow` não existe na sessão —
-  `disableWorkflows`, política da org ou cliente antigo. Sem ele, os dois
-  caminhos constroem em contexto **e dizem por quê**: downgrade silencioso se lê
-  como preferência.
-- **`references/build-slices-workflow.md`** — o contrato que o script gerado tem
-  que cumprir. As slices rodam num `for` com `await`, não em `pipeline()`: elas
-  compartilham uma working tree e o `dep:` existe justamente pra dizer que a 2 se
-  apoia no que a 1 criou. `parallel()` aparece uma vez só, no **estágio zero**,
-  que é read-only — um agente por reuse note, mais um que resolve os comandos do
-  gate **e roda todos eles uma vez**. Rodar é o ponto: prova a permissão e
-  estabelece a linha de base verde, então árvore já vermelha vira blocker antes
-  da slice 1 em vez de slice falsa-vermelha no meio.
+- **`references/build-mode.md`**: the choice between workflow and context. When it
+  is asked (once, at the start of every supervised run, with no size threshold),
+  the question in PT-BR, the unattended rule (always workflow, no question) and the
+  fallback for when `Workflow` does not exist in the session: `disableWorkflows`,
+  org policy or an old client. Without it, both paths build in context **and say
+  why**, because a silent downgrade reads as a preference.
+- **`references/build-slices-workflow.md`**: the contract the generated script has
+  to meet. The slices run in a `for` with `await`, not in `pipeline()`: they share
+  one working tree, and `dep:` exists precisely to say that 2 leans on what 1
+  created. `parallel()` appears once, in **stage zero**, which is read-only: one
+  agent per reuse note, plus one that resolves the gate's commands **and runs all
+  of them once**. Running is the point: it proves the permission and establishes
+  the green baseline, so a tree that is already red becomes a blocker before slice
+  1 instead of a false-red slice halfway through.
 
-### Mudou
+### Changed
 
-- **`/bb:implement`** (2.2.0) escolhe o modo dentro do passo 3, e a válvula de
-  segurança do passo 7 passa a atender também o blocker que volta de dentro da
-  run — do estágio zero ou de um agente de slice. A árvore fica como a run
-  deixou, pro diagnóstico.
-- **`/bb:delegate`** (2.3.0) escolhe uma vez e repassa a decisão, então o loop do
-  implement não re-pergunta. Workflow parado no meio cai onde a válvula já caía:
-  `status: blocked`, blocker nomeado, sem landing. O que voltou verde já está
-  commitado e ticado.
-- **`references/routines.md`** perdeu a regra "single-agent only until you've
-  measured cost". Ela existia porque fan-out não tinha forma definida; agora tem,
-  e é numa run sem ninguém acordado que a compactação no meio do build mais
-  machuca. O provisionamento ganhou a **allowlist dos comandos de gate** —
-  comando fora dela não pausa numa routine, falha.
+- **`/bb:implement`** (2.2.0) picks the mode inside step 3, and step 7's safety
+  valve now also catches the blocker that comes back from inside the run, from
+  stage zero or from a slice agent. The tree stays as the run left it, for the
+  diagnosis.
+- **`/bb:delegate`** (2.3.0) chooses once and passes the decision along, so
+  implement's loop does not ask again. A workflow stopped halfway lands where the
+  valve already landed: `status: blocked`, blocker named, no landing. What came
+  back green is already committed and ticked.
+- **`references/routines.md`** lost the "single-agent only until you've measured
+  cost" rule. It existed because fan-out had no defined shape; now it has one, and
+  it is in a run with nobody awake that mid-build compaction hurts most.
+  Provisioning gained the **allowlist of gate commands**: a command outside it does
+  not pause in a routine, it fails.
 
-O commit é o checkpoint: cada agente commita só os arquivos que tocou, com o
-`- [x]` da sua slice no mesmo commit. O resume do workflow é só na mesma sessão e
-re-roda tudo que começou depois do primeiro agente não-terminado; os commits
-sobrevivem a qualquer coisa, então re-rodar um brief meio construído retoma pelos
-checkboxes, não pela run.
+The commit is the checkpoint: each agent commits only the files it touched, with
+its slice's `- [x]` in the same commit. The workflow's resume works only in the
+same session and re-runs everything that started after the first unfinished agent;
+the commits survive anything, so re-running a half-built brief picks up from the
+checkboxes, not from the run.
 
-## 2.6.0 — 2026-08-05
+## 2.6.0 (2026-08-05)
 
-O `/bb:brisar` passa a cobrir o **duplo diamante inteiro**. Antes ele começava no
-scaffold: o builder chegava com uma ideia e saía com uma tela, sem nenhuma etapa
-entre as duas além do próprio repertório dele. O primeiro diamante — pesquisar o
-espaço antes de desenhar dentro dele — não existia em skill nenhuma do bundle.
+`/bb:brisar` now covers the **whole double diamond**. It used to start at the
+scaffold: the builder arrived with an idea and left with a screen, with no step
+between the two beyond their own repertoire. The first diamond, researching the
+space before designing inside it, existed in no skill of the bundle.
 
-Nada foi removido e nenhuma fase existente mudou de contrato. As fases 0–3
-(calibração, intake, maturity gate, scaffold) seguem iguais.
+Nothing was removed and no existing phase changed its contract. Phases 0 to 3
+(calibration, intake, maturity gate, scaffold) stay as they were.
 
-### Novo — o primeiro diamante
+### New: the first diamond
 
-- **`references/phase-research.md`** — pesquisa antes do pixel, em subagentes
-  paralelos. **Piso que roda em qualquer modo:** bench de mercado (Mobbin),
-  o design system **lido da fonte** (não da memória, não de cópia congelada), e
-  a resposta explícita pra "precisa de componente novo?". **Discricionário, e
-  declarado:** vieses comportamentais com proveniência (fonte primária ou
-  `[não verificado]`), heurísticas, modelos mentais, e "o que o produto já tem
-  pra mostrar" (assets no repo, dado que existe de fato, copy viva no i18n,
-  locales). O modo (`pocket`/`full`) é julgado, não perguntado — e o que foi
-  pulado é dito em voz alta. Corte silencioso se lê como cobertura completa.
-- **`references/brief.md`** — o design brief como **contrato vivo** em
-  `.bb/tasks/<slug>/brief-design.md`, registrado em `gate.design_brief`.
-  Atualizado a cada rodada sem ser pedido, e no fim vira delta pro spec.
-  Traz a **reconciliação obrigatória** contra o enquadramento do
-  `/bb:discover` — _confirma · contradiz · não alcança_ — e a **leitura em
-  chat** como parte da entrega, não cortesia.
-- **`references/phase-diverge.md`** — direções **em pé de igualdade**. Cada uma
-  com cinco partes obrigatórias (aposta · composição · copy prevista · racional
-  ancorado na pesquisa · risco e custo), depois de declarar a base comum a
-  todas. Recomendar é permitido; descrever uma em detalhe e as outras num
-  parágrafo, não — o check de tratamento igual **bloqueia o gate**.
-- **`references/phase-medium.md`** — o meio virou **pergunta**: código, Claude
-  design, Figma, Paper ou Pencil, oferecendo só o que o preflight detecta e
-  **nomeando** o que falta. O brief serve os cinco; só o build muda. Meio de
-  canvas pula o scaffold, e canvas-primeiro-código-depois é caminho normal, não
-  reinício.
+- **`references/phase-research.md`**: research before pixel, in parallel
+  subagents. **The floor, which runs in any mode:** a market bench (Mobbin), the
+  design system **read from the source** (not from memory, not from a frozen copy),
+  and an explicit answer to "does this need a new component?".
+  **Discretionary, and declared:** behavioral biases with provenance (a primary
+  source or `[não verificado]`), heuristics, mental models, and "what the product
+  already has to show" (assets in the repo, data that actually exists, live copy in
+  the i18n, locales). The mode (`pocket`/`full`) is judged, not asked, and whatever
+  was skipped is said out loud. A silent cut reads as full coverage.
+- **`references/brief.md`**: the design brief as a **living contract** in
+  `.bb/tasks/<slug>/brief-design.md`, recorded in `gate.design_brief`. Updated
+  every round without being asked, and at the end it becomes a delta for the spec.
+  It brings the **mandatory reconciliation** against `/bb:discover`'s framing
+  (_confirms · contradicts · does not reach_) and the **read in chat** as part of
+  the delivery, not a courtesy.
+- **`references/phase-diverge.md`**: directions **on equal footing**. Each one with
+  five mandatory parts (the bet · the composition · the copy it expects · a
+  rationale anchored in the research · risk and cost), after declaring the base
+  common to all of them. Recommending is allowed; describing one in detail and the
+  others in a paragraph is not, and the equal-treatment check **blocks the gate**.
+- **`references/phase-medium.md`**: the medium became a **question**: code, Claude
+  design, Figma, Paper or Pencil, offering only what the preflight detects and
+  **naming** what is missing. The brief serves all five; only the build changes. A
+  canvas medium skips the scaffold, and canvas-first-code-later is a normal path,
+  not a restart.
 
-### Mudou — o segundo diamante ficou medium-aware e a review, sênior
+### Changed: the second diamond became medium-aware, and the review senior
 
-- **Develop** lê `medium.chosen` e constrói no meio escolhido. Passa a gravar um
-  **locator preciso** por surface × variante (arquivo, ou arquivo + página +
-  pranchas) e as **deviations** conscientes — sem isso o Deliver não consegue
-  abrir nem julgar o que foi feito.
-- **Deliver** ganhou o que faltava:
-  - **lê o artefato de qualquer meio** (arquivos, preview, MCP do Paper/Figma/
-    Pencil). Antes o input era literalmente "HTML/React em `src/`": quem
-    desenhou num canvas não tinha o que ele abrisse;
-  - **a unidade de review é surface × variante**, não surface. É nos deltas
-    entre variantes que o contrato é violado;
-  - **sete lentes** em vez de quatro. As três novas: **copy lida palavra por
-    palavra** (rótulo que nomeia processo inexistente, claim que a fonte não
-    sustenta, erro de português no herói), **contraste calculado como número**
-    contra o mínimo da WCAG, e a **triangulação**;
-  - **triangulação problema × pesquisa × construído.** O `gate.design_brief`
-    **soma** ao `gate.discover_brief`, nunca substitui. Três perguntas: o
-    construído honra a pesquisa? a pesquisa honra o problema? onde discordam,
-    quem está errado? A resposta pode ser **o enquadramento**;
-  - **severidade `divergência`** — o build está fiel e a review discorda de uma
-    decisão do brief ou do spec. Nunca bloqueia; abre decisão, e exige o
-    argumento (sem ele é preferência, e preferência não entra em review);
-  - **delta pro spec** no handoff: o contrato alcança o que o design aprendeu.
-- **`preflight-tooling.md`** — detecta `paper`/`figma`/`pencil`/`mobbin`, e passa
-  a ler os **dois escopos** de `mcpServers` (global e de projeto). Servidor
-  configurado só pro diretório atual não aparecia no topo e era reportado como
-  ausente — o que removia silenciosamente um meio que o builder tinha.
-- **Retomada** — um `brief-design.md` no disco é sinal de retomada por si só, com
-  ou sem sessão. O brisar continua de onde o brief parou e **nunca re-roda a
-  pesquisa por cima de um brief existente**.
+- **Develop** reads `medium.chosen` and builds in the chosen medium. It now records
+  a **precise locator** per surface × variant (the file, or the file plus the page
+  plus the boards) and the deliberate **deviations**. Without those, Deliver cannot
+  open or judge what was made.
+- **Deliver** gained what it was missing:
+  - it **reads the artifact from any medium** (files, a preview, the Paper/Figma/
+    Pencil MCP). The input used to be literally "HTML/React in `src/`": whoever
+    designed on a canvas had nothing it could open;
+  - **the unit of review is surface × variant**, not surface. It is in the deltas
+    between variants that the contract gets violated;
+  - **seven lenses** instead of four. The three new ones: **copy read word by
+    word** (a label naming a process that does not exist, a claim the source does
+    not support, a Portuguese error in the hero), **contrast computed as a number**
+    against the WCAG minimum, and the **triangulation**;
+  - **triangulation of problem × research × what was built.** The
+    `gate.design_brief` **adds to** the `gate.discover_brief`, never replaces it.
+    Three questions: does what was built honor the research? does the research
+    honor the problem? where they disagree, who is wrong? The answer can be **the
+    framing**;
+  - **the `divergência` severity**: the build is faithful and the review disagrees
+    with a decision of the brief or of the spec. It never blocks; it opens a
+    decision, and it demands the argument (without one it is a preference, and a
+    preference does not enter a review);
+  - **a delta for the spec** at the handoff, so the contract reaches what the
+    design learned.
+- **`preflight-tooling.md`** detects `paper`/`figma`/`pencil`/`mobbin`, and now
+  reads **both scopes** of `mcpServers` (global and project). A server configured
+  only for the current directory did not show up at the top and was reported as
+  absent, which silently removed a medium the builder had.
+- **Resuming**: a `brief-design.md` on disk is a signal of resumption on its own,
+  with or without a session. brisar continues from where the brief stopped and
+  **never re-runs the research on top of an existing brief**.
 
-### Postura preservada de propósito
+### The stance kept on purpose
 
-A editorial stance do Deliver não mudou: só sinaliza o que importa, todo issue vem
-com solução, **um elogio específico** ("não é torcida, é informação"),
-não-bloqueante quando falta contexto, review e a11y em arquivos separados. O que
-mudou foi o alcance das lentes, não o tom.
+Deliver's editorial stance did not change: it only flags what matters, every issue
+comes with a solution, **one specific piece of praise** ("it is not cheerleading,
+it is information"), non-blocking when context is missing, review and a11y in
+separate files. What changed was the reach of the lenses, not the tone.
 
-E uma regra nova que atravessa tudo: **legibilidade é requisito do artefato.** O
-público não é só designer. Ponteiro interno carrega o significado no primeiro uso,
-conceito de design ganha glosa de 5–10 palavras. Denso é bom; precisar de
-decodificador não.
+And one new rule that crosses everything: **legibility is a requirement of the
+artifact.** The audience is not only designers. An internal pointer carries its
+meaning at first use, and a design concept gets a 5 to 10 word gloss. Dense is
+good; needing a decoder is not.
 
-### Quando a ferramenta não está lá — degradar sem mentir
+### When the tool is not there: degrade without lying
 
-O piso da pesquisa é inegociável, o que significa que ele precisa de um caminho
-quando a ferramenta falta. Antes esse caminho era uma frase ("degrada e diz qual
-frente"), então o piso rodava e o resultado piorava sem que ninguém soubesse
-quanto.
+The research floor is non-negotiable, which means it needs a path for when the tool
+is missing. That path used to be one sentence ("degrade and say which front"), so
+the floor ran and the result got worse without anybody knowing by how much.
 
-- **Front A sem Mobbin** — escada explícita, e o primeiro degrau é decidir se a
-  tela é **pública ou atrás de login**, porque isso define quais degraus existem.
-  **Atrás de login — que é a maior parte de um produto** (paywall, expiração,
-  modal de upgrade, empty state, onboarding pós-signup): o app do concorrente
-  **não é fonte**, e a skill não planeja em cima de entrar nele — brisar não cria
-  conta nem faz login. Sobram **galerias públicas por `site:`** (Land-book, SaaS
-  Landing Page, Refero, Pageflows, Nicelydone — algumas indexam fluxo gravado em
-  vez de frame solto, o que é o substituto mais próximo de tela logada),
-  **os prints que o builder já tem** (maior sinal por token, e o degrau mais
-  pulado por educação), **o precedente do próprio produto**, e só então busca
-  genérica. **Público — landing, preço, site institucional:** aí o
-  navegador ganha o lugar dele, com a ressalva de que lê a superfície de
-  _marketing_ e não diz nada sobre como a plataforma se comporta por dentro.
-  E uma obrigação **aperta**: achado negativo agora vai com **o tamanho e a
-  origem do corpus**, ou não vai. "Nenhuma das 18 telas usa urgência" só pesa se
-  as 18 não foram entregues por um ranqueamento.
-- **Front B: "não está no cwd" não é "não está no disco".** Degrau novo **antes**
-  do remoto — procurar o repo no resto da máquina (`mdfind` no macOS, `find` como
-  portátil, sempre excluindo `node_modules`), buscando **o artefato e não o nome
-  do repo**, porque a pasta pode se chamar qualquer coisa. Era o buraco mais bobo
-  e mais caro: brisar rodado de uma pasta vizinha declarava o repo ausente com o
-  arquivo ali do lado, degradando três frentes sem motivo. E este degrau vale
-  **mais** que o remoto — lê source de verdade, então recupera o inventário de
-  componentes e o "quantos lugares usam isso" que o remoto não dá. Com duas
-  ressalvas: confirmar que o hit é o checkout certo (worktree velho ou cópia
-  vendorizada responde com confiança e errado) e mais de um hit plausível é
-  pergunta pro builder, não moeda ao ar.
-- **E quando o `gh` não está disponível** — que não é caso de borda: pode não
-  estar instalado, não estar autenticado, ou estar numa conta sem acesso ao repo
-  privado. Esse caminho ficou desenhado em vez de encolhido: procurar no disco
-  **antes** de oferecer autenticação · oferecer `gh auth login` (nunca rodar
-  sozinho — é autenticação, e é do builder) · **perguntar ao builder onde está**,
-  que é a resposta mais barata e a mais pulada por reflexo de autossuficiência ·
-  pedir **o arquivo de regras do próprio repo** em vez dos tokens, que é melhor
-  porque é orientação autoral e **continua certa quando os caminhos mudam** · e só
-  então o pacote de marca, com o gap declarado.
-- **Onde os caminhos devem morar — e não é dentro da skill.** Cravar o caminho de
-  token de um produto no plugin deixa o plugin errado no dia do refactor. Dois
-  lares melhores, nessa ordem: **o arquivo de regras do repo do produto** (é a
-  única coisa capaz de manter aquilo verdadeiro) e o `ds_source` do
-  `product-registry.yaml`, ou um `.brisar/config.yaml`/`BRISAR_DS_PATH` pra
-  override por máquina. Quando a busca dá trabalho, a skill **sugere registrar**
-  — a próxima rodada não deve repetir a procura.
-- **Front B sem o repo em lugar nenhum** — degrau remoto: **ler o repo
-  via `gh`**, sem clonar. Duas chamadas: a **árvore inteira** de
-  caminhos (`git/trees/HEAD?recursive=1`) como mapa, e `contents` pra ler os
-  arquivos que o mapa apontou. Resolve o caso comum — `gh` autenticado, repo não
-  está aqui — e cobre **token e copy viva no i18n**. O que **não** cobre: o
-  inventário de componentes com as armadilhas (a semântica real de um componente
-  exige varredura de source, não duas leituras) e "quantos lugares usam isso".
-  **Não use `gh search code`:** ele tem orçamento de **10 requisições por minuto**,
-  um fan-out de subagentes esgota numa rodada, o 403 volta vazio — igualzinho a
-  "não achei" — e o qualificador `path:` não aceita glob, então query razoável
-  retorna zero e se lê como ausência. A árvore fica no orçamento normal de
-  5.000/hora, vem completa numa chamada e é grepável localmente; quando
-  `truncated: false`, **ausência de caminho é conclusiva**. brisar **não clona por
-  conta própria** — repo privado da empresa no computador de alguém é decisão do
-  builder.
-- **O fallback empacotado parou de se passar por design system.** O
-  `references/ds/brand/` é **pacote de marca** — voz, princípios, significado de
-  cor, uso de logo. O `tokens.json` dele é artefato de marca e **não** é o
-  vocabulário de token de produção. Continua servindo pra intenção visual;
-  parou de ser apresentado como token lido da fonte, o que gerava classe que a
-  codebase não tem.
-- **A linha de modo ganhou uma quarta parte: o que a degradação invalida.**
-  Nomear a ferramenta que faltou não informa nada. "Não li o token da fonte,
-  então os valores são de segunda mão, o inventário de componentes não existe, e
-  não verifiquei se essa página já está em produção" informa o que não confiar.
+- **Front A without Mobbin**: an explicit ladder, and its first rung is deciding
+  whether the screen is **public or behind a login**, because that defines which
+  rungs exist. **Behind a login, which is most of a product** (paywall,
+  expiration, upgrade modal, empty state, post-signup onboarding): the
+  competitor's app **is not a source**, and the skill does not plan on getting
+  into it, since brisar creates no account and does not log in. What is left:
+  **public galleries via `site:`** (Land-book, SaaS Landing Page, Refero,
+  Pageflows, Nicelydone, some of which index a recorded flow instead of a loose
+  frame, which is the closest substitute for a logged-in screen), **the
+  screenshots the builder already has** (the most signal per token, and the rung
+  most often skipped out of politeness), **the product's own precedent**, and only
+  then a generic search. **Public, meaning a landing page, pricing, an
+  institutional site:** there the browser earns its place, with the caveat that it
+  reads the _marketing_ surface and says nothing about how the platform behaves
+  inside. And one obligation **tightens**: a negative finding now travels with
+  **the size and the origin of the corpus**, or it does not travel. "None of the 18
+  screens uses urgency" only carries weight if the 18 were not handed over by a
+  ranking.
+- **Front B: "it is not in the cwd" is not "it is not on the disk".** A new rung
+  **before** the remote one: look for the repo in the rest of the machine (`mdfind`
+  on macOS, `find` as the portable option, always excluding `node_modules`),
+  searching for **the artifact and not the repo's name**, because the folder can be
+  called anything. It was the silliest and the most expensive hole: brisar run from
+  a neighboring folder declared the repo absent with the file right there,
+  degrading three fronts for no reason. And this rung is worth **more** than the
+  remote one, because it reads real source, so it recovers the component inventory
+  and the "how many places use this" that the remote path does not give. With two
+  caveats: confirm the hit is the right checkout (an old worktree or a vendored
+  copy answers confidently and wrong), and more than one plausible hit is a
+  question for the builder, not a coin toss.
+- **And when `gh` is not available**, which is not an edge case: it may not be
+  installed, may not be authenticated, or may be on an account with no access to
+  the private repo. That path got designed instead of shrunk: search the disk
+  **before** offering authentication · offer `gh auth login` (never run it alone,
+  because it is authentication, and it is the builder's) · **ask the builder where
+  it is**, which is the cheapest answer and the one most often skipped out of a
+  self-sufficiency reflex · ask for **the repo's own rules file** instead of the
+  tokens, which is better because it is authored guidance and **stays right when
+  the paths change** · and only then the brand package, with the gap declared.
+- **Where the paths should live, and it is not inside the skill.** Hardcoding a
+  product's token path into the plugin leaves the plugin wrong on the day of the
+  refactor. Two better homes, in this order: **the rules file of the product's
+  repo** (the only thing capable of keeping that true) and the `ds_source` of
+  `product-registry.yaml`, or a `.brisar/config.yaml`/`BRISAR_DS_PATH` for a
+  per-machine override. When the search takes work, the skill **suggests
+  registering it**, because the next round should not repeat the hunt.
+- **Front B with the repo nowhere**: the remote rung, **reading the repo via
+  `gh`** without cloning. Two calls: the **whole tree** of paths
+  (`git/trees/HEAD?recursive=1`) as the map, and `contents` to read the files the
+  map pointed at. It solves the common case (`gh` authenticated, repo not here) and
+  covers **tokens and live copy in the i18n**. What it does **not** cover: the
+  component inventory with its traps (a component's real semantics needs a source
+  sweep, not two reads) and "how many places use this". **Don't use `gh search
+  code`:** it has a budget of **10 requests per minute**, a subagent fan-out
+  exhausts it in one round, the 403 comes back empty (exactly like "found
+  nothing"), and the `path:` qualifier takes no glob, so a reasonable query returns
+  zero and reads as absence. The tree stays in the normal 5,000/hour budget, comes
+  complete in one call and is greppable locally; when `truncated: false`, **the
+  absence of a path is conclusive**. brisar **does not clone on its own**, because
+  a company's private repo on somebody's computer is the builder's decision.
+- **The packaged fallback stopped passing itself off as a design system.**
+  `references/ds/brand/` is a **brand package**: voice, principles, the meaning of
+  a color, logo usage. Its `tokens.json` is a brand artifact and is **not** the
+  production token vocabulary. It still serves visual intent; it stopped being
+  presented as tokens read from the source, which produced classes the codebase
+  does not have.
+- **The mode line gained a fourth part: what the degradation invalidates.** Naming
+  the tool that was missing informs nothing. "I did not read the tokens from the
+  source, so the values are second-hand, the component inventory does not exist,
+  and I did not verify whether this page is already in production" informs what not
+  to trust.
 
-### Não designer — o contrato da calibração passou a valer nas fases novas
+### Not a designer: the calibration contract now holds in the new phases
 
-A Phase 0 define um vocabulário proibido pro perfil `executive` (`scaffold`,
-`embed`, `npm`, `MCP`, `repo`, `branch`, `slug`) e as quatro fases novas do
-primeiro diamante não o honravam — nenhuma delas lia `profile.persona_id`.
+Phase 0 defines a forbidden vocabulary for the `executive` profile (`scaffold`,
+`embed`, `npm`, `MCP`, `repo`, `branch`, `slug`) and the four new phases of the
+first diamond did not honor it, since none of them read `profile.persona_id`.
 
-- **As fases se nomeiam pelo resultado, não pelo método.** "Monto 2 ou 3 caminhos
-  diferentes e você escolhe" no lugar de "divergir em direções". Quem não é
-  designer não tem por que saber o que é divergência — e o gate pedia justamente
-  que ele escolhesse isso.
-- **A pergunta do meio vende a consequência, não a ferramenta.** Ninguém sem
-  repertório escolhe entre Paper e Figma; escolhe entre "ver rápido", "mostrar e
-  receber comentário" e "isso vai pra produção". `MCP` saiu do texto de usuário.
-- **A recomendação virou obrigatória** pros perfis `executive` e `content`. N
-  caminhos no mesmo nível de detalhe e nenhum critério não é neutralidade: é
-  entregar o julgamento mais difícil do fluxo pra quem tem menos repertório, e o
-  resultado costuma ser escolher o primeiro. Não afrouxa o tratamento igual — a
-  regra proíbe **descrição assimétrica**, nunca recomendação declarada.
-- **E o contrato de vocabulário ganhou verificação mecânica.** A regra de perfil
-  era aspiracional — dois lugares diziam "escreva pra quem não é designer" e nada
-  checava. Agora o self-check antes de apresentar tem **duas passadas com alvo
-  zero**: ponteiro pelado (já existia) e, quando o perfil é `executive`/`content`,
-  o vocabulário proibido **mais os nomes do próprio método** (`divergência`,
-  `reconciliação`, `piso`, `pocket`/`full`) — cada ocorrência **substituída** pelo
-  que significa, nunca anotada. Regra com check é seguida; regra com adjetivo
-  deriva, e foi exatamente assim que o contrato passou batido por quatro fases.
+- **The phases name themselves by the result, not by the method.** "I put together
+  2 or 3 different paths and you choose" instead of "diverge into directions".
+  Someone who is not a designer has no reason to know what divergence is, and the
+  gate was asking them to choose exactly that.
+- **The medium question sells the consequence, not the tool.** Nobody without the
+  repertoire chooses between Paper and Figma; they choose between "see it fast",
+  "show it and get comments" and "this goes to production". `MCP` left the user's
+  text.
+- **The recommendation became mandatory** for the `executive` and `content`
+  profiles. N paths at the same level of detail and no criterion is not
+  neutrality: it is handing the hardest judgment of the flow to whoever has the
+  least repertoire, and the result is usually picking the first one. It does not
+  loosen the equal treatment, because the rule forbids **asymmetric description**,
+  never a declared recommendation.
+- **And the vocabulary contract gained a mechanical check.** The profile rule was
+  aspirational: two places said "write for someone who is not a designer" and
+  nothing checked. Now the self-check before presenting has **two passes with a
+  target of zero**: a bare pointer (which already existed) and, when the profile is
+  `executive`/`content`, the forbidden vocabulary **plus the names of the method
+  itself** (`divergência`, `reconciliação`, `piso`, `pocket`/`full`), each
+  occurrence **replaced** by what it means, never annotated. A rule with a check is
+  followed; a rule with an adjective drifts, and that is exactly how the contract
+  slipped past four phases.
 
-### A leitura em chat ficou mais curta sem ficar mais pobre
+### The read in chat got shorter without getting poorer
 
-Legibilidade tinha self-check mecânico e concisão tinha só adjetivo, então o texto
-tinha viés estrutural pra inflar — glosar, expandir ponteiro e citar evidência
-todos empurram pra cima. Três testes de necessidade, mais um self-check simétrico:
-cada bloco existe pra habilitar **uma decisão ou uma opinião**; o achado viaja com
-**a consequência, não com o percurso**; e a **evidência mora no documento, o chat
-carrega a conclusão**. E **o chat apresenta o delta quando quem lê já leu** —
-"assuma que ninguém leu" é verdade pro stakeholder e falso pro builder na quarta
-rodada do brief que ele ajudou a escrever. O discriminador é **o leitor, não o
-número da rodada**: apresentar pra alguém novo é rodada 1 pra essa pessoa, e a
-leitura inteira volta.
+Legibility had a mechanical self-check and concision had only an adjective, so the
+text had a structural bias toward inflating: glossing, expanding a pointer and
+citing evidence all push it up. Three necessity tests, plus a symmetrical
+self-check: each block exists to enable **one decision or one opinion**; the
+finding travels with **the consequence, not with the journey**; and the
+**evidence lives in the document, the chat carries the conclusion**. And **the chat
+presents the delta when the reader has already read**, because "assume nobody read
+it" is true for the stakeholder and false for the builder on the fourth round of a
+brief they helped write. The discriminator is **the reader, not the round number**:
+presenting to someone new is round 1 for that person, and the whole read comes
+back.
 
-E o empate entre as duas regras ficou resolvido em vez de implícito:
-**legibilidade ganha.** Frase que o leitor não decodifica custa a ele o ponto
-inteiro; frase dez palavras mais longa custa dez palavras. Então a glosa fica e o
-ponteiro fica expandido, sempre — e a concisão passa a mirar outro lugar: **corta
-itens inteiros, não as palavras dentro deles.** Concisão decide **o que** entra na
-leitura, legibilidade decide **como** cada coisa sobrevivente é escrita. Encurtar
-raspando glosa é o único movimento que falha nas duas ao mesmo tempo.
+And the tie between the two rules got resolved instead of staying implicit:
+**legibility wins.** A sentence the reader cannot decode costs them the whole
+point; a sentence ten words longer costs ten words. So the gloss stays and the
+pointer stays expanded, always, and concision aims somewhere else: **it cuts whole
+items, not the words inside them.** Concision decides **what** enters the read,
+legibility decides **how** each surviving thing is written. Shortening by scraping
+the gloss is the one move that fails both at once.
 
-## 2.5.0 — 2026-08-05
+## 2.5.0 (2026-08-05)
 
-### A direção visual do brisar mora junto do brief
+### brisar's visual direction lives next to the brief
 
-O `/bb:brisar` escrevia a direção visual dentro da pasta scaffoldada
-(`<slug>/design/<surface>.md`), longe do brief que ela serve. Agora ela é membro da
-pasta da task: uma surface vira `.bb/tasks/<slug>/design.md`, duas ou mais viram
-`.bb/tasks/<slug>/design/<surface>.md` mais um índice. A pasta do projeto continua
-com código e `design-context/` (tokens e componentes, que são do scaffold) — o que
-saiu de lá é só o brief de tela.
+`/bb:brisar` wrote the visual direction inside the scaffolded folder
+(`<slug>/design/<surface>.md`), far from the brief it serves. Now it is a member of
+the task's folder: one surface becomes `.bb/tasks/<slug>/design.md`, two or more
+become `.bb/tasks/<slug>/design/<surface>.md` plus an index. The project's folder
+keeps the code and `design-context/` (tokens and components, which belong to the
+scaffold); what left it is only the screen brief.
 
-Os dois membros da pasta são independentes: brisar sem `/bb:discover` deixa uma task
-só com design, e uma spec sem desenho segue legal. A seleção do `/bb:delegate` varre
-`spec.md`, então uma pasta sem brief simplesmente não é candidata.
+The folder's two members are independent: brisar without `/bb:discover` leaves a
+task with design only, and a spec with no design is fine. `/bb:delegate`'s
+selection scans `spec.md`, so a folder without a brief is simply not a candidate.
 
-Quem lê não hardcoda caminho: o `.brisar/config.yaml` ganhou `design_path` (absoluto,
-mesmo idioma do `ds_path` já existente) e `surfaces[].file` passou a ser relativo a
-ele. A escolha entre um arquivo e uma pasta acontece uma vez, na Phase 4, e nunca é
-re-derivada rio abaixo.
+Whoever reads does not hardcode a path: `.brisar/config.yaml` gained `design_path`
+(absolute, in the same language as the existing `ds_path`) and `surfaces[].file`
+became relative to it. The choice between one file and a folder happens once, in
+Phase 4, and is never re-derived downstream.
 
-## 2.4.0 — 2026-08-05
+## 2.4.0 (2026-08-05)
 
-### A spec virou um documento pra ser lido
+### The spec became a document meant to be read
 
-Os briefs do `/bb:spec` eram formulário: seis seções fixas dizendo a mesma coisa
-três vezes, tabela com parágrafo de 300 caracteres dentro da célula, e seção
-inteira recontando a conversa que produziu o brief. Quem ia construir preferia
-reler o chat. Agora a spec tem **duas metades**:
+`/bb:spec`'s briefs were a form: six fixed sections saying the same thing three
+times, a table with a 300 character paragraph inside a cell, and a whole section
+recounting the conversation that produced the brief. Whoever was going to build
+preferred re-reading the chat. Now the spec has **two halves**:
 
-- **topo livre** — abertura de 1–3 parágrafos e quantas seções o problema pedir,
-  com os nomes que ele pedir. Arquitetura, quando o caso tem, mora aqui com nome
-  próprio: "o seam entre agente e caller" diz mais que "design".
-- **espinha fixa** — `decisions`, `behavior`, `tasks`, `out of scope`, `open`,
-  nesta ordem. Fixa porque cada uma tem quem leia: o `implement` consome `tasks`,
-  a frente `contract` do review caminha `behavior`, o gate trava em `open`.
+- **a free top**: a 1 to 3 paragraph opening and as many sections as the problem
+  asks for, with the names it asks for. Architecture, when the case has any, lives
+  here under a name of its own: "the seam between agent and caller" says more than
+  "design".
+- **a fixed set**: `decisions`, `behavior`, `tasks`, `out of scope`, `open`, in
+  this order. Fixed because each one has a reader: `implement` consumes `tasks`,
+  review's `contract` front walks `behavior`, the gate blocks on `open`.
 
-O critério que separa as duas metades é um só: **a prosa descreve, não reconta**.
-O que a coisa é fica na spec; como chegamos até ela vai pro corpo do commit.
-`## design` saiu de vez — no bb a palavra já é desenho de tela.
+One criterion separates the two halves: **the prose describes, it does not
+recount.** What the thing is stays in the spec; how we got there goes into the
+commit body. `## design` is gone for good, because in bb the word already means
+screen design.
 
-### O revisor independente virou passo próprio
+### The independent reviewer became a step of its own
 
-Era sub-bullet de um passo condicional; agora é um passo obrigatório em todo brief
-Medium+, antes do gate, em contexto fresco e só com o brief na mão. O mandato
-ganhou a metade que faltava: além do que está faltando, achar **o que sobra** —
-fato repetido em três seções, prosa que reconta a conversa. O veredito aparece no
-gate em uma linha.
+It was a sub-bullet of a conditional step; now it is a mandatory step in every
+Medium+ brief, before the gate, in fresh context and with nothing but the brief in
+hand. The mandate gained the half it was missing: beyond what is missing, find
+**what is redundant**, a fact repeated in three sections, prose that recounts the
+conversation. The verdict shows up at the gate in one line.
 
-### Um lint mecânico, e o CI rodando ele
+### A mechanical lint, and CI running it
 
-`lint_spec.py` (stdlib, sem dependência) barra o que é objetivo: seção morta
-(`## design`, `## still open`), célula de tabela acima de 100 caracteres, row com
-contagem de células errada — o bug do `|` não escapado —, frontmatter inválido e
-espinha ausente. Sem teto de linhas: tamanho é julgamento, e julgamento é do
-revisor. O `validate.yml` roda ele em todo `.bb/tasks/*/spec.md`.
+`lint_spec.py` (stdlib, no dependency) bars what is objective: a dead section
+(`## design`, `## still open`), a table cell over 100 characters, a row with the
+wrong cell count (the unescaped `|` bug), invalid frontmatter and a missing
+section. No line ceiling, because size is judgment, and judgment belongs to the
+reviewer. `validate.yml` runs it over every `.bb/tasks/*/spec.md`.
 
-### Slice pronta pra workflow
+### A slice ready for a workflow
 
-Cada slice do `## tasks` agora carrega dependência e verificação:
+Every slice of `## tasks` now carries its dependency and its verification:
 
 ```
-- [ ] **3. nome** — o que entrega → behaviors 1,3 · dep: 2 · verifica: CI verde
+- [ ] **3. name** — what it delivers → behaviors 1,3 · dep: 2 · verifica: CI verde
 ```
 
-O `implement` lê `dep:` como ordem de construção (não a ordem da lista) e roda o
-`verifica:` antes de marcar o checkbox. É o DAG que a adoção de workflow consome
-sem reinterpretar prosa.
+`implement` reads `dep:` as the build order (not the order of the list) and runs the
+`verifica:` before ticking the checkbox. It is the DAG that a workflow adoption
+consumes without reinterpreting prose.
 
-### `shape` saiu do vocabulário
+### `shape` left the vocabulary
 
-Brief é **spec**; o verbo é **especificar**. No `/bb:discover` e no `/bb:brisar`,
-onde "shaping" queria dizer enquadrar o problema, virou **enquadrar**. `Finding
-shape` e `return shape` ficam: são formato de dado, outro sentido da palavra.
+A brief is a **spec**; the verb is **especificar**. In `/bb:discover` and
+`/bb:brisar`, where "shaping" meant framing the problem, it became **enquadrar**.
+`Finding shape` and `return shape` stay: they are a data format, another sense of
+the word.
 
-## 2.2.0 — 2026-08-03
+## 2.2.0 (2026-08-03)
 
-### `/bb:review` virou sete frentes que você escolhe
+### `/bb:review` became seven fronts you choose
 
-O `review` fazia muita coisa de uma vez: rodava diff, threads e CI em sequência
-sem perguntar, e o que era "regra do projeto" ficava diluído dentro das lentes de
-correção e qualidade. Agora ele **detecta o que dá pra revisar nessa branch e
-pergunta quais frentes rodar**:
+`review` did too much at once: it ran the diff, the threads and CI in sequence
+without asking, and what was a "project rule" stayed diluted inside the
+correctness and quality lenses. Now it **detects what there is to review on this
+branch and asks which fronts to run**:
 
-| frente        | o que procura                                                           |
-| ------------- | ----------------------------------------------------------------------- |
-| `correctness` | bugs no diff, em 2–5 ângulos nomeados                                   |
-| `quality`     | reuso, simplificação, peso morto, eficiência, altitude, consistência    |
-| `rules`       | desvios do `CODE_REVIEW_GUIDE.md` e dos `CLAUDE.md` que governam o diff |
-| `contract`    | o mapa `## behavior` do brief como contrato de aceite                   |
-| `a11y`        | WCAG AA no que o diff mexeu na UI — estático, sem browser               |
-| `threads`     | comentários de review não resolvidos da PR                              |
-| `ci`          | checks vermelhos — evidência antes de editar                            |
+| front         | what it looks for                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------ |
+| `correctness` | bugs in the diff, across 2 to 5 named angles                                               |
+| `quality`     | reuse, simplification, dead weight, efficiency, altitude, consistency                      |
+| `rules`       | deviations from `CODE_REVIEW_GUIDE.md` and from the `CLAUDE.md` files that govern the diff |
+| `contract`    | the brief's `## behavior` map as the acceptance contract                                   |
+| `a11y`        | WCAG AA in whatever the diff touched in the UI, static, no browser                         |
+| `threads`     | unresolved review comments on the PR                                                       |
+| `ci`          | red checks, evidence before editing                                                        |
 
-A pergunta oferece só as frentes disponíveis (sem PR aberta não existe `threads`
-nem `ci`; sem brief não existe `contract`; sem arquivo de UI no diff não existe
-`a11y`), e diz a profundidade que o diff resolveu antes de gastar agente.
+The question offers only the available fronts (with no open PR there is no
+`threads` and no `ci`; with no brief there is no `contract`; with no UI file in the
+diff there is no `a11y`), and it says the depth the diff resolved before spending
+an agent.
 
-### Execução em paralelo, com verificação independente
+### Parallel execution, with independent verification
 
-As frentes escolhidas viram um fan-out de agentes read-only numa mensagem só —
-eles reportam candidatos, nunca editam; o contexto principal é o único que
-escreve. Depois vem a barreira: os candidatos são agrupados por `file:line` e
-cada grupo passa por um verificador independente que devolve **CONFIRMED /
-PLAUSIBLE / REFUTED**. Candidato não verificado é descartado, nunca promovido.
-Todo candidato que saiu de um finder termina num de quatro lugares, e a linha de
-stats fecha a conta: reportado, **refutado** (uma linha cada), **sem veredito** (o
-descartado, com o local e o motivo do veredito faltar) ou contado no cap.
+The chosen fronts become a fan-out of read-only agents in a single message: they
+report candidates and never edit, and the main context is the only one that writes.
+Then comes the barrier: the candidates are grouped by `file:line` and each group
+passes through an independent verifier that answers **CONFIRMED / PLAUSIBLE /
+REFUTED**. An unverified candidate is discarded, never promoted. Every candidate
+that left a finder ends up in one of four places, and the stats line closes the
+account: reported, **refuted** (one line each), **without a verdict** (the
+discarded one, with the location and the reason the verdict is missing) or counted
+in the cap.
 
-O tamanho do diff dimensiona o fan-out; **o conteúdo** decide quais ângulos entram
-nele. Diff de código roda os cinco. Diff de prompt/skill/markdown troca o ângulo de
-footguns de linguagem — que não tem onde morder ali — por `instruction-integrity`:
-duas seções que se contradizem, ponteiro que não resolve de onde é citado, regra no
-negativo que escreve no prompt o comportamento que ela proíbe, instrução que sobrou
-de um guard deletado, saída sem cap num doc que capa as outras, e ação oferecida sem
-o probe da precondição. Diff de config/manifest ganha um ângulo de validade contra o
-schema do formato. O ângulo derrubado é nomeado no relatório com o motivo — a
-profundidade reportada é a que rodou.
+The size of the diff sizes the fan-out; **the content** decides which angles enter
+it. A code diff runs all five. A prompt/skill/markdown diff swaps the
+language-footguns angle, which has nothing to grip there, for
+`instruction-integrity`: two sections that contradict each other, a pointer that
+does not resolve from where it is cited, a rule in the negative that writes into
+the prompt the behavior it forbids, an instruction left over from a deleted guard,
+an output with no cap in a doc that caps the others, and an action offered without
+a probe for its precondition. A config/manifest diff gains an angle of validity
+against the format's schema. A dropped angle is named in the report with the
+reason, because the reported depth is the one that ran.
 
-Arquitetura de ângulos e verificação adaptada do `/code-review` do Claude Code
-(Anthropic, Apache-2.0).
+The angle and verification architecture is adapted from Claude Code's
+`/code-review` (Anthropic, Apache-2.0).
 
-### Desvio de regra agora vem com a regra citada
+### A rule deviation now comes with the rule quoted
 
-A frente `rules` é a que responde "seguiu as regras do projeto?". Cada achado
-carrega **o texto exato da regra** (com ID ou `path§seção`) ao lado da **linha que
-a quebra** — é o que mata regra alucinada, porque o verificador confere a citação,
-não um crash. Três fontes em ordem de precedência: o `CODE_REVIEW_GUIDE.md` (lido
-fresh), o conjunto de `CLAUDE.md` que governa os arquivos tocados (escopo por
-diretório ancestral), e comentários de guidance no próprio código. Divergência
-entre guia e código vira item separado apontando pro `/bb:review-setup` — tanto
-regra citando caminho que não existe mais quanto **regra desviada em 40%+ dos
-arquivos que ela alcança**, que nessa densidade fala mais do guia desatualizado que
-do diff (o achado continua, o veredito não muda, e o relatório oferece regenerar a
-regra em vez de pedir sete edições).
+The `rules` front is the one that answers "did it follow the project's rules?".
+Each finding carries **the rule's exact text** (with an ID or `path§section`) next
+to **the line that breaks it**, which is what kills a hallucinated rule, because
+the verifier checks the citation, not a crash. Three sources in order of
+precedence: `CODE_REVIEW_GUIDE.md` (read fresh), the set of `CLAUDE.md` files that
+govern the touched files (scoped by ancestor directory), and guidance comments in
+the code itself. A divergence between the guide and the code becomes a separate
+item pointing at `/bb:review-setup`, both a rule citing a path that no longer
+exists and a **rule deviated from in 40%+ of the files it reaches**, which at that
+density says more about the outdated guide than about the diff (the finding stays,
+the verdict does not change, and the report offers to regenerate the rule instead
+of asking for seven edits).
 
-### O relatório diz o que passou, e você escolhe corrigir ou comentar
+### The report says what passed, and you choose to fix or to comment
 
-Duas coisas que a skill gerada do plugin antigo fazia bem voltaram. O relatório
-fecha com **o que veio limpo** — uma linha por frente dizendo o que cobriu sem
-achar nada, e na frente `rules` um checklist PASS/FAIL/SKIP regra por regra, com os
-SKIP colapsados numa linha. Regra silenciosa agora se lê como checada, não como
-esquecida.
+Two things the old plugin's generated skill did well came back. The report closes
+with **what came out clean**, one line per front saying what it covered without
+finding anything, and in the `rules` front a PASS/FAIL/SKIP checklist rule by rule,
+with the SKIPs collapsed into one line. A silent rule now reads as checked, not as
+forgotten.
 
-E na curadoria, corrigir não é o único desfecho: item por item você escolhe entre
-**corrigir** e **comentar na PR**, e pode misturar (corrige 1–3, comenta 4–6). O
-comentário sai ancorado na linha do diff, com a citação da regra ou o critério WCAG
-junto, e só depois de você ver o corpo exato e aprovar — comentário de PR é
-voltado pra fora. Achado cujo local está fora do diff (bug em linha não-alterada de
-função que a branch mexeu) não tem onde ancorar: vai num comentário-resumo com o
-`file:line` escrito no texto, e o re-report diz quais foram assim. A opção só
-aparece quando existe PR aberta. O re-report passou a ter três desfechos:
-`corrigido`, `comentado` e `deixado no relatório`.
+And in the curation, fixing is not the only outcome: item by item you choose
+between **fixing** and **commenting on the PR**, and you can mix (fix 1 to 3,
+comment 4 to 6). The comment goes out anchored to the diff's line, with the rule's
+citation or the WCAG criterion alongside, and only after you have seen the exact
+body and approved it, because a PR comment faces outward. A finding whose location
+is outside the diff (a bug on an unchanged line of a function the branch touched)
+has nowhere to anchor: it goes in a summary comment with the `file:line` written in
+the text, and the re-report says which ones went that way. The option only appears
+when there is an open PR. The re-report now has three outcomes: `corrigido`,
+`comentado` and `deixado no relatório`.
 
-### Acessibilidade entrou como frente — e o `/bb:ui-accessibility` saiu
+### Accessibility came in as a front, and `/bb:ui-accessibility` left
 
-Quando o diff toca UI, a frente `a11y` roda o que dá pra provar do código: papel
-semântico, nome acessível, label de campo, alcance por teclado, foco visível,
-região live, e contraste quando as duas cores estão no diff ou resolvem pelos
-tokens. Cada achado diz **quem fica bloqueado** — é o `failure_scenario` dessa
-frente — e leva prioridade Critical/Major/Minor/Enhancement.
+When the diff touches UI, the `a11y` front runs what can be proven from the code:
+semantic role, accessible name, field label, keyboard reach, visible focus, live
+region, and contrast when both colors are in the diff or resolve through the
+tokens. Each finding says **who ends up blocked**, which is that front's
+`failure_scenario`, and it carries a Critical/Major/Minor/Enhancement priority.
 
-A mesma frente roda em **escopo de superfície**: aponta pra uma pasta, um conjunto
-de arquivos ou uma página rodando e ela audita tudo, sem diff e sem repo git, com
-o browser resolvendo o que o código não fecha (contraste computado, ordem real de
-foco, o que o leitor de tela anuncia, reflow em 320px). Relatório agrupado por
-prioridade e veredito `WCAG AA: pass | fail | partial`.
+The same front runs in **surface scope**: point it at a folder, a set of files or a
+running page and it audits everything, with no diff and no git repo, with the
+browser resolving what the code does not settle (computed contrast, the real focus
+order, what the screen reader announces, reflow at 320px). The report is grouped by
+priority, with a `WCAG AA: pass | fail | partial` verdict.
 
-Com isso o **`/bb:ui-accessibility` foi removido** — eram duas skills pedindo o
-mesmo checklist. `/bb:review` responde aos mesmos gatilhos ("auditoria de
-acessibilidade", "WCAG", "contraste", "leitor de tela"), e o gate do Deliver do
-`/bb:brisar` passou a oferecer essa auditoria. São **15 skills** agora.
+With that, **`/bb:ui-accessibility` was removed**, since they were two skills
+asking for the same checklist. `/bb:review` answers the same triggers ("auditoria
+de acessibilidade", "WCAG", "contraste", "leitor de tela"), and the gate of
+`/bb:brisar`'s Deliver now offers that audit. There are **15 skills** now.
 
-### O `/bb:ship` passou a usar a mesma engine
+### `/bb:ship` started using the same engine
 
-O ship tinha a própria passada de review — quatro lentes fixas, sem probe, sem
-verificação independente — e era ela que rodava no `/bb:delegate` e na routine
-noturna. Ou seja: no caminho que de fato encosta código na main, o
-`CODE_REVIEW_GUIDE.md` do repo não era checado e acessibilidade não existia.
+ship had a review pass of its own, four fixed lenses, no probe, no independent
+verification, and that was the one running in `/bb:delegate` and in the nightly
+routine. Which means: on the path that actually puts code next to main, the repo's
+`CODE_REVIEW_GUIDE.md` was not checked and accessibility did not exist.
 
-Agora o Step 2 do ship **lê as referências do `/bb:review`**
-(`${CLAUDE_PLUGIN_ROOT}/skills/review/references/{fronts,verify,front-*,act-apply-fixes}.md`) e
-roda todas as frentes disponíveis menos `threads` e `ci` — essas duas continuam
-sendo trabalho do próprio ship. Sem pergunta e sem gate: ship é caminho de
-entrega. Ler reference não é invocar skill, então o ship segue self-contained; o
-que morreu foi a segunda definição de "como se revisa". Consequência direta:
-`/bb:delegate` agora checa regra de projeto, contrato do brief e acessibilidade, e
-cada achado passa pelo verificador antes de virar fix.
+Now ship's Step 2 **reads `/bb:review`'s references**
+(`${CLAUDE_PLUGIN_ROOT}/skills/review/references/{fronts,verify,front-*,act-apply-fixes}.md`) and
+runs every available front except `threads` and `ci`, which stay ship's own work.
+No question and no gate: ship is a delivery path. Reading a reference is not
+invoking a skill, so ship stays self-contained; what died was the second definition
+of "how you review". The direct consequence: `/bb:delegate` now checks project
+rules, the brief's contract and accessibility, and every finding passes through the
+verifier before becoming a fix.
 
-### SKILL.md virou router
+### SKILL.md became a router
 
-Cada frente e cada ação viraram reference própria, carregada só quando aquela
-frente foi escolhida: `references/front-{correctness,quality,rules,contract,a11y,threads,ci}.md`,
-`references/fronts.md` (catálogo + probe + profundidade), `references/verify.md`,
+Each front and each action became its own reference, loaded only when that front
+was chosen: `references/front-{correctness,quality,rules,contract,a11y,threads,ci}.md`,
+`references/fronts.md` (catalog + probe + depth), `references/verify.md`,
 `references/act-apply-fixes.md`, `references/act-comment-findings.md`,
 `references/mode-external-pr.md`.
 
-No `/bb:review-setup`, o campo `Lens` das regras virou `Categoria` — ele não roteia
-mais nada (a frente `rules` lê todas as regras), só diz que tipo de preocupação a
-regra é. Guias já gerados com `Lens` continuam válidos.
+In `/bb:review-setup`, the rules' `Lens` field became `Categoria`: it no longer
+routes anything (the `rules` front reads every rule), it only says what kind of
+concern the rule is. Guides already generated with `Lens` stay valid.
 
-## 2.1.0 — 2026-07-30
+## 2.1.0 (2026-07-30)
 
-### `/bb:ship` ganhou o destino **LexFlow**
+### `/bb:ship` gained the **LexFlow** destination
 
-Quem constrói app LexFlow tinha o `ship` desembocando sempre em PR — e parte do
-time não tem `gh`. Agora o LexFlow é um **4º destino**, ao lado de branch / main
-/ PR. Os destinos são exclusivos: quem quer PR **e** deploy roda o `ship` duas
-vezes.
+Whoever builds a LexFlow app had `ship` always ending in a PR, and part of the team
+does not have `gh`. Now LexFlow is a **4th destination**, next to branch / main /
+PR. The destinations are exclusive: whoever wants a PR **and** a deploy runs `ship`
+twice.
 
-O que o caminho faz: detecta `lexflow.toml` na raiz, roda um gate próprio,
-revisa os workflows YAML com lentes que cabem num app declarativo, commita,
-pusha o repo do app — e **entrega** `lexflow deploy --ref <sha>` com o sha que
-passou pelo review. O `ship` nunca deploya; a mecânica de deploy continua sendo
-do `lexflow-builder`, a skill do time de plataforma.
+What the path does: it detects `lexflow.toml` at the root, runs a gate of its own,
+reviews the YAML workflows with lenses that fit a declarative app, commits, pushes
+the app's repo, and **hands over** `lexflow deploy --ref <sha>` with the sha that
+went through the review. `ship` never deploys; the deploy mechanics stay with
+`lexflow-builder`, the platform team's skill.
 
-O gate tem três camadas, cada uma com uma autoridade:
+The gate has three layers, each with an authority of its own:
 
-- `scripts/check_lexflow_manifest.py` — parse do `lexflow.toml` via `tomllib`,
-  exige `[app]`, confere que todo `source` declarado (deployments, workflows,
-  middlewares) aponta pra arquivo real. Roda em ms, sem rede, e funciona
-  deslogado. Com `--changed`, mapeia os arquivos do diff nos deployments que eles
-  afetam — direto ou por referência de dentro de um YAML.
-- `lexflow deploy --dry-run` — a autoridade sobre o manifest. `Manifest error:`
-  **bloqueia** (é erro do app, e acontece antes de qualquer chamada de rede); 5xx
-  na fase de diff **reporta** como instabilidade de plataforma; CLI ausente ou
-  deslogado **pula** o check e aponta `lexflow login`.
-- conferência de opcodes — `lexflow opcodes list` cruzado com os YAMLs tocados.
+- `scripts/check_lexflow_manifest.py`: parses `lexflow.toml` through `tomllib`,
+  requires `[app]`, and checks that every declared `source` (deployments,
+  workflows, middlewares) points at a real file. It runs in milliseconds, with no
+  network, and works logged out. With `--changed`, it maps the diff's files onto the
+  deployments they affect, directly or by a reference from inside a YAML.
+- `lexflow deploy --dry-run`: the authority over the manifest. `Manifest error:`
+  **blocks** (it is the app's error, and it happens before any network call); a 5xx
+  in the diff phase **reports** platform instability; a missing or logged-out CLI
+  **skips** the check and points at `lexflow login`.
+- the opcode check: `lexflow opcodes list` crossed against the touched YAMLs.
 
-### `/bb:delegate` acompanhou o destino novo
+### `/bb:delegate` followed the new destination
 
-O passo de landing do `delegate` afirmava draft PR pro caminho unattended — que não
-existe em repo LexFlow. Agora bifurca por destino, e o blocker de um run travado
-aterrissa no `## still open` do brief quando não há PR pra escrever nele.
+`delegate`'s landing step asserted a draft PR for the unattended path, which does
+not exist in a LexFlow repo. Now it forks by destination, and the blocker of a
+stopped run lands in the brief's `## still open` when there is no PR to write it in.
 
-### Landings extraídos pra `references/`
+### The landings were extracted into `references/`
 
-O `SKILL.md` do `ship` virou router: os quatro landings agora vivem em
-`references/land-{branch,main,pr,lexflow}.md`, carregados só quando aquele
-destino é o escolhido. O `SKILL.md` foi de 170 pra 135 linhas carregando um
-destino a mais.
+`ship`'s `SKILL.md` became a router: the four landings now live in
+`references/land-{branch,main,pr,lexflow}.md`, loaded only when that destination is
+the chosen one. The `SKILL.md` went from 170 to 135 lines while carrying one more
+destination.
 
-## 2.0.0 — 2026-07-23
+## 2.0.0 (2026-07-23)
 
-O plugin `ofc` (Oficina) virou o **Builder Bundle** (`bb`): 28 skills de 4 fontes
-(ofc, bundle brisar, cópias da loja inspira-skills, inspira-code-review)
-consolidadas em **16 skills** organizadas em 6 trilhas. Repo renomeado de
-`inspira-legal/ofc-skills` pra `inspira-legal/builder-bundle` (o GitHub
-redireciona o nome antigo).
+The `ofc` plugin (Oficina) became the **Builder Bundle** (`bb`): 28 skills from 4
+sources (ofc, the brisar bundle, copies from the inspira-skills store,
+inspira-code-review) consolidated into **16 skills** organized in 6 trilhas. The
+repo was renamed from `inspira-legal/ofc-skills` to
+`inspira-legal/builder-bundle` (GitHub redirects the old name).
 
-### Migrando do ofc
+### Migrating from ofc
 
-O marketplace deste repo agora lista **só o plugin `bb`** — a entrada `ofc` foi
-removida de propósito (quebra de major). Consequências:
+This repo's marketplace now lists **only the `bb` plugin**: the `ofc` entry was
+removed on purpose (a major break). The consequences:
 
-- **`claude plugin update` do ofc antigo falha.** É o comportamento esperado:
-  não existe mais `ofc` pra atualizar. Migre assim:
+- **`claude plugin update` on the old ofc fails.** That is the expected behavior:
+  there is no `ofc` left to update. Migrate like this:
 
   ```bash
   claude plugin uninstall ofc@inspira-legal
@@ -801,75 +812,76 @@ removida de propósito (quebra de major). Consequências:
   claude plugin install bb@inspira-legal
   ```
 
-- **Coexistência ofc + bb funciona, mas não fique nela.** Os prefixos são
-  distintos (`/ofc:` e `/bb:`), então nada quebra — porém os dois plugins têm
-  hook `SessionStart`, e você passa a injetar contexto operacional **em dobro**
-  em toda sessão. Desinstale o ofc primeiro.
-- **Briefs antigos precisam ser movidos.** O único caminho lido agora é
-  `.bb/tasks/<slug>/spec.md` — não há fallback pro `.ofc/`. Migre com:
+- **ofc + bb coexistence works, but do not stay there.** The prefixes are distinct
+  (`/ofc:` and `/bb:`), so nothing breaks, but both plugins have a `SessionStart`
+  hook, so you start injecting the operating context **twice** in every session.
+  Uninstall ofc first.
+- **Old briefs have to be moved.** The only path read now is
+  `.bb/tasks/<slug>/spec.md`; there is no fallback to `.ofc/`. Migrate with:
 
   ```bash
   git mv .ofc/tasks .bb/tasks
   find .bb/tasks -name shape.md -execdir git mv shape.md spec.md \;
   ```
 
-- **Env var da routine: `BB_UNATTENDED`** — a antiga `OFC_UNATTENDED` não é mais
-  lida. Atualize a Cloud Routine pra definir a nova e rodar `/bb:delegate`.
-- **Marcador do sticky comment do maintain-repo mudou de `ofc:` pra `bb:`** —
-  o `/bb:maintain-repo` não reconhece o comment antigo e cria um novo; apague o
-  sticky antigo do `/ofc:maintain-repo` no repo triado.
-- **Skill customizada gerada pelo code-review-setup antigo** continua
-  funcionando isolada no repo dela, mas recomendamos remover e usar
-  `/bb:review` + `/bb:review-setup` (que agora gera só o `CODE_REVIEW_GUIDE.md`,
-  sem skill por repo).
+- **The routine's env var is `BB_UNATTENDED`**: the old `OFC_UNATTENDED` is no
+  longer read. Update the Cloud Routine to set the new one and run `/bb:delegate`.
+- **maintain-repo's sticky comment marker changed from `ofc:` to `bb:`**:
+  `/bb:maintain-repo` does not recognize the old comment and creates a new one, so
+  delete the old `/ofc:maintain-repo` sticky in the triaged repo.
+- **A custom skill generated by the old code-review-setup** keeps working in
+  isolation in its own repo, but we recommend removing it and using `/bb:review` +
+  `/bb:review-setup` (which now generates only the `CODE_REVIEW_GUIDE.md`, with no
+  per-repo skill).
 
-### De-para: 28 skills → 16
+### Mapping: 28 skills → 16
 
-| origem              | skill antiga            | destino no bb                                                 |
-| ------------------- | ----------------------- | ------------------------------------------------------------- |
-| ofc                 | `frame-problem`         | `/bb:discover` (fase de enquadramento)                        |
-| ofc                 | `assess-fit`            | `/bb:discover` (fase de fit)                                  |
-| brisar              | `nise`                  | `/bb:discover` (material de descoberta)                       |
-| brisar              | `esperanca`             | `/bb:discover` (material de hipótese)                         |
-| loja                | `desafio`               | `/bb:challenge` (renomeada)                                   |
-| loja                | `think`                 | `/bb:think` (base do método)                                  |
-| ofc                 | `answer-yourself`       | `/bb:think` (modo take: veredito direto)                      |
-| ofc                 | `legal-lens`            | `/bb:legal-lens`                                              |
-| ofc                 | `shape`                 | `/bb:spec` (o método veio daqui)                              |
-| loja                | `spec`                  | `/bb:spec` (formato de export em `references/export-spec.md`) |
-| ofc                 | `implement`             | `/bb:implement`                                               |
-| ofc                 | `ship`                  | `/bb:ship`                                                    |
-| ofc                 | `delegate`              | `/bb:delegate`                                                |
-| ofc                 | `gather-branch-context` | `/bb:gather-branch-context`                                   |
-| ofc                 | `review-changes`        | `/bb:review` (fonte diff)                                     |
-| ofc                 | `tidy`                  | `/bb:review` (passada de qualidade)                           |
-| ofc                 | `tidy-pr`               | `/bb:review` (fonte threads)                                  |
-| loja                | `pr-review`             | `/bb:review`                                                  |
-| loja                | `fix-ci`                | `/bb:review` (fonte CI, absorvida)                            |
-| ofc                 | `maintain-repo`         | `/bb:maintain-repo`                                           |
-| inspira-code-review | `code-review-setup`     | `/bb:review-setup`                                            |
-| inspira-code-review | `code-review-update`    | `/bb:review-setup` (update absorvido)                         |
-| brisar              | `brisar`                | `/bb:brisar`                                                  |
-| brisar              | `tarsila`               | `/bb:brisar` (fase Develop)                                   |
-| brisar              | `clarisse`              | `/bb:brisar` (fase Deliver)                                   |
-| loja                | `ui-accessibility`      | `/bb:review` (frente `a11y`, desde 2.2.0)                     |
-| ofc                 | `code-deep-research`    | `/bb:code-deep-research`                                      |
-| ofc                 | `write-readme`          | `/bb:write-readme`                                            |
+| source              | old skill               | destination in bb                                         |
+| ------------------- | ----------------------- | --------------------------------------------------------- |
+| ofc                 | `frame-problem`         | `/bb:discover` (the framing phase)                        |
+| ofc                 | `assess-fit`            | `/bb:discover` (the fit phase)                            |
+| brisar              | `nise`                  | `/bb:discover` (discovery material)                       |
+| brisar              | `esperanca`             | `/bb:discover` (hypothesis material)                      |
+| store               | `desafio`               | `/bb:challenge` (renamed)                                 |
+| store               | `think`                 | `/bb:think` (the base of the method)                      |
+| ofc                 | `answer-yourself`       | `/bb:think` (take mode: a direct verdict)                 |
+| ofc                 | `legal-lens`            | `/bb:legal-lens`                                          |
+| ofc                 | `shape`                 | `/bb:spec` (the method came from here)                    |
+| store               | `spec`                  | `/bb:spec` (export format in `references/export-spec.md`) |
+| ofc                 | `implement`             | `/bb:implement`                                           |
+| ofc                 | `ship`                  | `/bb:ship`                                                |
+| ofc                 | `delegate`              | `/bb:delegate`                                            |
+| ofc                 | `gather-branch-context` | `/bb:gather-branch-context`                               |
+| ofc                 | `review-changes`        | `/bb:review` (the diff source)                            |
+| ofc                 | `tidy`                  | `/bb:review` (the quality pass)                           |
+| ofc                 | `tidy-pr`               | `/bb:review` (the threads source)                         |
+| store               | `pr-review`             | `/bb:review`                                              |
+| store               | `fix-ci`                | `/bb:review` (the CI source, absorbed)                    |
+| ofc                 | `maintain-repo`         | `/bb:maintain-repo`                                       |
+| inspira-code-review | `code-review-setup`     | `/bb:review-setup`                                        |
+| inspira-code-review | `code-review-update`    | `/bb:review-setup` (update absorbed)                      |
+| brisar              | `brisar`                | `/bb:brisar`                                              |
+| brisar              | `tarsila`               | `/bb:brisar` (the Develop phase)                          |
+| brisar              | `clarisse`              | `/bb:brisar` (the Deliver phase)                          |
+| store               | `ui-accessibility`      | `/bb:review` (the `a11y` front, since 2.2.0)              |
+| ofc                 | `code-deep-research`    | `/bb:code-deep-research`                                  |
+| ofc                 | `write-readme`          | `/bb:write-readme`                                        |
 
-### Arquitetura do bundle
+### The bundle's architecture
 
-- **Progressive disclosure** em toda skill fundida: `SKILL.md` enxuto que
-  roteia; o material de cada fase/modo vive em `references/` e carrega só
-  quando a fase roda.
-- **Handoff gates**: skill com próximo passo natural termina num
-  `AskUserQuestion` que sugere a próxima trilha — sugere, nunca auto-invoca
-  (exceção: `delegate` e o auto-chain implement→ship quando pré-autorizado).
-  Convenção única em `plugins/bb/references/handoff-gate.md`.
-- **Manifesto em runtime**: `implement`, `ship`, `review` e `review-setup`
-  consultam `inspira-legal/manifesto` pra decisões de stack; sem acesso, seguem
-  os padrões do repo atual e avisam.
-- **Motor de review compartilhado** entre `ship` e `review` em
-  `plugins/bb/references/` + `scripts/` — papéis distintos, motor único.
+- **Progressive disclosure** in every fused skill: a lean `SKILL.md` that routes;
+  the material of each phase/mode lives in `references/` and loads only when the
+  phase runs.
+- **Handoff gates**: a skill with a natural next step ends in an
+  `AskUserQuestion` that suggests the next trilha, and it suggests, never
+  auto-invokes (the exception: `delegate` and the implement→ship auto-chain when
+  pre-authorized). The single convention lives in
+  `plugins/bb/references/handoff-gate.md`.
+- **The manifesto at runtime**: `implement`, `ship`, `review` and `review-setup`
+  consult `inspira-legal/manifesto` for stack decisions; without access, they
+  follow the current repo's patterns and say so.
+- **A review engine shared** between `ship` and `review` in
+  `plugins/bb/references/` + `scripts/`: distinct roles, one engine.
 
-O histórico anterior a 2.0.0 (plugin `ofc` até a 1.16.0) vive no git log deste
-repo.
+The history before 2.0.0 (the `ofc` plugin up to 1.16.0) lives in this repo's git
+log.

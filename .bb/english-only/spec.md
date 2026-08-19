@@ -110,8 +110,8 @@ Happy path, one area at a time, each area a commit:
 - [x] **7. Manifests**: `plugins/bb/.claude-plugin/plugin.json` and
       `.claude-plugin/marketplace.json`
       → behavior 7 · dep: — · verify: both descriptions read English
-- [ ] **8. `CHANGELOG.md`**: the 12 entries, headings and prose
-      → behavior 8 · dep: 1 · verify: the Portuguese line census on the file returns nothing
+- [x] **8. `CHANGELOG.md`**: the 12 entries, headings and prose
+      → behavior 8 · dep: 1 · verify: the Portuguese line census on the file returns only the tokens an entry quotes from the version it describes
 - [ ] **9. The 7 landed specs**: `.bb/*/spec.md`, prose and section names
       → behaviors 9, table row 4 · dep: 1 · verify: the census returns nothing and the CI lint stays green
 - [x] **10. Literal names**: `spine` and `ruler` become the thing they name, the
