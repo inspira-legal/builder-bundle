@@ -25,7 +25,7 @@ about output language is exactly what the model does on its own.
 - **`plugins/bb/references/vocabulario.md` is deleted.** It exists to rule the
   Portuguese layer. The one rule that survives it, call each thing by the name the
   code gives it, is already in `doc-style.md`, and the four readers point there.
-- **The spec spine goes back to English**: `## Decisions`, `## Behavior`, `## Tasks`,
+- **The spec's fixed sections go back to English**: `## Decisions`, `## Behavior`, `## Tasks`,
   `## Out of scope`, `## Open`. The task fields become `dep:` and `verify:`.
   `lint_spec.py` keeps resolving both spellings, and `W003` now carries the English
   name to write instead.
@@ -43,12 +43,16 @@ about output language is exactly what the model does on its own.
   ` #` inside it. Both break the parse or silently truncate the value.
 - **The new English prose follows `doc-style.md`**: no dash, sentence case in
   headings, one idea per list item.
+- **A figure of speech has to name a mechanism the code has.** `spine` for the fixed
+  sections and `ruler` for this page name nothing, so they become what they are, and
+  `doc-style.md` states the rule in that form. `safety valve`, `gate`, `front` and
+  `trilha` stay: each one is a name the plugin already uses for a real mechanism.
 
 ## Behavior
 
 Happy path, one area at a time, each area a commit:
 
-1. The spine rename lands first, in `lint_spec.py` and in every page that names a
+1. The section rename lands first, in `lint_spec.py` and in every page that names a
    section or a task field. Nothing else can be written against the new names until
    this is true.
 2. The 15 `SKILL.md` descriptions and the 2 agent descriptions become English, each
@@ -61,15 +65,16 @@ Happy path, one area at a time, each area a commit:
 6. `README.md` becomes English, keeping the all lowercase house style.
 7. The two manifests carry English descriptions.
 8. `CHANGELOG.md` becomes English, entry by entry.
-9. The 7 landed specs in `.bb/` become English, spine included.
-10. The version goes to 2.13.0 with an English entry describing the change.
+9. The 7 landed specs in `.bb/` become English, section names included.
+10. Every figure that names nothing is replaced by the literal name.
+11. The version goes to 2.13.0 with an English entry describing the change.
 
 | WHEN                                                       | THEN                                                                             |
 | ---------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | a rewritten `description:` would need a colon              | it takes a period, parentheses, or a comma, and never a quoted scalar            |
 | a `description:` carries a `#`                             | the `#` goes, because YAML reads it as a comment and drops the rest of the line  |
-| a page names a spine section                               | it names the English one, and no page teaches the Portuguese spelling as current |
-| a landed spec still uses the Portuguese spine              | the lint accepts it, and task 9 rewrites it anyway                               |
+| a page names a fixed section                               | it names the English one, and no page teaches the Portuguese spelling as current |
+| a landed spec still uses the Portuguese section names      | the lint accepts it, and task 9 rewrites it anyway                               |
 | a line in `ds/` is Portuguese                              | it stays Portuguese                                                              |
 | a Portuguese word is an identifier (`brisar`, a slug)      | it stays as written                                                              |
 | a translated sentence wants a dash                         | it takes what `doc-style.md` prescribes                                          |
@@ -78,7 +83,7 @@ Happy path, one area at a time, each area a commit:
 
 ## Tasks
 
-- [ ] **1. English spine**: `lint_spec.py` (canonical set, `W003` message, dead
+- [ ] **1. English section names**: `lint_spec.py` (canonical set, `W003` message, dead
       section text), `spec-format.md`, `spec-state.md`, `export-spec.md`,
       `build-tasks-workflow.md`, `build-mode.md`, `delegate/SKILL.md`,
       `implement/SKILL.md`, `spec/SKILL.md`, `review/SKILL.md`, `front-contract.md`,
@@ -107,11 +112,15 @@ Happy path, one area at a time, each area a commit:
       → behavior 7 · dep: — · verify: both descriptions read English
 - [ ] **8. `CHANGELOG.md`**: the 12 entries, headings and prose
       → behavior 8 · dep: 1 · verify: the Portuguese line census on the file returns nothing
-- [ ] **9. The 7 landed specs**: `.bb/*/spec.md`, prose and spine
+- [ ] **9. The 7 landed specs**: `.bb/*/spec.md`, prose and section names
       → behaviors 9, table row 4 · dep: 1 · verify: the census returns nothing and the CI lint stays green
-- [ ] **10. 2.13.0**: version in the plugin manifest, English `CHANGELOG` entry, spec
+- [ ] **10. Literal names**: `spine` and `ruler` become the thing they name, the
+      figures that name nothing go (rubber-stamp, "that bite", the smaller door), and
+      `doc-style.md` states the rule
+      → behavior 10 · dep: — · verify: `grep -rniE "spine|ruler|rubber-?stamp|that bite"` outside `.bb/` and `CHANGELOG.md` returns nothing
+- [ ] **11. 2.13.0**: version in the plugin manifest, English `CHANGELOG` entry, spec
       closed
-      → behavior 10 · dep: 1, 2, 3, 4, 5, 6, 7, 8, 9 · verify: `gh pr checks --watch` green
+      → behavior 11 · dep: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 · verify: `gh pr checks --watch` green
 
 ## Out of scope
 

@@ -219,7 +219,7 @@ result: "monto caminhos pra você escolher", not "divergir em direções".
 
 1. **An internal pointer carries its meaning on first use.** Never a bare `D7`, `P6`,
    "restriction 2", "axis 2", always `D7 (a decisão de que o bloco de valor carrega a
-persuasão)`. The ruler: _a reader who has not opened the spec understands the
+persuasão)`. The test: _a reader who has not opened the spec understands the
    sentence._
 2. **A design concept gets a 5–10 word gloss on first use.** "reactância (a defesa que a pessoa
    levanta quando sente que estão vendendo pra ela)", "efeito de dotação (a mesma coisa vale

@@ -355,10 +355,10 @@ Two hard requirements, and they are what separates this from a listicle:
   is. And say where each trigger **risks** reading as manipulative or desperate for this
   specific audience. The wrong tone destroys credibility faster than it converts.
 
-### Heuristics that actually bite
+### Heuristics that change the screen
 
 Not a recital. Only the ones that bear on this pattern, each with the concrete implication for
-this screen. Three that bite beat ten that are quoted.
+this screen. Three that change the design beat ten that are quoted.
 
 ### Mental models of the audience
 

@@ -133,6 +133,6 @@ python3 plugins/bb/skills/spec/scripts/lint_spec.py .bb/<slug>/spec.md
 | W003 | warning | a section named in Portuguese; the message carries the English name |
 | W004 | warning | no `## Out of scope`                                                |
 
-Whether the document is too long, repeats itself, or drifts into archaeology is not a
+Whether the document is too long, repeats itself, or recounts the conversation is not a
 lint check; it's what the independent reviewer is asked to find. A line ceiling on a
 document meant to be read just rebuilds the form.

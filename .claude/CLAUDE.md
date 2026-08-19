@@ -24,7 +24,7 @@ plugins/bb/
 │   └── operating-context.md            # the injected operating frame (edit to tune)
 ├── references/                        # plugin-level docs (not skill-scoped)
 │   ├── vocabulario.md                  # one name per thing, in Portuguese (table + capitalization)
-│   ├── doc-style.md                    # the style ruler for every English sentence bb writes
+│   ├── doc-style.md                    # the style rules for every English sentence bb writes
 │   ├── handoff-gate.md                 # the one convention for end-of-skill gates (+ AskUserQuestion rationale)
 │   ├── confidence-and-steelman.md      # shared reasoning protocols (think, challenge)
 │   ├── spec-state.md                   # the .bb/<slug>/ folder contract
@@ -56,11 +56,11 @@ plugins/bb/
 - Agents live in `plugins/bb/agents/<name>.md`, auto-discovered (no `plugin.json`
   entry). What an agent buys is a **system prompt the harness delivers**: the
   invariant half of a role travels with it instead of being re-composed into every
-  prompt by the context that fans out, which is the half that gets shortened first.
+  prompt by the context that fans out, which is the half a caller trims first.
   That single ownership is the reason to reach for an agent; the skill references
   defer to it rather than restating it. The `tools:` list narrows the surface on top
   of that (CI fails a bb agent that lists a write tool), but with `Bash` on the list
-  it is a smaller door, not a closed one, so don't write it up as a guarantee. Name
+  it narrows the surface without closing it, so don't write it up as a guarantee. Name
   agents by **role in the pipeline**, not by front or phase: what varies between
   fronts is prompt content the caller already assembles. The `description` is PT-BR
   and sits in context globally, so keep it narrow and name the skill that is the real

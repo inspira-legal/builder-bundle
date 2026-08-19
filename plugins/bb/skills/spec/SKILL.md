@@ -37,7 +37,7 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
 
 4. **Loop.** Fold each answer into the draft, re-surface anything new it opens, ask again. Keep going until a round surfaces no new gray areas.
 
-5. **Adversarial completeness pass (when the gray areas run dry).** Don't _review_ the spec: try to **break** it; the same model that wrote the map rubber-stamps it on a re-read. Two moves, looping anything they surface back to step 3:
+5. **Adversarial completeness pass (when the gray areas run dry).** Don't _review_ the spec: try to **break** it; the same model that wrote the map approves it on a re-read. Two moves, looping anything they surface back to step 3:
    - **Run the generators** (`references/completeness-generators.md`) to manufacture questions along the axes omission hides in: input dimensions, external outputs' empty/limit/shape-change cases, state & lifecycle, failure & recovery, concurrency, trust boundary, data lifecycle, observability. Output is questions, not filled sections.
    - **Render the trace**: lay out behavior → task → test as a coverage table, not a mental check; every mapped behavior traces to a task and every task to a behavior. An unlinked row IS the omission, made visible rather than asserted. This is the table the gate shows; "I checked traceability" becomes proof the user can see.
 
@@ -72,7 +72,7 @@ Before the gate, the load-bearing technical decisions must be **made or explicit
 - **Error & edge handling**: for each edge in the behavior map (below), decide _how_ it's handled (failure & rollback, validation, retries). Map the case in the behavior; decide the handling here.
 - **Integration points**: the existing systems, dependencies, and external services it touches.
 
-These are the decisions that bite _after_ you've built against them (expensive to undo), so they get closed here, before breaking it into tasks. A fork left open is what the gate blocks on. Architecture that needs more room than a bullet (a seam, a data flow, a diagram) is described in the spec's free top half, under the name it has in this problem (`references/spec-format.md`).
+These are the decisions that cost the most _after_ you've built against them (expensive to undo), so they get closed here, before breaking it into tasks. A fork left open is what the gate blocks on. Architecture that needs more room than a bullet (a seam, a data flow, a diagram) is described in the spec's free top half, under the name it has in this problem (`references/spec-format.md`).
 
 ## Map the behavior (required for Medium+)
 
@@ -105,7 +105,7 @@ Before asserting how something works: check the codebase, then its docs, then th
 
 ## Hand off: the gate decides whether to roll on
 
-spec always ends at a validated `.bb/<slug>/spec.md`; the spec is the durable asset either way. What changes is what happens next, and the gate's 3-way pick (above) decides it. The seam between speccing and building is a checkpoint the user crosses on purpose, not a wall.
+spec always ends at a validated `.bb/<slug>/spec.md`; the spec is the durable asset either way. What changes is what happens next, and the gate's 3-way pick (above) decides it. The step from speccing to building is a checkpoint the user crosses on purpose, not a stop.
 
 - **Implementar:** invoke `/bb:implement` now. It loads this spec as the intent, builds every task, and stops ready to ship, where it offers `/bb:ship`. The "build it, I'll decide on shipping after" path.
 - **Delegar:** invoke `/bb:delegate <slug>` now. It loads this spec as the intent, builds every task, _and_ lands it (the full `/bb:implement` → `/bb:ship` run). The "I'm happy, run the whole thing" path.

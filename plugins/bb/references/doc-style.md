@@ -14,8 +14,7 @@ option labels, reports, and plain chat. This page is English, which is where Ame
 spelling and the word choices below apply. One rule crosses both languages, the dash rule,
 because it is punctuation rather than vocabulary.
 
-This page is the whole ruler. Every rule bb writes by is stated here, so writing to it is a
-local read, never a fetch.
+This page states every rule bb writes by, so writing to it is a local read, never a fetch.
 
 ## Precedence
 
@@ -46,10 +45,9 @@ or a comma.
 - Keep every sentence carrying something the reader can act on. A step reads as an
   instruction and its outcome, and how fast or how simple it is comes across from the step
   itself.
-- Metaphor is welcome where it names a mechanism: the safety valve that fires, the gate that
-  blocks, a tool that is a smaller door and not a closed one. A figure that carries a
-  mechanism is what makes an instruction stick to the agent reading the `SKILL.md`. Where the
-  literal sentence is already short, write the literal sentence.
+- Name each thing by what it does, and write the literal sentence. A figure of speech holds
+  only where it names a mechanism the code has, like the safety valve `/bb:implement` fires,
+  and a reader who does not know the figure still has to know what to do.
 - Use American spelling, and call each thing by the name the code gives it.
 
 ## Headings
