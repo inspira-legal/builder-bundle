@@ -33,6 +33,7 @@ const FORBIDDEN_CALLS = [
 
 const META_REGEX = /export\s+const\s+meta\s*=\s*\{/;
 const PARALLEL_REGEX = /\bparallel\s*\(/g;
+const LOOP_REGEX = /\b(?:for|while|do)\b/;
 
 /** A `/` here opens a regex literal rather than dividing; anything else is division. */
 const KEYWORDS_BEFORE_REGEX = new Set([
@@ -326,12 +327,21 @@ function validateSource(source: string): ValidationIssue[] {
     }
   }
 
-  const parallels = code.match(PARALLEL_REGEX) ?? [];
+  const parallels = [...code.matchAll(PARALLEL_REGEX)];
   if (parallels.length !== 1) {
     issues.push({
       level: "error",
       message: `Found ${parallels.length} parallel() calls, expected exactly 1: the tasks share one working tree, so only stage zero fans out`,
     });
+  } else {
+    const loop = code.match(LOOP_REGEX);
+    const fanOut = parallels[0].index ?? 0;
+    if (loop && loop.index !== undefined && loop.index < fanOut) {
+      issues.push({
+        level: "error",
+        message: `The parallel() call on line ${lineOf(code, fanOut)} comes after the loop on line ${lineOf(code, loop.index)}: stage zero proves the ground before the first task runs, so the fan-out precedes the task loop`,
+      });
+    }
   }
 
   for (const { label, regex } of FORBIDDEN_CALLS) {

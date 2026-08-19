@@ -205,12 +205,20 @@ tasks whose proof is CI, which is ship's to close.
 
 The script is code now, so most of the old pre-invoke checklist moved off the run.
 
-**CI and the pre-commit hook** own what a parse or a regex settles, in
-`.github/scripts/validate-workflow-script.ts`: the file parses, `export const meta` is
-present and free of interpolation, there is exactly one `parallel()`, and `Date.now()`,
-`new Date()` and `Math.random()` appear nowhere. It runs inside `package.json`'s
-`validate`, which is what lefthook's pre-commit job runs, so the guard fires before the
-commit and not only in CI. oxfmt formats `js` alongside `json` and `md`.
+**CI and the pre-commit hook** own what a parse or a scan settles, in
+`.github/scripts/validate-workflow-script.ts`, over a source whose comment, string,
+template and regex bodies are blanked first, so only code is read:
+
+- the file parses, wrapped the way the platform runs it;
+- `export const meta` is present, and a pure literal: no interpolation, no spread, and no
+  bare word other than `true`, `false`, `null` and `undefined`;
+- `meta.phases`, when the block declares it, has one entry per `phase()` call;
+- there is exactly one `parallel()`, and it comes before the task loop;
+- `Date.now()`, `new Date()` and `Math.random()` appear nowhere.
+
+It runs inside `package.json`'s `validate`, which is what lefthook's pre-commit job runs,
+so the guard fires before the commit and not only in CI. oxfmt formats `js` alongside
+`json` and `md`.
 
 **A one-time PR review** owns what only reading the code settles: `schema` on every
 `agent()` that needs a typed answer, and every result null-checked before use. That is a
