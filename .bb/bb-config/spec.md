@@ -261,7 +261,7 @@ Happy path, first time:
 - [x] **11. The machine paths find their owner**: `surfaces[]` moves into `design.md`'s
       frontmatter, `ds_path` keeps its resolution order and stops being persisted
       → behavior 20 · dep: 8 · verify: reading
-- [ ] **12. `spec-state.md` states the shape**: `brief-design.md` and `design.md` carry
+- [x] **12. `spec-state.md` states the shape**: `brief-design.md` and `design.md` carry
       frontmatter, and no `.bb/<slug>/` member is a state file
       → behaviors 12, 14 · dep: 7, 11 · verify: `python3 scripts/lint_spec.py`
 

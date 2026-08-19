@@ -16,9 +16,11 @@ the dir, and everything durable about that work lives inside it:
 ├── spec.md              # the spec, /bb:discover seeds, /bb:spec finalizes
 ├── brief-design.md      # the design brief, /bb:brisar first diamond
 ├── design.md            # visual direction, single surface, /bb:brisar Phase 4
-└── design/              # …or one file per surface, when there is more than one
-    ├── README.md        # index + suggested drawing order
-    └── <surface>.md
+├── design/              # …or one file per surface, when there is more than one
+│   ├── README.md        # index + suggested drawing order
+│   └── <surface>.md
+├── develop-notes.md     # the surfaces as built, /bb:brisar Develop
+└── design-review.md     # …plus accessibility-checklist.md and handoff.md, Deliver
 ```
 
 - `design.md` and `design/` are the same artifact in two shapes: one surface writes
@@ -69,15 +71,34 @@ slug: <kebab-slug> # matches the dir name
 ---
 ```
 
-`brief-design.md` carries its own, smaller block. It is a record, not a selection
-candidate, so it has no `status` for `/bb:delegate` to drive:
+**Every member carries its own frontmatter, and none of them is a state file.** What a
+later session needs to know about a document is written at the top of that document, so
+there is nothing beside them to keep in sync and nothing outside `.bb/<slug>/` to read
+first.
+
+`brief-design.md` opens with the journey's block (the contract is
+`${CLAUDE_PLUGIN_ROOT}/skills/brisar/references/brief.md`):
 
 ```yaml
 ---
+status: in-progress | completed
+phase: research | brief | diverge | medium | develop | deliver | done
+round: 1
 slug: <kebab-slug>
+created: <ISO>
 canonical: <absolute path actually written, when the folder is a symlink; else omitted>
 ---
 ```
+
+That `status` is the journey's, not the spec's. `/bb:delegate` selects on `spec.md`'s
+block and neither reads nor writes this one. A brief with no frontmatter reads as
+`phase: brief`, `round: 1`, `status: in-progress`.
+
+`design.md`, or `design/README.md` when there is more than one surface, carries the
+surfaces list in its own frontmatter: `name`, `file`, `state` and `last_updated` per
+surface, with `file` relative to the task folder. The members brisar writes later,
+`develop-notes.md`, `design-review.md`, `accessibility-checklist.md` and `handoff.md`,
+each summarize themselves the same way.
 
 - `pending`: no task done yet.
 - `in-progress`: some tasks done, not landed (resumable).
