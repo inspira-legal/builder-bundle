@@ -157,7 +157,7 @@ Caminho principal:
       32, `code-deep-research` 27, `maintain-repo` 24, `implement` 23, `legal-lens` 23,
       `delegate` 19, `think` 19, `gather-branch-context` 9; os 22 de `description:` moram
       nesses arquivos → behaviors 7, 17 · depende: 1 · verifica: grep zerado
-- [ ] **8. Travessão nas references do plugin, nos hooks e nos agents**: 127 em 12 arquivos,
+- [x] **8. Travessão nas references do plugin, nos hooks e nos agents**: 127 em 12 arquivos,
       incluindo o `vocabulario.md` e o `operating-context.md`
       → behavior 7 · depende: 1 · verifica: grep zerado
 - [ ] **9. Travessão na doc do repo**: 41 em 5 arquivos: `README.md` 18, `.claude/CLAUDE.md`
