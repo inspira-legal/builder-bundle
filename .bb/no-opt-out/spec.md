@@ -102,7 +102,7 @@ one spec: making every build fresh is what makes the review necessary.
 - **`js` joins the lefthook oxfmt glob**, which today covers `json` and `md` only, so the
   formatter is not what first meets the file in CI.
 - **The reviewer becomes an agent**: `agents/bb-spec-reviewer.md`, `tools: ["Read",
-  "Grep", "Glob"]`, no Bash, no `model:` so it inherits the session's. Completeness
+"Grep", "Glob"]`, no Bash, no `model:` so it inherits the session's. Completeness
   judgment is the same order of work as writing the spec was, so it runs at the same tier.
 - **Its mandate covers the repo, not only the text**: omission, contradiction and surplus,
   plus "do the reuse notes point at code that exists" and "is this spec buildable by an
@@ -154,19 +154,19 @@ one spec: making every build fresh is what makes the review necessary.
     there is exactly one `parallel()`, the forbidden time and random calls are absent, and
     oxfmt formats `js` alongside `json` and `md`.
 
-| WHEN                                         | THEN                                                            |
-| -------------------------------------------- | --------------------------------------------------------------- |
+| WHEN                                         | THEN                                                             |
+| -------------------------------------------- | ---------------------------------------------------------------- |
 | every task already ticked                    | it does not invoke; reports nothing to build and goes on         |
 | the spec has no `## Tasks`                   | implement's Prerequisites stop the run before this               |
 | the spec has one task                        | workflow all the same; there is no threshold                     |
 | the spec has no reuse note                   | stage zero runs the checks agent alone                           |
 | a reuse note points at code that is gone     | stops before task 1; delegate flips `blocked`                    |
 | a reuse note points at code that moved       | goes on; the new path enters the convention note                 |
-| the authority chain resolves no check        | `checksHint` is empty; stage zero reports it and does not block   |
+| the authority chain resolves no check        | `checksHint` is empty; stage zero reports it and does not block  |
 | a check command outside the allowlist        | fails in stage zero; stops with a permission blocker             |
 | the tree is already red before task 1        | stops; the red predates the build and is reported as such        |
 | a check red after 3 re-runs, files untouched | the task does not commit and does not revert; the loop stops     |
-| a check red and a file did change            | not a flake; no re-run, the task fixes it or returns the blocker  |
+| a check red and a file did change            | not a flake; no re-run, the task fixes it or returns the blocker |
 | a task agent returns `null`                  | a failed task; the loop stops and what is green stays committed  |
 | the agent finds the spec underspecified      | it returns the blocker instead of improvising; the loop stops    |
 | `verify:` is `reading`                       | self-inspection against the behaviors the task cites             |
@@ -176,13 +176,13 @@ one spec: making every build fresh is what makes the review necessary.
 | inline `script` is refused too               | builds in context naming the reason                              |
 | the `Bash` call cannot read the script       | builds in context naming the reason                              |
 | `Workflow` is off by config or by org        | builds in context naming the reason                              |
-| a plugin `workflows/` dir does register      | `build-tasks` shows in autocomplete; the invocation is unchanged  |
+| a plugin `workflows/` dir does register      | `build-tasks` shows in autocomplete; the invocation is unchanged |
 | delegate drives the build                    | nothing is asked, at either end of the chain                     |
 | the run is interrupted halfway               | commits and checkboxes hold the progress; re-running resumes     |
 | one finding comes back `load-bearing`        | folded into the loop, and round two runs                         |
 | every finding comes back `minor`             | folded, no round two                                             |
-| the reviewer finds a dead reuse note         | `load-bearing` by definition: back to the loop before the gate    |
-| round two still returns load-bearing         | into `## Open`; the gate offers resolve or defer, not build       |
+| the reviewer finds a dead reuse note         | `load-bearing` by definition: back to the loop before the gate   |
+| round two still returns load-bearing         | into `## Open`; the gate offers resolve or defer, not build      |
 | no Agent tool in the session                 | the gate says the review did not run and why                     |
 
 ## Tasks

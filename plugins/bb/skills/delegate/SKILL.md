@@ -97,8 +97,8 @@ and stop.
 | selected spec already `in-progress`              | resume: implement skips checked tasks; status stays `in-progress` until landing                                                                 |
 | spec has no frontmatter                          | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                            |
 | implement safety valve fires (underspecified)    | flip `status: blocked`, point back to `/bb:spec`, stop; do not improvise                                                                        |
-| the build stops (stage zero or a task)            | flip `status: blocked`, exit without landing                                                                                                    |
-| the build falls back to this context             | it runs the same way; the reason is named in one line, and again in step 6                                                                       |
+| the build stops (stage zero or a task)           | flip `status: blocked`, exit without landing                                                                                                    |
+| the build falls back to this context             | it runs the same way; the reason is named in one line, and again in step 6                                                                      |
 | ship hits an unrecoverable stop / blocker        | flip `status: blocked`; write the blocker into the PR description, or into the spec's `## Open` when the destination has no PR; report it; exit |
 | slug sits under both `.bb/` layouts              | one candidate; the `.bb/<slug>/` copy is the one read                                                                                           |
 | spec only under `.bb/tasks/<slug>/`              | found by the second glob, run as usual                                                                                                          |

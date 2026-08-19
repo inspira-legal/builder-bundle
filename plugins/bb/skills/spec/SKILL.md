@@ -54,7 +54,6 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
    Then dispatch the `bb-spec-reviewer` agent (Agent tool) with the spec's path and **nothing else**: not a summary of the conversation, not which sections are new, not what to look for. Its mandate is its own system prompt, so don't re-compose it here; naming what to look for narrows it to what this context can already see, which is the half the review exists to cover. A reviewer with no memory of the conversation that produced the spec reads it the way the builder will, and the builder is now one fresh agent per task.
 
    It returns findings, each weighed `load-bearing` or `minor` with a one-line reason. Fold them all back into step 3's loop. The weight is the reviewer's, since it read the spec; the round is yours, since only you know what the fold changed:
-
    - **Round one is mandatory**, whatever the spec's size and however clean it looks.
    - **Round two runs when round one returned at least one `load-bearing` finding**, whatever section the fold touched, because a fold that closes a load-bearing gap is itself unreviewed text.
    - **Two rounds is the ceiling.** Anything still `load-bearing` after round two goes into `## Open`, where step 7's gate blocks on it exactly like an open decision.
