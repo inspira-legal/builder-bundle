@@ -26,9 +26,9 @@ gate_fires = (
 
 Print diagnosis in plain text (informative, not interactive):
 
-> **Heads up.** Você marcou [artefato] com [scale_signal]. Antes de scaffoldar, vale rodar `/bb:discover` (~10 minutos) para enquadrar: problema (com quem dói, como dói), fit, hipótese e apetite. O custo de pular essa etapa em produto-real é alto: descobre-se a falha de fundamentação só depois que código foi escrito.
+> **Heads up.** You marked [artifact] as [scale_signal]. Before scaffolding, it is worth running `/bb:discover` (~10 minutes) to frame it: the problem (who it hurts, how it hurts), the fit, the hypothesis and the appetite. Skipping this step on a real product is expensive: the grounding failure only shows up after the code is written.
 >
-> Se quiser pular, registro o override no session.yaml e sigo direto. Se quiser maturar, gravo bootstrap e você roda `/bb:discover` agora. Quando voltar para `/bb:brisar`, ele continua da pesquisa com o enquadramento incorporado.
+> If you want to skip it, I record the override in session.yaml and go straight through. If you want to frame it first, I save the bootstrap and you run `/bb:discover` now. When you come back to `/bb:brisar`, it continues from the research with the framing folded in.
 
 Then `AskUserQuestion`:
 
@@ -36,20 +36,20 @@ Then `AskUserQuestion`:
 {
   "questions": [
     {
-      "question": "Maturar problema antes de scaffoldar?",
+      "question": "Frame the problem before scaffolding?",
       "header": "Gate",
       "options": [
         {
-          "label": "Sim, rodar /bb:discover primeiro",
-          "description": "Gravo bootstrap; você roda /bb:discover, depois volta pro /bb:brisar e a pesquisa continua com o enquadramento pronto"
+          "label": "Yes, run /bb:discover first",
+          "description": "I save the bootstrap; you run /bb:discover, then come back to /bb:brisar and the research continues with the framing ready"
         },
         {
-          "label": "Não, sigo direto",
-          "description": "Registro override + razão, scaffolda agora; risco fica documentado"
+          "label": "No, go straight through",
+          "description": "I record the override + the reason and scaffold now; the risk stays documented"
         },
         {
-          "label": "Não tenho certeza",
-          "description": "Me dá mais contexto sobre o que /bb:discover faria que o brisar sozinho não faz"
+          "label": "Not sure",
+          "description": "Tell me more about what /bb:discover would do that brisar alone does not"
         }
       ],
       "multiSelect": false
@@ -75,7 +75,7 @@ gate:
 
 Print to the user, seeding discover with the intake already collected:
 
-> ✓ Bootstrap salvo em `.brisar/session.yaml`. Roda `/bb:discover <sua ideia em 1 frase>` agora. Ele enquadra problema, fit e hipótese e grava a spec em `.bb/<slug>/spec.md`. Quando terminar, chama `/bb:brisar` de novo na mesma pasta. Eu detecto o bootstrap, leio a spec e prossigo da pesquisa (o enquadramento é justamente o que a pesquisa vai testar).
+> ✓ Bootstrap saved at `.brisar/session.yaml`. Run `/bb:discover <your idea in 1 sentence>` now. It frames the problem, the fit and the hypothesis, and writes the spec at `.bb/<slug>/spec.md`. When it finishes, call `/bb:brisar` again in the same folder. I detect the bootstrap, read the spec and carry on from the research (the framing is exactly what the research is going to test).
 
 **STOP.** Do not scaffold and do not invoke /bb:discover: the builder crosses on purpose. End the turn here. (On return, Step 0.1 of SKILL.md handles the resume: locate the spec, record `gate.discover_brief`, resume at the Research phase.)
 
@@ -87,22 +87,22 @@ Ask ONE extra question to record the reason:
 {
   "questions": [
     {
-      "question": "Razão do override (registro no session.yaml para você revisar depois):",
+      "question": "Reason for the override (recorded in session.yaml for you to review later):",
       "header": "Override",
       "options": [
         {
-          "label": "Já enquadrei o problema em outro contexto",
-          "description": "Trio existe na cabeça/Notion/Linear, não preciso re-fazer aqui"
+          "label": "I already framed the problem elsewhere",
+          "description": "The trio exists in my head, in Notion or in Linear, no need to redo it here"
         },
         {
-          "label": "É baixo risco, tipo 'vai escalar' mas é experimento",
-          "description": "Marquei 'vai escalar' por intuição, mas na real é exploratório"
+          "label": "Low risk, marked 'will scale' but it is an experiment",
+          "description": "I marked 'will scale' on instinct, but it is really exploratory"
         },
         {
-          "label": "Tenho prazo apertado, vou enquadrar no caminho",
-          "description": "Aceito o risco; rodo /bb:discover mais tarde se virar dor"
+          "label": "Tight deadline, I will frame it along the way",
+          "description": "I accept the risk; I run /bb:discover later if it starts to hurt"
         },
-        { "label": "Outro motivo", "description": "Texto livre" }
+        { "label": "Another reason", "description": "Free text" }
       ],
       "multiSelect": false
     }
@@ -116,7 +116,7 @@ Record in session.yaml:
 gate:
   fired: true
   resolution: override
-  override_reason: "<label escolhido ou texto livre>"
+  override_reason: "<the chosen label, or the free text>"
 ```
 
 Continue to the Research phase.
@@ -125,9 +125,9 @@ Continue to the Research phase.
 
 Print informative response (plain text):
 
-> `/bb:discover` enquadra o problema antes do código: com quem dói e como dói, se vale resolver (fit), a hipótese (Se X, esperamos Y porque Z), a métrica de sucesso e o apetite (quanto vale investir, em estilo Shaping). Demora ~10 minutos e grava uma spec em `.bb/`. Eu, brisar, capturo só os 3 dados que viram pasta de projeto. Sem o enquadramento, o scaffold sai pronto mas você não sabe o que conta como sucesso.
+> `/bb:discover` frames the problem before the code: who it hurts and how it hurts, whether it is worth solving (the fit), the hypothesis (If X, we expect Y because Z), the success metric and the appetite (how much it is worth investing, in Shaping style). It takes ~10 minutes and writes a spec at `.bb/`. I, brisar, capture only the 3 pieces of data that become a project folder. Without the framing, the scaffold comes out ready but you do not know what counts as success.
 >
-> Em produto-real ou commitment isso costuma valer. Em exploração descartável é overkill.
+> On a real product or a commitment it usually pays off. On a throwaway exploration it is overkill.
 
 Repeat the original question (yes / no / additional free text). No infinite loop, max 2 times.
 
@@ -144,7 +144,7 @@ gate:
 current_phase: phase-3
 ```
 
-Print short echo: _"Apetite exploratório, scale=exploration, pulando o gate. Indo pra pesquisa."_ Continue to the Research phase.
+Print short echo: _"Exploratory appetite, scale=exploration, skipping the gate. Going to the research."_ Continue to the Research phase.
 
 ## State at the end
 

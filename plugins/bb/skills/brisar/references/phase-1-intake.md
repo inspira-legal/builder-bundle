@@ -10,18 +10,18 @@ It reads `intent.raw_prompt` (what the builder typed) + `preflight.product.detec
 
 ### Shortcut matrix
 
-| Signal in raw_prompt                                                                                                          | Cwd                                                 | Shortcut          | Target                   | What brisar does                                                                                                                         |
-| ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ----------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| "uma tela", "só design", "protótipo rápido", "desenhar X", "construir tela Y"                                                 | already-scaffolded repo (has `.brisar/config.yaml`) | `develop-direct`  | Develop phase (internal) | Skips intake. Writes `intent.shortcut: develop-direct` to session.yaml. After confirmation, jumps to `references/phase-develop.md`.      |
-| "revisa esse design", "preciso de doc pra dev", "antes de mergear", "fechar deliver", "preparar PR"                           | repo with surfaces in `src/` or `<surface>.html`    | `deliver-direct`  | Deliver phase (internal) | Skips intake. Writes `intent.shortcut: deliver-direct`. After confirmation, jumps to `references/phase-deliver.md`.                      |
-| "shapear", "maturar problema", "vale a pena", "validar mercado", "tem demanda", "preciso cortar escopo", "priorizar features" | any                                                 | `discover-direct` | `/bb:discover`           | Skips intake. Writes `intent.shortcut: discover-direct`. Suggests `/bb:discover` (it runs its own intake) and STOPS, never auto-invokes. |
-| "quero começar", "novo projeto", "scaffolda", "tela X em marca Y" (default)                                                   | any                                                 | none              | (follows normal flow)    | Persona branch below.                                                                                                                    |
+| Signal in raw_prompt                                                                                                                       | Cwd                                                 | Shortcut          | Target                   | What brisar does                                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- | ----------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| "one screen", "design only", "quick prototype", "design X", "build screen Y"                                                               | already-scaffolded repo (has `.brisar/config.yaml`) | `develop-direct`  | Develop phase (internal) | Skips intake. Writes `intent.shortcut: develop-direct` to session.yaml. After confirmation, jumps to `references/phase-develop.md`.      |
+| "review this design", "I need docs for the dev", "before merging", "close the deliver", "prepare the PR"                                   | repo with surfaces in `src/` or `<surface>.html`    | `deliver-direct`  | Deliver phase (internal) | Skips intake. Writes `intent.shortcut: deliver-direct`. After confirmation, jumps to `references/phase-deliver.md`.                      |
+| "shape it", "mature the problem", "is it worth it", "validate the market", "is there demand", "I need to cut scope", "prioritize features" | any                                                 | `discover-direct` | `/bb:discover`           | Skips intake. Writes `intent.shortcut: discover-direct`. Suggests `/bb:discover` (it runs its own intake) and STOPS, never auto-invokes. |
+| "I want to start", "new project", "scaffold it", "screen X in brand Y" (default)                                                           | any                                                 | none              | (follows normal flow)    | Persona branch below.                                                                                                                    |
 
 ### When the shortcut fires
 
 1. Print a short confirmation, example for `develop-direct`:
 
-   > **/bb:brisar**: detectei que você quer construir direto. Vou pular o intake e entrar na fase Develop. Confirma?
+   > **/bb:brisar**: I detected you want to build straight away. I'll skip the intake and go into the Develop phase. Confirm?
 
 2. `AskUserQuestion` requesting confirmation:
 
@@ -29,16 +29,16 @@ It reads `intent.raw_prompt` (what the builder typed) + `preflight.product.detec
    {
      "questions": [
        {
-         "question": "Atalho detectado: <alvo>. Pular intake?",
-         "header": "Atalho",
+         "question": "Shortcut detected: <target>. Skip the intake?",
+         "header": "Shortcut",
          "options": [
            {
-             "label": "Sim, pular pra <alvo>",
-             "description": "A fase/skill alvo roda seu próprio intake. Vai puxar contexto direto."
+             "label": "Yes, skip to <target>",
+             "description": "The target phase or skill runs its own intake. It pulls context directly."
            },
            {
-             "label": "Não, fluxo completo",
-             "description": "Roda o intake normal (calibração + 3 perguntas + scaffold)."
+             "label": "No, full flow",
+             "description": "Runs the normal intake (calibration + 3 questions + scaffold)."
            }
          ],
          "multiSelect": false
@@ -47,12 +47,12 @@ It reads `intent.raw_prompt` (what the builder typed) + `preflight.product.detec
    }
    ```
 
-3. If "Sim" → writes `intent.shortcut` and a minimal session.yaml. For `develop-direct`/`deliver-direct`, load the target phase file and continue there. For `discover-direct`, suggest `/bb:discover <ideia>` and STOP.
-4. If "Não" → continues normally to Step 0b (persona branch).
+3. If "Yes" → writes `intent.shortcut` and a minimal session.yaml. For `develop-direct`/`deliver-direct`, load the target phase file and continue there. For `discover-direct`, suggest `/bb:discover <idea>` and STOP.
+4. If "No" → continues normally to Step 0b (persona branch).
 
 ### Why confirmation is mandatory
 
-A heuristic-detected shortcut may be wrong. Asking for confirmation costs 1 turn and avoids skipping context the builder wanted to build (for example: "preciso de doc pra dev" might be part of a larger intake, not necessarily a jump to Deliver).
+A heuristic-detected shortcut may be wrong. Asking for confirmation costs 1 turn and avoids skipping context the builder wanted to build (for example: "I need docs for the dev" might be part of a larger intake, not necessarily a jump to Deliver).
 
 ### When NOT to fire the shortcut (even with a signal)
 
@@ -67,14 +67,14 @@ Read `.brisar/session.yaml` field `profile.persona_id`. Route:
 
 | `persona_id`     | Goes to                                                                             | How many questions                                         |
 | ---------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `builder-senior` | [Senior variant](#variante-senior-2-perguntas)                                      | 2 (intent + brand, with brand skipped if product detected) |
-| `builder-junior` | [Standard flow](#pergunta-1--o-que-você-está-construindo) below + narration         | 3                                                          |
-| `executive`      | [Executive variant](#variante-executive-linguagem-operacional)                      | 5-6 in operational language                                |
+| `builder-senior` | [Senior variant](#senior-variant-2-questions)                                       | 2 (intent + brand, with brand skipped if product detected) |
+| `builder-junior` | [Standard flow](#question-1-what-are-you-building) below + narration                | 3                                                          |
+| `executive`      | [Executive variant](#executive-variant-operational-language)                        | 5-6 in operational language                                |
 | `content`        | **Does NOT enter Phase 1.** Jumps straight to `references/phase-framer-handoff.md`. | 0 (intake-Framer-variant)                                  |
 
 If `persona_id` is missing: assumes `builder-junior` (Phase 0 fallback) and follows the standard flow.
 
-If `preflight.product.detected != unknown`: brand, hosting, and (sometimes) artifact are already derived from the product, skip those questions regardless of persona. Use [Shortcuts with product detected](#atalhos-com-produto-detectado).
+If `preflight.product.detected != unknown`: brand, hosting, and (sometimes) artifact are already derived from the product, skip those questions regardless of persona. Use [Shortcuts with product detected](#shortcuts-with-product-detected).
 
 ---
 
@@ -84,7 +84,7 @@ Senior dev, technical vocabulary OK, no narration of every `cd`. Path optimized 
 
 Print a short intro:
 
-> **/bb:brisar**: perfil senior detectado. 2 perguntas e te jogo no editor.
+> **/bb:brisar**: senior profile detected. 2 questions and I drop you in the editor.
 
 ### Senior question #1: intent
 
@@ -92,12 +92,12 @@ Print a short intro:
 {
   "questions": [
     {
-      "question": "O que você está construindo? Uma frase.",
+      "question": "What are you building? One sentence.",
       "header": "Intent",
       "options": [
         {
-          "label": "Resposta livre",
-          "description": "Ex: 'tela de busca semântica em LexFlow' ou 'componente Chat novo no DS'"
+          "label": "Free response",
+          "description": "For example: 'semantic search screen in LexFlow' or 'new Chat component in the DS'"
         }
       ],
       "multiSelect": false
@@ -129,9 +129,9 @@ Junior uses the 3 questions below (Question 1, 2, 3), exactly like senior in gre
 
 Example of junior echo (vs senior):
 
-| Senior                                    | Junior                                                                                                                    |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| "Slug: `lexflow-busca`. Indo para marca." | "Slug derivado: `lexflow-busca`. Vou usar como nome da pasta. Próximo: pergunta de marca pra eu saber que tokens copiar." |
+| Senior                                    | Junior                                                                                                                      |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| "Slug: `lexflow-search`. Going to brand." | "Derived slug: `lexflow-search`. I'll use it as the folder name. Next: the brand question, so I know which tokens to copy." |
 
 When in Phase 5 (handoff), junior receives narrated instructions for each command (see `phase-5-handoff.md`).
 
@@ -143,7 +143,7 @@ Executive doesn't have technical vocabulary. **NEVER use**: scaffold, embed, MCP
 
 Print a short intro:
 
-> **/bb:brisar**: vou te ajudar a sair de "ideia" pra "protótipo clicável que dá pra mostrar pro time". Vou fazer 5 perguntas rápidas em linguagem do dia-a-dia.
+> **/bb:brisar**: I'll help you get from "idea" to "a clickable prototype you can show the team". I'll ask 5 quick questions in everyday language.
 
 ### Exec question #1: what
 
@@ -151,12 +151,12 @@ Print a short intro:
 {
   "questions": [
     {
-      "question": "O que você quer construir? Em uma frase, do jeito que explicaria pra um colega.",
-      "header": "Ideia",
+      "question": "What do you want to build? In one sentence, the way you'd explain it to a colleague.",
+      "header": "Idea",
       "options": [
         {
-          "label": "Resposta livre",
-          "description": "Ex: 'plataforma pra gestão financeira do setor', 'ferramenta pra acompanhar contratos do time jurídico'"
+          "label": "Free response",
+          "description": "For example: 'a platform for the department's financial management', 'a tool to track the legal team's contracts'"
         }
       ],
       "multiSelect": false
@@ -171,24 +171,24 @@ Print a short intro:
 {
   "questions": [
     {
-      "question": "Quem vai usar essa ferramenta?",
-      "header": "Usuários",
+      "question": "Who is going to use this tool?",
+      "header": "Users",
       "options": [
         {
-          "label": "Time interno (operações, financeiro, RH, etc)",
-          "description": "Ferramenta interna, não tem cliente externo"
+          "label": "Internal team (operations, finance, HR, etc)",
+          "description": "An internal tool, no external client"
         },
         {
-          "label": "Advogados internos da Inspira",
-          "description": "Ferramenta pra advogados da casa"
+          "label": "Inspira's in-house lawyers",
+          "description": "A tool for the firm's own lawyers"
         },
         {
-          "label": "Cliente da Inspira",
-          "description": "Ferramenta voltada pra fora, cliente final"
+          "label": "An Inspira client",
+          "description": "An outward-facing tool, for the end client"
         },
         {
-          "label": "Misto / não sei ainda",
-          "description": "Tem mais de um público, ou ainda em definição"
+          "label": "Mixed / not sure yet",
+          "description": "More than one audience, or still being defined"
         }
       ],
       "multiSelect": false
@@ -203,12 +203,12 @@ Print a short intro:
 {
   "questions": [
     {
-      "question": "Qual problema essa ferramenta resolve hoje?",
-      "header": "Problema",
+      "question": "What problem does this tool solve today?",
+      "header": "Problem",
       "options": [
         {
-          "label": "Resposta livre",
-          "description": "Em uma frase. Ex: 'gente perde tempo achando contrato em pasta', 'não tem visibilidade do orçamento por área'"
+          "label": "Free response",
+          "description": "In one sentence. For example: 'people lose time hunting for a contract in a folder', 'there's no visibility of the budget per area'"
         }
       ],
       "multiSelect": false
@@ -223,24 +223,24 @@ Print a short intro:
 {
   "questions": [
     {
-      "question": "Como você quer que pareça visualmente?",
+      "question": "How do you want it to look?",
       "header": "Visual",
       "options": [
         {
-          "label": "Cara da Inspira (azul/preto, claro)",
-          "description": "Marca-mãe. O jeito padrão da Inspira"
+          "label": "Inspira's look (blue/black, light)",
+          "description": "The parent brand. Inspira's default look"
         },
         {
-          "label": "Cara do LexFlow (escuro, dev-tool)",
-          "description": "Visual escuro, tipo ferramenta de programador"
+          "label": "LexFlow's look (dark, dev-tool)",
+          "description": "A dark visual, like a programmer's tool"
         },
         {
-          "label": "Outra marca interna (Stillare, etc)",
-          "description": "Tem identidade própria, me fala qual"
+          "label": "Another internal brand (Stillare, etc)",
+          "description": "It has its own identity, tell me which"
         },
         {
-          "label": "Não sei / decida por mim",
-          "description": "Uso Inspira como base. Você ajusta depois"
+          "label": "Not sure / decide for me",
+          "description": "I use Inspira as the base. You adjust it later"
         }
       ],
       "multiSelect": false
@@ -255,15 +255,15 @@ Print a short intro:
 {
   "questions": [
     {
-      "question": "Quando você quer ter algo pronto pra mostrar?",
-      "header": "Prazo",
+      "question": "When do you want something ready to show?",
+      "header": "Deadline",
       "options": [
         {
-          "label": "Pra essa semana",
-          "description": "Urgência. Protótipo simples vai ter que servir"
+          "label": "This week",
+          "description": "Urgent. A simple prototype will have to do"
         },
-        { "label": "Em ~2 semanas", "description": "Tempo razoável pra explorar" },
-        { "label": "Sem prazo definido", "description": "Quero fazer direito" }
+        { "label": "In ~2 weeks", "description": "A reasonable amount of time to explore" },
+        { "label": "No set deadline", "description": "I want to do it properly" }
       ],
       "multiSelect": false
     }
@@ -277,18 +277,18 @@ Print a short intro:
 {
   "questions": [
     {
-      "question": "Depois do protótipo: alguém da engenharia vai pegar pra virar produto de verdade?",
-      "header": "Continuação",
+      "question": "After the prototype: is someone in engineering going to turn it into a real product?",
+      "header": "Continuation",
       "options": [
         {
-          "label": "Sim, vou passar pro time técnico",
-          "description": "Protótipo é pra validar; alguém constrói depois"
+          "label": "Yes, I'll hand it to the technical team",
+          "description": "The prototype is to validate; someone builds it afterwards"
         },
         {
-          "label": "Não, só preciso pra mostrar/validar",
-          "description": "Pode ficar como demo mesmo"
+          "label": "No, I only need it to show or validate",
+          "description": "It can stay a demo"
         },
-        { "label": "Ainda não sei", "description": "Depende do feedback que receber" }
+        { "label": "Not sure yet", "description": "Depends on the feedback I get" }
       ],
       "multiSelect": false
     }
@@ -303,9 +303,9 @@ Map to the session.yaml schema:
 - Question #1 → `intent.raw_prompt` + derived `slug`
 - Question #2 → `intent.audience` (new field: `internal-team | internal-lawyers | client | mixed`)
 - Question #3 → `intent.problem_statement`
-- Question #4 → `brand.name` (or `deferred` if "não sei")
-- Question #5 → `shaping.appetite` mapped: "essa semana" → `1 week`, "~2 semanas" → `2 weeks`, "sem prazo" → `undefined`
-- Question #6 → `intent.scale_signal`: "sim, eng pega" → `will-scale`, "não, só demo" → `exploration`, "não sei" → `exploration`
+- Question #4 → `brand.name` (or `deferred` if "not sure")
+- Question #5 → `shaping.appetite` mapped: "this week" → `1 week`, "~2 weeks" → `2 weeks`, "no set deadline" → `undefined`
+- Question #6 → `intent.scale_signal`: "yes, engineering picks it up" → `will-scale`, "no, only a demo" → `exploration`, "not sure" → `exploration`
 
 **Always force:**
 
@@ -313,7 +313,7 @@ Map to the session.yaml schema:
 - `artifact.hosting: prototype-hosted`
 - `intent.persona: executive`
 
-Short echo in operational language. E.g.: _"Recebido, projeto: 'plataforma de gestão financeira'. Pra time interno. Pra essa semana. Vou montar um protótipo HTML clicável que você pode abrir no navegador e mostrar pro time. Vai gerar uma pasta `<slug>/` com arquivos prontos + um `HANDOFF-DEV.md` que o time técnico usa pra continuar."_
+Short echo in operational language. E.g.: _"Got it, project: 'financial management platform'. For an internal team. For this week. I'll put together a clickable HTML prototype you can open in the browser and show the team. It generates a `<slug>/` folder with the files ready plus a `HANDOFF-DEV.md` the technical team uses to carry on."_
 
 **Phase 2 (gate) does NOT run for executive.** Goes straight to Phase 3 prototype-hosted variant.
 
@@ -335,7 +335,7 @@ What still needs to be asked:
 - **Question #1 (intent)**: always, without this there's nothing to build
 - **Appetite/scale_signal**: only for senior/junior (executive on detected product is rare; if it happens, force `will-scale` and continue)
 
-Echo when product is detected: _"Detectei que você tá em [Stillare/LexFlow/etc]. Pulei marca e hospedagem, já sei. Próximo: [pergunta intent]."_
+Echo when product is detected: _"I detected you're in [Stillare/LexFlow/etc]. I skipped brand and hosting, I already know them. Next: [intent question]."_
 
 ---
 
@@ -343,7 +343,7 @@ Echo when product is detected: _"Detectei que você tá em [Stillare/LexFlow/etc
 
 Print a short intro:
 
-> **/bb:brisar**: trilha de design. Vou fazer 3 perguntas rápidas e em poucos minutos você tem um projeto scaffoldado e direção visual para começar a desenhar. Use "Other" para texto livre em qualquer momento.
+> **/bb:brisar**: design trilha. I'll ask 3 quick questions and in a few minutes you have a scaffolded project and a visual direction to start designing. Use "Other" for free text at any point.
 
 Then `AskUserQuestion`:
 
@@ -351,12 +351,12 @@ Then `AskUserQuestion`:
 {
   "questions": [
     {
-      "question": "O que você está construindo? Descreva em uma frase, vou usar para nomear a pasta do projeto.",
-      "header": "Projeto",
+      "question": "What are you building? Describe it in one sentence, I'll use it to name the project folder.",
+      "header": "Project",
       "options": [
         {
-          "label": "Resposta livre",
-          "description": "Em uma frase, ex: 'tela de busca semântica para Lexflow' ou 'landing page nova institucional'"
+          "label": "Free response",
+          "description": "In one sentence, for example: 'semantic search screen for Lexflow' or 'new institutional landing page'"
         }
       ],
       "multiSelect": false
@@ -369,40 +369,40 @@ Then `AskUserQuestion`:
 
 The answer serves two purposes:
 
-1. **Project slug**: derive in sanitized kebab-case (lowercase, ASCII, no stopwords). E.g.: "tela de busca semântica para Lexflow" → `lexflow-busca-semantica`. E.g.: "landing page nova institucional" → `landing-institucional`. Cap at 50 characters.
-2. **Surface inference (provisional)**: suggest main surfaces. E.g.: "busca" → `[busca, resultados, vazio]`. "landing" → `[hero, beneficios, cta]`. Will be confirmed/adjusted in Phase 4.
+1. **Project slug**: derive in sanitized kebab-case (lowercase, ASCII, no stopwords). E.g.: "semantic search screen for Lexflow" → `lexflow-semantic-search`. E.g.: "new institutional landing page" → `institutional-landing`. Cap at 50 characters.
+2. **Surface inference (provisional)**: suggest main surfaces. E.g.: "search" → `[search, results, empty]`. "landing" → `[hero, benefits, cta]`. Will be confirmed/adjusted in Phase 4.
 
-If the phrase is vague ("um app", "alguma coisa nova"), ask ONCE for specificity: _"Pode ser mais concreto? Ex: 'painel de filtros para advogados', 'editor de petições', 'tela de onboarding'."_ If still vague, accept with `intent.confidence: low` and continue.
+If the phrase is vague ("an app", "something new"), ask ONCE for specificity: _"Can you be more concrete? For example: 'a filter panel for lawyers', 'a brief editor', 'an onboarding screen'."_ If still vague, accept with `intent.confidence: low` and continue.
 
-Short echo: _"Recebido, slug: `<slug>`. Indo para marca."_
+Short echo: _"Got it, slug: `<slug>`. Going to brand."_
 
 ## Question 2: brand
 
 Use the registry built in Step 0.3. Construct the options dynamically:
 
-**Always inject `Site institucional (Framer)` as a fixed option, before "Sem marca / custom"**: it's a different surface (Framer + harpa-lpbuilder), not a registry brand. It's a forked path, not a brand.
+**Always inject `Institutional site (Framer)` as a fixed option, before "No brand / custom"**: it's a different surface (Framer + harpa-lpbuilder), not a registry brand. It's a forked path, not a brand.
 
 ```json
 {
   "questions": [
     {
-      "question": "Qual marca?",
-      "header": "Marca",
+      "question": "Which brand?",
+      "header": "Brand",
       "options": [
         {
           "label": "Inspira",
-          "description": "Marca-base, light theme, Cornflower Blue + Rich Black"
+          "description": "Base brand, light theme, Cornflower Blue + Rich Black"
         },
-        { "label": "Lexflow", "description": "Sub-marca dev-tool: dark theme, GitHub Primer" },
+        { "label": "Lexflow", "description": "Dev-tool sub-brand: dark theme, GitHub Primer" },
         {
-          "label": "Site institucional (Framer)",
-          "description": "Não é Vite, usa Framer + harpa-lpbuilder. Vou redirecionar para esse fluxo."
+          "label": "Institutional site (Framer)",
+          "description": "Not Vite, uses Framer + harpa-lpbuilder. I'll redirect you to that flow."
         },
         {
-          "label": "Sem marca / custom",
-          "description": "Vou criar identidade própria, white-label ou nova marca"
+          "label": "No brand / custom",
+          "description": "I'll create an identity of my own, white-label or a new brand"
         },
-        { "label": "Ainda não sei", "description": "Decidir depois, registre como pendente" }
+        { "label": "I do not know yet", "description": "Decide later, record it as pending" }
       ],
       "multiSelect": false
     }
@@ -412,22 +412,22 @@ Use the registry built in Step 0.3. Construct the options dynamically:
 
 ### How to read
 
-- **Site institucional (Framer)**: register `brand.name: site-institucional`, `brand.workflow: framer-harpa`, `brand.design_md_path: null`. **SKIP the entire Question 3 (the artifact/hosting/appetite question in the original format) and use the [Question 3 Framer-variant](#pergunta-3-framer-variant-só-quando-brandworkflow--framer-harpa) below.** The flow continues differently from here. Phase 2 (gate) is skipped and Phase 3 becomes `references/phase-framer-handoff.md` instead of the normal scaffold.
-- **Known brand (Inspira, Lexflow, etc.)**: register `brand.name`, `brand.source: registry`, `brand.design_md_path: <path>`. Echo: _"Marca [X], vou copiar tokens de `<path>` no scaffold."_
+- **Institutional site (Framer)**: register `brand.name: site-institucional`, `brand.workflow: framer-harpa`, `brand.design_md_path: null`. **SKIP the entire Question 3 (the artifact/hosting/appetite question in the original format) and use the [Question 3 Framer-variant](#question-3-framer-variant-only-when-brandworkflow--framer-harpa) below.** The flow continues differently from here. Phase 2 (gate) is skipped and Phase 3 becomes `references/phase-framer-handoff.md` instead of the normal scaffold.
+- **Known brand (Inspira, Lexflow, etc.)**: register `brand.name`, `brand.source: registry`, `brand.design_md_path: <path>`. Echo: _"Brand [X], I'll copy the tokens from `<path>` in the scaffold."_
 - **No brand / custom**: do a follow-up:
   ```json
   {
     "questions": [
       {
-        "question": "Como começar a identidade?",
+        "question": "How should the identity start?",
         "header": "Custom",
         "options": [
-          { "label": "Partir da Inspira", "description": "Clone tokens da Inspira, ajusto depois" },
-          { "label": "Partir da Lexflow", "description": "Clone tokens da Lexflow, ajusto depois" },
-          { "label": "Começar do zero", "description": "Só Tailwind primitives, sem brand layer" },
+          { "label": "Start from Inspira", "description": "Clone Inspira's tokens, I adjust later" },
+          { "label": "Start from Lexflow", "description": "Clone Lexflow's tokens, I adjust later" },
+          { "label": "Start from zero", "description": "Tailwind primitives only, no brand layer" },
           {
-            "label": "Tenho tokens externos",
-            "description": "Vou colocar em design-context manualmente"
+            "label": "I have external tokens",
+            "description": "I'll put them in design-context by hand"
           }
         ],
         "multiSelect": false
@@ -436,49 +436,49 @@ Use the registry built in Step 0.3. Construct the options dynamically:
   }
   ```
   Register `brand.source: custom-from-inspira | custom-from-lexflow | from-scratch | external-tokens`. For custom-from-X, copy the tokens of the base brand but register `brand.name: custom`, `brand.design_md_path: null`.
-- **Don't know yet**: register `brand: deferred`. Use Inspira as fallback in the scaffold but warn: _"Vou usar Inspira como base; quando decidir, edita `<slug>/design-context/tokens.md` ou roda `/bb:brisar` de novo."_
+- **Don't know yet**: register `brand: deferred`. Use Inspira as fallback in the scaffold but warn: _"I'll use Inspira as the base; once you decide, edit `<slug>/design-context/tokens.md` or run `/bb:brisar` again."_
 - **Empty brand registry (DS not-found)**: fall back to free-text mode. Ask which brand, register `brand.source: free-text`, use Tailwind primitives in the scaffold.
 
 Short echo.
 
 ## Question 3 Framer-variant (only when `brand.workflow == framer-harpa`)
 
-When the builder chose "Site institucional (Framer)", the fidelity/hosting questions from the Vite path don't make sense (Framer is hi-fi by definition; hosting is always the existing Framer project). Replace with:
+When the builder chose "Institutional site (Framer)", the fidelity/hosting questions from the Vite path don't make sense (Framer is hi-fi by definition; hosting is always the existing Framer project). Replace with:
 
 ```json
 {
   "questions": [
     {
-      "question": "O que você está construindo no site? (página nova, seção em página existente, ou edit em conteúdo já no ar)",
-      "header": "Escopo Framer",
+      "question": "What are you building on the site? (a new page, a section in an existing page, or an edit to content already live)",
+      "header": "Framer scope",
       "options": [
         {
-          "label": "Página nova",
-          "description": "Criar uma página inédita no Harpa. Vai ter rota nova"
+          "label": "New page",
+          "description": "Create a brand-new page in Harpa. It gets a new route"
         },
         {
-          "label": "Seção em página existente",
-          "description": "Adicionar/redesenhar bloco em página que já existe"
+          "label": "Section in an existing page",
+          "description": "Add or redesign a block in a page that already exists"
         },
         {
-          "label": "Edit em conteúdo já no ar",
-          "description": "Mexer em copy, imagens, ou ajuste fino sem mudança estrutural"
+          "label": "Edit to content already live",
+          "description": "Change copy, images, or fine-tune without a structural change"
         },
-        { "label": "Ainda não sei o escopo", "description": "Vou explorar, começa rascunhando" }
+        { "label": "I don't know the scope yet", "description": "I'll explore, start by sketching" }
       ],
       "multiSelect": false
     },
     {
-      "question": "Apetite + prioridade",
-      "header": "Apetite",
+      "question": "Appetite + priority",
+      "header": "Appetite",
       "options": [
-        { "label": "Hoje: urgência", "description": "Precisa ir pro ar essa semana" },
-        { "label": "Esta semana: normal", "description": "Iteração padrão de marketing" },
+        { "label": "Today: urgent", "description": "It has to go live this week" },
+        { "label": "This week: normal", "description": "The standard marketing iteration" },
         {
-          "label": "2 semanas, campanha",
-          "description": "Lançamento de feature, anúncio, ou marco"
+          "label": "2 weeks, a campaign",
+          "description": "A feature launch, an announcement, or a milestone"
         },
-        { "label": "Sem prazo: exploração", "description": "Estudo de redesign, experimento" }
+        { "label": "No deadline: exploration", "description": "A redesign study, an experiment" }
       ],
       "multiSelect": false
     }
@@ -498,7 +498,7 @@ Capture:
 
 **Important:** `intent.scale_signal: commitment` AND the normal Phase 2 gate does not fire here. Framer + harpa-lpbuilder is already the production path, there's no scaffold to gate. Jump directly to `references/phase-framer-handoff.md`.
 
-Short echo: _"Site institucional / Framer, escopo: [X], apetite: [Y]. Vou montar handoff para o fluxo HARPA."_
+Short echo: _"Institutional site / Framer, scope: [X], appetite: [Y]. I'll put together the handoff for the HARPA flow."_
 
 ---
 
@@ -512,53 +512,53 @@ Combined question (a single `AskUserQuestion` with 2 questions, both structured)
 {
   "questions": [
     {
-      "question": "O que você quer no final + onde isso vai viver?",
-      "header": "Artefato",
+      "question": "What do you want at the end + where is it going to live?",
+      "header": "Artifact",
       "options": [
         {
-          "label": "Protótipo low-fi (standalone)",
-          "description": "Wireframe clicável, repo novo"
+          "label": "Low-fi prototype (standalone)",
+          "description": "Clickable wireframe, new repo"
         },
         {
-          "label": "Protótipo mid-fi (standalone)",
-          "description": "Visual aplicado, mockado, repo novo"
+          "label": "Mid-fi prototype (standalone)",
+          "description": "Visuals applied, mocked, new repo"
         },
         {
-          "label": "Protótipo hi-fi (standalone)",
-          "description": "Visual final, dados mock, repo novo"
+          "label": "Hi-fi prototype (standalone)",
+          "description": "Final visuals, mock data, new repo"
         },
         {
-          "label": "Protótipo hi-fi (embedded)",
-          "description": "Visual final dentro de app existente"
+          "label": "Hi-fi prototype (embedded)",
+          "description": "Final visuals inside an existing app"
         },
         {
-          "label": "Produto no ar (standalone)",
-          "description": "Deploy real, repo novo, dados reais"
+          "label": "Product live (standalone)",
+          "description": "Real deploy, new repo, real data"
         },
         {
-          "label": "Produto no ar (embedded)",
-          "description": "Deploy real, app existente, dados reais"
+          "label": "Product live (embedded)",
+          "description": "Real deploy, existing app, real data"
         },
-        { "label": "Storybook só", "description": "Componente isolado para review" }
+        { "label": "Storybook only", "description": "An isolated component for review" }
       ],
       "multiSelect": false
     },
     {
-      "question": "Apetite + intent de escala",
-      "header": "Apetite",
+      "question": "Appetite + scale intent",
+      "header": "Appetite",
       "options": [
-        { "label": "1 dia: exploração", "description": "Sprint relâmpago, descartável" },
-        { "label": "1 semana: exploração", "description": "Pequeno e focado, ainda exploração" },
-        { "label": "2 semanas: exploração", "description": "Médio porte, ainda testando" },
+        { "label": "1 day: exploration", "description": "A lightning sprint, disposable" },
+        { "label": "1 week: exploration", "description": "Small and focused, still exploration" },
+        { "label": "2 weeks: exploration", "description": "Medium sized, still testing" },
         {
-          "label": "2 semanas, vai escalar",
-          "description": "Médio porte, mas o protótipo vai virar produto"
+          "label": "2 weeks, it will scale",
+          "description": "Medium sized, but the prototype becomes a product"
         },
         {
-          "label": "6 semanas, commitment",
-          "description": "Ciclo Shaping clássico, comprometido com o resultado"
+          "label": "6 weeks, commitment",
+          "description": "The classic Shaping cycle, committed to the result"
         },
-        { "label": "Sem prazo definido: vai escalar", "description": "Open-ended, mas sério" }
+        { "label": "No set deadline: it will scale", "description": "Open-ended, but serious" }
       ],
       "multiSelect": false
     }
@@ -577,7 +577,7 @@ Capture:
 
 The combination `artifact.fidelity` + `intent.scale_signal` feeds Phase 2 (maturity gate). Don't cross-check here, just capture and continue.
 
-Brief echo with the 3 pieces of data together: _"Recebido, protótipo hi-fi standalone, 1 semana de exploração. Indo para o gate."_
+Brief echo with the 3 pieces of data together: _"Got it, hi-fi standalone prototype, 1 week of exploration. Going to the gate."_
 
 ## State to persist
 
@@ -609,9 +609,9 @@ shaping:
   appetite: "1 week"
 
 surfaces_provisional:
-  - busca
-  - resultados
-  - vazio
+  - search
+  - results
+  - empty
 ```
 
 `surfaces_provisional` is a list inferred from the prompt, not confirmed. Phase 4 will refine it. Useful for the gate to decide context.

@@ -46,7 +46,7 @@ Before any question, read `.brisar/session.yaml` in full:
   changes the vocabulary of everything printed. For `executive` and `content`, Phase 0 established
   a banned vocabulary (`scaffold`, `embed`, `npm`, `MCP`, `repo`, `branch`, `slug`, see
   `phase-0-calibration.md`) and it binds here too: the mode line and the findings are user-facing
-  text. Say "o projeto do produto não está neste computador", not "o repo não está no cwd".
+  text. Say "the product project is not on this computer", not "the repo is not in the cwd".
 - **`intent.raw_prompt`**: the builder's own words. Often carries the constraint that matters
   most, phrased casually.
 - If a project spec exists (a full behavior contract, not just the discover sections), read it
@@ -62,32 +62,33 @@ Judge the depth from what you already have; **do not ask**. Signals, in order of
 | Signal                                                       | Pushes toward       |
 | ------------------------------------------------------------ | ------------------- |
 | No spec, one surface, adjustment-shaped request              | `pocket`            |
-| Builder said "rápido", "simples", "só uma tela"              | `pocket`            |
+| Builder said "quick", "simple", "just one screen"            | `pocket`            |
 | Spec with small appetite                                     | `pocket`            |
 | New surface with no precedent in the product                 | `full`              |
 | Contract with multiple variants/states, or a metric attached | `full`              |
 | Commercial/persuasive surface, or a novel interaction        | `full`              |
-| Builder said "com profundidade", "pesquisa a fundo"          | `full`              |
+| Builder said "in depth", "research it thoroughly"            | `full`              |
 | The hardest composition has no market repertoire             | `full`, and say why |
 
 Then print **one line**, before running anything:
 
-> **Pesquisa, modo `pocket`.** Vou rodar o piso: referências no Mobbin, o design system lido
-> da fonte, e a resposta sobre componente novo. **Pulei** vieses comportamentais, o padrão
-> aqui é conhecido e o ganho não paga a rodada. Se quiser, peço e rodo.
+> **Research, `pocket` mode.** I am running the floor: references on Mobbin, the design system
+> read from source, and the answer about a new component. **I skipped** behavioral biases, the
+> pattern here is known and the gain does not pay for the round. Ask and I run it.
 
 The line has three parts and all three are mandatory: **the mode · what runs · what was
 skipped and why**. "Nothing was skipped" is a valid third part in `full` mode.
 
 **A fourth part appears whenever a floor front ran degraded: what the degradation invalidates.**
 Naming the missing tool is not enough. The reader needs to know which conclusions got weaker.
-"Rodei a Front B sem o repo" tells them nothing; "não li o token da fonte, então os valores são
-de segunda mão e o inventário de componentes não existe" tells them what not to trust:
+"I ran Front B without the repo" tells them nothing; "I did not read the tokens from source, so
+the values are second hand and the component inventory does not exist" tells them what not to
+trust:
 
-> **Pesquisa, modo `full`.** Rodei o piso e os vieses. **Degradado:** o repo do produto não
-> está aqui e o `gh` não está autenticado, então o design system foi lido do pacote de marca:
-> os valores são de segunda mão, o inventário de componentes não existe, e **não verifiquei se
-> essa página já está em produção**. Nada foi pulado.
+> **Research, `full` mode.** I ran the floor and the biases. **Degraded:** the product repo is
+> not here and `gh` is not authenticated, so the design system was read from the brand package:
+> the values are second hand, the component inventory does not exist, and **I did not check
+> whether this page is already in production**. Nothing was skipped.
 
 ## Step 1: the floor (runs in every mode, no exceptions)
 
@@ -148,9 +149,9 @@ page is walkable, which beats a cropped screenshot. Two cautions: it reads the *
 surface and says nothing about how the platform behaves once you are inside, and a consent banner
 gets the most privacy-preserving answer, not a click-through to see the page faster.
 
-**Say which rungs were available, not just which one you used.** "Fiz o bench em galerias
-públicas porque a tela é logada e não há como entrar" is a finding about the corpus, and it is
-what lets the reader weigh everything built on top of it.
+**Say which rungs were available, not just which one you used.** "I ran the bench on public
+galleries because the screen is behind a login and there is no way in" is a finding about the
+corpus, and it is what lets the reader weigh everything built on top of it.
 
 The two obligations that give Front A its value survive the degradation: group **by recurring
 decision, never by app**, and keep the **"does not apply to us, and why"** block.
@@ -158,7 +159,7 @@ decision, never by app**, and keep the **"does not apply to us, and why"** block
 **One obligation changes, and it matters.** A negative finding needs a corpus that was sampled
 systematically, "none of the 18 screens uses urgency" only carries weight if the 18 were not
 handed to you by a ranking algorithm. Off Mobbin, a negative finding is reported **with the size
-and the origin of the corpus** ("nas 6 landings que abri, nenhuma usa contagem regressiva") or it
+and the origin of the corpus** ("in the 6 landings I opened, none uses a countdown") or it
 is not reported at all. Absence measured on a biased corpus is not evidence, and a brief that
 asserts it will be quoted back.
 
@@ -256,8 +257,8 @@ one. In order, and **each of these is a real answer, not a shrug**:
    works on the product has it cloned. Do not offer authentication before looking.
 2. **Offer `gh auth login`**: one command, and it upgrades every later run, not just this one.
    Never run it silently: it is an authentication step and it belongs to the builder.
-3. **Ask the builder to point at it.** "Onde fica o projeto do produto nesta máquina?" or "me cola
-   o arquivo de tokens" is one question with a complete answer. Cheapest of all, and the rung most
+3. **Ask the builder to point at it.** "Where is the product project on this machine?" or "paste me
+   the tokens file" is one question with a complete answer. Cheapest of all, and the rung most
    often skipped out of a reflex to seem self-sufficient. A builder who works on the product knows
    this path from memory.
 4. **Ask what the repo's own rules say.** Many repos carry a token rules file
@@ -288,7 +289,7 @@ production source is the design-system package in the product repo. Designing ag
 class names the codebase does not have, which surfaces at implementation time and costs a rewrite.
 
 So on rung 5: use it for **voice and visual intent**, never for token values. When rung 5 is all
-you have, the honest report is _"não li o design system da fonte"_, with the consequence spelled
+you have, the honest report is _"I did not read the design system from source"_, with the consequence spelled
 out in the mode line (Step 0's fourth part), not a token table presented as if it were read.
 
 Then answer the question that matters. **How far can we diverge without leaving the
@@ -345,7 +346,7 @@ Only when the surface has to persuade, reassure, or move someone past a decision
 Two hard requirements, and they are what separates this from a listicle:
 
 - **Bring the source.** Primary source when one exists: author, year, publication, the actual
-  finding with its numbers. When you cannot trace a claim, mark it `[não verificado]` and say
+  finding with its numbers. When you cannot trace a claim, mark it `[unverified]` and say
   so plainly. Numbers that circulate without a traceable origin (the famous "loss aversion is
   2× stronger", "free trials convert 2–5× better") **do not go into a product document** as
   fact. Include the honest contestation when the literature disputes the effect. It does not
@@ -390,7 +391,7 @@ Rung 3 (the repo found elsewhere on disk) recovers all of it, which is why it co
 recovers the live copy and, partially, the assets; **what data actually exists and whether
 authorization serves it cannot be answered remotely**, and guessing it is how a design ends up
 promising a number the backend will not return. When the repo is absent, this front reports what
-it recovered and marks the data question `[não verificado]` instead of assuming availability.
+it recovered and marks the data question `[unverified]` instead of assuming availability.
 
 ## Step 3: fan-out execution
 
@@ -401,13 +402,13 @@ raw dumps.
 Every subagent returns the same structure:
 
 ```
-## Achados
+## Findings
 - [finding, with the decision or constraint it implies]
 
-## Evidência
+## Evidence
 - [links, file paths, real values, sources with year]
 
-## Não rendeu
+## Came back empty
 - [what was searched and came back empty, including negative findings worth keeping]
 ```
 
@@ -417,7 +418,7 @@ Rules for the fan-out:
   independent fronts is a signal, and it is only meaningful if they did not share context.
 - **Pass the constraints down.** Every subagent gets the hypothesis, the cuts, and the
   audience. A front that does not know what was cut will research a solution for it.
-- **`Não rendeu` is not filler.** An empty front stated plainly beats a padded one, and an
+- **`Came back empty` is not filler.** An empty front stated plainly beats a padded one, and an
   absence across a corpus is a finding (Front A).
 - If a front fails on tooling (MCP absent, source unreadable), degrade and say which one.
   Never block, never fake it.
@@ -465,7 +466,7 @@ gate, at the end of the brief, and that is where the builder gets to steer.
    one failure mode that looks like thoroughness.
 4. **Absence is a finding.** Report the technique that appears nowhere, the query that returned
    nothing, the source you could not trace. It is evidence, and it is invisible if unstated.
-5. **Mark uncertainty instead of smoothing it.** `[não verificado]` costs nothing and protects
+5. **Mark uncertainty instead of smoothing it.** `[unverified]` costs nothing and protects
    every downstream decision. A confident sentence with no source is a liability in a document
    people will quote back.
 6. **Never research a solution for something that was cut**: but do report when the cut looks

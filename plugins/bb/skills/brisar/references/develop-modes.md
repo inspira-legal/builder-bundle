@@ -10,7 +10,7 @@ every medium, but the target and the tooling change:
 
 | `medium.chosen` | Target artifact                             | Tooling    | Notes                                                                                                   |
 | --------------- | ------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------- |
-| `código`        | `.tsx` / `.html` in the project             | Write/Edit | The templates below. Uses `design-context/` from Phase 3.                                               |
+| `code`        | `.tsx` / `.html` in the project             | Write/Edit | The templates below. Uses `design-context/` from Phase 3.                                               |
 | `claude-design` | one self-contained HTML preview per surface | Write      | Inline all CSS; no external fetches. No scaffold exists; token values come from the research (Front B). |
 | `paper`         | artboards in a Paper file                   | Paper MCP  | Read the tool's own guide before the first write. Values set explicitly, never eyeballed.               |
 | `figma`         | frames in a Figma file                      | Figma MCP  | Reuse the file's components and variables before creating new nodes.                                    |
@@ -51,7 +51,7 @@ every medium, but the target and the tooling change:
 
 ### Target decision (silent before building)
 
-First `medium.chosen` (table at the top of this file). When the medium is `código`, then read
+First `medium.chosen` (table at the top of this file). When the medium is `code`, then read
 `artifact.hosting` from session.yaml:
 
 | Hosting            | Target                                                                             |
@@ -201,20 +201,20 @@ tarsila:
 {
   "questions": [
     {
-      "question": "Como esse componente se encaixa?",
-      "header": "Encaixe",
+      "question": "How does this component fit in?",
+      "header": "Fit",
       "options": [
         {
-          "label": "Adicionar ao DS",
-          "description": "Vai virar parte do Brisa DS, output em <DS_path>/components/. Sugere PR ao DS."
+          "label": "Add it to the DS",
+          "description": "It becomes part of the Brisa DS, output at <DS_path>/components/. Suggests a PR to the DS."
         },
         {
-          "label": "Custom local",
-          "description": "Vive no projeto, fora do DS. Output em src/components/."
+          "label": "Local custom",
+          "description": "It lives in the project, outside the DS. Output at src/components/."
         },
         {
-          "label": "Variant de existente",
-          "description": "Variação de um componente do DS (ex: Button variant=destructive). Atualiza no DS."
+          "label": "Variant of an existing one",
+          "description": "A variation of a DS component (e.g. Button variant=destructive). Updated in the DS."
         }
       ],
       "multiSelect": false
@@ -258,16 +258,16 @@ Ask:
 {
   "questions": [
     {
-      "question": "O que precisa mudar?",
-      "header": "Mudança",
+      "question": "What needs to change?",
+      "header": "Change",
       "options": [
-        { "label": "Hierarquia visual", "description": "CTA, ordem, prominência" },
+        { "label": "Visual hierarchy", "description": "CTA, order, prominence" },
         {
-          "label": "Aplicar tokens corretos",
-          "description": "Trocar hex hardcoded por tokens do DS"
+          "label": "Apply the right tokens",
+          "description": "Swap hardcoded hex for DS tokens"
         },
-        { "label": "Adicionar estado", "description": "Falta loading/empty/error" },
-        { "label": "Outro", "description": "Descreve em texto livre" }
+        { "label": "Add a state", "description": "loading/empty/error is missing" },
+        { "label": "Other", "description": "Describe it in free text" }
       ],
       "multiSelect": true
     }
@@ -281,7 +281,7 @@ Use the Edit tool with specific `old_string`/`new_string`. DO NOT overwrite the 
 
 **4. Short echo after applying**
 
-> "Atualizei <surface>: <resumo de 1 linha do que mudou>. Loading/empty/error já estavam, não toquei."
+> "Updated <surface>: <1-line summary of what changed>. Loading/empty/error were already there, I did not touch them."
 
 **5. Update session.yaml**
 

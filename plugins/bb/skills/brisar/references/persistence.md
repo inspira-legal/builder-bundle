@@ -116,7 +116,7 @@ diverge:
 # Medium (where the exploration happens: asked, never assumed)
 # ============================================================
 medium:
-  chosen: código | claude-design | paper | figma | pencil
+  chosen: code | claude-design | paper | figma | pencil
   offered: [<options presented>]
   unavailable: [<medium>: <missing mcp>]   # named to the builder, not hidden
   reason: <one line. Why this one fits>
@@ -129,12 +129,12 @@ medium:
 # ============================================================
 tarsila:
   status: null | in-progress | completed | blocked
-  medium: código | claude-design | paper | figma | pencil
+  medium: code | claude-design | paper | figma | pencil
   build_target: react+tailwind | prototype-html | storybook | canvas | preview-html
   surfaces:
     - name: <surface_name>
       # Locator, Deliver opens the artifact from this. Imprecise here = unreviewable.
-      file: <path>                 # medium código / claude-design
+      file: <path>                 # medium code / claude-design
       canvas:                      # medium paper / figma / pencil
         file: <file name or id>
         page: <page name>
@@ -157,7 +157,7 @@ tarsila:
 clarisse:
   status: null | in-progress | completed | blocked
   ran_modes: [design-review | accessibility | handoff]
-  medium: código | claude-design | paper | figma | pencil
+  medium: code | claude-design | paper | figma | pencil
   reader: files | preview | paper-mcp | figma-mcp | pencil-mcp
   artifacts:
     design_review: ".brisar/clarisse/design-review.md" | null
@@ -221,6 +221,13 @@ Old sessions may carry `nise:`/`esperanca:` sections, a `shaping:` block, and st
 - `deferred-to-*` statuses → `in-progress` (the deferral targets no longer exist as separate skills; the gates re-offer the right next step).
 - Leave the old `nise:`/`esperanca:` sections in place (read-only reference); write only the v2 keys.
 - Bump `brisar_version: "2.1.0"`.
+
+### Sessions written before 2.13.0
+
+The medium token used to be recorded in Portuguese. A `session.yaml` or `config.yaml` carrying
+`código` in `medium.chosen`, `medium.history`, `tarsila.medium` or `clarisse.medium` reads as
+`code`; write `code` back on the next save. Same for a `divergência`/`reconciliação` key: read it
+as `divergence`/`reconciliation`.
 
 ### Status states: who can set
 

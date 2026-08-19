@@ -14,7 +14,7 @@ The discipline here is **fidelity to contracts**:
 
 Before any question, read `.brisar/session.yaml` in full:
 
-- **If `gate.discover_brief` points at a spec** (`.bb/<slug>/spec.md`). Read it. Cuts recorded there are respected: DO NOT prototype features that were cut. Flag at the start: "Vou pular [feature_x] porque foi cortada no discover." The hypothesis informs layout decisions (when the builder asks "how should I arrange the CTA?", recall it). The appetite scales fidelity: small/medium appetite = lean fidelity (structure + tokens; no microinteraction polish); large appetite = polish included.
+- **If `gate.discover_brief` points at a spec** (`.bb/<slug>/spec.md`). Read it. Cuts recorded there are respected: DO NOT prototype features that were cut. Flag at the start: "I am skipping [feature_x] because it was cut in the discover." The hypothesis informs layout decisions (when the builder asks "how should I arrange the CTA?", recall it). The appetite scales fidelity: small/medium appetite = lean fidelity (structure + tokens; no microinteraction polish); large appetite = polish included.
 - **If `gate.design_brief` points at a brief** (`.bb/<slug>/brief-design.md`): read it. This is the **richer contract** when it exists: it carries the research, the chosen direction with its five parts (bet, composition, copy, rationale, risk), the base block common to all directions, and the token constraints read from source. The copy in the direction is the copy you build. Not a starting point to improve on. The spec and the design brief **coexist**: the spec says what problem and what was cut; the design brief says how this surface should be.
 - **Read `medium.chosen`**: it decides the artifact and the tooling (table at the top of `references/develop-modes.md`). On a canvas or `claude-design` medium there is no scaffold and no `design-context/`; that is the normal path, not a failure.
 - **Save your output** in the `tarsila:` section of session.yaml (the Develop phase's state key) and set `current_phase: develop`.
@@ -29,7 +29,7 @@ Checks, without printing anything. **Which ones apply depends on `medium.chosen`
 grep -A6 '^medium:' .brisar/session.yaml 2>/dev/null
 ```
 
-- `medium.chosen: código` → run 0.1–0.3 below.
+- `medium.chosen: code` → run 0.1–0.3 below.
 - `medium.chosen` is `claude-design`, `paper`, `figma` or `pencil` → **skip 0.1 and 0.2**. There is
   no config and no `design-context/` by design (`medium.scaffold: skipped`). Instead confirm the
   MCP for that medium is reachable, and get the contract from `gate.design_brief` + the research
@@ -38,7 +38,7 @@ grep -A6 '^medium:' .brisar/session.yaml 2>/dev/null
   guess: run the medium question (`references/phase-medium.md`) first. It is one turn and it
   decides everything downstream.
 
-### 0.1: config (medium `código` only)
+### 0.1: config (medium `code` only)
 
 ```bash
 test -f .brisar/config.yaml && cat .brisar/config.yaml
@@ -46,9 +46,9 @@ test -f .brisar/config.yaml && cat .brisar/config.yaml
 
 If it does not exist: the builder reached Develop without the scaffold phases. Fall into **fallback mode**, ask where the design system is (with tokens.md/components.md) or offer to run the full brisar journey first.
 
-### 0.2: Design context (medium `código` only)
+### 0.2: Design context (medium `code` only)
 
-Read from `.brisar/config.yaml` the `design_context_path` field. Default: `<projeto>/design-context/`.
+Read from `.brisar/config.yaml` the `design_context_path` field. Default: `<project>/design-context/`.
 
 ```bash
 test -f "${DC_PATH}/tokens.md" && test -f "${DC_PATH}/components.md"
@@ -76,7 +76,7 @@ Phase 4 to produce a thinner version of what the brief already says.
 
 Print the introduction:
 
-> **Fase Develop**: vou construir tela em alta fidelidade aplicando o design-context. Modo: full surface, componente isolado, ou iteração em algo existente.
+> **Develop phase**: I am going to build a high-fidelity screen applying the design-context. Mode: full surface, single component, or iteration on something that exists.
 
 Call `AskUserQuestion`:
 
@@ -84,20 +84,20 @@ Call `AskUserQuestion`:
 {
   "questions": [
     {
-      "question": "Que tipo de construção você precisa?",
-      "header": "Modo Develop",
+      "question": "What kind of build do you need?",
+      "header": "Develop mode",
       "options": [
         {
           "label": "Full surface",
-          "description": "Construir 1 ou mais surfaces de ponta a ponta (lê a direção visual de cada em .bb/<slug>/). Recomendado se veio do scaffold."
+          "description": "Build 1 or more surfaces end to end (reads the visual direction of each one at .bb/<slug>/). Recommended if you came from the scaffold."
         },
         {
-          "label": "Componente isolado",
-          "description": "Construir 1 componente novo ou variant do DS (button, card, dialog, ...). Output vai pro components/ do projeto."
+          "label": "Single component",
+          "description": "Build 1 new component or DS variant (button, card, dialog, and so on). The output goes to the project components/."
         },
         {
-          "label": "Iteração em existente",
-          "description": "Mexer numa tela/componente que já existe. Lê o arquivo atual e propõe diffs."
+          "label": "Iterate on what exists",
+          "description": "Change a screen or component that already exists. Reads the current file and proposes diffs."
         }
       ],
       "multiSelect": false
@@ -112,10 +112,10 @@ If "Full surface" and `surfaces[]` has more than one entry, ask the second quest
 {
   "questions": [
     {
-      "question": "Qual(is) surface(s)?",
+      "question": "Which surface, or surfaces?",
       "header": "Surface",
       "options": [
-        { "label": "<surface_1>", "description": "Direção visual de <surface_1>.md" },
+        { "label": "<surface_1>", "description": "Visual direction of <surface_1>.md" },
         { "label": "<surface_2>", "description": "..." }
       ],
       "multiSelect": true
@@ -132,11 +132,11 @@ Lazy-load `references/develop-modes.md`. Do not load everything in Step 0.
 
 Each mode has a template + checklist:
 
-| Mode               | Template/checklist              | Main output                                                             |
-| ------------------ | ------------------------------- | ----------------------------------------------------------------------- |
-| Full surface       | `develop-modes.md#full-surface` | `<projeto>/src/<surface>.tsx` (or `<surface>.html` if prototype-hosted) |
-| Componente isolado | `develop-modes.md#component`    | `<projeto>/src/components/<Name>.tsx`                                   |
-| Iteração           | `develop-modes.md#iteration`    | Diff applied to the existing file                                       |
+| Mode                   | Template/checklist              | Main output                                                             |
+| ---------------------- | ------------------------------- | ----------------------------------------------------------------------- |
+| Full surface           | `develop-modes.md#full-surface` | `<project>/src/<surface>.tsx` (or `<surface>.html` if prototype-hosted) |
+| Single component       | `develop-modes.md#component`    | `<project>/src/components/<Name>.tsx`                                   |
+| Iterate on what exists | `develop-modes.md#iteration`    | Diff applied to the existing file                                       |
 
 Cross-cutting rules:
 
@@ -158,11 +158,11 @@ Expected schema in `tarsila:`:
 ```yaml
 tarsila:
   status: completed | in-progress | blocked
-  medium: código | claude-design | paper | figma | pencil
+  medium: code | claude-design | paper | figma | pencil
   surfaces:
     - name: <surface_name>
       # Locator. Deliver reads the artifact from this. Precise or Deliver cannot review it.
-      file: <path> # medium código / claude-design
+      file: <path> # medium code / claude-design
       canvas: # medium paper / figma / pencil
         file: <file name or id>
         page: <page name>
@@ -190,26 +190,26 @@ rediscovered as a bug.
 
 ### Gate (always the last)
 
-Echo what was built (1 line: _"Construí <surface> em <path>. Loading/Empty/Error inclusos."_) + reminder about missing tokens/components (if any). Then the handoff gate:
+Echo what was built (1 line: _"Built <surface> at <path>. Loading/Empty/Error included."_) + reminder about missing tokens/components (if any). Then the handoff gate:
 
 ```json
 {
   "questions": [
     {
-      "question": "Surface construída. Próximo passo?",
-      "header": "Próximo",
+      "question": "Surface built. Next step?",
+      "header": "Next",
       "options": [
         {
-          "label": "Revisar e preparar handoff (fase Deliver)",
-          "description": "Design review + accessibility + handoff doc antes de mergear"
+          "label": "Review it and prepare the handoff (Deliver phase)",
+          "description": "Design review + accessibility + handoff doc before merging"
         },
         {
-          "label": "Construir outra surface",
-          "description": "Volto pro intake do Develop com a próxima surface"
+          "label": "Build another surface",
+          "description": "I go back to the Develop intake with the next surface"
         },
         {
-          "label": "Parar por aqui",
-          "description": "Estado salvo; rode /bb:brisar de novo pra continuar"
+          "label": "Stop here",
+          "description": "The state is saved; run /bb:brisar again to continue"
         }
       ],
       "multiSelect": false
@@ -228,7 +228,7 @@ Echo what was built (1 line: _"Construí <surface> em <path>. Loading/Empty/Erro
 2. **States always.** Default, loading, empty, error. Even on small appetite, only skip with an explicit `cut_reason`.
 3. **Decision recorded.** If you invented a custom component, write it in `.brisar/tarsila/notes.md` with the reason. Do not disappear without a record.
 4. **At most 2 questions per turn.** More than that becomes a form. Ask + build + echo.
-5. **Cuts respected.** If the spec cut X, do not prototype X. If the builder asks for X anyway, flag first: _"Notei que [X] foi cortado no discover. Prosseguir mesmo assim ou reabrir o corte?"_
+5. **Cuts respected.** If the spec cut X, do not prototype X. If the builder asks for X anyway, flag first: _"I noticed [X] was cut in the discover. Go on anyway, or reopen the cut?"_
 6. **No nitpicking of tokens.** If tokens.md says `--color-primary: #0070F3`, use exactly that. Do not "tweak 1%" to look better.
 
 One sharp caution: **never edit `tokens.md` or `components.md`**. The DS source of truth is governed by the scaffold phases (or an explicit DS-update round), and the Develop phase is a consumer. Writing to it from here creates a race between surfaces.
@@ -241,6 +241,6 @@ One sharp caution: **never edit `tokens.md` or `components.md`**. The DS source 
 | `<design_context_path>/tokens.md`           | Phase 3     | Develop (Step 0, read) |
 | `<design_context_path>/components.md`       | Phase 3     | Develop (Step 0, read) |
 | `<design_path>/<surfaces[].file>`           | Phase 4     | Develop (Step 2)       |
-| `<projeto>/src/<surface>.tsx` (or .html)    | Develop     | Deliver, dev           |
+| `<project>/src/<surface>.tsx` (or .html)    | Develop     | Deliver, dev           |
 | `.brisar/session.yaml` (`tarsila:` section) | Develop     | Deliver, re-entry      |
 | `.brisar/tarsila/notes.md`                  | Develop     | Deliver, human builder |

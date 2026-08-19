@@ -9,23 +9,23 @@ This is the phase that delivers. Everything before was conversation; here you wr
 
 ## Step 1: confirm slug and location
 
-Phase 1 derived a slug (e.g. `lexflow-busca-semantica`). Before creating files, confirm:
+Phase 1 derived a slug (e.g. `lexflow-semantic-search`). Before creating files, confirm:
 
 ```json
 {
   "questions": [
     {
-      "question": "Slug do projeto: '<slug>'. Vou criar a pasta `./<slug>/` aqui (`pwd`). OK?",
+      "question": "Project slug: '<slug>'. I'll create the folder `./<slug>/` here (`pwd`). OK?",
       "header": "Slug",
       "options": [
-        { "label": "OK, criar aqui", "description": "Pasta vai ser ./<slug>/ no diretório atual" },
+        { "label": "OK, create it here", "description": "The folder will be ./<slug>/ in the current directory" },
         {
-          "label": "Quero ajustar o slug",
-          "description": "Texto livre, me dá o nome que prefere"
+          "label": "I want to adjust the slug",
+          "description": "Free text, give me the name you prefer"
         },
         {
-          "label": "Quero criar em outra pasta",
-          "description": "Texto livre, caminho relativo ou absoluto"
+          "label": "I want to create it in another folder",
+          "description": "Free text, a relative or absolute path"
         }
       ],
       "multiSelect": false
@@ -180,8 +180,8 @@ export default function App() {
       <main className="mx-auto max-w-3xl px-6 py-12">
         <h1 className="text-3xl font-semibold mb-4">{`<slug>`}</h1>
         <p className="text-text-secondary">
-          Scaffolded by /bb:brisar. Tokens da marca <strong>Inspira</strong> ativos. Próximo: a fase
-          Develop constrói cada surface a partir da direção visual em <code>.bb/</code>.
+          Scaffolded by /bb:brisar. <strong>Inspira</strong> brand tokens active. Next: the Develop
+          phase builds each surface from the visual direction in <code>.bb/</code>.
         </p>
       </main>
     </div>
@@ -201,7 +201,7 @@ export default function App() {
       <main className="mx-auto max-w-3xl px-6 py-12">
         <h1 className="text-2xl font-semibold mb-4">{`<slug>`}</h1>
         <p style={{ color: "var(--color-text-secondary)" }}>
-          Scaffolded by /bb:brisar. Tokens da marca <strong>Lexflow</strong> ativos (dark, GitHub
+          Scaffolded by /bb:brisar. <strong>Lexflow</strong> brand tokens active (dark, GitHub
           Primer-inspired).
         </p>
       </main>
@@ -245,14 +245,14 @@ dist
 ````markdown
 # <slug>
 
-Scaffolded by /bb:brisar, <data>.
+Scaffolded by /bb:brisar, <date>.
 
 ## Stack
 
 - Vite + React 18 + TypeScript
-- Tailwind v4 (com tokens da marca <brand>)
+- Tailwind v4 (with the <brand> brand tokens)
 
-## Como rodar
+## How to run
 
 ```bash
 pnpm install
@@ -260,20 +260,20 @@ pnpm dev
 ```
 ````
 
-## O que está aqui
+## What's here
 
-- `src/`: código React. Ainda vazio; surfaces vão preencher.
-- `design-context/`: fonte para a fase Develop do /bb:brisar. Não edite à mão a menos que saiba o que está fazendo.
-- `.brisar/config.yaml`: config do brisar. A fase Develop lê esse arquivo para saber onde estão os tokens e a direção visual.
+- `src/`: React code. Still empty; the surfaces will fill it.
+- `design-context/`: the source for /bb:brisar's Develop phase. Don't edit it by hand unless you know what you're doing.
+- `.brisar/config.yaml`: brisar's config. The Develop phase reads this file to know where the tokens and the visual direction are.
 
-A direção visual de cada surface fica em `.bb/<slug>/`, junto do brief. Leia antes de desenhar.
+The visual direction for each surface lives in `.bb/<slug>/`, next to the spec. Read it before designing.
 
-## Próximos passos
+## Next steps
 
-Rode `/bb:brisar` de novo nesta pasta. Ele detecta o projeto e oferece a fase Develop, que lê `design-context/tokens.md` e `design-context/components.md`, mais a direção visual da surface, e te ajuda a construir cada surface.
+Run `/bb:brisar` again in this folder. It detects the project and offers the Develop phase, which reads `design-context/tokens.md` and `design-context/components.md`, plus the surface's visual direction, and helps you build each surface.
 
-Para shaping mais profundo: `/bb:discover`.
-Para spec formal: `/bb:spec`.
+For deeper shaping: `/bb:discover`.
+For a formal spec: `/bb:spec`.
 
 ````
 
@@ -286,8 +286,8 @@ Short synthesis extracted from `<DS_PATH>/<brand.design_md_path>`. Don't copy th
 ```markdown
 # Tokens: <brand>
 
-> Fonte: <DS_PATH>/<brand.design_md_path>
-> Sintetizado por /bb:brisar em <data>.
+> Source: <DS_PATH>/<brand.design_md_path>
+> Synthesized by /bb:brisar on <date>.
 
 ## Color (semantic)
 
@@ -302,7 +302,7 @@ Short synthesis extracted from `<DS_PATH>/<brand.design_md_path>`. Don't copy th
 | Error           | `--color-feedback-critical-text` | `<value>` |
 | Success         | `--color-feedback-success-text`  | `<value>` |
 
-(Adicione mais linhas conforme o DESIGN.md específico tem.)
+(Add more rows as the specific DESIGN.md carries them.)
 
 ## Typography
 
@@ -321,11 +321,11 @@ Short synthesis extracted from `<DS_PATH>/<brand.design_md_path>`. Don't copy th
 
 - Use semantic tokens, not primitives.
 - Never the secondary brand color as primary CTA fill (Inspira: Cornflower Blue is secondary; Rich Black is primary).
-- (extraídas do "Don't" do DESIGN.md)
+- (extracted from the "Don't" section of DESIGN.md)
 ````
 
 For Lexflow, adapt the tokens to the dark equivalents.
-For custom, copy from the base but add `> ⚠ Custom, ajuste valores conforme a identidade evolui.` at the top.
+For custom, copy from the base but add `> ⚠ Custom, adjust the values as the identity evolves.` at the top.
 
 ### design-context/components.md
 
@@ -334,28 +334,28 @@ Synthesis of the "Components: In Scope" and "Components: Out of Scope" sections 
 ```markdown
 # Components: <brand>
 
-> Fonte: <DS_PATH>/<brand.design_md_path>
-> Sintetizado por /bb:brisar em <data>.
+> Source: <DS_PATH>/<brand.design_md_path>
+> Synthesized by /bb:brisar on <date>.
 
-## In scope (use estes)
+## In scope (use these)
 
 - Button (Primary, Secondary, Neutral, Ghost, Destructive)
 - Text Input
 - Card (Default, Brand-Tinted)
 - Feedback Banner (info, success, warning, critical)
-- (...lista da DESIGN.md...)
+- (...the list from DESIGN.md...)
 
-## Out of scope (não tem ainda: sinalize gap se precisar)
+## Out of scope (not there yet: flag a gap if you need one)
 
 - Data table
 - Combobox / Multi-select
 - Date picker
-- (...lista da DESIGN.md...)
+- (...the list from DESIGN.md...)
 
-## Quando precisar de algo out-of-scope
+## When you need something out of scope
 
-Edite este arquivo adicionando `## Custom adicionado neste projeto` com o componente.
-Quando rodar `/bb:brisar` em modo feedback (futuro), os adicionais viram seeds para o DS.
+Edit this file, adding `## Custom added in this project` with the component.
+When you run `/bb:brisar` in feedback mode (future), the additions become seeds for the DS.
 ```
 
 ## Step 5: .brisar/config.yaml
@@ -455,28 +455,28 @@ mkdir -p <slug>/.brisar
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><slug>, Protótipo</title>
+    <title><slug>, Prototype</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="landing">
       <header>
         <h1><slug></h1>
-        <p class="subtitle">Protótipo clicável, gerado por /bb:brisar em <data>.</p>
+        <p class="subtitle">Clickable prototype, generated by /bb:brisar on <date>.</p>
       </header>
 
       <section class="surfaces">
-        <h2>Telas</h2>
+        <h2>Screens</h2>
         <ul>
-          <li><a href="<surface-1>.html"><surface-1, descrição curta></a></li>
-          <li><a href="<surface-2>.html"><surface-2, descrição curta></a></li>
+          <li><a href="<surface-1>.html"><surface-1, short description></a></li>
+          <li><a href="<surface-2>.html"><surface-2, short description></a></li>
           <!-- one <li> per surface -->
         </ul>
       </section>
 
       <footer class="meta">
-        <p>Marca: <strong><brand></strong> · Audiência: <audience> · Apetite: <appetite></p>
-        <p class="hint">Pra time técnico: ver <code>HANDOFF-DEV.md</code> na raiz da pasta.</p>
+        <p>Brand: <strong><brand></strong> · Audience: <audience> · Appetite: <appetite></p>
+        <p class="hint">For the technical team: see <code>HANDOFF-DEV.md</code> at the root of the folder.</p>
       </footer>
     </main>
   </body>
@@ -497,11 +497,11 @@ Phase 3 creates empty stubs; Phase 4 populates with content from the visual dire
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <nav class="back"><a href="index.html">← Voltar</a></nav>
+    <nav class="back"><a href="index.html">← Back</a></nav>
     <main class="surface" id="<surface-id>">
-      <h1><surface, título></h1>
+      <h1><surface, title></h1>
       <!-- Phase 4 will populate this block with the visual direction of the surface -->
-      <p class="placeholder">Conteúdo desta tela vai aqui (gerado em Phase 4 do /bb:brisar).</p>
+      <p class="placeholder">The content of this screen goes here (generated in Phase 4 of /bb:brisar).</p>
     </main>
   </body>
 </html>
@@ -619,90 +619,90 @@ a {
 ```markdown
 # HANDOFF: <slug>
 
-**Status:** protótipo HTML estático. Foi gerado por `/bb:brisar` em <data> pra <pessoa> (perfil executive) validar a ideia com stakeholders.
+**Status:** static HTML prototype. Generated by `/bb:brisar` on <date> for <person> (executive profile) to validate the idea with stakeholders.
 
-**Esta pasta NÃO é o produto.** É um clicável pra mostrar a direção. Pegue o conceito, NÃO o código, re-escreva no stack apropriado.
+**This folder is NOT the product.** It's a clickable to show the direction. Take the concept, NOT the code, and rewrite it in the appropriate stack.
 
 ---
 
-## Contexto da ideia
+## Context of the idea
 
-- **O que é:** <intent.raw_prompt>
-- **Quem usa:** <intent.audience>
-- **Problema que resolve:** <intent.problem_statement>
-- **Marca:** <brand.name> (tokens em [styles.css](styles.css))
-- **Apetite original:** <shaping.appetite>
-- **Continua como produto?:** <intent.scale_signal == will-scale ? "sim, virar produto de verdade" : "não, só validação">
+- **What it is:** <intent.raw_prompt>
+- **Who uses it:** <intent.audience>
+- **Problem it solves:** <intent.problem_statement>
+- **Brand:** <brand.name> (tokens in [styles.css](styles.css))
+- **Original appetite:** <shaping.appetite>
+- **Does it continue as a product?:** <intent.scale_signal == will-scale ? "yes, it becomes a real product" : "no, validation only">
 
-## Telas / surfaces
+## Screens / surfaces
 
-| Tela        | Arquivo                              | Direção visual                        |
+| Screen      | File                                 | Visual direction                      |
 | ----------- | ------------------------------------ | ------------------------------------- |
 | <surface-1> | [<surface-1>.html](<surface-1>.html) | `../.bb/<slug>/design/<surface-1>.md` |
 | <surface-2> | [<surface-2>.html](<surface-2>.html) | `../.bb/<slug>/design/<surface-2>.md` |
 
-A direção visual de cada tela mora em `.bb/<slug>/`, junto do brief. Leia ANTES do HTML. O HTML é mockado; o brief tem a intenção.
+The visual direction for each screen lives in `.bb/<slug>/`, next to the spec. Read it BEFORE the HTML. The HTML is mocked; the spec carries the intent.
 
-## Stack recomendada pra produção
+## Recommended stack for production
 
-Esta ferramenta é candidata a virar app interno. Stack alinhada com o resto da Inspira:
+This tool is a candidate to become an internal app. A stack aligned with the rest of Inspira:
 
 - **Framework:** Vite + React 18 + TypeScript
-- **Estilo:** Tailwind v4 com tokens da marca <brand>
-- **Design system:** Brisa DS (tokens em `BRISA DS V0/brand/<brand>/DESIGN.md`)
-- **Para iniciar a versão real:**
-  1. Rode `/bb:brisar` na pasta-raiz da Inspira (não nesta pasta. Esta é só protótipo).
-  2. Quando perguntar perfil, marque "Sei mexer em código".
-  3. Quando perguntar produto/marca: marque <brand>.
-  4. /bb:brisar scaffolda Vite. Use a direção visual em `.bb/<slug>/` como input pra fase Develop no projeto novo.
+- **Styling:** Tailwind v4 with the <brand> brand tokens
+- **Design system:** Brisa DS (tokens in `BRISA DS V0/brand/<brand>/DESIGN.md`)
+- **To start the real version:**
+  1. Run `/bb:brisar` in Inspira's root folder (not in this folder. This one is only a prototype).
+  2. When it asks for the profile, pick "I can work in code".
+  3. When it asks about product/brand: pick <brand>.
+  4. /bb:brisar scaffolds Vite. Use the visual direction in `.bb/<slug>/` as the input for the Develop phase in the new project.
 
-## O que NÃO fazer
+## What to avoid
 
-- Não copie HTML/CSS direto. Re-escreva como componentes React tipados, usando o DS.
-- Não use as cores hardcoded em `styles.css`. Use os tokens semânticos do Tailwind v4 do scaffold real.
-- Não precise pedir aprovação a cada tela. A direção visual já tá em `.bb/<slug>/`.
+- Don't copy the HTML/CSS directly. Rewrite it as typed React components, using the DS.
+- Don't use the hardcoded colors in `styles.css`. Use the semantic Tailwind v4 tokens of the real scaffold.
+- Don't ask for approval on every screen. The visual direction is already in `.bb/<slug>/`.
 
-## Quem fez o protótipo
+## Who made the prototype
 
-<pessoa> (executive). Use <pessoa> como stakeholder de validação. Não como cliente final do código.
+<person> (executive). Use <person> as the validation stakeholder. Not as the end client of the code.
 ```
 
-Fill the "Direção visual" column from what Phase 4 recorded (`design_path` + `surfaces[].file`), one row per surface, with a single surface that path is `../.bb/<slug>/design.md`.
+Fill the "Visual direction" column from what Phase 4 recorded (`design_path` + `surfaces[].file`), one row per surface, with a single surface that path is `../.bb/<slug>/design.md`.
 
 ##### `<slug>/README.md`: executive language
 
 ```markdown
 # <slug>
 
-Protótipo clicável da sua ideia. Gerado por /bb:brisar em <data>.
+A clickable prototype of your idea. Generated by /bb:brisar on <date>.
 
-## Como abrir
+## How to open it
 
-1. Abra a pasta `<slug>/` no Finder.
-2. Dê dois cliques em `index.html`.
-3. Vai abrir no seu navegador (Chrome/Safari/Edge, qualquer um).
-4. Os links levam pra cada tela do protótipo.
+1. Open the `<slug>/` folder in Finder.
+2. Double-click `index.html`.
+3. It opens in your browser (Chrome/Safari/Edge, any of them).
+4. The links take you to each screen of the prototype.
 
-Não precisa instalar nada. Funciona offline.
+You don't need to install anything. It works offline.
 
-## Como mostrar pro time
+## How to show it to the team
 
-Opção 1. Compartilhar a pasta inteira: zipe `<slug>/` e mande. Cada pessoa abre o `index.html`.
+Option 1. Share the whole folder: zip `<slug>/` and send it. Each person opens the `index.html`.
 
-Opção 2. Hospedar pra link: jogue a pasta no Vercel/Netlify (ou peça pro time de eng). Aí vira um link normal.
+Option 2. Host it for a link: drop the folder on Vercel/Netlify (or ask the eng team). Then it becomes a normal link.
 
-## E o produto de verdade?
+## And the real product?
 
-Esse protótipo é pra validar a ideia. **Não é o produto final.** O time técnico precisa pegar o `HANDOFF-DEV.md` (na raiz da pasta) pra construir a versão real.
+This prototype is for validating the idea. **It is not the final product.** The technical team needs to take the `HANDOFF-DEV.md` (at the root of the folder) to build the real version.
 
-## O que tem em cada pasta
+## What's in each folder
 
-- `index.html`: tela inicial (lista todas as telas)
-- `<surface>.html`: uma por tela do protótipo
-- `styles.css`: visual (cores, fontes, espaçamentos da marca <brand>)
-- `HANDOFF-DEV.md`: pacote pro time técnico (não precisa abrir, mas se for passar adiante, manda esse arquivo)
+- `index.html`: the opening screen (lists every screen)
+- `<surface>.html`: one per screen of the prototype
+- `styles.css`: the visuals (colors, fonts, spacing of the <brand> brand)
+- `HANDOFF-DEV.md`: the package for the technical team (you don't need to open it, but if you pass this on, send this file)
 
-O brief de cada tela (texto explicando o que ela faz) fica em `.bb/<slug>/`, uma pasta acima.
+The spec for each screen (the text explaining what it does) lives in `.bb/<slug>/`, one folder up.
 ```
 
 #### Step 4: `.brisar/config.yaml` (variant)
