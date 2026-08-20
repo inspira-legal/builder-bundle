@@ -1,5 +1,42 @@
 # Changelog
 
+## 2.18.0 (2026-08-20)
+
+**Design becomes a calibrated, reviewable dimension.** The profile learns how the
+person designs, the design journey leans on that answer, and the review engine gains
+the front that checks the design system. Three specs carry the reasoning:
+`.bb/design-no-perfil/`, `.bb/frente-de-design/`, and `.bb/exportar-pro-observador/`
+(the last one pending: it frames exporting bb's records to an observer and builds
+nothing yet).
+
+### New
+
+- **`profile.design_tools` in `~/.claude/bb.config.json`**: `/bb:profile` asks one
+  more question, which of Figma, Paper and Pencil are part of the person's day. An
+  empty list is an answer ("none of them"); a missing key is a config written before
+  the question and reads as not asked. `hooks/sync_instructions.py` renders the answer
+  as one line in the profile block of `~/.claude/BUILDER-BUNDLE.md`.
+- **`medium_default` on a product entry** (`product-registry.yaml`): a product with a
+  settled design workflow leans the medium question for everyone who works on it,
+  above the person's own habit. Both levels order the question and set the
+  recommendation; neither answers it, the medium stays always asked.
+- **The `design` front in `/bb:review`**: deviations from the design system the
+  project actually has. Raw values where a token exists, rebuilt components, missing
+  documented states, drift from the branch's visual direction, each finding citing
+  the source it deviates from (`front-design.md` + `design-checklist.md`). Available
+  when the diff touches UI and a design source resolves; also runs standalone over a
+  surface (a folder, files, or a running page), like the accessibility front, which
+  is the design review loop on its own. brisar's Deliver gate offers it next to the
+  deep accessibility audit.
+
+### Changed
+
+- `phase-medium.md` orders its options by the product's `medium_default`, then the
+  person's `design_tools`, then the fit signals, and the trim keeps the product
+  default and the person's tools, in that order; a lean tool whose MCP is absent is
+  named once in the intro line, never forced.
+- `preflight-tooling.md` cross-references `design_tools` alongside `uses_terminal`.
+
 ## 2.17.0 (2026-08-20)
 
 **One skill, one document.** `/bb:discover` used to seed `## Problem` / `## Hypothesis` /

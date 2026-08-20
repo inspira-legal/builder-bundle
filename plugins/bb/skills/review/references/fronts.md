@@ -18,6 +18,7 @@ door as any other run.
 | `rules`       | Project rules | deviations from the repo's `CODE_REVIEW_GUIDE.md`                                                  | there is a `CODE_REVIEW_GUIDE.md` at the root            | `front-rules.md`       |
 | `contract`    | Spec contract | the diff built what was agreed, and only that                                                      | the branch has a spec (`.bb/<slug>/spec.md`)             | `front-contract.md`    |
 | `a11y`        | Accessibility | WCAG AA on the UI the diff touched, semantics, accessible name, keyboard, focus, contrast          | the diff touches a UI file                               | `front-a11y.md`        |
+| `design`      | Design system | raw values where a token exists, rebuilt components, missing states, drift from the direction      | the diff touches a UI file and a design source resolves  | `front-design.md`      |
 | `threads`     | PR threads    | unresolved review comments                                                                         | there is an open PR for the branch                       | `front-threads.md`     |
 | `ci`          | CI            | red checks, evidence, diagnosis, root cause                                                        | a check is failing on the PR or on the branch's last run | `front-ci.md`          |
 
@@ -54,6 +55,11 @@ batch of cheap read-only calls (parallel background where possible):
   dialog does activate it. When the grep is ambiguous, read the hunks before
   offering the front, not after.
 
+- design source, only when the UI grep above passed: a token source the project
+  reads (a `tokens.json`, CSS custom properties, a Tailwind theme config, a brisar
+  prototype's `tokens*.css`), or the branch's `.bb/<slug>/design.md`
+  (or `design/`). One resolving makes `design` available; the resolution order and
+  what each rung is worth are `front-design.md`'s.
 - `gh pr view --json number,url`: is there an open PR.
 - failing checks: `gh pr checks <n>` when a PR exists, otherwise
   `gh run list --branch <branch> --limit 1`: the branch's last run is evidence
@@ -63,15 +69,17 @@ A front whose probe comes back empty is **not offered** and not reported as a
 failure. Only `threads` needs an open PR; `ci` falls back to the branch's last
 run. `gh` unauthenticated makes both unavailable. Say so once, with
 `gh auth login` as the remedy, and offer the rest. No `CODE_REVIEW_GUIDE.md` makes
-`rules` unavailable. One line, with `/bb:review-setup` as the remedy.
+`rules` unavailable. One line, with `/bb:review-setup` as the remedy. UI in the diff
+but no design source makes `design` unavailable. One line, naming what would create a
+source (a token file the build reads, or a visual direction from `/bb:brisar`).
 
 ## Depth: two tiers by default, a third only when asked
 
-| Diff                             | Correctness angles                                | Quality | Rules      | Contract | A11y    | Verify                         | Sweep   | Report cap |
-| -------------------------------- | ------------------------------------------------- | ------- | ---------- | -------- | ------- | ------------------------------ | ------- | ---------- |
-| ≲2 files / ≲100 lines            | the first 2 of the angle set, inline (no fan-out) | inline  | inline     | inline   | inline  | self-check in the main context | none    | 6          |
-| **any larger diff, the default** | the first 3 of the angle set (3 agents)           | 1 agent | 1 agent    | 1 agent  | 1 agent | 1-vote grouped by location     | none    | 10         |
-| **deep, only on request**        | the whole angle set (up to 5 agents)              | 1 agent | 1–2 agents | 1 agent  | 1 agent | 1-vote grouped by location     | 1 agent | 15         |
+| Diff                             | Correctness angles                                | Quality | Rules      | Contract | A11y    | Design  | Verify                         | Sweep   | Report cap |
+| -------------------------------- | ------------------------------------------------- | ------- | ---------- | -------- | ------- | ------- | ------------------------------ | ------- | ---------- |
+| ≲2 files / ≲100 lines            | the first 2 of the angle set, inline (no fan-out) | inline  | inline     | inline   | inline  | inline  | self-check in the main context | none    | 6          |
+| **any larger diff, the default** | the first 3 of the angle set (3 agents)           | 1 agent | 1 agent    | 1 agent  | 1 agent | 1 agent | 1-vote grouped by location     | none    | 10         |
+| **deep, only on request**        | the whole angle set (up to 5 agents)              | 1 agent | 1–2 agents | 1 agent  | 1 agent | 1 agent | 1-vote grouped by location     | 1 agent | 15         |
 
 **Size alone never reaches the third row.** A big diff runs the middle tier: the
 same three angles a medium one gets, no sweep, because a review that silently
@@ -121,8 +129,10 @@ change it reviewed.
    has to guess), changed files **with `.bb/` already subtracted** (`SKILL.md`,
    step 1), one paragraph of what changed, the repo's
    `CODE_REVIEW_GUIDE.md` when there is one, the criteria path its front points at
-   (`review-checklist.md` or `quality-checklist.md`, siblings of this file), and
-   the spec when there is one, plus ONE angle/lens set and its candidate cap.
+   (`review-checklist.md`, `quality-checklist.md` or `design-checklist.md`, siblings
+   of this file), and the spec when there is one, plus ONE angle/lens set and its
+   candidate cap. The `design` finder's scope block also carries the resolved design
+   sources (`front-design.md`, §1), so the finder cites instead of re-resolving.
 3. **Barrier before verify.** Pool every finder's candidates first: verification
    groups them by `file:line`, which needs all of them (`verify.md`).
 4. **`threads` and `ci` don't fan out**: they're script/`gh` reads followed by

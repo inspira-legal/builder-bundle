@@ -128,7 +128,8 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
   `.claude/CLAUDE.md` calls a monolithic `SKILL.md` that inlines every phase a defect, not a
   style choice.
 - **Evidence**: "Progressive disclosure (mandatory for fused skills)" in `.claude/CLAUDE.md`;
-  `plugins/bb/skills/review/SKILL.md` routing to seven `references/front-*.md`.
+  `plugins/bb/skills/review/SKILL.md` routing to the `references/front-*.md` files, one
+  per front, so the count never goes stale here when a front lands.
 
 #### BB008: No dash in the prose
 

@@ -29,12 +29,17 @@ improvement, and a "fix" that isn't justified against its finding is a guess.
 ## Order of operations
 
 1. In front order: correctness fixes first (highest severity first), then HIGH
-   rule deviations, then contract gaps, then quality edits. A quality pass over
-   code about to be fixed is wasted work.
+   rule deviations, then Critical and Major a11y failures and High design
+   deviations, then contract gaps, then the remaining a11y and design findings,
+   then quality edits. A quality pass over code about to be fixed is wasted work.
    - A **rule deviation** fix is applied the way the cited rule states it, and
      the commit body quotes the rule ID. When following the rule would change
      behavior, it stops being a mechanical fix: treat it as a correctness fix
      and justify it as one.
+   - A **design deviation** fix replaces the deviating value or component with
+     what the cited source names, the token, the DS component, the documented
+     state, and the commit body cites that source. When the source itself is
+     what is wrong, that is design-system debt to note, not a review edit.
    - A **contract gap** is closed by building the missing behavior or the missing
      test, not by editing the spec. When the spec itself turns out to be wrong,
      that's a `/bb:spec` conversation, not a review edit.
