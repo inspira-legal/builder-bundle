@@ -60,6 +60,7 @@ version starts next.
   `~/.claude/BUILDER-BUNDLE.md` and the `CLAUDE.md` import, which is all it ever governed;
   the version bb runs is not an instruction. Every failure in the new path stays silent,
   which is the hook's existing contract: exit 0 and print nothing.
+
 ## 2.17.0 (2026-08-20)
 
 **One skill, one document.** `/bb:discover` used to seed `## Problem` / `## Hypothesis` /
