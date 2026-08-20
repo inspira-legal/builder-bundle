@@ -87,31 +87,65 @@ def newline_of(text: str) -> str:
     return "\r\n" if crlf > text.count("\n") - crlf else "\n"
 
 
+def block_bounds(lines: list[str]) -> tuple[int, int] | None:
+    """Where the first whole block starts and ends. A start with no end after it
+    is not a block: nothing is removed on the strength of half a pair. An end
+    pairs with the *nearest* start above it, so a leftover start earlier in the
+    file cannot swallow the lines between the two."""
+    start = None
+    for i, line in enumerate(lines):
+        marker = line.strip()
+        if marker == BLOCK_START:
+            start = i
+        elif marker == BLOCK_END and start is not None:
+            return start, i
+    return None
+
+
+def without_blocks(lines: list[str]) -> tuple[list[str], bool]:
+    """The lines with every whole block gone, and whether there was one."""
+    found = False
+    while True:
+        bounds = block_bounds(lines)
+        if bounds is None:
+            return lines, found
+        start, end = bounds
+        lines = lines[:start] + lines[end + 1 :]
+        found = True
+
+
 def strip_block(text: str) -> str | None:
-    """The text without the managed block, or None when there is no block."""
-    nl = newline_of(text)
-    kept: list[str] = []
-    inside = found = False
-    for line in text.split(nl):
-        if line.strip() == BLOCK_START:
-            inside = found = True
-            continue
-        if line.strip() == BLOCK_END:
-            inside = False
-            continue
-        if not inside:
-            kept.append(line)
+    """The text without the managed block, or None when there is no whole block.
+
+    Splitting and joining on "\n" leaves each line's own ending inside the line,
+    so a CRLF file, or a file carrying both, comes back byte for byte outside the
+    block.
+    """
+    lines, found = without_blocks(text.split("\n"))
     if not found:
         return None
-    while kept and not kept[-1].strip():
-        kept.pop()
-    return nl.join(kept) + (nl if kept else "")
+    while lines and not lines[-1].strip():
+        lines.pop()
+    return "\n".join(lines) + ("\n" if lines else "")
 
 
-def with_block(text: str | None) -> str:
+def with_block(text: str | None) -> str | None:
+    """The file with exactly one block at the end, or None when it is not ours to
+    touch. A start marker left without an end is a half written block, and the
+    person's lines sit under it: appending a block there would put them inside the
+    pair, and the next run would take them out with it. Nothing is written into a
+    file in that state."""
+    if text is not None:
+        remainder, _ = without_blocks(text.split("\n"))
+        if any(line.strip() == BLOCK_START for line in remainder):
+            return None
     nl = newline_of(text) if text else "\n"
     block = nl.join([BLOCK_START, IMPORT_LINE, BLOCK_END])
-    body = "" if text is None else (strip_block(text) or text)
+    # An empty strip result is a file that held nothing but the block, which is
+    # not the same as no block at all: `or` here would append a second one on
+    # every session.
+    stripped = None if text is None else strip_block(text)
+    body = "" if text is None else (text if stripped is None else stripped)
     body = body.rstrip("\r\n")
     return (body + nl + nl if body else "") + block + nl
 
@@ -225,7 +259,7 @@ def main() -> int:
         write(INSTRUCTIONS_PATH, text)
     memory = read_raw(MEMORY_PATH)
     updated = with_block(memory)
-    if updated != memory:
+    if updated is not None and updated != memory:
         write(MEMORY_PATH, updated, newline="")
     return 0
 
