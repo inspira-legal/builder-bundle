@@ -7,7 +7,7 @@ agent's contract is the prompt string inside it, not a paraphrase kept here. Thi
 documents what the skills need to know to call it and what its return means.
 
 There is no mode question. The in-context build survives as the fallback for a session
-that cannot reach the script, and the skills announce that downgrade in one line.
+that cannot reach the script, and the skills say in one line why the build ran here.
 
 ## Why the build runs here and not in the main context
 

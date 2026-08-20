@@ -54,7 +54,7 @@ and stop.
    dispatched: implement's step 3 builds `args`, resolves and proves the script path in
    one `Bash` call, and invokes `Workflow` with `scriptPath`. Its result is the build
    report. Invoking `/bb:delegate` is the request for that workflow, which is the opt-in
-   the `Workflow` tool asks for. The fallback chain, three mechanical stops and nothing
+   the `Workflow` tool asks for. The fallback chain, three mechanical cases and nothing
    else, and what the script does with the run, are the plugin-level
    `references/build-tasks-workflow.md`; it applies here unchanged, with the reason named
    in one line and again in step 6.
