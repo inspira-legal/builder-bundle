@@ -240,7 +240,7 @@ Happy path, first time:
 | Develop finishes a surface                    | it lands in `design.md`'s frontmatter, not in a state file           |
 | `CLAUDE.md` already carries the import        | the marked block is replaced in place, the rest untouched            |
 | the plugin is uninstalled                     | both files stay; the header names what wrote them and how to stop it |
-| `CLAUDE.md` has a start marker with no end     | the writer leaves that file alone: no import, no removal              |
+| `CLAUDE.md` has a start marker with no end    | the writer leaves that file alone: no import, no removal             |
 
 ## Tasks
 
