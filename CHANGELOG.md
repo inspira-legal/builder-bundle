@@ -2,12 +2,10 @@
 
 ## 2.14.0 (2026-08-19)
 
-**The build has one path, and the spec is always reviewed.** 2.7.0 gave
-`/bb:implement` and `/bb:delegate` a second build path and made it a question asked
-once per run. The question is gone: the build is one agent per task, dispatched as a
-workflow, and the in-context build survives only as the fallback for a session that
-cannot run it. `/bb:spec` stopped scaling its review by size: every spec it writes is
-read by an agent that did not write it.
+**The build has one path.** 2.7.0 gave `/bb:implement` and `/bb:delegate` a second
+build path and made it a question asked once per run. The question is gone: the build
+is one agent per task, dispatched as a workflow, and the in-context build survives only
+as the fallback for a session that cannot run it.
 
 The mode question cost more than it bought. Both answers had to stay documented and
 both had to stay correct, so every change to the build loop was written twice, and the
@@ -24,12 +22,6 @@ which the skill can read for itself.
   prompt string inside the file, not a paraphrase kept next to it. This reverses
   2.7.0's `build-slices-workflow.md`, which was the contract a generated script had to
   meet, re-derived by whoever ran the build.
-- **`agents/bb-spec-reviewer.md`**, the third read-only agent. What spec's step 6 used
-  to describe in prose (spawn a reviewer, give it only the spec, tell it what to hunt)
-  is a system prompt the harness delivers, so the invariant half of the role stops
-  being re-composed by the caller. Round one is mandatory, round two runs when round
-  one returned a `load-bearing` finding, and two rounds is the ceiling; a survivor
-  goes to `## Open` and the gate blocks on it.
 - **`.github/scripts/validate-workflow-script.ts`**, the guard that replaces most of
   the old pre-invoke checklist. It blanks comment, string, template and regex bodies
   first, so every check reads code and not text, then asks: the script parses;
@@ -66,10 +58,6 @@ which the skill can read for itself.
   `verify` result, or with `failed`, stops the build instead of landing in `built`:
   `verify:` is what makes a task done, so green over an absent proof is a task the
   caller and ship would both read as proven.
-- **`/bb:spec`** (2.4.0) dispatches the reviewer over every spec it writes, and the
-  gate states the review's status in one line **always**: the verdict, or that it did
-  not run and why. The old wording scaled the review by size, which exempted exactly
-  the specs whose author was most confident.
 - **oxfmt formats `js`** alongside `json` and `md` in the lefthook glob. CI already
   formatted the file through `oxfmt --check .`; the hook did not.
 

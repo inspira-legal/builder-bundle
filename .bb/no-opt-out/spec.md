@@ -4,22 +4,18 @@ created: 2026-08-19
 slug: no-opt-out
 ---
 
-# two steps stop being optional: the build always runs as a workflow, the spec is always reviewed
+# the build stops being optional: it always runs as a workflow
 
 `build-via-workflow` shipped the one-agent-per-task build as a **choice**, asked at the
 start of every `/bb:implement` and `/bb:delegate` run, and shipped the script as prose the
-skill re-authors per run. `spec` shipped its independent reviewer as a step whose mandate
-the skill re-composes from prose every time, right at the point where the run wants to
-reach its gate.
+skill re-authors per run. The pass that catches what the main context loses is assembled by
+the context that is about to skip it.
 
-Both are the same shape: the pass that catches what the main context loses is assembled by
-the context that is about to skip it. This change executes both instead of offering them.
-The mode question goes, the workflow becomes the only build path, the in-context build
-survives as the fallback for a session with no `Workflow` tool, and the reviewer becomes a
-dispatched agent whose mandate lives in a system prompt the harness delivers.
+This change executes it instead of offering it. The mode question goes, the workflow becomes
+the only build path, and the in-context build survives as the fallback for a session with no
+`Workflow` tool.
 
-Success: `/bb:implement` and `/bb:delegate` reach the build with nothing asked, and no spec
-reaches its exit gate without a verdict from something that did not write it.
+Success: `/bb:implement` and `/bb:delegate` reach the build with nothing asked.
 
 ## Why the script stops being generated
 
@@ -34,8 +30,7 @@ It also retires the mode question's second argument. "What does this session kno
 file doesn't" was the discriminator for recommending the in-context build; with no choice
 left it becomes a **requirement on the spec**. A task agent gets the spec, its own line and
 the convention note, so a spec no fresh agent can build from is a broken spec, not a reason
-to build elsewhere. That is the `bb-spec-reviewer`'s question, and it is why both halves are
-one spec: making every build fresh is what makes the review necessary.
+to build elsewhere. `/bb:spec`'s step 6 is where that question gets asked.
 
 ## Decisions
 
@@ -79,11 +74,11 @@ one spec: making every build fresh is what makes the review necessary.
   throwaway one-task spec, invoked exactly the way the skills invoke it, asserted to return
   that task as built. Reading cannot catch a wrong call signature, and a fixed script that
   CI only parses would ship the error.
-- **`build-mode.md` is deleted by task 8**, the last task, once no reader is left: the two
-  skills go first, the `.claude/CLAUDE.md` tree goes with the deletion. The compaction
-  argument (a spec of eight tasks built in one context drifts from its own `## Decisions`)
-  moves into `build-tasks-workflow.md`; the self-sufficiency argument moves into the
-  reviewer's mandate.
+- **`build-mode.md` is deleted by the last task**, once no reader is left: the two skills
+  go first, the `.claude/CLAUDE.md` tree goes with the deletion. Both of its arguments move
+  into `build-tasks-workflow.md`, the compaction one (a spec of eight tasks built in one
+  context drifts from its own `## Decisions`) and the self-sufficiency one, which becomes a
+  requirement on the spec that `/bb:spec`'s step 6 already checks.
 - **`build-tasks-workflow.md` stops being a contract to meet and starts documenting the
   script**: `args`, the return schemas, the convention note with its ceiling, and the
   pre-invoke checklist split three ways.
@@ -101,25 +96,8 @@ one spec: making every build fresh is what makes the review necessary.
   guard fires before the commit and not only in CI.
 - **`js` joins the lefthook oxfmt glob**, which today covers `json` and `md` only, so the
   formatter is not what first meets the file in CI.
-- **The reviewer becomes an agent**: `agents/bb-spec-reviewer.md`, `tools: ["Read",
-"Grep", "Glob"]`, no Bash, no `model:` so it inherits the session's. Completeness
-  judgment is the same order of work as writing the spec was, so it runs at the same tier.
-- **Its mandate covers the repo, not only the text**: omission, contradiction and surplus,
-  plus "do the reuse notes point at code that exists" and "is this spec buildable by an
-  agent that has only this file". A dead reuse note found here costs a read; found in
-  stage zero it costs a run.
-- **The reviewer weighs its own findings, the skill decides the round.** Each finding comes
-  back with `weight: load-bearing | minor` and a one-line reason. The reviewer proposes
-  because it read the spec; the skill decides because only it knows what the fold changed.
-- **One trigger for round two, and two rounds is the ceiling.** Round one is mandatory.
-  Round two runs when round one returned at least one `load-bearing` finding, whatever
-  section the fold touched. Anything still `load-bearing` after round two is written into
-  `## Open`, and the exit gate treats it exactly like an open decision: no clean build
-  option, only resolve now or defer explicitly.
-- **The gate always states the review's status**: the verdict in one line, or that it did
-  not run and why. It never shows a verdict that did not happen.
 - **Versions**: `plugin.json` `2.13.0` to `2.14.0`; `implement` `2.4.0` to `2.5.0`;
-  `delegate` `2.5.0` to `2.6.0`; `spec` `2.3.0` to `2.4.0`.
+  `delegate` `2.5.0` to `2.6.0`.
 
 ## Behavior
 
@@ -143,16 +121,9 @@ one spec: making every build fresh is what makes the review necessary.
 7. A refused `scriptPath` becomes an inline `script` off the same file, in the same run.
 8. With no `Workflow` tool, a `Bash` call that fails to read the script, or both call shapes
    refused, the skills build in context and name the reason in one line.
-9. Every spec dispatches `bb-spec-reviewer` before its exit gate. It receives the spec's
-   path and nothing about the conversation that produced it; its mandate is its own system
-   prompt.
-10. The reviewer returns findings, each weighed `load-bearing` or `minor`; the skill folds
-    them into the gray-area loop, and one `load-bearing` finding is what makes round two run.
-11. The exit gate states the review's status in one line, and a `load-bearing` finding that
-    survived round two sits in `## Open`, which the gate blocks on like an open decision.
-12. CI and the pre-commit hook guard the script: it parses, `export const meta` is a literal,
-    there is exactly one `parallel()`, the forbidden time and random calls are absent, and
-    oxfmt formats `js` alongside `json` and `md`.
+9. CI and the pre-commit hook guard the script: it parses, `export const meta` is a literal,
+   there is exactly one `parallel()`, the forbidden time and random calls are absent, and
+   oxfmt formats `js` alongside `json` and `md`.
 
 | WHEN                                         | THEN                                                             |
 | -------------------------------------------- | ---------------------------------------------------------------- |
@@ -179,11 +150,6 @@ one spec: making every build fresh is what makes the review necessary.
 | a plugin `workflows/` dir does register      | `build-tasks` shows in autocomplete; the invocation is unchanged |
 | delegate drives the build                    | nothing is asked, at either end of the chain                     |
 | the run is interrupted halfway               | commits and checkboxes hold the progress; re-running resumes     |
-| one finding comes back `load-bearing`        | folded into the loop, and round two runs                         |
-| every finding comes back `minor`             | folded, no round two                                             |
-| the reviewer finds a dead reuse note         | `load-bearing` by definition: back to the loop before the gate   |
-| round two still returns load-bearing         | into `## Open`; the gate offers resolve or defer, not build      |
-| no Agent tool in the session                 | the gate says the review did not run and why                     |
 
 ## Tasks
 
@@ -199,7 +165,7 @@ one spec: making every build fresh is what makes the review necessary.
 - [x] **2. The reference documents the script**: `build-tasks-workflow.md` rewritten as
       documentation, with the compaction argument moved in from `build-mode.md`, the `args`
       shape, and the checklist split into CI, PR review and the skill's three per-run items
-      → behaviors 2, 6, 12 · dep: 1 · verify: reading
+      → behaviors 2, 6, 9 · dep: 1 · verify: reading
 - [x] **3. implement**: step 3 loses the question and gains the path resolution, the
       invocation and the three fallbacks; steps 4 to 6 shrink to the in-context path, keeping
       the checks authority chain the build step now needs for `checksHint`; the `## Tasfas`
@@ -209,27 +175,17 @@ one spec: making every build fresh is what makes the review necessary.
       invokes and reads the return, with the same fallbacks; step 7 stops reporting "the
       build mode it ran in"; the edge row "workflow mode stops" loses the mode word
       → behaviors 1, 2, 6, 7, 8 · dep: 2 · verify: reading
-- [x] **5. The reviewer agent**: `agents/bb-spec-reviewer.md` with `description` and
-      `tools` and no `model`, carrying the omission, contradiction and surplus mandate, the
-      reuse-note check, the buildable-by-a-fresh-agent question, and the weighed return
-      → behaviors 9, 10 · dep: — · verify: reading
-- [x] **6. spec**: step 6 dispatches the agent unconditionally in place of the
-      "Medium-and-up" qualifier, with the one-load-bearing-finding trigger for round two and
-      the two-round ceiling; step 7's gate states the review's status every time and blocks
-      on a surviving `load-bearing` finding in `## Open` the way it blocks on a decision
-      → behaviors 9, 10, 11 · dep: 5 · verify: reading
-- [x] **7. The guard around the script**:
+- [x] **5. The guard around the script**:
       `.github/scripts/validate-workflow-script.ts` parsing the file with `Bun.Transpiler`
       and failing the forbidden calls, the meta interpolation and a second `parallel()`;
       added to `package.json`'s `validate` script (which is what lefthook runs) and to
       `validate.yml` as its own step; `js` added to the lefthook oxfmt glob
-      → behavior 12 · dep: 1 · verify: CI
-- [x] **8. Versions, docs, and the deletion**: `plugin.json` `2.14.0`, the three skill
+      → behavior 9 · dep: 1 · verify: CI
+- [x] **6. Versions, docs, and the deletion**: `plugin.json` `2.14.0`, the two skill
       versions, the CHANGELOG entry naming which `build-via-workflow` decisions this
-      reverses, `README.md`'s agent count going from two to three, `build-mode.md` deleted
-      now that no reader is left, and `.claude/CLAUDE.md` (the tree, the new agent, the new
-      `workflows/` dir, the JS exception)
-      → behaviors 1, 9, 12 · dep: 1, 2, 3, 4, 5, 6, 7 · verify: CI
+      reverses, `build-mode.md` deleted now that no reader is left, and `.claude/CLAUDE.md`
+      (the tree, the new `workflows/` dir, the JS exception)
+      → behaviors 1, 9 · dep: 1, 2, 3, 4, 5 · verify: CI
 
 ## Out of scope
 

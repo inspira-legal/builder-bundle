@@ -20,7 +20,7 @@ instead of lossy by accident.
 
 That price is also why the spec is reviewed before it ever gets here. A task agent
 receives the spec, its own line and the convention note, so a spec that only its author
-can build from is a broken spec. `bb-spec-reviewer` asks that question in `/bb:spec`.
+can build from is a broken spec. `/bb:spec`'s step 6 asks that question.
 
 ## What the platform forces
 

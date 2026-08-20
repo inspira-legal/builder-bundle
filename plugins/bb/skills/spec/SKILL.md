@@ -4,7 +4,7 @@ description: Align on the idea before building. Develops a draft, iterates the g
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.4.0
+  version: 2.3.0
 ---
 
 # Spec
@@ -43,7 +43,7 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
 
    What you're hunting: (a) **unresolved load-bearing decisions** (a technical fork building can't proceed without, still blank or "TBD"); (b) **unmapped or unanswered behavior** (a happy-path step glossed over, an edge with no decided outcome); (c) **material contradictions**. Load-bearing gaps, behavior holes, and real conflicts only. Don't manufacture nitpicks, or the loop never closes.
 
-6. **Check the spec: the lint, then the independent reviewer. Every spec that got written, every time.** This is a step of its own because it's the one an author skips: you cannot see your own omissions, and the pass that would catch them is the pass that feels redundant.
+6. **Check the spec: the lint, then an independent reviewer. Every Medium-and-up spec, every time.** This is a step of its own because it's the one an author skips: you cannot see your own omissions, and the pass that would catch them is the pass that feels redundant.
 
    First the lint (dead section names, malformed tables, a missing required section), so the gate spends its attention on completeness instead:
 
@@ -51,17 +51,12 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
    python3 scripts/lint_spec.py .bb/<slug>/spec.md
    ```
 
-   Then dispatch the `bb-spec-reviewer` agent (Agent tool) with the spec's path and **nothing else**: not a summary of the conversation, not which sections are new, not what to look for. Its mandate is its own system prompt, so don't re-compose it here; naming what to look for narrows it to what this context can already see, which is the half the review exists to cover. A reviewer with no memory of the conversation that produced the spec reads it the way the builder will, and the builder is now one fresh agent per task.
-
-   It returns findings, each weighed `load-bearing` or `minor` with a one-line reason. Fold them all back into step 3's loop. The weight is the reviewer's, since it read the spec; the round is yours, since only you know what the fold changed:
-   - **Round one is mandatory**, whatever the spec's size and however clean it looks.
-   - **Round two runs when round one returned at least one `load-bearing` finding**, whatever section the fold touched, because a fold that closes a load-bearing gap is itself unreviewed text.
-   - **Two rounds is the ceiling.** Anything still `load-bearing` after round two goes into `## Open`, where step 7's gate blocks on it exactly like an open decision.
+   Then spawn a reviewer (Agent tool, fresh context) given ONLY the spec and this mandate: _"you did not write this. Find what is missing, what is unmapped, what contradicts itself, and what is surplus: a fact repeated in more than one section, prose that retells the conversation instead of describing what to build."_ A reviewer with no memory of the conversation that produced the spec reads it the way the builder will. Fold what it finds back into step 3, and carry its verdict to the gate in one line.
 
    Without an Agent tool in this context, say so at the gate rather than showing a verdict that never ran.
 
-7. **The exit gate: blocks on open load-bearing decisions.** Don't gate blind: first **show the artifact the user is signing off on**, a tight recap of the happy path, the full edge→outcome table, the **coverage table** (behavior → task → test) with `⚠️` on any unmapped row plus a one-line counter (`N behaviors, M mapped, K open`), and the **review's status** in one line, always: the reviewer's verdict (clean, or what it flagged and how it was resolved), or that it did not run and why, so "is this complete?" is answerable at a glance instead of forcing them to reopen the file. Then list what's **still open** (unresolved load-bearing decisions + parked questions). Then ask one `AskUserQuestion` (a handoff gate, with the format in the plugin-level `references/handoff-gate.md`):
-   - **If any load-bearing decision is still open, or a `load-bearing` finding survived round two into `## Open`:** do NOT offer a clean "build". The only options are **resolve it now** or **defer explicitly** ("decide at build time", recorded as such in the spec). Never a silent "build anyway".
+7. **The exit gate: blocks on open load-bearing decisions.** Don't gate blind: first **show the artifact the user is signing off on**, a tight recap of the happy path, the full edge→outcome table, the **coverage table** (behavior → task → test) with `⚠️` on any unmapped row plus a one-line counter (`N behaviors, M mapped, K open`), and (Medium+) the **independent reviewer's verdict** in one line (clean, or what it flagged and how it was resolved), so "is this complete?" is answerable at a glance instead of forcing them to reopen the file. Then list what's **still open** (unresolved load-bearing decisions + parked questions). Then ask one `AskUserQuestion` (a handoff gate, with the format in the plugin-level `references/handoff-gate.md`):
+   - **If any load-bearing decision is still open:** do NOT offer a clean "build". The only options are **resolve it now** or **defer explicitly** ("decide at build time", recorded as such in the spec). Never a silent "build anyway".
    - **If nothing load-bearing is open:** finalize `.bb/<slug>/spec.md` (with its frontmatter block; see "Capture the alignment"), then offer three paths: **Implement** (invoke `/bb:implement` now: build every task and stop ready to ship, where it offers `/bb:ship`), **Delegate** (invoke `/bb:delegate <slug>` now: build every task _and_ land it, the full `implement → ship` run), or **Stop here** (leave the spec; the user picks up later). Choosing to adjust instead is always available. That loops back into the question tool; an Implement or Delegate pick is the affirmative start, not a silent roll-through.
 
 Size the ask to the stakes: cheap-to-reverse decisions lead with your pick (the user vetoes if wrong); expensive-to-undo ones lay the options out and let them choose. Full playbook in `references/draft-first.md`.
