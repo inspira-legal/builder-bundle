@@ -39,7 +39,7 @@ contract, the schema and the reading rules live in the plugin-level
 
    | option label                                     | description                                                                                                 |
    | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
-   | I am used to opening and editing code            | You work in the code, not only in the result. Leave it blank if you only want the result.                   |
+   | I am used to reading and editing code            | You work in the code, not only in the result. Leave it blank if you only want the result.                   |
    | I am used to working in the terminal             | Commands and git are part of your day. Leave it blank if you have never opened one.                         |
    | I am used to technical instructions              | A command on one line is enough. Leave it blank and each one arrives with where it runs and what it prints. |
    | I am used to terms like `branch`, `MCP`, `embed` | They land without a translation. Leave it blank if you prefer plain words.                                  |
@@ -59,10 +59,10 @@ contract, the schema and the reading rules live in the plugin-level
 5. **Ask whether the hook injects at all.** One `AskUserQuestion`, two options, asked
    apart from the four because this one is about the plugin and not about the person:
 
-   | option label                      | description                                                             |
-   | --------------------------------- | ----------------------------------------------------------------------- |
-   | Open every session with the frame | How bb works and who you are, which is what survives a compaction.      |
-   | Inject nothing                    | The hook stays silent. Your four answers are still read by every skill. |
+   | option label                                        | description                                                                                                       |
+   | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+   | Open every session with the custom instructions     | How bb works and who you are, which is what survives a compaction.                                                |
+   | Do not use the builder bundle's custom instructions | The hook stays silent, so nothing comes back after a compaction. Your four answers are still read by every skill. |
 
    The first is the default, and it is what an unanswered file already does. Say in the
    second option's own line what turning it off costs, rather than after the fact.

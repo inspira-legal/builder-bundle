@@ -61,7 +61,7 @@ asks today:
 
 | key                      | what `/bb:profile` asks                                | the hint beside it        |
 | ------------------------ | ------------------------------------------------------ | ------------------------- |
-| `reads_code`             | Você abre e edita o código, ou quer só o resultado?    | quem só quer o resultado  |
+| `reads_code`             | Tem costume de ler e editar o código?                  | quem só quer o resultado  |
 | `uses_terminal`          | Você roda comandos e git no dia a dia?                 | quem nunca abriu um       |
 | `technical_instructions` | Tem costume com instruções e comandos técnicos?        | marcado, comando compacto |
 | `technical_vocabulary`   | Termos como `scaffold` e `branch` passam sem tradução? | quem prefere em português |
