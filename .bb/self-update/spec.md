@@ -144,7 +144,7 @@ Happy path:
       and dirty guard, the two CLI calls, and the outcome recording.
       → behaviors 5, 6, 7, 10, 11, 12, 13, 14, 15, 17 · dep: 1 · verify: run it by hand with
       the clone on `main` and again on a feature branch
-- [ ] **3. The wiring**: `sync_instructions.py` calls `report()` and the spawn on both of its
+- [x] **3. The wiring**: `sync_instructions.py` calls `report()` and the spawn on both of its
       paths, merging one JSON payload, with the child's streams closed.
       → behaviors 1, 2, 3, 8, 9, 16, 20, 21 · dep: 1, 2 · verify: run the hook, read its JSON
 - [ ] **4. The record**: a `README.md` line saying bb keeps itself current, and the CHANGELOG
