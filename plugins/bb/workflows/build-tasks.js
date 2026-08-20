@@ -105,7 +105,7 @@ Its \`verify:\` is: ${t.verify}
 
 What earlier tasks established (names, paths, signatures, patterns chosen, and any reuse
 target that moved). This outranks a path the spec names:
-${conventions || "nothing yet; you are the first task."}
+${conventions || "nothing was recorded; the spec is all you have."}
 
 The project's checks: ${checks && checks.length ? checks.join(" && ") : "none were found"}
 
@@ -193,18 +193,24 @@ if (!stopped) {
   const gone = verdicts.filter((v) => v.verdict === "gone");
   const moved = verdicts.filter((v) => v.verdict === "moved");
 
+  // Both stage-zero agents have already returned, so one stop carries every blocker they
+  // found: naming the first alone costs a whole round trip to discover the second.
+  const blockers = [];
+
   if (gone.length) {
-    stopped = {
-      n: 0,
-      status: "red",
-      blocker: `reuse note points at code that is gone: ${gone.map((v) => v.note).join("; ")}`,
-    };
-  } else if (!checks.commands.length) {
+    blockers.push(`reuse note points at code that is gone: ${gone.map((v) => v.note).join("; ")}`);
+  }
+
+  if (!checks.commands.length) {
     log("no check was found in this project; building without a baseline");
   } else if (!checks.ran) {
-    stopped = { n: 0, status: "red", blocker: checks.blocker || "a check could not be executed" };
+    blockers.push(checks.blocker || "a check could not be executed");
   } else if (!checks.green) {
-    stopped = { n: 0, status: "red", blocker: checks.blocker || "the tree was already red" };
+    blockers.push(checks.blocker || "the tree was already red");
+  }
+
+  if (blockers.length) {
+    stopped = { n: 0, status: "red", blocker: blockers.join(" | ") };
   }
 
   // `moved` is not a stop: the path travels forward and outranks the one the spec names.

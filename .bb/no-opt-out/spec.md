@@ -83,9 +83,11 @@ to build elsewhere. `/bb:spec`'s step 6 is where that question gets asked.
   script**: `args`, the return schemas, the convention note with its ceiling, and the
   pre-invoke checklist split three ways.
 - **The checklist splits into CI, PR review and the skill.** CI takes what a parse or a
-  regex settles: the file parses, `export const meta` is present and free of
-  interpolation, exactly one `parallel()`, and no `Date.now()`, `new Date()` or
-  `Math.random()`. A one-time PR review takes what only reading the code settles (`schema`
+  regex settles: the file parses, `export const meta` is present, a pure literal, and
+  carries `name` and `description`, its `phases` entries match the `phase()` calls title by
+  title, there is exactly one `parallel()` and it precedes the task loop, and none of
+  `Date.now()`, `new Date()` or `Math.random()` is reachable, including through optional
+  chaining and through a subscript. A one-time PR review takes what only reading the code settles (`schema`
   on every typed `agent()`, every result null-checked). The skill keeps the three that are
   genuinely per-run: `args` passed as a JSON value with only unticked tasks, the branch
   already checked out, and the agent count against the guideline the session declares.
@@ -96,6 +98,13 @@ to build elsewhere. `/bb:spec`'s step 6 is where that question gets asked.
   guard fires before the commit and not only in CI.
 - **`js` joins the lefthook oxfmt glob**, which today covers `json` and `md` only, so the
   formatter is not what first meets the file in CI.
+- **A blocked run records why, not just that it blocked.** `/bb:delegate` already flipped
+  `status: blocked`, and the blocker itself lived only in the session that hit it. Ship's own
+  stop has written it down all along, so the build side matching it closes an asymmetry rather
+  than adding a rule. Where it lands follows the destination, the PR description or the
+  spec's `## Open`, and the route follows the kind: the spec's fault back to `/bb:spec`, a
+  stage-zero blocker to whoever owns the allowlist or the red that predates the build, a red
+  task to the task.
 - **Versions**: `plugin.json` `2.15.0` to `2.16.0`; `implement` `2.4.0` to `2.5.0`;
   `delegate` `2.5.0` to `2.6.0`.
 
@@ -121,9 +130,13 @@ to build elsewhere. `/bb:spec`'s step 6 is where that question gets asked.
 7. A refused `scriptPath` becomes an inline `script` off the same file, in the same run.
 8. With no `Workflow` tool, a `Bash` call that fails to read the script, or both call shapes
    refused, the skills build in context and name the reason in one line.
-9. CI and the pre-commit hook guard the script: it parses, `export const meta` is a literal,
-   there is exactly one `parallel()`, the forbidden time and random calls are absent, and
-   oxfmt formats `js` alongside `json` and `md`.
+9. CI and the pre-commit hook guard the script: it parses, `export const meta` is a literal
+   carrying `name` and `description`, its `phases` match the `phase()` calls by title, there
+   is exactly one `parallel()` before the task loop, no spelling of the forbidden time and
+   random calls is reachable, and oxfmt formats `js` alongside `json` and `md`.
+10. A run that stops writes the blocker where the run can be found again: the PR description
+    when the destination has a PR, the spec's `## Open` on the pushed branch when it does
+    not. The report names which kind of blocker it was.
 
 | WHEN                                         | THEN                                                             |
 | -------------------------------------------- | ---------------------------------------------------------------- |
@@ -149,6 +162,8 @@ to build elsewhere. `/bb:spec`'s step 6 is where that question gets asked.
 | `Workflow` is off by config or by org        | builds in context naming the reason                              |
 | a plugin `workflows/` dir does register      | `build-tasks` shows in autocomplete; the invocation is unchanged |
 | delegate drives the build                    | nothing is asked, at either end of the chain                     |
+| the build stops and the destination has a PR | the blocker goes into the PR description                         |
+| the build stops with no PR anywhere          | the blocker goes into the spec's `## Open`                       |
 | the run is interrupted halfway               | commits and checkboxes hold the progress; re-running resumes     |
 
 ## Tasks
@@ -173,8 +188,10 @@ to build elsewhere. `/bb:spec`'s step 6 is where that question gets asked.
       → behaviors 1, 2, 7, 8 · dep: 2 · verify: reading
 - [x] **4. delegate**: step 3 deleted and the rest renumbered; the build step resolves,
       invokes and reads the return, with the same fallbacks; step 7 stops reporting "the
-      build mode it ran in"; the edge row "workflow mode stops" loses the mode word
-      → behaviors 1, 2, 6, 7, 8 · dep: 2 · verify: reading
+      build mode it ran in"; the edge row "workflow mode stops" loses the mode word; a
+      stopped run writes the blocker into the PR description, or into the spec's `## Open`
+      when there is no PR
+      → behaviors 1, 2, 6, 7, 8, 10 · dep: 2 · verify: reading
 - [x] **5. The guard around the script**:
       `.github/scripts/validate-workflow-script.ts` parsing the file with `Bun.Transpiler`
       and failing the forbidden calls, the meta interpolation and a second `parallel()`;

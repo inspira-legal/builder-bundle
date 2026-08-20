@@ -206,9 +206,13 @@ template and regex bodies are blanked first, so only code is read:
 - the file parses, wrapped the way the platform runs it;
 - `export const meta` is present, and a pure literal: no interpolation, no spread, and no
   bare word other than `true`, `false`, `null` and `undefined`;
-- `meta.phases`, when the block declares it, has one entry per `phase()` call;
+- `meta` carries a `name` and a `description`, which the platform reads for the permission
+  dialog and for the workflow list;
+- `meta.phases`, when the block declares it, has one entry per `phase()` call, and the
+  titles match one for one, since a title is how the platform pairs an entry to a call;
 - there is exactly one `parallel()`, and it comes before the task loop;
-- `Date.now()`, `new Date()` and `Math.random()` appear nowhere.
+- `Date.now()`, `new Date()` and `Math.random()` appear nowhere, in any spelling: optional
+  chaining is flattened before the scan, and `Date[...]` or `Math[...]` fails on its own.
 
 It runs inside `package.json`'s `validate`, which is what lefthook's pre-commit job runs,
 so the guard fires before the commit and not only in CI. oxfmt formats `js` alongside

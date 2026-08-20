@@ -31,6 +31,9 @@ const FORBIDDEN_CALLS = [
   { label: "Math.random()", regex: /\bMath\s*\.\s*random\s*\(/ },
 ];
 
+/** `Date["now"]()` reaches the same calls past the three above, and only ever on purpose. */
+const SUBSCRIPTED_GLOBAL_REGEX = /\b(Date|Math)\s*\[/;
+
 const META_REGEX = /export\s+const\s+meta\s*=\s*\{/;
 const PARALLEL_REGEX = /\bparallel\s*\(/g;
 const LOOP_REGEX = /\b(?:for|while|do)\b/;
@@ -53,18 +56,48 @@ const KEYWORDS_BEFORE_REGEX = new Set([
   "await",
 ]);
 
-function regexCanStart(out: string[], at: number): boolean {
-  let j = at - 1;
+/** The heads whose closing `)` is followed by a statement, which a regex may open. */
+const CONTROL_HEADS = new Set(["if", "while", "for", "switch", "catch", "with"]);
+
+/** The index of the last non-space character at or before `from`, or -1. */
+function prevCode(out: string[], from: number): number {
+  let j = from;
   while (j >= 0 && /\s/.test(out[j])) j--;
+  return j;
+}
+
+/** The identifier ending at `end`, with where it starts; an empty word when none ends there. */
+function wordEndingAt(out: string[], end: number): { word: string; start: number } {
+  let k = end;
+  while (k >= 0 && /[A-Za-z0-9_$]/.test(out[k])) k--;
+  return { word: out.slice(k + 1, end + 1).join(""), start: k + 1 };
+}
+
+function regexCanStart(out: string[], at: number): boolean {
+  const j = prevCode(out, at - 1);
   if (j < 0) return true;
 
   const ch = out[j];
-  if (/[)\]}"'`]/.test(ch)) return false;
+  // `if (ok) /re/.test(x)` opens a statement with a regex, so a `)` means division only when it
+  // closed a value. Read as division, the regex body stays in the code stream, where a
+  // `parallel(` or a `Date.now(` inside it counts as the call it spells.
+  if (ch === ")") {
+    let depth = 0;
+    let k = j;
+    for (; k >= 0; k--) {
+      if (out[k] === ")") depth++;
+      else if (out[k] === "(" && --depth === 0) break;
+    }
+    return k >= 0 && CONTROL_HEADS.has(wordEndingAt(out, prevCode(out, k - 1)).word);
+  }
+  if (/[\]}"'`]/.test(ch)) return false;
   if (!/[A-Za-z0-9_$]/.test(ch)) return true;
 
-  let k = j;
-  while (k >= 0 && /[A-Za-z0-9_$]/.test(out[k])) k--;
-  return KEYWORDS_BEFORE_REGEX.has(out.slice(k + 1, j + 1).join(""));
+  const { word, start } = wordEndingAt(out, j);
+  // A keyword reached through a property access is a property name: `obj.in / 2` divides, and
+  // reading it as a regex swallows the code after it, hiding whatever call lives there.
+  if (out[prevCode(out, start - 1)] === ".") return false;
+  return KEYWORDS_BEFORE_REGEX.has(word);
 }
 
 type Frame = { kind: "code"; braces: number } | { kind: "template" };
@@ -190,8 +223,10 @@ function blankNonCode(source: string): string {
   return out.join("");
 }
 
+type MetaBlock = { start: number; end: number };
+
 /** The span from `export const meta = {` to its matching brace, or null when absent. */
-function findMetaBlock(code: string): { start: number; end: number } | null {
+function findMetaBlock(code: string): MetaBlock | null {
   const match = code.match(META_REGEX);
   if (!match || match.index === undefined) return null;
 
@@ -228,6 +263,7 @@ const META_LITERAL_WORDS = new Set(["true", "false", "null", "undefined"]);
 const IDENTIFIER_REGEX = /[A-Za-z_$][A-Za-z0-9_$]*/g;
 const PHASES_KEY_REGEX = /\bphases\s*:\s*\[/;
 const PHASE_CALL_REGEX = /\bphase\s*\(/g;
+const TITLE_REGEX = /\btitle\s*:\s*(['"])(.*?)\1/g;
 
 /**
  * The platform reads `meta` before the script runs, so a variable, a call or a spread there
@@ -235,7 +271,7 @@ const PHASE_CALL_REGEX = /\bphase\s*\(/g;
  * alone does not prove. Inside the block every identifier is either a property key, which a
  * `:` follows, or a value, and a value that is a bare word is one of the four above.
  */
-function metaLiteralIssues(code: string, meta: { start: number; end: number }): ValidationIssue[] {
+function metaLiteralIssues(code: string, meta: MetaBlock): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
   const block = code.slice(meta.start, meta.end);
 
@@ -288,6 +324,54 @@ function countPhaseEntries(block: string): number | null {
   return entries;
 }
 
+/** The titles the phase() calls pass, read off the source because `code` has its strings blanked. */
+function calledTitles(source: string, code: string, meta: MetaBlock): (string | null)[] {
+  const titles: (string | null)[] = [];
+  for (const hit of code.matchAll(PHASE_CALL_REGEX)) {
+    const at = hit.index ?? 0;
+    if (at >= meta.start && at < meta.end) continue;
+    const arg = source.slice(at + hit[0].length).match(/^\s*(['"])(.*?)\1\s*\)/);
+    titles.push(arg ? arg[2] : null);
+  }
+  return titles;
+}
+
+/**
+ * The platform matches a `meta.phases` entry to a `phase()` call by title, so counts that agree
+ * while the titles do not are still a progress display that lies: the declared entry never fires,
+ * and the call arrives with no entry of its own.
+ */
+function phaseIssues(source: string, code: string, meta: MetaBlock): ValidationIssue[] {
+  const declared = countPhaseEntries(code.slice(meta.start, meta.end));
+  if (declared === null) return [];
+
+  const called = calledTitles(source, code, meta);
+  if (declared !== called.length) {
+    return [
+      {
+        level: "error",
+        message: `meta.phases declares ${declared} entries against ${called.length} phase() calls: the platform matches them by title, so a stale declaration is a progress display that lies`,
+      },
+    ];
+  }
+
+  const titles = [...source.slice(meta.start, meta.end).matchAll(TITLE_REGEX)].map((hit) => hit[2]);
+  // A computed title reads as null and a titleless entry leaves the two lists uneven; either way
+  // there is nothing to compare by name, and the count above is the whole check.
+  if (titles.length !== declared || called.some((title) => title === null)) return [];
+
+  const orphans = called.filter((title) => !titles.includes(title));
+  const unused = titles.filter((title) => !called.includes(title));
+  if (!orphans.length && !unused.length) return [];
+
+  return [
+    {
+      level: "error",
+      message: `meta.phases and the phase() calls disagree on titles (declared, never called: ${unused.join(", ") || "none"}; called, never declared: ${orphans.join(", ") || "none"}): the platform matches them by title, so each side without a partner becomes a progress group of its own`,
+    },
+  ];
+}
+
 function validateSource(source: string): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
 
@@ -301,7 +385,12 @@ function validateSource(source: string): ValidationIssue[] {
     return issues; // Nothing below says anything useful about a file that won't parse.
   }
 
-  const code = blankNonCode(source);
+  // `?.(` is an optional call and `?.` an optional access. Both are flattened, at the same width
+  // so every line number below still lands on the real line, because `Date?.now?.()` is the
+  // forbidden call spelled around the check for it.
+  const code = blankNonCode(source)
+    .replace(/\?\.(\s*\()/g, "  $1")
+    .replace(/\?\./g, " .");
 
   const meta = findMetaBlock(code);
   if (meta === null) {
@@ -317,14 +406,18 @@ function validateSource(source: string): ValidationIssue[] {
   } else {
     issues.push(...metaLiteralIssues(code, meta));
 
-    const declared = countPhaseEntries(code.slice(meta.start, meta.end));
-    const calls = (code.slice(0, meta.start) + code.slice(meta.end)).match(PHASE_CALL_REGEX) ?? [];
-    if (declared !== null && declared !== calls.length) {
-      issues.push({
-        level: "error",
-        message: `meta.phases declares ${declared} entries against ${calls.length} phase() calls: the platform matches them by title, so a stale declaration is a progress display that lies`,
-      });
+    const block = code.slice(meta.start, meta.end);
+    // A `phases` entry carries `title` and `detail`, so either key here is meta's own.
+    for (const key of ["name", "description"]) {
+      if (!new RegExp(`\\b${key}\\s*:`).test(block)) {
+        issues.push({
+          level: "error",
+          message: `"export const meta" declares no ${key}: the platform reads it for the permission dialog and for the workflow list`,
+        });
+      }
     }
+
+    issues.push(...phaseIssues(source, code, meta));
   }
 
   const parallels = [...code.matchAll(PARALLEL_REGEX)];
@@ -352,6 +445,14 @@ function validateSource(source: string): ValidationIssue[] {
         message: `${label} on line ${lineOf(code, hit.index)}: it throws at runtime and would break resume`,
       });
     }
+  }
+
+  const subscript = code.match(SUBSCRIPTED_GLOBAL_REGEX);
+  if (subscript?.index !== undefined) {
+    issues.push({
+      level: "error",
+      message: `${subscript[1]}[...] on line ${lineOf(code, subscript.index)}: a subscript reaches the calls above past the check for them`,
+    });
   }
 
   return issues;

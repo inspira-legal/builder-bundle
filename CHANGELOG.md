@@ -25,11 +25,13 @@ which the skill can read for itself.
 - **`.github/scripts/validate-workflow-script.ts`**, the guard that replaces most of
   the old pre-invoke checklist. It blanks comment, string, template and regex bodies
   first, so every check reads code and not text, then asks: the script parses;
-  `export const meta` is present and a pure literal (no interpolation, no spread, and no
-  bare word other than `true`, `false`, `null`, `undefined`); `meta.phases`, when
-  declared, has one entry per `phase()` call; there is exactly one `parallel()` and it
-  precedes the task loop; and `Date.now()`, `new Date()` and `Math.random()` appear
-  nowhere. It runs inside `package.json`'s `validate`, which is what lefthook's
+  `export const meta` is present, a pure literal (no interpolation, no spread, and no
+  bare word other than `true`, `false`, `null`, `undefined`) and carries a `name` and a
+  `description`; `meta.phases`, when declared, has one entry per `phase()` call and the
+  titles match one for one, since the title is what pairs an entry to a call; there is
+  exactly one `parallel()` and it precedes the task loop; and no spelling of
+  `Date.now()`, `new Date()` or `Math.random()` is reachable, optional chaining and
+  `Date[...]` included. It runs inside `package.json`'s `validate`, which is what lefthook's
   pre-commit job runs, and as its own step in `validate.yml`.
 - **`.github/scripts/lib/validate-common.ts`**, the tree walk, the argv resolution and
   the report tail both validators had a copy of. Two argv bugs died with the
@@ -54,6 +56,11 @@ which the skill can read for itself.
   status flip, which is the line bare `/bb:delegate` reads back when it skips that spec,
   and the skip names where the blocker sends it instead of pointing everything at
   `/bb:spec`.
+- **A stage-zero stop names every blocker it found.** Both agents have already
+  returned when the verdicts are read, so a reuse note pointing at code that is gone no
+  longer hides a check the run cannot execute, or a tree that was already red. The old
+  `if / else if` reported the first and dropped the rest, which cost a whole round trip
+  to discover the second.
 - **The task loop has a fourth exit.** A task that returns `green` with a missing
   `verify` result, or with `failed`, stops the build instead of landing in `built`:
   `verify:` is what makes a task done, so green over an absent proof is a task the
