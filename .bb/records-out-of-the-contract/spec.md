@@ -149,7 +149,7 @@ Happy path:
 - [x] **1. `discovery.md`**: `/bb:discover` writes its own document, with frontmatter,
       and stops touching `spec.md`; its gate wording follows
       → behaviors 1, E1, E5 · dep: — · verify: reading `skills/discover/`
-- [ ] **2. Two upstreams in spec**: `skills/spec/SKILL.md:26` reads `discovery.md` and
+- [x] **2. Two upstreams in spec**: `skills/spec/SKILL.md:26` reads `discovery.md` and
       `design.md` instead of in-file sections, and the echo names them
       → behaviors 2, E1, E2, E3 · dep: 1 · verify: reading
 - [x] **3. One `design.md`**: the six brisar members collapse into one document with
