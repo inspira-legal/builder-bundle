@@ -32,9 +32,9 @@ builder.
 
 Before any question, read `.bb/<slug>/design.md` in full, and with it:
 
-- **`.bb/<slug>/spec.md`** (`## Problem` / `## Hypothesis` / `## Fit` / `## Cuts`). This is
-  the **upstream contract**. The research answers _how should this be?_; the spec answered
-  _is it worth building, and what did we cut?_ Load it:
+- **`.bb/<slug>/discovery.md`** (`## Problem` / `## Hypothesis` / `## Fit` / `## Cuts`). This
+  is the **upstream framing**. The research answers _how should this be?_; the framing
+  answered _is it worth building, and what did we cut?_ Load it:
   the hypothesis tells you what the research must test, and the cuts tell you what **not** to
   research a solution for.
   - **A cut is a constraint, not a taboo.** If the research finds a cut was wrong, that is a
@@ -470,9 +470,9 @@ decorative ones.
 
 ## Cooperation contract
 
-| Artifact                                                               | Produced by                                     | Consumed by                                                  |
-| ---------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
-| `.bb/<slug>/spec.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | `/bb:discover`, `/bb:spec` (outside this skill) | Research (Step 0, upstream contract), Brief (reconciliation) |
-| `.bb/<slug>/design.md` (findings by front, `## Left out`)              | Research                                        | Brief, Diverge, Deliver (what was skipped, and why)          |
-| Distilled findings per front                                           | Research subagents                              | Brief (`references/brief.md`)                                |
-| Token source on disk + the repo's own token rules                      | the product repo                                | Research (Front B; read, never written)                      |
+| Artifact                                                                    | Produced by                                     | Consumed by                                                  |
+| --------------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
+| `.bb/<slug>/discovery.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | `/bb:discover` (outside this skill)             | Research (Step 0, upstream framing), Brief (reconciliation)  |
+| `.bb/<slug>/design.md` (findings by front, `## Left out`)                   | Research                                        | Brief, Diverge, Deliver (what was skipped, and why)          |
+| Distilled findings per front                                                | Research subagents                              | Brief (`references/brief.md`)                                |
+| Token source on disk + the repo's own token rules                           | the product repo                                | Research (Front B; read, never written)                      |

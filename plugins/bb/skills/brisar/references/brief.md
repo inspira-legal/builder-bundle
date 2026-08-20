@@ -147,8 +147,8 @@ Two rules about the findings section:
 ## Step 2: reconciliation against the upstream framing (mandatory)
 
 The step that stops a beautiful screen from answering the wrong question. Compare the research
-against the spec's `## Problem` / `## Hypothesis` / `## Fit` / `## Cuts` and write
-**three blocks**. All three, even when one is short.
+against `.bb/<slug>/discovery.md`'s `## Problem` / `## Hypothesis` / `## Fit` /
+`## Cuts` and write **three blocks**. All three, even when one is short.
 
 - **Confirms**: where the research supports the hypothesis, **and with what**: the reference,
   the source, the real value. "Confirmed" without evidence is just agreement.

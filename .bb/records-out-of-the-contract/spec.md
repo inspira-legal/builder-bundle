@@ -169,7 +169,7 @@ Happy path:
 - [x] **7. `spec-state.md` rewritten**: the tree, the frontmatter schemas, the reversal
       rule for the three documents, and the symlink obligation covering `prototype/`
       → behaviors 1, 3, 4, E8, E9 · dep: 1, 3, 4 · verify: reading
-- [ ] **8. The outside readers repointed**: `review/references/front-contract.md:20`,
+- [x] **8. The outside readers repointed**: `review/references/front-contract.md:20`,
       `spec/references/export-spec.md:18`, `spec/references/spec-format.md:105`, and
       `lint_spec.py`'s `DEAD_SECTIONS` gaining the four moved names
       → behaviors 6, 7, E13 · dep: 1 · verify: CI

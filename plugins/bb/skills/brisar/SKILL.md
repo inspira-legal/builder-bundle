@@ -122,21 +122,21 @@ A brief on disk means the journey already ran, possibly in a much earlier sessio
 someone else. **Do not re-run it and do not rewrite it.** Read its frontmatter, `phase` and
 `status`, and resume from there:
 
-| Frontmatter                                | Resume at                                   |
-| ------------------------------------------ | ------------------------------------------- |
-| `status: bootstrapped-to-discover`         | Research, with the spec next to it (below)  |
-| `status: completed`                        | ask: Develop, a new surface, or a new round |
-| `phase: research`, findings, no directions | Diverge                                     |
-| `phase: diverge`, none marked `chosen`     | Diverge, at convergence                     |
-| a chosen direction, nothing built          | the medium question                         |
-| a chosen direction and surfaces built      | Deliver                                     |
+| Frontmatter                                | Resume at                                    |
+| ------------------------------------------ | -------------------------------------------- |
+| `status: bootstrapped-to-discover`         | Research, with the record next to it (below) |
+| `status: completed`                        | ask: Develop, a new surface, or a new round  |
+| `phase: research`, findings, no directions | Diverge                                      |
+| `phase: diverge`, none marked `chosen`     | Diverge, at convergence                      |
+| a chosen direction, nothing built          | the medium question                          |
+| a chosen direction and surfaces built      | Deliver                                      |
 
 On `status: bootstrapped-to-discover`, the maturity gate fired earlier and the builder went to
-/bb:discover. The spec it wrote is the file next to the brief in the same task folder (the
-spec-state contract, plugin-level `references/spec-state.md`: `.bb/<slug>/spec.md` carrying
-`## Problem` / `## Fit`). Let the appetite and the cuts inform fidelity and scope, and resume
-at the **Research phase**: the intake is already in the brief, and the framing is exactly what
-the research has to test.
+/bb:discover. The record it wrote is the file next to this one in the same slug folder (the
+spec-state contract, plugin-level `references/spec-state.md`: `.bb/<slug>/discovery.md`
+carrying `## Problem` / `## Fit`). Let the appetite and the cuts inform fidelity and scope,
+and resume at the **Research phase**: the intake is already in the brief, and the framing is
+exactly what the research has to test.
 
 Say in one line what you found and where you are resuming, then continue. Re-running research
 over a brief that already exists is the most expensive mistake available here, and it destroys
@@ -249,8 +249,8 @@ not create `prototype/`**. Instead, the harpa context becomes a section of
 `.bb/<slug>/design.md`, with intent + visual direction in Framer idiom +
 instructions to open Claude Code inside `harpa-lpbuilder/`.
 
-**Variant when MCP unframer is missing:** generate the markdown handoff anyway,
-without MCP. The dev/designer takes it to Framer manually. The Develop phase
+**Variant when MCP unframer is missing:** write the `## Harpa handoff` section
+anyway, without MCP. The dev/designer takes it to Framer manually. The Develop phase
 is not used on this path. Details in `references/phase-framer-handoff.md`.
 
 ### Bootstrap protocol (brisar → /bb:discover → brisar)
@@ -261,20 +261,20 @@ opens `.bb/<slug>/design.md` with `status: bootstrapped-to-discover` and
 prose, and the gate's resolution in the decision log.
 
 …then suggests running `/bb:discover <ideia>` and stops (never auto-invokes).
-/bb:discover keeps its own state in `.bb/<slug>/spec.md`. When the
-builder returns and runs `/bb:brisar` again, Step 0.1 reads that frontmatter, finds the
-spec next to the brief, and resumes at the **Research phase** with the framing carried
+/bb:discover keeps its own state in `.bb/<slug>/discovery.md`. When the builder
+returns and runs `/bb:brisar` again, Step 0.1 reads that frontmatter, finds the record
+next to the journey, and resumes at the **Research phase** with the framing carried
 over.
 
-### The spec and the design brief: they coexist, neither replaces the other
+### The framing and the journey: they coexist, neither replaces the other
 
-Two documents in the same task folder, two different questions, and later phases read
+Two documents in the same slug folder, two different questions, and later phases read
 both:
 
-| File                                                                   | Answers                                              | Written by                 |
-| ---------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------- |
-| `.bb/<slug>/spec.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | Is it worth building, for whom, and what did we cut? | `/bb:discover`, `/bb:spec` |
-| `.bb/<slug>/design.md`                                                 | How should this surface be, and why?                 | the Brief phase here       |
+| File                                                                        | Answers                                              | Written by                 |
+| --------------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------- |
+| `.bb/<slug>/discovery.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | Is it worth building, for whom, and what did we cut? | `/bb:discover`             |
+| `.bb/<slug>/design.md`                                                      | How should this surface be, and why?                 | the Brief phase here       |
 
 **Never substitute one for the other.** Reviewing against the research alone loses the
 problem; reviewing against the hypothesis alone loses everything the research learned.
