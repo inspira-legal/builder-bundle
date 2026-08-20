@@ -140,7 +140,7 @@ Happy path:
 - [x] **1. Resolution and stamp**: `hooks/check_version.py` resolves the marketplace, clone,
       scope, and stamp path, and reads and writes the stamp. No network, no spawn.
       → behaviors 4, 18, 19 · dep: — · verify: run the module on this machine, read the stamp
-- [ ] **2. The worker**: the `__main__` path with the fetch, the version compare, the branch
+- [x] **2. The worker**: the `__main__` path with the fetch, the version compare, the branch
       and dirty guard, the two CLI calls, and the outcome recording.
       → behaviors 5, 6, 7, 10, 11, 12, 13, 14, 15, 17 · dep: 1 · verify: run it by hand with
       the clone on `main` and again on a feature branch
