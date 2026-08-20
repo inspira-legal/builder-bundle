@@ -33,11 +33,11 @@ and they are invisible to a review that only looks at structure.
 
 The review holds **three** things against each other, not two:
 
-1. **The problem**: `gate.discover_brief`: what are we solving, for whom, what did we cut, what
+1. **The problem**: `.bb/<slug>/spec.md`: what are we solving, for whom, what did we cut, what
    does success look like.
-2. **The research**: `gate.design_brief`: what the market, the design system and the product
-   actually said, and which direction was chosen and why.
-3. **The built thing**: `tarsila.surfaces[]`.
+2. **The research**: `.bb/<slug>/brief-design.md`: what the market, the design system and the
+   product actually said, and which direction was chosen and why.
+3. **The built thing**: the surfaces in `.bb/<slug>/develop-notes.md`.
 
 Three questions, in this order:
 
@@ -54,15 +54,15 @@ Three questions, in this order:
 The brief already ran its own reconciliation when it closed. **Run it again here**, against the
 built thing, which did not exist then. Neither pass replaces the other.
 
-## Cross-awareness with the session
+## Cross-awareness with the journey
 
-Before any question, read `.brisar/session.yaml` in full:
+Before any question, read the task folder `.bb/<slug>/` in full:
 
-- **If `tarsila:` exists**: surfaces are built. Use `tarsila.surfaces[]` as the locator (file, or
+- **If `develop-notes.md` exists**: surfaces are built. Its frontmatter is the locator (file, or
   file + page + artboards on a canvas), plus `variants[]`, `states_covered[]` and `deviations[]`.
-- **`medium.chosen`**: decides how you open the artifact. See Step 0.
-- **If `gate.discover_brief` points at a spec** (`.bb/<slug>/spec.md`): read it. The hypothesis, cuts, and appetite there are the criteria against which to review. Appetite informs review rigor (small appetite = lean review; large = dense review).
-- **If `gate.design_brief` points at a brief** (`.bb/<slug>/brief-design.md`): read it. The research, the chosen direction, the base block common to all directions, the token limits read from source, and the open tension. **The two briefs coexist and neither substitutes for the other**, reviewing against the research alone loses the problem; reviewing against the hypothesis alone loses everything the research learned.
+- **The medium**, recorded in the brief: decides how you open the artifact. See Step 0.
+- **If there is a spec** (`.bb/<slug>/spec.md`): read it. The hypothesis, cuts, and appetite there are the criteria against which to review. Appetite informs review rigor (small appetite = lean review; large = dense review).
+- **The brief** (`.bb/<slug>/brief-design.md`): read it. The research, the chosen direction, the base block common to all directions, the token limits read from source, and the open tension. **The two briefs coexist and neither substitutes for the other**, reviewing against the research alone loses the problem; reviewing against the hypothesis alone loses everything the research learned.
 - **If there is no spec**: **flag as a non-blocking warning**: "I cannot review against the hypothesis because it was never formulated. I can review against standard UI/UX criteria, but the depth stays limited. Want to run /bb:discover first? (non-blocking, I can go on)"
 - **If there is no design brief**: same stance, one line: the review runs, but it cannot check
   fidelity to research that was never written. Say which lens is unavailable instead of implying
@@ -71,16 +71,15 @@ Before any question, read `.brisar/session.yaml` in full:
 ## Step 0: pre-flight (silent)
 
 ```bash
-test -f .brisar/session.yaml && cat .brisar/session.yaml
+ls .bb/<slug>/
 test -d .github/workflows && grep -l "inspira-legal/code-review" .github/workflows/*.yml 2>/dev/null
 ```
 
 Record:
 
-- `session_exists`: bool
-- `tarsila_done`: bool (Develop phase state present)
-- `discover_brief`: path or null
-- `design_brief`: path or null
+- `brief`: path or null
+- `develop_notes`: path or null (the Develop phase ran)
+- `spec`: path or null
 - `medium`: code | claude-design | paper | figma | pencil
 - `reader`: how the artifact gets opened (below)
 - `ci_code_review_present`: bool (Inspira's code-review workflow exists)
@@ -89,10 +88,10 @@ Record:
 
 **A review that cannot open the artifact is not a review.** Resolve this before Step 1:
 
-| `medium.chosen` | Reader                                                                                           |
+| Medium          | Reader                                                                                           |
 | --------------- | ------------------------------------------------------------------------------------------------ |
-| `code`          | Read the files at `tarsila.surfaces[].file`                                                      |
-| `claude-design` | Read the preview file at `tarsila.surfaces[].file`                                               |
+| `code`          | Read the files at each surface's `file`                                                          |
+| `claude-design` | Read the preview file at each surface's `file`                                                   |
 | `paper`         | Paper MCP, structure, computed styles and text content from `canvas.file` / `page` / `artboards` |
 | `figma`         | Figma MCP, design context and variables for the named frames                                     |
 | `pencil`        | Pencil MCP; `.pen` files are only reachable this way; never Read/Grep them                       |
@@ -156,15 +155,15 @@ If `ci_code_review_present: false` and the chosen mode includes the handoff doc,
 
 Lazy-load `references/deliver-modes.md`. Do not load all modes in Step 0.
 
-| Mode                | Loads                                 | Output                                        |
-| ------------------- | ------------------------------------- | --------------------------------------------- |
-| Design review       | when chosen                           | `.brisar/clarisse/design-review.md`           |
-| Accessibility audit | when chosen or after design review    | `.brisar/clarisse/accessibility-checklist.md` |
-| Handoff doc         | when chosen or at end of the pipeline | `.brisar/clarisse/handoff.md`                 |
+| Mode                | Loads                                 | Output                                  |
+| ------------------- | ------------------------------------- | --------------------------------------- |
+| Design review       | when chosen                           | `.bb/<slug>/design-review.md`           |
+| Accessibility audit | when chosen or after design review    | `.bb/<slug>/accessibility-checklist.md` |
+| Handoff doc         | when chosen or at end of the pipeline | `.bb/<slug>/handoff.md`                 |
 
 ### Stance per mode
 
-- **Design review:** sweeps **surface × variant** (reads `tarsila.surfaces[]` and each entry's `variants[]`), through **seven lenses**: the four structural ones plus copy, computed contrast, and the triangulation. Full list and how to run each: `deliver-modes.md#mode-1-design-review`. Comments only if the issue is significant. At least 1 piece of praise for what worked (not cheerleading. It's information: "this worked, keep it").
+- **Design review:** sweeps **surface × variant** (reads the surfaces in `.bb/<slug>/develop-notes.md` and each entry's `variants[]`), through **seven lenses**: the four structural ones plus copy, computed contrast, and the triangulation. Full list and how to run each: `deliver-modes.md#mode-1-design-review`. Comments only if the issue is significant. At least 1 piece of praise for what worked (not cheerleading. It's information: "this worked, keep it").
 - **Accessibility:** suggests `/bb:review`'s accessibility audit (surface scope. It can read the rendered page) if the builder requested depth or if it's going to merge. Otherwise, does inline: color contrast, keyboard navigation (mental walkthrough), `aria-label` on icons, tab order, visible focus.
 - **Handoff doc:** reads tokens + components from the design-context (or from the design brief's DS section on a canvas medium), reads the built surfaces, and generates a structured doc for the developer. Doesn't invent components, only maps what exists. If context to fill a section is missing, ask or skip it with `not-applicable` + reason. **Also produces the spec delta** when the design learned something the contract does not carry yet.
 
@@ -186,43 +185,36 @@ contract is a correct outcome.
 
 Always writes:
 
-- `.brisar/session.yaml` updated with the `clarisse:` section (the Deliver phase's state key) and `current_phase: deliver` (or `done` if the journey closes here)
-- 1+ artifacts in `.brisar/clarisse/`
-- **The brief updated** (`gate.design_brief`). The living-contract rule from `references/brief.md`
-  applies here too: the review's findings and the decisions taken on them belong in the record.
+- 1+ artifacts in `.bb/<slug>/`, one per mode that ran
+- **The brief updated**. The living-contract rule from `references/brief.md` applies here too:
+  the review's findings and the decisions taken on them belong in the record. Its frontmatter
+  goes to `phase: deliver` (or `phase: done`, `status: completed`, if the journey closes here),
+  and the prose says which modes ran and what the next action is.
 
-Expected schema:
+Each artifact carries its own summary in its own frontmatter. `design-review.md`:
 
 ```yaml
-clarisse:
-  status: completed | in-progress | blocked
-  ran_modes: [design-review, accessibility, handoff]
-  medium: code | claude-design | paper | figma | pencil
-  reader: files | preview | paper-mcp | figma-mcp | pencil-mcp
-  artifacts:
-    design_review: .brisar/clarisse/design-review.md
-    accessibility: .brisar/clarisse/accessibility-checklist.md
-    handoff: .brisar/clarisse/handoff.md
-  design_review:
-    blockers: 0 # how many issues block merge
-    significants: 0 # how many significant issues (non-blocking)
-    divergences: 0 # >0 means a contract decision needs the owner
-    surfaces_swept: <n> # surface × variant combinations actually reviewed
-    variants_unreviewed: [] # anything not reachable, never silently omitted
-    triangulation:
-      built_honors_research: aligned | partial | misaligned | unknown
-      research_honors_problem: aligned | partial | misaligned | unknown
-      who_is_wrong: none | design | framing | both
-    lenses_skipped: [<lens>: <reason>] # e.g. contrast, when values were unreadable
-  accessibility:
-    wcag_aa_status: pass | fail | partial | not-assessed
-    blockers: []
-  handoff:
-    completeness: high | med | low
-    ci_code_review_present: bool
-    spec_delta: [] # what the contract has to absorb; empty is a valid answer
-  next_action: ready-to-merge | fix-blockers | re-prototype | decide-divergences | run-a11y-audit
+---
+medium: code | claude-design | paper | figma | pencil
+reader: files | preview | paper-mcp | figma-mcp | pencil-mcp
+design_review:
+  blockers: 0 # how many issues block merge
+  significants: 0 # how many significant issues (non-blocking)
+  divergences: 0 # >0 means a contract decision needs the owner
+  surfaces_swept: <n> # surface × variant combinations actually reviewed
+  variants_unreviewed: [] # anything not reachable, never silently omitted
+  triangulation:
+    built_honors_research: aligned | partial | misaligned | unknown
+    research_honors_problem: aligned | partial | misaligned | unknown
+    who_is_wrong: none | design | framing | both
+  lenses_skipped: [<lens>: <reason>] # e.g. contrast, when values were unreadable
+next_action: ready-to-merge | fix-blockers | re-prototype | decide-divergences | run-a11y-audit
+---
 ```
+
+`accessibility-checklist.md` carries `wcag_aa_status` (pass, fail, partial, not-assessed) and its
+`blockers`. `handoff.md` carries `completeness` (high, med, low), `ci_code_review_present` and the
+`spec_delta`: what the contract has to absorb, where empty is a valid answer.
 
 **`variants_unreviewed` and `lenses_skipped` are not bookkeeping.** They are the difference between
 "reviewed" and "reviewed the first artboard with the lenses that happened to work". A review that
@@ -230,7 +222,7 @@ covered less than everything says so.
 
 ### Gate (always the last)
 
-Echo the final status in 1 line, e.g.: _"Design review: 2 issues significativos, 0 blockers. Accessibility: WCAG AA pass. Handoff doc completo. Artefatos em `.brisar/clarisse/`."_, then the handoff gate:
+Echo the final status in 1 line, e.g.: _"Design review: 2 issues significativos, 0 blockers. Accessibility: WCAG AA pass. Handoff doc completo. Artefatos em `.bb/<slug>/`."_, then the handoff gate:
 
 ```json
 {
@@ -249,7 +241,7 @@ Echo the final status in 1 line, e.g.: _"Design review: 2 issues significativos,
         },
         {
           "label": "Stop here",
-          "description": "Full journey; the state is saved at .brisar/. To re-run 1 mode, run /bb:brisar again and choose Deliver."
+          "description": "Full journey; everything is in .bb/<slug>/. To re-run 1 mode, run /bb:brisar again and choose Deliver."
         }
       ],
       "multiSelect": false
@@ -258,7 +250,7 @@ Echo the final status in 1 line, e.g.: _"Design review: 2 issues significativos,
 }
 ```
 
-Each option that names a skill **suggests the command and stops**: never auto-invokes. On "Encerrar", set `status: completed`, `current_phase: done`, `completed_at`, and end.
+Each option that names a skill **suggests the command and stops**: never auto-invokes. On "Encerrar", set the brief's `status: completed` and `phase: done`, and end.
 
 If blockers exist (`design_review.blockers > 0` or `wcag_aa_status: fail`), prepend an option "Go back to Develop and fix them" (loads `phase-develop.md` in iteration mode) as the recommended pick.
 
@@ -273,7 +265,7 @@ Two options to prepend when the situation calls for them:
   design source of truth; the handoff names it and says which values the implementer reads from the
   MCP. Switching medium does **not** re-run the first diamond.
 
-## Persona: expected behaviors
+## Expected behaviors
 
 1. **Communication is the product.** Every UI decision is a message. When the message is confused (wrong hierarchy, ambiguous CTA, sloppy copy), flag it. When it's clear, record it, because clarity is fragile and people forget what worked.
 2. **Explicit severity.** Each issue receives `severity: blocker | significant | divergence | minor`. Minor goes in the review's "neighborhood" section (notes for a future round), never as a blocker. `divergence` never blocks. It opens a decision.
@@ -293,14 +285,13 @@ And a second: **do not turn the review into a redesign.** The strongest failure 
 
 ## Cooperation contract
 
-| Artifact                                      | Produced by                           | Consumed by                                                                                       |
-| --------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `.brisar/session.yaml` (`clarisse:` section)  | Deliver                               | Human (decides merge and divergences), `/bb:review` (cross-checks design review with code review) |
-| `.bb/<slug>/brief-design.md`                  | Brief (updated here, living contract) | Human, the implementing dev, later rounds                                                         |
-| `.bb/<slug>/spec.md`                          | `/bb:spec` (delta proposed here)      | `/bb:implement`, `/bb:delegate`                                                                   |
-| `.brisar/clarisse/design-review.md`           | Deliver                               | Human (responds to issues), Develop phase (re-prototype if blockers)                              |
-| `.brisar/clarisse/accessibility-checklist.md` | Deliver                               | Human (resolves before merge), CI (reference)                                                     |
-| `.brisar/clarisse/handoff.md`                 | Deliver                               | Developer / agent who implements, `/bb:spec`, `/bb:review`                                        |
+| Artifact                                | Produced by                           | Consumed by                                                                        |
+| --------------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------- |
+| `.bb/<slug>/brief-design.md`            | Brief (updated here, living contract) | Human, the implementing dev, later rounds                                          |
+| `.bb/<slug>/spec.md`                    | `/bb:spec` (delta proposed here)      | `/bb:implement`, `/bb:delegate`                                                    |
+| `.bb/<slug>/design-review.md`           | Deliver                               | Human (responds to issues), `/bb:review`, Develop phase (re-prototype if blockers) |
+| `.bb/<slug>/accessibility-checklist.md` | Deliver                               | Human (resolves before merge), CI (reference)                                      |
+| `.bb/<slug>/handoff.md`                 | Deliver                               | Developer / agent who implements, `/bb:spec`, `/bb:review`                         |
 
 ### Related skills (suggest, never invoke)
 

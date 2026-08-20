@@ -104,36 +104,18 @@ Before doing anything:
 Next step: see the /bb:brisar terminal (Framer variant in phase-5-handoff.md).
 ```
 
-## Step 3: update .brisar/session.yaml (in cwd, without creating a new folder)
+## Step 3: close the journey in the brief
 
-Since this path does NOT scaffold, `.brisar/session.yaml` stays in the cwd where /brisar was run, not inside `<slug>/`.
+This path does NOT scaffold, so the handoff file stays in the cwd where `/bb:brisar` was run.
+The brief stays where Phase 1 opened it, `.bb/<slug>/brief-design.md`. Set its frontmatter
+`status: completed`, `phase: done`, and record in prose:
 
-```yaml
-status: completed
-current_phase: done
-completed_at: <ISO>
-
-intent: <from Phase 1>
-brand:
-  name: site-institucional
-  workflow: framer-harpa
-  source: external-bundle
-  design_md_path: null
-artifact:
-  fidelity: framer-canvas
-  hosting: framer-harpa
-shaping:
-  appetite: <appetite>
-framer:
-  scope: <framer.scope>
-  handoff_file: "harpa-handoff-<slug>-<YYYY-MM-DD>.md"
-  harpa_repo_path: <path detected in Step 1, or null>
-
-# Phase 2 (gate) and Phase 3 (Vite scaffold) were NOT executed: Framer path does not use them.
-gate:
-  fired: false
-  resolution: not-applicable-framer-path
-```
+- the brand (`site-institucional`, workflow `framer-harpa`, from the external bundle), the
+  fidelity (`framer-canvas`, hosted in Framer via harpa) and the appetite
+- the scope (`<framer.scope>`), the name of the handoff file
+  (`harpa-handoff-<slug>-<YYYY-MM-DD>.md`) and the harpa repo path detected in Step 1, if any
+- one line in the decision log: the gate and the scaffold were not executed, the Framer path
+  does not use them
 
 ## Step 4: call phase-5-handoff.md in "framer terminal" mode
 

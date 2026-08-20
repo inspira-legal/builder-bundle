@@ -68,6 +68,32 @@ At the end of the trilha the brief feeds the **delta back into the spec**. The c
 up with what the design learned. That handoff is the Deliver phase's business, but the material
 comes from here, which is exactly why the record has to be complete.
 
+## The frontmatter: the journey's state, and the only place it lives
+
+The brief opens with a frontmatter block. This is what tells a later session where the
+journey stopped, so there is no state file beside it to keep in sync.
+
+```yaml
+---
+status: in-progress | bootstrapped-to-discover | completed
+phase: research | brief | diverge | medium | develop | deliver | done
+round: 1
+slug: <slug>
+created: <ISO>
+canonical: <real path, only when .bb is a symlink into a store>
+---
+```
+
+`status: bootstrapped-to-discover` is the one Phase 2 writes when the maturity gate sends the
+builder to `/bb:discover` first: the journey is open and waiting outside brisar.
+
+`phase` is the phase that is **open**, not the last one finished, so a session that
+reads it knows what to do rather than what was done. Every phase updates it when it
+hands off, and `round` increments with each exploration round.
+
+A brief with no frontmatter reads as `phase: brief`, `round: 1`, `status: in-progress`.
+It is a brief written before this block existed, and it is not an error.
+
 ## Step 1: assemble the document
 
 Sections, in order. **Bold = mandatory in every mode**, including pocket.
@@ -79,6 +105,7 @@ Sections, in order. **Bold = mandatory in every mode**, including pocket.
 | **Findings by front**                        | The research, organized by decision, not by tool                  | floor fronts only |
 | **The directions**                           | Filled by the Diverge phase; leave the heading                    | yes               |
 | **The tension the research did not resolve** | Step 3                                                            | yes               |
+| **Left out, and why**                        | A front skipped, a front degraded, a direction discarded          | yes, short        |
 | **Decision log for this brief**              | Dated table, grows over the rounds                                | starts empty      |
 | Exploration rounds                           | One block per round after the first (living-contract rule)        | as they happen    |
 
@@ -211,11 +238,24 @@ still long and now needs a decoder.
 The audience is **not only designers**. A document that needs decoding is a document that was
 not read.
 
-Read `profile.persona_id` before writing: for `executive` and `content`, Phase 0's banned
-vocabulary binds here (`phase-0-calibration.md`). And it binds on **the skill's own words**, not
-only on design concepts: "divergence", "reconciliation", "the research floor" are our method's
-names, and a builder without design repertoire has no reason to know them. Name the phase by its
-result: "I put together paths for you to choose from", instead of "diverge into directions".
+Read `technical_vocabulary` before writing. When it is false, the banned vocabulary below binds
+here. And it binds on **the skill's own words**, not only on design concepts: "divergence",
+"reconciliation", "the research floor" are our method's names, and a builder without design
+repertoire has no reason to know them. Name the phase by its result: "I put together paths for you
+to choose from", instead of "diverge into directions".
+
+#### The banned vocabulary, when `technical_vocabulary` is false
+
+This is the list, and it is the one every phase that prints user-facing text reads:
+
+| Banned                                                      | Say instead                    |
+| ----------------------------------------------------------- | ------------------------------ |
+| `scaffold`, `embed`, `repo`, `branch`, `slug`, `npm`, `MCP` | folder, project, install, page |
+| `divergence`, `diverge`                                     | the paths I put together       |
+| `reconciliation`                                            | what the research changed      |
+| the research floor, `pocket`, `full`                        | the minimum research           |
+
+Each hit gets replaced by what it means for the reader, never annotated.
 
 1. **An internal pointer carries its meaning on first use.** Never a bare `D7`, `P6`,
    "restriction 2", "axis 2", always `D7 (the decision that the value block carries the
@@ -231,13 +271,9 @@ persuasion)`. The test: _a reader who has not opened the spec understands the
 Self-check before presenting, two passes, both target **zero**:
 
 1. **Bare pointers**: `D\d+`, `P\d+`, "restriction N", "axis N" with no gloss at first occurrence.
-2. **Banned vocabulary, when `persona_id` is `executive` or `content`**: scan for `scaffold`,
-   `embed`, `npm`, `MCP`, `repo`, `branch`, `slug`, plus the method's own names (`divergence`,
-   `diverge`, `reconciliation`, the research floor, `pocket`, `full`). Each hit gets replaced by
-   what it means for the reader, not annotated: "the product project", "the paths I put together",
-   "the minimum research". The list from Phase 0 was written for the intake and it binds on every
-   phase that prints. A phase that honours it in the questions and breaks it in the findings has
-   not honoured it.
+2. **Banned vocabulary, when `technical_vocabulary` is false**: scan for every row of the table
+   above. The list binds on every phase that prints, not only on the intake. A phase that honours
+   it in the questions and breaks it in the findings has not honoured it.
 
 Both passes are mechanical on purpose. A rule with a check gets followed and a rule with an
 adjective gets drifted, which is exactly how the vocabulary contract went unenforced through four
@@ -245,25 +281,25 @@ phases.
 
 ## Step 5: persistence and gate
 
-Write the document, then `.brisar/session.yaml`:
+Write the document. Its frontmatter is the persistence: set `phase: diverge` (the phase
+now open), `status`, and `round`. There is no second file.
 
-```yaml
-brief:
-  status: completed | in-progress
-  path: <canonical path to brief-design.md>
-  round: 1 # increments on every update
-  reconciliation:
-    upstream: <path to the spec, or null>
-    confirms: <n>
-    contradicts: <n> # >0 means the framing needs a decision
-    unreachable: <n>
-  open_tension: <one line>
-  next_action: ready-for-diverge
-```
+The reconciliation counts and the open tension are **sections of the document**, not
+fields to copy somewhere: a contradicted point needs the sentence explaining it, which
+is exactly what a count loses. Develop and Deliver read this document by its path,
+`.bb/<slug>/brief-design.md`, and the spec is its sibling in the same folder. **The two
+coexist; the design brief never replaces the spec.**
 
-Also record the path under `gate.design_brief`. That is the slot Develop and Deliver read,
-the same way `gate.discover_brief` carries the upstream framing. **The two coexist; the design
-brief never replaces the spec.**
+### What goes in `## Left out, and why`
+
+The declared-never-silent rule, written down. One line each, and the reason is the point:
+
+- a research front not run, and what made it not worth its cost
+- a front run degraded, and which conclusions got weaker because of it
+- a direction discarded during divergence, and what killed it
+- an idea that never reached divergence at all
+
+A front skipped without a reason reads as a front nobody thought of.
 
 ### Gate
 
@@ -298,7 +334,7 @@ a decision the builder owns, and it is cheaper to settle now than after the scre
 
 When nothing was contradicted, drop the second option and simplify the question.
 
-## Persona: expected behaviors
+## Expected behaviors
 
 1. **The brief is a contract, so it gets maintained like one.** Update every round, without
    being asked. A brief that stops at v1 while the design reaches v8 is worse than no brief:
@@ -326,8 +362,7 @@ pre-loading the answer.
 
 | Artifact                                                               | Produced by                               | Consumed by                                     |
 | ---------------------------------------------------------------------- | ----------------------------------------- | ----------------------------------------------- |
-| `.brisar/session.yaml` (`research:` section)                           | Research                                  | Brief (Step 1, the material)                    |
+| The findings by front, in the brief's current round                    | Research                                  | Brief (Step 1, the material)                    |
 | `.bb/<slug>/spec.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | `/bb:discover`, `/bb:spec`                | Brief (Step 2, reconciliation)                  |
 | `.bb/<slug>/brief-design.md`                                           | **Brief** (and updated every later round) | Diverge, Develop, Deliver, the implementing dev |
-| `.brisar/session.yaml` (`brief:` + `gate.design_brief`)                | Brief                                     | Diverge, Develop, Deliver, re-entry             |
 | Delta back into `spec.md`                                              | Deliver (material from here)              | `/bb:implement`, `/bb:spec`                     |

@@ -1,14 +1,14 @@
 # Phase 5: handoff + gate
 
-After Phase 4 writes the visual direction of each surface into `.bb/<slug>/`, the journey-map part of brisar is done. This phase prints the handoff summary (persona-shaped) and ends with the **handoff gate**. A single `AskUserQuestion` offering the natural next steps. The gate suggests, never auto-invokes (per `plugins/bb/references/handoff-gate.md`).
+After Phase 4 writes the visual direction of each surface into `.bb/<slug>/`, the journey-map part of brisar is done. This phase prints the handoff summary, shaped by the profile, and ends with the **handoff gate**. A single `AskUserQuestion` offering the natural next steps. The gate suggests, never auto-invokes (per `plugins/bb/references/handoff-gate.md`).
 
-**Read the medium before writing the summary.** Everything below that names `design-context/`,
-`.brisar/config.yaml` or the scaffolded project folder assumes medium `code`. On a canvas or
+**Read the medium before writing the summary.** Everything below that names `design-context/`
+or the scaffolded project folder assumes medium `code`. On a canvas or
 `claude-design` medium Phase 3 was skipped (`medium.scaffold: skipped`) and none of those exist:
 report the design brief and the canvas artifact instead. Telling the builder to open a folder that
 was never created is the kind of error that reads as the tool being confused about its own state.
 
-## Output shape (default: senior/standard)
+## Output shape (default: `technical_instructions` true)
 
 Plain text. Structure:
 
@@ -19,8 +19,7 @@ Structure created:
   <slug>/
   ├── package.json, vite.config.ts, tsconfig.json
   ├── src/{main.tsx, App.tsx, index.css, tokens-brand.css}
-  ├── design-context/{tokens.md, components.md}     ← the Develop phase reads this
-  └── .brisar/{config.yaml, session.yaml}
+  └── design-context/{tokens.md, components.md}     ← the Develop phase reads this
 
   .bb/<slug>/                                        ← next to the spec
   └── design/                                        ← the brief for each surface
@@ -66,15 +65,15 @@ Then the gate:
 }
 ```
 
-- **Develop:** load `references/phase-develop.md` and continue in this same session. Update `current_phase: develop`.
+- **Develop:** load `references/phase-develop.md` and continue in this same session. Set the brief's `phase: develop`.
 - **/bb:discover:** suggest the command (`/bb:discover <the idea in 1 sentence>`) and STOP, never invoke it.
 - **Stop:** print one line saying the re-entry works (`/bb:brisar` in this folder resumes) and end.
 
 ## Conditional variants
 
-### If persona = executive (path prototype-hosted)
+### If `uses_terminal` is false (path prototype-hosted)
 
-**Replaces the whole default terminal**: executive doesn't run `pnpm dev` and the Develop phase doesn't apply (design goes straight to HTML in Phase 4).
+**Replaces the whole default terminal**: nobody runs `pnpm dev` here and the Develop phase doesn't apply (design goes straight to HTML in Phase 4).
 
 ```
 ✓ /bb:brisar finished. HTML prototype created at ./<slug>/
@@ -117,7 +116,7 @@ hypothesis and the metric clear, and saves rework later.
 
 No Develop gate here. End with a simple report. Mention `/bb:discover` as the optional next step (as above) and stop.
 
-### If persona = junior (explicit narration)
+### If `technical_instructions` is false (explicit narration)
 
 Same default terminal, but with narration before the gate:
 
@@ -150,7 +149,7 @@ Add before the gate:
 
 ```
 ⚠ Heads up: you marked "<scale_signal>" but skipped the maturity gate.
-The override is recorded in .brisar/session.yaml with the reason "<override_reason>".
+The override is recorded in the brief's decision log with the reason "<override_reason>".
 If at some point you feel the grounding is missing, run /bb:discover,
 that is where it gets resolved.
 ```
@@ -180,9 +179,8 @@ Add:
 
 ```
 ⚠ The design system was not found in this environment. The scaffold's tokens are
-Tailwind defaults with placeholders. Point BRISAR_DS_PATH at it, or set
-ds_path in .brisar/config.yaml. The bundle also carries a copy at
-references/ds/ inside the skill itself.
+Tailwind defaults with placeholders. Point BRISAR_DS_PATH at it. The bundle also
+carries a copy at references/ds/ inside the skill itself.
 ```
 
 ### If DS gaps were detected in Phase 4
@@ -194,7 +192,7 @@ Add:
   - <surface>: <missing component>
   - ...
 
-These were recorded in .brisar/session.yaml as ds_feedback_seeds.
+These are recorded in the brief, under what was left out.
 Review or promote them whenever you want. They are candidates for new DS components.
 ```
 
@@ -208,7 +206,7 @@ Review or promote them whenever you want. They are candidates for new DS compone
 
 If the builder returns to the same `<slug>/` and runs /bb:brisar:
 
-- Step 0 detects `.brisar/session.yaml` with `status: completed` + existing `.brisar/config.yaml`.
+- Step 0 finds `.bb/<slug>/brief-design.md` with `status: completed` in its frontmatter.
 - Asks:
   ```
   A Brisa project already exists here (<slug>, brand <brand>, <N> surfaces). What do you want?
@@ -217,8 +215,8 @@ If the builder returns to the same `<slug>/` and runs /bb:brisar:
   - Add a new surface (goes to Phase 4)
   - Switch brand (rewrites design-context/, keeps src/)
   - Reframe it (I suggest /bb:discover)
-  - Start over from zero (archives .brisar/session.archived-<ISO>.yaml first)
+  - Start over from zero (appends a new round to the brief, keeping the old one)
   ```
-- Routes accordingly. "Reframe it" suggests `/bb:discover` and stops; "Start over" always archives the old session first.
+- Routes accordingly. "Reframe it" suggests `/bb:discover` and stops; "Start over" appends a round, it never replaces what the brief already holds.
 
 This is the re-entry contract. Not used on the first invocation, but keeps the skill useful in subsequent sessions.

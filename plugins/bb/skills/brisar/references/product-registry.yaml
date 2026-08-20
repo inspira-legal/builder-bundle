@@ -49,8 +49,8 @@ products:
     fallback_path: framer-handoff-no-mcp
     requires_mcp: []
     notes: |
-      For builders without git/npm (executive persona). Output: clickable prototype + markdown handoff
-      for the eng team to pick up later. brisar does not try to teach git on this path.
+      For builders whose profile has uses_terminal false. Output: clickable prototype + markdown
+      handoff for the eng team to pick up later. brisar does not try to teach git on this path.
 
 # === Detection: how brisar identifies a product by cwd ===
 
@@ -59,7 +59,7 @@ detection_logic: |
   1. For each product in products[], evaluate `detection[]` against cwd.
   2. Match = ALL markers of the product matching (AND, not OR).
   3. First match wins: registry order is priority.
-  4. If no match: log `product: unknown` and proceed to profile calibration.
+  4. If no match: log `product: unknown` and proceed to the intake.
   5. If unlikely multiple matches: warn in silent log, use the first.
 
   When detected:
@@ -68,7 +68,7 @@ detection_logic: |
   - Default mode = product.mode_default
 
   BETA NOTE: greenfield products have empty detection[], so the registry effectively
-  never matches and brisar always proceeds to manual profile/brand/artifact intake.
+  never matches and brisar always proceeds to manual brand/artifact intake.
 
 # === Embed mode: requirements ===
 
@@ -84,7 +84,8 @@ embed_requirements:
 
 prototype_hosted:
   what_it_does: |
-    For builders with persona=executive or content without technical background.
+    For builders whose profile has uses_terminal false, and for the Framer path
+    (brand.workflow == framer-harpa), which has no local scaffold either.
     brisar generates a scaffolded Vite prototype BUT runs it in sandbox/hosted (does not try local npm install).
     Output: link to the prototype + handoff .md written for a dev to take over later.
   output_artifacts:

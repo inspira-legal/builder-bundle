@@ -28,7 +28,7 @@ Print diagnosis in plain text (informative, not interactive):
 
 > **Heads up.** You marked [artifact] as [scale_signal]. Before scaffolding, it is worth running `/bb:discover` (~10 minutes) to frame it: the problem (who it hurts, how it hurts), the fit, the hypothesis and the appetite. Skipping this step on a real product is expensive: the grounding failure only shows up after the code is written.
 >
-> If you want to skip it, I record the override in session.yaml and go straight through. If you want to frame it first, I save the bootstrap and you run `/bb:discover` now. When you come back to `/bb:brisar`, it continues from the research with the framing folded in.
+> If you want to skip it, I record the override in the brief's decision log and go straight through. If you want to frame it first, I open the brief and you run `/bb:discover` now. When you come back to `/bb:brisar`, it continues from the research with the framing folded in.
 
 Then `AskUserQuestion`:
 
@@ -62,22 +62,15 @@ Then `AskUserQuestion`:
 
 ### Yes: run /bb:discover first
 
-Update `.brisar/session.yaml` to:
-
-```yaml
-status: bootstrapped-to-discover
-gate:
-  fired: true
-  resolution: bootstrap-to-discover
-```
-
-(Keeps `intent`, `brand`, `artifact`, `surfaces_provisional` intact.)
+In `.bb/<slug>/brief-design.md`, which Phase 1 already opened, set the frontmatter
+`status: bootstrapped-to-discover` and leave `phase: research`. The decision log takes one
+dated row: the gate fired, resolution `bootstrap-to-discover`.
 
 Print to the user, seeding discover with the intake already collected:
 
-> ✓ Bootstrap saved at `.brisar/session.yaml`. Run `/bb:discover <your idea in 1 sentence>` now. It frames the problem, the fit and the hypothesis, and writes the spec at `.bb/<slug>/spec.md`. When it finishes, call `/bb:brisar` again in the same folder. I detect the bootstrap, read the spec and carry on from the research (the framing is exactly what the research is going to test).
+> ✓ Brief opened at `.bb/<slug>/brief-design.md`. Run `/bb:discover <your idea in 1 sentence>` now. It frames the problem, the fit and the hypothesis, and writes the spec at `.bb/<slug>/spec.md`. When it finishes, call `/bb:brisar` again in the same folder. I detect the bootstrap, read the spec and carry on from the research (the framing is exactly what the research is going to test).
 
-**STOP.** Do not scaffold and do not invoke /bb:discover: the builder crosses on purpose. End the turn here. (On return, Step 0.1 of SKILL.md handles the resume: locate the spec, record `gate.discover_brief`, resume at the Research phase.)
+**STOP.** Do not scaffold and do not invoke /bb:discover: the builder crosses on purpose. End the turn here. (On return, Step 0.1 of SKILL.md handles the resume: read the brief's frontmatter, find the spec next to it, resume at the Research phase.)
 
 ### No: going straight
 
@@ -87,7 +80,7 @@ Ask ONE extra question to record the reason:
 {
   "questions": [
     {
-      "question": "Reason for the override (recorded in session.yaml for you to review later):",
+      "question": "Reason for the override (recorded in the brief for you to review later):",
       "header": "Override",
       "options": [
         {
@@ -110,14 +103,8 @@ Ask ONE extra question to record the reason:
 }
 ```
 
-Record in session.yaml:
-
-```yaml
-gate:
-  fired: true
-  resolution: override
-  override_reason: "<the chosen label, or the free text>"
-```
+Record it in the brief's decision log, one dated row: the gate fired, resolution
+`override`, and the reason in the builder's own words.
 
 Continue to the Research phase.
 
@@ -135,26 +122,14 @@ Repeat the original question (yes / no / additional free text). No infinite loop
 
 (`fidelity` ∈ low-fi/mid-fi/hi-fi AND scale_signal == exploration)
 
-Update `.brisar/session.yaml`:
-
-```yaml
-gate:
-  fired: false
-  resolution: not-applicable
-current_phase: phase-3
-```
+Nothing to record: a gate that did not fire is not a decision. Continue, the brief's
+frontmatter stays as Phase 1 opened it.
 
 Print short echo: _"Exploratory appetite, scale=exploration, skipping the gate. Going to the research."_ Continue to the Research phase.
 
-## State at the end
+## What the brief carries at the end
 
-Regardless of the path:
-
-```yaml
-gate:
-  fired: true | false
-  resolution: bootstrap-to-discover | override | not-applicable
-  override_reason: <string or null>
-  discover_brief: <path or null> # filled on the bootstrap return (Step 0.1)
-current_phase: phase-3 # (unless it bootstrapped, which stops here)
-```
+The gate writes nothing of its own. On the bootstrap path the brief's frontmatter reads
+`status: bootstrapped-to-discover` with `phase: research`, and on both other paths it stays
+as Phase 1 opened it. A gate that fired leaves one dated row in the decision log, with the
+resolution and, on the override, the reason.

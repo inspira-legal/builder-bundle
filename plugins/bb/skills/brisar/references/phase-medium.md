@@ -20,7 +20,7 @@ design need no MCP, so there is always a path.
 
 ## Step 0: build the option list
 
-Read `preflight.mcps`, `preflight.product` and `profile.persona_id`:
+Read `preflight.mcps`, `preflight.product` and the profile's `technical_vocabulary`:
 
 | Option            | Offered when  | Needs                                     |
 | ----------------- | ------------- | ----------------------------------------- |
@@ -47,7 +47,7 @@ Print one intro line naming the chosen direction and what is missing, if anythin
 **Lead each description with the outcome, not the tool.** Someone without design repertoire is not
 choosing between Paper and Figma. They are choosing between "I want to see it fast", "I want to show
 it and get comments" and "this goes to production". The tool name stays as the label; the description
-sells the consequence. Drop `MCP` from user-facing text entirely, for `executive` and `content` it
+sells the consequence. Drop `MCP` from user-facing text entirely, when `technical_vocabulary` is false it
 is banned vocabulary, and for everyone else it is an implementation detail of our side.
 
 ```json
@@ -83,7 +83,7 @@ is banned vocabulary, and for everyone else it is an implementation detail of ou
 Order the options by fit, not alphabetically, and put the best fit first. The order above is a
 default for an unresolved visual direction, not a fixed list. Signals: a detected product with a
 real repo leans **Code**; several compositions to compare leans a **canvas**; no local toolchain,
-or `persona_id: executive`, leans **Claude design**.
+or `reads_code` false, leans **Claude design**.
 
 Do **not** add an "Other" option. The tool provides free text.
 
@@ -142,7 +142,7 @@ medium:
 No gate here. The medium question is a step inside the flow, not a stopping point. Continue
 straight to Phase 3 when `scaffold: required`, or to Develop when it is skipped.
 
-## Persona: expected behaviors
+## Expected behaviors
 
 1. **Offer only what exists, and name what doesn't.** A silently shortened list reads as the tool
    deciding for the builder.
@@ -162,9 +162,9 @@ expressed, never what it is.
 
 ## Cooperation contract
 
-| Artifact                                                       | Produced by                       | Consumed by                                            |
-| -------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------ |
-| `preflight.mcps`                                               | Step 0.4 (`preflight-tooling.md`) | Step 0 here; the option list                           |
-| `.brisar/session.yaml` (`diverge.directions[].status: chosen`) | Diverge                           | Step 1; what is being built                            |
-| `.brisar/session.yaml` (`medium:` section)                     | this step                         | Phase 3, Develop, Deliver, re-entry                    |
-| Token values read from source                                  | Research (Front B)                | Develop on canvas mediums (no `design-context/` there) |
+| Artifact                                             | Produced by                       | Consumed by                                            |
+| ---------------------------------------------------- | --------------------------------- | ------------------------------------------------------ |
+| `preflight.mcps`                                     | Step 0.4 (`preflight-tooling.md`) | Step 0 here; the option list                           |
+| The chosen direction in `.bb/<slug>/brief-design.md` | Diverge                           | Step 1; what is being built                            |
+| The medium, recorded in the same brief               | this step                         | Phase 3, Develop, Deliver, re-entry                    |
+| Token values read from source                        | Research (Front B)                | Develop on canvas mediums (no `design-context/` there) |
