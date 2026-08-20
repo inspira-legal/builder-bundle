@@ -18,20 +18,21 @@ version starts next.
 
 - **`plugins/bb/hooks/check_version.py`**, both halves of the update in one file.
   `report()` runs in process on the session start: it reads the stamp and returns the line
-  the session context carries when the last run installed something. The `__main__` path
-  is the detached worker, spawned with `sys.executable` because `python3` is not on every
-  PATH a child inherits, and it does the slow half: `git fetch` in the marketplace clone,
-  the version compare, the two commands a person would run,
+  the session context carries when the last run installed something. Handing that line over
+  marks the stamp, so it reaches one session and the ones after it are silent again. The
+  `__main__` path is the detached worker, spawned with `sys.executable` because `python3` is
+  not on every PATH a child inherits, and it does the slow half: `git fetch` in the
+  marketplace clone, the version compare, the two commands a person would run,
   `claude plugin marketplace update MARKETPLACE` and
   `claude plugin update bb@MARKETPLACE -s SCOPE -y`. It calls the CLI instead of writing
   into the cache and rewriting `installed_plugins.json`, which would be a hook
   reimplementing the installer that owns those files.
-- **The stamp, `update-stamp.json`, is the only channel between the two.** It holds
-  `date`, `outcome`, `from`, `to`, and `reason`, and it sits under `CLAUDE_PLUGIN_DATA`,
+- **The stamp, `update-stamp.json`, is the only channel between the two.** It holds `date`,
+  `outcome`, `from`, `to`, `reason`, and `reported`, and it sits under `CLAUDE_PLUGIN_DATA`,
   falling back to `~/.claude/plugins/data/bb-MARKETPLACE`, because the install path carries
   the version and is replaced on every update. The session start pays one file read: no
-  network, no install, and no wait. **The day is claimed before the spawn**, so two
-  sessions starting at the same moment leave only the first one spawning a worker, and a
+  network, no install, and no wait. **The day is claimed with an exclusive file create**, so
+  two sessions starting at the same moment leave only the first one spawning a worker, and a
   run that fails records the reason and leaves tomorrow as the retry.
 - **The guard on a clone that is a working tree.** `claude plugin update` installs what
   the marketplace clone holds in its working tree, not what the default branch holds, so
