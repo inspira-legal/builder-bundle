@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Keep ~/.claude/BB-INSTRUCTIONS.md holding bb's custom instructions, and keep
+"""Keep ~/.claude/BUILDER-BUNDLE.md holding bb's custom instructions, and keep
 ~/.claude/CLAUDE.md importing it. Run by /bb:profile right after it writes the
 config, and by the SessionStart hook so an updated plugin refreshes the file
 instead of leaving the previous version's frame in place.
@@ -13,7 +13,7 @@ carries the frame in the session itself, the way it always did, and says once
 that /bb:profile exists.
 
 `custom_instructions: false` is the opt out, and it is a removal: the managed
-block leaves CLAUDE.md and BB-INSTRUCTIONS.md leaves the disk. The contract is
+block leaves CLAUDE.md and BUILDER-BUNDLE.md leaves the disk. The contract is
 references/bb-config.md. Every failure exits 0 and silently: a hook must never
 block a session.
 """
@@ -26,7 +26,7 @@ import os
 
 CLAUDE_DIR = os.path.join(os.path.expanduser("~"), ".claude")
 CONFIG_PATH = os.path.join(CLAUDE_DIR, "bb.config.json")
-INSTRUCTIONS_PATH = os.path.join(CLAUDE_DIR, "BB-INSTRUCTIONS.md")
+INSTRUCTIONS_PATH = os.path.join(CLAUDE_DIR, "BUILDER-BUNDLE.md")
 MEMORY_PATH = os.path.join(CLAUDE_DIR, "CLAUDE.md")
 
 # The import is fenced by markers so it can be found again, replaced in place and
@@ -34,7 +34,7 @@ MEMORY_PATH = os.path.join(CLAUDE_DIR, "CLAUDE.md")
 # outside is the person's and is never rewritten.
 BLOCK_START = "<!-- bb:start -->"
 BLOCK_END = "<!-- bb:end -->"
-IMPORT_LINE = "@BB-INSTRUCTIONS.md"
+IMPORT_LINE = "@BUILDER-BUNDLE.md"
 
 # What each answer means, in the words the instructions carry. The flags
 # themselves are never written: `reads_code: false` says nothing on its own.
@@ -65,7 +65,7 @@ PROFILE_LINES: dict[str, tuple[str, str]] = {
 INVITATION = (
     "- **No profile calibrated yet.** How much to spell out is a guess right now. "
     "When a bb skill runs, offer `/bb:profile`: it asks four questions once, writes "
-    "the answers into `~/.claude/BB-INSTRUCTIONS.md`, and every session after that "
+    "the answers into `~/.claude/BUILDER-BUNDLE.md`, and every session after that "
     "reads them from there."
 )
 

@@ -14,7 +14,7 @@ persona packs four independent things into one id, so every reader downstream as
 
 This replaces the persona with a checklist of what the person actually does, asks it
 once through `/bb:profile`, and writes `~/.claude/bb.config.json`. From that file
-`hooks/sync_instructions.py` writes `~/.claude/BB-INSTRUCTIONS.md` and has
+`hooks/sync_instructions.py` writes `~/.claude/BUILDER-BUNDLE.md` and has
 `~/.claude/CLAUDE.md` import it, so a skill that never heard of brisar still knows whether
 to spell out `pnpm install` or just print it, and the person can open the file that says
 so. Before there is a config nothing is written anywhere: the session hears one line
@@ -156,7 +156,7 @@ write is the brief itself.
   carries the version (`plugins/cache/inspira-legal/bb/2.13.0`), so anything written
   inside it dies on the next plugin update. JSON because the hook is Python and `json`
   is stdlib; YAML would add a dependency to a hook that must never fail.
-- **The instructions are a file, not an injection.** `~/.claude/BB-INSTRUCTIONS.md`
+- **The instructions are a file, not an injection.** `~/.claude/BUILDER-BUNDLE.md`
   holds the frame plus the profile, and `~/.claude/CLAUDE.md` imports it with a marked
   three line block. What arrives in a session is then something the person can open, edit
   and delete, instead of something only the model ever saw. The cost is that a file can
@@ -206,7 +206,7 @@ Happy path, first time:
    with one line: no profile calibrated, `/bb:profile` sets it. Nothing is written.
 2. The user runs `/bb:profile`. It asks the four-item checklist, shows what it wrote, and
    writes the file.
-3. The next session starts. `~/.claude/CLAUDE.md` imports `~/.claude/BB-INSTRUCTIONS.md`,
+3. The next session starts. `~/.claude/CLAUDE.md` imports `~/.claude/BUILDER-BUNDLE.md`,
    so the behavior those answers imply is there before the first message.
 4. The user runs `/bb:brisar`. It reads the config, asks nothing about the person, and
    goes straight to the intake, at the depth `reads_code` sets.
@@ -216,7 +216,7 @@ Happy path, first time:
 | WHEN                                          | THEN                                                                 |
 | --------------------------------------------- | -------------------------------------------------------------------- |
 | no config file                                | the invitation names `/bb:profile`; nothing is written               |
-| config with a valid profile                   | `BB-INSTRUCTIONS.md` carries the behavior the answers imply          |
+| config with a valid profile                   | `BUILDER-BUNDLE.md` carries the behavior the answers imply           |
 | config unreadable or malformed                | treated as missing; the session is never blocked                     |
 | a profile flag absent from the file           | reads as `false`                                                     |
 | `custom_instructions` is false                | file deleted, block removed; skills still read the four flags        |
@@ -245,7 +245,7 @@ Happy path, first time:
 - [x] **1. The config contract**: `references/bb-config.md` with the location, the JSON
       schema, the four flags, missing-reads-as-false and unreadable-reads-as-missing
       → behaviors 1, 3, 4, 11 · dep: — · verify: reading
-- [x] **2. The writer**: `sync_instructions.py` renders `BB-INSTRUCTIONS.md` from
+- [x] **2. The writer**: `sync_instructions.py` renders `BUILDER-BUNDLE.md` from
       `operating-context.md` plus the profile block, keeps the marked import in
       `CLAUDE.md`, removes both on the opt out, and injects the frame plus the invitation
       while there is no config

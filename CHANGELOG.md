@@ -4,14 +4,14 @@
 
 **bb's context is a file you own, and having it is a choice.** The frame used to arrive
 as something a hook printed into every session, which nobody could read, edit or refuse.
-It is now `~/.claude/BB-INSTRUCTIONS.md`, imported from `~/.claude/CLAUDE.md`, written by
+It is now `~/.claude/BUILDER-BUNDLE.md`, imported from `~/.claude/CLAUDE.md`, written by
 `/bb:profile` with the profile already in it.
 
 ### Added
 
-- **`~/.claude/BB-INSTRUCTIONS.md`**, written by `hooks/sync_instructions.py`: the
+- **`~/.claude/BUILDER-BUNDLE.md`**, written by `hooks/sync_instructions.py`: the
   operating frame plus the four profile sentences, under a header naming the version that
-  wrote it and how to make it stop. `~/.claude/CLAUDE.md` gets the `@BB-INSTRUCTIONS.md`
+  wrote it and how to make it stop. `~/.claude/CLAUDE.md` gets the `@BUILDER-BUNDLE.md`
   import, three lines fenced by `<!-- bb:start -->` and `<!-- bb:end -->`. Everything
   outside those markers is the person's, and is never rewritten, line endings included.
 - **`custom_instructions`**, a top level field beside `profile`. `false` and both go away:

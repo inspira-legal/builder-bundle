@@ -1,6 +1,6 @@
 ---
 name: profile
-description: Calibrate once who is on the other side, and every bb session after this one is calibrated. Asks four questions (are you used to editing code, to the terminal, to technical instructions, to technical vocabulary), writes ~/.claude/bb.config.json and ~/.claude/BB-INSTRUCTIONS.md, and shows or recalibrates a profile that already exists. Use when the user says "/bb:profile", "set my profile", "recalibrate", "bb is explaining too much", "bb is explaining too little" or "stop using bb's custom instructions", or when a bb skill runs with no profile set.
+description: Calibrate once who is on the other side, and every bb session after this one is calibrated. Asks four questions (are you used to editing code, to the terminal, to technical instructions, to technical vocabulary), writes ~/.claude/bb.config.json and ~/.claude/BUILDER-BUNDLE.md, and shows or recalibrates a profile that already exists. Use when the user says "/bb:profile", "set my profile", "recalibrate", "bb is explaining too much", "bb is explaining too little" or "stop using bb's custom instructions", or when a bb skill runs with no profile set.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -11,12 +11,12 @@ metadata:
 
 **Scope: the person's profile, plus whether bb keeps its custom instructions.** How much
 to spell out, which words to use, whether a command comes as one line or as numbered
-steps, and whether `~/.claude/BB-INSTRUCTIONS.md` exists at all. Not the project, not the
+steps, and whether `~/.claude/BUILDER-BUNDLE.md` exists at all. Not the project, not the
 machine, not the ship destination.
 
 The profile is a fact about the person, so it is asked once and stored once, at
 `~/.claude/bb.config.json`. The answers reach a session through
-`~/.claude/BB-INSTRUCTIONS.md`, which `~/.claude/CLAUDE.md` imports, both written by
+`~/.claude/BUILDER-BUNDLE.md`, which `~/.claude/CLAUDE.md` imports, both written by
 `hooks/sync_instructions.py`. The full contract, the schema, the reading rules and what
 the writer touches live in the plugin-level `references/bb-config.md`; read it before
 writing anything.
@@ -82,7 +82,7 @@ writing anything.
    ```
 
    It reads the config you just wrote and settles both files: it renders
-   `~/.claude/BB-INSTRUCTIONS.md` and adds the marked `@BB-INSTRUCTIONS.md` import to
+   `~/.claude/BUILDER-BUNDLE.md` and adds the marked `@BUILDER-BUNDLE.md` import to
    `~/.claude/CLAUDE.md`, or removes both when the answer was no. Do not write either file
    by hand: the script is the only writer, which is what keeps the text in step with the
    installed version.

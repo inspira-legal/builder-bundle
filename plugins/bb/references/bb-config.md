@@ -45,7 +45,7 @@ so a person can see how old the answers are.
 ## `custom_instructions`
 
 Whether bb keeps its custom instructions in `~/.claude`. `true`, the default, and
-`BB-INSTRUCTIONS.md` holds the operating frame plus the profile block while `CLAUDE.md`
+`BUILDER-BUNDLE.md` holds the operating frame plus the profile block while `CLAUDE.md`
 imports it. `false` and both go away: the import block leaves `CLAUDE.md` and the file is
 deleted. Frame and profile travel together, because the frame names the profile block as
 the section that closes it, and half of it is worth less than either half whole.
@@ -62,10 +62,10 @@ writing the config. The SessionStart hook runs it again, which is the whole reas
 hook still exists: the frame lives inside the versioned install path, so an update would
 otherwise leave the previous version's text sitting in `~/.claude` for good.
 
-| file                           | what is in it                                                                                                                |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
-| `~/.claude/BB-INSTRUCTIONS.md` | the whole file is bb's: `hooks/operating-context.md` plus the profile block, under a header naming the version that wrote it |
-| `~/.claude/CLAUDE.md`          | three lines fenced by `<!-- bb:start -->` and `<!-- bb:end -->`, holding the import `@BB-INSTRUCTIONS.md`                    |
+| file                          | what is in it                                                                                                                |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `~/.claude/BUILDER-BUNDLE.md` | the whole file is bb's: `hooks/operating-context.md` plus the profile block, under a header naming the version that wrote it |
+| `~/.claude/CLAUDE.md`         | three lines fenced by `<!-- bb:start -->` and `<!-- bb:end -->`, holding the import `@BUILDER-BUNDLE.md`                     |
 
 Four rules bound the writing, and together they are what makes it safe to run on every
 session:
@@ -79,12 +79,12 @@ session:
 - **Written only when it changed.** The rendered text is compared to what is on disk, so
   a session that changes nothing writes nothing.
 - **The opt out is a removal.** `custom_instructions: false` deletes
-  `BB-INSTRUCTIONS.md` and takes the block out of `CLAUDE.md`, rather than leaving behind
+  `BUILDER-BUNDLE.md` and takes the block out of `CLAUDE.md`, rather than leaving behind
   a file nobody reads.
 
 What this shape cannot do is clean up after itself: nothing runs at uninstall time, so
 both files stay and keep shaping sessions until someone deletes them. That is why the
-header of `BB-INSTRUCTIONS.md` names what wrote it, which version, and how to make it
+header of `BUILDER-BUNDLE.md` names what wrote it, which version, and how to make it
 stop.
 
 ## Reading it
