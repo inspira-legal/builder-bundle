@@ -206,7 +206,7 @@ Review or promote them whenever you want. They are candidates for new DS compone
 
 If the builder returns to the same `<slug>/` and runs /bb:brisar:
 
-- Step 0 finds `.bb/<slug>/brief-design.md` with `status: completed` in its frontmatter.
+- Step 0 finds `.bb/<slug>/design.md` with `status: completed` in its frontmatter.
 - Asks:
   ```
   A Brisa project already exists here (<slug>, brand <brand>, <N> surfaces). What do you want?

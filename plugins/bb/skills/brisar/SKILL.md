@@ -106,7 +106,7 @@ The brief is what carries a journey, so finding one is the whole resume:
 
 ```bash
 BB=$(d=$PWD; while [ "$d" != / ] && [ ! -d "$d/.bb" ]; do d=$(dirname "$d"); done; echo "$d/.bb")
-ls "$BB"/*/brief-design.md "$BB"/tasks/*/brief-design.md 2>/dev/null
+ls "$BB"/*/design.md "$BB"/tasks/*/design.md 2>/dev/null
 ```
 
 The walk-up matters: a re-entry from inside the project folder would miss a brief that lives in
@@ -219,13 +219,13 @@ in Step 0**, open only what the current phase needs.
 
 | Artifact                                                                  | Produced by                                                                | Consumed by                                                                                                                 |
 | ------------------------------------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| **`.bb/<slug>/brief-design.md`**                                          | **Brief**, and updated by every later round, including Deliver             | every phase (each reads it in its Step 0), Diverge, Develop, Deliver, the implementing dev, later rounds                    |
+| **`.bb/<slug>/design.md`**                                                | **Brief**, and updated by every later round, including Deliver             | every phase (each reads it in its Step 0), Diverge, Develop, Deliver, the implementing dev, later rounds                    |
 | `<slug>/design-context/tokens.md` + `components.md`                       | Phase 3 (medium `code` only)                                               | Develop (Step 0). On canvas mediums the DS values come from the Research instead                                            |
-| `.bb/<slug>/design.md` (or `design/<surface>.md`)                         | Phase 4                                                                    | builder, Develop, complements the design brief (brief = chosen direction; this = per-surface hierarchy, states, components) |
+| `.bb/<slug>/design.md`, `## Surfaces`                                     | Phase 4                                                                    | builder, Develop: per-surface hierarchy, states and components, under the chosen direction above it                         |
 | `<slug>/...` (vite, package.json, src/)                                   | Phase 3                                                                    | builder (`pnpm install && pnpm dev`), Develop                                                                               |
 | `<slug>/HANDOFF-DEV.md`                                                   | Phase 3 (when `uses_terminal` is false)                                    | dev who picks up the prototype later                                                                                        |
-| `.bb/<slug>/develop-notes.md`                                             | Develop (optional decisions log)                                           | Deliver, builder                                                                                                            |
-| `.bb/<slug>/design-review.md`, `accessibility-checklist.md`, `handoff.md` | Deliver                                                                    | builder, implementing dev                                                                                                   |
+| `.bb/<slug>/design.md`, `## Built`                                        | Develop                                                                    | Deliver, builder                                                                                                            |
+| `.bb/<slug>/design.md`, `## Design review` + `## Accessibility`           | Deliver                                                                    | builder, `/bb:spec`                                                                                                         |
 | `.bb/<slug>/spec.md`                                                      | /bb:discover, /bb:spec (outside this skill); **delta proposed by Deliver** | Step 0.1 (bootstrap return), Research, Brief, Diverge, Develop, Deliver                                                     |
 | `harpa-handoff-<slug>-<date>.md` (in cwd)                                 | Framer/content path                                                        | builder inside `harpa-lpbuilder/`                                                                                           |
 
@@ -250,7 +250,7 @@ is not used on this path. Details in `references/phase-framer-handoff.md`.
 ### Bootstrap protocol (brisar → /bb:discover → brisar)
 
 When the maturity gate fires and the builder accepts framing the problem first, brisar
-opens `.bb/<slug>/brief-design.md` with `status: bootstrapped-to-discover` and
+opens `.bb/<slug>/design.md` with `status: bootstrapped-to-discover` and
 `phase: research` in the frontmatter, the intake's answers (intent, brand, artifact) in
 prose, and the gate's resolution in the decision log.
 
@@ -268,7 +268,7 @@ both:
 | File                                                                   | Answers                                              | Written by                 |
 | ---------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------- |
 | `.bb/<slug>/spec.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | Is it worth building, for whom, and what did we cut? | `/bb:discover`, `/bb:spec` |
-| `.bb/<slug>/brief-design.md`                                           | How should this surface be, and why?                 | the Brief phase here       |
+| `.bb/<slug>/design.md`                                                 | How should this surface be, and why?                 | the Brief phase here       |
 
 **Never substitute one for the other.** Reviewing against the research alone loses the
 problem; reviewing against the hypothesis alone loses everything the research learned.
@@ -278,8 +278,8 @@ against the built thing, the artifact that did not exist the first time.
 ### Critical path rule
 
 The paths are derived, not persisted. `design-context/` sits at the root of the
-scaffolded folder Phase 3 created; the visual direction is `.bb/<slug>/design.md` (or
-`design/<surface>.md`), next to the spec in the task folder (plugin-level
+scaffolded folder Phase 3 created; the visual direction is `## Surfaces`
+inside `.bb/<slug>/design.md`, next to the spec in the task folder (plugin-level
 `references/spec-state.md`). Develop and Deliver derive both from the slug, no
 hardcoded string on either side.
 
@@ -319,7 +319,7 @@ Phase 2: Maturity gate (senior/junior only)
 │   → NO GATE, flows straight into Brief                                      │
 │                                                                             │
 │ Brief: the design contract                                                  │
-│   → .bb/<slug>/brief-design.md, the journey in its own frontmatter          │
+│   → .bb/<slug>/design.md, the journey in its own frontmatter          │
 │   → reconcile vs the framing: confirms · contradicts · does not reach       │
 │   → close on an unresolved tension (none found = research was shallow)      │
 │   → present it in chat: findings · references · directions · tension        │
@@ -345,7 +345,7 @@ Phase 3: Scaffold OR prototype-hosted     [medium == code only]
   → executive = prototype-hosted (folder + HANDOFF-DEV.md, no local npm install)
 
 Phase 4: Design direction        [prose skipped when the brief has it]
-  → .bb/<slug>/design.md, or design/<surface>.md per surface (max 5)
+  → .bb/<slug>/design.md, section ## Surfaces (max 5)
 
 Phase Framer (replaces Phase 2-4 on the Framer/content path)
   → harpa-handoff-<slug>-<date>.md, with or without MCP unframer
@@ -375,7 +375,7 @@ Phase 5: Terminal report + gate
 Two sharp cautions:
 
 **Never overwrite an existing brief without asking**: a restart appends a new round
-to `.bb/<slug>/brief-design.md`, it does not replace what is there.
+to `.bb/<slug>/design.md`, it does not replace what is there.
 
 **Changing medium does not reopen the first diamond.** Explore on a canvas, then build
 in code, is the normal path. The research, brief and chosen direction are already

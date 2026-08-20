@@ -28,7 +28,8 @@ every medium, but the target and the tooling change:
 - **States always** (see the per-surface checklist). A canvas represents them as separate
   artboards; code as separate states.
 - **Deliver has to read this back.** Name the artifact and its location precisely in
-  `.bb/<slug>/develop-notes.md`: file path, or file + page + artboard names for a canvas. A
+  the surfaces list in `.bb/<slug>/design.md`'s frontmatter: the `artifact` path, or file + page
+  + artboard names for a canvas. A
   review that cannot find the artifact is not a review.
 
 ---
@@ -41,9 +42,9 @@ every medium, but the target and the tooling change:
 
 - `<project>/design-context/tokens.md`: colors, spacing, type-scale
 - `<project>/design-context/components.md`: components available in the DS
-- `.bb/<slug>/design.md` (or each `design/<surface>.md`): visual direction written by brisar Phase 4 in the task folder (hierarchy, components, states, sketch), with the surfaces listed in its frontmatter
+- `.bb/<slug>/design.md`, `## Surfaces`: the visual direction written by Phase 4 (hierarchy, components, states, sketch), with the surfaces listed in the document's frontmatter
 - `.bb/<slug>/spec.md`: cuts, hypothesis, appetite
-- `.bb/<slug>/brief-design.md`: the research, the chosen direction and the medium; **the richer
+- `.bb/<slug>/design.md`: the research, the chosen direction and the medium; **the richer
   input when it exists**
 - On a canvas or `claude-design` medium, `design-context/` **does not exist**. Fall back to the
   brief + the research DS values. That is not degraded mode; it is the normal path for those
@@ -155,7 +156,7 @@ export default function <SurfaceName>() {
 ### Expected output
 
 - Surface file at the correct path (per the target decision above)
-- Update the frontmatter of `.bb/<slug>/develop-notes.md`:
+- Update the surfaces list in `.bb/<slug>/design.md`'s frontmatter:
 
 ```yaml
 surfaces:
@@ -233,7 +234,7 @@ surfaces:
 
 - `<path>/<Name>.tsx`
 - (if DS) `<DS_path>/components/<Name>.tsx` + entry in `components.md`
-- Update `.bb/<slug>/develop-notes.md` (`custom_components` on the surface, if it was local)
+- Update `.bb/<slug>/design.md` (`custom_components` on the surface, if it was local)
 
 ---
 
@@ -282,7 +283,7 @@ Use the Edit tool with specific `old_string`/`new_string`. DO NOT overwrite the 
 
 > "Updated <surface>: <1-line summary of what changed>. Loading/empty/error were already there, I did not touch them."
 
-**5. Update `.bb/<slug>/develop-notes.md`**
+**5. Update `.bb/<slug>/design.md`**
 
 ```yaml
 surfaces:
@@ -293,12 +294,12 @@ surfaces:
     iteration_reason: <short summary>
 ```
 
-One sharp caution for iteration: touching `tokens.md`/`components.md` "in passing" during a surface iteration is a separate decision, record it in `.bb/<slug>/develop-notes.md` and leave the DS files alone.
+One sharp caution for iteration: touching `tokens.md`/`components.md` "in passing" during a surface iteration is a separate decision, record it under `## Built` in `.bb/<slug>/design.md` and leave the DS alone.
 
 ---
 
 **Mental recap before closing any mode:**
 
-- Always update `.bb/<slug>/develop-notes.md`, frontmatter and prose.
+- Always update `.bb/<slug>/design.md`, frontmatter and prose.
 - If there were custom or missing_tokens, they go in that same file.
 - End at the Step 3 gate of `phase-develop.md` (Deliver / another surface / stop), suggest, never invoke.

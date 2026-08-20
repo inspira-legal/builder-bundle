@@ -107,7 +107,7 @@ Next step: see the /bb:brisar terminal (Framer variant in phase-5-handoff.md).
 ## Step 3: close the journey in the brief
 
 This path does NOT scaffold, so the handoff file stays in the cwd where `/bb:brisar` was run.
-The brief stays where Phase 1 opened it, `.bb/<slug>/brief-design.md`. Set its frontmatter
+The brief stays where Phase 1 opened it, `.bb/<slug>/design.md`. Set its frontmatter
 `status: completed`, `phase: done`, and record in prose:
 
 - the brand (`site-institucional`, workflow `framer-harpa`, from the external bundle), the

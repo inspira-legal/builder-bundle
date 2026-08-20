@@ -62,13 +62,13 @@ Then `AskUserQuestion`:
 
 ### Yes: run /bb:discover first
 
-In `.bb/<slug>/brief-design.md`, which Phase 1 already opened, set the frontmatter
+In `.bb/<slug>/design.md`, which Phase 1 already opened, set the frontmatter
 `status: bootstrapped-to-discover` and leave `phase: research`. The decision log takes one
 dated row: the gate fired, resolution `bootstrap-to-discover`.
 
 Print to the user, seeding discover with the intake already collected:
 
-> ✓ Brief opened at `.bb/<slug>/brief-design.md`. Run `/bb:discover <your idea in 1 sentence>` now. It frames the problem, the fit and the hypothesis, and writes the spec at `.bb/<slug>/spec.md`. When it finishes, call `/bb:brisar` again in the same folder. I detect the bootstrap, read the spec and carry on from the research (the framing is exactly what the research is going to test).
+> ✓ Brief opened at `.bb/<slug>/design.md`. Run `/bb:discover <your idea in 1 sentence>` now. It frames the problem, the fit and the hypothesis, and writes the spec at `.bb/<slug>/spec.md`. When it finishes, call `/bb:brisar` again in the same folder. I detect the bootstrap, read the spec and carry on from the research (the framing is exactly what the research is going to test).
 
 **STOP.** Do not scaffold and do not invoke /bb:discover: the builder crosses on purpose. End the turn here. (On return, Step 0.1 of SKILL.md handles the resume: read the brief's frontmatter, find the spec next to it, resume at the Research phase.)
 

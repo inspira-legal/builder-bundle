@@ -152,7 +152,7 @@ Happy path:
 - [ ] **2. Two upstreams in spec**: `skills/spec/SKILL.md:26` reads `discovery.md` and
       `design.md` instead of in-file sections, and the echo names them
       → behaviors 2, E1, E2, E3 · dep: 1 · verify: reading
-- [ ] **3. One `design.md`**: the six brisar members collapse into one document with
+- [x] **3. One `design.md`**: the six brisar members collapse into one document with
       sections that replace, the frontmatter moves to it, every phase reference points
       at it
       → behaviors 3, E3, E6, E11 · dep: — · verify: `grep -rn "brief-design\|develop-notes\|design-review\|accessibility-checklist"` is empty

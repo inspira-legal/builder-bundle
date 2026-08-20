@@ -30,7 +30,7 @@ builder.
 
 ## Cross-awareness with the journey
 
-Before any question, read `.bb/<slug>/brief-design.md` in full, and with it:
+Before any question, read `.bb/<slug>/design.md` in full, and with it:
 
 - **`.bb/<slug>/spec.md`** (`## Problem` / `## Hypothesis` / `## Fit` / `## Cuts`). This is
   the **upstream contract**. The research answers _how should this be?_; the spec answered
@@ -425,7 +425,7 @@ Rules for the fan-out:
 ## Step 4: write it into the brief, then hand off
 
 There is no state file to fill. What the research produced goes into
-`.bb/<slug>/brief-design.md`, in the sections that already exist for it
+`.bb/<slug>/design.md`, in the sections that already exist for it
 (`references/brief.md`):
 
 | What the research holds                                 | Where it lands in the brief                    |
@@ -473,6 +473,6 @@ decorative ones.
 | Artifact                                                               | Produced by                                     | Consumed by                                                  |
 | ---------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
 | `.bb/<slug>/spec.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | `/bb:discover`, `/bb:spec` (outside this skill) | Research (Step 0, upstream contract), Brief (reconciliation) |
-| `.bb/<slug>/brief-design.md` (findings by front, `## Left out`)        | Research                                        | Brief, Diverge, Deliver (what was skipped, and why)          |
+| `.bb/<slug>/design.md` (findings by front, `## Left out`)        | Research                                        | Brief, Diverge, Deliver (what was skipped, and why)          |
 | Distilled findings per front                                           | Research subagents                              | Brief (`references/brief.md`)                                |
 | Token source on disk + the repo's own token rules                      | the product repo                                | Research (Front B; read, never written)                      |

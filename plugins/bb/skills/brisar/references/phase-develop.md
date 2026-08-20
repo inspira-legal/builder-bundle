@@ -12,12 +12,13 @@ The discipline here is **fidelity to contracts**:
 
 ## Cross-awareness with the journey
 
-Before any question, read `.bb/<slug>/brief-design.md` in full, and with it:
+Before any question, read `.bb/<slug>/design.md` in full, and with it:
 
 - **The spec next to it** (`.bb/<slug>/spec.md`), when there is one. Read it. Cuts recorded there are respected: DO NOT prototype features that were cut. Flag at the start: "I am skipping [feature_x] because it was cut in the discover." The hypothesis informs layout decisions (when the builder asks "how should I arrange the CTA?", recall it). The appetite scales fidelity: small/medium appetite = lean fidelity (structure + tokens; no microinteraction polish); large appetite = polish included.
 - **The brief itself** is the **richer contract**: it carries the research, the chosen direction with its five parts (bet, composition, copy, rationale, risk), the base block common to all directions, and the token constraints read from source. The copy in the direction is the copy you build. Not a starting point to improve on. The spec and the design brief **coexist**: the spec says what problem and what was cut; the design brief says how this surface should be.
 - **Read the medium** recorded by the medium question: it decides the artifact and the tooling (table at the top of `references/develop-modes.md`). On a canvas or `claude-design` medium there is no scaffold and no `design-context/`; that is the normal path, not a failure.
-- **Save your output** in `.bb/<slug>/develop-notes.md` (Step 3 below) and set the brief's frontmatter `phase: develop`.
+- **Save your output** in `.bb/<slug>/design.md` under `## Built` (Step 3 below), update the
+  surfaces list in its frontmatter, and set `phase: develop`.
 
 ## Step 0: pre-flight (silent)
 
@@ -66,7 +67,7 @@ ls "$BB/<slug>/design.md" "$BB/<slug>/design"/*.md \
 
 If no surface has a md: Phase 4 needs to run first (offer it) or the builder describes the screen directly in chat.
 
-**Exception. A design brief outranks this check.** When `.bb/<slug>/brief-design.md` already carries
+**Exception. A design brief outranks this check.** When `.bb/<slug>/design.md` already carries
 a chosen direction, you already have the visual direction in a richer form. Do not send the builder back to
 Phase 4 to produce a thinner version of what the brief already says.
 
@@ -148,10 +149,11 @@ Cross-cutting rules:
 Always write:
 
 - The artifact itself, in the chosen medium (project files, preview, or canvas nodes)
-- `.bb/<slug>/develop-notes.md`: the surfaces built, in its frontmatter, and the build decisions
+- `.bb/<slug>/design.md`, section `## Built`: the build decisions, with the surfaces list in the
+  document's own frontmatter
   in prose under it (custom components, missing tokens, doubts)
 
-The frontmatter of `develop-notes.md`:
+The surfaces list in `design.md`'s frontmatter:
 
 ```yaml
 ---
@@ -225,7 +227,7 @@ Echo what was built (1 line: _"Built <surface> at <path>. Loading/Empty/Error in
 
 1. **Fidelity > creativity.** The contract (tokens + components + the surface's direction file) is the truth. When something conflicts or is missing, ask. Do not improvise.
 2. **States always.** Default, loading, empty, error. Even on small appetite, only skip with an explicit `cut_reason`.
-3. **Decision recorded.** If you invented a custom component, write it in `.bb/<slug>/develop-notes.md` with the reason. Do not disappear without a record.
+3. **Decision recorded.** If you invented a custom component, write it under `## Built` in `.bb/<slug>/design.md` with the reason. Do not disappear without a record.
 4. **At most 2 questions per turn.** More than that becomes a form. Ask + build + echo.
 5. **Cuts respected.** If the spec cut X, do not prototype X. If the builder asks for X anyway, flag first: _"I noticed [X] was cut in the discover. Go on anyway, or reopen the cut?"_
 6. **No nitpicking of tokens.** If tokens.md says `--color-primary: #0070F3`, use exactly that. Do not "tweak 1%" to look better.
@@ -240,4 +242,4 @@ One sharp caution: **never edit `tokens.md` or `components.md`**. The DS source 
 | `<project>/design-context/components.md`  | Phase 3     | Develop (Step 0, read) |
 | `.bb/<slug>/design.md` (or `design/*.md`) | Phase 4     | Develop (Step 2)       |
 | `<project>/src/<surface>.tsx` (or .html)  | Develop     | Deliver, dev           |
-| `.bb/<slug>/develop-notes.md`             | Develop     | Deliver, human builder |
+| `.bb/<slug>/design.md`, `## Built`        | Develop     | Deliver, human builder |

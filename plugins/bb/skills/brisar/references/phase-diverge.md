@@ -22,7 +22,7 @@ unevenly specified (Step 4).
 
 ## Step 0: Read the space
 
-From `.bb/<slug>/brief-design.md` and the spec next to it:
+From `.bb/<slug>/design.md` and the spec next to it:
 
 - **the brief** → The findings, the reconciliation, the open tension. This
   is the material; the directions are combinations of it.
@@ -217,7 +217,7 @@ readings of the problem, never in variant count.
 
 | Artifact                           | Produced by                                        | Consumed by                                               |
 | ---------------------------------- | -------------------------------------------------- | --------------------------------------------------------- |
-| `.bb/<slug>/brief-design.md`       | Brief (updated here with directions + convergence) | Develop, Deliver, the implementing dev                    |
+| `.bb/<slug>/design.md`       | Brief (updated here with directions + convergence) | Develop, Deliver, the implementing dev                    |
 | The directions and the convergence | Diverge (written into the brief)                   | medium question, Develop, Deliver, re-entry               |
 | Chosen direction + base block      | Diverge                                            | Develop (what to build), Deliver (what to review against) |
 | Appetite and cuts                  | `/bb:discover` (upstream)                          | Diverge (Step 0, bounds every direction)                  |

@@ -6,7 +6,7 @@ The previous version asked 6-10 questions just to reach "now I'll frame it." Thi
 
 Before branching by the profile, brisar checks whether the builder mentioned **specific intent for a later stage of the trilha**. When there's a clear signal, it shortens the pipeline: jumps to the right phase (or suggests /bb:discover) instead of running the full intake + scaffold.
 
-It reads what the builder typed + `preflight.product.detected` + whether the repo already carries a journey (`.bb/*/brief-design.md`).
+It reads what the builder typed + `preflight.product.detected` + whether the repo already carries a journey (`.bb/*/design.md`).
 
 ### Shortcut matrix
 
@@ -592,7 +592,7 @@ Brief echo with the 3 pieces of data together: _"Got it, hi-fi standalone protot
 ## Open the brief
 
 Phase 1 is where the slug gets confirmed, so it is where the first write happens. Everything
-answered above was held in context until here. Open `.bb/<slug>/brief-design.md`:
+answered above was held in context until here. Open `.bb/<slug>/design.md`:
 
 ```yaml
 ---
