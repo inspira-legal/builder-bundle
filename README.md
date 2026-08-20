@@ -15,6 +15,8 @@ claude plugin marketplace add inspira-legal/builder-bundle
 claude plugin install bb@inspira-legal
 ```
 
+it keeps itself current. once a day, on a session start, a detached worker compares the installed version against the `version` in `plugins/bb/.claude-plugin/plugin.json` on the marketplace's default branch and, when the remote is ahead, runs `claude plugin marketplace update` and `claude plugin update` for you. nothing is asked and nothing waits: the session you are in keeps the version it loaded, the new one starts on the next session, and the only trace is one line in that session's context. `custom_instructions: false` does not turn this off, it governs `~/.claude/BUILDER-BUNDLE.md` alone.
+
 it writes its operating context into `~/.claude/BUILDER-BUNDLE.md`, imported by your `CLAUDE.md` and carrying the profile set by `/bb:profile`, and it ships two read-only agents (`bb-review-finder`, `bb-review-verifier`) that review dispatches in parallel: internal pipeline roles, not entry points. skills are invoked as `/bb:<skill>` (e.g. `/bb:discover`, `/bb:spec`, `/bb:ship`). every skill with a natural next step ends at a gate that **suggests** the next trilha, and never auto-invokes.
 
 ## what is inside

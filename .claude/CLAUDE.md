@@ -18,10 +18,11 @@ plugins/bb/
 │   ├── bb-review-finder.md             # review fan-out: finds candidates, read-only by `tools:`
 │   └── bb-review-verifier.md           # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
 ├── hooks/                             # session infra (auto-active, no skill)
-│   ├── hooks.json                      # SessionStart: keep BUILDER-BUNDLE.md current
+│   ├── hooks.json                      # SessionStart: BUILDER-BUNDLE.md, and bb's own update
 │   ├── enter_worktree.py               # worktree isolation for local autonomous runs
 │   ├── scheduling-decision.md          # /loop vs Desktop task vs Channels decision table
 │   ├── sync_instructions.py            # writes ~/.claude/BUILDER-BUNDLE.md + the CLAUDE.md import
+│   ├── check_version.py                # the daily self-update: the stamp, and the detached worker
 │   └── operating-context.md            # the operating frame it writes from (edit to tune)
 ├── references/                        # plugin-level docs (not skill-scoped)
 │   ├── doc-style.md                    # the style rules for every sentence bb writes
