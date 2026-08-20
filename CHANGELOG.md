@@ -15,6 +15,12 @@ carries `inject_frame` beside `profile`, and `/bb:profile` asks for it.
   two option question, apart from the four about the person, and prints which of the two
   the next session will do. The contract is in `references/bb-config.md`.
 
+### Fixed
+
+- **The hook is invoked as `python3`.** `hooks/hooks.json` said `python`, which is absent
+  on a machine that only ships `python3`. Because the hook must never block a session, it
+  failed the only way it can: silently, with no frame arriving at all.
+
 ## 2.14.0 (2026-08-19)
 
 **The profile is asked once, globally, and the journey lives in the brief.** Calibration
