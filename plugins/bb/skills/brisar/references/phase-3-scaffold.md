@@ -1,6 +1,11 @@
-# Phase 3: scaffold (write real files)
+# Phase 3: scaffold the prototype
 
 This is the phase that delivers. Everything before was conversation; here you write files to disk. If something fails, surface the error. Don't simulate success.
+
+**Everything this phase writes goes under `.bb/<slug>/prototype/`.** The prototype is brisar's
+own output and it sits next to the journey that produced it (plugin-level
+`references/spec-state.md`), which is what lets Deliver find it from the slug alone. The app's
+own source tree is `/bb:implement`'s to write, from the spec.
 
 ## When to run
 
@@ -9,26 +14,24 @@ This is the phase that delivers. Everything before was conversation; here you wr
 
 ## Step 1: confirm slug and location
 
-Phase 1 derived a slug (e.g. `lexflow-semantic-search`). Before creating files, confirm:
+Phase 1 derived a slug (e.g. `lexflow-semantic-search`). The location is not a question: the
+prototype goes to `.bb/<slug>/prototype/`, resolved from the nearest `.bb/` up the tree, the
+same way every other phase resolves the task folder. What is left to confirm is the name:
 
 ```json
 {
   "questions": [
     {
-      "question": "Project slug: '<slug>'. I'll create the folder `./<slug>/` here (`pwd`). OK?",
+      "question": "Slug '<slug>'. The prototype goes to `.bb/<slug>/prototype/`, next to the journey. OK?",
       "header": "Slug",
       "options": [
         {
-          "label": "OK, create it here",
-          "description": "The folder will be ./<slug>/ in the current directory"
+          "label": "OK, go",
+          "description": "Creates .bb/<slug>/prototype/"
         },
         {
           "label": "I want to adjust the slug",
           "description": "Free text, give me the name you prefer"
-        },
-        {
-          "label": "I want to create it in another folder",
-          "description": "Free text, a relative or absolute path"
         }
       ],
       "multiSelect": false
@@ -37,39 +40,40 @@ Phase 1 derived a slug (e.g. `lexflow-semantic-search`). Before creating files, 
 }
 ```
 
-If the slug or path changed, rename the task folder and update the brief's `slug`.
+If the slug changed, rename the task folder and update `design.md`'s `slug`.
 
-Additional check: if the destination folder already exists and is not empty, ask if it's OK to overwrite or if they want another name.
+Additional check: if `prototype/` already exists and is not empty, this is a later round on
+the same journey. Say which surfaces are already there and build on them, the way the
+document's own sections replace rather than accumulate.
 
 ## Step 2: directory structure
 
 Create:
 
 ```
-<slug>/
+.bb/<slug>/prototype/
 ├── package.json
 ├── vite.config.ts
 ├── tsconfig.json
 ├── index.html
 ├── README.md
 ├── .gitignore
-├── src/
-│   ├── main.tsx
-│   ├── App.tsx
-│   ├── index.css
-│   └── components/
-│       └── (empty for now; surfaces will populate)
-└── design-context/
-    ├── tokens.md
-    └── components.md
+└── src/
+    ├── main.tsx
+    ├── App.tsx
+    ├── index.css
+    └── components/
+        └── (empty for now; surfaces will populate)
 ```
 
-The visual direction does **not** live here: Phase 4 writes it into the task folder, `.bb/<slug>/`, next to the spec (plugin-level `references/spec-state.md`).
+The visual direction does **not** live here: it is `## Surfaces` in `.bb/<slug>/design.md`, one
+level up (plugin-level `references/spec-state.md`). Neither does the design system, which is
+read from the plugin at build time (Step 4).
 
 Command:
 
 ```bash
-mkdir -p <slug>/src/components <slug>/design-context
+mkdir -p .bb/<slug>/prototype/src/components
 ```
 
 ## Step 3: file templates
@@ -214,7 +218,7 @@ export default function App() {
 For custom-from-inspira / custom-from-lexflow, use the base with a note in the comment:
 
 ```tsx
-// Initial tokens inherited from brand <base>; adjust in design-context/tokens.md.
+// Initial tokens inherited from brand <base>; the token delta goes in ../design.md.
 ```
 
 ### src/index.css
@@ -264,25 +268,32 @@ pnpm dev
 ## What's here
 
 - `src/`: React code. Still empty; the surfaces will fill it.
-- `design-context/`: the source for /bb:brisar's Develop phase. Don't edit it by hand unless you know what you're doing.
-  The Develop phase finds both by convention: `design-context/` at this folder's root, and the visual direction in the task folder.
 
-The visual direction for each surface lives in `.bb/<slug>/`, next to the spec. Read it before designing.
+This is a prototype: the journey's screens, their states, and the brand tokens applied. No real
+data, no integrations. The visual direction for each surface is `## Surfaces` in
+`../design.md`, one level up. Read it before designing.
 
 ## Next steps
 
-Run `/bb:brisar` again in this folder. It detects the project and offers the Develop phase, which reads `design-context/tokens.md` and `design-context/components.md`, plus the surface's visual direction, and helps you build each surface.
+Run `/bb:brisar` again. It offers the Develop phase, which reads the design system from the
+plugin plus the surface's direction, and helps you build each surface.
 
 For deeper shaping: `/bb:discover`.
 For a formal spec: `/bb:spec`.
 
 ````
 
-## Step 4: design-context/ (contract with the Develop phase)
+## Step 4: where the design system comes from
 
-### design-context/tokens.md
+Nothing is generated here. The Develop phase reads the design system live from
+`${CLAUDE_PLUGIN_ROOT}/skills/brisar/references/ds/`, with `BRISAR_DS_PATH` overriding it when
+the builder points somewhere else. A per-project synthesis would be a copy that never
+revalidates: the DS moves in the plugin and the copy keeps asserting last month's values.
 
-Short synthesis extracted from `<DS_PATH>/<brand.design_md_path>`. Don't copy the entire file, extract the essential. Structure:
+What this project **changes or invents** is the part worth writing, and it goes into
+`.bb/<slug>/design.md` as its token delta, not into a file beside the code. The reference below
+is the shape Research reads out of the DS, kept here so Develop knows what a token synthesis
+looks like when it has to state one in the journey:
 
 ```markdown
 # Tokens: <brand>
@@ -328,7 +339,7 @@ Short synthesis extracted from `<DS_PATH>/<brand.design_md_path>`. Don't copy th
 For Lexflow, adapt the tokens to the dark equivalents.
 For custom, copy from the base but add `> ⚠ Custom, adjust the values as the identity evolves.` at the top.
 
-### design-context/components.md
+### The component synthesis
 
 Synthesis of the "Components: In Scope" and "Components: Out of Scope" sections of the brand's DESIGN.md:
 
@@ -355,16 +366,16 @@ Synthesis of the "Components: In Scope" and "Components: Out of Scope" sections 
 
 ## When you need something out of scope
 
-Edit this file, adding `## Custom added in this project` with the component.
+Record it in the journey's token delta with the reason.
 When you run `/bb:brisar` in feedback mode (future), the additions become seeds for the DS.
 ```
 
-## Step 5: record the scaffold in the brief
+## Step 5: record the scaffold in the journey
 
-No config file: the paths are derived. `design-context/` is at the root of the folder
-this phase just created, and the visual direction is `.bb/<slug>/design.md`, from the
-slug. The brand and the DS path stay in context for this session, and the brief records
-which brand the scaffold was built on.
+No config file: every path is derived from the slug. The prototype is
+`.bb/<slug>/prototype/` and the direction is `## Surfaces` in `.bb/<slug>/design.md`, its
+sibling. The DS path stays in context for this session, and `design.md` records which brand
+the prototype was built on.
 
 Set the brief's frontmatter `phase: design-direction`. Don't mark `status: completed`
 yet, only after Phase 4.
@@ -379,29 +390,18 @@ Instead of Vite + App.tsx, use:
 - `.storybook/main.ts` and `.storybook/preview.ts`
 - `src/components/Button.stories.tsx` as starter
 
-### Embedded (inside existing app)
-
-Don't create a new folder. Instead:
-
-- Ask which folder of the app is the entry point.
-- Create only `design-context/` at the root of the existing app (the design direction goes to `.bb/<slug>/` as usual).
-- Create `src/components/<slug>/` for the feature's components.
-- Don't touch existing `package.json`, `vite.config`, `index.html`.
-
-Warning: embedded is riskier. Confirm with the builder before touching any file of the existing app.
-
 ### Prototype-hosted (static HTML, when `uses_terminal` is false)
 
 **When to run:** `uses_terminal` is false OR `artifact.fidelity == prototype-hosted`. Output is HTML + CSS without a build step. Builder opens the file directly in the browser (`file://` or drag-and-drop).
 
-**Why HTML, not Vite?** Someone who doesn't run commands doesn't have an npm/node/git environment. Vite requires `pnpm install && pnpm dev` running locally: friction that blocks the path. Static HTML opens in any browser, any machine, without dependencies. When the eng team picks it up, they can rewrite it in Vite/React by reading the `HANDOFF-DEV.md`.
+**Why HTML, not Vite?** Someone who doesn't run commands doesn't have an npm/node/git environment. Vite requires `pnpm install && pnpm dev` running locally: friction that blocks the path. Static HTML opens in any browser, any machine, without dependencies.
 
 **DON'T confuse with Framer.** Framer is the specific path for the institutional site (`brand.workflow == framer-harpa`). Static HTML is the path for a new internal tool built without a terminal.
 
 #### Directory structure (variant)
 
 ```
-<slug>/
+.bb/<slug>/prototype/
 ├── index.html                       ← prototype landing (links to each surface)
 ├── <surface-1>.html                 ← one page per surface
 ├── <surface-2>.html
@@ -411,23 +411,25 @@ Warning: embedded is riskier. Confirm with the builder before touching any file 
 └── README.md                        ← everyday language. How to open, how to show
 ```
 
-The written direction for each screen lands in `.bb/<slug>/` (Phase 4), same as the standard variant.
+`styles.css` sits beside the `.html` files because a `<link>` in a static page has to resolve
+without a build step. The written direction for each screen is `## Surfaces` in
+`.bb/<slug>/design.md`, one level up, same as the standard variant.
 
 DO NOT create: `package.json`, `vite.config.ts`, `tsconfig.json`, `src/`, `node_modules/`.
 
 #### Step 1: confirm slug (same as normal variant)
 
-Same Step 1 as the standard scaffold. Confirms slug and where to create the folder.
+Same Step 1 as the standard scaffold. Confirms the slug; the location is derived.
 
 #### Step 2: create the folder
 
 ```bash
-mkdir -p <slug>
+mkdir -p .bb/<slug>/prototype
 ```
 
 #### Step 3: HTML templates
 
-##### `<slug>/index.html`: landing
+##### `prototype/index.html`: landing
 
 ```html
 <!doctype html>
@@ -463,7 +465,7 @@ mkdir -p <slug>
 </html>
 ```
 
-##### `<slug>/<surface>.html`: one per surface (generated in Phase 4 + scaffold base here)
+##### `prototype/<surface>.html`: one per surface (generated in Phase 4 + scaffold base here)
 
 Phase 3 creates empty stubs; Phase 4 populates with content from the visual direction. Stub:
 
@@ -487,7 +489,7 @@ Phase 3 creates empty stubs; Phase 4 populates with content from the visual dire
 </html>
 ```
 
-##### `<slug>/styles.css`
+##### `prototype/styles.css`
 
 Brand tokens in `:root` (extracted from DESIGN.md, same as the standard scaffold extracts for Tailwind), BUT here they are pure CSS vars (no Tailwind):
 
@@ -594,7 +596,7 @@ a {
 }
 ```
 
-##### `<slug>/HANDOFF-DEV.md`: delivery for the technical team
+##### `prototype/HANDOFF-DEV.md`: delivery for the technical team
 
 ```markdown
 # HANDOFF: <slug>
@@ -618,10 +620,10 @@ a {
 
 | Screen      | File                                 | Visual direction                      |
 | ----------- | ------------------------------------ | ------------------------------------- |
-| <surface-1> | [<surface-1>.html](<surface-1>.html) | `../.bb/<slug>/design/<surface-1>.md` |
-| <surface-2> | [<surface-2>.html](<surface-2>.html) | `../.bb/<slug>/design/<surface-2>.md` |
+| <surface-1> | [<surface-1>.html](<surface-1>.html) | `../design.md`, `### <surface-1>` |
+| <surface-2> | [<surface-2>.html](<surface-2>.html) | `../design.md`, `### <surface-2>` |
 
-The visual direction for each screen lives in `.bb/<slug>/`, next to the spec. Read it BEFORE the HTML. The HTML is mocked; the spec carries the intent.
+The visual direction for each screen is `## Surfaces` in `../design.md`. Read it BEFORE the HTML. The HTML is mocked; the journey carries the intent.
 
 ## Recommended stack for production
 
@@ -634,22 +636,22 @@ This tool is a candidate to become an internal app. A stack aligned with the res
   1. Run `/bb:brisar` in Inspira's root folder (not in this folder. This one is only a prototype).
   2. When it asks for the profile, pick "I can work in code".
   3. When it asks about product/brand: pick <brand>.
-  4. /bb:brisar scaffolds Vite. Use the visual direction in `.bb/<slug>/` as the input for the Develop phase in the new project.
+  4. /bb:brisar scaffolds Vite. Use `## Surfaces` in `.bb/<slug>/design.md` as the input for the Develop phase.
 
 ## What to avoid
 
 - Don't copy the HTML/CSS directly. Rewrite it as typed React components, using the DS.
 - Don't use the hardcoded colors in `styles.css`. Use the semantic Tailwind v4 tokens of the real scaffold.
-- Don't ask for approval on every screen. The visual direction is already in `.bb/<slug>/`.
+- Don't ask for approval on every screen. The visual direction is already in `.bb/<slug>/design.md`.
 
 ## Who made the prototype
 
 <person>. Use <person> as the validation stakeholder. Not as the end client of the code.
 ```
 
-Fill the "Visual direction" column from the `surfaces[]` Phase 4 recorded, one row per surface, with a single surface that path is `../.bb/<slug>/design.md`.
+Fill the "Visual direction" column from the `surfaces[]` Phase 4 recorded, one row per surface, each pointing at its `### <surface>` subsection in `../design.md`.
 
-##### `<slug>/README.md`: everyday language
+##### `prototype/README.md`: everyday language
 
 ```markdown
 # <slug>
@@ -658,7 +660,7 @@ A clickable prototype of your idea. Generated by /bb:brisar on <date>.
 
 ## How to open it
 
-1. Open the `<slug>/` folder in Finder.
+1. Open the `.bb/<slug>/prototype/` folder in Finder.
 2. Double-click `index.html`.
 3. It opens in your browser (Chrome/Safari/Edge, any of them).
 4. The links take you to each screen of the prototype.
@@ -667,7 +669,7 @@ You don't need to install anything. It works offline.
 
 ## How to show it to the team
 
-Option 1. Share the whole folder: zip `<slug>/` and send it. Each person opens the `index.html`.
+Option 1. Share the whole folder: zip `prototype/` and send it. Each person opens the `index.html`.
 
 Option 2. Host it for a link: drop the folder on Vercel/Netlify (or ask the eng team). Then it becomes a normal link.
 
@@ -682,13 +684,13 @@ This prototype is for validating the idea. **It is not the final product.** The 
 - `styles.css`: the visuals (colors, fonts, spacing of the <brand> brand)
 - `HANDOFF-DEV.md`: the package for the technical team (you don't need to open it, but if you pass this on, send this file)
 
-The spec for each screen (the text explaining what it does) lives in `.bb/<slug>/`, one folder up.
+The written direction for each screen is in `../design.md`, one folder up.
 ```
 
 #### Step 4: record the prototype in the brief
 
 Same as the standard variant, with one difference to state in prose: this is a
-prototype-hosted artifact, so there is no `design-context/` and the Develop phase is not
+prototype-hosted artifact, so there is no Vite scaffold and the Develop phase is not
 used on this path. Which HTML file each surface landed in is Phase 4's business, and it
 goes into `design.md`'s own frontmatter beside the direction it describes.
 
@@ -705,7 +707,7 @@ variant).
 
 #### Phase 4 in this variant
 
-Phase 4 populates the `<surface>.html` stubs with HTML markup aligned to the surface's direction file in `.bb/<slug>/`. Not with React components, but with sections/divs styled via classes in `styles.css`. Result: builder opens `index.html`, clicks on a surface, sees a layout close to the brief.
+Phase 4 populates the `<surface>.html` stubs with HTML markup aligned to the surface's `### <surface>` subsection in `.bb/<slug>/design.md`. Not with React components, but with sections/divs styled via classes in `styles.css`. Result: builder opens `index.html`, clicks on a surface, sees a layout close to the brief.
 
 #### Phase 5 in this variant
 

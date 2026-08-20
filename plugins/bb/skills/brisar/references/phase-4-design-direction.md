@@ -74,7 +74,7 @@ If your structure is different, edit this README freely. It is your project.
 
 ## How to build it
 
-Run `/bb:brisar` again in the project folder. It detects the project and offers the Develop phase. The phase reads `design-context/` for the tokens and components, and the file in this folder for the brief of the specific surface. I recommend drawing one surface at a time.
+Run `/bb:brisar` again. It offers the Develop phase, which reads the design system from the plugin and this document's `### <surface>` subsection for the surface being built. I recommend drawing one surface at a time.
 ```
 
 ## Step 3: generate one file per surface
@@ -105,7 +105,7 @@ Each bullet in one sentence. Do not write more than 5 bullets. If you need to, r
 
 ## Componentes do DS a usar
 
-[List 3-7 components from `design-context/components.md` that fit here. For each, say "for X" or "for Y". Do not blindly copy the list.
+[List 3-7 components from the DS that fit here. For each, say "for X" or "for Y". Do not blindly copy the list.
 
 Examples:
 

@@ -12,7 +12,7 @@ It reads what the builder typed + `preflight.product.detected` + whether the rep
 
 | Signal in raw_prompt                                                                                                                       | Cwd                                              | Shortcut          | Target                   | What brisar does                                                                              |
 | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------ | ----------------- | ------------------------ | --------------------------------------------------------------------------------------------- |
-| "one screen", "design only", "quick prototype", "design X", "build screen Y"                                                               | already-scaffolded repo (has `design-context/`)  | `develop-direct`  | Develop phase (internal) | Skips intake. After confirmation, jumps to `references/phase-develop.md`.                     |
+| "one screen", "design only", "quick prototype", "design X", "build screen Y"                                                               | a slug with `.bb/<slug>/prototype/`              | `develop-direct`  | Develop phase (internal) | Skips intake. After confirmation, jumps to `references/phase-develop.md`.                     |
 | "review this design", "I need docs for the dev", "before merging", "close the deliver", "prepare the PR"                                   | repo with surfaces in `src/` or `<surface>.html` | `deliver-direct`  | Deliver phase (internal) | Skips intake. After confirmation, jumps to `references/phase-deliver.md`.                     |
 | "shape it", "mature the problem", "is it worth it", "validate the market", "is there demand", "I need to cut scope", "prioritize features" | any                                              | `discover-direct` | `/bb:discover`           | Skips intake. Suggests `/bb:discover` (it runs its own intake) and STOPS, never auto-invokes. |
 | "I want to start", "new project", "scaffold it", "screen X in brand Y" (default)                                                           | any                                              | none              | (follows normal flow)    | Variant branch below.                                                                         |
@@ -56,7 +56,7 @@ A heuristic-detected shortcut may be wrong. Asking for confirmation costs 1 turn
 
 ### When NOT to fire the shortcut (even with a signal)
 
-- No `design-context/` in cwd AND signal is `develop-direct`: scaffold is a prerequisite for the Develop phase. Falls into the normal flow; the Phase 5 gate offers Develop at the end.
+- No `.bb/<slug>/prototype/` AND signal is `develop-direct`: the scaffold is a prerequisite for the Develop phase. Falls into the normal flow; the Phase 5 gate offers Develop at the end.
 - `reads_code` is false, or `brand.workflow == framer-harpa`: skip shortcuts. These paths have operational or brand-first intake that doesn't combine well with short-circuit.
 
 ---
@@ -314,7 +314,7 @@ What each answer settles:
 - `artifact.hosting: prototype-hosted`
 - `artifact.audience: no-code`
 
-Short echo in operational language. E.g.: _"Got it, project: 'financial management platform'. For an internal team. For this week. I'll put together a clickable HTML prototype you can open in the browser and show the team. It generates a `<slug>/` folder with the files ready plus a `HANDOFF-DEV.md` the technical team uses to carry on."_
+Short echo in operational language. E.g.: _"Got it, project: 'financial management platform'. For an internal team. For this week. I'll put together a clickable HTML prototype you can open in the browser and show the team. It lands in `.bb/<slug>/prototype/`, with the files ready plus a `HANDOFF-DEV.md` the technical team uses to carry on."_
 
 **Phase 2 (gate) does NOT run when `reads_code` is false.** Goes straight to Phase 3 prototype-hosted variant.
 
@@ -328,7 +328,7 @@ When `preflight.product.detected` is a known product (inspira-saas, portal-clien
 | ---------------------- | ----------------------------------------- |
 | `brand.name`           | `product.brand`                           |
 | `brand.design_md_path` | derived from `product.ds_source`          |
-| `artifact.hosting`     | `embedded` (always, for detected product) |
+| `artifact.hosting`     | `standalone` (the prototype folder)       |
 | `mode`                 | `product.mode_default` (usually `embed`)  |
 
 What still needs to be asked:
@@ -434,7 +434,7 @@ Use the registry built in Step 0.3. Construct the options dynamically:
           { "label": "Start from zero", "description": "Tailwind primitives only, no brand layer" },
           {
             "label": "I have external tokens",
-            "description": "I'll put them in design-context by hand"
+            "description": "I'll paste them and you record the delta"
           }
         ],
         "multiSelect": false
@@ -443,7 +443,7 @@ Use the registry built in Step 0.3. Construct the options dynamically:
   }
   ```
   Register `brand.source: custom-from-inspira | custom-from-lexflow | from-scratch | external-tokens`. For custom-from-X, copy the tokens of the base brand but register `brand.name: custom`, `brand.design_md_path: null`.
-- **Don't know yet**: register `brand: deferred`. Use Inspira as fallback in the scaffold but warn: _"I'll use Inspira as the base; once you decide, edit `<slug>/design-context/tokens.md` or run `/bb:brisar` again."_
+- **Don't know yet**: register `brand: deferred`. Use Inspira as fallback in the scaffold but warn: _"I'll use Inspira as the base; once you decide, run `/bb:brisar` again."_
 - **Empty brand registry (DS not-found)**: fall back to free-text mode. Ask which brand, register `brand.source: free-text`, use Tailwind primitives in the scaffold.
 
 Short echo.
@@ -538,16 +538,8 @@ Combined question (a single `AskUserQuestion` with 2 questions, both structured)
           "description": "Final visuals, mock data, new repo"
         },
         {
-          "label": "Hi-fi prototype (embedded)",
-          "description": "Final visuals inside an existing app"
-        },
-        {
           "label": "Product live (standalone)",
           "description": "Real deploy, new repo, real data"
-        },
-        {
-          "label": "Product live (embedded)",
-          "description": "Real deploy, existing app, real data"
         },
         { "label": "Storybook only", "description": "An isolated component for review" }
       ],
@@ -580,8 +572,11 @@ Combined question (a single `AskUserQuestion` with 2 questions, both structured)
 
 Capture:
 
-- `artifact.fidelity` ∈ `{low-fi, mid-fi, hi-fi, production, storybook-only}` (mapped from the 7 labels)
-- `artifact.hosting` ∈ `{standalone, embedded, storybook-only}` (mapped)
+- `artifact.fidelity` ∈ `{low-fi, mid-fi, hi-fi, production, storybook-only}` (mapped from the 5 labels)
+- `artifact.hosting` ∈ `{standalone, prototype-hosted, storybook-only}` (mapped). There is no
+  hosting inside an existing app: every prototype is born in `.bb/<slug>/prototype/`. A builder who
+  wants the surface in the product is asking for `/bb:spec` then `/bb:implement`, and saying so is
+  the answer, not scaffolding into their `src/`.
 - `shaping.appetite` (string)
 - `intent.scale_signal` ∈ `{exploration, will-scale, commitment}`, derived from the second question
 

@@ -10,7 +10,7 @@ every medium, but the target and the tooling change:
 
 | `medium.chosen` | Target artifact                             | Tooling    | Notes                                                                                                   |
 | --------------- | ------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------- |
-| `code`          | `.tsx` / `.html` in the project             | Write/Edit | The templates below. Uses `design-context/` from Phase 3.                                               |
+| `code`          | `.tsx` / `.html` in `.bb/<slug>/prototype/` | Write/Edit | The templates below. The DS comes from the plugin, never from the project.                              |
 | `claude-design` | one self-contained HTML preview per surface | Write      | Inline all CSS; no external fetches. No scaffold exists; token values come from the research (Front B). |
 | `paper`         | artboards in a Paper file                   | Paper MCP  | Read the tool's own guide before the first write. Values set explicitly, never eyeballed.               |
 | `figma`         | frames in a Figma file                      | Figma MCP  | Reuse the file's components and variables before creating new nodes.                                    |
@@ -18,9 +18,10 @@ every medium, but the target and the tooling change:
 
 **Rules that hold in every medium:**
 
-- **Tokens first, from the source.** On a canvas medium there is no `design-context/tokens.md`; the values
-  come from the research's DS front, which read the real source. Same authority, one
-  step earlier.
+- **Tokens first, from the source.** The DS ships with the plugin, at
+  `${CLAUDE_PLUGIN_ROOT}/skills/brisar/references/ds/` (or `BRISAR_DS_PATH`). What this project
+  changed or invented is the token delta in `.bb/<slug>/design.md`, and on a canvas medium the
+  values the research front read are the same authority, one step earlier.
 - **The chosen direction is the contract.** Same five parts (bet, composition, copy, rationale,
   risk) whatever the medium. If the medium makes a part awkward, say so. Do not quietly drop it.
 - **The copy is the copy.** The direction's strings go in as written. Placeholder text on a canvas
@@ -40,27 +41,28 @@ every medium, but the target and the tooling change:
 
 ### Inputs
 
-- `<project>/design-context/tokens.md`: colors, spacing, type-scale
-- `<project>/design-context/components.md`: components available in the DS
+- `${CLAUDE_PLUGIN_ROOT}/skills/brisar/references/ds/` (or `BRISAR_DS_PATH`): the tokens and the
+  components the DS offers
 - `.bb/<slug>/design.md`, `## Surfaces`: the visual direction written by Phase 4 (hierarchy, components, states, sketch), with the surfaces listed in the document's frontmatter
 - `.bb/<slug>/spec.md`: cuts, hypothesis, appetite
 - `.bb/<slug>/design.md`: the research, the chosen direction and the medium; **the richer
   input when it exists**
-- On a canvas or `claude-design` medium, `design-context/` **does not exist**. Fall back to the
-  brief + the research DS values. That is not degraded mode; it is the normal path for those
-  mediums.
+- On a canvas or `claude-design` medium there is no `prototype/` folder. The DS still comes from
+  the plugin; only the target artifact changes. That is not degraded mode; it is the normal path
+  for those mediums.
 
 ### Target decision (silent before building)
 
 First the medium (table at the top of this file). When the medium is `code`, then read the
 hosting recorded in the brief:
 
-| Hosting            | Target                                                                             |
-| ------------------ | ---------------------------------------------------------------------------------- |
-| `standalone`       | React + Tailwind in `src/<surface>.tsx`                                            |
-| `embedded`         | React + Tailwind in `src/pages/<surface>.tsx` (or convention of the embedded repo) |
-| `prototype-hosted` | Plain static HTML in `<surface>.html` (no Vite, no build)                          |
-| `storybook-only`   | Story in `src/stories/<Component>.stories.tsx`                                     |
+Every target is under `.bb/<slug>/prototype/`:
+
+| Hosting            | Target                                                       |
+| ------------------ | ------------------------------------------------------------ |
+| `standalone`       | React + Tailwind in `src/<surface>.tsx`                      |
+| `prototype-hosted` | Plain static HTML in `<surface>.html` (no Vite, no build)     |
+| `storybook-only`   | Story in `src/stories/<Component>.stories.tsx`               |
 
 ### Per-surface checklist
 
@@ -142,8 +144,7 @@ export default function <SurfaceName>() {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><Brand>, <surface></title>
-    <link rel="stylesheet" href="design-context/tokens.css" />
-    <link rel="stylesheet" href="design-context/components.css" />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main>

@@ -165,7 +165,7 @@ Lazy-load `references/deliver-modes.md`. Do not load all modes in Step 0.
 
 - **Design review:** sweeps **surface × variant** (reads the surfaces list in `.bb/<slug>/design.md`'s frontmatter and each entry's `variants[]`), through **seven lenses**: the four structural ones plus copy, computed contrast, and the triangulation. Full list and how to run each: `deliver-modes.md#mode-1-design-review`. Comments only if the issue is significant. At least 1 piece of praise for what worked (not cheerleading. It's information: "this worked, keep it").
 - **Accessibility:** suggests `/bb:review`'s accessibility audit (surface scope. It can read the rendered page) if the builder requested depth or if it's going to merge. Otherwise, does inline: color contrast, keyboard navigation (mental walkthrough), `aria-label` on icons, tab order, visible focus.
-- **Handoff doc:** reads tokens + components from the design-context (or from the design brief's DS section on a canvas medium), reads the built surfaces, and generates a structured doc for the developer. Doesn't invent components, only maps what exists. If context to fill a section is missing, ask or skip it with `not-applicable` + reason. **Also produces the spec delta** when the design learned something the contract does not carry yet.
+- **Handoff doc:** reads tokens + components from the plugin's design system, reads the built surfaces, and generates a structured doc for the developer. Doesn't invent components, only maps what exists. If context to fill a section is missing, ask or skip it with `not-applicable` + reason. **Also produces the spec delta** when the design learned something the contract does not carry yet.
 
 ### Severity: four levels, and one of them is new
 

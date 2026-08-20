@@ -156,7 +156,7 @@ Happy path:
       sections that replace, the frontmatter moves to it, every phase reference points
       at it
       → behaviors 3, E3, E6, E11 · dep: — · verify: `grep -rn "brief-design\|develop-notes\|design-review\|accessibility-checklist"` is empty
-- [ ] **4. Prototype in `.bb/`, DS from the plugin**: `embedded` and `design-context/`
+- [x] **4. Prototype in `.bb/`, DS from the plugin**: `embedded` and `design-context/`
       are removed, the prototype path becomes `.bb/<slug>/prototype/`, Develop's
       opening says prototype instead of high-fidelity surface construction
       → behaviors 4, E7, E8, E12 · dep: 3 · verify: `grep -rn "design-context"` is empty

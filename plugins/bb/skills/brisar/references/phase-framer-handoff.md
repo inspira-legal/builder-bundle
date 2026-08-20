@@ -4,7 +4,7 @@ Replaces Phase 2 (gate) + Phase 3 (scaffold) + Phase 4 (design-direction) **only
 
 ## Why this phase exists
 
-The standard brisar flow (Vite + Tailwind + design-context/) is incompatible with Framer:
+The standard brisar flow (Vite + Tailwind in `prototype/`) is incompatible with Framer:
 
 - Framer doesn't accept Tailwind nor CSS modules, code components use inline styles only.
 - Tokens live as Framer color styles (`/Rich Black`, `/Centaurea`, `/Cornflower`), not as CSS vars.
@@ -123,4 +123,4 @@ Phase 5 already has conditional variants (production override, custom brand, etc
 
 ## One sharp caution
 
-Never scaffold or generate design-context on the Framer path. The single handoff file in the cwd is the whole output: `harpa-lpbuilder/.claude/rules/` already carries the token/component equivalents (duplicating creates drift), the Develop phase is not used (the Claude session inside `harpa-lpbuilder` does that work), and the `mcp-unframer-co` MCP belongs to that session, not this one. If the builder doesn't have the MCP configured, the markdown handoff still works. Mention they can add the MCP to their Claude config (`~/.claude.json`, `mcpServers` block) for the live-canvas path next time.
+Never scaffold a prototype folder on the Framer path. The single handoff file in the cwd is the whole output: `harpa-lpbuilder/.claude/rules/` already carries the token/component equivalents (duplicating creates drift), the Develop phase is not used (the Claude session inside `harpa-lpbuilder` does that work), and the `mcp-unframer-co` MCP belongs to that session, not this one. If the builder doesn't have the MCP configured, the markdown handoff still works. Mention they can add the MCP to their Claude config (`~/.claude.json`, `mcpServers` block) for the live-canvas path next time.

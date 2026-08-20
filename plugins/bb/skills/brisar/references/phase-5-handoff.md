@@ -1,11 +1,11 @@
 # Phase 5: handoff + gate
 
-After Phase 4 writes the visual direction of each surface into `.bb/<slug>/`, the journey-map part of brisar is done. This phase prints the handoff summary, shaped by the profile, and ends with the **handoff gate**. A single `AskUserQuestion` offering the natural next steps. The gate suggests, never auto-invokes (per `plugins/bb/references/handoff-gate.md`).
+After Phase 4 writes the visual direction of each surface into `.bb/<slug>/design.md`, the journey-map part of brisar is done. This phase prints the handoff summary, shaped by the profile, and ends with the **handoff gate**. A single `AskUserQuestion` offering the natural next steps. The gate suggests, never auto-invokes (per `plugins/bb/references/handoff-gate.md`).
 
-**Read the medium before writing the summary.** Everything below that names `design-context/`
-or the scaffolded project folder assumes medium `code`. On a canvas or
+**Read the medium before writing the summary.** Everything below that names the `prototype/`
+folder assumes medium `code`. On a canvas or
 `claude-design` medium Phase 3 was skipped (`medium.scaffold: skipped`) and none of those exist:
-report the design brief and the canvas artifact instead. Telling the builder to open a folder that
+report `design.md` and the canvas artifact instead. Telling the builder to open a folder that
 was never created is the kind of error that reads as the tool being confused about its own state.
 
 ## Output shape (default: `technical_instructions` true)
@@ -13,20 +13,14 @@ was never created is the kind of error that reads as the tool being confused abo
 Plain text. Structure:
 
 ```
-✓ /bb:brisar finished the scaffold. Project at ./<slug>/
+✓ /bb:brisar finished the scaffold. Prototype at .bb/<slug>/prototype/
 
 Structure created:
-  <slug>/
-  ├── package.json, vite.config.ts, tsconfig.json
-  ├── src/{main.tsx, App.tsx, index.css, tokens-brand.css}
-  └── design-context/{tokens.md, components.md}     ← the Develop phase reads this
-
-  .bb/<slug>/                                        ← next to the spec
-  └── design/                                        ← the brief for each surface
-      ├── README.md (suggested order)
-      ├── <surface-1>.md
-      ├── <surface-2>.md
-      └── <surface-3>.md
+  .bb/<slug>/
+  ├── design.md                                      ← the journey, one surface per section
+  └── prototype/
+      ├── package.json, vite.config.ts, tsconfig.json
+      └── src/{main.tsx, App.tsx, index.css, tokens-brand.css}
 
 To run it:
 
@@ -48,7 +42,7 @@ Then the gate:
       "options": [
         {
           "label": "Build the surfaces now (Develop phase)",
-          "description": "I continue in this session: I read the chosen direction in the design brief + the visual direction in .bb/<slug>/ + design-context/ and build screen by screen"
+          "description": "I continue in this session: I read the chosen direction and each surface in .bb/<slug>/design.md, plus the DS from the plugin, and build screen by screen"
         },
         {
           "label": "Run /bb:discover first",
@@ -76,21 +70,21 @@ Then the gate:
 **Replaces the whole default terminal**: nobody runs `pnpm dev` here and the Develop phase doesn't apply (design goes straight to HTML in Phase 4).
 
 ```
-✓ /bb:brisar finished. HTML prototype created at ./<slug>/
+✓ /bb:brisar finished. HTML prototype created at .bb/<slug>/prototype/
 
 What's here:
-  <slug>/
-  ├── index.html              ← open this file in the browser (double-click)
-  ├── <surface-1>.html        ← one page per screen
-  ├── <surface-2>.html
-  ├── styles.css              ← the visuals of the <brand> brand
-  ├── README.md               ← how to show it to the team
-  └── HANDOFF-DEV.md          ← the package for the technical team to carry on
-
-  .bb/<slug>/                 ← the written brief for each screen lives here
+  .bb/<slug>/
+  ├── design.md               ← the written direction for each screen
+  └── prototype/
+      ├── index.html          ← open this file in the browser (double-click)
+      ├── <surface-1>.html    ← one page per screen
+      ├── <surface-2>.html
+      ├── styles.css          ← the visuals of the <brand> brand
+      ├── README.md           ← how to show it to the team
+      └── HANDOFF-DEV.md      ← the package for the technical team to carry on
 
 How to open it:
-  1. Go to the <slug>/ folder in Finder
+  1. Go to the .bb/<slug>/prototype/ folder in Finder
   2. Double-click index.html
   3. It opens in the browser. The links on the page take you to each screen.
 
@@ -160,7 +154,7 @@ Add:
 
 ```
 ⚠ Brand: not decided yet. I used the Inspira tokens as a fallback.
-When you decide, edit <slug>/design-context/tokens.md or run /bb:brisar again.
+When you decide, run /bb:brisar again.
 ```
 
 ### If brand.source ∈ {custom-from-inspira, custom-from-lexflow, from-scratch, external-tokens}
@@ -169,7 +163,7 @@ Add:
 
 ```
 ⚠ Custom brand (<source>): the initial tokens are inherited from <base>.
-Edit <slug>/design-context/tokens.md as the identity evolves.
+The token delta in design.md carries the identity as it evolves.
 When it stabilizes, consider promoting it to a DESIGN.md of its own at <DS_PATH>/brand/<name>/.
 ```
 
@@ -204,7 +198,7 @@ Review or promote them whenever you want. They are candidates for new DS compone
 
 ## When to run /bb:brisar again in the same project
 
-If the builder returns to the same `<slug>/` and runs /bb:brisar:
+If the builder returns to the same slug and runs /bb:brisar:
 
 - Step 0 finds `.bb/<slug>/design.md` with `status: completed` in its frontmatter.
 - Asks:
@@ -213,7 +207,7 @@ If the builder returns to the same `<slug>/` and runs /bb:brisar:
   - Build/iterate the surfaces (Develop phase)
   - Review/handoff what exists (Deliver phase)
   - Add a new surface (goes to Phase 4)
-  - Switch brand (rewrites design-context/, keeps src/)
+  - Switch brand (rewrites the tokens, keeps src/)
   - Reframe it (I suggest /bb:discover)
   - Start over from zero (appends a new round to the brief, keeping the old one)
   ```

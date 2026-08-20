@@ -1,13 +1,12 @@
-# Develop phase: high-fidelity surface construction
+# Develop phase: build the prototype
 
-Loaded when the builder chooses to build surfaces (Phase 5 gate, the `develop-direct` shortcut, or re-entry). You build high-fidelity screens by reading the **written contract** produced by the earlier phases: tokens, components, visual direction per surface. This phase does not invent brand, does not decide scope, does not review delivery. It builds what was agreed.
+Loaded when the builder chooses to build surfaces (Phase 5 gate, the `develop-direct` shortcut, or re-entry). You build a **clickable prototype** of the journey: its screens navigating between each other, each screen's states, the DS tokens applied. Mock data, no integrations, no error handling, no tests. That is not a degradation, it is what a prototype is for; the product code is `/bb:implement`'s job, written from the spec.
 
 The discipline here is **fidelity to contracts**:
 
-- Find the two paths by convention: `design-context/` at the project root, and the task folder `.bb/<slug>/` for the direction.
-- Read `tokens.md` + `components.md` from that path, sources of truth for the design system.
-- Read the surface's direction file, `.bb/<slug>/<surfaces[].file>`, written in Phase 4 inside the task folder.
-- Build React + Tailwind (or plain static HTML if `prototype-hosted`) applying tokens faithfully.
+- Read the design system from the plugin: `${CLAUDE_PLUGIN_ROOT}/skills/brisar/references/ds/`, or `BRISAR_DS_PATH` when the builder set it.
+- Read the surface's direction, `## Surfaces` in `.bb/<slug>/design.md`, written in Phase 4.
+- Build React + Tailwind (or plain static HTML if `prototype-hosted`) into `.bb/<slug>/prototype/`, applying tokens faithfully.
 - When something is not in the DS, **ask** before inventing.
 
 ## Cross-awareness with the journey
@@ -16,7 +15,7 @@ Before any question, read `.bb/<slug>/design.md` in full, and with it:
 
 - **The spec next to it** (`.bb/<slug>/spec.md`), when there is one. Read it. Cuts recorded there are respected: DO NOT prototype features that were cut. Flag at the start: "I am skipping [feature_x] because it was cut in the discover." The hypothesis informs layout decisions (when the builder asks "how should I arrange the CTA?", recall it). The appetite scales fidelity: small/medium appetite = lean fidelity (structure + tokens; no microinteraction polish); large appetite = polish included.
 - **The brief itself** is the **richer contract**: it carries the research, the chosen direction with its five parts (bet, composition, copy, rationale, risk), the base block common to all directions, and the token constraints read from source. The copy in the direction is the copy you build. Not a starting point to improve on. The spec and the design brief **coexist**: the spec says what problem and what was cut; the design brief says how this surface should be.
-- **Read the medium** recorded by the medium question: it decides the artifact and the tooling (table at the top of `references/develop-modes.md`). On a canvas or `claude-design` medium there is no scaffold and no `design-context/`; that is the normal path, not a failure.
+- **Read the medium** recorded by the medium question: it decides the artifact and the tooling (table at the top of `references/develop-modes.md`). On a canvas or `claude-design` medium there is no `prototype/` folder; the artifact is the canvas, named in the surfaces list. That is the normal path, not a failure.
 - **Save your output** in `.bb/<slug>/design.md` under `## Built` (Step 3 below), update the
   surfaces list in its frontmatter, and set `phase: develop`.
 
@@ -29,53 +28,53 @@ Checks, without printing anything. **Which ones apply depends on `medium.chosen`
 The medium is in the brief, recorded by the medium question.
 
 - medium `code` → run 0.1–0.3 below.
-- medium `claude-design`, `paper`, `figma` or `pencil` → **skip 0.1 and 0.2**. There is no
-  `design-context/` on those paths by design, the scaffold is skipped. Instead confirm the MCP
-  for that medium is reachable, and get the contract from the brief + the research DS values.
-  Only if the brief is also missing do you fall into fallback mode.
+- medium `claude-design`, `paper`, `figma` or `pencil` → **skip 0.1**. There is no `prototype/`
+  folder on those paths by design, the scaffold is skipped. Instead confirm the MCP for that
+  medium is reachable. The DS still comes from the plugin (0.2), the same as on `code`.
+  Only if `design.md` is also missing do you fall into fallback mode.
 - No medium in the brief → the builder arrived by shortcut, without the medium question. Do not
   guess: run the medium question (`references/phase-medium.md`) first. It is one turn and it
   decides everything downstream.
 
-### 0.1: the scaffold (medium `code` only)
+### 0.1: the prototype folder (medium `code` only)
 
 ```bash
-test -d design-context
+test -d "$BB/<slug>/prototype"
 ```
 
-If it does not exist: the builder reached Develop without the scaffold phases. Fall into **fallback mode**, ask where the design system is (with tokens.md/components.md) or offer to run the full brisar journey first.
+If it does not exist: the builder reached Develop without Phase 3. Offer to run the scaffold, which is one turn, rather than improvising a folder here.
 
-### 0.2: Design context (medium `code` only)
+### 0.2: the design system
 
-`design-context/` sits at the project root: `<project>/design-context/`.
+It ships with the plugin, so there is nothing per-project to find:
 
 ```bash
-test -f "${DC_PATH}/tokens.md" && test -f "${DC_PATH}/components.md"
+DS_PATH="${BRISAR_DS_PATH:-${CLAUDE_PLUGIN_ROOT}/skills/brisar/references/ds}"
+test -d "$DS_PATH/brand"
 ```
 
-If missing: warning + degrade to visual construction without DS (structure first, tokens later).
+If `BRISAR_DS_PATH` is set but unreadable, fall back to the plugin's own `references/ds/` and say so once, then continue. Only if neither resolves do you degrade to visual construction without DS (structure first, tokens later).
 
 ### 0.3: visual direction per surface
 
-The surfaces are listed in the direction's own frontmatter, each with a `file` relative to the task folder. The task folder is the one for this slug, under the nearest `.bb/` up the tree (Develop usually runs inside the project folder, one level below it):
+The surfaces are listed in `design.md`'s own frontmatter, each with its `artifact`. The task folder is the one for this slug, under the nearest `.bb/` up the tree:
 
 ```bash
 BB=$(d=$PWD; while [ "$d" != / ] && [ ! -d "$d/.bb" ]; do d=$(dirname "$d"); done; echo "$d/.bb")
-ls "$BB/<slug>/design.md" "$BB/<slug>/design"/*.md \
-   "$BB/tasks/<slug>/design.md" "$BB/tasks/<slug>/design"/*.md 2>/dev/null
+ls "$BB/<slug>/design.md" "$BB/tasks/<slug>/design.md" 2>/dev/null
 ```
 
-If no surface has a md: Phase 4 needs to run first (offer it) or the builder describes the screen directly in chat.
+If `## Surfaces` is empty: Phase 4 needs to run first (offer it) or the builder describes the screen directly in chat.
 
-**Exception. A design brief outranks this check.** When `.bb/<slug>/design.md` already carries
-a chosen direction, you already have the visual direction in a richer form. Do not send the builder back to
-Phase 4 to produce a thinner version of what the brief already says.
+**Exception. A chosen direction outranks this check.** When `design.md` already carries one,
+you have the visual direction in a richer form. Do not send the builder back to Phase 4 to
+produce a thinner version of what the document already says.
 
 ## Step 1: intake (1-2 questions)
 
 Print the introduction:
 
-> **Develop phase**: I am going to build a high-fidelity screen applying the design-context. Mode: full surface, single component, or iteration on something that exists.
+> **Develop phase**: I am going to build a clickable prototype of the screen, with the DS tokens applied. Mode: full surface, single component, or iteration on something that exists.
 
 Call `AskUserQuestion`:
 
@@ -88,11 +87,11 @@ Call `AskUserQuestion`:
       "options": [
         {
           "label": "Full surface",
-          "description": "Build 1 or more surfaces end to end (reads the visual direction of each one at .bb/<slug>/). Recommended if you came from the scaffold."
+          "description": "Build 1 or more surfaces end to end (reads each one's direction in .bb/<slug>/design.md). Recommended if you came from the scaffold."
         },
         {
           "label": "Single component",
-          "description": "Build 1 new component or DS variant (button, card, dialog, and so on). The output goes to the project components/."
+          "description": "Build 1 new component or DS variant (button, card, dialog, and so on). The output goes to the prototype's components/."
         },
         {
           "label": "Iterate on what exists",
@@ -114,7 +113,7 @@ If "Full surface" and `surfaces[]` has more than one entry, ask the second quest
       "question": "Which surface, or surfaces?",
       "header": "Surface",
       "options": [
-        { "label": "<surface_1>", "description": "Visual direction of <surface_1>.md" },
+        { "label": "<surface_1>", "description": "The direction recorded for <surface_1>" },
         { "label": "<surface_2>", "description": "..." }
       ],
       "multiSelect": true
@@ -131,18 +130,19 @@ Lazy-load `references/develop-modes.md`. Do not load everything in Step 0.
 
 Each mode has a template + checklist:
 
-| Mode                   | Template/checklist              | Main output                                                             |
-| ---------------------- | ------------------------------- | ----------------------------------------------------------------------- |
-| Full surface           | `develop-modes.md#full-surface` | `<project>/src/<surface>.tsx` (or `<surface>.html` if prototype-hosted) |
-| Single component       | `develop-modes.md#component`    | `<project>/src/components/<Name>.tsx`                                   |
-| Iterate on what exists | `develop-modes.md#iteration`    | Diff applied to the existing file                                       |
+| Mode                   | Template/checklist              | Main output                                                                             |
+| ---------------------- | ------------------------------- | --------------------------------------------------------------------------------------- |
+| Full surface           | `develop-modes.md#full-surface` | `.bb/<slug>/prototype/src/<surface>.tsx` (or `<surface>.html` if prototype-hosted)      |
+| Single component       | `develop-modes.md#component`    | `.bb/<slug>/prototype/src/components/<Name>.tsx`                                        |
+| Iterate on what exists | `develop-modes.md#iteration`    | Diff applied to the existing file                                                       |
 
 Cross-cutting rules:
 
 - **Tokens first.** Apply tokens before writing any hardcoded color/spacing.
-- **DS components before custom.** If a Button exists in components.md, use it. Custom only if justifiable.
-- **Loading/Empty/Error states always.** Even on small appetite.
-- **Do not invent brand.** If tokens.md does not have an `accent-warning` color, do not invent it, ask the builder or mark TODO.
+- **DS components before custom.** If a Button exists in the DS, use it. Custom only if justifiable.
+- **Loading/Empty/Error states always.** Even on small appetite. A state you did not build is declared in `states_not_built`, never faked.
+- **Do not invent brand.** If the DS does not have an `accent-warning` color, do not invent it, ask the builder or mark TODO.
+- **Mock the data, skip the wiring.** No API calls, no auth, no persistence. When the builder asks for the real thing, name the path: `/bb:spec`, then `/bb:implement`.
 
 ## Step 3: persistence + gate
 
@@ -238,8 +238,7 @@ One sharp caution: **never edit `tokens.md` or `components.md`**. The DS source 
 
 | Artifact                                  | Produced by | Consumed by            |
 | ----------------------------------------- | ----------- | ---------------------- |
-| `<project>/design-context/tokens.md`      | Phase 3     | Develop (Step 0, read) |
-| `<project>/design-context/components.md`  | Phase 3     | Develop (Step 0, read) |
+| `${CLAUDE_PLUGIN_ROOT}/.../references/ds/` | the plugin  | Develop (Step 0, read) |
 | `.bb/<slug>/design.md` (or `design/*.md`) | Phase 4     | Develop (Step 2)       |
 | `<project>/src/<surface>.tsx` (or .html)  | Develop     | Deliver, dev           |
 | `.bb/<slug>/design.md`, `## Built`        | Develop     | Deliver, human builder |

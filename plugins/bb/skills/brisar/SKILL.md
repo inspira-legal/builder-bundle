@@ -142,12 +142,15 @@ the record of rounds the brief was keeping.
 Heuristic in order (stop at the first one that works):
 
 1. Variable `BRISAR_DS_PATH`.
-2. The project it is running in: a `design-context/` at the root, or the DS the detected product declares (`ds_source`).
+2. The DS the detected product declares (`ds_source`).
 3. Bundled: `references/ds/` **in this skill's own directory**. Ships with the
    plugin; contains `brand/DESIGN.md` + sub-brands + voice references.
 
-If nothing works, record `ds_path: not-found` and continue in brand free-text
-mode.
+The bundled copy is the floor, not the last resort: it travels with the plugin,
+so Develop always has a design system to read and there is no per-project
+synthesis to keep in sync. If `BRISAR_DS_PATH` is set but unreadable, fall back
+to it and say so once. Only a missing bundle records `ds_path: not-found` and
+continues in brand free-text mode.
 
 This resolves the **brand**: voice, principles, sub-brand identity. It is not the
 production token source, and its bundled `brand/tokens/tokens.json` must not be
@@ -205,7 +208,7 @@ in Step 0**, open only what the current phase needs.
 | **Brief, the design contract**                                     | Straight after Research (no gate between them) and again on **every later round** that changes a decision                                                                                                                            | `references/brief.md`                                                    |
 | **Diverge, directions in equal standing**                          | After the Brief gate, when the builder chooses to diverge                                                                                                                                                                            | `references/phase-diverge.md`                                            |
 | **Medium, where to explore**                                       | After Diverge, before Phase 3. Also when Develop is reached by shortcut with no `medium` recorded.                                                                                                                                   | `references/phase-medium.md`                                             |
-| Phase 3, Scaffold (real files)                                     | After the medium question, and **only** when `medium.chosen == code`. `uses_terminal` picks the variant: true = normal scaffold; false = `prototype-hosted`                                                                          | `references/phase-3-scaffold.md`                                         |
+| Phase 3, Scaffold the prototype                                    | After the medium question, and **only** when `medium.chosen == code`. `uses_terminal` picks the variant: true = normal scaffold; false = `prototype-hosted`                                                                          | `references/phase-3-scaffold.md`                                         |
 | Phase 4, Design direction                                          | After Phase 3. **Skip only the per-surface prose** when a design brief already carries the chosen direction, but Step 4 (recording `surfaces[]` in the direction's own frontmatter) always runs, because four readers join that list | `references/phase-4-design-direction.md`                                 |
 | **Phase Framer-handoff** (replaces Phase 2+3+4 on the Framer path) | When `brand.workflow == framer-harpa`                                                                                                                                                                                                | `references/phase-framer-handoff.md`                                     |
 | Phase 5, Terminal report                                           | Always, last phase of the direction stage.                                                                                                                                                                                           | `references/phase-5-handoff.md`                                          |
@@ -220,14 +223,13 @@ in Step 0**, open only what the current phase needs.
 | Artifact                                                                  | Produced by                                                                | Consumed by                                                                                                                 |
 | ------------------------------------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | **`.bb/<slug>/design.md`**                                                | **Brief**, and updated by every later round, including Deliver             | every phase (each reads it in its Step 0), Diverge, Develop, Deliver, the implementing dev, later rounds                    |
-| `<slug>/design-context/tokens.md` + `components.md`                       | Phase 3 (medium `code` only)                                               | Develop (Step 0). On canvas mediums the DS values come from the Research instead                                            |
 | `.bb/<slug>/design.md`, `## Surfaces`                                     | Phase 4                                                                    | builder, Develop: per-surface hierarchy, states and components, under the chosen direction above it                         |
 | `<slug>/...` (vite, package.json, src/)                                   | Phase 3                                                                    | builder (`pnpm install && pnpm dev`), Develop                                                                               |
-| `<slug>/HANDOFF-DEV.md`                                                   | Phase 3 (when `uses_terminal` is false)                                    | dev who picks up the prototype later                                                                                        |
+| `.bb/<slug>/prototype/`                                                   | Phase 3, filled by Develop                                                 | the builder (opens it), Deliver (reviews it)                                                                                 |
 | `.bb/<slug>/design.md`, `## Built`                                        | Develop                                                                    | Deliver, builder                                                                                                            |
 | `.bb/<slug>/design.md`, `## Design review` + `## Accessibility`           | Deliver                                                                    | builder, `/bb:spec`                                                                                                         |
 | `.bb/<slug>/spec.md`                                                      | /bb:discover, /bb:spec (outside this skill); **delta proposed by Deliver** | Step 0.1 (bootstrap return), Research, Brief, Diverge, Develop, Deliver                                                     |
-| `harpa-handoff-<slug>-<date>.md` (in cwd)                                 | Framer/content path                                                        | builder inside `harpa-lpbuilder/`                                                                                           |
+| `.bb/<slug>/design.md`, `## Harpa handoff`                                | Framer/content path                                                        | builder inside `harpa-lpbuilder/`                                                                                           |
 
 Each phase reads the whole brief in Step 0 and writes **only its own
 sections** at the end, cross-awareness without coupling. The brief's
@@ -238,10 +240,9 @@ second file holding a copy of it (`references/brief.md`).
 
 When the builder chooses "Site institucional (Framer)" on Question 2, or the
 brand carries `brand.workflow == framer-harpa`, brisar forks: **does not scaffold**, **does
-not create the `<slug>/` folder**, **does not generate design-context/**.
-Instead, it generates `harpa-handoff-<slug>-<date>.md` in the cwd with intent +
-visual direction in Framer idiom + instructions to open Claude Code inside
-`harpa-lpbuilder/`.
+not create `prototype/`**. Instead, the harpa context becomes a section of
+`.bb/<slug>/design.md`, with intent + visual direction in Framer idiom +
+instructions to open Claude Code inside `harpa-lpbuilder/`.
 
 **Variant when MCP unframer is missing:** generate the markdown handoff anyway,
 without MCP. The dev/designer takes it to Framer manually. The Develop phase
@@ -277,16 +278,15 @@ against the built thing, the artifact that did not exist the first time.
 
 ### Critical path rule
 
-The paths are derived, not persisted. `design-context/` sits at the root of the
-scaffolded folder Phase 3 created; the visual direction is `## Surfaces`
-inside `.bb/<slug>/design.md`, next to the spec in the task folder (plugin-level
-`references/spec-state.md`). Develop and Deliver derive both from the slug, no
-hardcoded string on either side.
+The paths are derived, not persisted. The prototype is `.bb/<slug>/prototype/` and
+the visual direction is `## Surfaces` inside `.bb/<slug>/design.md`, next to the
+spec in the task folder (plugin-level `references/spec-state.md`). Develop and
+Deliver derive both from the slug, no hardcoded string on either side, and the
+design system comes from the plugin (0.2) rather than from the project.
 
-**On canvas mediums there is no design-context**, by design
-(`medium.scaffold: skipped`). The DS values come from the Research phase, which read
-the same source one step earlier. Its absence on those paths is the normal state, not
-a failure to report.
+**On canvas mediums there is no `prototype/` folder**, by design
+(`medium.scaffold: skipped`). The artifact is the canvas, named in the surfaces list.
+Its absence on those paths is the normal state, not a failure to report.
 
 ---
 
@@ -319,7 +319,7 @@ Phase 2: Maturity gate (senior/junior only)
 │   → NO GATE, flows straight into Brief                                      │
 │                                                                             │
 │ Brief: the design contract                                                  │
-│   → .bb/<slug>/design.md, the journey in its own frontmatter          │
+│   → .bb/<slug>/design.md, the journey in its own frontmatter                │
 │   → reconcile vs the framing: confirms · contradicts · does not reach       │
 │   → close on an unresolved tension (none found = research was shallow)      │
 │   → present it in chat: findings · references · directions · tension        │
@@ -340,15 +340,15 @@ Medium: where to explore (1 question, offers only what's detected)
   → canvas mediums set scaffold: skipped
 
 Phase 3: Scaffold OR prototype-hosted     [medium == code only]
-  → senior + detected product = embed (clone via gh)
-  → senior/junior + greenfield = local Vite scaffold
-  → executive = prototype-hosted (folder + HANDOFF-DEV.md, no local npm install)
+  → everything lands in .bb/<slug>/prototype/
+  → senior/junior = local Vite scaffold
+  → executive = prototype-hosted (static HTML, no local npm install)
 
 Phase 4: Design direction        [prose skipped when the brief has it]
   → .bb/<slug>/design.md, section ## Surfaces (max 5)
 
 Phase Framer (replaces Phase 2-4 on the Framer/content path)
-  → harpa-handoff-<slug>-<date>.md, with or without MCP unframer
+  → a harpa section of .bb/<slug>/design.md, with or without MCP unframer
 
 Phase 5: Terminal report + gate
   → report what was created, written for the profile
