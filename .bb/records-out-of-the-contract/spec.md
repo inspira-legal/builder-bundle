@@ -163,7 +163,7 @@ Happy path:
 - [x] **5. Deliver invokes spec**: `handoff.md`, `HANDOFF-DEV.md` and `## Spec delta`
       are deleted, the gate invokes `/bb:spec`, rule 11 gains its named exception
       → behaviors 5, E4 · dep: 3 · verify: `grep -rn "HANDOFF-DEV"` is empty
-- [ ] **6. The framer path lands in `.bb/`**: `phase-framer-handoff.md` writes a
+- [x] **6. The framer path lands in `.bb/`**: `phase-framer-handoff.md` writes a
       section of `design.md` instead of a file in the cwd
       → behavior E10 · dep: 3 · verify: reading
 - [ ] **7. `spec-state.md` rewritten**: the tree, the frontmatter schemas, the reversal
