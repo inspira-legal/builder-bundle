@@ -137,7 +137,7 @@ Happy path:
 
 ## Tasks
 
-- [ ] **1. Resolution and stamp**: `hooks/check_version.py` resolves the marketplace, clone,
+- [x] **1. Resolution and stamp**: `hooks/check_version.py` resolves the marketplace, clone,
       scope, and stamp path, and reads and writes the stamp. No network, no spawn.
       → behaviors 4, 18, 19 · dep: — · verify: run the module on this machine, read the stamp
 - [ ] **2. The worker**: the `__main__` path with the fetch, the version compare, the branch
