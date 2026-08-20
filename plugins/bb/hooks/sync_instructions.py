@@ -62,9 +62,14 @@ PROFILE_LINES: dict[str, tuple[str, str]] = {
     ),
 }
 
+# The person's canvas tools, rendered as one line after the four. A key that is
+# absent is a profile written before the question existed: it renders nothing,
+# because "not asked" is not "none".
+DESIGN_TOOL_NAMES = {"figma": "Figma", "paper": "Paper", "pencil": "Pencil"}
+
 INVITATION = (
     "- **No profile calibrated yet.** How much to spell out is a guess right now. "
-    "When a bb skill runs, offer `/bb:profile`: it asks four questions once, writes "
+    "When a bb skill runs, offer `/bb:profile`: it asks its questions once, writes "
     "the answers into `~/.claude/BUILDER-BUNDLE.md`, and every session after that "
     "reads them from there."
 )
@@ -182,6 +187,37 @@ def read_profile(config: dict) -> dict | None:
     return profile if isinstance(profile, dict) else None
 
 
+def design_line(profile: dict) -> str | None:
+    tools = profile.get("design_tools")
+    if not isinstance(tools, list):
+        return None  # not asked yet: render nothing rather than inventing "none"
+    # The isinstance guard is what keeps a hand-edited config (a list inside the
+    # list, a number) from raising on the membership test and taking the whole
+    # sync down with it.
+    names = [
+        DESIGN_TOOL_NAMES[t]
+        for t in tools
+        if isinstance(t, str) and t in DESIGN_TOOL_NAMES
+    ]
+    if not names:
+        if tools:
+            return None  # nothing recognized: silence beats inverting their answer
+        return (
+            "- Canvas design tools are not part of their day. When a design journey "
+            "asks where to explore, lean on code and the in-conversation preview."
+        )
+    if len(names) == 1:
+        listed = names[0]
+    elif len(names) == 2:
+        listed = " and ".join(names)
+    else:
+        listed = ", ".join(names[:-1]) + ", and " + names[-1]
+    return (
+        f"- They design in {listed}. When a design journey asks where to explore, "
+        "offer what they use first."
+    )
+
+
 def profile_block(profile: dict | None) -> str:
     if profile is None:
         return HEADING + INVITATION
@@ -191,6 +227,9 @@ def profile_block(profile: dict | None) -> str:
         "- " + PROFILE_LINES[flag][0 if profile.get(flag) else 1]
         for flag in PROFILE_LINES
     ]
+    design = design_line(profile)
+    if design is not None:
+        lines.append(design)
     return HEADING + "\n".join(lines)
 
 
