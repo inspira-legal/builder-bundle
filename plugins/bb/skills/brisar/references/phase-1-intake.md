@@ -314,7 +314,7 @@ What each answer settles:
 - `artifact.hosting: prototype-hosted`
 - `artifact.audience: no-code`
 
-Short echo in operational language. E.g.: _"Got it, project: 'financial management platform'. For an internal team. For this week. I'll put together a clickable HTML prototype you can open in the browser and show the team. It lands in `.bb/<slug>/prototype/`, with the files ready plus a `HANDOFF-DEV.md` the technical team uses to carry on."_
+Short echo in operational language. E.g.: _"Got it, project: 'financial management platform'. For an internal team. For this week. I'll put together a clickable HTML prototype you can open in the browser and show the team. It lands in `.bb/<slug>/prototype/`, next to the journey that describes it."_
 
 **Phase 2 (gate) does NOT run when `reads_code` is false.** Goes straight to Phase 3 prototype-hosted variant.
 

@@ -164,6 +164,6 @@ expressed, never what it is.
 | Artifact                                             | Produced by                       | Consumed by                                            |
 | ---------------------------------------------------- | --------------------------------- | ------------------------------------------------------ |
 | `preflight.mcps`                                     | Step 0.4 (`preflight-tooling.md`) | Step 0 here; the option list                           |
-| The chosen direction in `.bb/<slug>/design.md` | Diverge                           | Step 1; what is being built                            |
+| The chosen direction in `.bb/<slug>/design.md`       | Diverge                           | Step 1; what is being built                            |
 | The medium, recorded in the same brief               | this step                         | Phase 3, Develop, Deliver, re-entry                    |
 | Token values read from source                        | Research (Front B)                | Develop on canvas mediums (no `prototype/` there)      |

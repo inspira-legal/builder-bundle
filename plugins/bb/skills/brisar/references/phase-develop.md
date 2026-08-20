@@ -202,7 +202,7 @@ Echo what was built (1 line: _"Built <surface> at <path>. Loading/Empty/Error in
       "options": [
         {
           "label": "Review it and prepare the handoff (Deliver phase)",
-          "description": "Design review + accessibility + handoff doc before merging"
+          "description": "Design review + accessibility, then /bb:spec, before building for real"
         },
         {
           "label": "Build another surface",
@@ -236,9 +236,9 @@ One sharp caution: **never edit `tokens.md` or `components.md`**. The DS source 
 
 ## Cooperation contract
 
-| Artifact                                  | Produced by | Consumed by            |
-| ----------------------------------------- | ----------- | ---------------------- |
+| Artifact                                   | Produced by | Consumed by            |
+| ------------------------------------------ | ----------- | ---------------------- |
 | `${CLAUDE_PLUGIN_ROOT}/.../references/ds/` | the plugin  | Develop (Step 0, read) |
-| `.bb/<slug>/design.md` (or `design/*.md`) | Phase 4     | Develop (Step 2)       |
-| `<project>/src/<surface>.tsx` (or .html)  | Develop     | Deliver, dev           |
-| `.bb/<slug>/design.md`, `## Built`        | Develop     | Deliver, human builder |
+| `.bb/<slug>/design.md` (or `design/*.md`)  | Phase 4     | Develop (Step 2)       |
+| `<project>/src/<surface>.tsx` (or .html)   | Develop     | Deliver, dev           |
+| `.bb/<slug>/design.md`, `## Built`         | Develop     | Deliver, human builder |

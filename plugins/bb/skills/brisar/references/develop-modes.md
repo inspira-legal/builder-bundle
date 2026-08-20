@@ -61,7 +61,7 @@ Every target is under `.bb/<slug>/prototype/`:
 | Hosting            | Target                                                       |
 | ------------------ | ------------------------------------------------------------ |
 | `standalone`       | React + Tailwind in `src/<surface>.tsx`                      |
-| `prototype-hosted` | Plain static HTML in `<surface>.html` (no Vite, no build)     |
+| `prototype-hosted` | Plain static HTML in `<surface>.html` (no Vite, no build)    |
 | `storybook-only`   | Story in `src/stories/<Component>.stories.tsx`               |
 
 ### Per-surface checklist

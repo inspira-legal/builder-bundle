@@ -80,8 +80,7 @@ What's here:
       ├── <surface-1>.html    ← one page per screen
       ├── <surface-2>.html
       ├── styles.css          ← the visuals of the <brand> brand
-      ├── README.md           ← how to show it to the team
-      └── HANDOFF-DEV.md      ← the package for the technical team to carry on
+      └── README.md           ← how to show it to the team
 
 How to open it:
   1. Go to the .bb/<slug>/prototype/ folder in Finder
@@ -95,9 +94,9 @@ How to show it to the team:
   - Or ask the eng team to host it (Vercel/Netlify). It becomes a link
 
 To turn it into a real product:
-  Pass the folder + HANDOFF-DEV.md to the technical team. They rewrite it
+  Pass the folder to the technical team. They rewrite it
   in the real stack (Vite + React + Tailwind v4 with the brand tokens).
-  HANDOFF-DEV.md carries every instruction.
+  `../design.md` carries the direction, and `/bb:spec` turns it into the contract.
 ```
 
 If the builder marked `intent.scale_signal == will-scale`, add at the end:

@@ -473,6 +473,6 @@ decorative ones.
 | Artifact                                                               | Produced by                                     | Consumed by                                                  |
 | ---------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
 | `.bb/<slug>/spec.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | `/bb:discover`, `/bb:spec` (outside this skill) | Research (Step 0, upstream contract), Brief (reconciliation) |
-| `.bb/<slug>/design.md` (findings by front, `## Left out`)        | Research                                        | Brief, Diverge, Deliver (what was skipped, and why)          |
+| `.bb/<slug>/design.md` (findings by front, `## Left out`)              | Research                                        | Brief, Diverge, Deliver (what was skipped, and why)          |
 | Distilled findings per front                                           | Research subagents                              | Brief (`references/brief.md`)                                |
 | Token source on disk + the repo's own token rules                      | the product repo                                | Research (Front B; read, never written)                      |

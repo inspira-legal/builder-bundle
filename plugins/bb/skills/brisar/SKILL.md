@@ -1,6 +1,6 @@
 ---
 name: brisar
-description: End to end design trilha. The whole double diamond, from the raw idea to a reviewed delivery, for designers and non designers alike. Research before pixels, consolidated into a design brief that stays a live contract, diverges into directions and asks where to explore (code, Claude design, Figma, Paper or Pencil); then it builds, critiques, and closes with accessibility, handoff and the delta back to the spec. Scales the effort and states what it skipped. Use when the builder says "let's start", "new project", "design a screen in <brand>", "build a prototype", "research before drawing", "show me directions", "build the surface", "review the prototype", "design handoff", "I have an interface idea". Don't use it to frame a product problem (that is /bb:discover) or to write a formal execution spec (that is /bb:spec).
+description: End to end design trilha. The whole double diamond, from the raw idea to a reviewed delivery, for designers and non designers alike. Research before pixels, consolidated into a design brief that stays a live contract, diverges into directions and asks where to explore (code, Claude design, Figma, Paper or Pencil); then it builds, critiques, closes with accessibility, and invokes /bb:spec to write the contract. Scales the effort and states what it skipped. Use when the builder says "let's start", "new project", "design a screen in <brand>", "build a prototype", "research before drawing", "show me directions", "build the surface", "review the prototype", "design handoff", "I have an interface idea". Don't use it to frame a product problem (that is /bb:discover) or to write a formal execution spec (that is /bb:spec).
 license: MIT
 metadata:
   author: Inspira
@@ -28,10 +28,10 @@ changes: code, Claude design, Figma, Paper or Pencil (`references/phase-medium.m
 
 **Second diamond, build it and hold it to account:**
 
-- **Develop**: build high-fidelity surfaces against the contracts
+- **Develop**: build the clickable prototype against the contracts
   (`references/phase-develop.md`).
-- **Deliver**: design review, accessibility audit, handoff doc, and the delta
-  back into the spec (`references/phase-deliver.md`).
+- **Deliver**: design review, accessibility audit, then it invokes `/bb:spec`
+  (`references/phase-deliver.md`).
 
 Each stage is entered explicitly (the builder asks, a shortcut routes there, or
 the previous stage's gate suggests it). The skill never rolls from one stage to
@@ -72,14 +72,19 @@ the next silently.
 9. **Directions get equal treatment.** A recommendation is fine; describing one
    direction in depth and the others in a sentence decides for the builder while
    pretending to offer a choice.
-10. **The brief is a living contract.** Every round updates it, without being
-    asked. It ends as a delta back into the spec. Where brief and spec disagree,
-    **the spec wins**: the brief is the research record, the spec is the contract.
-11. **Suggest, never auto-invoke.** Other skills (/bb:discover, /bb:spec,
-    /bb:challenge, /bb:review) are always suggested via handoff gate.
-    Internal phase transitions also go through a gate. The builder crosses them
-    on purpose. The one exception inside this skill: Research flows straight into
-    Brief, because the research is the brief's input and does not stand alone.
+10. **`design.md` is a living record.** Every round updates it, without being
+    asked, and its sections replace rather than accumulate. Where the record and
+    the spec disagree, **the spec wins**: `design.md` records the journey,
+    `spec.md` is the contract, and the reversal is registered here on the next
+    round (plugin-level `references/spec-state.md`).
+11. **Suggest, never auto-invoke.** Other skills (/bb:discover, /bb:challenge,
+    /bb:review) are always suggested via handoff gate. Internal phase
+    transitions also go through a gate. The builder crosses them on purpose.
+    Two exceptions, both named: Research flows straight into Brief, because the
+    research is the brief's input and does not stand alone; and **Deliver's gate
+    invokes `/bb:spec`**, because the journey has to reach the contract and this
+    skill is not the contract's writer. The precedent is the bootstrap protocol,
+    where Phase 2 writes `status: bootstrapped-to-discover` and routes out.
 12. **The review may disagree with the contract.** With the argument, as a
     `divergence`, never as a blocker and never as a silent rewrite. Disagreeing
     is the job; deciding belongs to the owner.
@@ -225,10 +230,10 @@ in Step 0**, open only what the current phase needs.
 | **`.bb/<slug>/design.md`**                                                | **Brief**, and updated by every later round, including Deliver             | every phase (each reads it in its Step 0), Diverge, Develop, Deliver, the implementing dev, later rounds                    |
 | `.bb/<slug>/design.md`, `## Surfaces`                                     | Phase 4                                                                    | builder, Develop: per-surface hierarchy, states and components, under the chosen direction above it                         |
 | `<slug>/...` (vite, package.json, src/)                                   | Phase 3                                                                    | builder (`pnpm install && pnpm dev`), Develop                                                                               |
-| `.bb/<slug>/prototype/`                                                   | Phase 3, filled by Develop                                                 | the builder (opens it), Deliver (reviews it)                                                                                 |
+| `.bb/<slug>/prototype/`                                                   | Phase 3, filled by Develop                                                 | the builder (opens it), Deliver (reviews it)                                                                                |
 | `.bb/<slug>/design.md`, `## Built`                                        | Develop                                                                    | Deliver, builder                                                                                                            |
 | `.bb/<slug>/design.md`, `## Design review` + `## Accessibility`           | Deliver                                                                    | builder, `/bb:spec`                                                                                                         |
-| `.bb/<slug>/spec.md`                                                      | /bb:discover, /bb:spec (outside this skill); **delta proposed by Deliver** | Step 0.1 (bootstrap return), Research, Brief, Diverge, Develop, Deliver                                                     |
+| `.bb/<slug>/spec.md`                                                      | `/bb:spec` only, **invoked by Deliver's gate**                             | Step 0.1 (bootstrap return), Research, Brief, Diverge, Develop, Deliver                                                     |
 | `.bb/<slug>/design.md`, `## Harpa handoff`                                | Framer/content path                                                        | builder inside `harpa-lpbuilder/`                                                                                           |
 
 Each phase reads the whole brief in Step 0 and writes **only its own
@@ -366,9 +371,9 @@ Phase 5: Terminal report + gate
 │     hierarchy · DS+states · COPY word-by-word · CONTRAST computed ·         │
 │     TRIANGULATION (problem × research × built)                              │
 │   → severity: blocker · significant · DIVERGENCE · minor                    │
-│   → accessibility + handoff doc + DELTA back into the spec                  │
+│   → accessibility audit into design.md, ## Accessibility                    │
 │   → gate: settle the divergences / build in code / /bb:review (a11y)        │
-│     / /bb:spec / stop here                                                  │
+│     / INVOKE /bb:spec / stop here                                           │
 ╰─────────────────────────────────────────────────────────────────────────────╯
 ```
 

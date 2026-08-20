@@ -217,7 +217,7 @@ readings of the problem, never in variant count.
 
 | Artifact                           | Produced by                                        | Consumed by                                               |
 | ---------------------------------- | -------------------------------------------------- | --------------------------------------------------------- |
-| `.bb/<slug>/design.md`       | Brief (updated here with directions + convergence) | Develop, Deliver, the implementing dev                    |
+| `.bb/<slug>/design.md`             | Brief (updated here with directions + convergence) | Develop, Deliver, the implementing dev                    |
 | The directions and the convergence | Diverge (written into the brief)                   | medium question, Develop, Deliver, re-entry               |
 | Chosen direction + base block      | Diverge                                            | Develop (what to build), Deliver (what to review against) |
 | Appetite and cuts                  | `/bb:discover` (upstream)                          | Diverge (Step 0, bounds every direction)                  |

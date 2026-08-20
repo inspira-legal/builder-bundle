@@ -77,9 +77,9 @@ Concretely, keeping it alive means three things:
 3. **Mark what is still in review.** Copy pending a brand pass, a claim pending confirmation, a
    permission question pending a legal answer. Unmarked, they read as settled.
 
-At the end of the trilha the brief feeds the **delta back into the spec**. The contract catches
-up with what the design learned. That handoff is the Deliver phase's business, but the material
-comes from here, which is exactly why the record has to be complete.
+At the end of the trilha Deliver's gate **invokes `/bb:spec`**, which reads this document and
+writes the contract out of it. That call is the Deliver phase's business, but the material comes
+from here, which is exactly why the record has to be complete.
 
 ## The frontmatter: the journey's state, and the only place it lives
 

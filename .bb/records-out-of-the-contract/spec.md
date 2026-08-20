@@ -160,7 +160,7 @@ Happy path:
       are removed, the prototype path becomes `.bb/<slug>/prototype/`, Develop's
       opening says prototype instead of high-fidelity surface construction
       → behaviors 4, E7, E8, E12 · dep: 3 · verify: `grep -rn "design-context"` is empty
-- [ ] **5. Deliver invokes spec**: `handoff.md`, `HANDOFF-DEV.md` and `## Spec delta`
+- [x] **5. Deliver invokes spec**: `handoff.md`, `HANDOFF-DEV.md` and `## Spec delta`
       are deleted, the gate invokes `/bb:spec`, rule 11 gains its named exception
       → behaviors 5, E4 · dep: 3 · verify: `grep -rn "HANDOFF-DEV"` is empty
 - [ ] **6. The framer path lands in `.bb/`**: `phase-framer-handoff.md` writes a
