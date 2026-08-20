@@ -151,15 +151,17 @@ These 3 bullets are enough to break the blank page. The Develop phase and the bu
 Max 3 items. If the list grows, it's a sign that this surface needs more shaping.]
 ```
 
-## Step 4: update .brisar/config.yaml and session.yaml
+## Step 4: the surfaces go in the direction's own frontmatter
 
-### config.yaml: fill in `design_path` and `surfaces`
+The list of surfaces describes the document it lives in, so it lives there. One surface
+writes it into `.bb/<slug>/design.md`; two or more write it into the index, and each
+`design/<surface>.md` carries only its own row's fields.
 
-`design_path` is the absolute path of the task folder; each `file` is relative to it. Three surfaces:
+Three surfaces, in the index's frontmatter:
 
 ```yaml
-design_path: "<absolute path of .bb/<slug>/>"
-
+---
+slug: <slug>
 surfaces:
   - name: busca
     file: design/busca.md
@@ -173,33 +175,30 @@ surfaces:
     file: design/vazio.md
     state: drafted
     last_updated: <ISO>
+---
 ```
 
-One surface:
+One surface, in `design.md`'s own frontmatter:
 
 ```yaml
-design_path: "<absolute path of .bb/<slug>/>"
-
+---
+slug: <slug>
 surfaces:
   - name: busca
     file: design.md
     state: drafted
     last_updated: <ISO>
+---
 ```
 
-### session.yaml: mark final phase
+`file` is relative to the task folder, which is derived from the slug: there is no
+absolute path to persist.
 
-```yaml
-current_phase: done
-status: completed
-completed_at: <ISO>
+### Close the journey in the brief
 
-# Adds the record of what was generated:
-surfaces_confirmed:
-  - busca
-  - resultados
-  - vazio
-```
+In `.bb/<slug>/brief-design.md`'s frontmatter, set `phase: done` and
+`status: completed`. What was generated is already the surfaces list above; the brief
+records the round that produced it.
 
 ## Inference: how to make decent surfaces.md without being robotic
 

@@ -4,7 +4,7 @@
 
 [![github](https://img.shields.io/badge/github-inspira--legal%2Fbuilder--bundle-111111?style=flat-square&logo=github)](https://github.com/inspira-legal/builder-bundle)
 
-_Builder Bundle (`bb`): the unified skill set for Inspira builders, 15 skills across 6 trilhas, from the problem to the PR._
+_Builder Bundle (`bb`): the unified skill set for Inspira builders, 16 skills across 6 trilhas, from the problem to the PR._
 
 </div>
 
@@ -15,11 +15,17 @@ claude plugin marketplace add inspira-legal/builder-bundle
 claude plugin install bb@inspira-legal
 ```
 
-it ships a `SessionStart` operating-context hook, auto-active on install, and two read-only agents (`bb-review-finder`, `bb-review-verifier`) that review dispatches in parallel: internal pipeline roles, not entry points. skills are invoked as `/bb:<skill>` (e.g. `/bb:discover`, `/bb:spec`, `/bb:ship`). every skill with a natural next step ends at a gate that **suggests** the next trilha, and never auto-invokes.
+it writes its operating context into `~/.claude/BUILDER-BUNDLE.md`, imported by your `CLAUDE.md` and carrying the profile set by `/bb:profile`, and it ships two read-only agents (`bb-review-finder`, `bb-review-verifier`) that review dispatches in parallel: internal pipeline roles, not entry points. skills are invoked as `/bb:<skill>` (e.g. `/bb:discover`, `/bb:spec`, `/bb:ship`). every skill with a natural next step ends at a gate that **suggests** the next trilha, and never auto-invokes.
 
 ## what is inside
 
-one plugin, `bb`; 15 skills in 6 trilhas.
+one plugin, `bb`; 16 skills, 15 of them in 6 trilhas and `/bb:profile` beside them.
+
+### configurar: who is on the other side
+
+| skill         | description                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:profile` | asks four questions once (are you used to reading code, to the terminal, to technical instructions, to technical vocabulary) and writes `~/.claude/bb.config.json`, then `~/.claude/BUILDER-BUNDLE.md` with the answers in it, imported by your `CLAUDE.md`, so no skill asks again. the same question sets `custom_instructions`, and `false` deletes both, for whoever wants nothing from bb in their sessions |
 
 ### pensar: frame and decide before building
 
@@ -55,9 +61,9 @@ one plugin, `bb`; 15 skills in 6 trilhas.
 
 ### design: from the idea to a high-fidelity surface
 
-| skill        | description                                                                                                                                                                                        |
-| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:brisar` | end-to-end design journey: calibrates the profile, scaffolds with the brand DS, writes a visual direction per surface, then builds (Develop) and reviews or hands off (Deliver) as internal phases |
+| skill        | description                                                                                                                                                                |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:brisar` | end-to-end design journey: scaffolds with the brand DS, writes a visual direction per surface, then builds (Develop) and reviews or hands off (Deliver) as internal phases |
 
 ### pesquisar and document
 

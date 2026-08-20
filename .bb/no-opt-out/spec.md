@@ -96,7 +96,7 @@ to build elsewhere. `/bb:spec`'s step 6 is where that question gets asked.
   guard fires before the commit and not only in CI.
 - **`js` joins the lefthook oxfmt glob**, which today covers `json` and `md` only, so the
   formatter is not what first meets the file in CI.
-- **Versions**: `plugin.json` `2.13.0` to `2.14.0`; `implement` `2.4.0` to `2.5.0`;
+- **Versions**: `plugin.json` `2.15.0` to `2.16.0`; `implement` `2.4.0` to `2.5.0`;
   `delegate` `2.5.0` to `2.6.0`.
 
 ## Behavior
@@ -181,7 +181,7 @@ to build elsewhere. `/bb:spec`'s step 6 is where that question gets asked.
       added to `package.json`'s `validate` script (which is what lefthook runs) and to
       `validate.yml` as its own step; `js` added to the lefthook oxfmt glob
       → behavior 9 · dep: 1 · verify: CI
-- [x] **6. Versions, docs, and the deletion**: `plugin.json` `2.14.0`, the two skill
+- [x] **6. Versions, docs, and the deletion**: `plugin.json` `2.16.0`, the two skill
       versions, the CHANGELOG entry naming which `build-via-workflow` decisions this
       reverses, `build-mode.md` deleted now that no reader is left, and `.claude/CLAUDE.md`
       (the tree, the new `workflows/` dir, the JS exception)

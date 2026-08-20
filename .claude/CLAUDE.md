@@ -4,8 +4,9 @@ A **Claude Code plugin** (`bb`) published through a one-plugin marketplace, the
 unified skill set for Inspira builders. Install via
 `claude plugin marketplace add inspira-legal/builder-bundle` then
 `claude plugin install bb@inspira-legal`. Skills are invoked as `/bb:<skill>`
-(e.g. `/bb:spec`). The plugin ships a `SessionStart` operating-context hook,
-auto-active when the plugin is enabled.
+(e.g. `/bb:spec`). The plugin writes its operating context into
+`~/.claude/BUILDER-BUNDLE.md` and imports it from `~/.claude/CLAUDE.md`, from the
+first `/bb:profile` on.
 
 ## Structure
 
@@ -17,29 +18,31 @@ plugins/bb/
 │   ├── bb-review-finder.md             # review fan-out: finds candidates, read-only by `tools:`
 │   └── bb-review-verifier.md           # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
 ├── hooks/                             # session infra (auto-active, no skill)
-│   ├── hooks.json                      # SessionStart context injection
+│   ├── hooks.json                      # SessionStart: keep BUILDER-BUNDLE.md current
 │   ├── enter_worktree.py               # worktree isolation for local autonomous runs
 │   ├── scheduling-decision.md          # /loop vs Desktop task vs Channels decision table
-│   ├── inject_operating_context.py     # SessionStart hook script
-│   └── operating-context.md            # the injected operating frame (edit to tune)
+│   ├── sync_instructions.py            # writes ~/.claude/BUILDER-BUNDLE.md + the CLAUDE.md import
+│   └── operating-context.md            # the operating frame it writes from (edit to tune)
 ├── references/                        # plugin-level docs (not skill-scoped)
 │   ├── doc-style.md                    # the style rules for every sentence bb writes
 │   ├── handoff-gate.md                 # the one convention for end-of-skill gates (+ AskUserQuestion rationale)
 │   ├── confidence-and-steelman.md      # shared reasoning protocols (think, challenge)
 │   ├── spec-state.md                   # the .bb/<slug>/ folder contract
+│   ├── bb-config.md                    # ~/.claude/bb.config.json: the schema and who reads it
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
 │   └── build-tasks-workflow.md         # how the skills call workflows/build-tasks.js, and what it returns
 ├── scripts/                           # shared executables (2+ skills), ref via ${CLAUDE_PLUGIN_ROOT}/scripts/
 │   ├── fetch_comments.py               # ship, review
 │   ├── reply_resolve_thread.py         # ship, review
 │   └── gather_context.py               # ship, review (resolves the diff range), gather-branch-context
-├── skills/                            # all 15 skills flat; trilha grouping is a docs concept
+├── skills/                            # all 16 skills flat; trilha grouping is a docs concept
 │   ├── Pensar:        discover, challenge, think, legal-lens
 │   ├── Desenhar:      spec
 │   ├── Construir:     implement, ship, delegate, gather-branch-context
 │   ├── Revisar:       review, maintain-repo, review-setup
 │   ├── Design:        brisar
-│   └── Pesquisar/Doc: code-deep-research, write-readme
+│   ├── Pesquisar/Doc: code-deep-research, write-readme
+│   └── no trilha:     profile
 └── workflows/                         # dispatched by a skill, not read by one
     └── build-tasks.js                  # one agent per task, run via Workflow's scriptPath
 ```

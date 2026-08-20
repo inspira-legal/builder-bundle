@@ -1,6 +1,6 @@
 # Pre-flight tooling: silent checks
 
-Runs as part of Step 0 of SKILL.md, before the profile calibration (Phase 0). Prints nothing to the user, just observes and persists to `.brisar/session.yaml`.
+Runs as part of Step 0 of SKILL.md, before the intake. Prints nothing to the user, just observes. What it finds stays in context for this session: it describes the machine, not the journey, so it is not part of the brief.
 
 Core principle: **never block due to missing tooling**. There is always a fallback. Surface the gap, offer to resolve it, and continue the path.
 
@@ -100,9 +100,9 @@ preflight:
     detection_basis: <list of markers that matched>
 ```
 
-## Full persistence
+## Everything it observes
 
-Goes to `.brisar/session.yaml` in Step 0:
+The full shape, held in context from Step 0 on:
 
 ```yaml
 preflight:
@@ -127,29 +127,29 @@ preflight:
     detection_basis: [<markers>]
 ```
 
-Does not re-run if filled within the last 24h AND the session is active. Re-runs when:
+Runs once per session. Re-runs when:
 
-- New session
-- Phase 0 changed the profile (e.g., senior → content, so the MCPs need re-checking)
+- The path changed (a Framer brand entered the picture, so the MCPs need re-checking)
 - Builder explicitly requested a refresh
 
 ## How each brisar piece uses the preflight
 
-### Phase 0 (profile calibration)
+### The profile
 
-To validate the answer by cross-referencing with tooling. See `phase-0-calibration.md` section "Cross-validation with preflight".
+To cross-reference the profile's `uses_terminal` with what is actually installed. The mismatches
+and what to do about each are in [When the preflight detects inconsistency](#when-the-preflight-detects-inconsistency).
 
 ### Phase 1 (lightning intake)
 
 If product detected: skips the brand question (already known via `product.brand`). Skips the hosting question (already known: embed).
 
-### Phase 3 (scaffold): NOT called for content persona
+### Phase 3 (scaffold): NOT called on the Framer path
 
-If persona = `executive` AND `tooling.git_installed: false`: goes to `prototype-hosted` instead of local scaffold.
+If `uses_terminal` is false AND `tooling.git_installed: false`: goes to `prototype-hosted` instead of local scaffold.
 
-If persona = `builder-senior` AND product detected AND `tooling.gh_authed: false`: offers to authenticate before trying to clone the private repo.
+If `uses_terminal` is true AND product detected AND `tooling.gh_authed: false`: offers to authenticate before trying to clone the private repo.
 
-### Phase Framer (content path)
+### Phase Framer
 
 If `mcps.unframer: false`: falls back to the product's `fallback_path: framer-handoff-no-mcp`: generates `harpa-handoff-<slug>-<date>.md` in cwd, without depending on MCP. Mention that the builder can add the `mcp-unframer-co` MCP to their Claude config (`~/.claude.json`, `mcpServers` block) for the live-canvas path next time. brisar never edits `~/.claude.json` itself.
 
@@ -188,15 +188,15 @@ Common cases and what to do:
 | `gh_authed: false` but builder is in a folder of an Inspira product (private) | Warn: "this product is private. Want to authenticate?"                                                                                                                                         |
 | MCP unframer present but builder didn't choose Framer                         | Don't mention it, only used when relevant                                                                                                                                                      |
 | Multiple matches in the product registry                                      | Silent log (debug). Take the first one from the registry.                                                                                                                                      |
-| `git_installed: false` AND persona = builder-senior                           | "You marked senior but git is not here. Update the profile, or install git?"                                                                                                                   |
-| `git_installed: false` AND persona = executive                                | Don't mention it; the executive path doesn't require git.                                                                                                                                      |
+| `git_installed: false` AND `uses_terminal` true                               | "Your profile says you run commands, but git is not here. Install it, or run `/bb:profile` again?"                                                                                             |
+| `git_installed: false` AND `uses_terminal` false                              | Don't mention it; the prototype-hosted path doesn't require git.                                                                                                                               |
 | `scope_read: global-only` (no python3)                                        | A project-scoped MCP may exist and be invisible. Before naming a medium as missing, say the check was partial, never report a clean absence you did not verify.                                |
 | No canvas MCP at all                                                          | Don't treat it as a gap. Code and Claude design cover the medium question; mention the canvas paths once, without nagging.                                                                     |
 | `mobbin: false`                                                               | Declare the degraded bench in the research mode line, with what it invalidates. Climb Front A's ladder. Do not drop Front A.                                                                   |
 | Product repo not on disk AND `gh_authed: true`                                | Read the DS and i18n remotely (Front B, **rung 4**, only after rung 3, the disk search, came up empty). Say the reading is remote and that a miss in the GitHub index is not proof of absence. |
 | Product repo not on disk AND `gh_authed: false`                               | Offer `gh auth login`. If declined, Front B falls to the brand package, which is **not** a token source. Report `authority: brand-only` and its consequence.                                   |
 
-Detected product and profile calibration stay independent: product = "where I am", profile = "who I am". A senior embedding into an Inspira product and an executive prototyping something new can sit in the same folder.
+Detected product and the profile stay independent: product = "where I am", profile = "who I am". Someone embedding into an Inspira product and someone prototyping something new can sit in the same folder.
 
 ## Minimum acceptable state
 
