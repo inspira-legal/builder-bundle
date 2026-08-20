@@ -1,5 +1,79 @@
 # Changelog
 
+## 2.16.0 (2026-08-19)
+
+**The build has one path.** 2.7.0 gave `/bb:implement` and `/bb:delegate` a second
+build path and made it a question asked once per run. The question is gone: the build
+is one agent per task, dispatched as a workflow, and the in-context build survives only
+as the fallback for a session that cannot run it.
+
+The mode question cost more than it bought. Both answers had to stay documented and
+both had to stay correct, so every change to the build loop was written twice, and the
+user was asked to pick between an argument they already agreed with (a spec of eight
+tasks built in one context hits compaction mid-build) and the path that argument
+rejects. What the answer never was is a preference: it was the session's capabilities,
+which the skill can read for itself.
+
+### New
+
+- **`plugins/bb/workflows/build-tasks.js`**, the script the run dispatches, fixed and
+  versioned instead of authored per run. `references/build-tasks-workflow.md` now
+  documents it, and **the script is the definition**: the task agent's contract is the
+  prompt string inside the file, not a paraphrase kept next to it. This reverses
+  2.7.0's `build-slices-workflow.md`, which was the contract a generated script had to
+  meet, re-derived by whoever ran the build.
+- **`.github/scripts/validate-workflow-script.ts`**, the guard that replaces most of
+  the old pre-invoke checklist. It blanks comment, string, template and regex bodies
+  first, so every check reads code and not text, then asks: the script parses;
+  `export const meta` is present, a pure literal (no interpolation, no spread, and no
+  bare word other than `true`, `false`, `null`, `undefined`) and carries a `name` and a
+  `description`; `meta.phases`, when declared, has one entry per `phase()` call and the
+  titles match one for one, since the title is what pairs an entry to a call; there is
+  exactly one `parallel()` and it precedes the task loop; and no spelling of
+  `Date.now()`, `new Date()` or `Math.random()` is reachable, optional chaining and
+  `Date[...]` included. It runs inside `package.json`'s `validate`, which is what lefthook's
+  pre-commit job runs, and as its own step in `validate.yml`.
+- **`.github/scripts/lib/validate-common.ts`**, the tree walk, the argv resolution and
+  the report tail both validators had a copy of. Two argv bugs died with the
+  duplication: a mixed `dir file.js` call inferred its branch from the extension and ran
+  `readdir` on a file, and a path the validator does not read was dropped silently,
+  printing the same `0 errors` a clean run prints.
+
+### Changed
+
+- **`/bb:implement`** (2.5.0) keeps its 8 steps, and step 3 no longer asks. It builds
+  `args` by reading the spec, confirms the three items that are genuinely per-run,
+  proves the script with one `Bash` call, and invokes `Workflow` with `scriptPath`. The
+  fallback chain lives in `build-tasks-workflow.md` and step 3 points at it instead of
+  restating it; what the step keeps is the rule that the downgrade **names its reason in
+  one line**, so it doesn't read as a preference. With every task already ticked there
+  is nothing to dispatch: the step says so and goes to step 8, and the script returns
+  the empty report before stage zero for a caller that invoked anyway.
+- **`/bb:delegate`** (2.6.0) lost 2.7.0's step 3 entirely, and the rest renumbered.
+  Nothing about how to build is asked at either end of the chain, and the report no
+  longer names a mode; a run that fell back to this context says so instead. A blocked
+  run now records **why**: the blocker goes into the spec's own `## Open` with the
+  status flip, which is the line bare `/bb:delegate` reads back when it skips that spec,
+  and the skip names where the blocker sends it instead of pointing everything at
+  `/bb:spec`.
+- **A stage-zero stop names every blocker it found.** Both agents have already
+  returned when the verdicts are read, so a reuse note pointing at code that is gone no
+  longer hides a check the run cannot execute, or a tree that was already red. The old
+  `if / else if` reported the first and dropped the rest, which cost a whole round trip
+  to discover the second.
+- **The task loop has a fourth exit.** A task that returns `green` with a missing
+  `verify` result, or with `failed`, stops the build instead of landing in `built`:
+  `verify:` is what makes a task done, so green over an absent proof is a task the
+  caller and ship would both read as proven.
+- **oxfmt formats `js`** alongside `json` and `md` in the lefthook glob. CI already
+  formatted the file through `oxfmt --check .`; the hook did not.
+
+### Removed
+
+- **`references/build-mode.md`**: with the question deleted there is no reader left.
+  Its argument for why the build runs outside the main context moved into
+  `build-tasks-workflow.md`, which is where the build now lives.
+
 ## 2.15.0 (2026-08-19)
 
 **bb's context is a file you own, and having it is a choice.** The frame used to arrive

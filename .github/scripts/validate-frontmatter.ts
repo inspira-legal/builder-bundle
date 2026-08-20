@@ -10,8 +10,16 @@
  */
 
 import { parse as parseYaml } from "yaml";
-import { readdir, readFile } from "fs/promises";
-import { basename, dirname, join, relative, resolve } from "path";
+import { readFile } from "fs/promises";
+import { basename, dirname } from "path";
+
+import {
+  type FileIssues,
+  type ValidationIssue,
+  reportAndExit,
+  resolveTargets,
+  runMain,
+} from "./lib/validate-common";
 
 /** Agents in this plugin are read-only roles; a write tool there is a defect, not a choice. */
 const FORBIDDEN_AGENT_TOOLS = ["Write", "Edit", "MultiEdit", "NotebookEdit"];
@@ -45,11 +53,6 @@ function parseFrontmatter(markdown: string): ParseResult {
       error: `YAML parse failed: ${err instanceof Error ? err.message : err}`,
     };
   }
-}
-
-interface ValidationIssue {
-  level: "error" | "warning";
-  message: string;
 }
 
 type FileKind = "skill" | "agent";
@@ -126,80 +129,32 @@ function validateAgentTools(tools: unknown): ValidationIssue[] {
   return [];
 }
 
-async function findValidatableFiles(baseDir: string): Promise<{ path: string; kind: FileKind }[]> {
-  const results: { path: string; kind: FileKind }[] = [];
-
-  async function walk(dir: string) {
-    const entries = await readdir(dir, { withFileTypes: true });
-    for (const entry of entries) {
-      const fullPath = join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (entry.name === "node_modules" || entry.name === ".git") continue;
-        await walk(fullPath);
-      } else {
-        const kind = classify(fullPath);
-        if (kind) results.push({ path: fullPath, kind });
-      }
-    }
-  }
-
-  await walk(baseDir);
-  return results;
-}
-
 async function main() {
-  const args = process.argv.slice(2);
+  const { baseDir, files, notes } = await resolveTargets(
+    process.argv.slice(2),
+    (p) => classify(p) !== null,
+  );
 
-  let files: { path: string; kind: FileKind }[];
-  let baseDir: string;
-
-  if (args.length > 0 && args.every((a) => a.endsWith(".md"))) {
-    baseDir = process.cwd();
-    files = args
-      .map((a) => resolve(a))
-      .map((path) => ({ path, kind: classify(path) }))
-      .filter((f): f is { path: string; kind: FileKind } => f.kind !== null);
-  } else {
-    baseDir = args[0] || process.cwd();
-    files = await findValidatableFiles(baseDir);
-  }
-
-  let totalErrors = 0;
-
-  const skills = files.filter((f) => f.kind === "skill").length;
+  const skills = files.filter((f) => classify(f) === "skill").length;
   console.log(`Validating ${skills} skill files and ${files.length - skills} agent files...\n`);
 
-  for (const { path: filePath, kind } of files) {
-    const rel = relative(baseDir, filePath);
-    const content = await readFile(filePath, "utf-8");
-    const result = parseFrontmatter(content);
+  const reports: FileIssues[] = [];
 
+  for (const path of files) {
+    const content = await readFile(path, "utf-8");
+    const result = parseFrontmatter(content);
     const issues: ValidationIssue[] = [];
 
     if (result.error) {
       issues.push({ level: "error", message: result.error });
     } else {
-      issues.push(...validateFrontmatter(result.frontmatter, kind));
+      issues.push(...validateFrontmatter(result.frontmatter, classify(path) as FileKind));
     }
 
-    if (issues.length > 0) {
-      console.log(rel);
-      for (const issue of issues) {
-        const prefix = issue.level === "error" ? "  ERROR" : "  WARN ";
-        console.log(`${prefix}: ${issue.message}`);
-        if (issue.level === "error") totalErrors++;
-      }
-      console.log();
-    }
+    reports.push({ path, issues });
   }
 
-  console.log("---");
-  console.log(`Validated ${files.length} files: ${totalErrors} errors`);
-
-  if (totalErrors > 0) process.exit(1);
+  reportAndExit(baseDir, reports, notes, "files");
 }
 
-main().catch((err) => {
-  console.error("Fatal error:", err);
-  process.exit(2);
-});
+runMain(main);

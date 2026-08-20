@@ -30,20 +30,21 @@ plugins/bb/
 │   ├── spec-state.md                   # the .bb/<slug>/ folder contract
 │   ├── bb-config.md                    # ~/.claude/bb.config.json: the schema and who reads it
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
-│   ├── build-mode.md                   # workflow-or-context: the per-run build choice (implement, delegate)
-│   └── build-tasks-workflow.md         # contract the generated one-agent-per-task script meets
+│   └── build-tasks-workflow.md         # how the skills call workflows/build-tasks.js, and what it returns
 ├── scripts/                           # shared executables (2+ skills), ref via ${CLAUDE_PLUGIN_ROOT}/scripts/
 │   ├── fetch_comments.py               # ship, review
 │   ├── reply_resolve_thread.py         # ship, review
 │   └── gather_context.py               # ship, review (resolves the diff range), gather-branch-context
-└── skills/                            # all 16 skills flat; trilha grouping is a docs concept
-    ├── Pensar:        discover, challenge, think, legal-lens
-    ├── Desenhar:      spec
-    ├── Construir:     implement, ship, delegate, gather-branch-context
-    ├── Revisar:       review, maintain-repo, review-setup
-    ├── Design:        brisar
-    ├── Pesquisar/Doc: code-deep-research, write-readme
-    └── no trilha:     profile
+├── skills/                            # all 16 skills flat; trilha grouping is a docs concept
+│   ├── Pensar:        discover, challenge, think, legal-lens
+│   ├── Desenhar:      spec
+│   ├── Construir:     implement, ship, delegate, gather-branch-context
+│   ├── Revisar:       review, maintain-repo, review-setup
+│   ├── Design:        brisar
+│   ├── Pesquisar/Doc: code-deep-research, write-readme
+│   └── no trilha:     profile
+└── workflows/                         # dispatched by a skill, not read by one
+    └── build-tasks.js                  # one agent per task, run via Workflow's scriptPath
 ```
 
 ### Naming conventions
@@ -100,6 +101,13 @@ transformation, file manipulation, JSON processing) over having the LLM do it
 inline. Reserve LLM reasoning for judgment calls, synthesis, and creative
 decisions.
 
+The **`workflows/` exception is JavaScript**: a file under `plugins/bb/workflows/` is
+`.js` because the `Workflow` tool takes a JavaScript script and nothing else. It gets
+no shell and no filesystem, so it only coordinates agents and reads their structured
+returns; the deterministic work Python would do belongs in a script an agent calls. The
+repo's own tooling under `.github/scripts/` follows the repo instead, which is bun and
+TypeScript.
+
 ### Writing guidelines
 
 - The prose of this repo, and every document a skill generates, follows
@@ -137,7 +145,9 @@ decisions.
 - Python scripts use `gh api graphql` for GitHub data (not the REST API directly)
 - Scripts are invoked via `Bash` tool from within skill workflows
 - Scripts write to stdout (JSON or plain text) for the LLM to consume
-- New scripts should use Python, stdlib only (no third-party imports)
+- New scripts should use Python, stdlib only (no third-party imports), with the two
+  exceptions the scripting principle names: `plugins/bb/workflows/*.js` and the repo's
+  own `.github/scripts/*.ts`
 
 ## Spec state
 
