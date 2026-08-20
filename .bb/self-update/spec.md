@@ -147,7 +147,7 @@ Happy path:
 - [x] **3. The wiring**: `sync_instructions.py` calls `report()` and the spawn on both of its
       paths, merging one JSON payload, with the child's streams closed.
       → behaviors 1, 2, 3, 8, 9, 16, 20, 21 · dep: 1, 2 · verify: run the hook, read its JSON
-- [ ] **4. The record**: a `README.md` line saying bb keeps itself current, and the CHANGELOG
+- [x] **4. The record**: a `README.md` line saying bb keeps itself current, and the CHANGELOG
       entry with the version bump in `plugin.json`.
       → behaviors 7, 21 · dep: 3 · verify: CI (`validate.yml`) green
 
