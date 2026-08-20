@@ -173,7 +173,7 @@ Happy path:
       `spec/references/export-spec.md:18`, `spec/references/spec-format.md:105`, and
       `lint_spec.py`'s `DEAD_SECTIONS` gaining the four moved names
       → behaviors 6, 7, E13 · dep: 1 · verify: CI
-- [ ] **9. `.bb/**` out of review's scope**: the exclusion lands where the mode is
+- [x] **9. `.bb/**` out of review's scope**: the exclusion lands where the mode is
       resolved (`review/SKILL.md` step 1) and where the diff reaches the finders
       (`review/references/fronts.md`), with the ruler-not-target distinction stated
       once in `front-contract.md`
