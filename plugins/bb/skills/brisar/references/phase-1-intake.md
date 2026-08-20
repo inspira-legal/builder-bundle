@@ -1,6 +1,6 @@
 # Phase 1: lightning intake (depth adapts to the profile)
 
-The previous version asked 6-10 questions just to reach "now I'll frame it." This phase cuts that, but the number and language of the questions vary by the profile injected into the frame (`reads_code` and `step_by_step`; see `plugins/bb/references/bb-config.md`). When the trade-off of skipping the framing isn't worth it (serious artifact, `reads_code` true), Phase 2 (maturity gate) pulls /bb:discover into the flow.
+The previous version asked 6-10 questions just to reach "now I'll frame it." This phase cuts that, but the number and language of the questions vary by the profile injected into the frame (`reads_code` and `technical_instructions`; see `plugins/bb/references/bb-config.md`). When the trade-off of skipping the framing isn't worth it (serious artifact, `reads_code` true), Phase 2 (maturity gate) pulls /bb:discover into the flow.
 
 ## Step 0a: shortcut router (before the variant)
 
@@ -63,13 +63,13 @@ A heuristic-detected shortcut may be wrong. Asking for confirmation costs 1 turn
 
 ## Step 0b: branch by the profile
 
-Read `reads_code` and `step_by_step` from the profile in the frame. Route:
+Read `reads_code` and `technical_instructions` from the profile in the frame. Route:
 
-| The profile says                        | Goes to                                                             | How many questions                                         |
-| --------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `reads_code` true, `step_by_step` false | [Short variant](#short-variant-2-questions)                         | 2 (intent + brand, with brand skipped if product detected) |
-| `reads_code` true, `step_by_step` true  | [Narrated variant](#narrated-variant-standard-flow-step-by-step)    | 3                                                          |
-| `reads_code` false                      | [Operational variant](#operational-variant-no-technical-vocabulary) | 5-6 in everyday language                                   |
+| The profile says                                  | Goes to                                                             | How many questions                                         |
+| ------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `reads_code` true, `technical_instructions` true  | [Short variant](#short-variant-2-questions)                         | 2 (intent + brand, with brand skipped if product detected) |
+| `reads_code` true, `technical_instructions` false | [Narrated variant](#narrated-variant-standard-flow-step-by-step)    | 3                                                          |
+| `reads_code` false                                | [Operational variant](#operational-variant-no-technical-vocabulary) | 5-6 in everyday language                                   |
 
 `brand.workflow == framer-harpa` **does NOT enter Phase 1.** It jumps straight to `references/phase-framer-handoff.md`, which runs its own intake.
 
@@ -122,7 +122,7 @@ Short echo + proceed to Phase 2 (gate runs as usual).
 
 ## Narrated variant (standard flow, step by step)
 
-With `step_by_step` true, use the 3 questions below (Question 1, 2, 3), the same ones the short variant asks in greenfield, but with **explicit narration** in each echo. Each echo needs to explain:
+With `technical_instructions` false, use the 3 questions below (Question 1, 2, 3), the same ones the short variant asks in greenfield, but with **explicit narration** in each echo. Each echo needs to explain:
 
 - What's going to happen in the next step
 - How long it takes
@@ -134,7 +134,7 @@ Example of a narrated echo, next to the short one:
 | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | "Slug: `lexflow-search`. Going to brand." | "Derived slug: `lexflow-search`. I'll use it as the folder name. Next: the brand question, so I know which tokens to copy." |
 
-In Phase 5 (handoff), `step_by_step` also narrates each command (see `phase-5-handoff.md`).
+In Phase 5 (handoff), the same flag narrates each command (see `phase-5-handoff.md`).
 
 ---
 

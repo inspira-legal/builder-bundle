@@ -48,7 +48,7 @@ the next silently.
    needs: `reads_code` sets how many questions and in what language,
    `technical_vocabulary` decides whether `scaffold`, `embed` and `MCP` appear
    at all, `uses_terminal` decides whether a path needs a command, and
-   `step_by_step` decides how a command is written. The contract is the
+   `technical_instructions` decides how a command is written. The contract is the
    plugin-level `references/bb-config.md`.
 4. **Detect > ask.** Step 0 cross-references cwd with the product registry; a
    match settles brand and hosting without asking. Tooling gaps are detected in

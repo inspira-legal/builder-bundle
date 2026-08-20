@@ -13,6 +13,11 @@ This page states every rule bb writes by, so writing to it is a local read, neve
 The rules govern how a sentence is built, so they hold in whatever language the sentence
 is written in.
 
+Which language that is depends on the reader. A file in this repo is English. A string a
+skill shows the person in the moment, an `AskUserQuestion` label, an option's description,
+a line it prints, follows the language the person is speaking. So a table of option labels
+inside a `SKILL.md` is the wording to say, never the string to print.
+
 ## Precedence
 
 A project guideline first, this page second. Where a skill states its own contract, the

@@ -52,28 +52,29 @@ asks today:
   "profile": {
     "reads_code": true,
     "uses_terminal": true,
-    "step_by_step": false,
+    "technical_instructions": true,
     "technical_vocabulary": true,
     "calibrated_at": "2026-08-19"
   }
 }
 ```
 
-| key                    | what `/bb:profile` asks                                    | the hint beside it        |
-| ---------------------- | ---------------------------------------------------------- | ------------------------- |
-| `reads_code`           | Você abre e edita o código, ou quer só o resultado?        | quem só quer o resultado  |
-| `uses_terminal`        | Você roda comandos e git no dia a dia?                     | quem nunca abriu um       |
-| `step_by_step`         | Quer que as partes técnicas sejam descritas passo a passo? | ideal para não técnicas   |
-| `technical_vocabulary` | Termos como `scaffold` e `branch` passam sem tradução?     | quem prefere em português |
+| key                      | what `/bb:profile` asks                                | the hint beside it        |
+| ------------------------ | ------------------------------------------------------ | ------------------------- |
+| `reads_code`             | Você abre e edita o código, ou quer só o resultado?    | quem só quer o resultado  |
+| `uses_terminal`          | Você roda comandos e git no dia a dia?                 | quem nunca abriu um       |
+| `technical_instructions` | Tem costume com instruções e comandos técnicos?        | marcado, comando compacto |
+| `technical_vocabulary`   | Termos como `scaffold` e `branch` passam sem tradução? | quem prefere em português |
 
 Every option carries that hint beside it. The question names a habit and the hint names
 who has it, so the person recognizes themselves without having to decode the term the
 answer is about. `scaffold` in the fourth question is the point: someone who does not
 know the word answers no on the strength of not knowing it.
 
-`step_by_step` decides what a command looks like when it is printed, not what runs:
-`pnpm install && pnpm dev` on one side, and on the other the numbered steps with where
-to run them, how long they take and what success prints. `uses_terminal` is knowing
+`technical_instructions` decides what a command looks like when it is printed, not what
+runs: true is `pnpm install && pnpm dev`, and false is the numbered steps with where to
+run them, how long they take and what success prints. All four flags point the same way,
+so nothing checked is the most careful profile on every axis. `uses_terminal` is knowing
 how, not having it installed, which is the preflight's question.
 
 The two pairs are independent on purpose. `builder-senior` and `builder-junior` were the
@@ -88,7 +89,7 @@ The fifteen `persona_id` reads become reads of one flag each:
 | ------------------------ | ---------------------- | ---------------------------------------- |
 | `phase-1-intake.md`      | branch by persona      | `reads_code` sets depth and language     |
 | `phase-3-scaffold.md`    | `persona == executive` | `uses_terminal` picks scaffold or hosted |
-| `phase-5-handoff.md`     | `persona == junior`    | `step_by_step`                           |
+| `phase-5-handoff.md`     | `persona == junior`    | `technical_instructions`                 |
 | `brief.md`, banned words | executive or content   | `technical_vocabulary`                   |
 | `phase-medium.md`        | `persona == executive` | `reads_code` leans the medium            |
 | `phase-diverge.md`       | who is choosing        | `technical_vocabulary`                   |
@@ -216,7 +217,7 @@ Happy path, first time:
 | `/bb:profile` with a file                     | shows the current profile, offers recalibrate or keep          |
 | brisar with a config                          | no profile question; each phase reads the flag it needs        |
 | brisar with no config                         | calls the `/bb:profile` calibration, then continues            |
-| `step_by_step` is true at a handoff           | commands print as numbered steps with what they print          |
+| `technical_instructions` false at a handoff   | commands print as numbered steps with what they print          |
 | `technical_vocabulary` is false in any phase  | `scaffold`, `embed`, `MCP`, `branch` are replaced, not glossed |
 | the plugin updates to a new version           | the config survives; it lives outside the install path         |
 | intake runs before the slug is confirmed      | nothing is written to disk yet                                 |

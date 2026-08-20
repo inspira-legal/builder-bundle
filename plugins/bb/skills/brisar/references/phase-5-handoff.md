@@ -8,7 +8,7 @@ or the scaffolded project folder assumes medium `code`. On a canvas or
 report the design brief and the canvas artifact instead. Telling the builder to open a folder that
 was never created is the kind of error that reads as the tool being confused about its own state.
 
-## Output shape (default: `step_by_step` false)
+## Output shape (default: `technical_instructions` true)
 
 Plain text. Structure:
 
@@ -116,7 +116,7 @@ hypothesis and the metric clear, and saves rework later.
 
 No Develop gate here. End with a simple report. Mention `/bb:discover` as the optional next step (as above) and stop.
 
-### If `step_by_step` is true (explicit narration)
+### If `technical_instructions` is false (explicit narration)
 
 Same default terminal, but with narration before the gate:
 

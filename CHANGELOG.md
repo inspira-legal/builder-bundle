@@ -32,9 +32,10 @@ went with it, and `.brisar/` is gone: the brief carries the journey.
 
 ### Added
 
-- **`/bb:profile`**: a checklist of four things the person knows or wants, `reads_code`,
-  `uses_terminal`, `step_by_step` and `technical_vocabulary`, each option carrying a hint
-  of who it is for. It writes `~/.claude/bb.config.json`, shows the profile on disk and
+- **`/bb:profile`**: a checklist of four habits the person either has or does not,
+  `reads_code`, `uses_terminal`, `technical_instructions` and `technical_vocabulary`. All
+  four point the same way, so checked always means say less about it and nothing checked
+  is the most careful profile there is. It writes `~/.claude/bb.config.json`, shows the profile on disk and
   recalibrates it. It is the only writer of that file. The contract, the JSON shape and
   what each flag changes are in `references/bb-config.md`.
 - **The hook always injects.** `inject_operating_context.py` composes the frame with the
@@ -50,7 +51,7 @@ went with it, and `.brisar/` is gone: the brief carries the journey.
 
 - **brisar reads the profile instead of asking for it.** Each phase that changed its voice
   by persona now reads the flag it actually needs: the intake and the scaffold read
-  `step_by_step`, the handoff reads `technical_vocabulary`. Tooling stays where it was, in
+  `technical_instructions`, the handoff reads `technical_vocabulary`. Tooling stays where it was, in
   the preflight, and the output path stays a project decision.
 - **The brief carries the journey.** `brief-design.md` opens with `status`, `phase`,
   `round`, `slug` and `created`, and the resume reads that block instead of a state file.

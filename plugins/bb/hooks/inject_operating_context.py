@@ -36,10 +36,10 @@ PROFILE_LINES: dict[str, tuple[str, str]] = {
         "They do not work in a terminal. Prefer a path that needs no command, and when "
         "one is unavoidable, say where it goes and what it does first.",
     ),
-    "step_by_step": (
+    "technical_instructions": (
+        "Keep the technical parts compact. One line per command is enough.",
         "Describe the technical parts one step at a time: where each step runs, how "
         "long it takes, and what it prints when it works.",
-        "Keep the technical parts compact. One line per command is enough.",
     ),
     "technical_vocabulary": (
         "Technical vocabulary reads fine: scaffold, branch, embed, MCP.",

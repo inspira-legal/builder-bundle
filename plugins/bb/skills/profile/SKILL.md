@@ -1,6 +1,6 @@
 ---
 name: profile
-description: Calibrate once who is on the other side, and every bb session after this one is calibrated. Asks four questions (do you read the code, do you run commands, do you want the technical parts step by step, does technical vocabulary read fine), writes ~/.claude/bb.config.json, and shows or recalibrates a profile that already exists. Use when the user says "/bb:profile", "set my profile", "recalibrate", "bb is explaining too much", "bb is explaining too little" or "stop injecting bb's context every session", or when a bb skill runs with no profile set.
+description: Calibrate once who is on the other side, and every bb session after this one is calibrated. Asks four questions (are you used to editing code, to the terminal, to technical instructions, to technical vocabulary), writes ~/.claude/bb.config.json, and shows or recalibrates a profile that already exists. Use when the user says "/bb:profile", "set my profile", "recalibrate", "bb is explaining too much", "bb is explaining too little" or "stop injecting bb's context every session", or when a bb skill runs with no profile set.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -34,18 +34,22 @@ contract, the schema and the reading rules live in the plugin-level
    injection. Keeping it ends the skill; there is nothing to write.
 
 4. **Ask the four, as one question.** A single `AskUserQuestion` with `multiSelect: true`
-   and these four options. Every option carries the hint of who it is for, so nobody has
-   to know the term to answer:
+   and these four options. Each one names a habit the person either has or does not, so
+   checked always means the same thing: they are used to this, so say less about it.
 
-   | option label                  | description                                                                                                   |
-   | ----------------------------- | ------------------------------------------------------------------------------------------------------------- |
-   | I open and edit the code      | You work in the code, not only in the result. Leave it blank if you only want the result.                     |
-   | I run commands and git        | The terminal is part of your day. Leave it blank if you have never opened one.                                |
-   | Spell out the technical parts | Every command with where to run it and what it prints when it works. Made for non technical people.           |
-   | Technical terms read fine     | `scaffold`, `branch`, `MCP` and `embed` land without a translation. Leave it blank if you prefer plain words. |
+   | option label                                     | description                                                                                                 |
+   | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+   | I am used to opening and editing code            | You work in the code, not only in the result. Leave it blank if you only want the result.                   |
+   | I am used to working in the terminal             | Commands and git are part of your day. Leave it blank if you have never opened one.                         |
+   | I am used to technical instructions              | A command on one line is enough. Leave it blank and each one arrives with where it runs and what it prints. |
+   | I am used to terms like `branch`, `MCP`, `embed` | They land without a translation. Leave it blank if you prefer plain words.                                  |
 
-   Checked is `true`, unchecked is `false`. Nothing checked is a valid answer, and it is
-   the most careful profile there is.
+   Checked is `true`, unchecked is `false`, and all four point the same way. Nothing
+   checked is a valid answer, and it is the most careful profile there is.
+
+   **The labels above are the wording, not the string to print.** They are English because
+   the repo is; what the person reads follows the language they are speaking. The rule is
+   in the plugin-level `references/doc-style.md`.
 
    **Pre-fill from an old profile when there is one.** A project that brisar ran before the
    profile file existed carries `profile.persona_id` in its `.brisar/session.yaml`. Derive the
@@ -64,7 +68,8 @@ contract, the schema and the reading rules live in the plugin-level
    second option's own line what turning it off costs, rather than after the fact.
 
 6. **Write the file.** Create `~/.claude` if it is missing. `version: 1`, `inject_frame`,
-   the four flags, and `calibrated_at` as today's ISO date. Write the whole file; never
+   the four flags (`reads_code`, `uses_terminal`, `technical_instructions`,
+   `technical_vocabulary`), and `calibrated_at` as today's ISO date. Write the whole file; never
    merge into a shape you did not read.
 
 7. **Print what was written**, as the four sentences plus which of the two the hook will
