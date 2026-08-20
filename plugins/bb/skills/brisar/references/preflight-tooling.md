@@ -151,7 +151,7 @@ If `uses_terminal` is true AND product detected AND `tooling.gh_authed: false`: 
 
 ### Phase Framer
 
-If `mcps.unframer: false`: falls back to the product's `fallback_path: framer-handoff-no-mcp`: generates `harpa-handoff-<slug>-<date>.md` in cwd, without depending on MCP. Mention that the builder can add the `mcp-unframer-co` MCP to their Claude config (`~/.claude.json`, `mcpServers` block) for the live-canvas path next time. brisar never edits `~/.claude.json` itself.
+If `mcps.unframer: false`: falls back to the product's `fallback_path: framer-handoff-no-mcp`: writes the `## Harpa handoff` section of `.bb/<slug>/design.md`, without depending on MCP. Mention that the builder can add the `mcp-unframer-co` MCP to their Claude config (`~/.claude.json`, `mcpServers` block) for the live-canvas path next time. brisar never edits `~/.claude.json` itself.
 
 ### Research phase (market bench)
 

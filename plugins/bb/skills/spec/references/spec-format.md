@@ -102,10 +102,12 @@ in that problem.
 
 `## still open` is spelled `## Open`.
 
-Sections seeded upstream by `/bb:discover` (`## Problem`, `## Hypothesis`, `## Fit`,
-`## Cuts`) live in the top half and stay as they are. `## Cuts` is scope dropped while
-framing the problem, with the appetite behind it; `## Out of scope` is what this spec
-doesn't do. Both can appear in the same file.
+`## Problem`, `## Hypothesis`, `## Fit` and `## Cuts` are **not** sections of a spec.
+`/bb:discover` writes them into `.bb/<slug>/discovery.md`, and this spec reads them
+there by path (plugin-level `references/spec-state.md`); the lint fires `E003` on all
+four. `## Cuts` is scope dropped while framing the problem, with the appetite behind
+it, and it stays in that record; `## Out of scope` is what this spec doesn't do, and it
+belongs here.
 
 ## The lint
 

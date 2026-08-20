@@ -15,9 +15,9 @@ not at all.
 **Test:** "Will the user change any behavior because of this?"
 
 - **Yes** → `Hypothesis` required → trio (`Connected OKR` + `Expected Impact` +
-  `Metric`) required. If the spec's `## Hypothesis` (from `/bb:discover`)
-  exists, render it here; if the trio can't be filled from the spec, ask;
-  don't invent.
+  `Metric`) required. If `.bb/<slug>/discovery.md` carries a `## Hypothesis`,
+  render it here; if the trio can't be filled from the spec or that record,
+  ask; don't invent.
 - **No** (internal feature, design pattern, compliance) → trio omitted entirely,
   no placeholder, no "N/A".
 
@@ -40,7 +40,8 @@ Map from the spec: the opening and the free top half → context and framing;
 `## Decisions` → Decision rationale; `## Out of scope` → Out of scope; `## Behavior` → Behaviors;
 the behavior map's `WHEN … THEN …` rows → Definition of done criteria. A spec written before
 the rename spells those `## decisions`, `## out of scope` and `## behavior`, same sections,
-mapped the same way (the whole pairing is in the plugin-level `references/spec-state.md`).
+mapped the same way. The framing this export opens with comes from
+`.bb/<slug>/discovery.md`, not from the spec.
 
 ```markdown
 # Spec: [Feature Name]

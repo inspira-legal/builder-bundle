@@ -24,12 +24,20 @@ RECOMMENDED_SECTIONS = (
 )
 # `{raw}` takes the heading as the file spells it, so the message quotes the string the
 # author will search for.
+MOVED_TO_DISCOVERY = (
+    "`## {raw}` belongs to `.bb/<slug>/discovery.md`, written by `/bb:discover`. "
+    "The spec reads it there by path; a copy here goes stale on the next round."
+)
 DEAD_SECTIONS = {
     "design": (
         "`## {raw}` is a dead name: in bb `design` is screen design (`/bb:brisar`). "
         "Architecture belongs in the free top half, under the name it has in this problem."
     ),
     "still open": "section `## {raw}`: the name is `## Open`.",
+    "problem": MOVED_TO_DISCOVERY,
+    "hypothesis": MOVED_TO_DISCOVERY,
+    "fit": MOVED_TO_DISCOVERY,
+    "cuts": MOVED_TO_DISCOVERY,
 }
 VALID_STATUS = ("pending", "in-progress", "done", "blocked")
 MAX_CELL = 100

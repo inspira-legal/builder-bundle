@@ -1,14 +1,17 @@
-# Deliver phase: design review, accessibility, handoff
+# Deliver phase: design review, accessibility, and the contract
 
 Loaded when the builder chooses to review/deliver (Develop gate, the `deliver-direct` shortcut, or re-entry). Patron of this phase: Clarisse Sieckenius de Souza, Semiotic Engineering, PUC-Rio. Her insight anchors everything here: **every interface is a communication from the designer to the user, mediated by the product**. This phase ensures that communication arrived intact before going to production.
 
-This phase does **3 things**:
+This phase does **two things**, and then hands the journey to the contract:
 
 1. **Design review**: confronts the built surfaces against **the problem and the research**, and flags only what matters. This is a senior designer's review, not a conformance check: it reads the copy, computes the contrast, sweeps every variant against the contract, and it is allowed to **disagree with a decision in the brief or the spec** when it sees a better option.
 2. **Accessibility audit**: validates WCAG AA. Suggests `/bb:review` (accessibility audit, surface scope) when depth is required; does inline checks when it's just a sanity check.
-3. **Handoff doc**: generates the document that the developer/agent reads to implement (mapped components, states, edge cases, recorded decisions), plus the **delta back into the spec** when the design learned something the contract does not yet know.
 
-Doesn't scaffold (Phases 1–3). Doesn't build (Develop phase). Doesn't decide scope (`/bb:discover`). Only reviews, records, and delivers.
+Then the gate **invokes** `/bb:spec`. What a developer needs in order to build is a contract, and
+writing contracts is `/bb:spec`'s job: it reads this `design.md` and `discovery.md` as the
+records and writes `spec.md` itself. Deliver records the journey and points at it.
+
+Doesn't scaffold (Phases 1–3). Doesn't build (Develop phase). Doesn't decide scope (`/bb:discover`). Doesn't write the spec. Only reviews, records, and hands over.
 
 ## Editorial stance
 
@@ -35,9 +38,9 @@ The review holds **three** things against each other, not two:
 
 1. **The problem**: `.bb/<slug>/spec.md`: what are we solving, for whom, what did we cut, what
    does success look like.
-2. **The research**: `.bb/<slug>/brief-design.md`: what the market, the design system and the
+2. **The research**: `.bb/<slug>/design.md`: what the market, the design system and the
    product actually said, and which direction was chosen and why.
-3. **The built thing**: the surfaces in `.bb/<slug>/develop-notes.md`.
+3. **The built thing**: the surfaces list in `.bb/<slug>/design.md`'s frontmatter, and `## Built`.
 
 Three questions, in this order:
 
@@ -58,11 +61,11 @@ built thing, which did not exist then. Neither pass replaces the other.
 
 Before any question, read the task folder `.bb/<slug>/` in full:
 
-- **If `develop-notes.md` exists**: surfaces are built. Its frontmatter is the locator (file, or
+- **If the surfaces list carries an `artifact`**: surfaces are built. It is the locator (file, or
   file + page + artboards on a canvas), plus `variants[]`, `states_covered[]` and `deviations[]`.
 - **The medium**, recorded in the brief: decides how you open the artifact. See Step 0.
 - **If there is a spec** (`.bb/<slug>/spec.md`): read it. The hypothesis, cuts, and appetite there are the criteria against which to review. Appetite informs review rigor (small appetite = lean review; large = dense review).
-- **The brief** (`.bb/<slug>/brief-design.md`): read it. The research, the chosen direction, the base block common to all directions, the token limits read from source, and the open tension. **The two briefs coexist and neither substitutes for the other**, reviewing against the research alone loses the problem; reviewing against the hypothesis alone loses everything the research learned.
+- **The brief** (`.bb/<slug>/design.md`): read it. The research, the chosen direction, the base block common to all directions, the token limits read from source, and the open tension. **The two briefs coexist and neither substitutes for the other**, reviewing against the research alone loses the problem; reviewing against the hypothesis alone loses everything the research learned.
 - **If there is no spec**: **flag as a non-blocking warning**: "I cannot review against the hypothesis because it was never formulated. I can review against standard UI/UX criteria, but the depth stays limited. Want to run /bb:discover first? (non-blocking, I can go on)"
 - **If there is no design brief**: same stance, one line: the review runs, but it cannot check
   fidelity to research that was never written. Say which lens is unavailable instead of implying
@@ -113,7 +116,7 @@ review as complete.
 
 Print introduction:
 
-> **Deliver phase**: I am going to run the design review (against the hypothesis), the accessibility audit (WCAG AA), and write the handoff doc for the dev. Stance: I only flag what matters.
+> **Deliver phase**: I am going to run the design review (against the hypothesis) and the accessibility audit (WCAG AA), both into `design.md`. Stance: I only flag what matters.
 
 Call `AskUserQuestion`:
 
@@ -126,19 +129,15 @@ Call `AskUserQuestion`:
       "options": [
         {
           "label": "Full pipeline",
-          "description": "Runs the 3 modes in order (design review → accessibility → handoff doc). Recommended if you came from the Develop phase."
+          "description": "Runs both modes in order (design review → accessibility). Recommended if you came from the Develop phase."
         },
         {
           "label": "Design review",
-          "description": "Confronts the surfaces with the hypothesis and cuts from the brief. Output: design-review.md with the significant issues."
+          "description": "Confronts the surfaces with the hypothesis and the cuts. Output: the `## Design review` section, with the significant issues."
         },
         {
           "label": "Accessibility audit",
           "description": "WCAG AA: contrast, keyboard, screen reader, ARIA. Suggests /bb:review (the accessibility audit) if the depth calls for it."
-        },
-        {
-          "label": "Handoff doc",
-          "description": "Writes handoff.md for a developer or agent: components, states, edge cases, decisions."
         }
       ],
       "multiSelect": false
@@ -147,25 +146,19 @@ Call `AskUserQuestion`:
 }
 ```
 
-If `ci_code_review_present: false` and the chosen mode includes the handoff doc, flag **non-blocking** at the end:
-
-> "💡 I noticed the repo does not have the `inspira-legal/code-review` workflow configured. If you want automatic code review on PRs, run `/bb:review-setup`. Non-blocking. I write the handoff doc either way."
-
 ## Step 2: Mode execution
 
 Lazy-load `references/deliver-modes.md`. Do not load all modes in Step 0.
 
-| Mode                | Loads                                 | Output                                  |
-| ------------------- | ------------------------------------- | --------------------------------------- |
-| Design review       | when chosen                           | `.bb/<slug>/design-review.md`           |
-| Accessibility audit | when chosen or after design review    | `.bb/<slug>/accessibility-checklist.md` |
-| Handoff doc         | when chosen or at end of the pipeline | `.bb/<slug>/handoff.md`                 |
+| Mode                | Loads                              | Output                                     |
+| ------------------- | ---------------------------------- | ------------------------------------------ |
+| Design review       | when chosen                        | `.bb/<slug>/design.md`, `## Design review` |
+| Accessibility audit | when chosen or after design review | `.bb/<slug>/design.md`, `## Accessibility` |
 
 ### Stance per mode
 
-- **Design review:** sweeps **surface × variant** (reads the surfaces in `.bb/<slug>/develop-notes.md` and each entry's `variants[]`), through **seven lenses**: the four structural ones plus copy, computed contrast, and the triangulation. Full list and how to run each: `deliver-modes.md#mode-1-design-review`. Comments only if the issue is significant. At least 1 piece of praise for what worked (not cheerleading. It's information: "this worked, keep it").
+- **Design review:** sweeps **surface × variant** (reads the surfaces list in `.bb/<slug>/design.md`'s frontmatter and each entry's `variants[]`), through **seven lenses**: the four structural ones plus copy, computed contrast, and the triangulation. Full list and how to run each: `deliver-modes.md#mode-1-design-review`. Comments only if the issue is significant. At least 1 piece of praise for what worked (not cheerleading. It's information: "this worked, keep it").
 - **Accessibility:** suggests `/bb:review`'s accessibility audit (surface scope. It can read the rendered page) if the builder requested depth or if it's going to merge. Otherwise, does inline: color contrast, keyboard navigation (mental walkthrough), `aria-label` on icons, tab order, visible focus.
-- **Handoff doc:** reads tokens + components from the design-context (or from the design brief's DS section on a canvas medium), reads the built surfaces, and generates a structured doc for the developer. Doesn't invent components, only maps what exists. If context to fill a section is missing, ask or skip it with `not-applicable` + reason. **Also produces the spec delta** when the design learned something the contract does not carry yet.
 
 ### Severity: four levels, and one of them is new
 
@@ -191,7 +184,7 @@ Always writes:
   goes to `phase: deliver` (or `phase: done`, `status: completed`, if the journey closes here),
   and the prose says which modes ran and what the next action is.
 
-Each artifact carries its own summary in its own frontmatter. `design-review.md`:
+The document summarizes itself in its own frontmatter. The review's own fields:
 
 ```yaml
 ---
@@ -212,9 +205,8 @@ next_action: ready-to-merge | fix-blockers | re-prototype | decide-divergences |
 ---
 ```
 
-`accessibility-checklist.md` carries `wcag_aa_status` (pass, fail, partial, not-assessed) and its
-`blockers`. `handoff.md` carries `completeness` (high, med, low), `ci_code_review_present` and the
-`spec_delta`: what the contract has to absorb, where empty is a valid answer.
+The audit carries `wcag_aa_status` (pass, fail, partial, not-assessed) and its `blockers`, in the
+same frontmatter.
 
 **`variants_unreviewed` and `lenses_skipped` are not bookkeeping.** They are the difference between
 "reviewed" and "reviewed the first artboard with the lenses that happened to work". A review that
@@ -222,7 +214,7 @@ covered less than everything says so.
 
 ### Gate (always the last)
 
-Echo the final status in 1 line, e.g.: _"Design review: 2 issues significativos, 0 blockers. Accessibility: WCAG AA pass. Handoff doc completo. Artefatos em `.bb/<slug>/`."_, then the handoff gate:
+Echo the final status in 1 line, e.g.: _"Design review: 2 issues significativos, 0 blockers. Accessibility: WCAG AA pass. Tudo em `.bb/<slug>/design.md`."_, then the handoff gate:
 
 ```json
 {
@@ -237,7 +229,7 @@ Echo the final status in 1 line, e.g.: _"Design review: 2 issues significativos,
         },
         {
           "label": "Spec the real implementation",
-          "description": "I suggest /bb:spec, which turns the prototype + handoff doc into a build spec"
+          "description": "Runs /bb:spec now: it reads this design.md and the discovery, and writes the contract"
         },
         {
           "label": "Stop here",
@@ -250,7 +242,11 @@ Echo the final status in 1 line, e.g.: _"Design review: 2 issues significativos,
 }
 ```
 
-Each option that names a skill **suggests the command and stops**: never auto-invokes. On "Encerrar", set the brief's `status: completed` and `phase: done`, and end.
+**"Spec the real implementation" invokes `/bb:spec`.** It is the one exception to rule 11, and it
+is there because the journey has to reach the contract and this skill is not the contract's
+writer. The alternative is a document brisar writes for somebody to hand-copy into the spec
+later, which is two writers with extra steps. Every other option that names a skill **suggests
+the command and stops**. On "Encerrar", set `design.md`'s `status: completed` and `phase: done`, and end.
 
 If blockers exist (`design_review.blockers > 0` or `wcag_aa_status: fail`), prepend an option "Go back to Develop and fix them" (loads `phase-develop.md` in iteration mode) as the recommended pick.
 
@@ -261,9 +257,9 @@ Two options to prepend when the situation calls for them:
   any of them holds, the spec changes before the screens."_ A divergence buried in a markdown file
   is a divergence nobody answers.
 - **medium is a canvas and the work is going to production** → "Build it in code from here",
-  carrying the brief, the chosen direction and the design decisions forward. The canvas stays the
-  design source of truth; the handoff names it and says which values the implementer reads from the
-  MCP. Switching medium does **not** re-run the first diamond.
+  carrying the chosen direction and the design decisions forward. The canvas stays the design
+  source of truth; the surfaces list names it and says which values the implementer reads from
+  the MCP. Switching medium does **not** re-run the first diamond.
 
 ## Expected behaviors
 
@@ -279,19 +275,16 @@ Two options to prepend when the situation calls for them:
 10. **You may disagree with the contract.** With the argument, as a `divergence`, never as a blocker and never as a rewrite. Disagreeing is the job; deciding is not.
 11. **Legibility applies here too.** Expand internal pointers on first use, gloss design concepts in a few words. A review nobody can read changes nothing (`references/brief.md`, legibility rules).
 
-One sharp caution: design review and accessibility live in **separate files**, different audiences (designer vs dev) and different cycles (review runs once; the accessibility checklist is a living reference). Merging them into one file makes both harder to share.
-
-And a second: **do not turn the review into a redesign.** The strongest failure mode of a reviewer with license to disagree is quietly rebuilding the thing in its own image. State the divergence, hand it back, stop.
+One sharp caution: **do not turn the review into a redesign.** The strongest failure mode of a reviewer with license to disagree is quietly rebuilding the thing in its own image. State the divergence, hand it back, stop.
 
 ## Cooperation contract
 
-| Artifact                                | Produced by                           | Consumed by                                                                        |
-| --------------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------- |
-| `.bb/<slug>/brief-design.md`            | Brief (updated here, living contract) | Human, the implementing dev, later rounds                                          |
-| `.bb/<slug>/spec.md`                    | `/bb:spec` (delta proposed here)      | `/bb:implement`, `/bb:delegate`                                                    |
-| `.bb/<slug>/design-review.md`           | Deliver                               | Human (responds to issues), `/bb:review`, Develop phase (re-prototype if blockers) |
-| `.bb/<slug>/accessibility-checklist.md` | Deliver                               | Human (resolves before merge), CI (reference)                                      |
-| `.bb/<slug>/handoff.md`                 | Deliver                               | Developer / agent who implements, `/bb:spec`, `/bb:review`                         |
+| Artifact                                   | Produced by                           | Consumed by                                                                        |
+| ------------------------------------------ | ------------------------------------- | ---------------------------------------------------------------------------------- |
+| `.bb/<slug>/design.md`                     | Brief (updated here, living contract) | Human, the implementing dev, later rounds                                          |
+| `.bb/<slug>/spec.md`                       | `/bb:spec`, invoked from the gate     | `/bb:implement`, `/bb:delegate`                                                    |
+| `.bb/<slug>/design.md`, `## Design review` | Deliver                               | Human (responds to issues), `/bb:review`, Develop phase (re-prototype if blockers) |
+| `.bb/<slug>/design.md`, `## Accessibility` | Deliver                               | Human (resolves before merge), CI (reference)                                      |
 
 ### Related skills (suggest, never invoke)
 

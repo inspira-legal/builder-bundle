@@ -1,5 +1,40 @@
 # Changelog
 
+## 2.17.0 (2026-08-20)
+
+**One skill, one document.** `/bb:discover` used to seed `## Problem` / `## Hypothesis` /
+`## Fit` / `## Cuts` inside `spec.md`, and `/bb:brisar` used to write a brief, a handoff
+and a design file beside it. Three skills wrote into the same folder with overlapping
+claims on the same sections, so a later run could not tell whose sentence it was reading
+or whether the spec's copy of a framing was still the framing.
+
+Each skill now owns exactly one document, and `spec.md` has exactly one writer.
+`/bb:discover` writes `discovery.md`, `/bb:brisar` writes `design.md` plus a `prototype/`
+folder, `/bb:spec` writes `spec.md`, and the build side reads the spec. The two records
+are read **by path and never copied**: when the spec needs a fact one of them carries, it
+cites the document and the section. A quoted section is a second copy that goes stale the
+next time its own skill runs.
+
+The correction runs one way. Where a record and the spec disagree the spec wins, and
+`/bb:spec` still does not edit the record: the record's own writer registers the reversal
+on its next round, so the history stays readable.
+
+### Changed
+
+- **`references/spec-state.md`** is the contract for the new layout: `discovery.md`,
+  `spec.md`, `design.md`, `prototype/`. Each document carries its own frontmatter, and
+  `discovery.md` gets a `phase` / `verdict` block of its own.
+- **`/bb:brisar`**'s Deliver phase drops `handoff.md` and invokes `/bb:spec` at its gate,
+  so the design work reaches the contract instead of a document nobody reads next.
+- **`/bb:spec`** reads the two records as upstream and cites them.
+- **`/bb:review`**'s contract front and `fronts.md` follow the spec to its single writer.
+
+### Breaking
+
+A `.bb/<slug>/` written by an earlier version carries `brief-design.md` and a seeded
+`spec.md`. Nothing migrates it. Move the framing sections into `discovery.md` and rename
+`brief-design.md` to `design.md` before running the new skills against that slug.
+
 ## 2.16.1 (2026-08-20)
 
 **The dispatch carries its own opt-in, and the fallback chain is stated once.** A run read

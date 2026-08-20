@@ -1,6 +1,6 @@
 ---
 name: discover
-description: Runs the whole first diamond before any design. Frames the problem (the problem, who feels it, the hypothesis, the success signal, the appetite) and pressure tests the fit (is it worth building, what to cut, in what order, which testable bet). Writes the framing into the spec that /bb:spec reads as intent. Use when the user says "what problem are we solving", "frame the problem", "is this worth building", "validate the market", "what do we cut to fit", "prioritize these features", "run the trio", "shape this idea", "pivot or persevere", or arrives with a diffuse pain instead of a finished feature. Don't use it to design the solution (use /bb:spec), to stress a thesis already formed (use /bb:challenge), or for a small mechanical change.
+description: Runs the whole first diamond before any design. Frames the problem (the problem, who feels it, the hypothesis, the success signal, the appetite) and pressure tests the fit (is it worth building, what to cut, in what order, which testable bet). Writes the framing into its own discovery.md, the record /bb:spec reads as intent. Use when the user says "what problem are we solving", "frame the problem", "is this worth building", "validate the market", "what do we cut to fit", "prioritize these features", "run the trio", "shape this idea", "pivot or persevere", or arrives with a diffuse pain instead of a finished feature. Don't use it to design the solution (use /bb:spec), to stress a thesis already formed (use /bb:challenge), or for a small mechanical change.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -11,8 +11,8 @@ metadata:
 
 Run the whole first diamond: get the **problem** sharp, then decide **what
 survives to design**. Framing the wrong problem crisply still ships the wrong
-thing. This is the lowest-cost moment to catch that. The output is a spec
-seeded with framing and fit that `/bb:spec` reads as upstream intent.
+thing. This is the lowest-cost moment to catch that. The output is
+`.bb/<slug>/discovery.md`, the record `/bb:spec` reads as upstream intent.
 
 Two phases, each with its own reference, load only the one that's running:
 
@@ -23,17 +23,17 @@ Two phases, each with its own reference, load only the one that's running:
 
 ## Entry decision
 
-Read the invocation and any existing spec before asking anything:
+Read the invocation and any existing `discovery.md` before asking anything:
 
 - **Fresh pain or idea** → full pipeline, Phase 1 then Phase 2.
-- **Spec already carries `## Problem` / `## Hypothesis`** (an earlier discover
-  run, or written by hand. The lowercase `## problem` / `## hypothesis` counts the
-  same) → echo the trio in one line and go straight to Phase 2.
+- **`discovery.md` already carries `## Problem` / `## Hypothesis`** (an earlier
+  discover run, or written by hand. The lowercase `## problem` / `## hypothesis`
+  counts the same) → echo the trio in one line and go straight to Phase 2.
 - **A specific fit ask** ("what do we cut", "prioritize this", "is it worth building")
   → Phase 2, that mode only; if no framed problem exists, suggest Phase 1 once
   (non-blocking) and note `ran without a framed problem` in `## Fit` if declined.
-- **Spec already complete** (all four sections) → confirm whether this is an
-  audit/re-run before re-asking anything.
+- **`discovery.md` already complete** (all four sections) → confirm whether this
+  is an audit/re-run before re-asking anything.
 
 ## Interview discipline (both phases)
 
@@ -55,11 +55,26 @@ Read the invocation and any existing spec before asking anything:
 
 ## Capture (on disk)
 
-Both phases accrete the same spec, resolved per the spec-state contract
-(plugin-level `references/spec-state.md`): `.bb/<slug>/spec.md`. Generate
-`<slug>` as a short kebab name for the
-problem area; if the file exists for a _different_ idea, suffix it (`-2`) or ask;
-never overwrite another spec. Section formats live in each phase's reference.
+Both phases accrete the same document, resolved per the spec-state contract
+(plugin-level `references/spec-state.md`): `.bb/<slug>/discovery.md`. It is the
+only file discover writes; `spec.md` next to it belongs to `/bb:spec`, and
+discover neither creates nor edits it. Generate `<slug>` as a short kebab name for
+the problem area; if the file exists for a _different_ idea, suffix it (`-2`) or
+ask; never overwrite another record.
+
+The file opens with its own frontmatter, so a later session knows what it holds
+without reading the body:
+
+```yaml
+---
+slug: <kebab-slug> # matches the dir name
+created: 2026-08-20 # YYYY-MM-DD, set when the record is first written
+phase: frame | fit | done
+verdict: build-mvp | validate-first | pivot | persevere | shelve # omitted before Phase 2
+---
+```
+
+Section formats live in each phase's reference.
 Keep deferred ideas as plain bullets marked _revisit_, never checkboxes, so the
 task selector never mistakes them for work.
 
@@ -70,16 +85,16 @@ Lead with the pick the fit verdict supports: `next_action: build-mvp` → spec;
 `validate-first` or low confidence → challenge; design-led work → brisar.
 
 ```
-question: "First diamond closed. Problem framed and fit decided at .bb/<slug>/spec.md. Where do we go?"
+question: "First diamond closed. Problem framed and fit decided at .bb/<slug>/discovery.md. Where do we go?"
 options:
   - "Spec it (Recommended)". I run /bb:spec now: I design the solution on top of the problem and the fit.
   - "Design". I run /bb:brisar: visual direction and prototyping for design-led work.
   - "Challenge it". I run /bb:challenge: I stress the thesis before investing in the build.
-  - "Stop here". The spec stays saved; pick it back up with /bb:spec or /bb:discover.
+  - "Stop here". The record stays saved; pick it back up with /bb:spec or /bb:discover.
 ```
 
 When the fit verdict is `shelve` or `pivot`, there is nothing to hand off;
-report the verdict with its evidence and stop (a pivot points back to
+record the verdict with its evidence and stop (a pivot points back to
 `/bb:discover` with the reframed problem).
 
 ## Edge cases
@@ -87,6 +102,7 @@ report the verdict with its evidence and stop (a pivot points back to
 | WHEN                                       | THEN                                                                               |
 | ------------------------------------------ | ---------------------------------------------------------------------------------- |
 | slug exists for a different idea           | suffix `-2` or ask, never overwrite                                                |
+| `.bb/<slug>/spec.md` already exists        | left untouched: discover writes `discovery.md` and `/bb:spec` reads it             |
 | answer still vague after one clarification | accept at `low` confidence and move on                                             |
 | a field can't be answered                  | record `skipped: <reason>`                                                         |
 | fit asked with no framed problem           | suggest Phase 1 once; if declined, proceed and note `ran without a framed problem` |

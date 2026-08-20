@@ -4,7 +4,11 @@ The missing piece. Without this, brisar would end without concrete direction to 
 
 This phase produces the visual direction for each confirmed surface, with enough brief for the builder (or the Develop phase) to start designing. Each file has 5 fixed sections: Visual hierarchy, DS components, States, First sketch direction, Notes.
 
-**Where it lands:** inside the task's folder, next to the spec. The plugin-level `references/spec-state.md` owns that contract. One surface writes `.bb/<slug>/design.md`; two or more write `.bb/<slug>/design/<surface>.md` plus an index. The project folder scaffolded in Phase 3 holds code and design-context, not design direction.
+**Where it lands:** in `.bb/<slug>/design.md`, the one document this skill writes, under
+`## Surfaces` with a `### <surface>` subsection each, however many there are. The plugin-level
+`references/spec-state.md` owns that contract. The surfaces list in the frontmatter is the
+index, so there is no second index to keep in sync, and `.bb/<slug>/prototype/` holds the
+built artifact, never the direction.
 
 ## Step 1: confirm surfaces
 
@@ -43,7 +47,8 @@ Resolve `.bb/` per the spec-state contract (nearest ancestor with one, else crea
 
 With **one** confirmed surface, write `.bb/<slug>/design.md` with the Step 3 template and skip the index. An index of one is ceremony.
 
-With **two or more**, write `.bb/<slug>/design/<surface>.md` for each plus `.bb/<slug>/design/README.md`:
+With **two or more**, write a `### <surface>` subsection for each under `## Surfaces`, and let
+the frontmatter's surfaces list carry the order:
 
 ```markdown
 # Design: <slug>
@@ -69,7 +74,7 @@ If your structure is different, edit this README freely. It is your project.
 
 ## How to build it
 
-Run `/bb:brisar` again in the project folder. It detects the project and offers the Develop phase. The phase reads `design-context/` for the tokens and components, and the file in this folder for the brief of the specific surface. I recommend drawing one surface at a time.
+Run `/bb:brisar` again. It offers the Develop phase, which reads the design system from the plugin and this document's `### <surface>` subsection for the surface being built. I recommend drawing one surface at a time.
 ```
 
 ## Step 3: generate one file per surface
@@ -100,7 +105,7 @@ Each bullet in one sentence. Do not write more than 5 bullets. If you need to, r
 
 ## Componentes do DS a usar
 
-[List 3-7 components from `design-context/components.md` that fit here. For each, say "for X" or "for Y". Do not blindly copy the list.
+[List 3-7 components from the DS that fit here. For each, say "for X" or "for Y". Do not blindly copy the list.
 
 Examples:
 
@@ -155,7 +160,7 @@ Max 3 items. If the list grows, it's a sign that this surface needs more shaping
 
 The list of surfaces describes the document it lives in, so it lives there. One surface
 writes it into `.bb/<slug>/design.md`; two or more write it into the index, and each
-`design/<surface>.md` carries only its own row's fields.
+each `### <surface>` subsection carries only its own row's fields.
 
 Three surfaces, in the index's frontmatter:
 
@@ -196,7 +201,7 @@ absolute path to persist.
 
 ### Close the journey in the brief
 
-In `.bb/<slug>/brief-design.md`'s frontmatter, set `phase: done` and
+In `.bb/<slug>/design.md`'s frontmatter, set `phase: done` and
 `status: completed`. What was generated is already the surfaces list above; the brief
 records the round that produced it.
 
