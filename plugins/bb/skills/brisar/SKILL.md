@@ -43,11 +43,14 @@ the next silently.
    `references/handoff-gate.md`.
 2. **The profile is already in the session.** `~/.claude/BUILDER-BUNDLE.md`
    carries it, written from `~/.claude/bb.config.json`; brisar never asks who is
-   building. With no profile, run `/bb:profile` once and continue with the answers.
+   building. No profile block in the session means one of two things: read
+   `~/.claude/bb.config.json`, and use the four flags in it when it is there,
+   which is a person who turned the custom instructions off. With no file either,
+   run `/bb:profile` once and continue with the answers.
 3. **Adapt depth and vocabulary to the profile.** Each phase reads the flag it
    needs: `reads_code` sets how many questions and in what language,
-   `technical_vocabulary` decides whether `scaffold`, `embed` and `MCP` appear
-   at all, `uses_terminal` decides whether a path needs a command, and
+   `technical_vocabulary` alone decides whether `scaffold`, `embed` and `MCP`
+   appear at all, `uses_terminal` decides whether a path needs a command, and
    `technical_instructions` decides how a command is written. The contract is the
    plugin-level `references/bb-config.md`.
 4. **Detect > ask.** Step 0 cross-references cwd with the product registry; a

@@ -69,9 +69,10 @@ went with it, and `.brisar/` is gone: the brief carries the journey.
 ### Changed
 
 - **brisar reads the profile instead of asking for it.** Each phase that changed its voice
-  by persona now reads the flag it actually needs: the intake and the scaffold read
-  `technical_instructions`, the handoff reads `technical_vocabulary`. Tooling stays where it was, in
-  the preflight, and the output path stays a project decision.
+  by persona now reads the flag it actually needs: the intake reads `reads_code` and
+  `technical_instructions`, the scaffold reads `uses_terminal`, the handoff reads both of
+  those, and the vocabulary bans key on `technical_vocabulary`. Tooling stays where it
+  was, in the preflight, and the output path stays a project decision.
 - **The brief carries the journey.** `brief-design.md` opens with `status`, `phase`,
   `round`, `slug` and `created`, and the resume reads that block instead of a state file.
   Phase 1 opens the brief, and every phase after it updates it where it hands off. The

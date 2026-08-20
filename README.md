@@ -4,7 +4,7 @@
 
 [![github](https://img.shields.io/badge/github-inspira--legal%2Fbuilder--bundle-111111?style=flat-square&logo=github)](https://github.com/inspira-legal/builder-bundle)
 
-_Builder Bundle (`bb`): the unified skill set for Inspira builders, 15 skills across 6 trilhas, from the problem to the PR._
+_Builder Bundle (`bb`): the unified skill set for Inspira builders, 16 skills across 6 trilhas, from the problem to the PR._
 
 </div>
 
@@ -19,7 +19,7 @@ it writes its operating context into `~/.claude/BUILDER-BUNDLE.md`, imported by 
 
 ## what is inside
 
-one plugin, `bb`; 15 skills in 6 trilhas, plus `/bb:profile`.
+one plugin, `bb`; 16 skills, 15 of them in 6 trilhas and `/bb:profile` beside them.
 
 ### configurar: who is on the other side
 

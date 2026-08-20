@@ -28,6 +28,7 @@ plugins/bb/
 │   ├── handoff-gate.md                 # the one convention for end-of-skill gates (+ AskUserQuestion rationale)
 │   ├── confidence-and-steelman.md      # shared reasoning protocols (think, challenge)
 │   ├── spec-state.md                   # the .bb/<slug>/ folder contract
+│   ├── bb-config.md                    # ~/.claude/bb.config.json: the schema and who reads it
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
 │   ├── build-mode.md                   # workflow-or-context: the per-run build choice (implement, delegate)
 │   └── build-tasks-workflow.md         # contract the generated one-agent-per-task script meets
@@ -35,13 +36,14 @@ plugins/bb/
 │   ├── fetch_comments.py               # ship, review
 │   ├── reply_resolve_thread.py         # ship, review
 │   └── gather_context.py               # ship, review (resolves the diff range), gather-branch-context
-└── skills/                            # all 15 skills flat; trilha grouping is a docs concept
+└── skills/                            # all 16 skills flat; trilha grouping is a docs concept
     ├── Pensar:        discover, challenge, think, legal-lens
     ├── Desenhar:      spec
     ├── Construir:     implement, ship, delegate, gather-branch-context
     ├── Revisar:       review, maintain-repo, review-setup
     ├── Design:        brisar
-    └── Pesquisar/Doc: code-deep-research, write-readme
+    ├── Pesquisar/Doc: code-deep-research, write-readme
+    └── no trilha:     profile
 ```
 
 ### Naming conventions

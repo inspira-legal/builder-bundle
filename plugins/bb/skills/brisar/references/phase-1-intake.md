@@ -140,7 +140,7 @@ In Phase 5 (handoff), the same flag narrates each command (see `phase-5-handoff.
 
 ## Operational variant (no technical vocabulary)
 
-With `reads_code` false, technical vocabulary lands as noise. **NEVER use**: scaffold, embed, MCP, repo, branch, slug, hosting, fidelity, Shaping appetite, surface. **Use**: folder, project, install, environment, page, area.
+With `technical_vocabulary` false, the terms land as noise. **NEVER use**: scaffold, embed, MCP, repo, branch, slug, hosting, fidelity, Shaping appetite, surface. **Use**: folder, project, install, environment, page, area.
 
 Print a short intro:
 

@@ -71,11 +71,13 @@ writing anything.
    second option's own line what turning it off costs, rather than after the fact.
 
 6. **Write the config, then run the writer.** Create `~/.claude` if it is missing and
-   write `~/.claude/bb.config.json`: `version: 1`, `custom_instructions`, the four flags
-   (`reads_code`, `uses_terminal`, `technical_instructions`, `technical_vocabulary`), and
-   `calibrated_at` as today's ISO date. Write the whole file; never merge into a shape you
-   did not read. Then run the writer, from the plugin root two directories above this
-   skill:
+   write `~/.claude/bb.config.json` in the shape `references/bb-config.md` states:
+   `version` and `custom_instructions` at the top level, and the four flags
+   (`reads_code`, `uses_terminal`, `technical_instructions`, `technical_vocabulary`) plus
+   `calibrated_at`, today's ISO date, inside `profile`. The four flags have to sit under
+   `profile`, because that is where the writer reads them; flat, they read as no profile
+   at all. Write the whole file; never merge into a shape you did not read. Then run the
+   writer, from the plugin root two directories above this skill:
 
    ```bash
    python3 hooks/sync_instructions.py
@@ -98,13 +100,14 @@ writing anything.
 | WHEN                                       | THEN                                                                                    |
 | ------------------------------------------ | --------------------------------------------------------------------------------------- |
 | no file                                    | calibrate, write, print what was written                                                |
-| a valid profile exists                     | show it, offer keep, recalibrate, or flip the injection                                 |
+| a valid profile exists                     | show it, offer keep, recalibrate, or flip `custom_instructions`                         |
 | `custom_instructions: false` on disk       | nothing is in `~/.claude` right now: say so, and offer to turn it back on               |
 | `custom_instructions` absent               | reads `true`; write it explicitly on this calibration                                   |
 | the writer script cannot be found or run   | say the config was written and the instructions were not; never write the files by hand |
 | the file is malformed                      | treat as no profile, say the old file will be replaced, calibrate                       |
 | `~/.claude/` cannot be written             | say where it failed and that the session runs uncalibrated; never retry elsewhere       |
 | `CLAUDE.md` already carries the import     | the writer replaces the marked block in place; the rest of the file is never touched    |
+| `CLAUDE.md` has a start marker with no end | the writer leaves that file alone; say the import was not added and why                 |
 | the person checks nothing                  | valid; write all four `false`                                                           |
 | an old `profile.persona_id` in the project | derived into the four flags, pre-checked; the person confirms and the file is written   |
 | called by another skill mid task           | calibrate, write, and hand back; the answers apply to the rest of this session too      |

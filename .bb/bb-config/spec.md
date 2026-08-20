@@ -49,6 +49,7 @@ asks today:
 ```json
 {
   "version": 1,
+  "custom_instructions": true,
   "profile": {
     "reads_code": true,
     "uses_terminal": true,
@@ -239,6 +240,7 @@ Happy path, first time:
 | Develop finishes a surface                    | it lands in `design.md`'s frontmatter, not in a state file           |
 | `CLAUDE.md` already carries the import        | the marked block is replaced in place, the rest untouched            |
 | the plugin is uninstalled                     | both files stay; the header names what wrote them and how to stop it |
+| `CLAUDE.md` has a start marker with no end     | the writer leaves that file alone: no import, no removal              |
 
 ## Tasks
 
@@ -255,7 +257,8 @@ Happy path, first time:
       → behaviors 5, 6, 17, 18 · dep: 1 · verify: CI `validate-frontmatter`
 - [x] **4. brisar stops asking**: `phase-0-calibration.md` is deleted, `SKILL.md` Step
       0.1 and the phase table lose it
-      → behaviors 7, 8 · dep: 3 · verify: `grep -rn persona` is empty inside brisar
+      → behaviors 7, 8 · dep: 3 · verify: the only `persona` left inside brisar is the
+      derivation in task 10
 - [x] **5. Readers read their own flag**: `phase-1-intake`, `phase-3-scaffold`,
       `phase-5-handoff`, `brief`, `phase-medium`, `phase-diverge`, `phase-research`,
       `preflight-tooling` each switch to the flag named in the table above
@@ -268,7 +271,8 @@ Happy path, first time:
       → behaviors 5, 16, 19 · dep: — · verify: CI `validate-frontmatter`
 - [x] **8. The state file is deleted**: `persistence.md` goes, and every phase that
       wrote a section of `session.yaml` writes its part of the brief instead
-      → behaviors 12, 13, 19 · dep: 7 · verify: `grep -rn "session.yaml"` is empty
+      → behaviors 12, 13, 19 · dep: 7 · verify: the only `session.yaml` left is the one
+      task 10 reads
 - [x] **9. Resume reads the brief**: the resume globs `.bb/*/brief-design.md` and reads
       `phase` from the frontmatter; a `.brisar/` found on the way is read once
       → behaviors 13, 14, 16 · dep: 8 · verify: reading

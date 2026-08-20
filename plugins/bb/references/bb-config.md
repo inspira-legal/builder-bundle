@@ -53,7 +53,9 @@ the section that closes it, and half of it is worth less than either half whole.
 It sits beside `profile` rather than inside it because it is not a fact about the person.
 Turning it off costs what the frame is for, re-establishing the thread after a context
 compaction; what it buys is a session where nothing from bb arrives unasked. The four
-flags stay written either way, and every skill that runs still reads them.
+flags stay written either way, and every skill that runs still reads them, from this file
+rather than from the session: with `false` there is no `BUILDER-BUNDLE.md` to read them
+from, so a skill that needs a flag reads `~/.claude/bb.config.json` itself.
 
 ## What gets written, and where
 
@@ -70,6 +72,10 @@ otherwise leave the previous version's text sitting in `~/.claude` for good.
 Four rules bound the writing, and together they are what makes it safe to run on every
 session:
 
+- **A half written block stops the writer.** A `<!-- bb:start -->` with no
+  `<!-- bb:end -->` after it is a file in a state the writer does not understand, so it
+  writes nothing into it at all. The instructions file is still written; the import is
+  not, until the markers pair up again or both go.
 - **Only between the markers.** `CLAUDE.md` is a file the person writes by hand.
   Everything outside the two markers is theirs and is never rewritten, line endings
   included.
