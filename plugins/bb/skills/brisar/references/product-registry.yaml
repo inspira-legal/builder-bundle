@@ -7,6 +7,7 @@
 # 3. Decide mode_default (embed vs scaffold vs framer-handoff)
 # 4. Map the correct DS source
 # 5. Know requirements (MCPs, tools) per product
+# 6. Lean the medium question via the optional medium_default (see below)
 #
 # Principles:
 # - Brand ≠ product. Inspira (SaaS) and Client Portal share the Inspira brand but are distinct products.
@@ -66,6 +67,9 @@ detection_logic: |
   - Skip brand question in Phase 1 (already known from product.brand)
   - Skip hosting question (already known: embed)
   - Default mode = product.mode_default
+  - medium_default, when the entry carries one, is the strongest lean on the medium
+    question. It orders the question and never answers it; references/phase-medium.md
+    owns the ordering, the trim, and what happens when the named tool's MCP is absent.
 
   BETA NOTE: greenfield products have empty detection[], so the registry effectively
   never matches and brisar always proceeds to manual brand/artifact intake.
@@ -105,6 +109,8 @@ how_to_add_product: |
   3. Point to canonical repo_url.
   4. Decide mode_default + fallback_path.
   5. List requires_mcp if any.
-  6. Update last_updated.
+  6. Optionally set medium_default (code | claude-design | paper | figma | pencil)
+     when the product's design work has a settled medium. Leave it out otherwise.
+  7. Update last_updated.
 
   brisar reads the registry at every Step 0; no restart needed.

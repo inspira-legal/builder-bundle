@@ -136,8 +136,9 @@ Runs once per session. Re-runs when:
 
 ### The profile
 
-To cross-reference the profile's `uses_terminal` with what is actually installed. The mismatches
-and what to do about each are in [When the preflight detects inconsistency](#when-the-preflight-detects-inconsistency).
+To cross-reference the profile's `uses_terminal` and `design_tools` with what is actually
+installed and connected. The mismatches and what to do about each are in
+[When the preflight detects inconsistency](#when-the-preflight-detects-inconsistency).
 
 ### Phase 1 (lightning intake)
 
@@ -192,6 +193,7 @@ Common cases and what to do:
 | `git_installed: false` AND `uses_terminal` false                              | Don't mention it; the prototype-hosted path doesn't require git.                                                                                                                               |
 | `scope_read: global-only` (no python3)                                        | A project-scoped MCP may exist and be invisible. Before naming a medium as missing, say the check was partial, never report a clean absence you did not verify.                                |
 | No canvas MCP at all                                                          | Don't treat it as a gap. Code and Claude design cover the medium question; mention the canvas paths once, without nagging.                                                                     |
+| The profile's `design_tools` names a tool whose MCP is absent                 | Say it once, in the medium question's intro line: the profile names it, the connection is not here, and connecting it brings the option back. Never offer the option, never edit the config.   |
 | `mobbin: false`                                                               | Declare the degraded bench in the research mode line, with what it invalidates. Climb Front A's ladder. Do not drop Front A.                                                                   |
 | Product repo not on disk AND `gh_authed: true`                                | Read the DS and i18n remotely (Front B, **rung 4**, only after rung 3, the disk search, came up empty). Say the reading is remote and that a miss in the GitHub index is not proof of absence. |
 | Product repo not on disk AND `gh_authed: false`                               | Offer `gh auth login`. If declined, Front B falls to the brand package, which is **not** a token source. Report `authority: brand-only` and its consequence.                                   |

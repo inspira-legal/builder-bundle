@@ -20,7 +20,11 @@ design need no MCP, so there is always a path.
 
 ## Step 0: build the option list
 
-Read `preflight.mcps`, `preflight.product` and the profile's `technical_vocabulary`:
+Read `preflight.mcps`, `preflight.product`, the profile's `technical_vocabulary`, and
+the two leans: the person's `design_tools` (the profile block in the session, or
+`profile.design_tools` in `~/.claude/bb.config.json`; the contract is the plugin-level
+`references/bb-config.md`) and the detected product's `medium_default` from the
+registry, when either exists:
 
 | Option            | Offered when  | Needs                                     |
 | ----------------- | ------------- | ----------------------------------------- |
@@ -30,9 +34,13 @@ Read `preflight.mcps`, `preflight.product` and the profile's `technical_vocabula
 | **Figma**         | `mcps.figma`  | Figma MCP                                 |
 | **Pencil**        | `mcps.pencil` | Pencil MCP                                |
 
-Cap the list at four options (the question tool's limit). When more than four qualify, keep
-**Code** and **Claude design** and the canvas tools in registry order, and mention the
-remainder in the intro line rather than dropping them silently.
+Cap the list at four options (the question tool's limit). When more than four qualify,
+the survivors in order are **Code**, **Claude design**, the detected product's
+`medium_default` when it carries one, and then the person's own `design_tools`; the
+remaining canvas tools follow in registry order, and whatever falls off the end is
+mentioned in the intro line rather than dropped silently. A canvas tool neither lean
+names is the first to leave the list; the product's default is the last, because the
+strongest lean cannot recommend an option the trim already cut.
 
 If `preflight.mcps.scope_read` is `global-only`, the check was partial: a project-scoped server
 may exist and be invisible. Say the check was partial instead of asserting a clean absence.
@@ -43,6 +51,17 @@ Print one intro line naming the chosen direction and what is missing, if anythin
 
 > **Chosen direction: <name>.** Where do you want to see this standing up? _(I did not detect Figma
 > connected here. If you want that path, just configure it and I offer it next time.)_
+
+When the person's `design_tools` names a tool whose MCP the preflight did not find, the
+intro line is where that is said, once: their profile names it, the connection is not
+here, and connecting it brings the option back. The option itself is not offered, and
+nothing blocks.
+
+The product's `medium_default` degrades the same way when it names a canvas tool whose
+MCP is absent: the intro line says the product set it and the connection is not here,
+the option is not offered, and the recommendation falls to the next lean, the person's
+`design_tools` when one of theirs is offerable, the fit signals otherwise. The default
+is named as missing, never forced.
 
 **Lead each description with the outcome, not the tool.** Someone without design repertoire is not
 choosing between Paper and Figma. They are choosing between "I want to see it fast", "I want to show
@@ -81,9 +100,22 @@ is banned vocabulary, and for everyone else it is an implementation detail of ou
 ```
 
 Order the options by fit, not alphabetically, and put the best fit first. The order above is a
-default for an unresolved visual direction, not a fixed list. Signals: a detected product with a
-real repo leans **Code**; several compositions to compare leans a **canvas**; no local toolchain,
-or `reads_code` false, leans **Claude design**.
+default for an unresolved visual direction, not a fixed list. Two leans outrank the fit
+signals, in this order:
+
+1. **The product's `medium_default`** (from `references/product-registry.yaml`, when the
+   detected product carries one): a product with a settled design workflow settles it for
+   everyone who works on it, so its medium goes first and carries the recommendation, and
+   the intro line says the product set it.
+2. **The person's `design_tools`**: what they use goes ahead of what they do not, and the
+   recommendation lands on their habit when the product set nothing.
+
+Neither lean answers the question. They order it; the person still picks. Below the two,
+the fit signals break the remaining ties: a detected product with a real repo leans
+**Code**; several compositions to compare leans a **canvas**; no local toolchain, or
+`reads_code` false, leans **Claude design**. A `design_tools` that is absent (a profile
+written before the question existed) is not "none": it leans nothing, and the fit
+signals order the list alone.
 
 Do **not** add an "Other" option. The tool provides free text.
 
@@ -165,6 +197,8 @@ expressed, never what it is.
 | Artifact                                             | Produced by                       | Consumed by                                            |
 | ---------------------------------------------------- | --------------------------------- | ------------------------------------------------------ |
 | `preflight.mcps`                                     | Step 0.4 (`preflight-tooling.md`) | Step 0 here; the option list                           |
+| `profile.design_tools`                               | `/bb:profile` (bb-config.md)      | Step 0 here; the option order and the trim             |
+| `medium_default` on the product entry                | `product-registry.yaml`           | Step 0 here; the strongest lean                        |
 | The chosen direction in `.bb/<slug>/brief-design.md` | Diverge                           | Step 1; what is being built                            |
 | The medium, recorded in the same brief               | this step                         | Phase 3, Develop, Deliver, re-entry                    |
 | Token values read from source                        | Research (Front B)                | Develop on canvas mediums (no `design-context/` there) |
