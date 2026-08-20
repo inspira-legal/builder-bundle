@@ -53,9 +53,11 @@ and stop.
    Nothing about how to build is asked, at either end of the chain. The build is
    dispatched: implement's step 3 builds `args`, resolves and proves the script path in
    one `Bash` call, and invokes `Workflow` with `scriptPath`. Its result is the build
-   report. The fallback chain, and what the script does with the run, are the
-   plugin-level `references/build-tasks-workflow.md`; it applies here unchanged, with the
-   reason named in one line and again in step 6.
+   report. Invoking `/bb:delegate` is the request for that workflow, which is the opt-in
+   the `Workflow` tool asks for. The fallback chain, three mechanical cases and nothing
+   else, and what the script does with the run, are the plugin-level
+   `references/build-tasks-workflow.md`; it applies here unchanged, with the reason named
+   in one line and again in step 6.
 
    A non-null `stopped` (a stage-zero blocker such as a reuse note pointing at code
    that's gone, a check the run can't execute, or a tree already red; a red task; a
