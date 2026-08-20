@@ -4,7 +4,7 @@ description: Runs a spec end to end. Selects an unfinished spec (`.bb/<slug>/spe
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.6.0
+  version: 2.6.1
 ---
 
 # Delegate
@@ -53,11 +53,11 @@ and stop.
    Nothing about how to build is asked, at either end of the chain. The build is
    dispatched: implement's step 3 builds `args`, resolves and proves the script path in
    one `Bash` call, and invokes `Workflow` with `scriptPath`. Its result is the build
-   report. Invoking `/bb:delegate` is the request for that workflow, which is the opt-in
-   the `Workflow` tool asks for. The fallback chain, three mechanical cases and nothing
-   else, and what the script does with the run, are the plugin-level
-   `references/build-tasks-workflow.md`; it applies here unchanged, with the reason named
-   in one line and again in step 6.
+   report. Invoking `/bb:delegate`, by the command or by the phrases its `description`
+   lists, is the request for that workflow, and that request is the opt-in the `Workflow`
+   tool asks for, for this build. The fallback chain and what the script does with the
+   run are the plugin-level `references/build-tasks-workflow.md`; it applies here
+   unchanged, with the reason named in one line and again in step 6.
 
    A non-null `stopped` (a stage-zero blocker such as a reuse note pointing at code
    that's gone, a check the run can't execute, or a tree already red; a red task; a
@@ -89,7 +89,8 @@ and stop.
 
 6. **Report.** Name the slug, what landed (tasks, check results), and the destination
    (branch / PR URL / the hand-off command for a protected branch). A build that fell
-   back to this context says so here too.
+   back to this context says so here too, naming the step of the reference's fallback
+   chain the run landed on.
 
 ## Edge cases
 
@@ -105,7 +106,7 @@ and stop.
 | implement safety valve fires (underspecified)    | flip `status: blocked`, write the blocker into the spec's `## Open`, point back to `/bb:spec`, stop; do not improvise                           |
 | the build stops (stage zero or a task)           | flip `status: blocked`, write the blocker into the spec's `## Open`, exit without landing                                                       |
 | bare `/bb:delegate`, the oldest spec is blocked  | skipped, and reported with the blocker its `## Open` carries and where that blocker sends it                                                    |
-| the build falls back to this context             | it runs the same way; the reason is named in one line, and again in step 6                                                                      |
+| the build falls back to this context             | it runs the same way; the reason names which step of the reference's fallback chain, in one line and again in step 6                            |
 | ship hits an unrecoverable stop / blocker        | flip `status: blocked`; write the blocker into the PR description, or into the spec's `## Open` when the destination has no PR; report it; exit |
 | not in a git repo / no `.bb/` dir in either root | report the error, stop                                                                                                                          |
 

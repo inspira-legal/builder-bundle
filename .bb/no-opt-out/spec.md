@@ -12,8 +12,8 @@ skill re-authors per run. The pass that catches what the main context loses is a
 the context that is about to skip it.
 
 This change executes it instead of offering it. The mode question goes, the workflow becomes
-the only build path, and the in-context build survives as the fallback for a session with no
-`Workflow` tool.
+the only build path, and the in-context build survives as the last step of the fallback chain
+in `## Decisions`, for a session that cannot dispatch.
 
 Success: `/bb:implement` and `/bb:delegate` reach the build with nothing asked.
 

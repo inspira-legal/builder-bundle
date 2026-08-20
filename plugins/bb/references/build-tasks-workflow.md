@@ -6,8 +6,9 @@ task as a dynamic workflow. The script that does it is fixed and versioned at
 agent's contract is the prompt string inside it, not a paraphrase kept here. This file
 documents what the skills need to know to call it and what its return means.
 
-There is no mode question. The in-context build survives as the fallback for a session
-that cannot reach the script, and the skills say in one line why the build ran here.
+There is no mode question. The in-context build survives as the last step of the
+fallback chain below, and the skills say in one line why the build ran in the main
+context.
 
 ## Why the build runs here and not in the main context
 
@@ -55,15 +56,25 @@ cat "$CLAUDE_PLUGIN_ROOT/workflows/build-tasks.js" > /dev/null && echo "$CLAUDE_
 A non-zero exit is the missing-file case. The printed path is what goes into
 `scriptPath`, already expanded, because the tool takes a literal path.
 
-Three fallbacks, one attempt each: `scriptPath` refused becomes an inline `script` read
-off the same file; that refused too, or no `Workflow` tool in the session, or a `Bash`
-call that cannot read the file, becomes the in-context build with the reason named.
+The **fallback chain**, one attempt each, in this order. It is stated here and nowhere
+else, so the skills point at it by name and carry no count of their own:
 
-Those three are the whole list, and each one is something the session cannot do: the
-tool is absent, the tool refuses the call, the file does not read. Anything else
-dispatches. Invoking `/bb:implement` or `/bb:delegate` is the request for this workflow,
-which is the opt-in the `Workflow` tool asks for, so a standing rule about reaching for
-workflows only when asked is satisfied by the command that started the run.
+1. `Workflow` with `scriptPath` set to the printed path. This is the dispatch.
+2. `scriptPath` refused: an inline `script` read off the same file. Still a dispatch, so
+   a refusal at step 1 ends that attempt and not the chain.
+3. Step 2 refused too, or no `Workflow` tool in the session, or a `Bash` call that
+   cannot read the file: the in-context build, with the reason named.
+
+Only step 3 builds in the main context, and only those three conditions reach it. A run
+that has tasks to build and meets none of them dispatches at step 1. Invoking
+`/bb:implement` or `/bb:delegate`, by the command or by the phrases their `description`
+lists, is the request for this workflow, and that request is the opt-in the `Workflow`
+tool asks for. It covers this build and nothing beyond it.
+
+Two stops sit outside the chain, and neither is a step of it. A user who denies the
+permission dialog has declined this dispatch: report the denial and ask what they want
+instead. A stage zero that resolves the project's checks and cannot run them stops the
+run before task 1, which is the policy case below.
 
 ## `args`
 
@@ -127,7 +138,10 @@ One environment fails here by policy rather than by breakage: a repo whose top
 authority forbids running checks locally resolves commands and then cannot run them,
 which is `ran: false` and a stop before task 1. That is the contract working, and it
 means the workflow build does not complete on such a machine until the policy, or the
-hint the skill passes, says the project exposes nothing this run may execute.
+hint the skill passes, says the project exposes nothing this run may execute. It is a
+blocker to report and not a step of the fallback chain: the run names the command it
+could not execute, so the allowlist can be widened and the next run gets past stage
+zero.
 
 ## The task loop
 
