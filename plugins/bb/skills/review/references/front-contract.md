@@ -4,7 +4,7 @@ Available only when a spec matches this branch (resolve per the plugin-root
 `references/spec-state.md`: `.bb/<slug>/spec.md`). It's the one front that
 can catch a diff where every line is correct and the wrong thing got built.
 
-`.bb/**` is subtracted from the diff every front reads (`SKILL.md`, step 1), and
+`.bb/` is subtracted from the diff every front reads (`SKILL.md`, step 1), and
 this front is where that distinction earns its keep: the spec is the **ruler**
 this front measures the diff against, never a target it reports findings about.
 Read it; don't review it.

@@ -388,9 +388,9 @@ pre-loading the answer.
 
 ## Cooperation contract
 
-| Artifact                                                                    | Produced by                               | Consumed by                                     |
-| --------------------------------------------------------------------------- | ----------------------------------------- | ----------------------------------------------- |
-| The findings by front, in the current round                                 | Research                                  | Brief (Step 1, the material)                    |
-| `.bb/<slug>/discovery.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | `/bb:discover`                            | Brief (Step 2, reconciliation)                  |
-| `.bb/<slug>/spec.md`                                                        | `/bb:spec`                                | Brief (Step 2, reconciliation)                  |
-| `.bb/<slug>/design.md`                                                      | **Brief** (and every later phase)         | Diverge, Develop, Deliver, `/bb:spec`           |
+| Artifact                                                                    | Produced by                       | Consumed by                           |
+| --------------------------------------------------------------------------- | --------------------------------- | ------------------------------------- |
+| The findings by front, in the current round                                 | Research                          | Brief (Step 1, the material)          |
+| `.bb/<slug>/discovery.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | `/bb:discover`                    | Brief (Step 2, reconciliation)        |
+| `.bb/<slug>/spec.md`                                                        | `/bb:spec`                        | Brief (Step 2, reconciliation)        |
+| `.bb/<slug>/design.md`                                                      | **Brief** (and every later phase) | Diverge, Develop, Deliver, `/bb:spec` |

@@ -225,16 +225,16 @@ in Step 0**, open only what the current phase needs.
 
 ## Cooperation contract: who produces, who consumes
 
-| Artifact                                                                  | Produced by                                                                | Consumed by                                                                                                                 |
-| ------------------------------------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| **`.bb/<slug>/design.md`**                                                | **Brief**, and updated by every later round, including Deliver             | every phase (each reads it in its Step 0), Diverge, Develop, Deliver, the implementing dev, later rounds                    |
-| `.bb/<slug>/design.md`, `## Surfaces`                                     | Phase 4                                                                    | builder, Develop: per-surface hierarchy, states and components, under the chosen direction above it                         |
-| `<slug>/...` (vite, package.json, src/)                                   | Phase 3                                                                    | builder (`pnpm install && pnpm dev`), Develop                                                                               |
-| `.bb/<slug>/prototype/`                                                   | Phase 3, filled by Develop                                                 | the builder (opens it), Deliver (reviews it)                                                                                |
-| `.bb/<slug>/design.md`, `## Built`                                        | Develop                                                                    | Deliver, builder                                                                                                            |
-| `.bb/<slug>/design.md`, `## Design review` + `## Accessibility`           | Deliver                                                                    | builder, `/bb:spec`                                                                                                         |
-| `.bb/<slug>/spec.md`                                                      | `/bb:spec` only, **invoked by Deliver's gate**                             | Step 0.1 (bootstrap return), Research, Brief, Diverge, Develop, Deliver                                                     |
-| `.bb/<slug>/design.md`, `## Harpa handoff`                                | Framer/content path                                                        | builder inside `harpa-lpbuilder/`                                                                                           |
+| Artifact                                                        | Produced by                                                    | Consumed by                                                                                              |
+| --------------------------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **`.bb/<slug>/design.md`**                                      | **Brief**, and updated by every later round, including Deliver | every phase (each reads it in its Step 0), Diverge, Develop, Deliver, the implementing dev, later rounds |
+| `.bb/<slug>/design.md`, `## Surfaces`                           | Phase 4                                                        | builder, Develop: per-surface hierarchy, states and components, under the chosen direction above it      |
+| `<slug>/...` (vite, package.json, src/)                         | Phase 3                                                        | builder (`pnpm install && pnpm dev`), Develop                                                            |
+| `.bb/<slug>/prototype/`                                         | Phase 3, filled by Develop                                     | the builder (opens it), Deliver (reviews it)                                                             |
+| `.bb/<slug>/design.md`, `## Built`                              | Develop                                                        | Deliver, builder                                                                                         |
+| `.bb/<slug>/design.md`, `## Design review` + `## Accessibility` | Deliver                                                        | builder, `/bb:spec`                                                                                      |
+| `.bb/<slug>/spec.md`                                            | `/bb:spec` only, **invoked by Deliver's gate**                 | Step 0.1 (bootstrap return), Research, Brief, Diverge, Develop, Deliver                                  |
+| `.bb/<slug>/design.md`, `## Harpa handoff`                      | Framer/content path                                            | builder inside `harpa-lpbuilder/`                                                                        |
 
 Each phase reads the whole brief in Step 0 and writes **only its own
 sections** at the end, cross-awareness without coupling. The brief's
@@ -271,10 +271,10 @@ over.
 Two documents in the same slug folder, two different questions, and later phases read
 both:
 
-| File                                                                        | Answers                                              | Written by                 |
-| --------------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------- |
-| `.bb/<slug>/discovery.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | Is it worth building, for whom, and what did we cut? | `/bb:discover`             |
-| `.bb/<slug>/design.md`                                                      | How should this surface be, and why?                 | the Brief phase here       |
+| File                                                                        | Answers                                              | Written by           |
+| --------------------------------------------------------------------------- | ---------------------------------------------------- | -------------------- |
+| `.bb/<slug>/discovery.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | Is it worth building, for whom, and what did we cut? | `/bb:discover`       |
+| `.bb/<slug>/design.md`                                                      | How should this surface be, and why?                 | the Brief phase here |
 
 **Never substitute one for the other.** Reviewing against the research alone loses the
 problem; reviewing against the hypothesis alone loses everything the research learned.

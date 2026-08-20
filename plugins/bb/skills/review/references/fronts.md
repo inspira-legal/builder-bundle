@@ -118,7 +118,7 @@ change it reviewed.
    context. Hold that line when you dispatch.
 2. **Each finder gets the same scope block**: the resolved diff range
    (`<merge_base>...HEAD`, the sha the probe returned, not a `<base>` the finder
-   has to guess), changed files **with `.bb/**` already subtracted** (`SKILL.md`,
+   has to guess), changed files **with `.bb/` already subtracted** (`SKILL.md`,
    step 1), one paragraph of what changed, the repo's
    `CODE_REVIEW_GUIDE.md` when there is one, the criteria path its front points at
    (`review-checklist.md` or `quality-checklist.md`, siblings of this file), and

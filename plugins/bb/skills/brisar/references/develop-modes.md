@@ -28,10 +28,9 @@ every medium, but the target and the tooling change:
   becomes a decision nobody made.
 - **States always** (see the per-surface checklist). A canvas represents them as separate
   artboards; code as separate states.
-- **Deliver has to read this back.** Name the artifact and its location precisely in
-  the surfaces list in `.bb/<slug>/design.md`'s frontmatter: the `artifact` path, or file + page
-  + artboard names for a canvas. A
-  review that cannot find the artifact is not a review.
+- **Deliver has to read this back.** Name the artifact and its location precisely in the
+  surfaces list in `.bb/<slug>/design.md`'s frontmatter: the `artifact` path, or the file, page
+  and artboard names for a canvas. A review that cannot find the artifact is not a review.
 
 ---
 
@@ -58,11 +57,11 @@ hosting recorded in the brief:
 
 Every target is under `.bb/<slug>/prototype/`:
 
-| Hosting            | Target                                                       |
-| ------------------ | ------------------------------------------------------------ |
-| `standalone`       | React + Tailwind in `src/<surface>.tsx`                      |
-| `prototype-hosted` | Plain static HTML in `<surface>.html` (no Vite, no build)    |
-| `storybook-only`   | Story in `src/stories/<Component>.stories.tsx`               |
+| Hosting            | Target                                                    |
+| ------------------ | --------------------------------------------------------- |
+| `standalone`       | React + Tailwind in `src/<surface>.tsx`                   |
+| `prototype-hosted` | Plain static HTML in `<surface>.html` (no Vite, no build) |
+| `storybook-only`   | Story in `src/stories/<Component>.stories.tsx`            |
 
 ### Per-surface checklist
 

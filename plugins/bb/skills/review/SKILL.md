@@ -55,7 +55,7 @@ scope is the one path that needs neither a repo nor a diff.
   fronts, no git repository required), and stop at its own gate.
 - **Otherwise**: current branch, all fronts on the table.
 
-**`.bb/**` is never under review.** This skill reviews code and PRs, so subtract
+**`.bb/` is never under review.** This skill reviews code and PRs, so subtract
 the whole folder from the resolved diff before anything else reads it: the
 records, the spec and `prototype/` alike. `/bb:brisar`'s prototype is not the
 product, and a finding about a spec's prose is a finding about the ruler. The

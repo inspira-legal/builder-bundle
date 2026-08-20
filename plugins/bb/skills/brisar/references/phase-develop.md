@@ -130,11 +130,11 @@ Lazy-load `references/develop-modes.md`. Do not load everything in Step 0.
 
 Each mode has a template + checklist:
 
-| Mode                   | Template/checklist              | Main output                                                                             |
-| ---------------------- | ------------------------------- | --------------------------------------------------------------------------------------- |
-| Full surface           | `develop-modes.md#full-surface` | `.bb/<slug>/prototype/src/<surface>.tsx` (or `<surface>.html` if prototype-hosted)      |
-| Single component       | `develop-modes.md#component`    | `.bb/<slug>/prototype/src/components/<Name>.tsx`                                        |
-| Iterate on what exists | `develop-modes.md#iteration`    | Diff applied to the existing file                                                       |
+| Mode                   | Template/checklist              | Main output                                                                        |
+| ---------------------- | ------------------------------- | ---------------------------------------------------------------------------------- |
+| Full surface           | `develop-modes.md#full-surface` | `.bb/<slug>/prototype/src/<surface>.tsx` (or `<surface>.html` if prototype-hosted) |
+| Single component       | `develop-modes.md#component`    | `.bb/<slug>/prototype/src/components/<Name>.tsx`                                   |
+| Iterate on what exists | `develop-modes.md#iteration`    | Diff applied to the existing file                                                  |
 
 Cross-cutting rules:
 

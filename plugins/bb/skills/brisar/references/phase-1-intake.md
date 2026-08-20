@@ -324,12 +324,12 @@ Short echo in operational language. E.g.: _"Got it, project: 'financial manageme
 
 When `preflight.product.detected` is a known product (inspira-saas, portal-cliente, stillare, lexflow, ds-inspira), several fields are already derivable. Skip the corresponding questions:
 
-| Field                  | Source                                    |
-| ---------------------- | ----------------------------------------- |
-| `brand.name`           | `product.brand`                           |
-| `brand.design_md_path` | derived from `product.ds_source`          |
-| `artifact.hosting`     | `standalone` (the prototype folder)       |
-| `mode`                 | `product.mode_default` (usually `embed`)  |
+| Field                  | Source                                   |
+| ---------------------- | ---------------------------------------- |
+| `brand.name`           | `product.brand`                          |
+| `brand.design_md_path` | derived from `product.ds_source`         |
+| `artifact.hosting`     | `standalone` (the prototype folder)      |
+| `mode`                 | `product.mode_default` (usually `embed`) |
 
 What still needs to be asked:
 

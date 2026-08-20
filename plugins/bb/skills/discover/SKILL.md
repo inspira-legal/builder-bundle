@@ -73,7 +73,8 @@ phase: frame | fit | done
 verdict: build-mvp | validate-first | pivot | persevere | shelve # omitted before Phase 2
 ---
 ```
- Section formats live in each phase's reference.
+
+Section formats live in each phase's reference.
 Keep deferred ideas as plain bullets marked _revisit_, never checkboxes, so the
 task selector never mistakes them for work.
 

@@ -100,7 +100,7 @@ round.
 - **The lint gains the moved names as dead names.** `## Problem`, `## Hypothesis`,
   `## Fit` and `## Cuts` inside a `spec.md` fire `E003` pointing at `discovery.md`,
   which is what stops the copy being reborn.
-- **`/bb:review` never reviews `.bb/**`.** It reviews code and PRs, so the whole
+- **`/bb:review` never reviews `.bb/`.** It reviews code and PRs, so the whole
   folder leaves the diff every front reads: the three documents and `prototype/`
   alike. Reading `spec.md`'s `## Behavior` and `discovery.md`'s `## Cuts` as the
   **ruler** is a different act from producing findings about them, and the `contract`
@@ -123,26 +123,26 @@ Happy path:
 5. Deliver runs the design review and the accessibility audit into `design.md`, then
    its gate invokes `/bb:spec`, which reads both records and writes the contract.
 6. `/bb:review` reads `## Cuts` from `discovery.md` as the ruler, and reviews only the
-   code in the diff: `.bb/**` is excluded from every front's scope.
+   code in the diff: `.bb/` is excluded from every front's scope.
 7. `/bb:spec` export mode reads `## Hypothesis` from `discovery.md` for the trio rule.
 
-| #   | WHEN                                                                | THEN                                                                                            |
-| --- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| E1  | there is no `discovery.md`                                          | `/bb:spec` drafts from the one-liner and does not ask for one                                    |
-| E2  | there is no `design.md`                                             | same: the spec is drafted without it, no prompt                                                  |
-| E3  | `design.md` asserts a decision the spec reversed                    | `spec.md` wins; brisar registers the reversal in `design.md` on its next round                    |
-| E4  | Deliver invokes `/bb:spec` and `spec.md` already exists             | spec loops on top and rewrites it; no `-2` suffix, because it is the same idea                    |
-| E5  | brisar runs on a slug with no `discovery.md`                        | Research step 0 states which upstream is missing and continues                                   |
-| E6  | the medium is `paper`, `figma` or `pencil`                          | no `prototype/` is created; `design.md` names the file, page and artboard                         |
-| E7  | the builder asks brisar to write into the app's `src/`              | brisar answers that it prototypes, and names the path: `/bb:spec` then `/bb:implement`            |
-| E8  | `.bb/<slug>/` is a symlink into a canonical store                   | `prototype/` travels with the documents to the canonical target                                  |
-| E9  | the folder still holds `brief-design.md`, `handoff.md` or the rest  | nothing reads them; the folder is treated as if only the three documents exist                    |
-| E10 | `brand.workflow == framer-harpa`                                    | the harpa context becomes a section of `design.md`, not a file in the cwd                         |
-| E11 | a surface's state is not built                                      | `design.md` records it as not built; the prototype does not fake it                               |
-| E12 | `BRISAR_DS_PATH` points somewhere unreadable                        | brisar falls back to the plugin's `references/ds/` and says so once                               |
-| E13 | a `spec.md` carries `## Problem`, `## Hypothesis`, `## Fit`, `## Cuts` | `lint_spec.py` fires `E003` naming `discovery.md` as the section's home                          |
-| E14 | the diff touches `.bb/<slug>/` documents or `prototype/`             | those paths leave every front's scope; the `contract` front still reads them as the ruler         |
-| E15 | the diff is only `.bb/**`                                            | `/bb:review` says there is no code to review and stops, instead of running empty fronts           |
+| #   | WHEN                                                                   | THEN                                                                                      |
+| --- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| E1  | there is no `discovery.md`                                             | `/bb:spec` drafts from the one-liner and does not ask for one                             |
+| E2  | there is no `design.md`                                                | same: the spec is drafted without it, no prompt                                           |
+| E3  | `design.md` asserts a decision the spec reversed                       | `spec.md` wins; brisar registers the reversal in `design.md` on its next round            |
+| E4  | Deliver invokes `/bb:spec` and `spec.md` already exists                | spec loops on top and rewrites it; no `-2` suffix, because it is the same idea            |
+| E5  | brisar runs on a slug with no `discovery.md`                           | Research step 0 states which upstream is missing and continues                            |
+| E6  | the medium is `paper`, `figma` or `pencil`                             | no `prototype/` is created; `design.md` names the file, page and artboard                 |
+| E7  | the builder asks brisar to write into the app's `src/`                 | brisar answers that it prototypes, and names the path: `/bb:spec` then `/bb:implement`    |
+| E8  | `.bb/<slug>/` is a symlink into a canonical store                      | `prototype/` travels with the documents to the canonical target                           |
+| E9  | the folder still holds `brief-design.md`, `handoff.md` or the rest     | nothing reads them; the folder is treated as if only the three documents exist            |
+| E10 | `brand.workflow == framer-harpa`                                       | the harpa context becomes a section of `design.md`, not a file in the cwd                 |
+| E11 | a surface's state is not built                                         | `design.md` records it as not built; the prototype does not fake it                       |
+| E12 | `BRISAR_DS_PATH` points somewhere unreadable                           | brisar falls back to the plugin's `references/ds/` and says so once                       |
+| E13 | a `spec.md` carries `## Problem`, `## Hypothesis`, `## Fit`, `## Cuts` | `lint_spec.py` fires `E003` naming `discovery.md` as the section's home                   |
+| E14 | the diff touches `.bb/<slug>/` documents or `prototype/`               | those paths leave every front's scope; the `contract` front still reads them as the ruler |
+| E15 | the diff is only `.bb/`                                                | `/bb:review` says there is no code to review and stops, instead of running empty fronts   |
 
 ## Tasks
 
@@ -173,7 +173,7 @@ Happy path:
       `spec/references/export-spec.md:18`, `spec/references/spec-format.md:105`, and
       `lint_spec.py`'s `DEAD_SECTIONS` gaining the four moved names
       → behaviors 6, 7, E13 · dep: 1 · verify: CI
-- [x] **9. `.bb/**` out of review's scope**: the exclusion lands where the mode is
+- [x] **9. `.bb/` out of review's scope**: the exclusion lands where the mode is
       resolved (`review/SKILL.md` step 1) and where the diff reaches the finders
       (`review/references/fronts.md`), with the ruler-not-target distinction stated
       once in `front-contract.md`

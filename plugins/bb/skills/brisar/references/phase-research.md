@@ -470,9 +470,9 @@ decorative ones.
 
 ## Cooperation contract
 
-| Artifact                                                                    | Produced by                                     | Consumed by                                                  |
-| --------------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
-| `.bb/<slug>/discovery.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | `/bb:discover` (outside this skill)             | Research (Step 0, upstream framing), Brief (reconciliation)  |
-| `.bb/<slug>/design.md` (findings by front, `## Left out`)                   | Research                                        | Brief, Diverge, Deliver (what was skipped, and why)          |
-| Distilled findings per front                                                | Research subagents                              | Brief (`references/brief.md`)                                |
-| Token source on disk + the repo's own token rules                           | the product repo                                | Research (Front B; read, never written)                      |
+| Artifact                                                                    | Produced by                         | Consumed by                                                 |
+| --------------------------------------------------------------------------- | ----------------------------------- | ----------------------------------------------------------- |
+| `.bb/<slug>/discovery.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | `/bb:discover` (outside this skill) | Research (Step 0, upstream framing), Brief (reconciliation) |
+| `.bb/<slug>/design.md` (findings by front, `## Left out`)                   | Research                            | Brief, Diverge, Deliver (what was skipped, and why)         |
+| Distilled findings per front                                                | Research subagents                  | Brief (`references/brief.md`)                               |
+| Token source on disk + the repo's own token rules                           | the product repo                    | Research (Front B; read, never written)                     |

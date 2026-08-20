@@ -6,6 +6,7 @@ This phase does **two things**, and then hands the journey to the contract:
 
 1. **Design review**: confronts the built surfaces against **the problem and the research**, and flags only what matters. This is a senior designer's review, not a conformance check: it reads the copy, computes the contrast, sweeps every variant against the contract, and it is allowed to **disagree with a decision in the brief or the spec** when it sees a better option.
 2. **Accessibility audit**: validates WCAG AA. Suggests `/bb:review` (accessibility audit, surface scope) when depth is required; does inline checks when it's just a sanity check.
+
 Then the gate **invokes** `/bb:spec`. What a developer needs in order to build is a contract, and
 writing contracts is `/bb:spec`'s job: it reads this `design.md` and `discovery.md` as the
 records and writes `spec.md` itself. Deliver records the journey and points at it.
