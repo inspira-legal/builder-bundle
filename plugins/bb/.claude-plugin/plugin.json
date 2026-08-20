@@ -1,7 +1,7 @@
 {
   "name": "bb",
   "description": "Builder Bundle (bb): the unified skill set for Inspira builders, 16 skills across 6 trilhas (Pensar, Desenhar, Construir, Revisar, Design, Pesquisar/Doc), invoked as /bb:<skill> (e.g. /bb:spec). It never merges: landing on a protected branch stays with the human. Its operating context lives in ~/.claude/BUILDER-BUNDLE.md, imported by the person's CLAUDE.md and carrying the profile calibrated once by /bb:profile, which also deletes both when the person wants nothing from bb in their sessions.",
-  "version": "2.16.0",
+  "version": "2.17.0",
   "author": {
     "name": "Athena Briana",
     "email": "me@athenabriana.com"
