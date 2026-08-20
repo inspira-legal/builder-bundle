@@ -1,7 +1,7 @@
 {
   "name": "bb",
-  "description": "Builder Bundle (bb): the unified skill set for Inspira builders, 15 skills across 6 trilhas (Pensar, Desenhar, Construir, Revisar, Design, Pesquisar/Doc), invoked as /bb:<skill> (e.g. /bb:spec). It never merges: landing on a protected branch stays with the human. Ships a SessionStart operating-context hook that also carries the person's profile, calibrated once by /bb:profile.",
-  "version": "2.14.0",
+  "description": "Builder Bundle (bb): the unified skill set for Inspira builders, 15 skills across 6 trilhas (Pensar, Desenhar, Construir, Revisar, Design, Pesquisar/Doc), invoked as /bb:<skill> (e.g. /bb:spec). It never merges: landing on a protected branch stays with the human. Ships a SessionStart operating-context hook that also carries the person's profile, calibrated once by /bb:profile, and silenced by the same file when the person wants nothing injected.",
+  "version": "2.15.0",
   "author": {
     "name": "Athena Briana",
     "email": "me@athenabriana.com"

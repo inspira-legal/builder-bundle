@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.15.0 (2026-08-19)
+
+**Injecting the frame is now a choice, made in the same file as the profile.** The
+SessionStart hook opened every session unconditionally. `~/.claude/bb.config.json` now
+carries `inject_frame` beside `profile`, and `/bb:profile` asks for it.
+
+### Added
+
+- **`inject_frame`**, a top level field beside `profile`. `false` and the hook exits
+  silently, frame and profile together, because the frame names the profile block as the
+  section that closes it. Absent, or holding anything other than `false`, reads as `true`:
+  a file nobody has answered yet still injects. `/bb:profile` asks it as its own
+  two option question, apart from the four about the person, and prints which of the two
+  the next session will do. The contract is in `references/bb-config.md`.
+
 ## 2.14.0 (2026-08-19)
 
 **The profile is asked once, globally, and the journey lives in the brief.** Calibration

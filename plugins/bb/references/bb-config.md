@@ -1,7 +1,9 @@
-# The person's profile: `~/.claude/bb.config.json`
+# The config: `~/.claude/bb.config.json`
 
 One question, asked once, that every bb skill reads. What the person does is a fact
-about the person, so it is not asked per project and it is not stored per project.
+about the person, so it is not asked per project and it is not stored per project. The
+same file carries the one setting that is about the plugin instead of the person:
+whether the SessionStart hook injects at all.
 
 `/bb:profile` is the only writer. The SessionStart hook is the only reader that runs
 unasked; every other reader is a skill reading a flag it needs.
@@ -18,6 +20,7 @@ and `json` is stdlib; a hook that must never fail cannot carry a dependency.
 ```json
 {
   "version": 1,
+  "inject_frame": true,
   "profile": {
     "reads_code": true,
     "uses_terminal": true,
@@ -38,6 +41,18 @@ and `json` is stdlib; a hook that must never fail cannot carry a dependency.
 `calibrated_at` is an ISO date, written by `/bb:profile` and read by nobody. It is there
 so a person can see how old the answers are.
 
+## `inject_frame`
+
+Whether the SessionStart hook prints anything. `true`, the default, and every session
+opens with the operating frame and the profile block. `false`, and the hook exits
+silently: frame and profile together, because the frame names the profile block as the
+section that closes it, and half of it is worth less than either half whole.
+
+It sits beside `profile` rather than inside it because it is not a fact about the person.
+Turning it off costs the one thing this hook exists for, re-establishing the thread after
+a context compaction; what it buys is a session where nothing from bb arrives unasked.
+The four flags stay written either way, and every skill that runs still reads them.
+
 ## Reading it
 
 Three rules, and they are what keep a hook from ever blocking a session:
@@ -48,6 +63,8 @@ Three rules, and they are what keep a hook from ever blocking a session:
   is not an object, all read the same as missing. Never raise, never print to stderr.
 - **A missing flag is `false`.** A file written by an older version stays valid, and the
   safe default is more explanation, not less.
+- **Only an explicit `false` silences the hook.** `inject_frame` absent, or holding
+  anything other than `false`, reads as `true`. A file nobody has answered yet injects.
 
 ## What the flags decide
 

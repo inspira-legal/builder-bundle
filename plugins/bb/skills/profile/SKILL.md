@@ -1,6 +1,6 @@
 ---
 name: profile
-description: Calibrate once who is on the other side, and every bb session after this one is calibrated. Asks four questions (do you read the code, do you run commands, do you want the technical parts step by step, does technical vocabulary read fine), writes ~/.claude/bb.config.json, and shows or recalibrates a profile that already exists. Use when the user says "/bb:profile", "set my profile", "recalibrate", "bb is explaining too much" or "bb is explaining too little", or when a bb skill runs with no profile set.
+description: Calibrate once who is on the other side, and every bb session after this one is calibrated. Asks four questions (do you read the code, do you run commands, do you want the technical parts step by step, does technical vocabulary read fine), writes ~/.claude/bb.config.json, and shows or recalibrates a profile that already exists. Use when the user says "/bb:profile", "set my profile", "recalibrate", "bb is explaining too much", "bb is explaining too little" or "stop injecting bb's context every session", or when a bb skill runs with no profile set.
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -9,9 +9,10 @@ metadata:
 
 # Profile
 
-**Scope: the person's profile, and nothing else.** How much to spell out, which words to
-use, and whether a command comes as one line or as numbered steps. Not the project, not
-the machine, not the ship destination.
+**Scope: the person's profile, plus whether the hook injects at all.** How much to spell
+out, which words to use, whether a command comes as one line or as numbered steps, and
+whether a session opens with bb's operating frame. Not the project, not the machine, not
+the ship destination.
 
 The profile is a fact about the person, so it is asked once and stored once, at
 `~/.claude/bb.config.json`. The SessionStart hook reads it into every session. The full
@@ -27,8 +28,9 @@ contract, the schema and the reading rules live in the plugin-level
 2. **With no profile: calibrate.** Go to step 4.
 
 3. **With a profile: show it first, then offer.** Print the four answers as sentences,
-   not as flags, plus when it was calibrated. Then one `AskUserQuestion`: keep it, or
-   recalibrate. Keeping it ends the skill; there is nothing to write.
+   not as flags, plus when it was calibrated and one line saying whether the frame
+   injects. Then one `AskUserQuestion`: keep it, recalibrate the four, or only flip the
+   injection. Keeping it ends the skill; there is nothing to write.
 
 4. **Ask the four, as one question.** A single `AskUserQuestion` with `multiSelect: true`
    and these four options. Every option carries the hint of who it is for, so nobody has
@@ -49,21 +51,35 @@ contract, the schema and the reading rules live in the plugin-level
    four flags from it (the table in `references/bb-config.md`), pre-check them, and say in
    one line where they came from so the person corrects instead of re-answering.
 
-5. **Write the file.** Create `~/.claude` if it is missing. `version: 1`, the four flags,
-   and `calibrated_at` as today's ISO date. Write the whole file; never merge into a
-   shape you did not read.
+5. **Ask whether the hook injects at all.** One `AskUserQuestion`, two options, asked
+   apart from the four because this one is about the plugin and not about the person:
 
-6. **Print what was written**, as the four sentences, and say plainly that it is in
-   effect **from here on**: the frame this session started with does not reload, so it is
-   you carrying the answers for the rest of this session, and the hook takes over in the
-   next one. Offer nothing further; this skill has no next step.
+   | option label                      | description                                                             |
+   | --------------------------------- | ----------------------------------------------------------------------- |
+   | Open every session with the frame | How bb works and who you are, which is what survives a compaction.      |
+   | Inject nothing                    | The hook stays silent. Your four answers are still read by every skill. |
+
+   The first is the default, and it is what an unanswered file already does. Say in the
+   second option's own line what turning it off costs, rather than after the fact.
+
+6. **Write the file.** Create `~/.claude` if it is missing. `version: 1`, `inject_frame`,
+   the four flags, and `calibrated_at` as today's ISO date. Write the whole file; never
+   merge into a shape you did not read.
+
+7. **Print what was written**, as the four sentences plus which of the two the hook will
+   do, and say plainly that it is in effect **from here on**: the frame this session
+   started with does not reload, so it is you carrying the answers for the rest of this
+   session, and the hook takes over in the next one. Offer nothing further; this skill has
+   no next step.
 
 ## Edge cases
 
 | WHEN                                       | THEN                                                                                  |
 | ------------------------------------------ | ------------------------------------------------------------------------------------- |
 | no file                                    | calibrate, write, print what was written                                              |
-| a valid profile exists                     | show it, offer keep or recalibrate                                                    |
+| a valid profile exists                     | show it, offer keep, recalibrate, or flip the injection                               |
+| `inject_frame: false` on disk              | nothing calibrated this session: say so, and offer to turn it back on                 |
+| `inject_frame` absent                      | reads `true`; write it explicitly on this calibration                                 |
 | the file is malformed                      | treat as no profile, say the old file will be replaced, calibrate                     |
 | `~/.claude/` cannot be written             | say where it failed and that the session runs uncalibrated; never retry elsewhere     |
 | the person checks nothing                  | valid; write all four `false`                                                         |

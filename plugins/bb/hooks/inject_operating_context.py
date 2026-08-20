@@ -8,9 +8,11 @@ session in every repo where the plugin is enabled, so it nudges the way of
 working, it does not force a mode. Edit operating-context.md to change the frame,
 and PROFILE_LINES below to change what a profile flag means.
 
-The profile lives at ~/.claude/bb.config.json, written by /bb:profile; the
-contract is references/bb-config.md. A missing, unreadable or malformed file
-means no profile, never an error: this hook must never block a session.
+The config lives at ~/.claude/bb.config.json, written by /bb:profile; the
+contract is references/bb-config.md. `inject_frame: false` silences this hook
+entirely, frame and profile together. A missing, unreadable or malformed file
+means no profile and the frame still injects, never an error: this hook must
+never block a session.
 """
 
 from __future__ import annotations
@@ -18,7 +20,7 @@ from __future__ import annotations
 import json
 import os
 
-PROFILE_PATH = os.path.join(os.path.expanduser("~"), ".claude", "bb.config.json")
+CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".claude", "bb.config.json")
 
 # What each answer means, in the words the frame carries. The flags themselves
 # are never injected: `reads_code: false` says nothing on its own.
@@ -62,13 +64,18 @@ def read_frame(here: str, filename: str) -> str:
         return ""  # missing file -> stay silent, never block the session
 
 
-def read_profile() -> dict | None:
-    """The profile, or None. Malformed reads the same as missing, on purpose."""
+def read_config() -> dict:
+    """The config, or an empty dict. Malformed reads the same as missing, on purpose."""
     try:
-        with open(PROFILE_PATH, encoding="utf-8") as f:
-            profile = json.load(f).get("profile")
-    except (OSError, ValueError, AttributeError):
-        return None
+        with open(CONFIG_PATH, encoding="utf-8") as f:
+            config = json.load(f)
+    except (OSError, ValueError):
+        return {}
+    return config if isinstance(config, dict) else {}
+
+
+def read_profile(config: dict) -> dict | None:
+    profile = config.get("profile")
     return profile if isinstance(profile, dict) else None
 
 
@@ -85,6 +92,12 @@ def profile_block(profile: dict | None) -> str:
 
 
 def main() -> int:
+    config = read_config()
+    # Only an explicit false silences the hook. An absent or unparsable value
+    # reads as inject, the same direction as a missing profile flag: more
+    # context, never less.
+    if config.get("inject_frame", True) is False:
+        return 0
     here = os.path.dirname(os.path.abspath(__file__))
     ctx = read_frame(here, "operating-context.md")
     if not ctx:
@@ -94,7 +107,9 @@ def main() -> int:
             {
                 "hookSpecificOutput": {
                     "hookEventName": "SessionStart",
-                    "additionalContext": ctx + "\n" + profile_block(read_profile()),
+                    "additionalContext": ctx
+                    + "\n"
+                    + profile_block(read_profile(config)),
                 }
             }
         )
