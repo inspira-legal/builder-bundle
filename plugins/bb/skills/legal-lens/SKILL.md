@@ -72,10 +72,7 @@ Always report the findings in the conversation, grouped by severity. **If the
 artifact is a spec** (resolved via the spec-state contract), also append
 or update a `## Legal` section so the spec carries the legal context
 downstream; for an arbitrary document outside the spec folders, report only;
-don't write into it. A spec that already carries a `## Jurídico` section from
-before the rename is read and updated under the name it has, and one line of the
-report says the written name is `## Legal`, the same answer the lint's `W003`
-gives.
+don't write into it.
 
 ```
 ## Legal

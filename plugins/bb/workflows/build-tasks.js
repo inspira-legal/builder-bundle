@@ -111,8 +111,7 @@ The project's checks: ${checks && checks.length ? checks.join(" && ") : "none we
 
 Your steps:
 
-1. Re-read \`## Tasks\` on disk (also \`## Tarefas\`, the older spelling; a spec carrying
-   both headings gets both enumerated, in file order). If task ${t.n} is already \`- [x]\`,
+1. Re-read \`## Tasks\` on disk. If task ${t.n} is already \`- [x]\`,
    return immediately with status "skipped" and the conventions you received, unchanged. The
    run is resumable and what already landed must not be redone.
 2. Build the task. A stack choice the spec left open (framework, package manager, tooling)

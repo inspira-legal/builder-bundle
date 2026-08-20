@@ -127,7 +127,7 @@ product's language.
 ## tasks.md: implementation breakdown
 
 Generate for Large scope or non-trivial technical dependencies. Render from the
-spec's `## Tasks` (or `## Tarefas`) items. Same work, table form with explicit dependencies and
+spec's `## Tasks` items. Same work, table form with explicit dependencies and
 verification criteria.
 
 ```markdown

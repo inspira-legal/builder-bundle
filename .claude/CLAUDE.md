@@ -161,9 +161,7 @@ alone. Skills reference that file instead of restating the contract.
 The spec's **form** belongs to `plugins/bb/skills/spec/references/spec-format.md`:
 a free top half (opening plus whatever sections the problem asks for) over a fixed
 set (`Decisions`, `Behavior`, `Tasks`, `Out of scope`, `Open`), fixed because each
-member has a reader. A spec written before the rename keeps its older section
-names and still builds: both names resolve everywhere, and the lint answers `W003`
-naming the current one. `skills/spec/scripts/lint_spec.py` enforces the
+member has a reader. `skills/spec/scripts/lint_spec.py` enforces the
 mechanical half of that and runs in CI over every `.bb/*/spec.md`.
 
 ## Commits

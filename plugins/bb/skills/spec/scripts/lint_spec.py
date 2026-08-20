@@ -12,40 +12,16 @@ Output: `path:line CODE message` on stdout. Exit 1 when any E-code fired.
 import re
 import sys
 
-# (name to write, the spellings that resolve): a spec written before the rename still
-# parses, and the message cites the name to write.
+# The heading is matched lowercased, so `## decisions` and `## Decisions` are one name.
 REQUIRED_SECTIONS = (
-    ("Decisions", ("decisions", "decisões")),
-    ("Open", ("open", "em aberto")),
+    ("Decisions", "decisions"),
+    ("Open", "open"),
 )
 RECOMMENDED_SECTIONS = (
-    (
-        "Behavior",
-        ("behavior", "comportamento"),
-        "W001",
-        "the behavior map is the acceptance contract",
-    ),
-    ("Tasks", ("tasks", "tarefas"), "W002", "with no tasks the build has nothing to consume"),
-    (
-        "Out of scope",
-        ("out of scope", "fora de escopo"),
-        "W004",
-        "it is the boundary the build stays inside",
-    ),
+    ("Behavior", "behavior", "W001", "the behavior map is the acceptance contract"),
+    ("Tasks", "tasks", "W002", "with no tasks the build has nothing to consume"),
+    ("Out of scope", "out of scope", "W004", "it is the boundary the build stays inside"),
 )
-# An older section name still parses; W003 carries the name to write instead.
-RENAMED_SECTIONS = {
-    "decisões": "Decisions",
-    "comportamento": "Behavior",
-    "tarefas": "Tasks",
-    "fora de escopo": "Out of scope",
-    "em aberto": "Open",
-    "problema": "Problem",
-    "hipótese": "Hypothesis",
-    "encaixe": "Fit",
-    "cortes": "Cuts",
-    "jurídico": "Legal",
-}
 # `{raw}` takes the heading as the file spells it, so the message quotes the string the
 # author will search for.
 DEAD_SECTIONS = {
@@ -171,21 +147,16 @@ def check_body(lines):
             seen.add(name)
             if name in DEAD_SECTIONS:
                 yield i, "E003", DEAD_SECTIONS[name].format(raw=raw)
-            elif name in RENAMED_SECTIONS:
-                yield i, "W003", (
-                    f"`## {raw}` is the older name for this section: the name to write "
-                    f"is `## {RENAMED_SECTIONS[name]}`; the file stays valid"
-                )
 
     if table:
         yield from flush(table)
 
-    for name, spellings in REQUIRED_SECTIONS:
-        if not any(spelling in seen for spelling in spellings):
+    for name, spelling in REQUIRED_SECTIONS:
+        if spelling not in seen:
             yield 1, "E002", f"no `## {name}`: the format requires it"
 
-    for name, spellings, code, why in RECOMMENDED_SECTIONS:
-        if not any(spelling in seen for spelling in spellings):
+    for name, spelling, code, why in RECOMMENDED_SECTIONS:
+        if spelling not in seen:
             yield 1, code, f"no `## {name}`: {why}"
 
 

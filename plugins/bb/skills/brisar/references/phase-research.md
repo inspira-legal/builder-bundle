@@ -32,10 +32,9 @@ builder.
 
 Before any question, read `.bb/<slug>/brief-design.md` in full, and with it:
 
-- **`.bb/<slug>/spec.md`** (`## Problem` / `## Hypothesis` /
-  `## Fit` / `## Cuts`, or the older names on a spec written before the rename).
-  This is the **upstream contract**. The research answers _how should
-  this be?_; the spec answered _is it worth building, and what did we cut?_ Load it:
+- **`.bb/<slug>/spec.md`** (`## Problem` / `## Hypothesis` / `## Fit` / `## Cuts`). This is
+  the **upstream contract**. The research answers _how should this be?_; the spec answered
+  _is it worth building, and what did we cut?_ Load it:
   the hypothesis tells you what the research must test, and the cuts tell you what **not** to
   research a solution for.
   - **A cut is a constraint, not a taboo.** If the research finds a cut was wrong, that is a

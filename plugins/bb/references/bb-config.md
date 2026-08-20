@@ -126,27 +126,3 @@ and authenticated is the preflight's question, detected and never asked.
 `technical_instructions` decides how a command is written, never what runs. True and it
 is `pnpm install && pnpm dev` on one line; false and the same commands come as numbered
 steps, each with where to run it, how long it takes, and what success prints.
-
-## Deriving an old profile
-
-Before the profile file existed, brisar kept a `profile.persona_id` inside a project's
-`.brisar/session.yaml`. A person who answered it once should not have to answer again, so
-the first bb run that finds one and has no profile derives the four flags from it:
-
-| the old id       | `reads_code` | `uses_terminal` | `technical_instructions` | `technical_vocabulary` |
-| ---------------- | ------------ | --------------- | ------------------------ | ---------------------- |
-| `builder-senior` | true         | true            | true                     | true                   |
-| `builder-junior` | true         | true            | false                    | true                   |
-| `executive`      | false        | false           | false                    | false                  |
-
-`content` was never a person, it was the Framer output path (`brand.workflow ==
-framer-harpa`, a project fact). It derives nothing: the checklist gets asked.
-
-Three rules bound the derivation:
-
-- **Only when there is no profile.** A profile on disk is the person's own answer and always
-  wins; an old id in a project is never read over it.
-- **Derived once.** The derivation pre-fills the `/bb:profile` checklist, the person
-  confirms or corrects, and `/bb:profile` writes the file, which is what makes it stop being
-  derived. `/bb:profile` stays the only writer.
-- **The old file is left alone.** `.brisar/` is read, never written and never deleted.

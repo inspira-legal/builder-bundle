@@ -35,18 +35,6 @@ the dir, and everything durable about that work lives inside it:
 - Members are independent. A brisar run that never went through `/bb:discover`
   leaves a folder with design and no `spec.md`; a specced idea that never touched
   design has only `spec.md`.
-- **`.bb/tasks/<slug>/` is the layout this folder had before, and it still resolves.**
-  A named slug reads `.bb/<slug>/spec.md` and falls back to `.bb/tasks/<slug>/spec.md`;
-  bare selection (`/bb:delegate` with no slug) scans `.bb/*/spec.md` **and**
-  `.bb/tasks/*/spec.md` before picking by `created`. A folder without a spec is
-  simply not a candidate. A spec still written under the old path (in another repo,
-  or in one not migrated yet) is found either way, and the other members are **read**
-  beside it, in whichever of the two folders the spec was found. The folder's `<slug>`
-  is the key: the same slug seen under both paths is one spec, and the `.bb/<slug>/`
-  copy is the one read. **Writing is where the two paths stop being symmetric**: a new
-  member goes to `.bb/<slug>/` even when the spec was found under the old path, while
-  an update is written back to the file it was read from. So a reader looks for a
-  member in both folders and takes the `.bb/<slug>/` copy when both answer.
 - The `.bb/` root is the nearest ancestor of the cwd that already has one; if none
   does, it is created in the cwd. **Resolve it that way every time**. A bare relative
   `.bb/` mints a second root whenever a skill runs from a subfolder, and the slug's
@@ -120,28 +108,3 @@ upstream sections stay where they are, in the free top half, and the fixed secti
 (`## Decisions`, `## Behavior`, `## Tasks`, `## Out of scope`, `## Open`) go below
 them. The format is
 `${CLAUDE_PLUGIN_ROOT}/skills/spec/references/spec-format.md`.
-
-## Both names read the same
-
-A spec written before the rename carries the older section names.
-**Every reader takes both**, one pair per section:
-
-| written           | older spelling      | written         | older spelling |
-| ----------------- | ------------------- | --------------- | -------------- |
-| `## Decisions`    | `## Decisões`       | `## Problem`    | `## Problema`  |
-| `## Behavior`     | `## Comportamento`  | `## Hypothesis` | `## Hipótese`  |
-| `## Tasks`        | `## Tarefas`        | `## Fit`        | `## Encaixe`   |
-| `## Out of scope` | `## Fora de escopo` | `## Cuts`       | `## Cortes`    |
-| `## Open`         | `## Em aberto`      | `## Legal`      | `## Jurídico`  |
-
-The task line's dependency field is one field under two spellings, `dep:` and
-`depende:`, and reads the same either way.
-
-**Writing is not symmetric.** A new section is written under the name in the left
-column; a section already on disk keeps the spelling it has. The lint answers an older
-heading with `W003` and the name to write, and the file stays valid.
-
-A half-migrated spec can carry **both** names for the same thing, `## Tasks` and
-`## Tarefas` in one file. Read both and treat them as one section, in file order: the
-task lines under either heading are as unbuilt as the ones under the other, and
-stopping at the first match would let a run report clean over work it never did.

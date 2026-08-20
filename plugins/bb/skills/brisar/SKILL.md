@@ -129,19 +129,13 @@ someone else. **Do not re-run it and do not rewrite it.** Read its frontmatter, 
 On `status: bootstrapped-to-discover`, the maturity gate fired earlier and the builder went to
 /bb:discover. The spec it wrote is the file next to the brief in the same task folder (the
 spec-state contract, plugin-level `references/spec-state.md`: `.bb/<slug>/spec.md` carrying
-`## Problem` / `## Fit`, or the older names on a previous spec). Let the appetite and the cuts
-inform fidelity and scope, and resume at the **Research phase**: the intake is already in the
-brief, and the framing is exactly what the research has to test.
+`## Problem` / `## Fit`). Let the appetite and the cuts inform fidelity and scope, and resume
+at the **Research phase**: the intake is already in the brief, and the framing is exactly what
+the research has to test.
 
 Say in one line what you found and where you are resuming, then continue. Re-running research
 over a brief that already exists is the most expensive mistake available here, and it destroys
 the record of rounds the brief was keeping.
-
-A `.brisar/` folder from an older run may still be sitting in the project. Read it once for
-whatever context it holds, and leave it where it is. Nothing is written back to it. If its
-`session.yaml` carries a `profile.persona_id` and there is no `~/.claude/bb.config.json`,
-that is an answer the person already gave: derive the four flags from it (the table in the
-plugin-level `references/bb-config.md`) and offer `/bb:profile` to write them down.
 
 ### 0.2: detect Brisa DS
 

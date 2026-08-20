@@ -53,11 +53,6 @@ writing anything.
    the repo is; what the person reads follows the language they are speaking. The rule is
    in the plugin-level `references/doc-style.md`.
 
-   **Pre-fill from an old profile when there is one.** A project that brisar ran before the
-   profile file existed carries `profile.persona_id` in its `.brisar/session.yaml`. Derive the
-   four flags from it (the table in `references/bb-config.md`), pre-check them, and say in
-   one line where they came from so the person corrects instead of re-answering.
-
 5. **Ask whether bb keeps its custom instructions.** One `AskUserQuestion`, two options,
    asked apart from the four because this one is about the plugin and not about the
    person:

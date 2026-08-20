@@ -24,16 +24,13 @@ and stop.
 
 1. **Resolve the target spec** per the spec-state contract (plugin-level
    `references/spec-state.md`).
-   - **Named** (`/bb:delegate <slug>`): use `.bb/<slug>/spec.md`, falling back to
-     `.bb/tasks/<slug>/spec.md` for a spec still on the older layout. If neither
-     exists, report the error, list the available pending slugs, and stop.
-   - **Bare** (`/bb:delegate`): scan `.bb/*/spec.md` and `.bb/tasks/*/spec.md`,
-     read each frontmatter block, keep those with `status ∈ {pending, in-progress}`,
-     and pick the smallest `created` (tie-break: slug alphabetical). The folder's
-     `<slug>` is the key. A slug found under both paths is one candidate, read
-     from `.bb/<slug>/`. A spec with no frontmatter counts as `pending` with
-     unknown `created` (sorted last). If none qualify, report "no pending specs"
-     and stop.
+   - **Named** (`/bb:delegate <slug>`): use `.bb/<slug>/spec.md`. If it doesn't
+     exist, report the error, list the available pending slugs, and stop.
+   - **Bare** (`/bb:delegate`): scan `.bb/*/spec.md`, read each frontmatter block,
+     keep those with `status ∈ {pending, in-progress}`, and pick the smallest
+     `created` (tie-break: slug alphabetical). A spec with no frontmatter counts as
+     `pending` with unknown `created` (sorted last). If none qualify, report
+     "no pending specs" and stop.
    - A spec already `done`: report it's done and ask whether to re-run. A `blocked`
      spec is skipped in bare selection and reported, not silently dropped: name it
      with the blocker its `## Open` carries, and where that blocker sends it. The
@@ -47,8 +44,7 @@ and stop.
 3. **Build: follow `/bb:implement`'s workflow (steps 1–7), then return here.** Load
    the spec, honor its reuse notes and `## Behavior` contract, build every
    unchecked task in the order its `dep:` fields imply, run each task's
-   `verify:`, keep the project's checks green, and commit per task ticking its box. A spec
-   written before the rename says `## behavior` and `dep:` and is read the same.
+   `verify:`, keep the project's checks green, and commit per task ticking its box.
    **Do not run implement's step-8 ship hand-off**: delegate owns the transition to landing, so
    the chain lives here, not split across skills. If implement's **safety valve** fires
    (the spec was underspecified), stop: flip `status: blocked`, point back to
@@ -109,8 +105,6 @@ and stop.
 | bare `/bb:delegate`, the oldest spec is blocked  | skipped, and reported with the blocker its `## Open` carries and where that blocker sends it                                                    |
 | the build falls back to this context             | it runs the same way; the reason is named in one line, and again in step 6                                                                      |
 | ship hits an unrecoverable stop / blocker        | flip `status: blocked`; write the blocker into the PR description, or into the spec's `## Open` when the destination has no PR; report it; exit |
-| slug sits under both `.bb/` layouts              | one candidate; the `.bb/<slug>/` copy is the one read                                                                                           |
-| spec only under `.bb/tasks/<slug>/`              | found by the second glob, run as usual                                                                                                          |
 | not in a git repo / no `.bb/` dir in either root | report the error, stop                                                                                                                          |
 
 The hard line holds throughout: delegate never merges, never approves, never

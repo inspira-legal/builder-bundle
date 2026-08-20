@@ -30,17 +30,7 @@ jobs:
       - name: Lint specs
         run: |
           shopt -s nullglob
-          declare -A seen
-          specs=()
-          # `.bb/<slug>/` first: the older `.bb/tasks/<slug>/` stays in the scan, and a
-          # slug found under both is the same spec, linted once.
-          for f in .bb/*/spec.md .bb/tasks/*/spec.md; do
-            slug=$(basename "$(dirname "$f")")
-            if [ -z "${seen[$slug]:-}" ]; then
-              seen[$slug]=1
-              specs+=("$f")
-            fi
-          done
+          specs=(.bb/*/spec.md)
           if [ ${#specs[@]} -eq 0 ]; then
             echo "No specs in .bb/: nothing to lint."
             exit 0

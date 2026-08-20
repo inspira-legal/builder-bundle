@@ -41,8 +41,7 @@ came from a framed problem; otherwise run only the mode the user asked for.
 
 ## Capture
 
-Write into the same spec, accreting alongside `## Problem` / `## Hypothesis`,
-keeping the older names when the spec already carries them:
+Write into the same spec, accreting alongside `## Problem` / `## Hypothesis`:
 
 ```
 ## Fit
