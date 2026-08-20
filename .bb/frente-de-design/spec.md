@@ -27,12 +27,11 @@ review loop on its own.
 
 The front resolves the project's design source before it offers itself, in this order:
 
-1. `design-context/` at the repo root, the `tokens.md` and `components.md` brisar's
-   scaffold writes.
-2. A token source the project itself reads: a `tokens.json`, CSS custom properties, or
-   a Tailwind theme config.
-3. The branch's `.bb/<slug>/design.md` (or `design/<surface>.md`), the visual
-   direction, which supplements either of the above with intended hierarchy and states.
+1. A token source the project itself reads: a `tokens.json`, CSS custom properties, or
+   a Tailwind theme config; in a brisar prototype, the `tokens*.css` under
+   `.bb/<slug>/prototype/src/`.
+2. The branch's `.bb/<slug>/design.md` (or `design/<surface>.md`), the visual
+   direction, which supplements the token source with intended hierarchy and states.
 
 Nothing resolving makes the front unavailable, the same way no `CODE_REVIEW_GUIDE.md`
 makes `rules` unavailable: a design review with no source to cite is opinion, and the

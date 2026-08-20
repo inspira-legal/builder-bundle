@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.17.0 (2026-08-20)
+## 2.18.0 (2026-08-20)
 
 **Design becomes a calibrated, reviewable dimension.** The profile learns how the
 person designs, the design journey leans on that answer, and the review engine gains
@@ -36,6 +36,66 @@ nothing yet).
   default and the person's tools, in that order; a lean tool whose MCP is absent is
   named once in the intro line, never forced.
 - `preflight-tooling.md` cross-references `design_tools` alongside `uses_terminal`.
+
+## 2.17.0 (2026-08-20)
+
+**One skill, one document.** `/bb:discover` used to seed `## Problem` / `## Hypothesis` /
+`## Fit` / `## Cuts` inside `spec.md`, and `/bb:brisar` used to write a brief, a handoff
+and a design file beside it. Three skills wrote into the same folder with overlapping
+claims on the same sections, so a later run could not tell whose sentence it was reading
+or whether the spec's copy of a framing was still the framing.
+
+Each skill now owns exactly one document, and `spec.md` has exactly one writer.
+`/bb:discover` writes `discovery.md`, `/bb:brisar` writes `design.md` plus a `prototype/`
+folder, `/bb:spec` writes `spec.md`, and the build side reads the spec. The two records
+are read **by path and never copied**: when the spec needs a fact one of them carries, it
+cites the document and the section. A quoted section is a second copy that goes stale the
+next time its own skill runs.
+
+The correction runs one way. Where a record and the spec disagree the spec wins, and
+`/bb:spec` still does not edit the record: the record's own writer registers the reversal
+on its next round, so the history stays readable.
+
+### Changed
+
+- **`references/spec-state.md`** is the contract for the new layout: `discovery.md`,
+  `spec.md`, `design.md`, `prototype/`. Each document carries its own frontmatter, and
+  `discovery.md` gets a `phase` / `verdict` block of its own.
+- **`/bb:brisar`**'s Deliver phase drops `handoff.md` and invokes `/bb:spec` at its gate,
+  so the design work reaches the contract instead of a document nobody reads next.
+- **`/bb:spec`** reads the two records as upstream and cites them.
+- **`/bb:review`**'s contract front and `fronts.md` follow the spec to its single writer.
+
+### Breaking
+
+A `.bb/<slug>/` written by an earlier version carries `brief-design.md` and a seeded
+`spec.md`. Nothing migrates it. Move the framing sections into `discovery.md` and rename
+`brief-design.md` to `design.md` before running the new skills against that slug.
+
+## 2.16.1 (2026-08-20)
+
+**The dispatch carries its own opt-in, and the fallback chain is stated once.** A run read
+2.16.0's "the fallback for a session that cannot run it" as covering a session carrying a
+standing rule against workflows, and built the whole spec in the main context. The fix says
+opposite in the place the run reads: invoking `/bb:implement` or `/bb:delegate` is the
+request for the workflow, and that request is the opt-in.
+
+Saying it three times is what the first attempt got wrong. The count of fallbacks landed in
+five sentences across three files, in two spellings that contradicted each other, and one
+of them read a refusal of `scriptPath` as a reason to build in the main context, when that
+refusal still has an inline `script` dispatch after it. The chain is now a numbered list in
+`references/build-tasks-workflow.md` and nowhere else; the skills point at it by name.
+
+### Changed
+
+- **`references/build-tasks-workflow.md`**: the fallback chain is three ordered steps, with
+  step 2 marked as still a dispatch. Two stops that are not steps of it are named: a denied
+  permission dialog, which is reported and asked about, and a stage zero that cannot run
+  the project's checks, which is a blocker naming the command it could not execute.
+- **`/bb:implement` and `/bb:delegate`** carry no count of their own, and the opt-in covers
+  the build it was invoked for. Both name the `description` triggers alongside the slash
+  command, so a run that started from "build it" is covered too.
+- The one line a fallback owes now names which step the run landed on.
 
 ## 2.16.0 (2026-08-19)
 

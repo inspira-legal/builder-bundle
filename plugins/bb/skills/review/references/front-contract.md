@@ -4,6 +4,11 @@ Available only when a spec matches this branch (resolve per the plugin-root
 `references/spec-state.md`: `.bb/<slug>/spec.md`). It's the one front that
 can catch a diff where every line is correct and the wrong thing got built.
 
+`.bb/` is subtracted from the diff every front reads (`SKILL.md`, step 1), and
+this front is where that distinction earns its keep: the spec is the **ruler**
+this front measures the diff against, never a target it reports findings about.
+Read it; don't review it.
+
 ## The two questions
 
 1. **Did it build the specified thing?** Walk the spec's `## Behavior` map. Each
@@ -15,12 +20,16 @@ can catch a diff where every line is correct and the wrong thing got built.
    dependency of the specified work (fine, mention once) or an unrelated ride-along
    (a finding: it belongs in its own branch).
 
-## Also read the upstream sections when present
+## Also read the framing when it's there
 
-`## Problem`, `## Hypothesis`, `## Fit`, and `## Cuts` (written by
-`/bb:discover`) bound the work too. A diff that implements something `## Cuts`
-explicitly deferred is a finding with a strong citation. The decision to leave it
-out was already made.
+`.bb/<slug>/discovery.md` carries `## Problem`, `## Hypothesis`, `## Fit` and
+`## Cuts` (written by `/bb:discover`), and they bound the work too. A diff that
+implements something `## Cuts` explicitly deferred is a finding with a strong
+citation. The decision to leave it out was already made.
+
+`.bb/<slug>/design.md` is the other record worth opening when it exists: its
+surfaces and their states say which screens the journey has and which states were
+built. Where a record and the spec disagree, the spec wins.
 
 ## Finding shape
 

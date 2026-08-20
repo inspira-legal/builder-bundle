@@ -90,7 +90,7 @@ is banned vocabulary, and for everyone else it is an implementation detail of ou
         },
         {
           "label": "Code",
-          "description": "I build inside the real project. Best when production is already the destination and you want to leave here with it underway."
+          "description": "I build a clickable prototype in React or plain HTML. Best when the journey has to be navigable and the states have to be real."
         }
       ],
       "multiSelect": false
@@ -131,10 +131,9 @@ Do **not** add an "Other" option. The tool provides free text.
 
 Three consequences worth stating explicitly:
 
-1. **A canvas medium skips the scaffold.** No `<slug>/` folder, no `package.json`, no
-   `design-context/` generated from Phase 3. The design system still has to be _read_, that
-   already happened in the research (Front B), and the token values from there are what the
-   canvas gets. Record `scaffold: skipped` with the reason so a later re-entry does not think
+1. **A canvas medium skips the scaffold.** No `prototype/` folder and no `package.json`. The
+   design system still has to be _read_, that already happened in the research (Front B), and
+   the token values from there are what the canvas gets. Record `scaffold: skipped` with the reason so a later re-entry does not think
    the scaffold failed.
 2. **Deliver must be able to open what Develop produced.** This is not optional: a review that
    cannot read the artifact is not a review. The reader per medium is in the table above, and
@@ -194,11 +193,11 @@ expressed, never what it is.
 
 ## Cooperation contract
 
-| Artifact                                             | Produced by                       | Consumed by                                            |
-| ---------------------------------------------------- | --------------------------------- | ------------------------------------------------------ |
-| `preflight.mcps`                                     | Step 0.4 (`preflight-tooling.md`) | Step 0 here; the option list                           |
-| `profile.design_tools`                               | `/bb:profile` (bb-config.md)      | Step 0 here; the option order and the trim             |
-| `medium_default` on the product entry                | `product-registry.yaml`           | Step 0 here; the strongest lean                        |
-| The chosen direction in `.bb/<slug>/brief-design.md` | Diverge                           | Step 1; what is being built                            |
-| The medium, recorded in the same brief               | this step                         | Phase 3, Develop, Deliver, re-entry                    |
-| Token values read from source                        | Research (Front B)                | Develop on canvas mediums (no `design-context/` there) |
+| Artifact                                       | Produced by                       | Consumed by                                       |
+| ---------------------------------------------- | --------------------------------- | ------------------------------------------------- |
+| `preflight.mcps`                               | Step 0.4 (`preflight-tooling.md`) | Step 0 here; the option list                      |
+| `profile.design_tools`                         | `/bb:profile` (bb-config.md)      | Step 0 here; the option order and the trim        |
+| `medium_default` on the product entry          | `product-registry.yaml`           | Step 0 here; the strongest lean                   |
+| The chosen direction in `.bb/<slug>/design.md` | Diverge                           | Step 1; what is being built                       |
+| The medium, recorded in the same brief         | this step                         | Phase 3, Develop, Deliver, re-entry               |
+| Token values read from source                  | Research (Front B)                | Develop on canvas mediums (no `prototype/` there) |

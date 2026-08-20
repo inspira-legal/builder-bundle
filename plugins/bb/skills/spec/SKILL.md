@@ -1,6 +1,6 @@
 ---
 name: spec
-description: Align on the idea before building. Develops a draft, iterates the gray areas with you through the question tool, maps the expected behavior (happy path plus edges), runs an adversarial completeness pass and closes at a 3 way gate, implement / delegate / stop. Reads the framing from /bb:discover when it is there. Use when the user says "write the spec", "spec this out", "let's plan", "shape this", "what should we build", "let's discuss before building", or starts a non trivial feature. Don't use it for small mechanical changes (just do those) or to find bugs (use /bb:review).
+description: Align on the idea before building. Develops a draft, iterates the gray areas with you through the question tool, maps the expected behavior (happy path plus edges), runs an adversarial completeness pass and closes at a 3 way gate, implement / delegate / stop. Reads the framing from /bb:discover and the journey from /bb:brisar when they are there. Use when the user says "write the spec", "spec this out", "let's plan", "shape this", "what should we build", "let's discuss before building", or starts a non trivial feature. Don't use it for small mechanical changes (just do those) or to find bugs (use /bb:review).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -21,9 +21,27 @@ Reach a **shared understanding of the idea before any code**. What matters is th
 
 Always required: reach alignment, **close the load-bearing technical decisions, map the behavior**, and stop at a validated spec. Size is a running estimate, not locked at the start. If a "Tiny/Medium" task keeps surfacing gray areas mid-flow, re-size up and spec it properly.
 
-## Read upstream intent first
+## Read the upstream records first
 
-If the spec for this slug already carries `## Problem` / `## Hypothesis` / `## Fit` / `## Cuts` (seeded by `/bb:discover`), **read them before drafting**: they're the intent this work serves. The problem and success signal anchor the `why`, the appetite bounds the scope, and `## Fit` / `## Cuts` already settle what's in and what was deliberately dropped, so don't re-litigate a cut the user made upstream, and don't ask gray-area questions discover already answered. Echo the framing in one line so the user sees it carried through, then develop the design on top of it. No upstream sections is fine; spec from the one-liner as usual.
+Two siblings in `.bb/<slug>/` can already hold work this spec serves, and neither is written
+here (plugin-level `references/spec-state.md`):
+
+- **`discovery.md`**, from `/bb:discover`: `## Problem` / `## Hypothesis` / `## Fit` / `## Cuts`.
+  The problem and success signal anchor the `why`, the appetite bounds the scope, and `## Fit` /
+  `## Cuts` already settle what's in and what was deliberately dropped.
+- **`design.md`**, from `/bb:brisar`: the journey. The chosen direction, the surfaces and the
+  states each one built, and what the design review and the accessibility audit found.
+
+**Read them before drafting, and cite them instead of copying them.** A section quoted into
+the spec is a second copy that goes stale the next time its own skill runs; a path is a
+pointer that stays true. So don't re-litigate a cut the user made upstream, and don't ask
+gray-area questions discover already answered. Echo the framing in one line, naming which
+records exist, so the user sees it carried through, then develop the design on top of it.
+
+Where a record and this spec disagree, **the spec wins**: it is the contract, they are the
+records. The correction belongs to the record's own writer on its next round, so leave both
+files alone. Either record missing is fine, and one arriving later is the normal case: brisar's
+Deliver invokes this skill from its own gate. Spec from the one-liner as usual.
 
 ## The loop
 
@@ -91,7 +109,7 @@ Write a single `.bb/<slug>/spec.md`, the converged draft itself, written as some
 
 The on-disk contract (location, frontmatter schema, status lifecycle) is the plugin-level `references/spec-state.md`; follow it. In short: specs go to `.bb/<slug>/spec.md`. If a spec already exists for a _different_ idea under the same slug, suffix it (`-2`) or ask; never silently overwrite another spec.
 
-On finalize, open the spec with the frontmatter block (`status: pending`, `created: <today>`, `slug: <slug>`). If `/bb:discover` wrote the file first without the block, backfill it on finalize. Leave the lifecycle after this to delegate; spec only seeds `pending`.
+On finalize, open the spec with the frontmatter block (`status: pending`, `created: <today>`, `slug: <slug>`). This skill is the file's only writer, so the block is there from the first write. A spec landed before that rule can be missing it; backfill it on finalize. Leave the lifecycle after this to delegate; spec only seeds `pending`.
 
 **Large** work carries `## Behavior` and `## Tasks` as their own sections: the acceptance contract and the vertical tasks the build side consumes. **Medium** work keeps both inline in the decisions.
 

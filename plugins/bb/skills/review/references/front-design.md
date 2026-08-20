@@ -19,15 +19,15 @@ names what it deviates from, and one that cannot is dropped, never reported as a
 Resolve it before the front offers itself, in this order, keeping every rung that
 resolves (they supplement each other):
 
-1. **`design-context/` at the repo root**: the `tokens.md` and `components.md` that
-   `/bb:brisar`'s scaffold writes. The distilled source, made for exactly this read.
-2. **A token source the project itself reads**: a `tokens.json`, a stylesheet of CSS
+1. **A token source the project itself reads**: a `tokens.json`, a stylesheet of CSS
    custom properties, or a Tailwind theme config. The file the build consumes is the
-   authority on what a token is; a brand package that nothing imports is not one.
-3. **The branch's visual direction**: `.bb/<slug>/design.md`, or `design/<surface>.md`
+   authority on what a token is; a brand package that nothing imports is not one. In
+   a brisar prototype that file is under `.bb/<slug>/prototype/src/` (`tokens.css`,
+   `tokens-brand.css`).
+2. **The branch's visual direction**: `.bb/<slug>/design.md`, or `design/<surface>.md`
    plus its index, when the branch's spec folder carries one. It supplements the token
-   and component sources with the intended hierarchy, components, and states for the
-   surfaces this branch builds.
+   source with the intended hierarchy, components, and states for the surfaces this
+   branch builds, and it carries the token delta the prototype has not absorbed yet.
 
 Nothing resolving makes the front **unavailable**, the same way no
 `CODE_REVIEW_GUIDE.md` makes `rules` unavailable: with no source there is nothing to
@@ -35,8 +35,9 @@ cite, and the engine does not ship opinion. The report does not mention an unava
 front; the probe (`fronts.md`) is where the decision lives.
 
 Report at the top of the front's section which sources resolved and were judged
-against. Rungs 1 and 2 disagreeing on a value is itself a finding, `design-context/` is
-generated and can go stale against the source the build reads.
+against. The two rungs disagreeing on a value is itself a finding: a delta the
+direction records that the token source never absorbed, or a source that moved past
+the direction.
 
 ## 2. What's checkable
 
@@ -84,8 +85,8 @@ system"), or brisar's Deliver gate asks for depth, this front runs standalone: n
 no other fronts, no curation question. The scope is whatever the user pointed at.
 
 1. **Resolve the design source first.** Standalone changes nothing about §1: no source,
-   no review, and say so with what would create one (a `design-context/`, a token file,
-   or a visual direction from `/bb:brisar`).
+   no review, and say so with what would create one (a token file the build reads, or
+   a visual direction from `/bb:brisar`).
 2. **Establish the scope.** A folder or file set → enumerate the UI files under it
    (Glob) and read them. A URL or a dev server → open it with the preview/browser tools
    and read the rendered page. Both → both; the rendered page is the authority where

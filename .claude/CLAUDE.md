@@ -151,12 +151,16 @@ TypeScript.
 
 ## Spec state
 
-The on-disk contract is `plugins/bb/references/spec-state.md`: `.bb/<slug>/`
-is the spec's folder, holding the spec (`spec.md`, with its `status`/`created`/`slug`
-frontmatter and the status lifecycle owned by `/bb:delegate`) and the visual direction
-`/bb:brisar` writes next to it (`design.md` for a single surface, `design/<surface>.md`
-plus an index for several). Members are independent. A folder can carry either one
-alone. Skills reference that file instead of restating the contract.
+The on-disk contract is `plugins/bb/references/spec-state.md`: `.bb/<slug>/` holds
+three documents and a prototype, and **every skill writes its own document, with
+`spec.md` having exactly one writer**. `/bb:discover` writes `discovery.md` (the
+framing), `/bb:brisar` writes `design.md` (the journey) plus `prototype/` (the clickable
+artifact), and `/bb:spec` writes `spec.md` (the contract, with its
+`status`/`created`/`slug` frontmatter and the status lifecycle owned by `/bb:delegate`).
+The spec reads the two records by path and never copies their prose; where a record and
+the spec disagree the spec wins, and the record's own writer registers the reversal on
+its next round. Members are independent, and a folder can carry any one of them alone.
+Skills reference that file instead of restating the contract.
 
 The spec's **form** belongs to `plugins/bb/skills/spec/references/spec-format.md`:
 a free top half (opening plus whatever sections the problem asks for) over a fixed

@@ -41,7 +41,8 @@ came from a framed problem; otherwise run only the mode the user asked for.
 
 ## Capture
 
-Write into the same spec, accreting alongside `## Problem` / `## Hypothesis`:
+Write into the same `discovery.md`, accreting alongside `## Problem` /
+`## Hypothesis`, and set `phase: done` with the `verdict` the section decides:
 
 ```
 ## Fit
@@ -60,5 +61,5 @@ Kept, in priority order:
 And refine the `## Hypothesis` section in place into the testable form. Keep cut
 ideas worth revisiting as plain bullets marked _revisit_, never checkboxes.
 
-A legal-sensitive bet deserves `/bb:legal-lens` over the spec before committing;
+A legal-sensitive bet deserves `/bb:legal-lens` over the record before committing;
 mention it in the report when it applies.

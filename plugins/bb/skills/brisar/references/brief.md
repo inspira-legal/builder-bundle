@@ -1,28 +1,33 @@
-# Brief phase: the design contract
+# Brief phase: the journey's document
 
 Entered straight from the Research phase (no gate between them; the research is the input,
-the brief is the artifact). This phase consolidates the fronts into one document, reconciles
-it against the upstream problem framing, presents it in a way a non-designer can act on, and
-**keeps it alive** for the rest of the trilha.
+the brief is the artifact). This phase opens `.bb/<slug>/design.md`, consolidating the
+fronts into it, reconciling them against the upstream problem framing, presenting them in a
+way a non-designer can act on, and **keeping the document alive** for the rest of the trilha.
 
-The brief is the contract of the first diamond. Everything downstream reads it: the Diverge
-phase builds directions from it, Develop builds against it, Deliver reviews against it.
+**`design.md` is the only document brisar writes.** Every later phase writes its own section
+of this same file: Diverge the directions, Develop what got built, Deliver the review and the
+accessibility audit. One skill, one document, the way `/bb:discover` has `discovery.md` and
+`/bb:spec` has `spec.md` (plugin-level `references/spec-state.md`). The brief is the first
+diamond's half of it, and everything downstream reads it.
 
 ## Location
 
 Beside the task contract, as its sibling:
 
 ```
-.bb/<slug>/spec.md          ← the execution contract (/bb:spec)
-.bb/<slug>/brief-design.md  ← this file's output
+.bb/<slug>/discovery.md  ← the framing (/bb:discover)
+.bb/<slug>/spec.md       ← the execution contract (/bb:spec)
+.bb/<slug>/design.md     ← the journey, opened here and written by every later phase
+.bb/<slug>/prototype/    ← the clickable artifact (Develop)
 ```
 
 **Resolve `.bb/` the way the contract says**: the nearest ancestor of the cwd that already has
 one, and only create it in the cwd when no ancestor does (plugin-level
 `references/spec-state.md`). Never resolve it as a bare relative path: after Phase 3 the session
-runs from **inside** the project folder, so a relative `.bb/` would mint a second root one level
-down, and the brief would land in a different tree than its sibling `design.md`, which is exactly
-what the folder contract exists to prevent.
+runs from **inside** the prototype folder, so a relative `.bb/` would mint a second root one
+level down, and the journey would land in a different tree than its sibling `spec.md`, which is
+exactly what the folder contract exists to prevent.
 
 ```bash
 BB=$(d=$PWD; while [ "$d" != / ] && [ ! -d "$d/.bb" ]; do d=$(dirname "$d"); done; [ -d "$d/.bb" ] && echo "$d/.bb" || echo "$PWD/.bb")
@@ -33,19 +38,27 @@ canonical target**. The Edit tool refuses to write through a symlink on purpose,
 is what stops a copy from being born inside the repo. Record the real path in the brief's own
 frontmatter (`canonical:`) so the instruction travels inside the artifact and nobody has to
 remember it. **Leave the in-repo path in place as the symlink**: the resumption glob and every
-reader below name `.bb/<slug>/brief-design.md`, and they have to keep finding it.
+reader below name `.bb/<slug>/design.md`, and they have to keep finding it.
 
-If there is no task contract yet (pocket mode, no spec), write to
-`$BB/<slug>/brief-design.md` anyway and create the dir. The brief can precede the spec.
+If there is no task contract yet (pocket mode, no spec), write to `$BB/<slug>/design.md`
+anyway and create the dir. The journey can precede the spec, and usually does: Deliver's gate
+is what invokes `/bb:spec`.
 
 ## Authority: say this once and never blur it
 
-> **Where the brief and the spec disagree, the spec wins. The brief is the research record;
+> **Where `design.md` and the spec disagree, the spec wins. `design.md` is the record;
 > the spec is the contract.**
 
-The brief _changes_ the spec. That is its job, and it does it through the delta at handoff,
-not by contradicting it in place. A brief that quietly disagrees with the contract creates two
+The journey _changes_ the spec. That is its job, and it does it by **invoking `/bb:spec`** at
+Deliver's gate, not by contradicting the contract in place and not by writing a delta section
+for someone to apply by hand. A record that quietly disagrees with the contract creates two
 sources of truth, which is the failure this rule exists to prevent.
+
+The correction runs one way only. `/bb:spec` never edits `design.md`; that would give this
+document two writers, which is the disease the one-document rule cures. When the spec reverses
+a decision recorded here, **the next round of this skill** writes the reversal as a reversal
+(revokes D4, per the spec). Precedence is what makes that affordable: a stale record never
+misleads whoever builds, because whoever builds reads the contract.
 
 ## The living-contract rule: not optional, not on request
 
@@ -64,14 +77,14 @@ Concretely, keeping it alive means three things:
 3. **Mark what is still in review.** Copy pending a brand pass, a claim pending confirmation, a
    permission question pending a legal answer. Unmarked, they read as settled.
 
-At the end of the trilha the brief feeds the **delta back into the spec**. The contract catches
-up with what the design learned. That handoff is the Deliver phase's business, but the material
-comes from here, which is exactly why the record has to be complete.
+At the end of the trilha Deliver's gate **invokes `/bb:spec`**, which reads this document and
+writes the contract out of it. That call is the Deliver phase's business, but the material comes
+from here, which is exactly why the record has to be complete.
 
 ## The frontmatter: the journey's state, and the only place it lives
 
-The brief opens with a frontmatter block. This is what tells a later session where the
-journey stopped, so there is no state file beside it to keep in sync.
+`design.md` opens with a frontmatter block. This is what tells a later session where the
+journey stopped and what it produced, so there is no state file beside it to keep in sync.
 
 ```yaml
 ---
@@ -81,8 +94,23 @@ round: 1
 slug: <slug>
 created: <ISO>
 canonical: <real path, only when .bb is a symlink into a store>
+medium: code | claude-design | paper | figma | pencil # the medium question
+surfaces: # from Diverge on; the locator Deliver reviews against
+  - name: <surface>
+    artifact: <path under prototype/, or file + page + artboard on a canvas>
+    states_built: [default, empty, loading, error]
+    states_not_built: [<state>] # declared, never silent
+    variants: [<variant>]
+    deviations: [<what departed from the direction, and why>]
+wcag_aa_status: pass | fail | partial | not-assessed # Deliver
+blockers: [<what has to be fixed before merge>] # Deliver
 ---
 ```
+
+The fields below `canonical:` accrete as the phases run, and they are why one document
+replaces the six files this skill used to scatter: the surfaces list is the locator Deliver
+needs, `states_not_built` is the declaration a prototype owes, and `wcag_aa_status` plus
+`blockers` are the audit summarizing itself.
 
 `status: bootstrapped-to-discover` is the one Phase 2 writes when the maturity gate sends the
 builder to `/bb:discover` first: the journey is open and waiting outside brisar.
@@ -119,8 +147,8 @@ Two rules about the findings section:
 ## Step 2: reconciliation against the upstream framing (mandatory)
 
 The step that stops a beautiful screen from answering the wrong question. Compare the research
-against the spec's `## Problem` / `## Hypothesis` / `## Fit` / `## Cuts` and write
-**three blocks**. All three, even when one is short.
+against `.bb/<slug>/discovery.md`'s `## Problem` / `## Hypothesis` / `## Fit` /
+`## Cuts` and write **three blocks**. All three, even when one is short.
 
 - **Confirms**: where the research supports the hypothesis, **and with what**: the reference,
   the source, the real value. "Confirmed" without evidence is just agreement.
@@ -282,13 +310,13 @@ phases.
 ## Step 5: persistence and gate
 
 Write the document. Its frontmatter is the persistence: set `phase: diverge` (the phase
-now open), `status`, and `round`. There is no second file.
+now open), `status`, and `round`. There is no second file, in this phase or any later one.
 
 The reconciliation counts and the open tension are **sections of the document**, not
 fields to copy somewhere: a contradicted point needs the sentence explaining it, which
 is exactly what a count loses. Develop and Deliver read this document by its path,
-`.bb/<slug>/brief-design.md`, and the spec is its sibling in the same folder. **The two
-coexist; the design brief never replaces the spec.**
+`.bb/<slug>/design.md`, and write their own sections into it; the spec is its sibling in the
+same folder. **The two coexist; the record never replaces the contract.**
 
 ### What goes in `## Left out, and why`
 
@@ -360,9 +388,9 @@ pre-loading the answer.
 
 ## Cooperation contract
 
-| Artifact                                                               | Produced by                               | Consumed by                                     |
-| ---------------------------------------------------------------------- | ----------------------------------------- | ----------------------------------------------- |
-| The findings by front, in the brief's current round                    | Research                                  | Brief (Step 1, the material)                    |
-| `.bb/<slug>/spec.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | `/bb:discover`, `/bb:spec`                | Brief (Step 2, reconciliation)                  |
-| `.bb/<slug>/brief-design.md`                                           | **Brief** (and updated every later round) | Diverge, Develop, Deliver, the implementing dev |
-| Delta back into `spec.md`                                              | Deliver (material from here)              | `/bb:implement`, `/bb:spec`                     |
+| Artifact                                                                    | Produced by                       | Consumed by                           |
+| --------------------------------------------------------------------------- | --------------------------------- | ------------------------------------- |
+| The findings by front, in the current round                                 | Research                          | Brief (Step 1, the material)          |
+| `.bb/<slug>/discovery.md` (`## Problem`/`## Hypothesis`/`## Fit`/`## Cuts`) | `/bb:discover`                    | Brief (Step 2, reconciliation)        |
+| `.bb/<slug>/spec.md`                                                        | `/bb:spec`                        | Brief (Step 2, reconciliation)        |
+| `.bb/<slug>/design.md`                                                      | **Brief** (and every later phase) | Diverge, Develop, Deliver, `/bb:spec` |

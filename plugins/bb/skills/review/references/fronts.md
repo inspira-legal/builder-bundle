@@ -55,9 +55,9 @@ batch of cheap read-only calls (parallel background where possible):
   dialog does activate it. When the grep is ambiguous, read the hunks before
   offering the front, not after.
 
-- design source, only when the UI grep above passed: any one of `design-context/`
-  at the repo root, a token source the project reads (a `tokens.json`, CSS custom
-  properties, a Tailwind theme config), or the branch's `.bb/<slug>/design.md`
+- design source, only when the UI grep above passed: a token source the project
+  reads (a `tokens.json`, CSS custom properties, a Tailwind theme config, a brisar
+  prototype's `tokens*.css`), or the branch's `.bb/<slug>/design.md`
   (or `design/`). One resolving makes `design` available; the resolution order and
   what each rung is worth are `front-design.md`'s.
 - `gh pr view --json number,url`: is there an open PR.
@@ -71,7 +71,7 @@ run. `gh` unauthenticated makes both unavailable. Say so once, with
 `gh auth login` as the remedy, and offer the rest. No `CODE_REVIEW_GUIDE.md` makes
 `rules` unavailable. One line, with `/bb:review-setup` as the remedy. UI in the diff
 but no design source makes `design` unavailable. One line, naming what would create a
-source (a token file the build reads, or a `design-context/` from `/bb:brisar`).
+source (a token file the build reads, or a visual direction from `/bb:brisar`).
 
 ## Depth: two tiers by default, a third only when asked
 
@@ -126,7 +126,8 @@ change it reviewed.
    context. Hold that line when you dispatch.
 2. **Each finder gets the same scope block**: the resolved diff range
    (`<merge_base>...HEAD`, the sha the probe returned, not a `<base>` the finder
-   has to guess), changed files, one paragraph of what changed, the repo's
+   has to guess), changed files **with `.bb/` already subtracted** (`SKILL.md`,
+   step 1), one paragraph of what changed, the repo's
    `CODE_REVIEW_GUIDE.md` when there is one, the criteria path its front points at
    (`review-checklist.md`, `quality-checklist.md` or `design-checklist.md`, siblings
    of this file), and the spec when there is one, plus ONE angle/lens set and its

@@ -51,7 +51,7 @@ products:
     requires_mcp: []
     notes: |
       For builders whose profile has uses_terminal false. Output: clickable prototype + markdown
-      handoff for the eng team to pick up later. brisar does not try to teach git on this path.
+      journey the eng team picks up through /bb:spec. brisar does not try to teach git on this path.
 
 # === Detection: how brisar identifies a product by cwd ===
 
@@ -91,15 +91,14 @@ prototype_hosted:
     For builders whose profile has uses_terminal false, and for the Framer path
     (brand.workflow == framer-harpa), which has no local scaffold either.
     brisar generates a scaffolded Vite prototype BUT runs it in sandbox/hosted (does not try local npm install).
-    Output: link to the prototype + handoff .md written for a dev to take over later.
+    Output: link to the prototype, and the journey in `.bb/<slug>/design.md` that /bb:spec reads.
   output_artifacts:
-    - "<slug>/: scaffolded folder"
-    - "<slug>/HANDOFF-DEV.md: instructions for the dev to pick up"
-    - ".bb/<slug>/design.md (or design/<surface>.md): visual direction"
+    - ".bb/<slug>/prototype/: the clickable prototype"
+    - ".bb/<slug>/design.md, ## Surfaces: visual direction"
   caveats: |
     The builder won't be able to run `pnpm install && pnpm dev` locally.
-    brisar should say this explicitly: "this prototype is for the dev to pick up; you pass the link
-    + HANDOFF-DEV.md."
+    brisar should say this explicitly: "this prototype is for validating the idea; the dev builds
+    from the spec, and /bb:spec writes it out of the journey."
 
 # === Adding a new product ===
 
