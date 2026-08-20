@@ -1,5 +1,30 @@
 # Changelog
 
+## 2.16.1 (2026-08-20)
+
+**The dispatch carries its own opt-in, and the fallback chain is stated once.** A run read
+2.16.0's "the fallback for a session that cannot run it" as covering a session carrying a
+standing rule against workflows, and built the whole spec in the main context. The fix says
+opposite in the place the run reads: invoking `/bb:implement` or `/bb:delegate` is the
+request for the workflow, and that request is the opt-in.
+
+Saying it three times is what the first attempt got wrong. The count of fallbacks landed in
+five sentences across three files, in two spellings that contradicted each other, and one
+of them read a refusal of `scriptPath` as a reason to build in the main context, when that
+refusal still has an inline `script` dispatch after it. The chain is now a numbered list in
+`references/build-tasks-workflow.md` and nowhere else; the skills point at it by name.
+
+### Changed
+
+- **`references/build-tasks-workflow.md`**: the fallback chain is three ordered steps, with
+  step 2 marked as still a dispatch. Two stops that are not steps of it are named: a denied
+  permission dialog, which is reported and asked about, and a stage zero that cannot run
+  the project's checks, which is a blocker naming the command it could not execute.
+- **`/bb:implement` and `/bb:delegate`** carry no count of their own, and the opt-in covers
+  the build it was invoked for. Both name the `description` triggers alongside the slash
+  command, so a run that started from "build it" is covered too.
+- The one line a fallback owes now names which step the run landed on.
+
 ## 2.16.0 (2026-08-19)
 
 **The build has one path.** 2.7.0 gave `/bb:implement` and `/bb:delegate` a second
