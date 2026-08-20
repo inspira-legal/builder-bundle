@@ -166,7 +166,7 @@ Happy path:
 - [x] **6. The framer path lands in `.bb/`**: `phase-framer-handoff.md` writes a
       section of `design.md` instead of a file in the cwd
       → behavior E10 · dep: 3 · verify: reading
-- [ ] **7. `spec-state.md` rewritten**: the tree, the frontmatter schemas, the reversal
+- [x] **7. `spec-state.md` rewritten**: the tree, the frontmatter schemas, the reversal
       rule for the three documents, and the symlink obligation covering `prototype/`
       → behaviors 1, 3, 4, E8, E9 · dep: 1, 3, 4 · verify: reading
 - [ ] **8. The outside readers repointed**: `review/references/front-contract.md:20`,
