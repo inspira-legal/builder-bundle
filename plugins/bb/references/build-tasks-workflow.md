@@ -7,7 +7,7 @@ agent's contract is the prompt string inside it, not a paraphrase kept here. Thi
 documents what the skills need to know to call it and what its return means.
 
 There is no mode question. The in-context build survives as the fallback for a session
-that cannot run this, and the skills announce that downgrade in one line.
+that cannot reach the script, and the skills announce that downgrade in one line.
 
 ## Why the build runs here and not in the main context
 
@@ -58,6 +58,12 @@ A non-zero exit is the missing-file case. The printed path is what goes into
 Three fallbacks, one attempt each: `scriptPath` refused becomes an inline `script` read
 off the same file; that refused too, or no `Workflow` tool in the session, or a `Bash`
 call that cannot read the file, becomes the in-context build with the reason named.
+
+Those three are the whole list, and each one is something the session cannot do: the
+tool is absent, the tool refuses the call, the file does not read. Anything else
+dispatches. Invoking `/bb:implement` or `/bb:delegate` is the request for this workflow,
+which is the opt-in the `Workflow` tool asks for, so a standing rule about reaching for
+workflows only when asked is satisfied by the command that started the run.
 
 ## `args`
 
