@@ -26,6 +26,7 @@ from typing import NamedTuple
 CLAUDE_DIR = os.path.join(os.path.expanduser("~"), ".claude")
 PLUGIN_NAME = "bb"
 STAMP_NAME = "update-stamp.json"
+CLAIM_PREFIX = "update-claim-"
 
 # What the worker records in the stamp's `outcome`. `report()` speaks for
 # `installed` alone; the rest are read by whoever is diagnosing a quiet install.
@@ -178,12 +179,38 @@ def due(stamp: dict) -> bool:
     return stamp.get("date") != today()
 
 
+def _claim_marker(path: str) -> bool:
+    """The exclusive create that decides who owns today. It is the only part of
+    the claim two sessions cannot both win: starting at the same moment they
+    read the same stale stamp, so whoever writes it second still writes it. A
+    filesystem that cannot mark at all lets the claim through, because a feature
+    that stops updating is worse than one that spawns twice in a rare race."""
+    folder = os.path.dirname(path)
+    marker = f"{CLAIM_PREFIX}{today()}"
+    try:
+        os.makedirs(folder, exist_ok=True)
+        os.close(os.open(os.path.join(folder, marker), os.O_CREAT | os.O_EXCL))
+    except FileExistsError:
+        return False
+    except OSError:
+        return True
+    try:
+        for name in os.listdir(folder):
+            if name.startswith(CLAIM_PREFIX) and name != marker:
+                os.remove(os.path.join(folder, name))
+    except OSError:
+        pass
+    return True
+
+
 def claim_today(path: str | None) -> bool:
-    """Write today into the stamp before anything is spawned, keeping the fields
-    the last run left. A second session starting the same moment reads the
-    claimed date and spawns nothing."""
+    """Claim today before anything is spawned, keeping the fields the last run
+    left. A second session starting the same moment loses the claim and spawns
+    nothing."""
     stamp = read_stamp(path)
     if not due(stamp):
+        return False
+    if not path or not _claim_marker(path):
         return False
     return write_stamp(path, **_carried(stamp))
 

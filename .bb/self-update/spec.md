@@ -88,8 +88,9 @@ not somewhere it can return to. Keeping `main` green is the gate this feature le
 - **One file, two entry points.** `hooks/check_version.py` carries both: a function
   `sync_instructions.py` calls in process, and a `__main__` the hook spawns with
   `sys.executable`, because `python3` is not on every PATH a detached child inherits.
-- **The day is claimed before the spawn.** The stamp is written with today's date first, so a
-  second session starting at the same moment spawns no second worker.
+- **The day is claimed before the spawn.** An exclusive file create decides who owns the
+  day, and the winner writes today's date into the stamp, so a second session starting at
+  the same moment spawns no second worker.
 - **Never a downgrade.** The install runs only when the remote version is greater, compared as
   integer tuples, so `2.9.0` against `2.16.0` reads right.
 - **The target is the running install.** The marketplace name comes from `CLAUDE_PLUGIN_ROOT`
@@ -122,7 +123,7 @@ Happy path:
 | #   | when                                              | then                                                            |
 | --- | ------------------------------------------------- | --------------------------------------------------------------- |
 | 8   | the stamp's date is today                         | no worker and no network, and no line once it was announced     |
-| 9   | two sessions start at the same moment             | the claimed date leaves only the first spawning a worker        |
+| 9   | two sessions start at the same moment             | the exclusive claim leaves only the first spawning a worker     |
 | 10  | the clone is not on the remote default branch     | nothing installs; the branch name goes to `reason`              |
 | 11  | the clone's tree is dirty                         | nothing installs; `reason` says so                              |
 | 12  | the remote version equals or trails the installed | nothing installs, and no downgrade is attempted                 |
