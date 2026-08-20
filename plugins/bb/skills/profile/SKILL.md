@@ -15,7 +15,8 @@ whether a session opens with bb's operating frame. Not the project, not the mach
 the ship destination.
 
 The profile is a fact about the person, so it is asked once and stored once, at
-`~/.claude/bb.config.json`. The SessionStart hook reads it into every session. The full
+`~/.claude/bb.config.json`. The SessionStart hook reads it into every session, unless
+`inject_frame` says not to. The full
 contract, the schema and the reading rules live in the plugin-level
 `references/bb-config.md`; read it before writing the file.
 

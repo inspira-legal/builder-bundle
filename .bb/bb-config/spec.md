@@ -4,7 +4,7 @@ created: 2026-08-19
 slug: bb-config
 ---
 
-# one profile, asked once, injected every session
+# one profile, asked once, injected unless you say otherwise
 
 `/bb:brisar` opens by asking who is building, and turns the answer into one of four
 personas. The question is good and the place is wrong twice over. It is a fact about
@@ -14,7 +14,8 @@ persona packs four independent things into one id, so every reader downstream as
 
 This replaces the persona with a checklist of what the person actually does, asks it
 once through `/bb:profile`, and writes `~/.claude/bb.config.json`. The SessionStart hook
-reads that file and carries the answers into the operating frame of every session, so a
+reads that file and carries the answers into the operating frame of every session that
+wants one, so a
 skill that never heard of brisar still knows whether to spell out `pnpm install` or
 just print it. When the file is missing, the frame says so and names the skill that
 fixes it.
@@ -154,13 +155,14 @@ write is the brief itself.
   carries the version (`plugins/cache/inspira-legal/bb/2.13.0`), so anything written
   inside it dies on the next plugin update. JSON because the hook is Python and `json`
   is stdlib; YAML would add a dependency to a hook that must never fail.
-- **The hook always injects.** With a profile it injects the behavior the four answers
-  imply; without one it injects a short line naming `/bb:profile`, which the model acts
-  on when a bb skill runs and otherwise leaves alone.
+- **The hook injects unless `inject_frame` says not to.** With a profile it injects the
+  behavior the four answers imply; without one it injects a short line naming
+  `/bb:profile`, which the model acts on when a bb skill runs and otherwise leaves alone.
+  `inject_frame: false` silences it entirely, frame and profile together.
 - **What the hook injects is behavior, not the flags.** `reads_code: false` means
   nothing on its own; the frame carries the sentences it implies.
-- **The config holds the profile and nothing else**, because everything in it is
-  injected in every session. `ds_path` stays out: it is a machine path, read by one
+- **The config holds the profile plus `inject_frame`, and nothing else.** Anything else
+  in it would be injected in every session. `ds_path` stays out: it is a machine path, read by one
   phase, and it keeps the resolution order it has today (`BRISAR_DS_PATH`, then the
   project file, then the bundled DS).
 - **`/bb:profile` is the only writer**, and it does three things: calibrate on first
@@ -207,7 +209,9 @@ Happy path, first time:
 | no config file                                | frame carries the invitation naming `/bb:profile`              |
 | config with a valid profile                   | frame carries the behavior the four answers imply              |
 | config unreadable or malformed                | treated as missing; the session is never blocked               |
-| a flag absent from the file                   | reads as `false`                                               |
+| a profile flag absent from the file           | reads as `false`                                               |
+| `inject_frame` is false                       | the hook prints nothing; skills still read the four flags      |
+| `inject_frame` absent from the file           | reads as `true`; an unanswered file injects                    |
 | `/bb:profile` with no file                    | calibrates, writes the file, prints what it wrote              |
 | `/bb:profile` with a file                     | shows the current profile, offers recalibrate or keep          |
 | brisar with a config                          | no profile question; each phase reads the flag it needs        |

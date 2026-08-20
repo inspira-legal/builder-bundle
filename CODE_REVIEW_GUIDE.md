@@ -300,7 +300,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
   session start, and because a hook must not block (BB017) it fails in silence: the frame simply
   never arrives.
 - **Evidence**: `.github/workflows/validate.yml` and the skills call `python3 …/lint_spec.py`;
-  `plugins/bb/hooks/hooks.json` calls `python`, which is the one deviation in the repo today.
+  `a3af73a` fixed the one deviation, `plugins/bb/hooks/hooks.json` calling `python`.
 - **Do**:
   ```json
   { "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/inject_operating_context.py\"" }
