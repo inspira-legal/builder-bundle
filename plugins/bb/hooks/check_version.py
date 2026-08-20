@@ -132,11 +132,16 @@ def write_stamp(path: str | None, **fields: str) -> bool:
         return False
     stamp = {"date": today()}
     stamp.update({key: value for key, value in fields.items() if value})
+    # Through a temp file in the same directory. A worker killed mid write would
+    # otherwise leave truncated JSON, which reads as a first run and drops the
+    # line the last install earned.
+    temp = f"{path}.tmp"
     try:
         os.makedirs(os.path.dirname(path), exist_ok=True)
-        with open(path, "w", encoding="utf-8") as f:
+        with open(temp, "w", encoding="utf-8") as f:
             json.dump(stamp, f, indent=2)
             f.write("\n")
+        os.replace(temp, path)
     except OSError:
         return False
     return True
@@ -187,23 +192,28 @@ def resolve() -> Target | None:
     plugins = installed.get("plugins")
     key = f"{PLUGIN_NAME}@{marketplace}"
     records = plugins.get(key) if isinstance(plugins, dict) else None
-    for record in records if isinstance(records, list) else []:
-        if not isinstance(record, dict):
-            continue
-        if not _same_path(str(record.get("installPath") or ""), root):
-            continue
-        scope = str(record.get("scope") or "")
-        if not scope:
-            return None
-        return Target(
-            marketplace=marketplace,
-            clone=clone,
-            scope=scope,
-            project_path=record.get("projectPath") or None,
-            version=str(record.get("version") or version),
-            root=root,
-        )
-    return None
+    matches = [
+        record
+        for record in (records if isinstance(records, list) else [])
+        if isinstance(record, dict)
+        and _same_path(str(record.get("installPath") or ""), root)
+        and record.get("scope")
+    ]
+    if not matches:
+        return None
+    # Two scopes can share one cached install path, so the file can hold more
+    # than one match, and its order is not an order of preference. The `user`
+    # install is the one a session opened anywhere loads, so it goes first.
+    matches.sort(key=lambda record: str(record.get("scope")) != "user")
+    record = matches[0]
+    return Target(
+        marketplace=marketplace,
+        clone=clone,
+        scope=str(record.get("scope")),
+        project_path=record.get("projectPath") or None,
+        version=str(record.get("version") or version),
+        root=root,
+    )
 
 
 def report() -> str | None:
@@ -251,13 +261,33 @@ def _run(argv: list[str], timeout: int, cwd: str | None = None) -> str | None:
     The worker has no stream to report on, so every way a command can go wrong
     comes back as the same None and the caller writes the reason it knows.
     """
+    command: str | list[str] = argv
     if os.name == "nt" and os.path.splitext(argv[0])[1].lower() in (".cmd", ".bat"):
         # CreateProcess runs an executable. A `claude` installed as a .cmd shim,
         # which is what npm writes on Windows, needs the interpreter in front.
-        argv = [os.environ.get("COMSPEC") or "cmd.exe", "/c", *argv]
+        #
+        # cmd.exe reparses the line it is handed, and the marketplace name and
+        # the shim's own path both come out of files this hook does not own. So
+        # every argument goes in quoted, which is what keeps an `&` or a `|` from
+        # reading as a separator, and a `%`, the one metacharacter a quote does
+        # not tame, stops the run instead of reaching the parser. `/s` makes cmd
+        # strip the outer pair and take the rest of the line as it stands.
+        if any("%" in arg or (chr(34) in arg) for arg in argv):
+            return None
+        comspec = os.environ.get("COMSPEC") or "cmd.exe"
+        quoted = " ".join(f'"{arg}"' for arg in argv)
+        command = f'"{comspec}" /d /s /c "{quoted}"'
     try:
         done = subprocess.run(
-            argv, capture_output=True, text=True, timeout=timeout, cwd=cwd
+            command,
+            capture_output=True,
+            timeout=timeout,
+            cwd=cwd,
+            # Explicit, because the platform default is a legacy code page on
+            # most Windows installs: a byte git prints that the code page has no
+            # character for raises, and that raise reads as a failed command.
+            encoding="utf-8",
+            errors="replace",
         )
     except (OSError, ValueError, subprocess.SubprocessError):
         return None
@@ -371,10 +401,15 @@ def main() -> int:
         return 0
 
     # A project scoped install is addressed from its own directory, the way the
-    # person would run the command there.
+    # person would run the command there. Without that directory the command
+    # would run from wherever the worker started, and a project scope addressed
+    # from somewhere else installs nothing, so it says so and stops.
     cwd = target.project_path or None
     if cwd and not os.path.isdir(cwd):
         cwd = None
+    if target.scope == "project" and not cwd:
+        _record(OUTCOME_SKIPPED, reason="the project directory did not resolve")
+        return 0
     refresh = [claude, "plugin", "marketplace", "update", target.marketplace]
     if _run(refresh, CLI_TIMEOUT, cwd) is None:
         _record(
