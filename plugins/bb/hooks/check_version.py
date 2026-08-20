@@ -51,7 +51,6 @@ class Target(NamedTuple):
     scope: str  # `user` or `project`
     project_path: str | None  # where a project scoped update has to run
     version: str  # the version this session loaded
-    root: str  # the install path the scope was matched on
 
 
 def plugin_root() -> str | None:
@@ -256,7 +255,6 @@ def resolve() -> Target | None:
         scope=str(record.get("scope")),
         project_path=record.get("projectPath") or None,
         version=str(record.get("version") or version),
-        root=root,
     )
 
 
@@ -342,6 +340,18 @@ def _run(argv: list[str], timeout: int, cwd: str | None = None) -> str | None:
     return done.stdout if done.returncode == 0 else None
 
 
+def _run_or_fail(
+    argv: list[str], timeout: int, reason: str, cwd: str | None = None
+) -> str | None:
+    """The command's stdout, or None with the reason already in the stamp. Every
+    command the worker runs stops the run the same way, so the recording lives
+    here and the caller carries only the reason it knows."""
+    out = _run(argv, timeout, cwd)
+    if out is None:
+        _record(OUTCOME_FAILED, reason=reason)
+    return out
+
+
 def _default_branch(git: str, clone: str) -> str | None:
     """The branch the remote's HEAD points at, asked of the remote itself so a
     clone whose `origin/HEAD` was never written still answers."""
@@ -414,8 +424,7 @@ def main() -> int:
         _record(OUTCOME_FAILED, reason="the remote default branch did not answer")
         return 0
     fetch = [git, "-C", target.clone, "fetch", "--quiet", "origin", branch]
-    if _run(fetch, GIT_TIMEOUT) is None:
-        _record(OUTCOME_FAILED, reason=f"git fetch origin {branch} failed")
+    if _run_or_fail(fetch, GIT_TIMEOUT, f"git fetch origin {branch} failed") is None:
         return 0
 
     remote = _remote_version(git, target.clone)
@@ -432,17 +441,21 @@ def main() -> int:
     # The guard: `claude plugin update` installs the clone's working tree, so a
     # clone that doubles as someone's checkout is left exactly as it is.
     head = [git, "-C", target.clone, "rev-parse", "--abbrev-ref", "HEAD"]
-    checked_out = _run(head, GIT_TIMEOUT)
+    checked_out = _run_or_fail(
+        head, GIT_TIMEOUT, "the clone's checked out branch did not answer"
+    )
     if checked_out is None:
-        _record(OUTCOME_FAILED, reason="the clone's checked out branch did not answer")
         return 0
     checked_out = checked_out.strip()
     if checked_out != branch:
         _record(OUTCOME_SKIPPED, reason=f"the clone is on {checked_out}, not {branch}")
         return 0
-    dirt = _run([git, "-C", target.clone, "status", "--porcelain"], GIT_TIMEOUT)
+    dirt = _run_or_fail(
+        [git, "-C", target.clone, "status", "--porcelain"],
+        GIT_TIMEOUT,
+        "the clone's status did not answer",
+    )
     if dirt is None:
-        _record(OUTCOME_FAILED, reason="the clone's status did not answer")
         return 0
     if dirt.strip():
         _record(OUTCOME_SKIPPED, reason=f"the clone's tree is dirty on {branch}")
@@ -459,16 +472,13 @@ def main() -> int:
         _record(OUTCOME_SKIPPED, reason="the project directory did not resolve")
         return 0
     refresh = [claude, "plugin", "marketplace", "update", target.marketplace]
-    if _run(refresh, CLI_TIMEOUT, cwd) is None:
-        _record(
-            OUTCOME_FAILED,
-            reason=f"claude plugin marketplace update {target.marketplace} failed",
-        )
+    reason = f"claude plugin marketplace update {target.marketplace} failed"
+    if _run_or_fail(refresh, CLI_TIMEOUT, reason, cwd) is None:
         return 0
     plugin = f"{PLUGIN_NAME}@{target.marketplace}"
     install = [claude, "plugin", "update", plugin, "-s", target.scope, "-y"]
-    if _run(install, CLI_TIMEOUT, cwd) is None:
-        _record(OUTCOME_FAILED, reason=f"claude plugin update {plugin} failed")
+    reason = f"claude plugin update {plugin} failed"
+    if _run_or_fail(install, CLI_TIMEOUT, reason, cwd) is None:
         return 0
 
     _record(OUTCOME_INSTALLED, came_from=target.version, to=remote)
