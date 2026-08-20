@@ -236,6 +236,10 @@ Echo the final status in 1 line, e.g.: _"Design review: 2 issues significativos,
           "description": "I suggest /bb:review, the WCAG AA audit of the surface, with a priority matrix"
         },
         {
+          "label": "Deep design review",
+          "description": "I suggest /bb:review, the design front over the surface: tokens, components, states, every finding citing the design source"
+        },
+        {
           "label": "Spec the real implementation",
           "description": "I suggest /bb:spec, which turns the prototype + handoff doc into a build spec"
         },
@@ -251,6 +255,15 @@ Echo the final status in 1 line, e.g.: _"Design review: 2 issues significativos,
 ```
 
 Each option that names a skill **suggests the command and stops**: never auto-invokes. On "Encerrar", set the brief's `status: completed` and `phase: done`, and end.
+
+The question tool holds four options and "Stop here" always keeps its seat, so the
+standing suggestions yield to the prepends below, one step per prepend. With one, the two
+deep-audit options collapse into one, "Deep audit of the surface", whose description
+names both fronts of `/bb:review` (accessibility and design) and lets the builder pick
+there. With two, "Spec the real implementation" moves to the one line of prose above the
+question that the handoff gate keeps for what did not fit, still reachable via "Other".
+With all three at once, the collapsed deep audit moves up with it, and the gate is the
+three prepends plus "Stop here".
 
 If blockers exist (`design_review.blockers > 0` or `wcag_aa_status: fail`), prepend an option "Go back to Develop and fix them" (loads `phase-develop.md` in iteration mode) as the recommended pick.
 
@@ -296,5 +309,5 @@ And a second: **do not turn the review into a redesign.** The strongest failure 
 ### Related skills (suggest, never invoke)
 
 - `/bb:review-setup`: when the target repo doesn't have the code-review workflow
-- `/bb:review`: after a PR is opened, reviews the diff; also the accessibility audit when a11y needs depth
+- `/bb:review`: after a PR is opened, reviews the diff; also the accessibility audit when a11y needs depth, and the design front over the surface when the design review needs an independent pass
 - `/bb:challenge`: when the design review reveals the hypothesis may be wrong (pre-mortem before merging)

@@ -1,15 +1,15 @@
 ---
 name: review
-description: Reviews the change end to end. You pick the fronts, it runs read only agents in parallel, verifies every finding with an independent agent and reports them ranked. Then you choose item by item between fixing and commenting on the PR. Runs at standard depth (cheap); `/bb:review deep` or "review deeply" turns on the whole angle set. It also reviews an external PR by number and posts the review. Use when the user says "review my changes", "review the PR", "review this diff", "are there bugs here", "answer the PR comments", "CI broke", "fix CI", "clean up this code", "simplify the diff", "check it followed the project rules", "review the accessibility of what I changed", "accessibility audit", "WCAG", "a11y", "contrast", "screen reader", or "review PR 42 in repo X". The accessibility front also runs on its own over a surface scope (a folder, files, or a running page), with no diff. Don't use it to open or finish a PR and follow it to the end (use /bb:ship), or to triage every open PR in the repo (use /bb:maintain-repo).
+description: Reviews the change end to end. You pick the fronts, it runs read only agents in parallel, verifies every finding with an independent agent and reports them ranked. Then you choose item by item between fixing and commenting on the PR. Runs at standard depth (cheap); `/bb:review deep` or "review deeply" turns on the whole angle set. It also reviews an external PR by number and posts the review. Use when the user says "review my changes", "review the PR", "review this diff", "are there bugs here", "answer the PR comments", "CI broke", "fix CI", "clean up this code", "simplify the diff", "check it followed the project rules", "review the accessibility of what I changed", "accessibility audit", "WCAG", "a11y", "contrast", "screen reader", "design review", "does this follow the design system", "are the tokens used", "check this against the DS", or "review PR 42 in repo X". The accessibility and design fronts also run on their own over a surface scope (a folder, files, or a running page), with no diff. Don't use it to open or finish a PR and follow it to the end (use /bb:ship), or to triage every open PR in the repo (use /bb:maintain-repo).
 license: Apache-2.0
 metadata:
   author: Athena Briana - github.com/athenabriana; quality-pass material adapted from Claude Code's /simplify, angle/verify architecture adapted from Claude Code's /code-review (Anthropic, Apache-2.0), a11y front absorbed from rafael's ui-accessibility skill (loja inspira-skills, MIT)
-  version: 2.6.1
+  version: 2.7.0
 ---
 
 # Review
 
-One review skill, seven **fronts** of findings. The skill detects which fronts can
+One review skill, eight **fronts** of findings. The skill detects which fronts can
 produce anything on this branch, asks which ones you want, runs them as a parallel
 fan-out of read-only agents, and puts every candidate through an independent
 verifier before it reaches the report. Then the flow is interactive (report → you
@@ -47,12 +47,15 @@ scope is the one path that needs neither a repo nor a diff.
 - **Direct front ask**: the user already named the front ("CI broke", "answer the
   comments", "check it followed the rules"): that front is the scope. Skip step
   2's question and go straight to it.
-- **Accessibility audit**: the user named a **surface** instead of the branch: a
-  folder, a set of files, a URL or a running page ("accessibility audit", "check
-  the accessibility of this folder or page"). The named target is what routes
-  here; an a11y ask with no target is the `a11y` front over the diff, picked at
-  step 2. Run `references/front-a11y.md` in surface scope (no diff, no other
-  fronts, no git repository required), and stop at its own gate.
+- **Surface audit**: the user named a **surface** instead of the branch: a folder,
+  a set of files, a URL or a running page ("accessibility audit", "design review of
+  this page", "does this folder follow the design system"). The named target is
+  what routes here; an ask with no target is the matching front over the diff,
+  picked at step 2. Accessibility asks run `references/front-a11y.md` in surface
+  scope (no diff, no other fronts, no git repository required); design asks run
+  `references/front-design.md` in surface scope (same shape, and it needs a design
+  source to resolve). Both stop at their own gate. An ask naming both runs both,
+  one after the other, each with its own report.
 - **Otherwise**: current branch, all fronts on the table.
 
 Then resolve the **depth**: a separate axis from the fronts and decided here, not by
@@ -120,8 +123,8 @@ carries its front, its verdict, and the columns of **its own front's Finding
 shape**. The row format lives in each `front-*.md` next to the method that
 produces it, so a front that changes its columns doesn't leave a stale template
 here. Group the items by front under the front's label (Correctness, Quality,
-Rules, Contract, Accessibility, Threads, CI) and keep one numbering across the
-whole report.
+Rules, Contract, Accessibility, Design system, Threads, CI) and keep one numbering
+across the whole report.
 
 Close with what didn't make it and what actually ran:
 
@@ -177,8 +180,10 @@ priority order. Unfinished work on this report outranks the next skill:
 
 1. items still open → **"Apply more"** (loops to step 5)
 2. fronts left unrun → **"Run the fronts that were left out"** (loops to step 3)
-3. a11y findings that need a rendered page (runtime colors, real focus order, live
-   regions) → **"Audit the running UI"** (loops to `front-a11y.md`, surface scope)
+3. a11y or design findings that need a rendered page (runtime colors, real focus
+   order, live regions, the value the cascade actually resolved) → **"Audit the
+   running UI"** (loops to `front-a11y.md` or `front-design.md`, surface scope,
+   whichever front reported the reach)
 4. guide drift or missing guide reported → **"Generate or update the guide: I run
    /bb:review-setup"**
 5. no open PR and everything clean/handled → **"Open the PR: I run /bb:ship"** (not
@@ -201,8 +206,9 @@ offered, which needs no row here. What this table covers is everything else:
 | no front available (empty probe)             | say what was probed and why each came back empty, stop                                                                |
 | no open PR (a review with no PR)             | `threads` and the comment-on-PR option not offered; `ci` still runs off the branch's last run; gate offers `/bb:ship` |
 | `gh` unauthenticated                         | `threads`/`ci` unavailable; say so once with `gh auth login` as the remedy, offer the diff fronts                     |
-| a11y finding needs a rendered page           | report it as out of static reach; the gate offers the surface-scope audit                                             |
+| a11y or design finding needs a rendered page | report it as out of static reach; the gate offers the surface-scope audit                                             |
 | accessibility audit asked outside a git repo | surface scope needs no diff and no repo; audit what was pointed at                                                    |
+| design review asked and no design source     | say what would create one (a token file the build reads, or `/bb:brisar`), stop                                       |
 | legacy `.claude/skills/code-review/` present | flag as superseded; the user deletes it                                                                               |
 | uncommitted changes present                  | include in diff scope, flagged separately                                                                             |
 | a finder agent dies                          | its front reports with the angles that returned, and says which angle is missing                                      |
@@ -225,6 +231,7 @@ Per-front method (loaded only when that front is picked):
 - `references/front-rules.md`: `CODE_REVIEW_GUIDE.md` deviations, with the citation discipline.
 - `references/front-contract.md`: the spec's `## Behavior` map as the acceptance contract.
 - `references/front-a11y.md`: WCAG AA: diff scope (static) and surface scope (folder, files or a rendered page).
+- `references/front-design.md`: design-system deviations: the source ladder, both scopes, the citation discipline.
 - `references/front-threads.md`: PR review threads: fetch, triage, fix/answer, reply/resolve.
 - `references/front-ci.md`: CI failures: evidence → diagnosis → fix → verify.
 
@@ -243,7 +250,7 @@ Pipeline agents (plugin root, dispatched by the fan-out):
 - `${CLAUDE_PLUGIN_ROOT}/agents/bb-review-finder.md`: the finder's contract, and the narrowed `tools:` list.
 - `${CLAUDE_PLUGIN_ROOT}/agents/bb-review-verifier.md`: the CONFIRMED / PLAUSIBLE / REFUTED rubric.
 
-- `references/review-checklist.md`, `references/quality-checklist.md`: the correctness and quality criteria the fronts operationalize.
+- `references/review-checklist.md`, `references/quality-checklist.md`, `references/design-checklist.md`: the correctness, quality and design criteria the fronts operationalize.
 
 Scripts (plugin root):
 

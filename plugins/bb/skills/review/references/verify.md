@@ -69,7 +69,7 @@ A candidate the verifier rendered no verdict on (agent died, index omitted) is
 still gets its line in the report (§4): a candidate nobody judged is a different
 thing from one that was judged and refuted, and the reader has to be able to tell.
 
-## The addendum: rules, contract and a11y verify differently
+## The addendum: rules, contract, a11y and design verify differently
 
 These fronts don't turn on a crash, so their verifiers get one extra paragraph in
 the prompt saying what verification means there. It replaces the crash question and
@@ -87,6 +87,13 @@ carries the semantics, a focus style defined in a companion stylesheet all refut
 the finding. A criterion number that doesn't match the criterion's real content is
 REFUTED. Contrast claims are checked by recomputing the ratio from the resolved
 colors.
+
+`design` candidates verify like `rules`, against the design source instead of the
+guide: the verifier opens what the finding cites, the token file and line, the
+component's path, the states it documents, or the section of the branch's
+`design.md`, and checks that the source says what the finding claims and that the
+diff line actually deviates from it. A citation that does not hold up is REFUTED,
+the same discipline that kills hallucinated rules.
 
 ## 3. Sweep (deep runs only)
 
@@ -108,10 +115,12 @@ sweep is a real answer.
 - **Rank**, most severe first:
   1. CONFIRMED correctness bugs, HIGH rule deviations, **Critical** a11y failures
      (something the diff shipped is unusable for someone)
-  2. PLAUSIBLE correctness bugs, missing happy-path contract rows, **Major** a11y
-  3. MEDIUM rule deviations, remaining contract findings, **Minor** a11y
-  4. quality findings and a11y **Enhancement**s (always last: a cleanup never
-     outranks a bug)
+  2. PLAUSIBLE correctness bugs, missing happy-path contract rows, **Major** a11y,
+     **High** design deviations
+  3. MEDIUM rule deviations, remaining contract findings, **Minor** a11y, **Medium**
+     design
+  4. quality findings, a11y **Enhancement**s and **Low** design drift (always last:
+     a cleanup never outranks a bug)
 - **Cap** at the depth's report cap. Cuts come off the bottom, so quality is what
   gets trimmed, never a correctness bug. A front that states **no cap for its own
   scope** wins over a depth cap resolved from a diff. A surface-scope a11y audit
