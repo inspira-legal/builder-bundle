@@ -15,7 +15,7 @@ claude plugin marketplace add inspira-legal/builder-bundle
 claude plugin install bb@inspira-legal
 ```
 
-it ships a `SessionStart` operating-context hook, auto-active on install, which also carries the profile set by `/bb:profile`, and two read-only agents (`bb-review-finder`, `bb-review-verifier`) that review dispatches in parallel: internal pipeline roles, not entry points. skills are invoked as `/bb:<skill>` (e.g. `/bb:discover`, `/bb:spec`, `/bb:ship`). every skill with a natural next step ends at a gate that **suggests** the next trilha, and never auto-invokes.
+it writes its operating context into `~/.claude/BB-INSTRUCTIONS.md`, imported by your `CLAUDE.md` and carrying the profile set by `/bb:profile`, and it ships two read-only agents (`bb-review-finder`, `bb-review-verifier`) that review dispatches in parallel: internal pipeline roles, not entry points. skills are invoked as `/bb:<skill>` (e.g. `/bb:discover`, `/bb:spec`, `/bb:ship`). every skill with a natural next step ends at a gate that **suggests** the next trilha, and never auto-invokes.
 
 ## what is inside
 
@@ -23,9 +23,9 @@ one plugin, `bb`; 15 skills in 6 trilhas, plus `/bb:profile`.
 
 ### configurar: who is on the other side
 
-| skill         | description                                                                                                                                                                                                                                                                                                                                                               |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:profile` | asks four questions once (do you read the code, do you run commands, do you want the technical parts step by step, does technical vocabulary read fine) and writes `~/.claude/bb.config.json`. the hook carries the answers into every session, so no skill asks again. the same question sets `inject_frame`, which silences the hook for whoever wants nothing injected |
+| skill         | description                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:profile` | asks four questions once (are you used to reading code, to the terminal, to technical instructions, to technical vocabulary) and writes `~/.claude/bb.config.json`, then `~/.claude/BB-INSTRUCTIONS.md` with the answers in it, imported by your `CLAUDE.md`, so no skill asks again. the same question sets `custom_instructions`, and `false` deletes both, for whoever wants nothing from bb in their sessions |
 
 ### pensar: frame and decide before building
 

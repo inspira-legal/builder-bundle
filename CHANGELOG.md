@@ -2,18 +2,36 @@
 
 ## 2.15.0 (2026-08-19)
 
-**Injecting the frame is now a choice, made in the same file as the profile.** The
-SessionStart hook opened every session unconditionally. `~/.claude/bb.config.json` now
-carries `inject_frame` beside `profile`, and `/bb:profile` asks for it.
+**bb's context is a file you own, and having it is a choice.** The frame used to arrive
+as something a hook printed into every session, which nobody could read, edit or refuse.
+It is now `~/.claude/BB-INSTRUCTIONS.md`, imported from `~/.claude/CLAUDE.md`, written by
+`/bb:profile` with the profile already in it.
 
 ### Added
 
-- **`inject_frame`**, a top level field beside `profile`. `false` and the hook exits
-  silently, frame and profile together, because the frame names the profile block as the
-  section that closes it. Absent, or holding anything other than `false`, reads as `true`:
-  a file nobody has answered yet still injects. `/bb:profile` asks it as its own
-  two option question, apart from the four about the person, and prints which of the two
-  the next session will do. The contract is in `references/bb-config.md`.
+- **`~/.claude/BB-INSTRUCTIONS.md`**, written by `hooks/sync_instructions.py`: the
+  operating frame plus the four profile sentences, under a header naming the version that
+  wrote it and how to make it stop. `~/.claude/CLAUDE.md` gets the `@BB-INSTRUCTIONS.md`
+  import, three lines fenced by `<!-- bb:start -->` and `<!-- bb:end -->`. Everything
+  outside those markers is the person's, and is never rewritten, line endings included.
+- **`custom_instructions`**, a top level field beside `profile`. `false` and both go away:
+  the file is deleted and the block leaves `CLAUDE.md`, because an opt out that leaves a
+  file behind is not one. Absent, or holding anything other than `false`, reads as `true`.
+  `/bb:profile` asks it as its own two option question, apart from the four about the
+  person. The contract is in `references/bb-config.md`.
+
+### Changed
+
+- **The SessionStart hook stopped being the injector.** `hooks/sync_instructions.py`
+  replaces `inject_operating_context.py`, and what it does on a session is keep the file
+  in step with the installed plugin: the frame lives inside the versioned install path, so
+  without this an update would leave the previous version's text in `~/.claude` for good.
+  It writes only when the rendered text differs from what is on disk.
+- **Nothing is written before it is asked for.** With no config there are no files, so
+  installing the plugin writes nothing into anyone's `~/.claude`. Until the first
+  `/bb:profile`, the hook still carries the frame in the session itself, with one line
+  saying where it will live once it is asked for. What this shape cannot do is clean up at
+  uninstall time, which is why the file's own header says what wrote it.
 
 ### Fixed
 
@@ -41,7 +59,8 @@ went with it, and `.brisar/` is gone: the brief carries the journey.
 - **The hook always injects.** `inject_operating_context.py` composes the frame with the
   profile block when the file exists, and with an invitation naming `/bb:profile` when it
   does not, so a session is never silently uncalibrated. A missing flag reads `false`, and
-  a malformed file reads as no profile.
+  a malformed file reads as no profile. (2.15.0 replaced that script with
+  `hooks/sync_instructions.py`, which writes the file instead of printing into a session.)
 - **An old persona is derived, not re-asked.** A project brisar ran before the profile
   carries `profile.persona_id` in its `.brisar/session.yaml`. When there is no profile, the
   four flags are derived from it once and pre-fill the `/bb:profile` checklist, which the

@@ -4,8 +4,9 @@ A **Claude Code plugin** (`bb`) published through a one-plugin marketplace, the
 unified skill set for Inspira builders. Install via
 `claude plugin marketplace add inspira-legal/builder-bundle` then
 `claude plugin install bb@inspira-legal`. Skills are invoked as `/bb:<skill>`
-(e.g. `/bb:spec`). The plugin ships a `SessionStart` operating-context hook,
-auto-active when the plugin is enabled.
+(e.g. `/bb:spec`). The plugin writes its operating context into
+`~/.claude/BB-INSTRUCTIONS.md` and imports it from `~/.claude/CLAUDE.md`, from the
+first `/bb:profile` on.
 
 ## Structure
 
@@ -17,11 +18,11 @@ plugins/bb/
 │   ├── bb-review-finder.md             # review fan-out: finds candidates, read-only by `tools:`
 │   └── bb-review-verifier.md           # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
 ├── hooks/                             # session infra (auto-active, no skill)
-│   ├── hooks.json                      # SessionStart context injection
+│   ├── hooks.json                      # SessionStart: keep BB-INSTRUCTIONS.md current
 │   ├── enter_worktree.py               # worktree isolation for local autonomous runs
 │   ├── scheduling-decision.md          # /loop vs Desktop task vs Channels decision table
-│   ├── inject_operating_context.py     # SessionStart hook script
-│   └── operating-context.md            # the injected operating frame (edit to tune)
+│   ├── sync_instructions.py            # writes ~/.claude/BB-INSTRUCTIONS.md + the CLAUDE.md import
+│   └── operating-context.md            # the operating frame it writes from (edit to tune)
 ├── references/                        # plugin-level docs (not skill-scoped)
 │   ├── doc-style.md                    # the style rules for every sentence bb writes
 │   ├── handoff-gate.md                 # the one convention for end-of-skill gates (+ AskUserQuestion rationale)

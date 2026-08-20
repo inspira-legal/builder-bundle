@@ -163,7 +163,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
   Scripts run on whatever machine has the plugin installed, so a third-party import is a
   dependency the caller never agreed to install.
 - **Evidence**: the Scripts section of `.claude/CLAUDE.md`; the imports of
-  `plugins/bb/hooks/inject_operating_context.py` and
+  `plugins/bb/hooks/sync_instructions.py` and
   `plugins/bb/skills/spec/scripts/lint_spec.py`.
 - **Do**:
   ```python
@@ -191,7 +191,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
   its failure mode has to be silence and exit 0. Input that is missing, unreadable or malformed
   reads as absent, never as an error the person has to fix first.
 - **Evidence**: the module docstring and `read_config` in
-  `plugins/bb/hooks/inject_operating_context.py`.
+  `plugins/bb/hooks/sync_instructions.py`.
 - **Do**:
   ```python
   try:
@@ -303,7 +303,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
   `a3af73a` fixed the one deviation, `plugins/bb/hooks/hooks.json` calling `python`.
 - **Do**:
   ```json
-  { "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/inject_operating_context.py\"" }
+  { "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/sync_instructions.py\"" }
   ```
 
 ### MEDIUM
@@ -380,15 +380,15 @@ where a red run is the point.
 
 ## Reference files
 
-| Pattern                    | File                                           | Description                                          |
-| -------------------------- | ---------------------------------------------- | ---------------------------------------------------- |
-| The prose rules, whole     | `plugins/bb/references/doc-style.md`           | Every rule bb writes by, stated instead of linked    |
-| Repo structure and naming  | `.claude/CLAUDE.md`                            | Layout, naming, the scripting principle, commits     |
-| A router with many phases  | `plugins/bb/skills/review/SKILL.md`            | Progressive disclosure as BB004 asks for it          |
-| A read-only agent          | `plugins/bb/agents/bb-review-finder.md`        | The `tools:` list CI validates                       |
-| A hook that cannot fail    | `plugins/bb/hooks/inject_operating_context.py` | Missing, unreadable and malformed all read as absent |
-| A script with a CLI        | `plugins/bb/skills/spec/scripts/lint_spec.py`  | Stdlib only, stdout, its own rule codes              |
-| The `.bb/<slug>/` contract | `plugins/bb/references/spec-state.md`          | Folder members, frontmatter, the status lifecycle    |
+| Pattern                    | File                                          | Description                                          |
+| -------------------------- | --------------------------------------------- | ---------------------------------------------------- |
+| The prose rules, whole     | `plugins/bb/references/doc-style.md`          | Every rule bb writes by, stated instead of linked    |
+| Repo structure and naming  | `.claude/CLAUDE.md`                           | Layout, naming, the scripting principle, commits     |
+| A router with many phases  | `plugins/bb/skills/review/SKILL.md`           | Progressive disclosure as BB004 asks for it          |
+| A read-only agent          | `plugins/bb/agents/bb-review-finder.md`       | The `tools:` list CI validates                       |
+| A hook that cannot fail    | `plugins/bb/hooks/sync_instructions.py`       | Missing, unreadable and malformed all read as absent |
+| A script with a CLI        | `plugins/bb/skills/spec/scripts/lint_spec.py` | Stdlib only, stdout, its own rule codes              |
+| The `.bb/<slug>/` contract | `plugins/bb/references/spec-state.md`         | Folder members, frontmatter, the status lifecycle    |
 
 ## Change history
 

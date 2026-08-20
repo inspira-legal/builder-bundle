@@ -41,9 +41,9 @@ the next silently.
 
 1. **Every question via `AskUserQuestion`**: rationale in the plugin-root
    `references/handoff-gate.md`.
-2. **The profile is already in the frame.** The SessionStart hook injects it
-   from `~/.claude/bb.config.json`; brisar never asks who is building. With no
-   profile, run `/bb:profile` once and continue with the answers.
+2. **The profile is already in the session.** `~/.claude/BB-INSTRUCTIONS.md`
+   carries it, written from `~/.claude/bb.config.json`; brisar never asks who is
+   building. With no profile, run `/bb:profile` once and continue with the answers.
 3. **Adapt depth and vocabulary to the profile.** Each phase reads the flag it
    needs: `reads_code` sets how many questions and in what language,
    `technical_vocabulary` decides whether `scaffold`, `embed` and `MCP` appear

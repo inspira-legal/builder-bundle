@@ -3,10 +3,11 @@
 One question, asked once, that every bb skill reads. What the person does is a fact
 about the person, so it is not asked per project and it is not stored per project. The
 same file carries the one setting that is about the plugin instead of the person:
-whether the SessionStart hook injects at all.
+whether bb writes its custom instructions into `~/.claude` at all.
 
-`/bb:profile` is the only writer. The SessionStart hook is the only reader that runs
-unasked; every other reader is a skill reading a flag it needs.
+`/bb:profile` is the only writer of this file, and `hooks/sync_instructions.py` is the
+only writer of the two files this one decides. Every other reader is a skill reading a
+flag it needs.
 
 ## Location
 
@@ -20,7 +21,7 @@ and `json` is stdlib; a hook that must never fail cannot carry a dependency.
 ```json
 {
   "version": 1,
-  "inject_frame": true,
+  "custom_instructions": true,
   "profile": {
     "reads_code": true,
     "uses_terminal": true,
@@ -33,7 +34,7 @@ and `json` is stdlib; a hook that must never fail cannot carry a dependency.
 
 | flag                     | true means                                              |
 | ------------------------ | ------------------------------------------------------- |
-| `reads_code`             | opens and edits the code, wants the reasoning behind it |
+| `reads_code`             | reads and edits the code, wants the reasoning behind it |
 | `uses_terminal`          | runs commands and git without being walked through them |
 | `technical_instructions` | reads a command on one line and knows where to run it   |
 | `technical_vocabulary`   | reads `scaffold`, `branch` and `MCP` without a gloss    |
@@ -41,17 +42,50 @@ and `json` is stdlib; a hook that must never fail cannot carry a dependency.
 `calibrated_at` is an ISO date, written by `/bb:profile` and read by nobody. It is there
 so a person can see how old the answers are.
 
-## `inject_frame`
+## `custom_instructions`
 
-Whether the SessionStart hook prints anything. `true`, the default, and every session
-opens with the operating frame and the profile block. `false`, and the hook exits
-silently: frame and profile together, because the frame names the profile block as the
-section that closes it, and half of it is worth less than either half whole.
+Whether bb keeps its custom instructions in `~/.claude`. `true`, the default, and
+`BB-INSTRUCTIONS.md` holds the operating frame plus the profile block while `CLAUDE.md`
+imports it. `false` and both go away: the import block leaves `CLAUDE.md` and the file is
+deleted. Frame and profile travel together, because the frame names the profile block as
+the section that closes it, and half of it is worth less than either half whole.
 
 It sits beside `profile` rather than inside it because it is not a fact about the person.
-Turning it off costs the one thing this hook exists for, re-establishing the thread after
-a context compaction; what it buys is a session where nothing from bb arrives unasked.
-The four flags stay written either way, and every skill that runs still reads them.
+Turning it off costs what the frame is for, re-establishing the thread after a context
+compaction; what it buys is a session where nothing from bb arrives unasked. The four
+flags stay written either way, and every skill that runs still reads them.
+
+## What gets written, and where
+
+`hooks/sync_instructions.py` owns two files, and `/bb:profile` runs it right after
+writing the config. The SessionStart hook runs it again, which is the whole reason that
+hook still exists: the frame lives inside the versioned install path, so an update would
+otherwise leave the previous version's text sitting in `~/.claude` for good.
+
+| file                           | what is in it                                                                                                                |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `~/.claude/BB-INSTRUCTIONS.md` | the whole file is bb's: `hooks/operating-context.md` plus the profile block, under a header naming the version that wrote it |
+| `~/.claude/CLAUDE.md`          | three lines fenced by `<!-- bb:start -->` and `<!-- bb:end -->`, holding the import `@BB-INSTRUCTIONS.md`                    |
+
+Four rules bound the writing, and together they are what makes it safe to run on every
+session:
+
+- **Only between the markers.** `CLAUDE.md` is a file the person writes by hand.
+  Everything outside the two markers is theirs and is never rewritten, line endings
+  included.
+- **Nothing before consent.** With no config there is nothing to write, so neither file
+  is created on install. Until the first `/bb:profile`, the hook carries the frame in the
+  session itself and says once where it will live.
+- **Written only when it changed.** The rendered text is compared to what is on disk, so
+  a session that changes nothing writes nothing.
+- **The opt out is a removal.** `custom_instructions: false` deletes
+  `BB-INSTRUCTIONS.md` and takes the block out of `CLAUDE.md`, rather than leaving behind
+  a file nobody reads.
+
+What this shape cannot do is clean up after itself: nothing runs at uninstall time, so
+both files stay and keep shaping sessions until someone deletes them. That is why the
+header of `BB-INSTRUCTIONS.md` names what wrote it, which version, and how to make it
+stop.
 
 ## Reading it
 
@@ -64,8 +98,9 @@ Three rules, and they are what keep a hook from ever blocking a session:
 - **A missing flag is `false`.** A file written by an older version stays valid, and the
   safe default is more explanation, not less. All four flags point the same way, so this
   holds on every one of them: absent reads as the person not being used to it yet.
-- **Only an explicit `false` silences the hook.** `inject_frame` absent, or holding
-  anything other than `false`, reads as `true`. A file nobody has answered yet injects.
+- **Only an explicit `false` opts out.** `custom_instructions` absent, or holding
+  anything other than `false`, reads as `true`. A file nobody has answered yet keeps the
+  instructions.
 
 ## What the flags decide
 

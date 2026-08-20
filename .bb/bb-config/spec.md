@@ -4,7 +4,7 @@ created: 2026-08-19
 slug: bb-config
 ---
 
-# one profile, asked once, injected unless you say otherwise
+# one profile, asked once, written where you can read it
 
 `/bb:brisar` opens by asking who is building, and turns the answer into one of four
 personas. The question is good and the place is wrong twice over. It is a fact about
@@ -13,12 +13,12 @@ persona packs four independent things into one id, so every reader downstream as
 `persona == junior?` when what it wants to know is whether to spell out a command.
 
 This replaces the persona with a checklist of what the person actually does, asks it
-once through `/bb:profile`, and writes `~/.claude/bb.config.json`. The SessionStart hook
-reads that file and carries the answers into the operating frame of every session that
-wants one, so a
-skill that never heard of brisar still knows whether to spell out `pnpm install` or
-just print it. When the file is missing, the frame says so and names the skill that
-fixes it.
+once through `/bb:profile`, and writes `~/.claude/bb.config.json`. From that file
+`hooks/sync_instructions.py` writes `~/.claude/BB-INSTRUCTIONS.md` and has
+`~/.claude/CLAUDE.md` import it, so a skill that never heard of brisar still knows whether
+to spell out `pnpm install` or just print it, and the person can open the file that says
+so. Before there is a config nothing is written anywhere: the session hears one line
+naming the skill that fixes it.
 
 Pulling the profile out empties `.brisar/` of the one thing in it that was never about
 the project, which is the moment to finish the job: the session state moves into
@@ -156,14 +156,23 @@ write is the brief itself.
   carries the version (`plugins/cache/inspira-legal/bb/2.13.0`), so anything written
   inside it dies on the next plugin update. JSON because the hook is Python and `json`
   is stdlib; YAML would add a dependency to a hook that must never fail.
-- **The hook injects unless `inject_frame` says not to.** With a profile it injects the
-  behavior the four answers imply; without one it injects a short line naming
-  `/bb:profile`, which the model acts on when a bb skill runs and otherwise leaves alone.
-  `inject_frame: false` silences it entirely, frame and profile together.
-- **What the hook injects is behavior, not the flags.** `reads_code: false` means
-  nothing on its own; the frame carries the sentences it implies.
-- **The config holds the profile plus `inject_frame`, and nothing else.** Anything else
-  in it would be injected in every session. `ds_path` stays out: it is a machine path, read by one
+- **The instructions are a file, not an injection.** `~/.claude/BB-INSTRUCTIONS.md`
+  holds the frame plus the profile, and `~/.claude/CLAUDE.md` imports it with a marked
+  three line block. What arrives in a session is then something the person can open, edit
+  and delete, instead of something only the model ever saw. The cost is that a file can
+  go stale, which is what the SessionStart hook is left doing: it rewrites the file when
+  the installed version renders different text, and nothing else.
+- **Nothing is written before there is a config.** Installing the plugin touches no file
+  in `~/.claude`, because editing the person's `CLAUDE.md` uninvited is not a default
+  anyone opted into. Until the first `/bb:profile` the hook carries the frame in the
+  session itself, one line saying where it will live once it is asked for.
+- **`custom_instructions: false` is a removal.** The file is deleted and the block leaves
+  `CLAUDE.md`, frame and profile together, because the frame names the profile block as
+  the section that closes it. An opt out that leaves a file behind is not one.
+- **What the instructions carry is behavior, not the flags.** `reads_code: false` means
+  nothing on its own; the file carries the sentences it implies.
+- **The config holds the profile plus `custom_instructions`, and nothing else.** Anything
+  else in it would end up in every session. `ds_path` stays out: it is a machine path, read by one
   phase, and it keeps the resolution order it has today (`BRISAR_DS_PATH`, then the
   project file, then the bundled DS).
 - **`/bb:profile` is the only writer**, and it does three things: calibrate on first
@@ -185,8 +194,7 @@ write is the brief itself.
 - **`surfaces[]` moves into `design.md`'s frontmatter**, beside the document that
   describes what was built, instead of into a file that describes nothing else.
 - **An unreadable or malformed config reads as missing.** The hook never blocks a
-  session, the rule `inject_operating_context.py` already follows for its own missing
-  file.
+  session, the rule `sync_instructions.py` follows for its own missing file too.
 - **A missing flag is `false`.** A config written by an older version stays valid, and
   the safe default is more explanation, not less.
 
@@ -194,50 +202,54 @@ write is the brief itself.
 
 Happy path, first time:
 
-1. A session starts with no `~/.claude/bb.config.json`. The frame carries one line: no
-   profile calibrated, `/bb:profile` sets it.
+1. A session starts with no `~/.claude/bb.config.json`. The frame arrives in the session
+   with one line: no profile calibrated, `/bb:profile` sets it. Nothing is written.
 2. The user runs `/bb:profile`. It asks the four-item checklist, shows what it wrote, and
    writes the file.
-3. The next session starts. The hook reads the file and the frame carries the behavior
-   those answers imply.
+3. The next session starts. `~/.claude/CLAUDE.md` imports `~/.claude/BB-INSTRUCTIONS.md`,
+   so the behavior those answers imply is there before the first message.
 4. The user runs `/bb:brisar`. It reads the config, asks nothing about the person, and
    goes straight to the intake, at the depth `reads_code` sets.
 5. Phase 1 confirms the slug. The first write is `.bb/<slug>/brief-design.md`, whose
    frontmatter says which phase is open.
 
-| WHEN                                          | THEN                                                           |
-| --------------------------------------------- | -------------------------------------------------------------- |
-| no config file                                | frame carries the invitation naming `/bb:profile`              |
-| config with a valid profile                   | frame carries the behavior the four answers imply              |
-| config unreadable or malformed                | treated as missing; the session is never blocked               |
-| a profile flag absent from the file           | reads as `false`                                               |
-| `inject_frame` is false                       | the hook prints nothing; skills still read the four flags      |
-| `inject_frame` absent from the file           | reads as `true`; an unanswered file injects                    |
-| `/bb:profile` with no file                    | calibrates, writes the file, prints what it wrote              |
-| `/bb:profile` with a file                     | shows the current profile, offers recalibrate or keep          |
-| brisar with a config                          | no profile question; each phase reads the flag it needs        |
-| brisar with no config                         | calls the `/bb:profile` calibration, then continues            |
-| `technical_instructions` false at a handoff   | commands print as numbered steps with what they print          |
-| `technical_vocabulary` is false in any phase  | `scaffold`, `embed`, `MCP`, `branch` are replaced, not glossed |
-| the plugin updates to a new version           | the config survives; it lives outside the install path         |
-| intake runs before the slug is confirmed      | nothing is written to disk yet                                 |
-| a project has `.brisar/` and no brief         | read it once for the phase, then write only the brief          |
-| a project has both                            | the brief's frontmatter is the one read                        |
-| `.brisar/session.yaml` carries an old persona | derived into the four flags once, written to the config        |
-| a completed session restarts                  | the brief gains round `N+1`; earlier rounds stay readable      |
-| `~/.claude/` cannot be written                | `/bb:profile` says so and the session runs uncalibrated        |
-| the config changes while a session is open    | it applies from the next session; `/bb:profile` says so        |
-| a front is skipped or a direction discarded   | it lands in the brief's `## Left out` with its reason          |
-| Develop finishes a surface                    | it lands in `design.md`'s frontmatter, not in a state file     |
+| WHEN                                          | THEN                                                                 |
+| --------------------------------------------- | -------------------------------------------------------------------- |
+| no config file                                | the invitation names `/bb:profile`; nothing is written               |
+| config with a valid profile                   | `BB-INSTRUCTIONS.md` carries the behavior the answers imply          |
+| config unreadable or malformed                | treated as missing; the session is never blocked                     |
+| a profile flag absent from the file           | reads as `false`                                                     |
+| `custom_instructions` is false                | file deleted, block removed; skills still read the four flags        |
+| `custom_instructions` absent from the file    | reads as `true`; an unanswered file keeps the instructions           |
+| `/bb:profile` with no file                    | calibrates, writes the file, prints what it wrote                    |
+| `/bb:profile` with a file                     | shows the current profile, offers recalibrate or keep                |
+| brisar with a config                          | no profile question; each phase reads the flag it needs              |
+| brisar with no config                         | calls the `/bb:profile` calibration, then continues                  |
+| `technical_instructions` false at a handoff   | commands print as numbered steps with what they print                |
+| `technical_vocabulary` is false in any phase  | `scaffold`, `embed`, `MCP`, `branch` are replaced, not glossed       |
+| the plugin updates to a new version           | the config survives; the next session rewrites the instructions      |
+| intake runs before the slug is confirmed      | nothing is written to disk yet                                       |
+| a project has `.brisar/` and no brief         | read it once for the phase, then write only the brief                |
+| a project has both                            | the brief's frontmatter is the one read                              |
+| `.brisar/session.yaml` carries an old persona | derived into the four flags once, written to the config              |
+| a completed session restarts                  | the brief gains round `N+1`; earlier rounds stay readable            |
+| `~/.claude/` cannot be written                | `/bb:profile` says so and the session runs uncalibrated              |
+| the config changes while a session is open    | it applies from the next session; `/bb:profile` says so              |
+| a front is skipped or a direction discarded   | it lands in the brief's `## Left out` with its reason                |
+| Develop finishes a surface                    | it lands in `design.md`'s frontmatter, not in a state file           |
+| `CLAUDE.md` already carries the import        | the marked block is replaced in place, the rest untouched            |
+| the plugin is uninstalled                     | both files stay; the header names what wrote them and how to stop it |
 
 ## Tasks
 
 - [x] **1. The config contract**: `references/bb-config.md` with the location, the JSON
       schema, the four flags, missing-reads-as-false and unreadable-reads-as-missing
       → behaviors 1, 3, 4, 11 · dep: — · verify: reading
-- [x] **2. Hook reads and injects**: `inject_operating_context.py` composes the frame
-      with the behavior block or the invitation; `operating-context.md` grows the slot
-      → behaviors 1, 2, 3 · dep: 1 · verify: running the hook on both shapes
+- [x] **2. The writer**: `sync_instructions.py` renders `BB-INSTRUCTIONS.md` from
+      `operating-context.md` plus the profile block, keeps the marked import in
+      `CLAUDE.md`, removes both on the opt out, and injects the frame plus the invitation
+      while there is no config
+      → behaviors 1, 2, 3, 23, 24 · dep: 1 · verify: running it on every shape
 - [x] **3. The `/bb:profile` skill**: `skills/profile/SKILL.md`, calibrate, show,
       recalibrate, with its scope stated in the first line
       → behaviors 5, 6, 17, 18 · dep: 1 · verify: CI `validate-frontmatter`
