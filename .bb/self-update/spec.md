@@ -97,7 +97,8 @@ not somewhere it can return to. Keeping `main` green is the gate this feature le
   `known_marketplaces.json`, and the scope from the `installed_plugins.json` entry whose
   `installPath` matches `CLAUDE_PLUGIN_ROOT`.
 - **Only bb is updated**, at the scope it is installed at, with `-y` for the absent TTY.
-- **The stamp is the only channel**, holding `date`, `outcome`, `from`, `to`, and `reason`.
+- **The stamp is the only channel**, holding `date`, `outcome`, `from`, `to`, `reason`,
+  and `reported`.
 - **Every failure stays silent.** The hook's existing contract, exit 0 and print nothing,
   covers the new path too.
 
@@ -107,7 +108,7 @@ Happy path:
 
 1. SessionStart: `sync_instructions.py` calls `check_version.report()`, which reads the stamp.
 2. The stamp records an install from the last run, so its line joins the JSON payload's
-   `additionalContext`.
+   `additionalContext`, and the stamp is marked so the line is handed over once.
 3. The stamp's date is not today, so the hook writes today into it and spawns the detached
    worker, then returns.
 4. The worker resolves the marketplace name, the clone path, and the install scope.
@@ -120,7 +121,7 @@ Happy path:
 
 | #   | when                                              | then                                                            |
 | --- | ------------------------------------------------- | --------------------------------------------------------------- |
-| 8   | the stamp's date is today                         | no worker, no network, no output                                |
+| 8   | the stamp's date is today                         | no worker and no network, and no line once it was announced     |
 | 9   | two sessions start at the same moment             | the claimed date leaves only the first spawning a worker        |
 | 10  | the clone is not on the remote default branch     | nothing installs; the branch name goes to `reason`              |
 | 11  | the clone's tree is dirty                         | nothing installs; `reason` says so                              |

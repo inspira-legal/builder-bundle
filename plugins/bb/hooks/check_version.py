@@ -127,10 +127,12 @@ def read_stamp(path: str | None) -> dict:
 
 def write_stamp(path: str | None, **fields: str) -> bool:
     """The stamp, replaced whole with `date` plus whatever the caller records.
-    Returns whether it landed, so the worker can stop when it cannot claim."""
+    `date` defaults to today, and a caller that is rewriting the stamp without
+    claiming the day passes the stamp's own date back in to keep it. Returns
+    whether it landed, so the worker can stop when it cannot claim."""
     if not path:
         return False
-    stamp = {"date": today()}
+    stamp = {"date": fields.pop("date", "") or today()}
     stamp.update({key: value for key, value in fields.items() if value})
     # Through a temp file in the same directory. A worker killed mid write would
     # otherwise leave truncated JSON, which reads as a first run and drops the
@@ -145,6 +147,26 @@ def write_stamp(path: str | None, **fields: str) -> bool:
     except OSError:
         return False
     return True
+
+
+def _carried(stamp: dict) -> dict:
+    """The fields a rewrite keeps: what the last run did, and whether its line
+    was already handed to a session."""
+    return {
+        key: str(stamp.get(key) or "")
+        for key in ("outcome", "from", "to", "reason", "reported")
+        if stamp.get(key)
+    }
+
+
+def _mark_reported(path: str | None, stamp: dict) -> None:
+    """The install line, marked as handed over. The stamp's own date goes back
+    in, because announcing is not claiming the day."""
+    write_stamp(
+        path,
+        date=str(stamp.get("date") or ""),
+        **dict(_carried(stamp), reported="yes"),
+    )
 
 
 def today() -> str:
@@ -163,12 +185,7 @@ def claim_today(path: str | None) -> bool:
     stamp = read_stamp(path)
     if not due(stamp):
         return False
-    fields = {
-        key: str(stamp.get(key) or "")
-        for key in ("outcome", "from", "to", "reason")
-        if stamp.get(key)
-    }
-    return write_stamp(path, **fields)
+    return write_stamp(path, **_carried(stamp))
 
 
 def resolve() -> Target | None:
@@ -219,26 +236,30 @@ def resolve() -> Target | None:
 def report() -> str | None:
     """The line for the session context, or None when there is nothing to say.
 
-    Only an install speaks. A first run, a day that installed nothing, and a run
-    that failed all return None, which is the silence the feature promises.
+    Only an install speaks, and it speaks once. Handing the line over marks the
+    stamp, so the sessions that follow the announcement are silent again. A first
+    run, a day that installed nothing, and a run that failed all return None,
+    which is the silence the feature promises.
     """
-    stamp = read_stamp(stamp_path())
-    if stamp.get("outcome") != OUTCOME_INSTALLED:
+    path = stamp_path()
+    stamp = read_stamp(path)
+    if stamp.get("outcome") != OUTCOME_INSTALLED or stamp.get("reported"):
         return None
     to = str(stamp.get("to") or "")
     if not to:
         return None
     came_from = str(stamp.get("from") or "")
     origin = f" from {came_from}" if came_from else ""
-    if version_of(plugin_root()) == to:
+    running = version_of(plugin_root())
+    _mark_reported(path, stamp)
+    if running == to:
         return (
             f"- **bb updated itself to {to}**{origin}, and this session is running it. "
             f"The CHANGELOG entry for {to} is what changed."
         )
     return (
         f"- **bb {to} is installed**{origin}, and this session is still running "
-        f"{version_of(plugin_root()) or 'the version it loaded'}. The new one loads on "
-        "the next start."
+        f"{running or 'the version it loaded'}. The new one loads on the next start."
     )
 
 
