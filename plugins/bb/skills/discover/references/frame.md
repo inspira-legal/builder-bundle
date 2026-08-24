@@ -52,8 +52,11 @@ If <change>, the <success signal> moves, because <mechanism>.  [confidence: low]
 ```
 
 The `baseline:` and `target:` bullets each carry their value's provenance as a
-parenthesized note on the same bullet: a query, a log, or a named person's
-estimate marked as such. When nothing measures the signal yet,
+parenthesized note on the same bullet, in the shape the spec's `## Metric` uses:
+the rule's owner is
+`${CLAUDE_PLUGIN_ROOT}/skills/spec/references/spec-format.md` (spec's reference),
+and keeping one shape is what lets `/bb:spec` seed its bullets from these. When
+nothing measures the signal yet,
 `baseline: skipped: not-instrumented` is a valid baseline: it invents no number,
 and it flags the instrumentation as work for the spec's tasks.
 

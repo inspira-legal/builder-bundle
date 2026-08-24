@@ -73,8 +73,9 @@ forms, and an honest skip always beats an invented number.
 
 The `Baseline:` and `Target:` bullets each carry their value's provenance as a
 parenthesized note on the same bullet: a query, a log, or a named person's estimate
-marked as such. The note is the shape the lint checks; whether it names a real source is
-the gate's judgment. A value nothing measures yet is its own honest skip, `skipped:
+marked as such. This paragraph owns that shape (discover's frame capture cites it for
+its own `baseline:`/`target:` bullets). The note is the shape the lint checks; whether
+it names a real source is the gate's judgment. A value nothing measures yet is its own honest skip, `skipped:
 <reason>` in place of the value (`- Baseline: skipped: not-instrumented`, the form
 discover blesses): no provenance note, and the target and the events table stay while
 the skip flags the instrumentation as the first work. Internal work names an
