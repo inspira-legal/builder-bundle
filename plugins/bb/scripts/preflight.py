@@ -30,10 +30,40 @@ from scan_specs import scan  # noqa: E402
 
 MAX_UI_EXAMPLES = 8
 
+# The elements an accessibility review is actually about. Used to tell a tag from a
+# prose placeholder: `<merge_base>` and `<div>` are the same shape, and a repo of
+# documentation is full of the first kind, so a bare name only counts when it is one
+# of these. A tag carrying an attribute, a slash or a capital needs no list.
+A11Y_ELEMENTS = (
+    "a|abbr|article|aside|audio|button|canvas|dialog|details|summary|div|fieldset|"
+    "figure|figcaption|footer|form|h[1-6]|header|iframe|img|input|label|legend|li|"
+    "main|nav|ol|optgroup|option|p|picture|progress|section|select|span|svg|table|"
+    "tbody|td|textarea|tfoot|th|thead|tr|ul|video"
+)
+
 # What makes a hunk a UI change is what the hunk contains, never the file's extension:
 # a `.tsx` whose diff only moves handler bodies leaves the markup as it was.
 UI_MARKERS = (
-    ("markup", re.compile(r"<[A-Za-z][\w.-]*[\s/>]|createElement|innerHTML|dangerouslySetInnerHTML")),
+    (
+        "markup",
+        re.compile(
+            r"</[A-Za-z]"  # a closing tag
+            r"|<[A-Za-z][\w.-]*(?:\s+[\w:@.-]+\s*=|\s*/>)"  # an attribute, or self-closing
+            r"|<[A-Z][\w.]*[\s/>]"  # a JSX component
+            rf"|<(?:{A11Y_ELEMENTS})[\s/>]"  # a semantic element, written bare
+            r"|createElement|innerHTML|dangerouslySetInnerHTML"
+        ),
+    ),
+    (
+        # Server-side and non-JSX templates: the markup is HTML but the interpolation
+        # is what identifies the file as a rendered surface. `${{ }}` is excluded
+        # because that is a GitHub Actions expression, not a template.
+        "template",
+        re.compile(
+            r"(?<!\$)\{\{[^}]*\}\}|\{%[^%]*%\}|<%=?|\{#(?:if|each|await)\b|"
+            r"\bv-html\b|\bv-if\b|\*ngIf\b|th:(?:text|if)\b|@html\b"
+        ),
+    ),
     ("semantics", re.compile(r"\brole=|\baria-[\w-]+|\balt=|\blabel=|\btabIndex|\bautoFocus|\.focus\(")),
     ("interaction", re.compile(r"\bon(?:Click|KeyDown|KeyUp|KeyPress|Focus|Blur|Pointer\w+)\b")),
     ("style", re.compile(r"\boutline\s*:|:focus|\bcolor\s*:|\bbackground(?:-color)?\s*:|display\s*:\s*none")),
@@ -77,6 +107,23 @@ def probe_pr(cwd: str) -> dict | None:
     )
 
 
+# The buckets this names one by one. Anything `gh` starts emitting outside the set lands
+# in `other` rather than nowhere: a check the reader never sees is worse than one it
+# cannot classify.
+NAMED_BUCKETS = ("fail", "pending", "cancel", "pass", "skipping")
+
+# Every key the available shape carries, so the unavailable one can carry them too.
+EMPTY_CHECKS = {
+    "total": 0,
+    "failing": [],
+    "pending": [],
+    "cancelled": [],
+    "passing": 0,
+    "skipping": 0,
+    "other": {},
+}
+
+
 def probe_checks(cwd: str, number: int) -> dict | None:
     """Bucket the PR's checks. `gh pr checks` exits non-zero while any check is red."""
     code, out = run(
@@ -84,7 +131,10 @@ def probe_checks(cwd: str, number: int) -> dict | None:
     )
     rows = load_json(out)
     if rows is None:
-        return {"available": False, "exit_code": code}
+        # Same keys as the available shape. A reader that goes straight for `failing`
+        # gets an empty list instead of nothing at all, and `available` is still the
+        # one field that says whether any of it was measured.
+        return {"available": False, "exit_code": code, **EMPTY_CHECKS}
 
     buckets: dict[str, list[dict]] = {}
     for row in rows:
@@ -97,13 +147,23 @@ def probe_checks(cwd: str, number: int) -> dict | None:
         "total": len(rows),
         "failing": buckets.get("fail", []),
         "pending": buckets.get("pending", []),
+        # A cancelled check is not a pass and not a failure. It is named because a PR
+        # whose one gate was cancelled reads as "nothing failing" otherwise.
+        "cancelled": buckets.get("cancel", []),
         "passing": len(buckets.get("pass", [])),
         "skipping": len(buckets.get("skipping", [])),
+        "other": {
+            name: rows_ for name, rows_ in buckets.items() if name not in NAMED_BUCKETS
+        },
     }
 
 
 def probe_ui(cwd: str, diff_range: str) -> dict:
-    diff = run_ok(["git", "diff", diff_range, "-U0"], cwd=cwd) or ""
+    # `.bb/` is bb's own bookkeeping, and a spec is prose about a UI, never the UI. Left
+    # in, a spec that quotes markup offers the a11y front over a diff that has none.
+    diff = (
+        run_ok(["git", "diff", diff_range, "-U0", "--", ".", ":(exclude).bb/"], cwd=cwd) or ""
+    )
     hits: dict[str, list[str]] = {}
     current = "?"
     for line in diff.splitlines():
@@ -169,7 +229,10 @@ def main() -> None:
     diff_range = f"{merge_base}...HEAD" if merge_base else None
 
     pr = probe_pr(cwd) if gh_ok else None
-    specs = scan(cwd)
+    # `scan` walks up from where it is pointed, and the contract is the nearest ancestor
+    # of the cwd, not of the git root: a monorepo package with its own `.bb/` is the one
+    # the run is standing in. Every git call above is rooted, which is a different question.
+    specs = scan(repo)
     branch = run_ok(["git", "branch", "--show-current"], cwd=cwd)
 
     result = {
