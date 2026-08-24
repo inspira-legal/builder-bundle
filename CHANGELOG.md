@@ -1,5 +1,68 @@
 # Changelog
 
+## 2.18.0 (2026-08-20)
+
+**bb keeps itself current.** An install stayed on the version it arrived at. Claude Code
+has no notice for an outdated plugin, and a marketplace clone is refetched only when
+someone runs `claude plugin marketplace update` by hand, so an install from July still
+served July's skills. With 16 skills that change by PR every week, that is people running
+a bb the CHANGELOG no longer describes.
+
+The `SessionStart` hook now does the update, silently: nothing appears on screen, nothing
+is said to the model, nothing is asked, and there is no flag that turns it off. The effect
+lands on the next session either way, because a session has already loaded its plugins by
+the time a hook runs, so the running session keeps the version it loaded and the new one
+opens the next one.
+
+### Added
+
+- **`plugins/bb/hooks/check_version.py`**, both halves of the update in one file.
+  `claim_today()` runs in process on the session start: it reads the stamp and takes the day
+  when the day is still owed, which is one file read on the common path. The `__main__` path
+  is the detached worker, spawned with `sys.executable` because `python3` is not on every
+  PATH a child inherits, and it does the slow half: the guard on the marketplace clone, then
+  the two commands a person would run,
+  `claude plugin marketplace update MARKETPLACE` and
+  `claude plugin update bb@MARKETPLACE -s SCOPE -y`. It calls the CLI instead of writing
+  into the cache and rewriting `installed_plugins.json`, which would be a hook
+  reimplementing the installer that owns those files.
+- **The stamp, `update-stamp.json`, holds the claimed day and the last outcome.** Its fields
+  are `date`, `outcome` and `reason`, and it sits under `CLAUDE_PLUGIN_DATA`, falling back to
+  `~/.claude/plugins/data/bb-MARKETPLACE`, because the install path carries the version and
+  is replaced on every update. Nothing reads it back into a session: it is there for whoever
+  is diagnosing a quiet install, which is why a finished run records `ran` and not
+  `installed`: without a version compare the worker knows both commands exited 0 and nothing
+  more. The session start pays one file read: no network, no
+  install, and no wait. **The day is claimed with an exclusive file create**, so
+  two sessions starting at the same moment leave only the first one spawning a worker, and a
+  run that fails records the reason and leaves tomorrow as the retry.
+- **The guard on a clone that is a working tree.** `claude plugin update` installs what
+  the marketplace clone holds in its working tree, not what the default branch holds, so
+  the worker installs only when the clone sits on the remote default branch with a clean
+  tree. Any other state writes the branch name or the dirt into `reason` and installs
+  nothing. Checking the branch out is never an option, because the clone is someone's
+  checkout.
+- **Never a downgrade, and no compare of bb's own.** `claude plugin update` is forward only
+  and does the comparison itself, on the `version` in
+  `plugins/bb/.claude-plugin/plugin.json`, so the worker runs it on the day it owns instead
+  of fetching that file first. The bump is still the release: a commit that lands on `main`
+  without one reaches nobody, and with a daily check and no opt out, keeping `main` green is
+  the gate this leans on.
+
+### Changed
+
+- **`hooks/sync_instructions.py` carries the update on every path it has.**
+  `spawn_update()` claims the day through `check_version.py` and spawns the worker; `emit()`
+  is now the single print, so the paths that do speak merge into one JSON document. The
+  child gets the null device on all three streams, plus
+  `DETACHED_PROCESS | CREATE_NO_WINDOW` on Windows and `start_new_session` elsewhere: the
+  hook's stdout is the payload the runner parses, and a child that inherits it corrupts
+  the session start.
+- **The update sits outside the instructions opt out.** `custom_instructions: false`
+  governs `~/.claude/BUILDER-BUNDLE.md` and the `CLAUDE.md` import, which is all it ever
+  governed; the version bb runs is not an instruction. Every failure in the new path stays
+  silent, which is the hook's existing contract: exit 0 and print nothing.
+
 ## 2.17.0 (2026-08-20)
 
 **One skill, one document.** `/bb:discover` used to seed `## Problem` / `## Hypothesis` /
