@@ -19,19 +19,20 @@ Two rungs, resolved by the probe (`fronts.md`) before the front offers itself. K
 every rung that resolves; they answer different questions:
 
 1. **The branch spec's events table**: the `## Metric` section of the branch's
-   `.bb/<slug>/spec.md`, when it carries one. This rung is the **plan**: which
-   events exist, which behavior rows each instruments, the payload fields, and the
-   channel.
+   `.bb/<slug>/spec.md`, when it carries the table or an explicit `Events: none`
+   line. This rung is the **plan**: which events exist, which behavior rows each
+   instruments, the payload fields, and the channel. `Events: none` is a plan that
+   plans zero events, not an absent one: every emit the diff adds is then the
+   reverse finding, citing that line.
 2. **The analytics convention the project itself shows in source**: a typed event
    map, an emit wrapper, a generated client, whatever the code the diff touches
    already routes events through. This rung is the **convention**: how an event is
    named, what shape it takes, where it flows. bb names no analytics product; the
    convention is detected in the project's own source, never assumed.
 
-Neither rung resolving makes the front **unavailable**, never a degraded run, and
-this absence the report explains: one line naming the remedy, write the events
-table in the spec's `## Metric`, or point the review at the project's emit wrapper.
-The decision itself lives in the probe (`fronts.md`).
+Neither rung resolving makes the front **unavailable**, never a degraded run. The
+decision, and the remedy line the report owes when it fires, live in the probe
+(`fronts.md`).
 
 Report at the top of the front's section which rungs resolved and were judged
 against. The rungs disagreeing is itself a finding: a planned event the project's
@@ -70,27 +71,24 @@ to read.
 convention's file and line, or the payload rule's paragraph. Priorities are
 **High** (a payload or channel finding, the data duty the mandate protects),
 **Medium** (a planned event missing, or emitted off-plan), and **Low** (a name off
-the convention that routing survives). The report ranks them the way it ranks
-design's (`verify.md`, §4): High at tier 2, Medium at tier 3, Low at tier 4. Cap 8.
+the convention that routing survives). The report ranks the three per `verify.md`
+§4, which names them in its tiers. Cap 8.
 
 ## Scope discipline
 
 - Only interactions and emit sites the diff added or changed. A surface that was
   already uninstrumented before this branch is not this branch's finding: one line
   at the end as existing debt.
-- An added interaction no events table plans for (rung 1 absent) is not a coverage
-  finding; with no plan there is nothing to cite. One closing line names it as a
-  gap for the spec's events table.
+- An added interaction no plan covers (rung 1 absent, which `Events: none` is not)
+  is not a coverage finding; with no plan there is nothing to cite. One closing
+  line names it as a gap for the spec's events table.
 - When the repo's `CODE_REVIEW_GUIDE.md` itself states an analytics rule, a
   violation of it is a `rules` finding with the guide cited, not a duplicate here.
   This front judges against the ladder's sources.
 
-## Verify addendum
+## Verify
 
-`instrumentation` candidates verify like `rules`, against the cited source instead
-of the guide (`verify.md`, "The addendum"): the verifier opens what the finding
-cites, the events table row, the convention's source, or the payload rule's
-paragraph, and checks that the source says what the finding claims and that the
-diff line actually deviates from it. A citation that does not hold up is REFUTED,
-the same discipline that kills hallucinated rules. This paragraph is what the
-fan-out appends to the verifier's prompt for this front's candidates.
+`instrumentation` candidates verify against the cited source, not a crash. The
+addendum the fan-out appends to the verifier's prompt lives in `verify.md` ("The
+addendum"), beside the other fronts', so both callers of the engine judge from the
+one copy.

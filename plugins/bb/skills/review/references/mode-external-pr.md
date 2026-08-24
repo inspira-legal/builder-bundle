@@ -19,15 +19,18 @@ pushes**. The output is a review, optionally posted.
 
 Fronts available here: `correctness`, `quality`, `rules` (only when the target repo
 publishes a `CODE_REVIEW_GUIDE.md`, fetched above), `a11y` when the PR touches UI
-files, and `design` when the PR touches UI files and a design source resolves in the
-fetched repo (`front-design.md`'s ladder, read through the same contents API): those
-two are static, so the fetched source is enough. `contract`, `threads`, and `ci`
+files, `design` when the PR touches UI files and a design source resolves in the
+fetched repo (`front-design.md`'s ladder, read through the same contents API), and
+`instrumentation` when the PR wires analytics and the project's convention resolves
+in the fetched repo (rung 2 of `front-instrumentation.md`'s ladder, same API; rung 1
+doesn't apply, there's no local spec): those three are static, so the fetched source
+is enough. `contract`, `threads`, and `ci`
 don't apply, there's no local spec, the threads aren't yours to resolve, and the CI
 isn't yours to fix. Ask which of the available fronts to run, same as local mode.
 
 Run the picked fronts and the verify pass exactly as documented
 (`front-correctness.md`, `front-quality.md`, `front-rules.md`, `front-a11y.md`,
-`front-design.md`, `verify.md`), with
+`front-design.md`, `front-instrumentation.md`, `verify.md`), with
 one caveat: "open the file" here means fetching contents via
 `gh api repos/<owner>/<repo>/contents/<path>?ref=<headRefName>` for hunks that
 need surrounding context, and finder agents get that command in their scope block.
