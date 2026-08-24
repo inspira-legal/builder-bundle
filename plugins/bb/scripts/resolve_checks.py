@@ -8,9 +8,15 @@ it hands to workflows/build-tasks.js) and by /bb:ship (its Step 2).
 The chain used to be prose in three places, so a change to it had to land three
 times. This script is the resolution; the callers run what it returns.
 
-A top authority can also forbid running checks locally. That comes back as
-`runnable: false` with the line that says so, so a caller neither tries the command
-nor reads the refusal as a tree that was already red.
+Only the repo's own documents define the repo's checks. The machine-level
+`~/.claude/CLAUDE.md` is read for one thing: it can forbid running anything locally.
+Its commands belong to whatever project its author had in mind, so they never enter
+the list.
+
+A prohibition comes back as `runnable: false` with `policy.evidence`, the line that
+says so, and `policy.scope`, which of the two said it. A caller then neither tries
+the command nor reads the refusal as a tree that was already red, and can name the
+right source when it explains why nothing ran.
 
 Usage:
   python3 resolve_checks.py
@@ -32,18 +38,29 @@ CHECK_WORDS = re.compile(
     re.IGNORECASE,
 )
 
+# What a prohibition can be about. Wider than CHECK_WORDS because a line forbidding
+# the checks names them the way prose does ("never run the suite locally"), and
+# "suite" is not a word any check list is built from.
+CHECK_SUBJECTS = re.compile(
+    CHECK_WORDS.pattern + r"|su[ií]te|suite|e2e|coverage|spec[s]?\b",
+    re.IGNORECASE,
+)
+
 # A backticked span or a CI `run:` line is only a command when it starts with one of
 # these. It is what keeps `gh pr checks --watch` out of a check list: the authority
 # tiers are read as text, and a repo's docs mention plenty of commands that are not
-# the project's checks.
+# the project's checks. A `./`-prefixed head counts too, which is how the repo-local
+# wrappers (`./gradlew`, `./mvnw`, `./scripts/check.sh`) get in without being listed.
 RUNNERS = {
-    "npm", "pnpm", "yarn", "bun", "bunx", "npx", "deno",
-    "just", "make", "task", "rake", "bundle",
+    "npm", "pnpm", "yarn", "bun", "bunx", "npx", "deno", "node", "tsx", "vitest", "jest",
+    "just", "make", "task", "rake", "bundle", "cmake", "ctest", "meson", "ninja",
     "python", "python3", "uv", "poetry", "pdm", "hatch", "tox", "nox",
-    "pytest", "mypy", "ruff", "black", "isort", "flake8",
-    "cargo", "go", "dotnet", "mvn", "gradle", "swift", "mix",
+    "pytest", "mypy", "ruff", "black", "isort", "flake8", "pyright",
+    "cargo", "go", "dotnet", "mvn", "gradle", "gradlew", "swift", "mix", "zig",
     "tsc", "eslint", "prettier", "oxfmt", "oxlint", "biome",
-    "composer", "php", "bazel", "pre-commit",
+    "composer", "php", "phpunit", "bazel", "pre-commit", "rspec", "sbt", "lein", "stack",
+    "bash", "sh", "zsh", "docker", "docker-compose", "podman", "mise", "nix", "devbox",
+    "dart", "flutter", "elixir", "ruby", "cabal", "clang-format", "shellcheck",
 }
 
 # The verbs that turn a mention of the checks into a prohibition on running them.
@@ -52,6 +69,33 @@ FORBID = re.compile(
     r"never\s+run|do\s+not\s+run|don'?t\s+run|no\s+local\s+(?:checks|tests|builds)",
     re.IGNORECASE,
 )
+
+# A watcher never terminates, and a caller told to run every command once waits on it
+# forever. Matched against the whole command, flags included, because `--watch` is
+# where the hang lives.
+DENY_ANYWHERE = re.compile(r"\bwatch\b|\bserve\b|--ui\b", re.IGNORECASE)
+
+# What a check is not, matched against the command with its flags stripped: a dev
+# server, a publish, a deploy. Flags are stripped first so `cargo test --release`
+# stays a check while `pnpm run build:release` does not.
+DENY_NAMED = re.compile(
+    r"\bdev\b|\bstart\b|\bpublish\b|\brelease\b|\bdeploy\b|\bpreview\b|\bbump\b",
+    re.IGNORECASE,
+)
+
+# A formatter in write mode rewrites the tree instead of reporting on it. Its
+# `--check` sibling is the check; this one is an edit, and running it to establish a
+# baseline dirties every file it touches.
+WRITE_MODE = re.compile(r"--write\b|--fix\b|--fix-only\b|--in-place\b", re.IGNORECASE)
+
+# A CI line lifted out of its step loses the shell that defined these, so it cannot
+# run on its own: an array built two lines above, a command substitution, a GitHub
+# expression the runner would have interpolated.
+UNRESOLVED = re.compile(r"\$\{|\$\(|`")
+
+# Only a workflow that gates a change is a source of this project's checks. A release
+# or a publish workflow runs on a tag and its commands are not checks.
+CI_GATE_TRIGGERS = ("pull_request", "push", "merge_group", "pull_request_target")
 
 MAX_COMMANDS = 12
 
@@ -72,7 +116,50 @@ def looks_like_command(text: str) -> bool:
     text = text.strip()
     if not text or "\n" in text or len(text) > 120:
         return False
-    return text.split()[0] in RUNNERS
+    head = text.split()[0]
+    return head in RUNNERS or head.startswith("./")
+
+
+def read_package_scripts(root: Path) -> dict:
+    package = root / "package.json"
+    if not package.is_file():
+        return {}
+    try:
+        return json.loads(read_text(package)).get("scripts") or {}
+    except (ValueError, AttributeError):
+        return {}
+
+
+def script_body(text: str, scripts: dict) -> str | None:
+    """The package.json body behind a `<manager> run <name>`, when there is one.
+
+    A command naming a script says nothing about what the script does. `bun run fmt`
+    reads as a check and rewrites the tree; the body is where that shows, and the
+    body is available in every tier once package.json has been read.
+    """
+    parts = [token for token in text.split() if not token.startswith("-")]
+    if len(parts) < 2 or parts[0] not in ("npm", "pnpm", "yarn", "bun", "deno"):
+        return None
+    name = parts[2] if len(parts) > 2 and parts[1] == "run" else parts[1]
+    body = scripts.get(name)
+    return body if isinstance(body, str) else None
+
+
+def is_check_command(text: str, scripts: dict | None = None) -> bool:
+    """Whether a command that looks runnable is one of this project's checks.
+
+    The check word is looked for with the flags stripped, so `pnpm publish
+    --no-git-checks` is not admitted by the word sitting inside its own flag.
+    """
+    if UNRESOLVED.search(text) or WRITE_MODE.search(text) or DENY_ANYWHERE.search(text):
+        return False
+    named = " ".join(token for token in text.split() if not token.startswith("-"))
+    if DENY_NAMED.search(named):
+        return False
+    body = script_body(text, scripts) if scripts else None
+    if body and (WRITE_MODE.search(body) or DENY_ANYWHERE.search(body)):
+        return False
+    return bool(CHECK_WORDS.search(named))
 
 
 def dedupe(items: list[str]) -> list[str]:
@@ -86,54 +173,126 @@ def dedupe(items: list[str]) -> list[str]:
     return out
 
 
-def policy_sources(root: Path) -> list[Path]:
-    """Ordered highest authority first: the repo speaks before the machine does."""
+def policy_sources(root: Path) -> list[tuple[Path, str]]:
+    """Ordered highest authority first, each with the scope it governs.
+
+    The repo's own documents define this project's checks. The machine-level
+    CLAUDE.md governs the machine: it can forbid running anything locally, and that
+    prohibition is real, but its commands belong to whatever project its author had
+    in mind and are never this one's checks.
+    """
     home = Path.home()
     return [
-        root / "CLAUDE.md",
-        root / ".claude" / "CLAUDE.md",
-        root / "AGENTS.md",
-        root / "docs" / "CONTRIBUTING.md",
-        root / "CONTRIBUTING.md",
-        home / ".claude" / "CLAUDE.md",
+        (root / "CLAUDE.md", "repo"),
+        (root / ".claude" / "CLAUDE.md", "repo"),
+        (root / "AGENTS.md", "repo"),
+        (root / "docs" / "CONTRIBUTING.md", "repo"),
+        (root / "CONTRIBUTING.md", "repo"),
+        (home / ".claude" / "CLAUDE.md", "machine"),
     ]
 
 
-def read_authority_tier(root: Path) -> tuple[list[str], dict | None, list[str]]:
-    """Return (commands, policy, notes) from the CLAUDE.md / docs tier."""
+def read_authority_tier(root: Path, scripts: dict) -> tuple[list[str], dict | None, list[str]]:
+    """Return (commands, policy, notes) from the CLAUDE.md / docs tier.
+
+    The first repo document that yields a command is the one that answers: the tiers
+    are exclusive, so a passing mention in CONTRIBUTING.md does not get appended to
+    the suite CLAUDE.md already stated.
+    """
     commands: list[str] = []
     notes: list[str] = []
     policy = None
 
-    for path in policy_sources(root):
+    for path, scope in policy_sources(root):
         if not path.is_file():
             continue
+        found: list[str] = []
         for raw in read_text(path).splitlines():
             line = raw.strip()
-            if not line or not CHECK_WORDS.search(line):
+            if not line:
                 continue
-            spans = re.findall(r"`([^`]+)`", line)
-            commands.extend(s for s in spans if looks_like_command(s))
-            if FORBID.search(line):
-                notes.append(line)
+            if scope == "repo" and CHECK_WORDS.search(line):
+                spans = re.findall(r"`([^`]+)`", line)
+                found.extend(
+                    s for s in spans if looks_like_command(s) and is_check_command(s, scripts)
+                )
+            # The prohibition is read on every line, not only on one a check list
+            # could have been built from: "never run the suite locally" names the
+            # checks in words no command carries.
+            if FORBID.search(line) and CHECK_SUBJECTS.search(line):
+                notes.append(f"{path}: {line[:200]}")
                 if policy is None:
                     policy = {
                         "decision": "ci-only",
                         "source": str(path),
+                        "scope": scope,
                         "evidence": line[:400],
                     }
+        if found and not commands:
+            commands = found
 
     return dedupe(commands), policy, notes
 
 
-def read_ci_tier(root: Path) -> list[str]:
+def ci_gate_trigger(text: str) -> str | None:
+    """The trigger that makes a workflow a gate on a change, or None.
+
+    A `push` filtered down to `tags:` is a release trigger, not a gate: what runs
+    under it publishes, and a publish is not one of this project's checks.
+    """
+    lines = text.splitlines()
+    # `on` is a YAML 1.1 boolean, so workflows write it quoted about as often as bare.
+    start = next(
+        (i for i, line in enumerate(lines) if re.match(r"""^["']?on["']?\s*:""", line)), None
+    )
+    if start is None:
+        return None
+
+    inline = lines[start].split(":", 1)[1].strip()
+    if inline:
+        names = re.findall(r"[\w-]+", inline)
+        return next((n for n in names if n in CI_GATE_TRIGGERS), None)
+
+    block: list[str] = []
+    for line in lines[start + 1 :]:
+        if line.strip() and not line.startswith((" ", "\t")):
+            break
+        block.append(line)
+    body = "\n".join(block)
+
+    for trigger in CI_GATE_TRIGGERS:
+        match = re.search(rf"^(\s*)-?\s*{trigger}\s*:?\s*$", body, re.MULTILINE)
+        if not match:
+            continue
+        if trigger != "push":
+            return trigger
+        indent = match.group(1)
+        filters: list[str] = []
+        for line in body[match.end() :].splitlines():
+            if line.strip() and not line.startswith(indent + " "):
+                break
+            filters.append(line)
+        filter_text = "\n".join(filters)
+        if "tags" in filter_text and "branches" not in filter_text:
+            continue
+        return trigger
+    return None
+
+
+def read_ci_tier(root: Path, scripts: dict) -> tuple[list[str], list[str]]:
+    """Return (commands, workflow names read) from the workflow tier."""
     workflows = root / ".github" / "workflows"
     if not workflows.is_dir():
-        return []
+        return [], []
 
     commands: list[str] = []
+    read: list[str] = []
     for path in sorted(workflows.glob("*.y*ml")):
-        lines = read_text(path).splitlines()
+        text = read_text(path)
+        if not ci_gate_trigger(text):
+            continue
+        read.append(path.name)
+        lines = text.splitlines()
         i = 0
         while i < len(lines):
             match = re.match(r"^(\s*)-?\s*run:\s*(.*)$", lines[i])
@@ -156,7 +315,7 @@ def read_ci_tier(root: Path) -> list[str]:
                 commands.append(inline)
             i += 1
 
-    return dedupe(c for c in commands if CHECK_WORDS.search(c))
+    return dedupe(c for c in commands if is_check_command(c, scripts)), read
 
 
 def package_manager(root: Path) -> str:
@@ -172,19 +331,19 @@ def package_manager(root: Path) -> str:
     return "npm"
 
 
-def read_manifest_tier(root: Path) -> list[str]:
+def read_manifest_tier(root: Path, scripts: dict) -> list[str]:
     commands: list[str] = []
 
-    package = root / "package.json"
-    if package.is_file():
-        try:
-            scripts = json.loads(read_text(package)).get("scripts") or {}
-        except (ValueError, AttributeError):
-            scripts = {}
+    if scripts:
         manager = package_manager(root)
-        for name in scripts:
-            if CHECK_WORDS.search(name):
-                commands.append(f"{manager} run {name}")
+        for name, body in scripts.items():
+            if not CHECK_WORDS.search(name) or DENY_NAMED.search(name):
+                continue
+            # The body decides, not the name: a `fmt` running `oxfmt --write .` is an
+            # edit, and the `fmt:check` sitting next to it is the check.
+            if isinstance(body, str) and (WRITE_MODE.search(body) or DENY_ANYWHERE.search(body)):
+                continue
+            commands.append(f"{manager} run {name}")
 
     for filename, runner in (("justfile", "just"), ("Justfile", "just"), ("Makefile", "make")):
         path = root / filename
@@ -192,8 +351,11 @@ def read_manifest_tier(root: Path) -> list[str]:
             continue
         for line in read_text(path).splitlines():
             match = re.match(r"^([A-Za-z][\w-]*)\s*:(?!=)", line)
-            if match and CHECK_WORDS.search(match.group(1)):
-                commands.append(f"{runner} {match.group(1)}")
+            if not match:
+                continue
+            target = match.group(1)
+            if CHECK_WORDS.search(target) and not DENY_NAMED.search(target):
+                commands.append(f"{runner} {target}")
 
     pyproject = root / "pyproject.toml"
     if pyproject.is_file():
@@ -229,9 +391,10 @@ def main() -> None:
     git_root = run_ok(["git", "rev-parse", "--show-toplevel"], cwd=repo)
     root = Path(git_root) if git_root else Path(repo).resolve()
 
-    authority, policy, notes = read_authority_tier(root)
-    ci = read_ci_tier(root)
-    manifest = read_manifest_tier(root)
+    scripts = read_package_scripts(root)
+    authority, policy, notes = read_authority_tier(root, scripts)
+    ci, ci_workflows = read_ci_tier(root, scripts)
+    manifest = read_manifest_tier(root, scripts)
 
     if authority:
         commands, source = authority, "CLAUDE.md / docs"
@@ -245,13 +408,19 @@ def main() -> None:
     result = {
         "git_root": str(root),
         "commands": commands[:MAX_COMMANDS],
+        # `source: null` is the one answer that means no tier resolved anything. A
+        # tier that answers always answers with at least one command, so a caller
+        # reading an empty list still has to read `source` to know which happened.
         "source": source,
+        "truncated": len(commands) > MAX_COMMANDS,
+        "resolved_count": len(commands),
         "runnable": policy is None,
         "policy": policy,
         "notes": notes[:5],
         "candidates": {
             "authority": authority,
             "ci": ci,
+            "ci_workflows": ci_workflows,
             "manifest": manifest,
         },
     }
