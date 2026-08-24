@@ -14,14 +14,15 @@ not at all.
 
 **Test:** "Will the user change any behavior because of this?"
 
-- **Yes** → `Hypothesis` required → trio (`Connected OKR` + `Expected Impact` +
-  `Metric`) required. Render it from the two records, per the sources below.
-- **No** (internal feature, design pattern, compliance) → trio omitted entirely,
-  no placeholder, no "N/A".
+- **Yes** → the four fields render together: `Hypothesis`, `Connected OKR`,
+  `Expected Impact` and `Metric`, from the two records, per the sources below.
+- **No** (internal feature, design pattern, compliance) → all four omitted
+  entirely, no placeholder, no "N/A".
 
-When the spec's `## Metric` is `skipped: <reason>`, the trio is omitted whole
-under the same all-or-nothing rule: no placeholder, no "N/A". The skip's reason
-stays in the spec; the export does not carry it.
+When the spec's `## Metric` is `skipped: <reason>`, all four are omitted whole
+under the same all-or-nothing rule, the hypothesis included: the discovery's
+hypothesis stays in its record, the skip's reason stays in the spec, and the
+export carries neither.
 
 ### Where each field reads from
 
@@ -34,11 +35,17 @@ The trio renders from records already written, without asking:
   `baseline → target`, keeping the target's timeframe.
 - **Connected OKR**: the `okr:` line of `## Metric`.
 
-The export asks only for a field genuinely absent from both records, and asks
-for that field alone in the one batched round: a trio that needs an OKR no
-record carries means the export asks for the OKR and never invents it. A spec
-that predates `## Metric` resolves the same way, with the missing fields asked
-as before.
+Three rendering rules, because the audience is outside the cycle. The values
+render bare: the parenthesized provenance note stays in the spec, never in the
+export. A per-value skip never renders literally: where a bullet reads
+`skipped: <reason>`, the export writes "not yet measured", in the impact and in
+the hypothesis alike. And where the hypothesis's baseline or target disagrees
+with `## Metric`'s, the spec's values win (the reversal rule in the plugin-level
+`references/spec-state.md`): render the hypothesis with the spec's values.
+
+A field genuinely absent from both records is asked for, alone; the closing
+"Don't invent" rule below is the single home of how asking works, and a spec
+that predates `## Metric` resolves through it the same way.
 
 ## Auto-sizing the export
 
