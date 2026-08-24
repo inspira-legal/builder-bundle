@@ -107,6 +107,9 @@ not somewhere it can return to. Keeping `main` green is the gate this feature le
 - **Nothing is said in the session.** The stamp holds `date`, `outcome` and `reason`, and
   nothing reads it back into a session: it is there for whoever is diagnosing a quiet
   install.
+- **A run that finishes records `ran`, not `installed`.** Without a version compare the
+  worker knows both commands exited 0 and nothing more, and a stamp that claimed an install
+  every single day would answer the one question it exists to answer with a lie.
 - **Every failure stays silent.** The hook's existing contract, exit 0 and print nothing,
   covers the new path too.
 
@@ -122,7 +125,7 @@ Happy path:
 4. The worker resolves the marketplace name, the clone path, and the install scope.
 5. The clone sits on the remote default branch with a clean tree, so the guard passes.
 6. The worker runs `claude plugin marketplace update` and then `claude plugin update`.
-7. The worker writes `installed` and exits. The next session runs the new version, and says
+7. The worker writes `ran` and exits. The next session runs the new version, and says
    nothing about it.
 
 | #   | when                                          | then                                                             |

@@ -30,7 +30,9 @@ opens the next one.
   are `date`, `outcome` and `reason`, and it sits under `CLAUDE_PLUGIN_DATA`, falling back to
   `~/.claude/plugins/data/bb-MARKETPLACE`, because the install path carries the version and
   is replaced on every update. Nothing reads it back into a session: it is there for whoever
-  is diagnosing a quiet install. The session start pays one file read: no network, no
+  is diagnosing a quiet install, which is why a finished run records `ran` and not
+  `installed`: without a version compare the worker knows both commands exited 0 and nothing
+  more. The session start pays one file read: no network, no
   install, and no wait. **The day is claimed with an exclusive file create**, so
   two sessions starting at the same moment leave only the first one spawning a worker, and a
   run that fails records the reason and leaves tomorrow as the retry.

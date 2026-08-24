@@ -31,8 +31,10 @@ STAMP_NAME = "update-stamp.json"
 CLAIM_PREFIX = "update-claim-"
 
 # What the worker records in the stamp's `outcome`, for whoever is diagnosing a
-# quiet install. Nothing in a session reads them back.
-OUTCOME_INSTALLED = "installed"
+# quiet install. Nothing in a session reads them back. `ran` is deliberately not
+# `installed`: the worker calls the CLI without comparing versions first, so what
+# it knows is that both commands exited 0, not whether either had work to do.
+OUTCOME_RAN = "ran"
 OUTCOME_SKIPPED = "skipped"
 OUTCOME_FAILED = "failed"
 
@@ -114,21 +116,21 @@ def stamp_path() -> str | None:
 
 def read_stamp(path: str | None) -> dict:
     """The stamp, or an empty dict for a first run. A malformed file reads the
-    same as a missing one: no line, and the day is still owed."""
+    same as a missing one: the day is still owed."""
     return read_json(path) if path else {}
 
 
 def write_stamp(path: str | None, **fields: str) -> bool:
     """The stamp, replaced whole with today's date plus whatever the caller
-    records. Returns whether it landed, so the worker can stop when it cannot
-    claim."""
+    records. Returns whether it landed, which is how the hook tells a claim that
+    took the day from one that did not."""
     if not path:
         return False
     stamp = {"date": today()}
     stamp.update({key: value for key, value in fields.items() if value})
     # Through a temp file in the same directory. A worker killed mid write would
-    # otherwise leave truncated JSON, which reads as a first run and drops the
-    # line the last install earned.
+    # otherwise leave truncated JSON, which reads as a first run and gives the
+    # day away again.
     temp = f"{path}.tmp"
     try:
         os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -383,7 +385,7 @@ def main() -> int:
     if _run_or_fail(install, CLI_TIMEOUT, reason, cwd) is None:
         return 0
 
-    _record(OUTCOME_INSTALLED, reason=f"{plugin} from {branch}")
+    _record(OUTCOME_RAN, reason=f"{plugin} on {branch}")
     return 0
 
 
