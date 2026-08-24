@@ -18,11 +18,15 @@ exists. Second, the **smallest version still worth shipping**, which is what tur
 edge into a line you can actually hold.
 
 `## Metric` is part of the arrival, not a blank left for later. Seed the baseline and
-the target from the discovery record when it carries them, guess what remains with each
-value's provenance on its own bullet (an estimate marked as such reads as a guess the
-user corrects), or write the one-line `skipped: <reason>` when no honest measure exists.
-An honest skip beats an invented number; the shape and the events table live in
-`spec-format.md`.
+the target from the discovery record when it carries them, and name that record in the
+seeded value's provenance note (`(discovery.md, frame capture 2026-08-24)`): the
+materialized value carries its source, and after the gate hardens it the spec's value
+wins, per the reversal rule in the plugin-level `references/spec-state.md`. Guess what
+remains with each value's provenance on its own bullet (an estimate marked as such
+reads as a guess the user corrects), keep a value's own `skipped: <reason>` when only
+that value is unmeasured, or write the one-line `skipped: <reason>` when no honest
+measure exists at all. An honest skip beats an invented number; the shape and the
+events table live in `spec-format.md`.
 
 ## Surfacing the forks (the only thing you ask about)
 
@@ -60,10 +64,12 @@ Ask the forks through the **`AskUserQuestion` tool**: concrete options the user 
   the lint cannot.** A `Baseline:` or `Target:` without provenance is an open item
   the gate blocks on like any fork, resolved or explicitly deferred; the lint
   checks the note's shape, and whether it names a real source is your judgment at
-  the gate. On a Medium spec, whose behaviors live inline, judge the event trace
-  yourself: each event row against the inline behavior it instruments, payload
-  fields against the rule stated in `spec-format.md`. The lint's citation check
-  needs a `## Behavior` section and stays silent here.
+  the gate. A value whose own `skipped: <reason>` names the missing measurement is
+  not an open item; it is the honest state, and the instrumentation it flags is
+  work for `## Tasks`. On a Medium spec, whose behaviors live inline, judge the
+  event trace yourself: each event row against the inline behavior it instruments,
+  payload fields against the rule stated in `spec-format.md`. The lint's citation
+  check needs numbered behavior rows and stays silent here.
 - **Reflect back:** "So we're building X, for Y, and NOT doing Z, right?"
 - **Alignment is active, not silent.** It's confirmed when the user restates the
   idea in their own words or explicitly approves the written spec, never by the

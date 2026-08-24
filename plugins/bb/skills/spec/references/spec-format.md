@@ -74,9 +74,12 @@ forms, and an honest skip always beats an invented number.
 The `Baseline:` and `Target:` bullets each carry their value's provenance as a
 parenthesized note on the same bullet: a query, a log, or a named person's estimate
 marked as such. The note is the shape the lint checks; whether it names a real source is
-the gate's judgment. Internal work names an operational measure (error rate, runtime,
-adoption) where no product metric applies. The `okr:` line names the connected OKR when
-one exists, and is omitted when none does.
+the gate's judgment. A value nothing measures yet is its own honest skip, `skipped:
+<reason>` in place of the value (`- Baseline: skipped: not-instrumented`, the form
+discover blesses): no provenance note, and the target and the events table stay while
+the skip flags the instrumentation as the first work. Internal work names an
+operational measure (error rate, runtime, adoption) where no product metric applies.
+The `okr:` line names the connected OKR when one exists, and is omitted when none does.
 
 **The skip**: one line, `skipped: <reason>`, when no honest measure exists. It replaces
 the whole section body.
@@ -104,7 +107,9 @@ an instrumentation task covers its behaviors through the event row it cites, and
 build machinery proves it with no change.
 
 A Medium spec carries its behaviors inline, so an event row there has no numbered row to
-cite; the lint's citation check stays silent and the gate judges the trace.
+cite; its `behaviors` cell names the inline behavior in a short phrase instead. The
+lint leaves prose cells alone and the gate judges the trace. A re-size to Large numbers
+the behavior rows and rewrites those cells as numbers, part of the re-size itself.
 
 ## The rule that does the most work
 
@@ -177,19 +182,19 @@ belongs here.
 python3 plugins/bb/skills/spec/scripts/lint_spec.py .bb/<slug>/spec.md
 ```
 
-| code | level   | what it catches                                                              |
-| ---- | ------- | ---------------------------------------------------------------------------- |
-| E001 | error   | frontmatter missing, incomplete, or with an invalid status or date           |
-| E002 | error   | no `## Decisions` or no `## Open`                                            |
-| E003 | error   | a dead section name (`## design`, `## still open`)                           |
-| E004 | error   | a table cell above 100 characters                                            |
-| E005 | error   | a row whose cell count differs from the header                               |
-| W001 | warning | no `## Behavior`                                                             |
-| W002 | warning | no `## Tasks`                                                                |
-| W004 | warning | no `## Out of scope`                                                         |
-| W005 | warning | no `## Metric`                                                               |
-| W006 | warning | a `Baseline:` or `Target:` without its parenthesized provenance              |
-| W007 | warning | an event row citing a behavior row that does not exist (needs `## Behavior`) |
+| code | level   | what it catches                                                       |
+| ---- | ------- | --------------------------------------------------------------------- |
+| E001 | error   | frontmatter missing, incomplete, or with an invalid status or date    |
+| E002 | error   | no `## Decisions` or no `## Open`                                     |
+| E003 | error   | a dead section name (`## design`, `## still open`)                    |
+| E004 | error   | a table cell above 100 characters                                     |
+| E005 | error   | a row whose cell count differs from the header                        |
+| W001 | warning | no `## Behavior`                                                      |
+| W002 | warning | no `## Tasks`                                                         |
+| W004 | warning | no `## Out of scope`                                                  |
+| W005 | warning | no `## Metric`                                                        |
+| W006 | warning | a `Baseline:`/`Target:` bullet missing, or a value without provenance |
+| W007 | warning | an event row citing a numbered behavior row that does not exist       |
 
 Whether the document is too long, repeats itself, or recounts the conversation is not a
 lint check; it's what the independent reviewer is asked to find. A line ceiling on a

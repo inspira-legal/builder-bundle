@@ -26,7 +26,9 @@ and everything durable about that work lives inside it:
 - **The two records are read by path, never copied.** When the spec needs a fact that
   lives in a record, it cites the document and the section, and the reader opens it. A
   section quoted into the spec is a second copy that goes stale the next time its own
-  skill runs.
+  skill runs. One exception: the spec's `## Metric` materializes the baseline and the
+  target (its lint checks the values inline), each naming the record in its provenance
+  note; the reversal rule below is what keeps those copies honest.
 - **`prototype/` is the only non-document member.** It holds a clickable prototype
   brisar's Develop phase built: the journey's screens, their states, the DS tokens
   applied. It is not the product's code, which is `/bb:implement`'s output and lives in
