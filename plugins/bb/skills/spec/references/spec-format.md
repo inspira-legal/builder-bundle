@@ -17,7 +17,8 @@ opening, 1–3 paragraphs                  ┐
 
 ## Decisions                             ┐
 ## Behavior                              │  fixed, in this order
-## Tasks                                 │  each one has a reader
+## Metric                                │  each one has a reader
+## Tasks                                 │
 ## Out of scope                          │
 ## Open                                  ┘
 ```
@@ -31,14 +32,17 @@ idea better than a sentence would.
 
 **The fixed sections are fixed because each one has a reader.** `/bb:implement` consumes
 `## Tasks` and builds against `## Behavior`; the `contract` front of `/bb:review` walks
-`## Behavior` row by row; the spec gate itself blocks on `## Open`. A section nobody
-reads is a section that drifts, which is why the set is small and every member earns its
-slot.
+`## Behavior` row by row; the exit gate renders `## Metric` beside the coverage table,
+the export reads its trio by path, and review's instrumentation front resolves its
+events table first; the spec gate itself blocks on `## Open`. A section nobody reads is
+a section that drifts, which is why the set is small and every member earns its slot.
 
 - `## Decisions`: the closed calls, one bullet each, so the build side never has to
   re-derive them from prose.
 - `## Behavior`: the happy path step by step, then a `WHEN … THEN …` table where every
   row reads as a test. The acceptance contract.
+- `## Metric`: the measure the landing is judged by, or one explicit `skipped: <reason>`
+  line. Its own section below.
 - `## Tasks`: vertical tasks (below).
 - `## Out of scope`: the hard line, including ideas parked for later (mark them
   _revisit_). Plain bullets, never checkboxes.
@@ -46,7 +50,61 @@ slot.
   none.
 
 `## Behavior` and `## Tasks` are what Large work needs; a Medium spec can carry those
-inline and skip them, which is why the lint only warns on their absence.
+inline and skip them, which is why the lint only warns on their absence. `## Metric`
+rides every spec at every size; its checks warn instead of erroring so a spec that
+predates it stays valid.
+
+## The Metric section
+
+`## Metric` sits between `## Behavior` and `## Tasks` because the trace runs through it:
+an event row cites the behavior rows above it, and an instrumentation task cites the
+event rows below it. Every spec carries the section, whatever its size, in one of two
+forms, and an honest skip always beats an invented number.
+
+**The metric block**: the one metric, its baseline, its target, and a timeframe.
+
+```
+- Metric: <the one measure, and how it is read>
+- Baseline: <the current reading> (<provenance>)
+- Target: <where it should land>, within <timeframe> (<provenance>)
+- okr: <the connected OKR>
+- Events: <the table below, or `none` and why>
+```
+
+The `Baseline:` and `Target:` bullets each carry their value's provenance as a
+parenthesized note on the same bullet: a query, a log, or a named person's estimate
+marked as such. The note is the shape the lint checks; whether it names a real source is
+the gate's judgment. Internal work names an operational measure (error rate, runtime,
+adoption) where no product metric applies. The `okr:` line names the connected OKR when
+one exists, and is omitted when none does.
+
+**The skip**: one line, `skipped: <reason>`, when no honest measure exists. It replaces
+the whole section body.
+
+### The events table
+
+When the work has user-triggered behavior, the block also carries the events table, one
+row per event:
+
+| event                | behaviors | payload                   | channel  |
+| -------------------- | --------- | ------------------------- | -------- |
+| `vault_doc_uploaded` | 2, 3      | `doc_id`, `source` (enum) | internal |
+
+The event name follows the project's own convention. `behaviors` cites the numbered
+happy-path rows the event instruments. `channel` names the sink, and the column exists
+only when the project has more than one. Payload fields are IDs and enums, never free
+text and never document content: that rule is what keeps mandatory instrumentation
+compatible with a legaltech's data duties, and this paragraph is its single home; the
+gate and the review front cite it here instead of restating it.
+
+Instrumentation enters `## Tasks` as ordinary tasks with their own `verify:`, each
+citing the event rows it wires (`→ events <name>, <name>` in place of the behavior
+citation). An event row's own behavior citations are what the coverage table counts, so
+an instrumentation task covers its behaviors through the event row it cites, and the
+build machinery proves it with no change.
+
+A Medium spec carries its behaviors inline, so an event row there has no numbered row to
+cite; the lint's citation check stays silent and the gate judges the trace.
 
 ## The rule that does the most work
 
@@ -90,7 +148,9 @@ graph instead of re-interpreting prose.
 
 Every task cites at least one behavior and every behavior is cited by at least one
 task. That two-way trace is what the gate renders as the coverage table; an unlinked
-row on either side is an omission made visible.
+row on either side is an omission made visible. An instrumentation task cites event
+rows instead, and counts as citing the behaviors those rows cite (the Metric section
+above).
 
 ## Dead names
 
@@ -117,16 +177,19 @@ belongs here.
 python3 plugins/bb/skills/spec/scripts/lint_spec.py .bb/<slug>/spec.md
 ```
 
-| code | level   | what it catches                                                    |
-| ---- | ------- | ------------------------------------------------------------------ |
-| E001 | error   | frontmatter missing, incomplete, or with an invalid status or date |
-| E002 | error   | no `## Decisions` or no `## Open`                                  |
-| E003 | error   | a dead section name (`## design`, `## still open`)                 |
-| E004 | error   | a table cell above 100 characters                                  |
-| E005 | error   | a row whose cell count differs from the header                     |
-| W001 | warning | no `## Behavior`                                                   |
-| W002 | warning | no `## Tasks`                                                      |
-| W004 | warning | no `## Out of scope`                                               |
+| code | level   | what it catches                                                              |
+| ---- | ------- | ---------------------------------------------------------------------------- |
+| E001 | error   | frontmatter missing, incomplete, or with an invalid status or date           |
+| E002 | error   | no `## Decisions` or no `## Open`                                            |
+| E003 | error   | a dead section name (`## design`, `## still open`)                           |
+| E004 | error   | a table cell above 100 characters                                            |
+| E005 | error   | a row whose cell count differs from the header                               |
+| W001 | warning | no `## Behavior`                                                             |
+| W002 | warning | no `## Tasks`                                                                |
+| W004 | warning | no `## Out of scope`                                                         |
+| W005 | warning | no `## Metric`                                                               |
+| W006 | warning | a `Baseline:` or `Target:` without its parenthesized provenance              |
+| W007 | warning | an event row citing a behavior row that does not exist (needs `## Behavior`) |
 
 Whether the document is too long, repeats itself, or recounts the conversation is not a
 lint check; it's what the independent reviewer is asked to find. A line ceiling on a

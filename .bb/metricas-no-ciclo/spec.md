@@ -135,13 +135,13 @@ Happy path, once built:
 - Baseline: 0 of 15 records under `.bb/` carry any metric section (counted from the
   repo on 2026-08-24).
 - Target: hard 100% of new specs, soft 80% of the first five landings, within 8 weeks
-  of landing.
+  of landing (the discovery's hypothesis, hardened at this spec's gate).
 - Events: none; internal tooling, and the `.bb/` records themselves are the
   measurement surface (operational measure).
 
 ## Tasks
 
-- [ ] **1. Metric in the format and the lint**: `## Metric` added to
+- [x] **1. Metric in the format and the lint**: `## Metric` added to
       `spec-format.md` (shape, order, skip form, events table with the payload rule,
       the task-through-event-row trace), the three warnings added to `lint_spec.py`,
       and the fixed-set mentions in the spec SKILL.md updated → behaviors 2, 3, 4 ·

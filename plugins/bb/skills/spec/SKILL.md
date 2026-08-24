@@ -111,7 +111,7 @@ The on-disk contract (location, frontmatter schema, status lifecycle) is the plu
 
 On finalize, open the spec with the frontmatter block (`status: pending`, `created: <today>`, `slug: <slug>`). This skill is the file's only writer, so the block is there from the first write. A spec landed before that rule can be missing it; backfill it on finalize. Leave the lifecycle after this to delegate; spec only seeds `pending`.
 
-**Large** work carries `## Behavior` and `## Tasks` as their own sections: the acceptance contract and the vertical tasks the build side consumes. **Medium** work keeps both inline in the decisions.
+**Large** work carries `## Behavior` and `## Tasks` as their own sections: the acceptance contract and the vertical tasks the build side consumes. **Medium** work keeps both inline in the decisions. `## Metric` is its own section at every size, between `## Behavior` and `## Tasks`: the measure with provenance and the events table, or one explicit `skipped: <reason>` line (shape in `references/spec-format.md`).
 
 ## Export mode: a shareable product/UX spec
 
@@ -135,7 +135,7 @@ spec always ends at a validated `.bb/<slug>/spec.md`; the spec is the durable as
 
 ### references/spec-format.md
 
-The spec's format: the free top half and the fixed sections, what each fixed section is read by, the describes-vs-recounts rule, tables, dead section names, and the task shape with its dependencies. Paired with `scripts/lint_spec.py`, which enforces the mechanical half.
+The spec's format: the free top half and the fixed sections, what each fixed section is read by, the describes-vs-recounts rule, the Metric section with its events table, tables, dead section names, and the task shape with its dependencies. Paired with `scripts/lint_spec.py`, which enforces the mechanical half.
 
 ### references/draft-first.md
 
