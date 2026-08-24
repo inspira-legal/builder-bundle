@@ -148,7 +148,7 @@ Happy path, once built:
       dep: — · verify: command (lint this spec, which carries the section, and an old
       spec, which lacks it: the new warnings fire only where expected and nothing
       errors)
-- [ ] **2. The loop asks for it and the gate holds it**: in the spec SKILL.md and
+- [x] **2. The loop asks for it and the gate holds it**: in the spec SKILL.md and
       `draft-first.md`, the draft arrives with the Metric guessed with provenance or
       skipped; the exit gate renders the section beside the coverage counter, blocks
       a value without provenance as an open item, and judges the event trace for
