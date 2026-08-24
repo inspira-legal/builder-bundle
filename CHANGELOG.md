@@ -9,29 +9,29 @@ served July's skills. With 16 skills that change by PR every week, that is peopl
 a bb the CHANGELOG no longer describes.
 
 The `SessionStart` hook now does the update, silently: nothing appears on screen, nothing
-is asked, and there is no flag that turns it off. The effect lands on the next session
-either way, because a session has already loaded its plugins by the time a hook runs. So
-the running session keeps the version it loaded, and the line it carries says which
-version starts next.
+is said to the model, nothing is asked, and there is no flag that turns it off. The effect
+lands on the next session either way, because a session has already loaded its plugins by
+the time a hook runs, so the running session keeps the version it loaded and the new one
+opens the next one.
 
 ### Added
 
 - **`plugins/bb/hooks/check_version.py`**, both halves of the update in one file.
-  `report()` runs in process on the session start: it reads the stamp and returns the line
-  the session context carries when the last run installed something. Handing that line over
-  marks the stamp, so it reaches one session and the ones after it are silent again. The
-  `__main__` path is the detached worker, spawned with `sys.executable` because `python3` is
-  not on every PATH a child inherits, and it does the slow half: `git fetch` in the
-  marketplace clone, the version compare, the two commands a person would run,
+  `claim_today()` runs in process on the session start: it reads the stamp and takes the day
+  when the day is still owed, which is one file read on the common path. The `__main__` path
+  is the detached worker, spawned with `sys.executable` because `python3` is not on every
+  PATH a child inherits, and it does the slow half: the guard on the marketplace clone, then
+  the two commands a person would run,
   `claude plugin marketplace update MARKETPLACE` and
   `claude plugin update bb@MARKETPLACE -s SCOPE -y`. It calls the CLI instead of writing
   into the cache and rewriting `installed_plugins.json`, which would be a hook
   reimplementing the installer that owns those files.
-- **The stamp, `update-stamp.json`, is the only channel between the two.** It holds `date`,
-  `outcome`, `from`, `to`, `reason`, and `reported`, and it sits under `CLAUDE_PLUGIN_DATA`,
-  falling back to `~/.claude/plugins/data/bb-MARKETPLACE`, because the install path carries
-  the version and is replaced on every update. The session start pays one file read: no
-  network, no install, and no wait. **The day is claimed with an exclusive file create**, so
+- **The stamp, `update-stamp.json`, holds the claimed day and the last outcome.** Its fields
+  are `date`, `outcome` and `reason`, and it sits under `CLAUDE_PLUGIN_DATA`, falling back to
+  `~/.claude/plugins/data/bb-MARKETPLACE`, because the install path carries the version and
+  is replaced on every update. Nothing reads it back into a session: it is there for whoever
+  is diagnosing a quiet install. The session start pays one file read: no network, no
+  install, and no wait. **The day is claimed with an exclusive file create**, so
   two sessions starting at the same moment leave only the first one spawning a worker, and a
   run that fails records the reason and leaves tomorrow as the retry.
 - **The guard on a clone that is a working tree.** `claude plugin update` installs what
@@ -40,27 +40,26 @@ version starts next.
   tree. Any other state writes the branch name or the dirt into `reason` and installs
   nothing. Checking the branch out is never an option, because the clone is someone's
   checkout.
-- **Never a downgrade.** The comparison is the `version` in
-  `plugins/bb/.claude-plugin/plugin.json`, read from the fetched tip and compared as
-  integer tuples so `2.9.0` reads below `2.16.0`, and the install runs only when the remote
-  is greater. The bump is the release: a commit that lands on `main` without one reaches
-  nobody, and with a daily check and no opt out, keeping `main` green is the gate this
-  leans on.
+- **Never a downgrade, and no compare of bb's own.** `claude plugin update` is forward only
+  and does the comparison itself, on the `version` in
+  `plugins/bb/.claude-plugin/plugin.json`, so the worker runs it on the day it owns instead
+  of fetching that file first. The bump is still the release: a commit that lands on `main`
+  without one reaches nobody, and with a daily check and no opt out, keeping `main` green is
+  the gate this leans on.
 
 ### Changed
 
 - **`hooks/sync_instructions.py` carries the update on every path it has.**
-  `update_note()` asks `check_version.py` for the line, claims the day and spawns the
-  worker; `emit()` is now the single print, so all three paths merge into one JSON
-  document. The child gets the null device on all three streams, plus
+  `spawn_update()` claims the day through `check_version.py` and spawns the worker; `emit()`
+  is now the single print, so the paths that do speak merge into one JSON document. The
+  child gets the null device on all three streams, plus
   `DETACHED_PROCESS | CREATE_NO_WINDOW` on Windows and `start_new_session` elsewhere: the
   hook's stdout is the payload the runner parses, and a child that inherits it corrupts
   the session start.
-- **The update line sits outside the instructions opt out**, under its own
-  `## bb's own version` heading. `custom_instructions: false` governs
-  `~/.claude/BUILDER-BUNDLE.md` and the `CLAUDE.md` import, which is all it ever governed;
-  the version bb runs is not an instruction. Every failure in the new path stays silent,
-  which is the hook's existing contract: exit 0 and print nothing.
+- **The update sits outside the instructions opt out.** `custom_instructions: false`
+  governs `~/.claude/BUILDER-BUNDLE.md` and the `CLAUDE.md` import, which is all it ever
+  governed; the version bb runs is not an instruction. Every failure in the new path stays
+  silent, which is the hook's existing contract: exit 0 and print nothing.
 
 ## 2.17.0 (2026-08-20)
 
