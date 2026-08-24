@@ -16,10 +16,10 @@ thing. This is the lowest-cost moment to catch that. The output is
 
 Two phases, each with its own reference, load only the one that's running:
 
-| Phase                      | What it settles                                                                     | Reference             |
-| -------------------------- | ----------------------------------------------------------------------------------- | --------------------- |
-| **1. Frame** (o problema)  | problem, who & impact, hypothesis, success signal, appetite; each confidence-tagged | `references/frame.md` |
-| **2. Fit** (what survives) | worth building? what to cut, in what order, the one testable hypothesis             | `references/fit.md`   |
+| Phase                      | What it settles                                                                                                | Reference             |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------- |
+| **1. Frame** (o problema)  | problem, who & impact, hypothesis, success signal with baseline and target, appetite; each confidence-tagged   | `references/frame.md` |
+| **2. Fit** (what survives) | worth building? what to cut, in what order, the hypothesis hardened from baseline to target within a timeframe | `references/fit.md`   |
 
 ## Entry decision
 

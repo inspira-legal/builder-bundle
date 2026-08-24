@@ -159,7 +159,7 @@ Happy path, once built:
       shape, payload and channel checks, verify addendum), the review SKILL.md
       enumerations grown to nine, and the analytics-wiring triage note extended →
       behavior 5 · dep: 1 · verify: reading
-- [ ] **4. Discover closes upstream**: baseline and target with provenance in the
+- [x] **4. Discover closes upstream**: baseline and target with provenance in the
       frame capture, the hardened hypothesis format in fit, the phase-table wording
       in the discover SKILL.md → behavior 6 · dep: — · verify: reading
 - [ ] **5. Export reads instead of asking**: the trio sourced from the discovery

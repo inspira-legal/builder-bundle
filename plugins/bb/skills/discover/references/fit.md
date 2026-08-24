@@ -20,9 +20,12 @@ came from a framed problem; otherwise run only the mode the user asked for.
   RICE when Reach/Impact/Confidence/Effort exist, else ICE or a small Kano.
   Don't ask for data the user doesn't have; fall back.
 - **Hypothesis**: always close here. Harden the bet into testable form:
-  _"If <change>, then <observable metric> within <timeframe>, because
-  <mechanism>."_ A wish ("melhorar a UX") is not a hypothesis; don't close the
-  phase without the testable shape.
+  _"If <change>, the <metric> moves from <baseline> to <target> within
+  <timeframe>, because <mechanism>."_ Baseline and target come from the frame's
+  capture, each with its provenance; a baseline of `skipped: not-instrumented`
+  keeps the shape and names the instrumentation as the first work. A wish
+  ("melhorar a UX") is not a hypothesis; don't close the phase without the
+  testable shape.
 
 ## How it runs
 
