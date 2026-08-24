@@ -115,6 +115,18 @@ def check_frontmatter(lines):
             yield line_no, "E001", f"created `{value}` is not in YYYY-MM-DD format"
 
 
+def delimiter_row(rows):
+    """Return the table run's delimiter row, or None when the run has none."""
+    if len(rows) > 1 and all(SEPARATOR_CELL.match(c) for c in rows[1][1]):
+        return rows[1]
+    return None
+
+
+def table_body(rows):
+    """Return a table run's body rows, past the header and the delimiter."""
+    return rows[2:] if delimiter_row(rows) else rows[1:]
+
+
 def cited_rows(cell):
     """Return the row numbers a behaviors cell cites, or None when the cell is prose."""
     cleaned = PAREN_NOTE.sub(" ", cell).strip()
@@ -140,8 +152,7 @@ def check_citations(metric_tables, behavior_rows):
         column = next((i for i, cell in enumerate(header) if "behavior" in cell.lower()), None)
         if column is None:
             continue
-        is_separator = all(SEPARATOR_CELL.match(c) for c in rows[1][1])
-        for line_no, cells in rows[2:] if is_separator else rows[1:]:
+        for line_no, cells in table_body(rows):
             if column >= len(cells):
                 continue
             cited = cited_rows(cells[column])
@@ -175,8 +186,8 @@ def check_body(lines):
             return
         header_no, header = rows[0]
         width = len(header)
-        is_separator = all(SEPARATOR_CELL.match(c) for c in rows[1][1])
-        body = rows[2:] if is_separator else rows[1:]
+        delimiter = delimiter_row(rows)
+        body = table_body(rows)
         # The delimiter row is width-checked like any other: GFM needs it to match the
         # header, and a short one turns the whole table back into a paragraph of pipes.
         for line_no, cells in rows:
@@ -184,7 +195,7 @@ def check_body(lines):
                 remedy = (
                     "the delimiter row needs the same cells as the header, or GFM stops "
                     "reading it as a table"
-                    if is_separator and line_no == rows[1][0]
+                    if delimiter and line_no == delimiter[0]
                     else "a literal `|` has to become `\\|`"
                 )
                 yield (
@@ -202,9 +213,10 @@ def check_body(lines):
                         "content that long is prose or a bullet, not a table",
                     )
 
-    def end_table():
-        # Called before the run is flushed, while `section` still names the heading
-        # the table sits under.
+    def drain_table():
+        # Ends the current run while `section` still names the heading the table
+        # sits under: collect what the section needs, then width-check the rows.
+        # The caller rebinds `table` after draining.
         if section == "metric":
             metric_tables.append(list(table))
         elif section == "behavior":
@@ -214,6 +226,7 @@ def check_body(lines):
                 numbered = cells and NUMBERED_CELL.match(cells[0])
                 if numbered:
                     table_rows.add(int(numbered.group(1)))
+        yield from flush(table)
 
     for i, line in enumerate(lines, start=1):
         # A fence ends the current run of rows; two tables around a code block are
@@ -228,8 +241,7 @@ def check_body(lines):
             fence_marker = fence.group(1)
             open_value = None
             if table:
-                end_table()
-                yield from flush(table)
+                yield from drain_table()
                 table = []
             continue
 
@@ -238,8 +250,7 @@ def check_body(lines):
             table.append((i, split_row(line)))
             continue
         if table:
-            end_table()
-            yield from flush(table)
+            yield from drain_table()
             table = []
 
         match = HEADING.match(line)
@@ -274,8 +285,7 @@ def check_body(lines):
                 open_value = None
 
     if table:
-        end_table()
-        yield from flush(table)
+        yield from drain_table()
 
     for name, spelling in REQUIRED_SECTIONS:
         if spelling not in seen:
