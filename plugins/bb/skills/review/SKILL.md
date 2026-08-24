@@ -256,5 +256,7 @@ Pipeline agents (plugin root, dispatched by the fan-out):
 
 Scripts (plugin root):
 
-- `${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py`: branch, base + merge-base, diff stat, changed files, full diff, uncommitted changes. Resolves the review's diff range for the probe.
+- `${CLAUDE_PLUGIN_ROOT}/scripts/preflight.py`: the whole availability probe in one call. Resolves the review's diff range and answers every front's "Available when" (`fronts.md`).
+- `${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py`: the same branch context plus the commit log and the full diff, for a scope paragraph the probe's diff stat cannot carry.
+- `${CLAUDE_PLUGIN_ROOT}/scripts/inspect_pr_checks.py`: failing checks, their run IDs and the failure snippets, for the `ci` front (`front-ci.md`).
 - `${CLAUDE_PLUGIN_ROOT}/scripts/fetch_comments.py`, `${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py`: thread I/O via `gh api graphql`.
