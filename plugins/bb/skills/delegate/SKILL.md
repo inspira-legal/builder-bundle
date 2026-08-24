@@ -4,7 +4,7 @@ description: Runs a spec end to end. Selects an unfinished spec (`.bb/<slug>/spe
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.6.1
+  version: 2.7.0
 ---
 
 # Delegate
@@ -23,14 +23,16 @@ and stop.
 ## Workflow
 
 1. **Resolve the target spec** per the spec-state contract (plugin-level
-   `references/spec-state.md`).
-   - **Named** (`/bb:delegate <slug>`): use `.bb/<slug>/spec.md`. If it doesn't
-     exist, report the error, list the available pending slugs, and stop.
-   - **Bare** (`/bb:delegate`): scan `.bb/*/spec.md`, read each frontmatter block,
-     keep those with `status ∈ {pending, in-progress}`, and pick the smallest
-     `created` (tie-break: slug alphabetical). A spec with no frontmatter counts as
-     `pending` with unknown `created` (sorted last). If none qualify, report
-     "no pending specs" and stop.
+   `references/spec-state.md`). `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/scan_specs.py`
+   is that contract's selection rule as code: it resolves the `.bb/` root, reads every
+   `spec.md` frontmatter block, and prints each spec's `status`, `created`, unticked task
+   count and, for a blocked one, the line its `## Open` carries, alongside the `selected`
+   the rule picks and `pending_slugs` for the report.
+   - **Named** (`/bb:delegate <slug>`): pass `--slug <slug>`. `found: false` means report
+     the error, list `pending_slugs`, and stop.
+   - **Bare** (`/bb:delegate`): take `selected`, which is the smallest `created` among
+     `pending` and `in-progress`, tie-broken on the slug, with an absent frontmatter block
+     sorting last. Null means report "no pending specs" and stop.
    - A spec already `done`: report it's done and ask whether to re-run. A `blocked`
      spec is skipped in bare selection and reported, not silently dropped: name it
      with the blocker its `## Open` carries, and where that blocker sends it. The

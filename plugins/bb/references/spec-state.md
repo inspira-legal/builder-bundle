@@ -83,6 +83,12 @@ and lands a spec. `spec` only writes the initial block (`status: pending`) on fi
 The `## Tasks` checkboxes inside the spec stay `implement`'s concern. A spec without the
 block is treated as `pending` with unknown `created` (sorted last in bare selection).
 
+**Selection is a script, not a scan the reader repeats.**
+`${CLAUDE_PLUGIN_ROOT}/scripts/scan_specs.py` resolves the `.bb/` root the way this file
+says to, parses every block, applies the rule above and prints the whole set plus the
+`selected` one; `preflight.py` imports its `scan()` so a review's probe reads the same
+answer. What stays prose here is the contract; what a caller runs is the script.
+
 **`discovery.md`** opens with the framing's block (the contract is
 `${CLAUDE_PLUGIN_ROOT}/skills/discover/SKILL.md`):
 

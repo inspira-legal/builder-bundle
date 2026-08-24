@@ -68,21 +68,26 @@ answers to it any more. Do not edit anything. A near-match under a different nam
 "moved", not "gone"; only nothing at all is "gone".`;
 }
 
-// The authority chain below restates implement's step 4 on purpose: this string is what the
-// agent reads at runtime, and it has no way to follow a pointer at a doc. Both copies change
-// together.
-function checksPrompt(hint) {
-  return `Resolve this project's checks, then run all of them once.
+// `scripts/resolve_checks.py` walks the authority chain before the dispatch, so this agent
+// confirms a list instead of deriving one. The order is spelled out only for the caller that
+// passed nothing: the string is what the agent reads at runtime, and it cannot follow a
+// pointer at a doc.
+function checksPrompt(resolved) {
+  const listed =
+    resolved && resolved.commands && resolved.commands.length
+      ? `The caller resolved these from ${resolved.source}, in order: ${resolved.commands.join(" && ")}. Take that as the list unless the repo contradicts it.`
+      : `The caller resolved nothing, so resolve the checks yourself, highest authority first: CLAUDE.md and docs, then CI workflow files, then package.json / justfile / Makefile / pyproject.toml.`;
 
-${hint ? `The caller resolved this hint already: ${hint}` : "The caller resolved no hint."}
+  return `Establish this project's green baseline: confirm its checks, then run all of them once.
 
-Resolve in this order of authority: CLAUDE.md and docs, then CI workflow files, then
-package.json / justfile / Makefile / pyproject.toml. Run what CI runs, not a subset.
+${listed}
 
-Then run every command you resolved, once. Running them is the point: it proves the run may
-execute each one and it establishes the green baseline for the build.
+Run what CI runs, not a subset.
 
-Return "commands" with every command you resolved (an empty list when the project has none),
+Then run every command, once. Running them is the point: it proves the run may execute each
+one and it establishes the green baseline for the build.
+
+Return "commands" with every command you confirmed (an empty list when the project has none),
 "ran" false when a command could not be executed at all, "green" false when the tree is
 already failing a check, and "blocker" naming which command and why. Do not fix anything and
 do not edit any file: you are the baseline, not the first task.`;
@@ -155,6 +160,14 @@ if (!args.tasks || args.tasks.length === 0) {
 phase("Ground");
 
 const reuseNotes = args.reuseNotes || [];
+const resolved = args.checks || null;
+
+// A project whose top authority forbids running its checks locally is settled by
+// `scripts/resolve_checks.py` before the dispatch. Sending the agent anyway spends a whole
+// stage-zero round trip to come back `ran: false`, which stops the build over a policy
+// instead of over the code.
+const runChecks = !resolved || resolved.runnable !== false;
+
 const ground = await parallel([
   ...reuseNotes.map(
     (note) => () =>
@@ -165,17 +178,29 @@ const ground = await parallel([
         effort: "low",
       }),
   ),
-  () =>
-    agent(checksPrompt(args.checksHint), {
-      label: "checks: resolve and run",
-      phase: "Ground",
-      schema: CHECKS_RESULT,
-      effort: "low",
-    }),
+  ...(runChecks
+    ? [
+        () =>
+          agent(checksPrompt(resolved), {
+            label: "checks: confirm and run",
+            phase: "Ground",
+            schema: CHECKS_RESULT,
+            effort: "low",
+          }),
+      ]
+    : []),
 ]);
 
 const verdicts = ground.slice(0, reuseNotes.length);
-const checks = ground[ground.length - 1];
+
+// With no agent sent, the baseline is the policy itself, and `commands` is empty because an
+// empty list is what the task agents may execute here.
+const checks = runChecks ? ground[ground.length - 1] : { commands: [], ran: true, green: true };
+if (!runChecks) {
+  log(
+    `the project's checks belong to CI here (${resolved.source || "project policy"}); stage zero runs none`,
+  );
+}
 
 // A lost stage-zero agent is a stop of its own: proceeding would build on ground nobody proved.
 let stopped = null;
@@ -200,12 +225,14 @@ if (!stopped) {
     blockers.push(`reuse note points at code that is gone: ${gone.map((v) => v.note).join("; ")}`);
   }
 
-  if (!checks.commands.length) {
-    log("no check was found in this project; building without a baseline");
-  } else if (!checks.ran) {
-    blockers.push(checks.blocker || "a check could not be executed");
-  } else if (!checks.green) {
-    blockers.push(checks.blocker || "the tree was already red");
+  if (runChecks) {
+    if (!checks.commands.length) {
+      log("no check was found in this project; building without a baseline");
+    } else if (!checks.ran) {
+      blockers.push(checks.blocker || "a check could not be executed");
+    } else if (!checks.green) {
+      blockers.push(checks.blocker || "the tree was already red");
+    }
   }
 
   if (blockers.length) {
