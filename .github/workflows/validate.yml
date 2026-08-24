@@ -14,7 +14,10 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
+      # Full history: the Lint specs step diffs against the PR's base.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: oven-sh/setup-bun@v2
 
@@ -27,12 +30,17 @@ jobs:
       - name: Validate workflow scripts
         run: bun .github/scripts/validate-workflow-script.ts
 
+      # Lint the specs the PR touches. The landed specs that predate `## Metric`
+      # warn on every run by design (W005, no rewrite of history), and reprinting
+      # those same lines on every PR buries the one warning a new spec brings.
       - name: Lint specs
         run: |
-          shopt -s nullglob
-          specs=(.bb/*/spec.md)
+          specs=()
+          while IFS= read -r spec; do
+            [ -f "$spec" ] && specs+=("$spec")
+          done < <(git diff --name-only "origin/${GITHUB_BASE_REF}...HEAD" -- '.bb/*/spec.md')
           if [ ${#specs[@]} -eq 0 ]; then
-            echo "No specs in .bb/: nothing to lint."
+            echo "No specs touched by this PR: nothing to lint."
             exit 0
           fi
           python3 plugins/bb/skills/spec/scripts/lint_spec.py "${specs[@]}"
