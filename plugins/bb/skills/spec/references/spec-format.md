@@ -103,8 +103,9 @@ gate and the review front cite it here instead of restating it.
 Instrumentation enters `## Tasks` as ordinary tasks with their own `verify:`, each
 citing the event rows it wires (`→ events <name>, <name>` in place of the behavior
 citation). An event row's own behavior citations are what the coverage table counts, so
-an instrumentation task covers its behaviors through the event row it cites, and the
-build machinery proves it with no change.
+an instrumentation task covers its behaviors through the event row it cites; the build
+side resolves that citation into behavior numbers when it loads the spec (implement's
+step 1), and the machinery downstream consumes numbers the way it always did.
 
 A Medium spec carries its behaviors inline, so an event row there has no numbered row to
 cite; its `behaviors` cell names the inline behavior in a short phrase instead. The

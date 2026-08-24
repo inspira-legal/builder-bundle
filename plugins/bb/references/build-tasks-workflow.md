@@ -94,7 +94,11 @@ stringified one):
 ```
 
 `tasks` carries only the ones still unticked at invoke time, in an order that already
-satisfies `dep:`. The agents re-read the spec anyway: `args` is the plan, the file on
+satisfies `dep:`. `behaviors` always holds numbers: a task written as `→ events <name>`
+(an instrumentation task, spec-format.md's task shape) gets its numbers resolved by the
+skill through the cited event rows' own behavior citations, before this value is built,
+so the agent's prompt and the coverage count read the same contract every other task
+gets. The agents re-read the spec anyway: `args` is the plan, the file on
 disk is the truth.
 
 An empty `tasks` is not a run. The skill sees it first and reports nothing to build
