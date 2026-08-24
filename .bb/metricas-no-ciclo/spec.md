@@ -153,7 +153,7 @@ Happy path, once built:
       skipped; the exit gate renders the section beside the coverage counter, blocks
       a value without provenance as an open item, and judges the event trace for
       Medium specs the lint cannot check → behavior 1 · dep: 1 · verify: reading
-- [ ] **3. The ninth front**: catalog row, availability probe, depth column, the
+- [x] **3. The ninth front**: catalog row, availability probe, depth column, the
       criteria-path enumeration in the fan-out shape grown to hand the finder
       `front-instrumentation.md`, that new reference (ladder, criteria, finding
       shape, payload and channel checks, verify addendum), the review SKILL.md
