@@ -15,7 +15,7 @@ Take the current branch all the way to landed (checks green, committed), then la
 
 One call answers the whole ground this run stands on: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/preflight.py` prints `gh_authenticated`, the branch with its resolved `diff_range`, the `pr` for this branch with its `checks` buckets, `project_kind`, `code_review_guide` and the spec the branch belongs to. Every step below reads that one payload instead of probing again.
 
-- For the PR path: `gh_authenticated: false` means the scopes are missing; instruct the user to run `gh auth login`.
+- For the PR path: `gh_authenticated: false` means `gh auth status` came back non-zero, so either nobody is logged in or `gh` is not on the PATH at all; instruct the user to run `gh auth login`. Authenticated is not the same as sufficient: the PR path needs the `repo` and `workflow` scopes, and a login predating the `workflow` scope fails on the first push that touches `.github/workflows/`. `gh auth refresh -s repo,workflow` is the remedy for that one.
 - A non-null `pr` is the default destination ("finish the PR").
 
 ## Step 0: Preflight, what kind of project is this
@@ -61,14 +61,21 @@ clean commit.
 
 1. **The project's checks** (background):
    `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py` walks the authority chain
-   (project CLAUDE.md and docs, then CI workflow files, then `package.json` / `justfile` /
-   `Makefile` / `pyproject.toml`) and prints `{commands, source, runnable, policy}`. Run
-   every command it returns as concurrent background shells. An empty `commands` is a real
-   answer, not a failure: a LexFlow app repo has no CI and no build, and its checks are the
-   three layers in `references/land-lexflow.md`. `runnable: false` is the other real answer,
-   the project's top authority forbidding local runs with `policy.evidence` as the line that
-   says so, and the landing carries those checks to CI instead. Say which checks ran, and
-   which ones the PR will run.
+   (the repo's own CLAUDE.md and docs, then CI workflow files, then `package.json` / `justfile` /
+   `Makefile` / `pyproject.toml`) and prints `{commands, source, truncated, resolved_count,
+   runnable, policy, notes, candidates, git_root}`. Run every command it returns as concurrent
+   background shells. An empty `commands` is a real answer, not a failure: a LexFlow app repo
+   has no CI and no build, and its checks are the three layers in
+   `references/land-lexflow.md`. **`source` is what tells the two empties apart**: `null` means
+   no tier resolved anything, and a named tier always answers with at least one command. When
+   `truncated` is true, `resolved_count` exceeded what `commands` carries, so say how many were
+   left out rather than reporting the list as the whole suite. `runnable: false` is the other
+   real answer, something forbidding local runs, with `policy.evidence` as the line that says so
+   and **`policy.scope` as who said it**: `repo` for the project's own documents, `machine` for
+   the user's `~/.claude/CLAUDE.md`. Name that scope when you explain why nothing ran, because
+   "this machine never runs checks locally" and "this project forbids it" are different facts
+   and only one of them travels with the repo. Either way the landing carries those checks to CI
+   instead. Say which checks ran, and which ones the PR will run.
 
 2. **Fix what they report**, in the main context, one change at a time, re-running
    the failing check after each. A red check is not a finding to be curated; it's a
@@ -145,7 +152,7 @@ The ground for the whole run in one call: `gh_authenticated`, branch, base, `mer
 
 ### ${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py
 
-Walk the checks authority chain without running anything: CLAUDE.md and docs, then CI workflow files, then `package.json` / `justfile` / `Makefile` / `pyproject.toml`. Prints `{commands, source, runnable, policy, candidates}`. Shared with `/bb:implement`, which also hands it to `workflows/build-tasks.js` as `args.checks`.
+Walk the checks authority chain without running anything: the repo's own CLAUDE.md and docs, then CI workflow files, then `package.json` / `justfile` / `Makefile` / `pyproject.toml`. The user's `~/.claude/CLAUDE.md` is read only for a prohibition on local runs, never for commands. Prints `{commands, source, truncated, resolved_count, runnable, policy, notes, candidates, git_root}`. Shared with `/bb:implement`, which also hands it to `workflows/build-tasks.js` as `args.checks`.
 
 ### ${CLAUDE_PLUGIN_ROOT}/scripts/inspect_pr_checks.py
 

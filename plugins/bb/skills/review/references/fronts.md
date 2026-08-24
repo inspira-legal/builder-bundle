@@ -40,19 +40,26 @@ call `/bb:ship` makes. What each field settles:
 - `branch_spec`: the spec this branch belongs to, resolved through the plugin-root
   `references/spec-state.md` contract. Null makes `contract` unavailable.
 - `ui`: whether the diff's hunks contain UI, decided by **what the hunks contain**,
-  never by the file's extension. `ui.markers` names which of markup, semantics,
-  interaction and style matched and `ui.examples` carries the lines that matched, so
-  an ambiguous hit gets read before the front is offered rather than after. **A
-  touched `.tsx` is not a UI change**: a component file whose diff only moves handler
-  bodies, wires analytics, adds hooks, types or imports leaves the markup as it was,
-  and an a11y finder sent at it burns an agent to report nothing. `ui.hit` false is
+  never by the file's extension. `ui.markers` names which of markup, template,
+  semantics, interaction and style matched and `ui.examples` carries the lines that
+  matched, so an ambiguous hit gets read before the front is offered rather than after.
+  `.bb/` is excluded from the diff it reads: a spec is prose about a UI, never the UI.
+  **A touched `.tsx` is not a UI change**: a component file whose diff only moves
+  handler bodies, wires analytics, adds hooks, types or imports leaves the markup as it
+  was, and an a11y finder sent at it burns an agent to report nothing. `ui.hit` false is
   the front going unoffered and unmentioned; a `.js` that builds a dialog does
   activate it.
 - `pr`: an open PR for this branch, the only thing `threads` needs.
-- `checks`: that PR's checks bucketed into `failing`, `pending` and `passing`, which
-  is `ci`'s evidence. A pending check is not evidence yet. Without a PR the branch's
-  last run is evidence enough, and `gh run list --branch <branch> --limit 1` is the
-  one probe left to the caller.
+- `checks`: that PR's checks, which is `ci`'s evidence. `failing`, `pending` and
+  `cancelled` are lists of checks, because the name and the run link are what the front
+  needs; `passing` and `skipping` are counts, because a green check has nothing to read.
+  Anything `gh` buckets outside those five lands in `other`, keyed by bucket. A pending
+  check is not evidence yet, and a cancelled one is neither a pass nor a failure: it is
+  a gate that never ran. **`available: false` is the only field that says none of it was
+  measured**: the other keys are there with empty values, so a reader going straight for
+  `failing` gets `[]` and not a missing key, and `exit_code` carries what `gh` returned.
+  Without a PR the branch's last run is evidence enough, and
+  `gh run list --branch <branch> --limit 1` is the one probe left to the caller.
 - `gh_authenticated`: false makes `threads` and `ci` unavailable together.
 
 A front whose probe comes back empty is **not offered** and not reported as a

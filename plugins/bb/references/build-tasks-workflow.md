@@ -73,8 +73,10 @@ tool asks for. It covers this build and nothing beyond it.
 
 Two stops sit outside the chain, and neither is a step of it. A user who denies the
 permission dialog has declined this dispatch: report the denial and ask what they want
-instead. A stage zero that resolves the project's checks and cannot run them stops the
-run before task 1, which is the policy case below.
+instead. A stage zero that resolves the project's checks and is then **refused permission**
+to run one stops the run before task 1: that is the `ran: false` case below. The policy
+case is not a stop at all, and the two are easy to confuse because both end with nothing
+having run.
 
 ## `args`
 
@@ -85,7 +87,14 @@ stringified one):
 {
   slug: "<slug>",
   specPath: ".bb/<slug>/spec.md",
-  checks: { commands: ["..."], source: "<which tier answered>", runnable: true | false },
+  checks: {
+    commands: ["..."],
+    source: "<which tier answered, null when none did>",
+    truncated: true | false,
+    resolved_count: 0,
+    runnable: true | false,
+    policy: { decision: "ci-only", source: "<path>", scope: "repo" | "machine", evidence: "<the line>" }
+  },
   reuseNotes: ["<one string per reuse note in ## Decisions>"],
   tasks: [
     { n: 1, title: "...", delivers: "...", behaviors: [2, 3], dep: [], verify: "..." }
@@ -96,9 +105,15 @@ stringified one):
 `checks` is `${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py`'s output, passed through
 whole (or `null` when the skill could not run it). The script walks the authority chain,
 so nothing in the run resolves it a second time: it is the same call implement's step 4
-and ship's Step 2 make. `runnable: false` means the project's top authority forbids
-running its checks in this session, and it is what makes stage zero skip the checks agent
-instead of spending it to be refused.
+and ship's Step 2 make. `runnable: false` means local runs are forbidden, and it is what
+makes stage zero skip the checks agent instead of spending it to be refused; `policy.scope`
+says which document forbade them, the repo's own or the user's `~/.claude/CLAUDE.md`.
+
+`null` and an empty `commands` are **not** the same ground, which is why `source` is in the
+payload: `null` means the skill never resolved anything and the agent has to walk the chain
+itself, while a non-null payload with `source: null` means the chain was walked and this
+project has no checks. The prompt says whichever of the two it is, so a repo without a suite
+is not sent looking for one.
 
 `tasks` carries only the ones still unticked at invoke time, in an order that already
 satisfies `dep:`. The agents re-read the spec anyway: `args` is the plan, the file on

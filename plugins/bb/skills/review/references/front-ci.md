@@ -13,8 +13,9 @@ extracts each failure snippet, exiting non-zero while anything is still red. Rea
 log it returns, not just the check name.
 
 - The availability probe already bucketed the checks (`fronts.md`: `checks.failing`,
-  `checks.pending`). A pending check is not evidence; wait for it to settle before
-  diagnosing.
+  `checks.pending`, `checks.cancelled`). A pending check is not evidence; wait for it to
+  settle before diagnosing. A cancelled one has no log to diagnose either: report it as a
+  gate that never ran, which is what a re-run fixes.
 - Without a PR the branch's last run stands in: `gh run list --branch <branch>` for
   the run, then `gh run view <run-id> --log-failed` for its log.
 - The workflow file for the failing check (`.github/workflows/…`) when the
