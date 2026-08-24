@@ -73,10 +73,20 @@ answers to it any more. Do not edit anything. A near-match under a different nam
 // passed nothing: the string is what the agent reads at runtime, and it cannot follow a
 // pointer at a doc.
 function checksPrompt(resolved) {
-  const listed =
-    resolved && resolved.commands && resolved.commands.length
-      ? `The caller resolved these from ${resolved.source}, in order: ${resolved.commands.join(" && ")}. Take that as the list unless the repo contradicts it.`
-      : `The caller resolved nothing, so resolve the checks yourself, highest authority first: CLAUDE.md and docs, then CI workflow files, then package.json / justfile / Makefile / pyproject.toml.`;
+  // Three different grounds, and an empty list is two of them: no payload at all, and a
+  // payload whose whole chain came back empty. `source` is what separates them, so a repo
+  // that genuinely has no checks is not sent to re-walk a chain that already answered.
+  let listed;
+  if (!resolved) {
+    listed = `No list was resolved for you, so resolve the checks yourself, highest authority first: the repo's own CLAUDE.md and docs, then CI workflow files, then package.json / justfile / Makefile / pyproject.toml.`;
+  } else if (resolved.commands && resolved.commands.length) {
+    const cut = resolved.truncated
+      ? ` That list is cut at ${resolved.commands.length} of ${resolved.resolved_count} resolved; confirm the remaining ones from the same source before you run anything.`
+      : "";
+    listed = `The caller resolved these from ${resolved.source}, in order: ${resolved.commands.join(" && ")}. Take that as the list unless the repo contradicts it.${cut}`;
+  } else {
+    listed = `The caller walked the whole chain and this project has no checks: no document, no CI workflow and no manifest named one. Confirm that and return an empty list. Do not go hunting for a suite that is not there.`;
+  }
 
   return `Establish this project's green baseline: confirm its checks, then run all of them once.
 
