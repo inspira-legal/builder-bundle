@@ -51,12 +51,25 @@ SEPARATOR_CELL = re.compile(r"^:?-{2,}:?$")
 # A `|` escaped as `\|` is content, not a column boundary.
 CELL_SPLIT = re.compile(r"(?<!\\)\|")
 # The Metric section's mechanical shape (references/spec-format.md): the Baseline and
-# Target bullets carry provenance as a parenthesized note, `skipped: <reason>` is the
-# whole section, and a numbered happy-path row is what an event row cites.
-METRIC_VALUE = re.compile(r"^\s*-\s*(Baseline|Target)\s*:", re.IGNORECASE)
-METRIC_SKIP = re.compile(r"^\s*(?:-\s*)?skipped\s*:\s*\S", re.IGNORECASE)
+# Target bullets carry provenance as a parenthesized note or an honest per-value
+# `skipped: <reason>`, a `skipped: <reason>` line alone replaces the whole section,
+# and a numbered happy-path row is what an event row cites.
+METRIC_VALUE = re.compile(r"^\s{0,3}[-*+]\s+\**(Baseline|Target)\**\s*:", re.IGNORECASE)
+VALUE_SKIP = re.compile(r"skipped\s*:\s*\S", re.IGNORECASE)
+# Anchored at column 0: an indented `skipped:` is a sub-note of some other bullet,
+# not the section-level skip, and must not silence the checks below.
+METRIC_SKIP = re.compile(r"^(?:[-*+]\s+)?skipped\s*:\s*\S", re.IGNORECASE)
 PROVENANCE = re.compile(r"\([^)]+\)")
 BEHAVIOR_ROW = re.compile(r"^\s{0,3}(\d+)[.)]\s")
+NUMBERED_CELL = re.compile(r"^(\d+)[.)]?$")
+# A new list item, an `okr:` or a `skipped:` line closes the bullet above it; anything
+# else directly under an open bullet is a wrapped or lazy continuation of it.
+NEW_ITEM = re.compile(r"^\s{0,3}(?:[-*+]\s|\d+[.)]\s|okr\s*:|skipped\s*:)", re.IGNORECASE)
+# A citation cell is numbers, commas and ranges once parenthesized notes are stripped;
+# anything else is prose naming an inline behavior, judged by the gate, not here.
+PAREN_NOTE = re.compile(r"\([^)]*\)")
+CITATION_CELL = re.compile(r"^[\d\s,;.–-]+$")
+CITED_RANGE = re.compile(r"(\d+)\s*[–-]\s*(\d+)")
 CITED_NUMBER = re.compile(r"\d+")
 
 
@@ -102,6 +115,22 @@ def check_frontmatter(lines):
             yield line_no, "E001", f"created `{value}` is not in YYYY-MM-DD format"
 
 
+def cited_rows(cell):
+    """Return the row numbers a behaviors cell cites, or None when the cell is prose."""
+    cleaned = PAREN_NOTE.sub(" ", cell).strip()
+    if not cleaned or not CITATION_CELL.match(cleaned):
+        return None
+    cited = set()
+
+    def expand(match):
+        cited.update(range(int(match.group(1)), int(match.group(2)) + 1))
+        return " "
+
+    rest = CITED_RANGE.sub(expand, cleaned)
+    cited.update(int(n) for n in CITED_NUMBER.findall(rest))
+    return cited
+
+
 def check_citations(metric_tables, behavior_rows):
     """Yield W007 for event rows citing a numbered behavior row that does not exist."""
     for rows in metric_tables:
@@ -115,22 +144,27 @@ def check_citations(metric_tables, behavior_rows):
         for line_no, cells in rows[2:] if is_separator else rows[1:]:
             if column >= len(cells):
                 continue
-            for cited in CITED_NUMBER.findall(cells[column]):
-                if int(cited) not in behavior_rows:
+            cited = cited_rows(cells[column])
+            if cited is None:
+                continue
+            for n in sorted(cited):
+                if n not in behavior_rows:
                     yield (
                         line_no,
                         "W007",
-                        f"event row cites behavior {cited}, and `## Behavior` has no row {cited}",
+                        f"event row cites behavior {n}, and `## Behavior` has no row {n}",
                     )
 
 
 def check_body(lines):
     """Yield problems with sections, tables, and the Metric section's shape."""
     seen = set()
-    in_fence = False
+    fence_marker = None  # the marker (``` or ~~~) that opened the current fence
     section = None  # the current `##` heading, lowercased
     table = []  # (line_no, cells) of the current run of table rows
-    behavior_rows = set()  # the numbered happy-path rows an event row can cite
+    behavior_marks = []  # numbered-list markers under `## Behavior`, in file order
+    table_rows = set()  # numbered rows collected from a `## Behavior` table
+    metric_line = None  # the `## Metric` heading's line, anchors section-level warnings
     metric_values = []  # [line_no, key, text] of the Baseline and Target bullets
     metric_tables = []  # the Metric section's table runs, kept for the citation check
     metric_skipped = False
@@ -173,18 +207,30 @@ def check_body(lines):
         # the table sits under.
         if section == "metric":
             metric_tables.append(list(table))
+        elif section == "behavior":
+            # A behavior map written as a table still numbers its rows in the first
+            # cell; those numbers are citable the same as a list's.
+            for _, cells in table:
+                numbered = cells and NUMBERED_CELL.match(cells[0])
+                if numbered:
+                    table_rows.add(int(numbered.group(1)))
 
     for i, line in enumerate(lines, start=1):
         # A fence ends the current run of rows; two tables around a code block are
-        # two tables, not one with a mismatched header.
-        if FENCE.match(line) or in_fence:
+        # two tables, not one with a mismatched header. Only the marker that opened
+        # a fence closes it: a ``` line inside a ~~~ block is content.
+        fence = FENCE.match(line)
+        if fence_marker is not None:
+            if fence and fence.group(1) == fence_marker:
+                fence_marker = None
+            continue
+        if fence:
+            fence_marker = fence.group(1)
             open_value = None
             if table:
                 end_table()
                 yield from flush(table)
                 table = []
-            if FENCE.match(line):
-                in_fence = not in_fence
             continue
 
         if line.strip().startswith("|"):
@@ -203,6 +249,8 @@ def check_body(lines):
             name = raw.lower()
             seen.add(name)
             section = name
+            if name == "metric":
+                metric_line = i
             if name in DEAD_SECTIONS:
                 yield i, "E003", DEAD_SECTIONS[name].format(raw=raw)
             continue
@@ -210,7 +258,7 @@ def check_body(lines):
         if section == "behavior":
             row = BEHAVIOR_ROW.match(line)
             if row:
-                behavior_rows.add(int(row.group(1)))
+                behavior_marks.append(int(row.group(1)))
         elif section == "metric":
             if METRIC_SKIP.match(line):
                 metric_skipped = True
@@ -218,8 +266,9 @@ def check_body(lines):
             if value:
                 metric_values.append([i, value.group(1), line])
                 open_value = len(metric_values) - 1
-            elif open_value is not None and line.strip() and line[:1].isspace():
-                # A wrapped bullet: the provenance note may close on this line.
+            elif open_value is not None and line.strip() and not NEW_ITEM.match(line):
+                # A wrapped bullet, indented or a CommonMark lazy continuation: the
+                # provenance note may close on this line.
                 metric_values[open_value][2] += " " + line.strip()
             else:
                 open_value = None
@@ -238,7 +287,23 @@ def check_body(lines):
 
     # An explicit skip is the whole section, so nothing below applies to it.
     if "metric" in seen and not metric_skipped:
+        # A heading alone does not satisfy the mandate: the block carries both
+        # bullets, or the section is the one skip line.
+        present = {key.lower() for _, key, _ in metric_values}
+        for key in ("Baseline", "Target"):
+            if key.lower() not in present:
+                yield (
+                    metric_line or 1,
+                    "W006",
+                    f"no `{key}:` bullet: the metric block carries baseline and target, "
+                    "or the section is one `skipped: <reason>` line",
+                )
         for line_no, key, text in metric_values:
+            rest = text[METRIC_VALUE.match(text).end() :].strip()
+            if VALUE_SKIP.match(rest):
+                # An honest per-value skip (`Baseline: skipped: not-instrumented`)
+                # needs no provenance; it flags the instrumentation as first work.
+                continue
             if not PROVENANCE.search(text):
                 yield (
                     line_no,
@@ -246,10 +311,17 @@ def check_body(lines):
                     f"`{key}:` without provenance: name the source in a parenthesized "
                     "note on the same bullet (a query, a log, a named person's estimate)",
                 )
-        # Medium specs carry behaviors inline, with no numbered rows to cite; the gate
-        # judges their trace instead.
-        if "behavior" in seen:
-            yield from check_citations(metric_tables, behavior_rows)
+        # Markers all spelling `1.` are a CommonMark auto-numbered list that renders
+        # 1, 2, 3…; the citable numbers are what the reader sees, not the literals.
+        if len(behavior_marks) > 1 and len(set(behavior_marks)) == 1:
+            rows = set(range(behavior_marks[0], behavior_marks[0] + len(behavior_marks)))
+        else:
+            rows = set(behavior_marks)
+        rows |= table_rows
+        # A `## Behavior` in prose, or a table with no numbered rows, leaves nothing
+        # to cite; the gate judges the trace there, the same as a Medium spec.
+        if rows:
+            yield from check_citations(metric_tables, rows)
 
 
 def lint(path):
