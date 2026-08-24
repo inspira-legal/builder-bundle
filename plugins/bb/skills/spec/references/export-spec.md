@@ -15,11 +15,30 @@ not at all.
 **Test:** "Will the user change any behavior because of this?"
 
 - **Yes** → `Hypothesis` required → trio (`Connected OKR` + `Expected Impact` +
-  `Metric`) required. If `.bb/<slug>/discovery.md` carries a `## Hypothesis`,
-  render it here; if the trio can't be filled from the spec or that record,
-  ask; don't invent.
+  `Metric`) required. Render it from the two records, per the sources below.
 - **No** (internal feature, design pattern, compliance) → trio omitted entirely,
   no placeholder, no "N/A".
+
+When the spec's `## Metric` is `skipped: <reason>`, the trio is omitted whole
+under the same all-or-nothing rule: no placeholder, no "N/A". The skip's reason
+stays in the spec; the export does not carry it.
+
+### Where each field reads from
+
+The trio renders from records already written, without asking:
+
+- **Hypothesis**: the `## Hypothesis` section of `.bb/<slug>/discovery.md`,
+  which arrives in testable form from the discover phase.
+- **Metric**: the `Metric:` bullet of the spec's `## Metric` section.
+- **Expected Impact**: the `Baseline:` and `Target:` bullets of `## Metric`, as
+  `baseline → target`, keeping the target's timeframe.
+- **Connected OKR**: the `okr:` line of `## Metric`.
+
+The export asks only for a field genuinely absent from both records, and asks
+for that field alone in the one batched round: a trio that needs an OKR no
+record carries means the export asks for the OKR and never invents it. A spec
+that predates `## Metric` resolves the same way, with the missing fields asked
+as before.
 
 ## Auto-sizing the export
 
@@ -38,6 +57,7 @@ where the user wants them (default: alongside the spec in
 
 Map from the spec: the opening and the free top half → context and framing;
 `## Decisions` → Decision rationale; `## Out of scope` → Out of scope; `## Behavior` → Behaviors;
+`## Metric` → the trio's `Metric`, `Expected Impact`, and `Connected OKR` (per the trio rule above);
 the behavior map's `WHEN … THEN …` rows → Definition of done criteria. A spec written before
 the rename spells those `## decisions`, `## out of scope` and `## behavior`, same sections,
 mapped the same way. The framing this export opens with comes from
@@ -55,7 +75,7 @@ mapped the same way. The framing this export opens with comes from
 
 <!-- Trio below: only if the feature changes user behavior (see trio rule). -->
 
-**Hypothesis:** If we deliver X, we expect to see Y in metric Z
+**Hypothesis:** If [change], the [metric] moves from [baseline] to [target] within [timeframe]
 **Connected OKR:** [metric name]: [how this initiative moves that indicator]
 **Expected Impact:** [baseline → target]
 **Metric:** [how to measure]
@@ -178,6 +198,6 @@ Spec exported. What to carry to each destination:
 
 ## Don't invent
 
-Every field renders from the spec or from an answer the user gave. A field the
-spec doesn't settle gets asked (one round, batched) or left blank; blank beats
-invented.
+Every field renders from the spec, from the discovery record, or from an answer
+the user gave. A field neither record settles gets asked (one round, batched) or
+left blank; blank beats invented.

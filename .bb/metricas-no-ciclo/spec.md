@@ -162,7 +162,7 @@ Happy path, once built:
 - [x] **4. Discover closes upstream**: baseline and target with provenance in the
       frame capture, the hardened hypothesis format in fit, the phase-table wording
       in the discover SKILL.md → behavior 6 · dep: — · verify: reading
-- [ ] **5. Export reads instead of asking**: the trio sourced from the discovery
+- [x] **5. Export reads instead of asking**: the trio sourced from the discovery
       record and `## Metric` by path in `export-spec.md`, asking only for a genuinely
       absent field, skip omitting the trio whole → behavior 7 · dep: 1 · verify:
       reading
