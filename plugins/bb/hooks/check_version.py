@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
-"""Keep the installed bb current, without asking and without waiting.
+"""Keep the installed bb current, without asking, without waiting, and without
+saying anything.
 
-Two entry points live here. `report()` runs in process from the SessionStart hook:
-it reads the stamp, returns the line the session context carries when the last run
-installed something, and says whether today's check is still owed. The `__main__`
-path is the detached worker that does the network half and writes the stamp back.
+The SessionStart hook calls `claim_today()` in process, which is one file read on
+the common path, and spawns the `__main__` path here when the day is still owed.
+That path is the detached worker: it guards the marketplace clone, runs the two
+commands a person would run, and records what it did.
 
-The stamp is the only channel between the two, and it lives under
+The stamp holds the claimed day and the last outcome. It lives under
 `CLAUDE_PLUGIN_DATA` because the install path carries the version and is replaced
-on every update.
+on every update. Nothing reads the outcome back into a session: it is there for
+whoever is diagnosing a quiet install.
 
 Every failure here is silent: the hook's contract is exit 0 and no output, and a
 resolution that comes back empty means nothing runs.
@@ -28,17 +30,14 @@ PLUGIN_NAME = "bb"
 STAMP_NAME = "update-stamp.json"
 CLAIM_PREFIX = "update-claim-"
 
-# What the worker records in the stamp's `outcome`. `report()` speaks for
-# `installed` alone; the rest are read by whoever is diagnosing a quiet install.
+# What the worker records in the stamp's `outcome`, for whoever is diagnosing a
+# quiet install. Nothing in a session reads them back.
 OUTCOME_INSTALLED = "installed"
-OUTCOME_CURRENT = "current"
 OUTCOME_SKIPPED = "skipped"
 OUTCOME_FAILED = "failed"
 
-# Where the version lives inside the marketplace repository, and how long the
-# worker gives the network and the CLI. The worker is detached, so a command that
-# hangs would otherwise sit there until the machine sleeps.
-REMOTE_MANIFEST = "plugins/bb/.claude-plugin/plugin.json"
+# How long the worker gives the network and the CLI. The worker is detached, so a
+# command that hangs would otherwise sit there until the machine sleeps.
 GIT_TIMEOUT = 60
 CLI_TIMEOUT = 300
 
@@ -50,7 +49,6 @@ class Target(NamedTuple):
     clone: str  # the marketplace's git clone, from `installLocation`
     scope: str  # `user` or `project`
     project_path: str | None  # where a project scoped update has to run
-    version: str  # the version this session loaded
 
 
 def plugin_root() -> str | None:
@@ -88,11 +86,6 @@ def marketplace_of(root: str | None) -> str | None:
     return parts[0] if parts else None
 
 
-def version_of(root: str | None) -> str | None:
-    parts = _segments(root) if root else None
-    return parts[1] if parts else None
-
-
 def read_json(path: str) -> dict:
     """The file as a dict. Missing and malformed both read as empty, on purpose:
     nothing here is worth an exception on a session start."""
@@ -126,13 +119,12 @@ def read_stamp(path: str | None) -> dict:
 
 
 def write_stamp(path: str | None, **fields: str) -> bool:
-    """The stamp, replaced whole with `date` plus whatever the caller records.
-    `date` defaults to today, and a caller that is rewriting the stamp without
-    claiming the day passes the stamp's own date back in to keep it. Returns
-    whether it landed, so the worker can stop when it cannot claim."""
+    """The stamp, replaced whole with today's date plus whatever the caller
+    records. Returns whether it landed, so the worker can stop when it cannot
+    claim."""
     if not path:
         return False
-    stamp = {"date": fields.pop("date", "") or today()}
+    stamp = {"date": today()}
     stamp.update({key: value for key, value in fields.items() if value})
     # Through a temp file in the same directory. A worker killed mid write would
     # otherwise leave truncated JSON, which reads as a first run and drops the
@@ -150,23 +142,13 @@ def write_stamp(path: str | None, **fields: str) -> bool:
 
 
 def _carried(stamp: dict) -> dict:
-    """The fields a rewrite keeps: what the last run did, and whether its line
-    was already handed to a session."""
+    """The fields a claim keeps, so a day that installs nothing still carries the
+    reason the day before it stopped."""
     return {
         key: str(stamp.get(key) or "")
-        for key in ("outcome", "from", "to", "reason", "reported")
+        for key in ("outcome", "reason")
         if stamp.get(key)
     }
-
-
-def _mark_reported(path: str | None, stamp: dict) -> None:
-    """The install line, marked as handed over. The stamp's own date goes back
-    in, because announcing is not claiming the day."""
-    write_stamp(
-        path,
-        date=str(stamp.get("date") or ""),
-        **dict(_carried(stamp), reported="yes"),
-    )
 
 
 def today() -> str:
@@ -223,7 +205,7 @@ def resolve() -> Target | None:
     parts = _segments(root) if root else None
     if not root or not parts:
         return None
-    marketplace, version = parts
+    marketplace = parts[0]
 
     known = read_json(os.path.join(CLAUDE_DIR, "plugins", "known_marketplaces.json"))
     entry = known.get(marketplace)
@@ -254,51 +236,12 @@ def resolve() -> Target | None:
         clone=clone,
         scope=str(record.get("scope")),
         project_path=record.get("projectPath") or None,
-        version=str(record.get("version") or version),
     )
 
 
-def report() -> str | None:
-    """The line for the session context, or None when there is nothing to say.
-
-    Only an install speaks, and it speaks once. Handing the line over marks the
-    stamp, so the sessions that follow the announcement are silent again. A first
-    run, a day that installed nothing, and a run that failed all return None,
-    which is the silence the feature promises.
-    """
-    path = stamp_path()
-    stamp = read_stamp(path)
-    if stamp.get("outcome") != OUTCOME_INSTALLED or stamp.get("reported"):
-        return None
-    to = str(stamp.get("to") or "")
-    if not to:
-        return None
-    came_from = str(stamp.get("from") or "")
-    origin = f" from {came_from}" if came_from else ""
-    running = version_of(plugin_root())
-    _mark_reported(path, stamp)
-    if running == to:
-        return (
-            f"- **bb updated itself to {to}**{origin}, and this session is running it. "
-            f"The CHANGELOG entry for {to} is what changed."
-        )
-    return (
-        f"- **bb {to} is installed**{origin}, and this session is still running "
-        f"{running or 'the version it loaded'}. The new one loads on the next start."
-    )
-
-
-def _record(
-    outcome: str, reason: str = "", came_from: str = "", to: str = ""
-) -> None:
-    """What this run did, into the stamp. `from` is a Python keyword, so it
-    reaches `write_stamp` through a dict."""
-    write_stamp(
-        stamp_path(),
-        outcome=outcome,
-        reason=reason,
-        **{"from": came_from, "to": to},
-    )
+def _record(outcome: str, reason: str = "") -> None:
+    """What this run did, into the stamp."""
+    write_stamp(stamp_path(), outcome=outcome, reason=reason)
 
 
 def _run(argv: list[str], timeout: int, cwd: str | None = None) -> str | None:
@@ -367,42 +310,15 @@ def _default_branch(git: str, clone: str) -> str | None:
     return None
 
 
-def _remote_version(git: str, clone: str) -> str | None:
-    """The version `plugin.json` carries on the tip that was just fetched."""
-    argv = [git, "-C", clone, "show", f"FETCH_HEAD:{REMOTE_MANIFEST}"]
-    out = _run(argv, GIT_TIMEOUT)
-    if not out:
-        return None
-    try:
-        manifest = json.loads(out)
-    except ValueError:
-        return None
-    version = manifest.get("version") if isinstance(manifest, dict) else None
-    return str(version) if version else None
-
-
-def _version_tuple(version: str) -> tuple[int, ...] | None:
-    parts = version.split(".")
-    if not all(part.isdigit() for part in parts):
-        return None
-    return tuple(int(part) for part in parts)
-
-
-def _ahead(remote: str, installed: str) -> bool:
-    """Whether the remote version is greater, compared as integer tuples so
-    `2.9.0` reads below `2.16.0`. A version that does not parse is never ahead,
-    which is what keeps a downgrade off the table."""
-    left, right = _version_tuple(remote), _version_tuple(installed)
-    if left is None or right is None:
-        return False
-    return left > right
-
-
 def main() -> int:
-    """The detached worker: fetch, compare, guard, install, record.
+    """The detached worker: guard, install, record.
 
-    Every path ends in one stamp write and exit 0. The stamp is what the next
-    session reads, and a day that installs nothing still says why.
+    Nothing is compared first. `claude plugin update` is forward only and the day
+    is already claimed, so a run with nothing to install costs one CLI call that
+    nobody waits on, and reading the remote version would buy only a name for a
+    line this feature does not print.
+
+    Every path ends in one stamp write and exit 0.
     """
     target = resolve()
     if not target:
@@ -422,20 +338,6 @@ def main() -> int:
     branch = _default_branch(git, target.clone)
     if not branch:
         _record(OUTCOME_FAILED, reason="the remote default branch did not answer")
-        return 0
-    fetch = [git, "-C", target.clone, "fetch", "--quiet", "origin", branch]
-    if _run_or_fail(fetch, GIT_TIMEOUT, f"git fetch origin {branch} failed") is None:
-        return 0
-
-    remote = _remote_version(git, target.clone)
-    if not remote:
-        _record(
-            OUTCOME_FAILED,
-            reason=f"no version read from {REMOTE_MANIFEST} on {branch}",
-        )
-        return 0
-    if not _ahead(remote, target.version):
-        _record(OUTCOME_CURRENT, reason=f"{branch} is at {remote}")
         return 0
 
     # The guard: `claude plugin update` installs the clone's working tree, so a
@@ -481,7 +383,7 @@ def main() -> int:
     if _run_or_fail(install, CLI_TIMEOUT, reason, cwd) is None:
         return 0
 
-    _record(OUTCOME_INSTALLED, came_from=target.version, to=remote)
+    _record(OUTCOME_INSTALLED, reason=f"{plugin} from {branch}")
     return 0
 
 

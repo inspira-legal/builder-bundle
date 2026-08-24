@@ -17,10 +17,10 @@ block leaves CLAUDE.md and BUILDER-BUNDLE.md leaves the disk. The contract is
 references/bb-config.md. Every failure exits 0 and silently: a hook must never
 block a session.
 
-The same hook carries bb's own update: check_version.report() adds a line when the
-last worker installed something, and a new worker is spawned when today's check is
-still owed. Nothing waits on it, and it is outside the opt out, which only ever
-governed the instructions file.
+The same hook carries bb's own update: a detached worker is spawned when today's
+check is still owed, and it says nothing in the session either way. Nothing waits
+on it, and it is outside the opt out, which only ever governed the instructions
+file.
 """
 
 from __future__ import annotations
@@ -77,10 +77,6 @@ INVITATION = (
 )
 
 HEADING = "\n## Who is on the other side\n\n"
-
-# The update line sits under its own heading, so it is never read as one more
-# bullet of the profile block it follows.
-UPDATE_HEADING = "\n\n## bb's own version\n\n"
 
 WORKER = "check_version.py"
 
@@ -296,23 +292,20 @@ def spawn_worker(here: str) -> None:
         )
 
 
-def update_note(here: str) -> str:
-    """The line the last worker earned, and today's spawn when the day is owed.
+def spawn_update(here: str) -> None:
+    """Today's worker, when the day is still owed. Says nothing either way.
 
     Wrapped whole: bb's own update is worth no part of the session, so anything
     that goes wrong in here leaves the instructions half of the hook untouched.
     """
     try:
         check_version = load_check_version(here)
-        line = check_version.report()
-        path = check_version.stamp_path()
-        if check_version.claim_today(path):
-            # The date is claimed before the spawn, so a second session starting
-            # this same moment reads today and spawns nothing.
+        # The day is claimed before the spawn, so a second session starting this
+        # same moment loses the claim and spawns nothing.
+        if check_version.claim_today(check_version.stamp_path()):
             spawn_worker(here)
-        return (UPDATE_HEADING + line) if line else ""
     except Exception:
-        return ""
+        return
 
 
 def sync(here: str, config: dict) -> None:
@@ -333,7 +326,7 @@ def sync(here: str, config: dict) -> None:
 
 def main() -> int:
     here = os.path.dirname(os.path.abspath(__file__))
-    update = update_note(here)
+    spawn_update(here)
     frame = ""
     config = read_config()
     if not config:
@@ -346,14 +339,13 @@ def main() -> int:
     elif config.get("custom_instructions", True) is False:
         # Only an explicit false opts out. An absent or unparsable value reads as
         # yes, the same direction as a missing profile flag: more context, never
-        # less. The opt out is the instructions file alone; the update line is
-        # not a thing anyone asked to stop.
+        # less. The opt out is the instructions file alone; the update is not
+        # a thing anyone asked to stop.
         remove()
     else:
         sync(here, config)
-    context = frame + update if frame else update.lstrip("\n")
-    if context:
-        emit(context)
+    if frame:
+        emit(frame)
     return 0
 
 
