@@ -11,17 +11,17 @@ door as any other run.
 
 ## The catalog
 
-| id                | Label           | What it covers                                                                                                                        | Available when                                                                                          | Reference                  |
-| ----------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | -------------------------- |
-| `correctness`     | Correctness     | bugs in the diff, logic, edges, contracts, concurrency, security                                                                      | the diff is not empty                                                                                   | `front-correctness.md`     |
-| `quality`         | Quality         | behavior-preserving cleanup, reuse, simplification, efficiency, dead weight, altitude, consistency                                    | the diff is not empty                                                                                   | `front-quality.md`         |
-| `rules`           | Project rules   | deviations from the repo's `CODE_REVIEW_GUIDE.md`                                                                                     | there is a `CODE_REVIEW_GUIDE.md` at the root                                                           | `front-rules.md`           |
-| `contract`        | Spec contract   | the diff built what was agreed, and only that                                                                                         | the branch has a spec (`.bb/<slug>/spec.md`)                                                            | `front-contract.md`        |
-| `a11y`            | Accessibility   | WCAG AA on the UI the diff touched, semantics, accessible name, keyboard, focus, contrast                                             | the diff touches a UI file                                                                              | `front-a11y.md`            |
-| `design`          | Design system   | raw values where a token exists, rebuilt components, missing states, drift from the direction                                         | the diff touches a UI file and a design source resolves                                                 | `front-design.md`          |
-| `instrumentation` | Instrumentation | added interactions missing their planned event, names off the convention, payloads past the payload rule, events to an unplanned sink | a ladder rung resolves: the branch spec's events table, or the project's analytics convention in source | `front-instrumentation.md` |
-| `threads`         | PR threads      | unresolved review comments                                                                                                            | there is an open PR for the branch                                                                      | `front-threads.md`         |
-| `ci`              | CI              | red checks, evidence, diagnosis, root cause                                                                                           | a check is failing on the PR or on the branch's last run                                                | `front-ci.md`              |
+| id                | Label           | What it covers                                                                                                                        | Available when                                                            | Reference                  |
+| ----------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | -------------------------- |
+| `correctness`     | Correctness     | bugs in the diff, logic, edges, contracts, concurrency, security                                                                      | the diff is not empty                                                     | `front-correctness.md`     |
+| `quality`         | Quality         | behavior-preserving cleanup, reuse, simplification, efficiency, dead weight, altitude, consistency                                    | the diff is not empty                                                     | `front-quality.md`         |
+| `rules`           | Project rules   | deviations from the repo's `CODE_REVIEW_GUIDE.md`                                                                                     | there is a `CODE_REVIEW_GUIDE.md` at the root                             | `front-rules.md`           |
+| `contract`        | Spec contract   | the diff built what was agreed, and only that                                                                                         | the branch has a spec (`.bb/<slug>/spec.md`)                              | `front-contract.md`        |
+| `a11y`            | Accessibility   | WCAG AA on the UI the diff touched, semantics, accessible name, keyboard, focus, contrast                                             | the diff touches a UI file                                                | `front-a11y.md`            |
+| `design`          | Design system   | raw values where a token exists, rebuilt components, missing states, drift from the direction                                         | the diff touches a UI file and a design source resolves                   | `front-design.md`          |
+| `instrumentation` | Instrumentation | added interactions missing their planned event, names off the convention, payloads past the payload rule, events to an unplanned sink | the diff adds interactions or wires analytics, and a ladder rung resolves | `front-instrumentation.md` |
+| `threads`         | PR threads      | unresolved review comments                                                                                                            | there is an open PR for the branch                                        | `front-threads.md`         |
+| `ci`              | CI              | red checks, evidence, diagnosis, root cause                                                                                           | a check is failing on the PR or on the branch's last run                  | `front-ci.md`              |
 
 ## Probe availability before asking
 
@@ -64,7 +64,12 @@ batch of cheap read-only calls (parallel background where possible):
   (or `design/`). One resolving makes `design` available; the resolution order and
   what each rung is worth are `front-design.md`'s.
 - instrumentation ladder, probed when the diff adds interactions or wires
-  analytics: rung 1 is the branch spec's `## Metric` events table (the spec the
+  analytics. Both signals are executable: the UI grep above names the interaction
+  hunks, and the analytics ones come from a second grep over the same added lines
+  for an emit site (a `track(`/`emit(`/`capture`/`logEvent` call, or an import
+  from the project's analytics or events module), which is what catches an emit
+  added in a service file no UI grep sees. Rung 1 is the branch spec's `## Metric`
+  events table or its explicit `Events: none` line (the spec the
   lookup above resolved), rung 2 is the analytics convention the project itself
   shows in source (a typed event map, an emit wrapper, a generated client, found
   where the diff's hunks or the project's analytics module already route events).
@@ -89,11 +94,11 @@ wrapper).
 
 ## Depth: two tiers by default, a third only when asked
 
-| Diff                             | Correctness angles                                | Quality | Rules      | Contract | A11y    | Design  | Instr   | Verify                         | Sweep   | Report cap |
-| -------------------------------- | ------------------------------------------------- | ------- | ---------- | -------- | ------- | ------- | ------- | ------------------------------ | ------- | ---------- |
-| ≲2 files / ≲100 lines            | the first 2 of the angle set, inline (no fan-out) | inline  | inline     | inline   | inline  | inline  | inline  | self-check in the main context | none    | 6          |
-| **any larger diff, the default** | the first 3 of the angle set (3 agents)           | 1 agent | 1 agent    | 1 agent  | 1 agent | 1 agent | 1 agent | 1-vote grouped by location     | none    | 10         |
-| **deep, only on request**        | the whole angle set (up to 5 agents)              | 1 agent | 1–2 agents | 1 agent  | 1 agent | 1 agent | 1 agent | 1-vote grouped by location     | 1 agent | 15         |
+| Diff                             | Correctness angles                                | Quality | Rules      | Contract | A11y    | Design  | Instrumentation | Verify                         | Sweep   | Report cap |
+| -------------------------------- | ------------------------------------------------- | ------- | ---------- | -------- | ------- | ------- | --------------- | ------------------------------ | ------- | ---------- |
+| ≲2 files / ≲100 lines            | the first 2 of the angle set, inline (no fan-out) | inline  | inline     | inline   | inline  | inline  | inline          | self-check in the main context | none    | 6          |
+| **any larger diff, the default** | the first 3 of the angle set (3 agents)           | 1 agent | 1 agent    | 1 agent  | 1 agent | 1 agent | 1 agent         | 1-vote grouped by location     | none    | 10         |
+| **deep, only on request**        | the whole angle set (up to 5 agents)              | 1 agent | 1–2 agents | 1 agent  | 1 agent | 1 agent | 1 agent         | 1-vote grouped by location     | 1 agent | 15         |
 
 **Size alone never reaches the third row.** A big diff runs the middle tier: the
 same three angles a medium one gets, no sweep, because a review that silently
@@ -149,7 +154,10 @@ change it reviewed.
    angle/lens set and its candidate cap. The `design` finder's scope block also
    carries the resolved design sources (`front-design.md`, §1), and the
    `instrumentation` finder's the resolved rungs (`front-instrumentation.md`, §1),
-   so the finder cites instead of re-resolving.
+   so the finder cites instead of re-resolving. A path a front's reference writes
+   as `${CLAUDE_PLUGIN_ROOT}/...` is resolved by this caller to an absolute path
+   before it enters the scope block; a dispatched agent has no plugin root to
+   expand.
 3. **Barrier before verify.** Pool every finder's candidates first: verification
    groups them by `file:line`, which needs all of them (`verify.md`).
 4. **`threads` and `ci` don't fan out**: they're script/`gh` reads followed by

@@ -46,7 +46,10 @@ scope is the one path that needs neither a repo nor a diff.
   that PR; posting the review requires explicit confirmation.
 - **Direct front ask**: the user already named the front ("CI broke", "answer the
   comments", "check it followed the rules"): that front is the scope. Skip step
-  2's question and go straight to it.
+  2's question and go straight to it. Skipping the question never skips the probe:
+  a front whose sources resolve there (instrumentation's ladder, design's) still
+  gets them resolved first, because the finder's scope block carries the resolved
+  rungs, and an ask whose probe comes back empty gets the remedy line, not a run.
 - **Surface audit**: the user named a **surface** instead of the branch: a folder,
   a set of files, a URL or a running page ("accessibility audit", "design review of
   this page", "does this folder follow the design system"). The named target is
