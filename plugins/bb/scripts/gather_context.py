@@ -12,21 +12,26 @@ Requires:
 Usage:
   python gather_context.py
   python gather_context.py --repo /path/to/repo
-  python gather_context.py --base develop
+  python gather_context.py --base develop --no-fetch
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import subprocess
-import sys
 from pathlib import Path
 
 MAX_DIFF_CHARS = 100000
 
 
 def run_ok(cmd: list[str], cwd: str | None = None) -> str | None:
-    p = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
+    # The encoding is named because `text=True` decodes in the locale codec, which is
+    # cp1252 on Windows: one accented character in a filename, a commit subject or a
+    # hunk would raise before this script prints anything at all.
+    p = subprocess.run(
+        cmd, cwd=cwd, capture_output=True, text=True, encoding="utf-8", errors="replace"
+    )
     return p.stdout.strip() if p.returncode == 0 else None
 
 
@@ -41,9 +46,14 @@ def get_base_branch(cwd: str) -> str | None:
     )
 
 
-def resolve_merge_base(base: str, cwd: str) -> tuple[str | None, str | None]:
-    """Return (merge_base_sha, ref_used). Prefer origin/<base>, fall back to local <base>."""
-    run_ok(["git", "fetch", "origin", base], cwd=cwd)  # best-effort; offline is fine
+def resolve_merge_base(base: str, cwd: str, fetch: bool = True) -> tuple[str | None, str | None]:
+    """Return (merge_base_sha, ref_used). Prefer origin/<base>, fall back to local <base>.
+
+    `fetch=False` is for the caller whose run already fetched this base: `preflight.py`
+    imports this function, and a review that reads both payloads pays the round trip once.
+    """
+    if fetch:
+        run_ok(["git", "fetch", "origin", base], cwd=cwd)  # best-effort; offline is fine
     for ref in (f"origin/{base}", base):
         mb = run_ok(["git", "merge-base", ref, "HEAD"], cwd=cwd)
         if mb:
@@ -72,33 +82,31 @@ def find_pr_template(cwd: str) -> str | None:
     return None
 
 
-def parse_args(argv: list[str]) -> tuple[str, str | None]:
-    repo_path = "."
-    base_override = None
-    args = argv[:]
-    while args:
-        if args[0] == "--repo" and len(args) > 1:
-            repo_path = args[1]
-            args = args[2:]
-        elif args[0] == "--base" and len(args) > 1:
-            base_override = args[1]
-            args = args[2:]
-        else:
-            args = args[1:]
-    return repo_path, base_override
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Gather this branch's context relative to its base, as JSON."
+    )
+    parser.add_argument("--repo", default=".", help="Path inside the target git repository.")
+    parser.add_argument("--base", default=None, help="Base branch, overriding the repo default.")
+    parser.add_argument(
+        "--no-fetch",
+        action="store_true",
+        help="Skip the base fetch, for a run that already did it.",
+    )
+    return parser.parse_args()
 
 
-def main() -> None:
-    repo_path, base_override = parse_args(sys.argv[1:])
+def main() -> int:
+    args = parse_args()
 
-    git_root = find_git_root(repo_path)
+    git_root = find_git_root(args.repo)
     if not git_root:
         print(json.dumps({"error": "Not inside a git repository"}))
-        sys.exit(1)
+        return 1
 
     cwd = git_root
-    base = base_override or get_base_branch(cwd) or "main"
-    merge_base, _ = resolve_merge_base(base, cwd)
+    base = args.base or get_base_branch(cwd) or "main"
+    merge_base, _ = resolve_merge_base(base, cwd, fetch=not args.no_fetch)
 
     result: dict = {
         "git_root": cwd,
@@ -133,7 +141,8 @@ def main() -> None:
         result["pr_template"] = template
 
     print(json.dumps(result, indent=2))
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

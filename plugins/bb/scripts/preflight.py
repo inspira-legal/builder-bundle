@@ -6,8 +6,8 @@ buckets, whether the repo has a `CODE_REVIEW_GUIDE.md`, which spec this branch
 belongs to, whether this is a LexFlow app, and whether the diff's hunks contain UI.
 
 Consumed by /bb:ship (Prerequisites and Step 0) and by /bb:review (the availability
-probe in `skills/review/references/fronts.md`). Both used to spend five to seven
-prose-decided calls on exactly this, one round trip each.
+probe in `skills/review/references/fronts.md`), which read this one payload instead
+of probing again.
 
 The diff range is `<merge_base>...HEAD`, resolved once here so every reader shares it.
 
@@ -18,14 +18,18 @@ Usage:
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import subprocess
 import sys
 from pathlib import Path
+from shutil import which
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from gather_context import resolve_merge_base  # noqa: E402
+from inspect_pr_checks import parse_available_fields  # noqa: E402
 from scan_specs import scan  # noqa: E402
 
 MAX_UI_EXAMPLES = 8
@@ -70,13 +74,18 @@ UI_MARKERS = (
 )
 
 
-def run(cmd: list[str], cwd: str | None = None) -> tuple[int, str]:
-    p = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
-    return p.returncode, p.stdout.strip()
+def run(cmd: list[str], cwd: str | None = None) -> tuple[int, str, str]:
+    # The encoding is named because `text=True` decodes in the locale codec, which is
+    # cp1252 on Windows: one accented character in a filename, a PR title or a hunk
+    # would raise before this script prints anything at all.
+    p = subprocess.run(
+        cmd, cwd=cwd, capture_output=True, text=True, encoding="utf-8", errors="replace"
+    )
+    return p.returncode, p.stdout.strip(), p.stderr.strip()
 
 
 def run_ok(cmd: list[str], cwd: str | None = None) -> str | None:
-    code, out = run(cmd, cwd=cwd)
+    code, out, _ = run(cmd, cwd=cwd)
     return out if code == 0 else None
 
 
@@ -89,22 +98,22 @@ def load_json(raw: str | None):
         return None
 
 
-def resolve_range(base: str, cwd: str) -> tuple[str | None, str | None]:
-    run(["git", "fetch", "origin", base], cwd=cwd)  # best-effort; offline is fine
-    for ref in (f"origin/{base}", base):
-        merge_base = run_ok(["git", "merge-base", ref, "HEAD"], cwd=cwd)
-        if merge_base:
-            return merge_base, ref
-    return None, None
-
-
 def probe_pr(cwd: str) -> dict | None:
-    return load_json(
+    """The **open** PR for this branch, or None.
+
+    `gh pr view` answers with the branch's most recent PR whatever its state, and a
+    non-null `pr` is read downstream as the run's destination, so a merged or closed one
+    would send the landing back to a PR nobody can push to. `state` is what filters it.
+    """
+    pr = load_json(
         run_ok(
             ["gh", "pr", "view", "--json", "number,url,title,baseRefName,state,isDraft,mergeable"],
             cwd=cwd,
         )
     )
+    if not pr or (pr.get("state") or "").upper() != "OPEN":
+        return None
+    return pr
 
 
 # The buckets this names one by one. Anything `gh` starts emitting outside the set lands
@@ -124,12 +133,26 @@ EMPTY_CHECKS = {
 }
 
 
-def probe_checks(cwd: str, number: int) -> dict | None:
+CHECK_FIELDS = ("name", "state", "bucket", "link")
+
+
+def probe_checks(cwd: str, number: int) -> dict:
     """Bucket the PR's checks. `gh pr checks` exits non-zero while any check is red."""
-    code, out = run(
-        ["gh", "pr", "checks", str(number), "--json", "name,state,bucket,link"], cwd=cwd
+    code, out, err = run(
+        ["gh", "pr", "checks", str(number), "--json", ",".join(CHECK_FIELDS)], cwd=cwd
     )
     rows = load_json(out)
+    if rows is None:
+        # A `gh` that does not offer one of those fields rejects the whole request and
+        # names the ones it has, so asking again with the intersection is what keeps the
+        # buckets from vanishing over a version skew. `inspect_pr_checks.py` reads the
+        # same message, which is why its parser is imported instead of rewritten here.
+        usable = [f for f in CHECK_FIELDS if f in parse_available_fields(f"{err}\n{out}")]
+        if usable:
+            code, out, err = run(
+                ["gh", "pr", "checks", str(number), "--json", ",".join(usable)], cwd=cwd
+            )
+            rows = load_json(out)
     if rows is None:
         # Same keys as the available shape. A reader that goes straight for `failing`
         # gets an empty list instead of nothing at all, and `available` is still the
@@ -184,30 +207,35 @@ def probe_ui(cwd: str, diff_range: str) -> dict:
 
 
 def branch_spec(specs: list[dict], branch: str | None) -> dict | None:
-    """The spec this branch belongs to, when its name carries the slug."""
+    """The spec this branch belongs to, when one of the branch's segments is its slug.
+
+    A whole segment and not a substring: `perf/deterministic-probes` contains the slug
+    `probes` without belonging to it, and the list arrives sorted by `created`, so the
+    oldest accidental match would be the one that won.
+    """
     if not branch:
         return None
+    segments = {branch, *branch.split("/")}
     for spec in specs:
-        if spec["dir"] and spec["dir"] in branch:
+        if {name for name in (spec["dir"], spec["slug"]) if name} & segments:
             return spec
     return None
 
 
-def parse_args(argv: list[str]) -> tuple[str, str | None]:
-    repo, base = ".", None
-    args = argv[:]
-    while args:
-        if args[0] == "--repo" and len(args) > 1:
-            repo, args = args[1], args[2:]
-        elif args[0] == "--base" and len(args) > 1:
-            base, args = args[1], args[2:]
-        else:
-            args = args[1:]
-    return repo, base
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Probe the ground a run stands on: branch, diff range, PR, checks, spec, UI."
+    )
+    parser.add_argument("--repo", default=".", help="Path inside the target git repository.")
+    parser.add_argument(
+        "--base", default=None, help="Base branch, overriding the PR's own and the repo default."
+    )
+    return parser.parse_args()
 
 
 def main() -> None:
-    repo, base_override = parse_args(sys.argv[1:])
+    args = parse_args()
+    repo, base_override = args.repo, args.base
 
     git_root = run_ok(["git", "rev-parse", "--show-toplevel"], cwd=repo)
     if not git_root:
@@ -216,19 +244,26 @@ def main() -> None:
 
     cwd = git_root
     root = Path(cwd)
-    gh_ok = run(["gh", "auth", "status"], cwd=cwd)[0] == 0
+    # `which` first: `subprocess.run` raises FileNotFoundError for a missing executable
+    # instead of exiting non-zero, and a traceback here would take down the whole probe
+    # on the very machines whose payload is supposed to say `gh_authenticated: false`.
+    gh_ok = which("gh") is not None and run(["gh", "auth", "status"], cwd=cwd)[0] == 0
 
-    base = base_override
+    pr = probe_pr(cwd) if gh_ok else None
+
+    # The PR's own base outranks the repo default, and is resolved before the range: a
+    # stacked PR, or one opened against `develop`, otherwise gets the parent branch's
+    # commits in every diff below and in the range each front reads as authoritative.
+    base = base_override or (pr or {}).get("baseRefName")
     if not base and gh_ok:
         base = run_ok(
             ["gh", "repo", "view", "--json", "defaultBranchRef", "--jq", ".defaultBranchRef.name"],
             cwd=cwd,
         )
     base = base or "main"
-    merge_base, base_ref = resolve_range(base, cwd)
+    merge_base, _ = resolve_merge_base(base, cwd)
     diff_range = f"{merge_base}...HEAD" if merge_base else None
 
-    pr = probe_pr(cwd) if gh_ok else None
     # `scan` walks up from where it is pointed, and the contract is the nearest ancestor
     # of the cwd, not of the git root: a monorepo package with its own `.bb/` is the one
     # the run is standing in. Every git call above is rooted, which is a different question.
@@ -242,7 +277,6 @@ def main() -> None:
             ["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"], cwd=cwd
         ),
         "base_branch": base,
-        "base_ref": base_ref,
         "merge_base": merge_base,
         "diff_range": diff_range,
         "diff_stat": run_ok(["git", "diff", diff_range, "--stat"], cwd=cwd) if diff_range else "",
@@ -255,11 +289,10 @@ def main() -> None:
         "checks": probe_checks(cwd, pr["number"]) if pr and pr.get("number") else None,
         "code_review_guide": (root / "CODE_REVIEW_GUIDE.md").is_file(),
         "project_kind": "lexflow" if (root / "lexflow.toml").is_file() else "git",
-        "bb_root": specs["bb_root"],
-        "has_bb_dir": specs["has_bb_dir"],
+        # The one thing this probe wants out of the spec scan. Selecting a spec is
+        # `/bb:delegate`'s, off `scan_specs.py`'s own stdout, so the rest of that
+        # payload has no reader here and is not copied into this one.
         "branch_spec": branch_spec(specs["specs"], branch),
-        "selected_spec": specs["selected"],
-        "pending_slugs": specs["pending_slugs"],
         "ui": probe_ui(cwd, diff_range) if diff_range else {"hit": False, "markers": [], "examples": {}},
     }
 
