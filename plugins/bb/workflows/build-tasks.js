@@ -68,21 +68,49 @@ answers to it any more. Do not edit anything. A near-match under a different nam
 "moved", not "gone"; only nothing at all is "gone".`;
 }
 
-// The authority chain below restates implement's step 4 on purpose: this string is what the
-// agent reads at runtime, and it has no way to follow a pointer at a doc. Both copies change
-// together.
-function checksPrompt(hint) {
-  return `Resolve this project's checks, then run all of them once.
+// `scripts/resolve_checks.py` walks the authority chain before the dispatch, so this agent
+// confirms a list instead of deriving one. The order is spelled out only for the caller that
+// passed nothing: the string is what the agent reads at runtime, and it cannot follow a
+// pointer at a doc.
+function checksPrompt(resolved) {
+  // Three different grounds, and an empty list is two of them: no payload at all, and a
+  // payload whose whole chain came back empty. `source` is what separates them, so a repo
+  // that genuinely has no checks is not sent to re-walk a chain that already answered.
+  //
+  // `unresolved` is the one part of the payload that is not an answer: what the resolver
+  // saw and could not turn into something runnable. It travels as work to do rather than
+  // as a list to confirm, because a stack whose runner the resolver cannot name arrives
+  // here as an empty list otherwise, and an empty list reads as "no checks".
+  const unresolved = (resolved && resolved.unresolved) || [];
+  const leads = unresolved.map((u) => `\`${u.command}\` in ${u.where} (${u.reason})`).join("; ");
 
-${hint ? `The caller resolved this hint already: ${hint}` : "The caller resolved no hint."}
+  let listed;
+  if (!resolved) {
+    listed = `No list was resolved for you, so resolve the checks yourself, highest authority first: the repo's own CLAUDE.md and docs, then CI workflow files, then package.json / justfile / Makefile / pyproject.toml.`;
+  } else if (resolved.commands && resolved.commands.length) {
+    const cut = resolved.truncated
+      ? ` That list is cut at ${resolved.commands.length} of ${resolved.resolved_count} resolved; confirm the remaining ones from the same source before you run anything.`
+      : "";
+    const more = leads
+      ? ` It also saw ${unresolved.length} command(s) in the same source it could not resolve, and they may be checks: ${leads}. Read those files and decide for yourself whether each one belongs in the list.`
+      : "";
+    listed = `The caller resolved these from ${resolved.source}, in order: ${resolved.commands.join(" && ")}. Take that as the list unless the repo contradicts it.${cut}${more}`;
+  } else if (leads) {
+    listed = `The caller walked the whole chain and resolved nothing runnable, but it did see ${unresolved.length} command(s) it could not resolve: ${leads}. Read those files and build the list yourself from what is there. An empty list is an answer only once you have looked.`;
+  } else {
+    listed = `The caller walked the whole chain and this project has no checks: no document, no CI workflow and no manifest named one. Confirm that and return an empty list. Do not go hunting for a suite that is not there.`;
+  }
 
-Resolve in this order of authority: CLAUDE.md and docs, then CI workflow files, then
-package.json / justfile / Makefile / pyproject.toml. Run what CI runs, not a subset.
+  return `Establish this project's green baseline: confirm its checks, then run all of them once.
 
-Then run every command you resolved, once. Running them is the point: it proves the run may
-execute each one and it establishes the green baseline for the build.
+${listed}
 
-Return "commands" with every command you resolved (an empty list when the project has none),
+Run what CI runs, not a subset.
+
+Then run every command, once. Running them is the point: it proves the run may execute each
+one and it establishes the green baseline for the build.
+
+Return "commands" with every command you confirmed (an empty list when the project has none),
 "ran" false when a command could not be executed at all, "green" false when the tree is
 already failing a check, and "blocker" naming which command and why. Do not fix anything and
 do not edit any file: you are the baseline, not the first task.`;
@@ -155,6 +183,14 @@ if (!args.tasks || args.tasks.length === 0) {
 phase("Ground");
 
 const reuseNotes = args.reuseNotes || [];
+const resolved = args.checks || null;
+
+// A project whose top authority forbids running its checks locally is settled by
+// `scripts/resolve_checks.py` before the dispatch. Sending the agent anyway spends a whole
+// stage-zero round trip to come back `ran: false`, which stops the build over a policy
+// instead of over the code.
+const runChecks = !resolved || resolved.runnable !== false;
+
 const ground = await parallel([
   ...reuseNotes.map(
     (note) => () =>
@@ -165,17 +201,29 @@ const ground = await parallel([
         effort: "low",
       }),
   ),
-  () =>
-    agent(checksPrompt(args.checksHint), {
-      label: "checks: resolve and run",
-      phase: "Ground",
-      schema: CHECKS_RESULT,
-      effort: "low",
-    }),
+  ...(runChecks
+    ? [
+        () =>
+          agent(checksPrompt(resolved), {
+            label: "checks: confirm and run",
+            phase: "Ground",
+            schema: CHECKS_RESULT,
+            effort: "low",
+          }),
+      ]
+    : []),
 ]);
 
 const verdicts = ground.slice(0, reuseNotes.length);
-const checks = ground[ground.length - 1];
+
+// With no agent sent, the baseline is the policy itself, and `commands` is empty because an
+// empty list is what the task agents may execute here.
+const checks = runChecks ? ground[ground.length - 1] : { commands: [], ran: true, green: true };
+if (!runChecks) {
+  log(
+    `the project's checks belong to CI here (${resolved.source || "project policy"}); stage zero runs none`,
+  );
+}
 
 // A lost stage-zero agent is a stop of its own: proceeding would build on ground nobody proved.
 let stopped = null;
@@ -200,12 +248,14 @@ if (!stopped) {
     blockers.push(`reuse note points at code that is gone: ${gone.map((v) => v.note).join("; ")}`);
   }
 
-  if (!checks.commands.length) {
-    log("no check was found in this project; building without a baseline");
-  } else if (!checks.ran) {
-    blockers.push(checks.blocker || "a check could not be executed");
-  } else if (!checks.green) {
-    blockers.push(checks.blocker || "the tree was already red");
+  if (runChecks) {
+    if (!checks.commands.length) {
+      log("no check was found in this project; building without a baseline");
+    } else if (!checks.ran) {
+      blockers.push(checks.blocker || "a check could not be executed");
+    } else if (!checks.green) {
+      blockers.push(checks.blocker || "the tree was already red");
+    }
   }
 
   if (blockers.length) {

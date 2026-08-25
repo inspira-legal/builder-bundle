@@ -35,7 +35,11 @@ plugins/bb/
 ├── scripts/                           # shared executables (2+ skills), ref via ${CLAUDE_PLUGIN_ROOT}/scripts/
 │   ├── fetch_comments.py               # ship, review
 │   ├── reply_resolve_thread.py         # ship, review
-│   └── gather_context.py               # ship, review (resolves the diff range), gather-branch-context
+│   ├── gather_context.py               # ship (the PR body), review, gather-branch-context
+│   ├── preflight.py                    # ship (Prerequisites + Step 0), review (the fronts probe)
+│   ├── resolve_checks.py               # implement (step 4 + args.checks), ship (Step 2)
+│   ├── scan_specs.py                   # delegate (selection); preflight.py imports its scan()
+│   └── inspect_pr_checks.py            # ship (CI failures), review (the ci front)
 ├── skills/                            # all 16 skills flat; trilha grouping is a docs concept
 │   ├── Pensar:        discover, challenge, think, legal-lens
 │   ├── Desenhar:      spec

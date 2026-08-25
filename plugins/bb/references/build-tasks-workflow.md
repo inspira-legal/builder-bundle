@@ -73,8 +73,10 @@ tool asks for. It covers this build and nothing beyond it.
 
 Two stops sit outside the chain, and neither is a step of it. A user who denies the
 permission dialog has declined this dispatch: report the denial and ask what they want
-instead. A stage zero that resolves the project's checks and cannot run them stops the
-run before task 1, which is the policy case below.
+instead. A stage zero that resolves the project's checks and is then **refused permission**
+to run one stops the run before task 1: that is the `ran: false` case below. The policy
+case is not a stop at all, and the two are easy to confuse because both end with nothing
+having run.
 
 ## `args`
 
@@ -85,13 +87,43 @@ stringified one):
 {
   slug: "<slug>",
   specPath: ".bb/<slug>/spec.md",
-  checksHint: "<what the authority chain resolved, or null>",
+  checks: {
+    commands: ["..."],
+    source: "<which tier answered, null when none did>",
+    truncated: true | false,
+    resolved_count: 0,
+    runnable: true | false,
+    policy: { decision: "ci-only", source: "<path>", scope: "repo" | "machine", evidence: "<the line>" },
+    unresolved: [{ command: "...", reason: "unrecognized-runner" | "shell-dependent", where: "<file>" }]
+  },
   reuseNotes: ["<one string per reuse note in ## Decisions>"],
   tasks: [
     { n: 1, title: "...", delivers: "...", behaviors: [2, 3], dep: [], verify: "..." }
   ]
 }
 ```
+
+`checks` is `${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py`'s output, passed through
+whole (or `null` when the skill could not run it). The script walks the authority chain,
+so nothing in the run resolves it a second time: it is the same call implement's step 4
+and ship's Step 2 make. `runnable: false` means local runs are forbidden, and it is what
+makes stage zero skip the checks agent instead of spending it to be refused; `policy.scope`
+says which document forbade them, the repo's own or the user's `~/.claude/CLAUDE.md`.
+
+`null` and an empty `commands` are **not** the same ground, which is why `source` is in the
+payload: `null` means the skill never resolved anything and the agent has to walk the chain
+itself, while a non-null payload with `source: null` means the chain was walked and this
+project has no checks. The prompt says whichever of the two it is, so a repo without a suite
+is not sent looking for one.
+
+`unresolved` is the third ground, and the only field in the payload that is not an answer. It
+carries what the resolver saw and could not turn into something runnable: a command whose
+runner it cannot name (`unrecognized-runner`), or one that needs the shell step that defined
+it (`shell-dependent`). Non-empty, it is what keeps an empty `commands` from reading as "this
+project has no checks" when it means "no runner I recognize", and what keeps a resolved list
+from reading as the whole suite when it is not. `checksPrompt()` hands those leads over as
+files to read rather than as a list to confirm, so the judgment lands with the agent that can
+open the file. The alternative is a confident empty list over a suite that exists.
 
 `tasks` carries only the ones still unticked at invoke time, in an order that already
 satisfies `dep:`. The agents re-read the spec anyway: `args` is the plan, the file on
@@ -104,9 +136,9 @@ task.
 
 ## Stage zero: prove the ground before task 1
 
-One agent per reuse note, plus one checks agent, all inside a single `parallel()`. This
-is a legitimate barrier: nothing starts until every verdict is in. These agents are
-read-only lookups, so they run at `effort: 'low'`.
+One agent per reuse note, plus the checks agent when there is something to run, all
+inside a single `parallel()`. This is a legitimate barrier: nothing starts until every
+verdict is in. These agents are read-only lookups, so they run at `effort: 'low'`.
 
 Each reuse-note agent returns:
 
@@ -114,10 +146,12 @@ Each reuse-note agent returns:
 { verdict: "intact" | "moved" | "gone", note: "<the note>", where: "<new path, if moved>" }
 ```
 
-The checks agent resolves the project's checks through implement's authority chain, the
-one its step 4 states, and then **runs all of them once**. Running them is the
-point: it proves the run has permission to execute each one, and it establishes the
-green baseline. It returns:
+The checks agent confirms the list `args.checks` carries and then **runs all of them
+once**. Running them is the point: it proves the run has permission to execute each one,
+and it establishes the green baseline. With `args.checks` null it resolves the chain
+itself, which is the only place the order is still spelled out at runtime. With
+`unresolved` non-empty it opens the files that field names and decides there, so the list
+it returns can be longer than the one it was handed. It returns:
 
 ```
 { commands: ["..."], ran: true | false, green: true | false, blocker: "<why, if any>" }
@@ -134,14 +168,16 @@ A stage-zero stop is normalized into the shape a task result has, so the caller 
 thing to read and a blocker to name:
 `{ n: 0, status: "red", blocker: "<which note died, or which command, and why>" }`.
 
-One environment fails here by policy rather than by breakage: a repo whose top
-authority forbids running checks locally resolves commands and then cannot run them,
-which is `ran: false` and a stop before task 1. That is the contract working, and it
-means the workflow build does not complete on such a machine until the policy, or the
-hint the skill passes, says the project exposes nothing this run may execute. It is a
-blocker to report and not a step of the fallback chain: the run names the command it
-could not execute, so the allowlist can be widened and the next run gets past stage
-zero.
+A repo whose top authority forbids running checks locally fails here by policy and not by
+breakage, so it is not a stop. The policy arrives as `runnable: false`, stage zero sends no
+checks agent, `commands` is empty for the task agents too, and the log says the checks
+belong to CI here. The build proceeds with the proof deferred to the PR, which is where
+that policy wanted it.
+
+`ran: false` keeps its meaning for the case it was written for: a command the run was
+refused with no policy saying so. That is still a stop before task 1 and still a blocker to
+report, naming the command, so the allowlist can be widened and the next run gets past
+stage zero.
 
 ## The task loop
 
@@ -161,9 +197,8 @@ keeps what is green.
 line, the behaviors it cites, the accumulated convention note and the check commands
 stage zero resolved, then tells the agent what to do with them: build inside
 `## Out of scope`, satisfy `verify:`, keep the checks green, commit the files it touched
-together with its `- [x]`, return the result. Read the string when you need the wording.
-This file used to paraphrase it in six numbered steps, which is the second contract the
-opening says not to keep.
+together with its `- [x]`, return the result. Read the string when you need the wording: a
+paraphrase here would be the second contract the opening says not to keep.
 
 Two of its rules reach the caller, because they show up in the return:
 
@@ -217,7 +252,8 @@ tasks whose proof is CI, which is ship's to close.
 
 ## What guards the script, and what the skill still checks per run
 
-The script is code now, so most of the old pre-invoke checklist moved off the run.
+Being code, the script gets most of its guarding from tooling rather than from a checklist
+the run walks.
 
 **CI and the pre-commit hook** own what a parse or a scan settles, in
 `.github/scripts/validate-workflow-script.ts`, over a source whose comment, string,
@@ -245,9 +281,10 @@ review of a change to this script, not a step in a build run.
 **The skill** owns the three that are genuinely per-run, and confirms them before
 invoking:
 
-- `args` is passed as a JSON value, and `tasks` holds only unticked tasks.
+- `args` is passed as a JSON value, `tasks` holds only unticked tasks, and `checks` is
+  `resolve_checks.py`'s output passed through whole.
 - The branch the commits belong on already exists and is checked out; the agents commit
   where the run puts them.
-- The agent count is `tasks.length + reuseNotes.length + 1`. Over the size guideline the
-  session declares, say so in one line and invoke anyway; the real cap is 1000 agents
-  per run.
+- The agent count is `tasks.length + reuseNotes.length`, plus one for the checks agent
+  when `checks.runnable` is not false. Over the size guideline the session declares, say so
+  in one line and invoke anyway; the real cap is 1000 agents per run.

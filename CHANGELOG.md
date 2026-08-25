@@ -1,5 +1,55 @@
 # Changelog
 
+## 2.19.0 (2026-08-25)
+
+**What a run can look up, it stops asking an agent to derive.** The checks authority chain
+was written out in every text that touched it, `/bb:ship` twice, `/bb:implement` step 4,
+`references/build-tasks-workflow.md` and `workflows/build-tasks.js`, where confirming it
+spent a whole stage-zero agent per build. It is `resolve_checks.py`'s docstring now, and the
+readers cite it; the one other copy is the fallback string `build-tasks.js` hands an agent
+that has no payload to read, which cannot follow a pointer.
+The spec selection rule was prose a reader re-walked every time. The review's opening probe
+was five to seven round trips of `git` and `gh` decided one at a time. None of that is
+judgment: it is parsing, and it belongs in a script.
+
+Three of them now answer in one call each, and the wiring gains a fix it needed anyway. A
+project whose top authority forbids running its checks locally used to reach stage zero,
+resolve the commands, fail to run them and stop before task 1, which made every build on
+such a machine a guaranteed block. `resolve_checks.py` reports that as `runnable: false`,
+the checks agent is not dispatched at all, and the build proceeds with the proof deferred
+to CI.
+
+### New
+
+- **`plugins/bb/scripts/resolve_checks.py`** walks the checks authority chain, which its
+  docstring now states in the one place, and prints
+  `{commands, source, truncated, resolved_count, runnable, policy, notes, unresolved, candidates, git_root}`.
+  It runs nothing. Read by `/bb:implement` (step 4, and passed through as `args.checks`)
+  and `/bb:ship` (Step 2).
+- **`plugins/bb/scripts/scan_specs.py`** is `references/spec-state.md`'s selection rule as
+  code: every spec's `status`, `created`, unticked task count and, for a blocked one, its
+  `## Open` line, alongside the `selected` the rule picks. `/bb:delegate` step 1 reads it.
+- **`plugins/bb/scripts/preflight.py`** answers a whole run's ground in one call: branch,
+  base, `merge_base`, the `diff_range` every reader shares, the PR with its check buckets,
+  `project_kind`, `code_review_guide`, the branch's spec and whether the diff's hunks
+  contain UI. `/bb:ship`'s Prerequisites and Step 0 and `/bb:review`'s fronts probe both
+  read it.
+
+### Changed
+
+- **`workflows/build-tasks.js`** takes `args.checks` and stage zero confirms what the
+  script found instead of re-deriving the chain in a prompt. `runnable: false` skips the
+  checks agent and the barrier it made every reuse verdict wait on.
+- **`references/build-tasks-workflow.md`** documents the new `args.checks` field, and a
+  project that forbids local runs is no longer written up as a stop.
+- **`/bb:review`**'s `fronts.md` maps `preflight.py`'s fields onto the fronts. The inline
+  UI-marker catalog moves into the script's `UI_MARKERS`; the judgment it cannot make, that
+  a touched `.tsx` is not a UI change, stays in the reference.
+- **`references/front-ci.md`** and **`references/land-pr.md`** watch CI in the background
+  through `Monitor` rather than holding the session in a foreground `--watch`.
+- **`inspect_pr_checks.py`** moves from `skills/ship/scripts/` to the plugin root: two
+  readers is the convention's line for a shared script.
+
 ## 2.18.0 (2026-08-20)
 
 **bb keeps itself current.** An install stayed on the version it arrived at. Claude Code

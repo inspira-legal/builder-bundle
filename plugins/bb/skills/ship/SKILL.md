@@ -4,7 +4,7 @@ description: Takes the current branch to landed, your way. It does not review by
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 3.0.0
+  version: 3.1.0
 ---
 
 # Ship
@@ -13,12 +13,14 @@ Take the current branch all the way to landed (checks green, committed), then la
 
 ## Prerequisites
 
-- For the PR path: `gh` authenticated (`gh auth status`, repo + workflow scopes). If not, instruct the user to run `gh auth login`.
-- Resolve the current branch's PR up front: `gh pr view --json number,url,title,baseRefName`. If one exists, it's the default destination ("finish the PR").
+One call answers the whole ground this run stands on: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/preflight.py` prints `gh_authenticated`, the branch with its `base_branch`, `merge_base` and resolved `diff_range`, the `pr` for this branch with its `checks` buckets, `project_kind`, `code_review_guide`, the spec the branch belongs to and whether the diff's hunks contain `ui`. Every step below reads that one payload instead of probing again.
+
+- For the PR path: `gh_authenticated: false` means `gh auth status` came back non-zero, so either nobody is logged in or `gh` is not on the PATH at all; instruct the user to run `gh auth login`. Authenticated is not the same as sufficient: the PR path needs the `repo` and `workflow` scopes, and a login predating the `workflow` scope fails on the first push that touches `.github/workflows/`. `gh auth refresh -s repo,workflow` is the remedy for that one.
+- A non-null `pr` is the default destination ("finish the PR").
 
 ## Step 0: Preflight, what kind of project is this
 
-A `lexflow.toml` at the repo root means this is a LexFlow app. Set `project_kind: lexflow`; both Step 1 and Step 2 read it. Anything else is `project_kind: git`.
+`project_kind: lexflow` in that payload means a `lexflow.toml` sits at the repo root and this is a LexFlow app; both Step 1 and Step 2 read it. Anything else is `project_kind: git`.
 
 The flag makes LexFlow the **recommended** destination. It does not settle the question. The same repo can legitimately want a PR this round.
 
@@ -57,13 +59,31 @@ the flow, and the person shipping is who decides whether this change earns it. W
 ship owns is the part with no judgment in it: the checks CI would run anyway, and a
 clean commit.
 
-1. **The project's checks** (background): detect the check commands in this order of
-   authority: project CLAUDE.md / docs, CI workflow files (`.github/workflows/`),
-   then `package.json` / `justfile` / `Makefile` / `pyproject.toml`. Run what CI runs
-   (lint, format, typecheck, tests) as concurrent background shells. Detection
-   finding nothing is a real answer, not a failure: a LexFlow app repo has no CI and
-   no build, and its checks are the three layers in `references/land-lexflow.md`. Say
-   which checks ran.
+1. **The project's checks** (background):
+   `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py` walks the authority chain its
+   own docstring states and prints
+   `{commands, source, truncated, resolved_count, runnable, policy, notes, unresolved, candidates, git_root}`.
+   Run every command it returns as
+   concurrent background shells. An empty `commands` is a real answer, not a failure: a LexFlow
+   app repo has no CI and no build, and its checks are the three layers in
+   `references/land-lexflow.md`. **`source` is what tells the two empties apart**: `null` means
+   no tier resolved anything, and a named tier always answers with at least one command. When
+   `truncated` is true, `resolved_count` exceeded what `commands` carries, so say how many were
+   left out rather than reporting the list as the whole suite. **`unresolved` is the one field
+   that is not an answer**: each entry is a command the script saw and could not turn into
+   something runnable, with `reason` (`unrecognized-runner`, a stack whose runner it cannot
+   name; `shell-dependent`, a line that needs the shell step that defined it) and `where`. Not
+   empty means the list is not settled: open `where` and decide yourself, because a stack this
+   script has never met comes back as an empty `commands` otherwise and an empty `commands`
+   reads as a project with no checks. `candidates` is the other half of that read, holding what
+   each tier offered separately, so a list that looks wrong gets compared instead of re-walked.
+   `runnable: false` is the other
+   real answer, something forbidding local runs, with `policy.evidence` as the line that says so
+   and **`policy.scope` as who said it**: `repo` for the project's own documents, `machine` for
+   the user's `~/.claude/CLAUDE.md`. Name that scope when you explain why nothing ran, because
+   "this machine never runs checks locally" and "this project forbids it" are different facts
+   and only one of them travels with the repo. Either way the landing carries those checks to CI
+   instead. Say which checks ran, and which ones the PR will run.
 
 2. **Fix what they report**, in the main context, one change at a time, re-running
    the failing check after each. A red check is not a finding to be curated; it's a
@@ -132,7 +152,19 @@ The LexFlow path: what a LexFlow app is (the remote is the platform; `push` is n
 
 A drop-in `.claude/loop.md` that makes a bare `/loop` route the PR-tending triad (review comments / failed CI / merge conflicts) through ship's PR flow while keeping merge a human action. Copy it into the target repo or `~/.claude`.
 
-Shared scripts live at the plugin root (`${CLAUDE_PLUGIN_ROOT}/scripts/`); `inspect_pr_checks.py` and `check_lexflow_manifest.py` are ship-owned and stay relative.
+Shared scripts live at the plugin root (`${CLAUDE_PLUGIN_ROOT}/scripts/`); `check_lexflow_manifest.py` is ship-owned and stays relative.
+
+### ${CLAUDE_PLUGIN_ROOT}/scripts/preflight.py
+
+The ground for the whole run in one call: `gh_authenticated`, branch, base, `merge_base` and the `diff_range` every reader shares, the `pr` with its `checks` buckets, `code_review_guide`, `project_kind`, the branch's spec and whether the diff's hunks contain UI. Shared with `/bb:review`, whose fronts probe reads the same payload. Prints JSON.
+
+### ${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py
+
+Walk the checks authority chain without running anything. Its docstring states the chain, tier by tier, and is the one place that does. Prints `{commands, source, truncated, resolved_count, runnable, policy, notes, unresolved, candidates, git_root}`, where `unresolved` is what it saw and could not resolve, so an empty `commands` is never mistaken for a project with no checks. Shared with `/bb:implement`, which also hands it to `workflows/build-tasks.js` as `args.checks`.
+
+### ${CLAUDE_PLUGIN_ROOT}/scripts/inspect_pr_checks.py
+
+Fetch failing PR checks, pull GitHub Actions logs, and extract a failure snippet. Exits non-zero while failures remain. Shared with `/bb:review`, whose `ci` front reads it instead of re-specifying `gh`.
 
 ### ${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py
 
@@ -145,10 +177,6 @@ Fetch all PR conversation comments, reviews, and review threads (with thread IDs
 ### ${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py
 
 Reply to a review thread and/or resolve it. `--thread-id` from fetch_comments.py; `--body` for the reply; `--no-resolve` to reply without resolving. Shared with `/bb:review`.
-
-### scripts/inspect_pr_checks.py
-
-Fetch failing PR checks, pull GitHub Actions logs, and extract a failure snippet. Exits non-zero while failures remain.
 
 ### scripts/check_lexflow_manifest.py
 
