@@ -9,8 +9,12 @@ familiar failure is how a wrong fix lands on top of a real one.
 Collect, read-only. One call is the collection:
 `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/inspect_pr_checks.py --repo "." --pr <number>`
 lists the failing checks, resolves their run IDs, pulls the GitHub Actions logs and
-extracts each failure snippet, exiting non-zero while anything is still red. Read the
-log it returns, not just the check name.
+extracts each failure snippet. Read the log it returns, not just the check name.
+
+Its exit code is one bit and answers a different question: non-zero covers a red
+check **and** every reason it could not look (not a repo, no `gh`, no PR resolved,
+the checks unfetchable), each of which prints its own line to stderr. Red is what
+the payload says, so the payload is what gets read.
 
 - The availability probe already bucketed the checks (`fronts.md`: `checks.failing`,
   `checks.pending`, `checks.cancelled`). A pending check is not evidence; wait for it to
@@ -50,8 +54,8 @@ an assertion to make CI green needs the user's explicit say-so, never a default.
 ## 4. Verify, bounded
 
 Watch the affected workflow re-run: `gh pr checks <number> --watch` (or
-`gh run watch`) as a **background** command with the Monitor tool on its output, per
-`hooks/scheduling-decision.md`, so the session keeps working through the CI cycle
-instead of blocking on it. Cap the loop at **3 diagnose→fix cycles per check**; after that,
+`gh run watch`) as a **background** command with the Monitor tool on its output.
+`${CLAUDE_PLUGIN_ROOT}/hooks/scheduling-decision.md` carries that rule whole, alert
+condition included; follow it there. Cap the loop at **3 diagnose→fix cycles per check**; after that,
 stop editing and report what's still red with the evidence. A check that
 survives three informed fixes needs a human decision, not a fourth guess.
