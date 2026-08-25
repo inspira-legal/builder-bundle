@@ -30,19 +30,30 @@ jobs:
       - name: Validate workflow scripts
         run: bun .github/scripts/validate-workflow-script.ts
 
-      # Lint the specs the PR touches. The landed specs that predate `## Metric`
-      # warn on every run by design (W005, no rewrite of history), and reprinting
-      # those same lines on every PR buries the one warning a new spec brings.
+      # Lint the specs the PR touches, plus the whole corpus whenever the linter
+      # itself changed: that corpus run is the only executable coverage the script
+      # has, so a PR that edits it proves it against every landed spec. The specs
+      # that predate `## Metric` warn on every corpus run by design (W005, no
+      # rewrite of history); the diff-aware default keeps that noise off the PRs
+      # that leave the linter alone. The diff lands in an assignment so a failed
+      # resolve fails the step instead of reading as "nothing to lint".
       - name: Lint specs
         run: |
-          specs=()
-          while IFS= read -r spec; do
-            [ -f "$spec" ] && specs+=("$spec")
-          done < <(git diff --name-only "origin/${GITHUB_BASE_REF}...HEAD" -- '.bb/*/spec.md')
-          if [ ${#specs[@]} -eq 0 ]; then
+          if [ -z "${GITHUB_BASE_REF}" ]; then
+            echo "::error::no base ref to diff against: this step expects a pull_request run"
+            exit 1
+          fi
+          range="origin/${GITHUB_BASE_REF}...HEAD"
+          changed=$(git -c core.quotePath=false diff --diff-filter=d --name-only "$range" -- '.bb/*/spec.md')
+          if ! git diff --quiet "$range" -- plugins/bb/skills/spec/scripts/lint_spec.py; then
+            echo "lint_spec.py changed: linting the whole corpus."
+            changed=$(printf '%s\n' .bb/*/spec.md)
+          fi
+          if [ -z "$changed" ]; then
             echo "No specs touched by this PR: nothing to lint."
             exit 0
           fi
+          mapfile -t specs <<< "$changed"
           python3 plugins/bb/skills/spec/scripts/lint_spec.py "${specs[@]}"
 
       - name: Check formatting
