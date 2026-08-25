@@ -26,7 +26,8 @@ itself uses. The reasoning is `.bb/metricas-no-ciclo/` (discovery and spec).
   table, `Events: none` included, or the analytics convention detected in the
   project's own source). Semantic checks, not presence: coverage, naming, payload,
   channel, each finding citing its source (`front-instrumentation.md`); available
-  in the external-PR mode on rung 2, ranked and applied like design's findings.
+  in the external-PR mode on rung 2, its findings ranked like design's and, there,
+  posted on the PR rather than applied.
 - **Discover captures baseline and target** on the success signal, with provenance
   in spec-format's shape, and fit hardens the hypothesis to "from <baseline> to
   <target> within <timeframe>"; `skipped: not-instrumented` is a valid baseline
@@ -34,11 +35,11 @@ itself uses. The reasoning is `.bb/metricas-no-ciclo/` (discovery and spec).
 
 ### Changed
 
-- The export renders the hypothesis-OKR-metric trio from the two records instead
-  of asking: values bare (provenance stays in the spec), a per-value skip as "not
-  yet measured", the four fields together or not at all, and the spec's values
-  winning where the records disagree. It asks only for a field genuinely absent
-  from both records.
+- The export renders the hypothesis-OKR-metric trio from `discovery.md` and the
+  spec instead of asking: values bare (provenance stays in the spec), a per-value
+  skip as "not yet measured", the four fields together or not at all, and the
+  spec's values winning where the two disagree. It asks only for a field genuinely
+  absent from both documents.
 - The spec's exit gate renders `## Metric` beside the coverage counter and holds a
   value without real provenance as an open item; seeding and gate rules live in
   `draft-first.md`.
