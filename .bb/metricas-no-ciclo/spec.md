@@ -40,7 +40,10 @@ compatible with a legaltech's data duties, and this paragraph is its single home
 Instrumentation then enters `## Tasks` as ordinary tasks with their own `verify:`,
 each citing the event rows it wires; an event row's own behavior citations are what
 the coverage table counts, so an instrumentation task covers its behaviors through
-the event row it cites, and the existing build machinery proves it with no change.
+the event row it cites. The build side resolves that citation into behavior numbers
+when it loads the spec (a prose cell carries through as the task's acceptance text,
+a missing event row stops the build as a spec error), and the machinery downstream
+consumes numbers the way it always did.
 
 ## The ninth front
 
@@ -83,10 +86,12 @@ section omits the trio whole under the existing all-or-nothing rule.
   rationale and accepted risk are recorded in the discovery and read there by path.
 - Events are born in the spec, in the Metric events table, under the payload rule
   stated in that section's paragraph.
-- Lint enforcement starts as warnings, three checks: no `## Metric` section; a metric
-  value without provenance; an event row citing a behavior row that does not exist,
-  checked only when the spec has a `## Behavior` section (Medium specs carry
-  behaviors inline and the gate judges their trace).
+- Lint enforcement starts as warnings, four conditions: no `## Metric` section; a
+  `Baseline:` or `Target:` bullet missing from the block; a value without provenance;
+  an event row citing a behavior row that does not exist, checked only when the spec
+  has a `## Behavior` section (Medium specs carry behaviors inline and the gate
+  judges their trace), with its own message when a behaviors cell joins numbers with
+  a connective word instead of commas.
 - The front's id is `instrumentation`: diff scope only this lap, criteria inline in
   `front-instrumentation.md`, source ladder of spec events then project convention.
 - bb names no analytics product anywhere; the front checks against what the project
@@ -103,9 +108,10 @@ Happy path, once built:
 2. User-triggered behavior rows get rows in the events table, each citing the
    behaviors it instruments, with payload fields and channel.
 3. Instrumentation enters `## Tasks` as ordinary tasks citing event rows, covering
-   behaviors through those rows, and the existing build machinery proves them
-   unchanged.
-4. CI lints every spec and the three new warnings fire where expected.
+   behaviors through those rows; the build resolves the citation into numbers on
+   load and proves them like any other task.
+4. CI lints the specs the PR touches (the whole corpus when the linter itself
+   changes) and the three new warnings fire where expected.
 5. On review, the probe resolves the ladder and offers the front; the finder checks
    the diff's added interactions against plan and convention; the verifier confirms;
    findings arrive ranked under the Instrumentation label.
