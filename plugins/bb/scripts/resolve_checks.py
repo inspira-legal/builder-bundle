@@ -5,8 +5,8 @@ them: CLAUDE.md and docs, then CI workflow files, then package.json / justfile /
 Makefile / pyproject.toml. Consumed by /bb:implement (its step 4, and the `checks`
 it hands to workflows/build-tasks.js) and by /bb:ship (its Step 2).
 
-The chain used to be prose in three places, so a change to it had to land three
-times. This script is the resolution; the callers run what it returns.
+This docstring is where the chain is stated, and this script is the resolution; the
+callers cite it and run what it returns, so a change to the chain lands once.
 
 Only the repo's own documents define the repo's checks. The machine-level
 `~/.claude/CLAUDE.md` is read for one thing: it can forbid running anything locally.
@@ -32,10 +32,10 @@ Usage:
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import subprocess
-import sys
 from pathlib import Path
 
 # What makes a line or a script name a check rather than a dev server or a release.
@@ -134,7 +134,11 @@ UNRESOLVED_REASONS = ("unrecognized-runner", "shell-dependent")
 
 
 def run_ok(cmd: list[str], cwd: str | None = None) -> str | None:
-    p = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
+    # The encoding is named because `text=True` decodes in the locale codec, which is
+    # cp1252 on Windows: one accented character in the repo's own path would raise here.
+    p = subprocess.run(
+        cmd, cwd=cwd, capture_output=True, text=True, encoding="utf-8", errors="replace"
+    )
     return p.stdout.strip() if p.returncode == 0 else None
 
 
@@ -473,20 +477,16 @@ def read_manifest_tier(root: Path, scripts: dict) -> list[str]:
     return dedupe(commands)
 
 
-def parse_args(argv: list[str]) -> str:
-    repo = "."
-    args = argv[:]
-    while args:
-        if args[0] == "--repo" and len(args) > 1:
-            repo = args[1]
-            args = args[2:]
-        else:
-            args = args[1:]
-    return repo
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Resolve this project's checks through the authority chain, as JSON."
+    )
+    parser.add_argument("--repo", default=".", help="Path inside the target repository.")
+    return parser.parse_args()
 
 
 def main() -> None:
-    repo = parse_args(sys.argv[1:])
+    repo = parse_args().repo
     git_root = run_ok(["git", "rev-parse", "--show-toplevel"], cwd=repo)
     root = Path(git_root) if git_root else Path(repo).resolve()
 

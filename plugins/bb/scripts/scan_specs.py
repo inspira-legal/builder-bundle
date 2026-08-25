@@ -16,9 +16,9 @@ Usage:
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
-import sys
 from pathlib import Path
 
 # A spec with no `created` sorts after every dated one, which is the contract's
@@ -27,17 +27,31 @@ UNDATED = "9999-12-31"
 
 SELECTABLE = ("pending", "in-progress")
 
+# A BOM and leading blank lines are invisible in an editor, and both push the opening
+# `---` off the start of the file.
+LEADING_NOISE = "\ufeff \t\r\n"
+
 
 def find_bb_root(start: Path) -> Path:
-    """Nearest ancestor of `start` that already has a `.bb/`, else `start` itself."""
+    """Nearest ancestor of `start` that already has a `.bb/`, else `start` itself.
+
+    The walk stops at the repository, the directory holding `.git`, and that boundary is
+    the point: past it the next `.bb/` up belongs to another project, or to the home
+    directory, and a run standing in a repo with no `.bb/` would adopt it.
+    """
     for candidate in (start, *start.parents):
         if (candidate / ".bb").is_dir():
             return candidate
+        if (candidate / ".git").exists():
+            break
     return start
 
 
 def parse_frontmatter(text: str) -> dict[str, str]:
-    match = re.match(r"^---\r?\n(.*?)\r?\n---\r?\n", text, re.DOTALL)
+    # A BOM or a blank line before the opening `---` is invisible in an editor and would
+    # otherwise yield no block at all, which reads as `status: pending` and puts a spec
+    # already `done` back in the selection.
+    match = re.match(r"^---\r?\n(.*?)\r?\n---\r?\n", text.lstrip(LEADING_NOISE), re.DOTALL)
     if not match:
         return {}
     block = {}
@@ -101,29 +115,33 @@ def scan(repo: str = ".") -> dict:
     }
 
 
-def parse_args(argv: list[str]) -> tuple[str, str | None]:
-    repo, slug = ".", None
-    args = argv[:]
-    while args:
-        if args[0] == "--repo" and len(args) > 1:
-            repo, args = args[1], args[2:]
-        elif args[0] == "--slug" and len(args) > 1:
-            slug, args = args[1], args[2:]
-        else:
-            args = args[1:]
-    return repo, slug
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Scan `.bb/*/spec.md` and apply the spec-state selection rule, as JSON."
+    )
+    parser.add_argument("--repo", default=".", help="Path inside the target repository.")
+    parser.add_argument(
+        "--slug", default=None, help="Target this spec by dir or slug instead of selecting one."
+    )
+    return parser.parse_args()
 
 
 def main() -> None:
-    repo, slug = parse_args(sys.argv[1:])
-    result = scan(repo)
+    args = parse_args()
+    result = scan(args.repo)
 
-    if slug:
+    # `is not None` and not truthiness: `--slug ""` named a target and missed it, which is
+    # `found: false` and a reported error, not a silent fall-through to the selection rule.
+    # The caller stops on `found: false`, so the key travels whenever a name was given.
+    if args.slug is not None:
         # A named target replaces the selection rule; the scan still travels, because the
         # caller reports the available slugs when the name misses.
-        named = next((s for s in result["specs"] if s["dir"] == slug or s["slug"] == slug), None)
+        named = next(
+            (s for s in result["specs"] if args.slug in (s["dir"], s["slug"])),
+            None,
+        )
         result["selected"] = named
-        result["named"] = slug
+        result["named"] = args.slug
         result["found"] = named is not None
 
     print(json.dumps(result, indent=2))
