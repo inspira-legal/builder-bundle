@@ -22,10 +22,10 @@ to CI.
 ### New
 
 - **`plugins/bb/scripts/resolve_checks.py`** walks the checks authority chain, which its
-  docstring now states in the one place, and prints `{commands, source, truncated,
-  resolved_count, runnable, policy, notes, unresolved, candidates, git_root}`. It runs
-  nothing. Read by `/bb:implement` (step 4, and passed through as `args.checks`) and
-  `/bb:ship` (Step 2).
+  docstring now states in the one place, and prints
+  `{commands, source, truncated, resolved_count, runnable, policy, notes, unresolved, candidates, git_root}`.
+  It runs nothing. Read by `/bb:implement` (step 4, and passed through as `args.checks`)
+  and `/bb:ship` (Step 2).
 - **`plugins/bb/scripts/scan_specs.py`** is `references/spec-state.md`'s selection rule as
   code: every spec's `status`, `created`, unticked task count and, for a blocked one, its
   `## Open` line, alongside the `selected` the rule picks. `/bb:delegate` step 1 reads it.

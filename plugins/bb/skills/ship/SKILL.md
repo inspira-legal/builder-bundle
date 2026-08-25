@@ -61,8 +61,9 @@ clean commit.
 
 1. **The project's checks** (background):
    `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py` walks the authority chain its
-   own docstring states and prints `{commands, source, truncated, resolved_count,
-   runnable, policy, notes, unresolved, candidates, git_root}`. Run every command it returns as
+   own docstring states and prints
+   `{commands, source, truncated, resolved_count, runnable, policy, notes, unresolved, candidates, git_root}`.
+   Run every command it returns as
    concurrent background shells. An empty `commands` is a real answer, not a failure: a LexFlow
    app repo has no CI and no build, and its checks are the three layers in
    `references/land-lexflow.md`. **`source` is what tells the two empties apart**: `null` means
