@@ -74,13 +74,17 @@ forms, and an honest skip always beats an invented number.
 The `Baseline:` and `Target:` bullets each carry their value's provenance as a
 parenthesized note on the same bullet: a query, a log, or a named person's estimate
 marked as such. This paragraph owns that shape (discover's frame capture cites it for
-its own `baseline:`/`target:` bullets). The note is the shape the lint checks; whether
-it names a real source is the gate's judgment. A value nothing measures yet is its own honest skip, `skipped:
+its own `baseline:`/`target:` bullets). The note is the shape the lint checks
+(`draft-first.md`'s gate bullets carry the judgment on top of it). A value nothing measures yet is its own honest skip, `skipped:
 <reason>` in place of the value (`- Baseline: skipped: not-instrumented`, the form
 discover blesses): no provenance note, and the target and the events table stay while
 the skip flags the instrumentation as the first work. Internal work names an
 operational measure (error rate, runtime, adoption) where no product metric applies.
 The `okr:` line names the connected OKR when one exists, and is omitted when none does.
+The `Events:` line is part of the block, never omitted: the table when the work has
+user-triggered behavior, `none` and why when it has none. The review's instrumentation
+front resolves its plan from exactly that line, so a block without it leaves the front
+planless; the lint does not check it, and the gate holds it (`draft-first.md`).
 
 **The skip**: one line, `skipped: <reason>`, when no honest measure exists. It replaces
 the whole section body.

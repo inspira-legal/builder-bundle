@@ -35,10 +35,9 @@ here (plugin-level `references/spec-state.md`):
 **Read them before drafting, and cite them instead of copying them.** A section quoted into
 the spec is a second copy that goes stale the next time its own skill runs; a path is a
 pointer that stays true. The one exception is `## Metric`: the lint reads the baseline and
-the target inline, so those two values are materialized, each naming the discovery record
-in its provenance note, and once the gate hardens them the spec's values win, per the
-reversal rule in the plugin-level `references/spec-state.md`. So don't re-litigate a cut
-the user made upstream, and don't ask
+the target inline, so those two values are materialized, each carrying the record's own
+source with the record named beside it (`references/draft-first.md` has the seeding
+rule). So don't re-litigate a cut the user made upstream, and don't ask
 gray-area questions discover already answered. Echo the framing in one line, naming which
 records exist, so the user sees it carried through, then develop the design on top of it.
 
@@ -78,8 +77,8 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
    Without an Agent tool in this context, say so at the gate rather than showing a verdict that never ran.
 
 7. **The exit gate: blocks on open load-bearing decisions.** Don't gate blind: first **show the artifact the user is signing off on**, a tight recap of the happy path, the full edge→outcome table, the **coverage table** (behavior → task → test) with `⚠️` on any unmapped row plus a one-line counter (`N behaviors, M mapped, K open`), the **`## Metric` section** rendered beside that counter (the metric block or its skip line, so the measure gets signed off with the coverage), and (Medium+) the **independent reviewer's verdict** in one line (clean, or what it flagged and how it was resolved), so "is this complete?" is answerable at a glance instead of forcing them to reopen the file. The gate also holds `## Metric` where the lint cannot: a value without real provenance is an open item, a value's own `skipped:` is not, and on a Medium spec the event trace is judged by hand; the how is `references/draft-first.md`'s gate bullets. Then list what's **still open** (unresolved load-bearing decisions + parked questions + metric values without provenance). Then ask one `AskUserQuestion` (a handoff gate, with the format in the plugin-level `references/handoff-gate.md`):
-   - **If any load-bearing decision is still open:** do NOT offer a clean "build". The only options are **resolve it now** or **defer explicitly** ("decide at build time", recorded as such in the spec). Never a silent "build anyway".
-   - **If nothing load-bearing is open:** finalize `.bb/<slug>/spec.md` (with its frontmatter block; see "Capture the alignment"), then offer three paths: **Implement** (invoke `/bb:implement` now: build every task and stop ready to ship, where it offers `/bb:ship`), **Delegate** (invoke `/bb:delegate <slug>` now: build every task _and_ land it, the full `implement → ship` run), or **Stop here** (leave the spec; the user picks up later). Choosing to adjust instead is always available. That loops back into the question tool; an Implement or Delegate pick is the affirmative start, not a silent roll-through.
+   - **If anything on that list is still open, a load-bearing decision or a metric value without real provenance:** do NOT offer a clean "build". The only options are **resolve it now** or **defer explicitly** ("decide at build time", recorded as such in the spec). Never a silent "build anyway".
+   - **If nothing on the list is open:** finalize `.bb/<slug>/spec.md` (with its frontmatter block; see "Capture the alignment"), then offer three paths: **Implement** (invoke `/bb:implement` now: build every task and stop ready to ship, where it offers `/bb:ship`), **Delegate** (invoke `/bb:delegate <slug>` now: build every task _and_ land it, the full `implement → ship` run), or **Stop here** (leave the spec; the user picks up later). Choosing to adjust instead is always available. That loops back into the question tool; an Implement or Delegate pick is the affirmative start, not a silent roll-through.
 
 Size the ask to the stakes: cheap-to-reverse decisions lead with your pick (the user vetoes if wrong); expensive-to-undo ones lay the options out and let them choose. Full playbook in `references/draft-first.md`.
 

@@ -18,10 +18,12 @@ exists. Second, the **smallest version still worth shipping**, which is what tur
 edge into a line you can actually hold.
 
 `## Metric` is part of the arrival, not a blank left for later. Seed the baseline and
-the target from the discovery record when it carries them, and name that record in the
-seeded value's provenance note (`(discovery.md, frame capture 2026-08-24)`): the
-materialized value carries its source, and after the gate hardens it the spec's value
-wins, per the reversal rule in the plugin-level `references/spec-state.md`. Guess what
+the target from the discovery record when it carries them, carrying each value's own
+source into the seeded note with the record named beside it
+(`(XRAY query 2026-08, via discovery.md)`): the materialized value keeps a source the
+gate can judge, not just a pointer to where it came from, and after the gate hardens
+it the spec's value wins, per the reversal rule in the plugin-level
+`references/spec-state.md`. Guess what
 remains with each value's provenance on its own bullet (an estimate marked as such
 reads as a guess the user corrects), keep a value's own `skipped: <reason>` when only
 that value is unmeasured, or write the one-line `skipped: <reason>` when no honest
@@ -66,10 +68,15 @@ Ask the forks through the **`AskUserQuestion` tool**: concrete options the user 
   checks the note's shape, and whether it names a real source is your judgment at
   the gate. A value whose own `skipped: <reason>` names the missing measurement is
   not an open item; it is the honest state, and the instrumentation it flags is
-  work for `## Tasks`. On a Medium spec, whose behaviors live inline, judge the
-  event trace yourself: each event row against the inline behavior it instruments,
-  payload fields against the rule stated in `spec-format.md`. The lint's citation
-  check needs numbered behavior rows and stays silent here.
+  work for `## Tasks`. The `Events:` line is held here too: the block carries the
+  table or its explicit `none`, because the review front's plan rung resolves on
+  exactly that line and the lint does not check it. On a Medium spec, whose
+  behaviors live inline, judge the event trace yourself: each event row against
+  the inline behavior it instruments, payload fields against the rule stated in
+  `spec-format.md`. The lint's citation check needs numbered behavior rows and
+  stays silent here; on a Large spec it walks event rows to behavior rows only,
+  so the reverse direction, every user-triggered behavior row having its event,
+  is yours to judge at the gate.
 - **Reflect back:** "So we're building X, for Y, and NOT doing Z, right?"
 - **Alignment is active, not silent.** It's confirmed when the user restates the
   idea in their own words or explicitly approves the written spec, never by the
