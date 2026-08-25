@@ -16,6 +16,11 @@ that /bb:profile exists.
 block leaves CLAUDE.md and BUILDER-BUNDLE.md leaves the disk. The contract is
 references/bb-config.md. Every failure exits 0 and silently: a hook must never
 block a session.
+
+The same hook carries bb's own update: a detached worker is spawned when today's
+check is still owed, and it says nothing in the session either way. Nothing waits
+on it, and it is outside the opt out, which only ever governed the instructions
+file.
 """
 
 from __future__ import annotations
@@ -23,6 +28,8 @@ from __future__ import annotations
 import io
 import json
 import os
+import subprocess
+import sys
 
 CLAUDE_DIR = os.path.join(os.path.expanduser("~"), ".claude")
 CONFIG_PATH = os.path.join(CLAUDE_DIR, "bb.config.json")
@@ -70,6 +77,13 @@ INVITATION = (
 )
 
 HEADING = "\n## Who is on the other side\n\n"
+
+WORKER = "check_version.py"
+
+# Windows has no fork: a child stays attached to the parent's console unless it is
+# told to detach, and a console it owns alone would flash a window on every start.
+DETACHED_PROCESS = 0x00000008
+CREATE_NO_WINDOW = 0x08000000
 
 
 def read_raw(path: str) -> str | None:
@@ -222,38 +236,85 @@ def remove() -> None:
         pass
 
 
-def inject(frame: str) -> None:
+def emit(context: str) -> None:
+    """The one payload this hook prints. Every path that has something to say
+    joins it here, because a second print would be a second JSON document on a
+    stream the runner parses as one."""
     print(
         json.dumps(
             {
                 "hookSpecificOutput": {
                     "hookEventName": "SessionStart",
-                    "additionalContext": frame + "\n" + profile_block(None),
+                    "additionalContext": context,
                 }
             }
         )
     )
 
 
-def main() -> int:
-    here = os.path.dirname(os.path.abspath(__file__))
-    config = read_config()
-    if not config:
-        # Nobody calibrated anything, so nothing is written into anyone's files.
-        # The frame still opens the session, and the invitation says where it
-        # will live once it is asked for.
-        frame = read_frame(here)
-        if frame:
-            inject(frame)
-        return 0
-    # Only an explicit false opts out. An absent or unparsable value reads as
-    # yes, the same direction as a missing profile flag: more context, never less.
-    if config.get("custom_instructions", True) is False:
-        remove()
-        return 0
+def load_check_version(here: str):
+    """The sibling module. A hook can be started from anywhere, so its directory
+    goes on the path rather than being assumed to be there."""
+    if here not in sys.path:
+        sys.path.insert(0, here)
+    import check_version
+
+    return check_version
+
+
+def spawn_worker(here: str) -> None:
+    """The detached worker, with all three of its streams on the null device.
+
+    The hook's stdout is the JSON payload above, and a child holding that handle
+    would write into the middle of it. The child outlives this process: nothing
+    here waits, and its effect lands on the next session either way.
+    """
+    argv = [sys.executable, os.path.join(here, WORKER)]
+    extra: dict = {}
+    if os.name == "nt":
+        extra["creationflags"] = DETACHED_PROCESS | CREATE_NO_WINDOW
+    else:
+        extra["start_new_session"] = True
+    # The child's cwd is its own business: it takes the directory for the CLI
+    # calls from the install's `projectPath`. Starting it in ~/.claude keeps a
+    # detached process from holding a handle on whatever directory this session
+    # opened in.
+    cwd = CLAUDE_DIR if os.path.isdir(CLAUDE_DIR) else None
+    with open(os.devnull, "r+b") as null:
+        subprocess.Popen(
+            argv,
+            stdin=null,
+            stdout=null,
+            stderr=null,
+            cwd=cwd,
+            close_fds=True,
+            **extra,
+        )
+
+
+def spawn_update(here: str) -> None:
+    """Today's worker, when the day is still owed. Says nothing either way.
+
+    Wrapped whole: bb's own update is worth no part of the session, so anything
+    that goes wrong in here leaves the instructions half of the hook untouched.
+    """
+    try:
+        check_version = load_check_version(here)
+        # The day is claimed before the spawn, so a second session starting this
+        # same moment loses the claim and spawns nothing.
+        if check_version.claim_today(check_version.stamp_path()):
+            spawn_worker(here)
+    except Exception:
+        return
+
+
+def sync(here: str, config: dict) -> None:
+    """The instructions file and the CLAUDE.md import, brought up to date. This
+    path says nothing in the session: the instructions reach it through the
+    import."""
     frame = read_frame(here)
     if not frame:
-        return 0
+        return
     text = render(read_version(here), frame, read_profile(config))
     if read_raw(INSTRUCTIONS_PATH) != text:
         write(INSTRUCTIONS_PATH, text)
@@ -261,6 +322,30 @@ def main() -> int:
     updated = with_block(memory)
     if updated is not None and updated != memory:
         write(MEMORY_PATH, updated, newline="")
+
+
+def main() -> int:
+    here = os.path.dirname(os.path.abspath(__file__))
+    spawn_update(here)
+    frame = ""
+    config = read_config()
+    if not config:
+        # Nobody calibrated anything, so nothing is written into anyone's files.
+        # The frame still opens the session, and the invitation says where it
+        # will live once it is asked for.
+        carried = read_frame(here)
+        if carried:
+            frame = carried + "\n" + profile_block(None)
+    elif config.get("custom_instructions", True) is False:
+        # Only an explicit false opts out. An absent or unparsable value reads as
+        # yes, the same direction as a missing profile flag: more context, never
+        # less. The opt out is the instructions file alone; the update is not
+        # a thing anyone asked to stop.
+        remove()
+    else:
+        sync(here, config)
+    if frame:
+        emit(frame)
     return 0
 
 
