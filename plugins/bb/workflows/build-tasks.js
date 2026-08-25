@@ -76,6 +76,14 @@ function checksPrompt(resolved) {
   // Three different grounds, and an empty list is two of them: no payload at all, and a
   // payload whose whole chain came back empty. `source` is what separates them, so a repo
   // that genuinely has no checks is not sent to re-walk a chain that already answered.
+  //
+  // `unresolved` is the one part of the payload that is not an answer: what the resolver
+  // saw and could not turn into something runnable. It travels as work to do rather than
+  // as a list to confirm, because a stack whose runner the resolver cannot name arrives
+  // here as an empty list otherwise, and an empty list reads as "no checks".
+  const unresolved = (resolved && resolved.unresolved) || [];
+  const leads = unresolved.map((u) => `\`${u.command}\` in ${u.where} (${u.reason})`).join("; ");
+
   let listed;
   if (!resolved) {
     listed = `No list was resolved for you, so resolve the checks yourself, highest authority first: the repo's own CLAUDE.md and docs, then CI workflow files, then package.json / justfile / Makefile / pyproject.toml.`;
@@ -83,7 +91,12 @@ function checksPrompt(resolved) {
     const cut = resolved.truncated
       ? ` That list is cut at ${resolved.commands.length} of ${resolved.resolved_count} resolved; confirm the remaining ones from the same source before you run anything.`
       : "";
-    listed = `The caller resolved these from ${resolved.source}, in order: ${resolved.commands.join(" && ")}. Take that as the list unless the repo contradicts it.${cut}`;
+    const more = leads
+      ? ` It also saw ${unresolved.length} command(s) in the same source it could not resolve, and they may be checks: ${leads}. Read those files and decide for yourself whether each one belongs in the list.`
+      : "";
+    listed = `The caller resolved these from ${resolved.source}, in order: ${resolved.commands.join(" && ")}. Take that as the list unless the repo contradicts it.${cut}${more}`;
+  } else if (leads) {
+    listed = `The caller walked the whole chain and resolved nothing runnable, but it did see ${unresolved.length} command(s) it could not resolve: ${leads}. Read those files and build the list yourself from what is there. An empty list is an answer only once you have looked.`;
   } else {
     listed = `The caller walked the whole chain and this project has no checks: no document, no CI workflow and no manifest named one. Confirm that and return an empty list. Do not go hunting for a suite that is not there.`;
   }

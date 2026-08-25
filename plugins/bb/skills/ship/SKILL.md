@@ -63,13 +63,21 @@ clean commit.
    `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py` walks the authority chain
    (the repo's own CLAUDE.md and docs, then CI workflow files, then `package.json` / `justfile` /
    `Makefile` / `pyproject.toml`) and prints `{commands, source, truncated, resolved_count,
-   runnable, policy, notes, candidates, git_root}`. Run every command it returns as concurrent
-   background shells. An empty `commands` is a real answer, not a failure: a LexFlow app repo
-   has no CI and no build, and its checks are the three layers in
+   runnable, policy, notes, unresolved, candidates, git_root}`. Run every command it returns as
+   concurrent background shells. An empty `commands` is a real answer, not a failure: a LexFlow
+   app repo has no CI and no build, and its checks are the three layers in
    `references/land-lexflow.md`. **`source` is what tells the two empties apart**: `null` means
    no tier resolved anything, and a named tier always answers with at least one command. When
    `truncated` is true, `resolved_count` exceeded what `commands` carries, so say how many were
-   left out rather than reporting the list as the whole suite. `runnable: false` is the other
+   left out rather than reporting the list as the whole suite. **`unresolved` is the one field
+   that is not an answer**: each entry is a command the script saw and could not turn into
+   something runnable, with `reason` (`unrecognized-runner`, a stack whose runner it cannot
+   name; `shell-dependent`, a line that needs the shell step that defined it) and `where`. Not
+   empty means the list is not settled: open `where` and decide yourself, because a stack this
+   script has never met comes back as an empty `commands` otherwise and an empty `commands`
+   reads as a project with no checks. `candidates` is the other half of that read, holding what
+   each tier offered separately, so a list that looks wrong gets compared instead of re-walked.
+   `runnable: false` is the other
    real answer, something forbidding local runs, with `policy.evidence` as the line that says so
    and **`policy.scope` as who said it**: `repo` for the project's own documents, `machine` for
    the user's `~/.claude/CLAUDE.md`. Name that scope when you explain why nothing ran, because
@@ -152,7 +160,7 @@ The ground for the whole run in one call: `gh_authenticated`, branch, base, `mer
 
 ### ${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py
 
-Walk the checks authority chain without running anything: the repo's own CLAUDE.md and docs, then CI workflow files, then `package.json` / `justfile` / `Makefile` / `pyproject.toml`. The user's `~/.claude/CLAUDE.md` is read only for a prohibition on local runs, never for commands. Prints `{commands, source, truncated, resolved_count, runnable, policy, notes, candidates, git_root}`. Shared with `/bb:implement`, which also hands it to `workflows/build-tasks.js` as `args.checks`.
+Walk the checks authority chain without running anything: the repo's own CLAUDE.md and docs, then CI workflow files, then `package.json` / `justfile` / `Makefile` / `pyproject.toml`. The user's `~/.claude/CLAUDE.md` is read only for a prohibition on local runs, never for commands. Prints `{commands, source, truncated, resolved_count, runnable, policy, notes, unresolved, candidates, git_root}`, where `unresolved` is what it saw and could not resolve, so an empty `commands` is never mistaken for a project with no checks. Shared with `/bb:implement`, which also hands it to `workflows/build-tasks.js` as `args.checks`.
 
 ### ${CLAUDE_PLUGIN_ROOT}/scripts/inspect_pr_checks.py
 

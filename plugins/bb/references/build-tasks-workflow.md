@@ -93,7 +93,8 @@ stringified one):
     truncated: true | false,
     resolved_count: 0,
     runnable: true | false,
-    policy: { decision: "ci-only", source: "<path>", scope: "repo" | "machine", evidence: "<the line>" }
+    policy: { decision: "ci-only", source: "<path>", scope: "repo" | "machine", evidence: "<the line>" },
+    unresolved: [{ command: "...", reason: "unrecognized-runner" | "shell-dependent", where: "<file>" }]
   },
   reuseNotes: ["<one string per reuse note in ## Decisions>"],
   tasks: [
@@ -114,6 +115,15 @@ payload: `null` means the skill never resolved anything and the agent has to wal
 itself, while a non-null payload with `source: null` means the chain was walked and this
 project has no checks. The prompt says whichever of the two it is, so a repo without a suite
 is not sent looking for one.
+
+`unresolved` is the third ground, and the only field in the payload that is not an answer. It
+carries what the resolver saw and could not turn into something runnable: a command whose
+runner it cannot name (`unrecognized-runner`), or one that needs the shell step that defined
+it (`shell-dependent`). Non-empty, it is what keeps an empty `commands` from reading as "this
+project has no checks" when it means "no runner I recognize", and what keeps a resolved list
+from reading as the whole suite when it is not. `checksPrompt()` hands those leads over as
+files to read rather than as a list to confirm, so the judgment lands with the agent that can
+open the file. The alternative is a confident empty list over a suite that exists.
 
 `tasks` carries only the ones still unticked at invoke time, in an order that already
 satisfies `dep:`. The agents re-read the spec anyway: `args` is the plan, the file on
@@ -139,7 +149,9 @@ Each reuse-note agent returns:
 The checks agent confirms the list `args.checks` carries and then **runs all of them
 once**. Running them is the point: it proves the run has permission to execute each one,
 and it establishes the green baseline. With `args.checks` null it resolves the chain
-itself, which is the only place the order is still spelled out at runtime. It returns:
+itself, which is the only place the order is still spelled out at runtime. With
+`unresolved` non-empty it opens the files that field names and decides there, so the list
+it returns can be longer than the one it was handed. It returns:
 
 ```
 { commands: ["..."], ran: true | false, green: true | false, blocker: "<why, if any>" }
