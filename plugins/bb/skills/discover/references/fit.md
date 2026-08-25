@@ -22,10 +22,12 @@ came from a framed problem; otherwise run only the mode the user asked for.
 - **Hypothesis**: always close here. Harden the bet into testable form:
   _"If <change>, the <metric> moves from <baseline> to <target> within
   <timeframe>, because <mechanism>."_ Baseline and target come from the frame's
-  capture, each with its provenance; a baseline of `skipped: not-instrumented`
-  keeps the shape and names the instrumentation as the first work. A wish
-  ("melhorar a UX") is not a hypothesis; don't close the phase without the
-  testable shape.
+  capture, each with its provenance; a value nothing measures yet keeps the
+  shape as its own `skipped: <reason>`, baseline and target alike. When the
+  phase ran without a framed problem, there is no capture to read: draft both
+  values here with their provenance, in the same shape, or skip each honestly.
+  A wish ("melhorar a UX") is not a hypothesis; don't close the phase without
+  the testable shape.
 
 ## How it runs
 

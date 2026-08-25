@@ -106,3 +106,4 @@ record the verdict with its evidence and stop (a pivot points back to
 | answer still vague after one clarification | accept at `low` confidence and move on                                             |
 | a field can't be answered                  | record `skipped: <reason>`                                                         |
 | fit asked with no framed problem           | suggest Phase 1 once; if declined, proceed and note `ran without a framed problem` |
+| hypothesis closes with no frame capture    | draft baseline and target in the fit itself, or skip each with a reason (`fit.md`) |

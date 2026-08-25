@@ -45,7 +45,7 @@ the spec-state contract), and set `phase: frame`:
 - appetite: <budget, e.g. "~2 weeks">
 - success signal: <the one observable metric>  [confidence: med]
 - baseline: <the metric's current reading> (<provenance>)
-- target: <where it should land> (<provenance>)
+- target: <where it should land>, within <timeframe> (<provenance>)
 
 ## Hypothesis
 If <change>, the <success signal> moves, because <mechanism>.  [confidence: low]
