@@ -54,23 +54,33 @@ CELL_SPLIT = re.compile(r"(?<!\\)\|")
 # Target bullets carry provenance as a parenthesized note or an honest per-value
 # `skipped: <reason>`, a `skipped: <reason>` line alone replaces the whole section,
 # and a numbered happy-path row is what an event row cites.
-METRIC_VALUE = re.compile(r"^\s{0,3}[-*+]\s+\**(Baseline|Target)\**\s*:", re.IGNORECASE)
-VALUE_SKIP = re.compile(r"skipped\s*:\s*\S", re.IGNORECASE)
-# Anchored at column 0: an indented `skipped:` is a sub-note of some other bullet,
-# not the section-level skip, and must not silence the checks below.
-METRIC_SKIP = re.compile(r"^(?:[-*+]\s+)?skipped\s*:\s*\S", re.IGNORECASE)
+METRIC_VALUE = re.compile(r"^\s*[-*+]\s+\**(Baseline|Target)\**\s*:", re.IGNORECASE)
+VALUE_SKIP = re.compile(r"\**skipped\**\s*:\s*\S", re.IGNORECASE)
+# Tolerant of 1-3 leading spaces (CommonMark top level) and bold, like the value
+# bullets. Only the section's first body line can be the section-level skip: the
+# skip replaces the whole section, so a `skipped:` arriving after other content is
+# a continuation or a sub-note, never the skip. check_body enforces that ordering.
+METRIC_SKIP = re.compile(r"^\s{0,3}(?:[-*+]\s+)?\**skipped\**\s*:\s*\S", re.IGNORECASE)
 PROVENANCE = re.compile(r"\([^)]+\)")
-BEHAVIOR_ROW = re.compile(r"^\s{0,3}(\d+)[.)]\s")
+BEHAVIOR_ROW = re.compile(r"^(\s*)(\d+)[.)]\s")
 NUMBERED_CELL = re.compile(r"^(\d+)[.)]?$")
-# A new list item, an `okr:` or a `skipped:` line closes the bullet above it; anything
-# else directly under an open bullet is a wrapped or lazy continuation of it.
-NEW_ITEM = re.compile(r"^\s{0,3}(?:[-*+]\s|\d+[.)]\s|okr\s*:|skipped\s*:)", re.IGNORECASE)
+# A new list item, an `okr:` or a `skipped:` line closes the bullet above it, and so
+# do a `>` quote and a thematic break: CommonMark interrupts a paragraph there, so
+# the rendered document does not keep them inside the bullet. Anything else directly
+# under an open bullet is a wrapped or lazy continuation of it.
+NEW_ITEM = re.compile(
+    r"^\s{0,3}(?:[-*+]\s|\d+[.)]\s|>|okr\s*:|skipped\s*:|(?:-\s*){3,}$|(?:\*\s*){3,}$|(?:_\s*){3,}$)",
+    re.IGNORECASE,
+)
 # A citation cell is numbers, commas and ranges once parenthesized notes are stripped;
 # anything else is prose naming an inline behavior, judged by the gate, not here.
 PAREN_NOTE = re.compile(r"\([^)]*\)")
 CITATION_CELL = re.compile(r"^[\d\s,;.–-]+$")
 CITED_RANGE = re.compile(r"(\d+)\s*[–-]\s*(\d+)")
 CITED_NUMBER = re.compile(r"\d+")
+# Numbers joined by a connector word (`1 e 2`, `1 and 3`) are a citation with a typo,
+# not prose: silence there hides a broken trace, so it gets its own W007 message.
+CONNECTOR_CELL = re.compile(r"^[\d\s,;.–-]+(?:e|and|et|y|&|\+)[\d\s,;.–-]+$", re.IGNORECASE)
 
 
 def split_row(line):
@@ -132,6 +142,11 @@ def cited_rows(cell):
     cleaned = PAREN_NOTE.sub(" ", cell).strip()
     if not cleaned or not CITATION_CELL.match(cleaned):
         return None
+    # A run of 4+ digits is a date or an ID, never a behavior row: the whole cell
+    # stops being a citation, rather than expanding into phantom rows or, on a
+    # fat-fingered range, into an unbounded flood of warnings.
+    if any(len(n) > 3 for n in CITED_NUMBER.findall(cleaned)):
+        return None
     cited = set()
 
     def expand(match):
@@ -157,6 +172,14 @@ def check_citations(metric_tables, behavior_rows):
                 continue
             cited = cited_rows(cells[column])
             if cited is None:
+                cleaned = PAREN_NOTE.sub(" ", cells[column]).strip()
+                if CONNECTOR_CELL.match(cleaned):
+                    yield (
+                        line_no,
+                        "W007",
+                        "behaviors cell joins numbers with a word: cite rows as "
+                        "numbers and commas, or write the behavior as a phrase",
+                    )
                 continue
             for n in sorted(cited):
                 if n not in behavior_rows:
@@ -173,12 +196,13 @@ def check_body(lines):
     fence_marker = None  # the marker (``` or ~~~) that opened the current fence
     section = None  # the current `##` heading, lowercased
     table = []  # (line_no, cells) of the current run of table rows
-    behavior_marks = []  # numbered-list markers under `## Behavior`, in file order
+    behavior_marks = []  # (indent, number) of list markers under `## Behavior`, in order
     table_rows = set()  # numbered rows collected from a `## Behavior` table
     metric_line = None  # the `## Metric` heading's line, anchors section-level warnings
     metric_values = []  # [line_no, key, text] of the Baseline and Target bullets
     metric_tables = []  # the Metric section's table runs, kept for the citation check
     metric_skipped = False
+    metric_body = False  # whether `## Metric` has body content before the current line
     open_value = None  # index into metric_values of the bullet still accumulating
 
     def flush(rows):
@@ -247,6 +271,8 @@ def check_body(lines):
 
         if line.strip().startswith("|"):
             open_value = None
+            if section == "metric":
+                metric_body = True
             table.append((i, split_row(line)))
             continue
         if table:
@@ -262,17 +288,20 @@ def check_body(lines):
             section = name
             if name == "metric":
                 metric_line = i
+                metric_body = False
             if name in DEAD_SECTIONS:
                 yield i, "E003", DEAD_SECTIONS[name].format(raw=raw)
             continue
 
         if section == "behavior":
             row = BEHAVIOR_ROW.match(line)
-            if row:
-                behavior_marks.append(int(row.group(1)))
+            if row and len(row.group(2)) <= 3:
+                behavior_marks.append((len(row.group(1)), int(row.group(2))))
         elif section == "metric":
-            if METRIC_SKIP.match(line):
-                metric_skipped = True
+            if line.strip():
+                if not metric_body and METRIC_SKIP.match(line):
+                    metric_skipped = True
+                metric_body = True
             value = METRIC_VALUE.match(line)
             if value:
                 metric_values.append([i, value.group(1), line])
@@ -303,13 +332,16 @@ def check_body(lines):
         for key in ("Baseline", "Target"):
             if key.lower() not in present:
                 yield (
-                    metric_line or 1,
+                    metric_line,
                     "W006",
                     f"no `{key}:` bullet: the metric block carries baseline and target, "
                     "or the section is one `skipped: <reason>` line",
                 )
         for line_no, key, text in metric_values:
             rest = text[METRIC_VALUE.match(text).end() :].strip()
+            # `- **Baseline:** x` closes its bold after the colon, so the label match
+            # ends inside the markers; shed them before reading the value.
+            rest = rest.lstrip("*").strip()
             if VALUE_SKIP.match(rest):
                 # An honest per-value skip (`Baseline: skipped: not-instrumented`)
                 # needs no provenance; it flags the instrumentation as first work.
@@ -321,12 +353,16 @@ def check_body(lines):
                     f"`{key}:` without provenance: name the source in a parenthesized "
                     "note on the same bullet (a query, a log, a named person's estimate)",
                 )
+        # Only the list's own rows are citable: a sub-item sits deeper than the
+        # minimum indent and renders inside its parent, not as a row of its own.
+        top = min((indent for indent, _ in behavior_marks), default=0)
+        marks = [n for indent, n in behavior_marks if indent == top]
         # Markers all spelling `1.` are a CommonMark auto-numbered list that renders
         # 1, 2, 3…; the citable numbers are what the reader sees, not the literals.
-        if len(behavior_marks) > 1 and len(set(behavior_marks)) == 1:
-            rows = set(range(behavior_marks[0], behavior_marks[0] + len(behavior_marks)))
+        if len(marks) > 1 and len(set(marks)) == 1:
+            rows = set(range(marks[0], marks[0] + len(marks)))
         else:
-            rows = set(behavior_marks)
+            rows = set(marks)
         rows |= table_rows
         # A `## Behavior` in prose, or a table with no numbered rows, leaves nothing
         # to cite; the gate judges the trace there, the same as a Medium spec.
@@ -336,9 +372,16 @@ def check_body(lines):
 
 def lint(path):
     try:
-        lines = open(path, encoding="utf-8").read().splitlines()
+        data = open(path, encoding="utf-8").read()
     except OSError as err:
         return [(1, "E001", f"could not read the file: {err}")]
+    except UnicodeDecodeError as err:
+        # A ValueError, not an OSError: one bad byte costs this file one finding,
+        # never the whole run.
+        return [(1, "E001", f"not valid UTF-8: {err}")]
+    # Markdown's line breaks are `\n` and `\r\n`; splitlines() also splits on \v,
+    # \f and U+2028/29, which shifts every reported line number after one.
+    lines = data.replace("\r\n", "\n").replace("\r", "\n").split("\n")
     return sorted([*check_frontmatter(lines), *check_body(lines)], key=lambda p: (p[0], p[1]))
 
 
