@@ -168,13 +168,11 @@ A stage-zero stop is normalized into the shape a task result has, so the caller 
 thing to read and a blocker to name:
 `{ n: 0, status: "red", blocker: "<which note died, or which command, and why>" }`.
 
-One environment used to fail here by policy rather than by breakage: a repo whose top
-authority forbids running checks locally resolved its commands, could not run them, and
-came back `ran: false`, which stopped every build on such a machine before task 1.
-`resolve_checks.py` reads that authority now, so the policy arrives as `runnable: false`,
-stage zero sends no checks agent, `commands` is empty for the task agents too, and the log
-says the checks belong to CI here. The build proceeds with the proof deferred to the PR,
-which is where that policy wanted it.
+A repo whose top authority forbids running checks locally fails here by policy and not by
+breakage, so it is not a stop. The policy arrives as `runnable: false`, stage zero sends no
+checks agent, `commands` is empty for the task agents too, and the log says the checks
+belong to CI here. The build proceeds with the proof deferred to the PR, which is where
+that policy wanted it.
 
 `ran: false` keeps its meaning for the case it was written for: a command the run was
 refused with no policy saying so. That is still a stop before task 1 and still a blocker to
@@ -199,9 +197,8 @@ keeps what is green.
 line, the behaviors it cites, the accumulated convention note and the check commands
 stage zero resolved, then tells the agent what to do with them: build inside
 `## Out of scope`, satisfy `verify:`, keep the checks green, commit the files it touched
-together with its `- [x]`, return the result. Read the string when you need the wording.
-This file used to paraphrase it in six numbered steps, which is the second contract the
-opening says not to keep.
+together with its `- [x]`, return the result. Read the string when you need the wording: a
+paraphrase here would be the second contract the opening says not to keep.
 
 Two of its rules reach the caller, because they show up in the return:
 
@@ -255,7 +252,8 @@ tasks whose proof is CI, which is ship's to close.
 
 ## What guards the script, and what the skill still checks per run
 
-The script is code now, so most of the old pre-invoke checklist moved off the run.
+Being code, the script gets most of its guarding from tooling rather than from a checklist
+the run walks.
 
 **CI and the pre-commit hook** own what a parse or a scan settles, in
 `.github/scripts/validate-workflow-script.ts`, over a source whose comment, string,

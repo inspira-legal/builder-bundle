@@ -3,8 +3,11 @@
 ## 2.18.0 (2026-08-24)
 
 **What a run can look up, it stops asking an agent to derive.** The checks authority chain
-was written three times, in `/bb:ship`, in `/bb:implement` step 4 and inside
-`workflows/build-tasks.js`, where confirming it spent a whole stage-zero agent per build.
+was written out in every text that touched it, `/bb:ship` twice, `/bb:implement` step 4,
+`references/build-tasks-workflow.md` and `workflows/build-tasks.js`, where confirming it
+spent a whole stage-zero agent per build. It is `resolve_checks.py`'s docstring now, and the
+readers cite it; the one other copy is the fallback string `build-tasks.js` hands an agent
+that has no payload to read, which cannot follow a pointer.
 The spec selection rule was prose a reader re-walked every time. The review's opening probe
 was five to seven round trips of `git` and `gh` decided one at a time. None of that is
 judgment: it is parsing, and it belongs in a script.
@@ -18,10 +21,11 @@ to CI.
 
 ### New
 
-- **`plugins/bb/scripts/resolve_checks.py`** walks the authority chain (CLAUDE.md and docs,
-  then CI workflow files, then `package.json` / `justfile` / `Makefile` / `pyproject.toml`)
-  and prints `{commands, source, runnable, policy, candidates}`. It runs nothing. Read by
-  `/bb:implement` (step 4, and passed through as `args.checks`) and `/bb:ship` (Step 2).
+- **`plugins/bb/scripts/resolve_checks.py`** walks the checks authority chain, which its
+  docstring now states in the one place, and prints `{commands, source, truncated,
+  resolved_count, runnable, policy, notes, unresolved, candidates, git_root}`. It runs
+  nothing. Read by `/bb:implement` (step 4, and passed through as `args.checks`) and
+  `/bb:ship` (Step 2).
 - **`plugins/bb/scripts/scan_specs.py`** is `references/spec-state.md`'s selection rule as
   code: every spec's `status`, `created`, unticked task count and, for a blocked one, its
   `## Open` line, alongside the `selected` the rule picks. `/bb:delegate` step 1 reads it.

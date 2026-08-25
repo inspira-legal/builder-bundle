@@ -13,7 +13,7 @@ Take the current branch all the way to landed (checks green, committed), then la
 
 ## Prerequisites
 
-One call answers the whole ground this run stands on: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/preflight.py` prints `gh_authenticated`, the branch with its resolved `diff_range`, the `pr` for this branch with its `checks` buckets, `project_kind`, `code_review_guide` and the spec the branch belongs to. Every step below reads that one payload instead of probing again.
+One call answers the whole ground this run stands on: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/preflight.py` prints `gh_authenticated`, the branch with its `base_branch`, `merge_base` and resolved `diff_range`, the `pr` for this branch with its `checks` buckets, `project_kind`, `code_review_guide`, the spec the branch belongs to and whether the diff's hunks contain `ui`. Every step below reads that one payload instead of probing again.
 
 - For the PR path: `gh_authenticated: false` means `gh auth status` came back non-zero, so either nobody is logged in or `gh` is not on the PATH at all; instruct the user to run `gh auth login`. Authenticated is not the same as sufficient: the PR path needs the `repo` and `workflow` scopes, and a login predating the `workflow` scope fails on the first push that touches `.github/workflows/`. `gh auth refresh -s repo,workflow` is the remedy for that one.
 - A non-null `pr` is the default destination ("finish the PR").
@@ -60,9 +60,8 @@ ship owns is the part with no judgment in it: the checks CI would run anyway, an
 clean commit.
 
 1. **The project's checks** (background):
-   `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py` walks the authority chain
-   (the repo's own CLAUDE.md and docs, then CI workflow files, then `package.json` / `justfile` /
-   `Makefile` / `pyproject.toml`) and prints `{commands, source, truncated, resolved_count,
+   `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py` walks the authority chain its
+   own docstring states and prints `{commands, source, truncated, resolved_count,
    runnable, policy, notes, unresolved, candidates, git_root}`. Run every command it returns as
    concurrent background shells. An empty `commands` is a real answer, not a failure: a LexFlow
    app repo has no CI and no build, and its checks are the three layers in
@@ -160,7 +159,7 @@ The ground for the whole run in one call: `gh_authenticated`, branch, base, `mer
 
 ### ${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py
 
-Walk the checks authority chain without running anything: the repo's own CLAUDE.md and docs, then CI workflow files, then `package.json` / `justfile` / `Makefile` / `pyproject.toml`. The user's `~/.claude/CLAUDE.md` is read only for a prohibition on local runs, never for commands. Prints `{commands, source, truncated, resolved_count, runnable, policy, notes, unresolved, candidates, git_root}`, where `unresolved` is what it saw and could not resolve, so an empty `commands` is never mistaken for a project with no checks. Shared with `/bb:implement`, which also hands it to `workflows/build-tasks.js` as `args.checks`.
+Walk the checks authority chain without running anything. Its docstring states the chain, tier by tier, and is the one place that does. Prints `{commands, source, truncated, resolved_count, runnable, policy, notes, unresolved, candidates, git_root}`, where `unresolved` is what it saw and could not resolve, so an empty `commands` is never mistaken for a project with no checks. Shared with `/bb:implement`, which also hands it to `workflows/build-tasks.js` as `args.checks`.
 
 ### ${CLAUDE_PLUGIN_ROOT}/scripts/inspect_pr_checks.py
 

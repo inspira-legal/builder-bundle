@@ -30,9 +30,8 @@ and stop.
    the rule picks and `pending_slugs` for the report.
    - **Named** (`/bb:delegate <slug>`): pass `--slug <slug>`. `found: false` means report
      the error, list `pending_slugs`, and stop.
-   - **Bare** (`/bb:delegate`): take `selected`, which is the smallest `created` among
-     `pending` and `in-progress`, tie-broken on the slug, with an absent frontmatter block
-     sorting last. Null means report "no pending specs" and stop.
+   - **Bare** (`/bb:delegate`): take `selected`, whatever it is. Null means report "no
+     pending specs" and stop.
    - A spec already `done`: report it's done and ask whether to re-run. A `blocked`
      spec is skipped in bare selection and reported, not silently dropped: name it
      with the blocker its `## Open` carries, and where that blocker sends it. The
@@ -101,10 +100,10 @@ and stop.
 | `/bb:delegate <slug>`, slug exists, not done     | run it end to end                                                                                                                               |
 | `/bb:delegate <slug>`, slug not found            | report the error, list available pending slugs, stop                                                                                            |
 | `/bb:delegate <slug>`, status `done`             | report it's done, ask whether to re-run                                                                                                         |
-| bare `/bb:delegate`, one+ pending                | pick smallest `created` (tie-break slug alpha), run it                                                                                          |
+| bare `/bb:delegate`, one+ pending                | run `scan_specs.py`'s `selected`                                                                                                                |
 | bare `/bb:delegate`, none pending                | report "no pending specs", stop                                                                                                                 |
 | selected spec already `in-progress`              | resume: implement skips checked tasks; status stays `in-progress` until landing                                                                 |
-| spec has no frontmatter                          | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                            |
+| spec has no frontmatter                          | the scan still selects it; run it, and `/bb:spec` backfills the block next time                                                                 |
 | implement safety valve fires (underspecified)    | flip `status: blocked`, write the blocker into the spec's `## Open`, point back to `/bb:spec`, stop; do not improvise                           |
 | the build stops (stage zero or a task)           | flip `status: blocked`, write the blocker into the spec's `## Open`, exit without landing                                                       |
 | bare `/bb:delegate`, the oldest spec is blocked  | skipped, and reported with the blocker its `## Open` carries and where that blocker sends it                                                    |
