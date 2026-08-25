@@ -65,8 +65,10 @@ scope is the one path that needs neither a repo nor a diff.
 the whole folder from the resolved diff before anything else reads it: the
 records, the spec and `prototype/` alike. `/bb:brisar`'s prototype is not the
 product, and a finding about a spec's prose is a finding about the ruler. The
-`contract` front still **reads** `spec.md` and `discovery.md`, which is what
-judging against a criterion means (`references/front-contract.md`). When the
+`contract` front still **reads** `spec.md` and `discovery.md`, and the
+`instrumentation` front's rung 1 reads the spec's `## Metric` the same way:
+judging against a criterion means reading it (`references/front-contract.md`,
+`references/front-instrumentation.md`). When the
 subtraction empties the diff, say there is no code to review and stop, rather
 than running fronts over nothing.
 
@@ -134,9 +136,10 @@ One unified report, numbered items across all fronts, most severe first. Each it
 carries its front, its verdict, and the columns of **its own front's Finding
 shape**. The row format lives in each `front-*.md` next to the method that
 produces it, so a front that changes its columns doesn't leave a stale template
-here. Group the items by front under the front's label (Correctness, Quality,
-Rules, Contract, Accessibility, Design system, Instrumentation, Threads, CI) and
-keep one numbering across the whole report.
+here. Group the items by front under the front's label from the catalog's Label
+column (Correctness, Quality, Project rules, Spec contract, Accessibility, Design
+system, Instrumentation, PR threads, CI) and keep one numbering across the whole
+report.
 
 Close with what didn't make it and what actually ran:
 

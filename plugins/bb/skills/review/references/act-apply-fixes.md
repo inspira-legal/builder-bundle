@@ -43,8 +43,10 @@ improvement, and a "fix" that isn't justified against its finding is a guess.
      what is wrong, that is design-system debt to note, not a review edit.
    - An **instrumentation finding** is fixed toward the cited source: wire the
      planned event, rename to the convention, trim the payload to the rule, or
-     reroute to the planned channel. An event the plan lacks is a gap for the
-     spec's events table to flag, never an event to invent here.
+     reroute to the planned channel. Wiring an event or renaming a live one adds
+     or changes a side effect, so it is justified and checked as a correctness
+     fix, never applied as a mechanical one. An event the plan lacks is a gap for
+     the spec's events table to flag, never an event to invent here.
    - A **contract gap** is closed by building the missing behavior or the missing
      test, not by editing the spec. When the spec itself turns out to be wrong,
      that's a `/bb:spec` conversation, not a review edit.

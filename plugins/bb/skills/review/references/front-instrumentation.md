@@ -55,11 +55,15 @@ to read.
 - **Payload**: payload fields hold only what the payload rule allows. The rule's
   single home is the events-table paragraph of
   `${CLAUDE_PLUGIN_ROOT}/skills/spec/references/spec-format.md` (spec's reference;
-  read it there, this front cites it and never restates it). A field past it is a
-  finding citing that rule.
+  read it there, this front cites it and never restates it). A dispatched finder
+  cannot expand that variable, so the caller resolves it into the scope block
+  beside the rungs (`fronts.md`, fan-out step 2). A field past the rule is a
+  finding citing it.
 - **Channel**: events flow to the channel the plan names. An event routed to a sink
-  the plan does not name is a finding citing the channel column, and a sensitive
-  payload routed to a third-party sink is that finding at its most severe.
+  the plan does not name is a finding citing the channel column, or the event's own
+  table row where the plan carries no channel column (a single-sink project's table
+  omits it), and a sensitive payload routed to a third-party sink is that finding at
+  its most severe.
 
 ## Finding shape
 
@@ -81,14 +85,9 @@ the convention that routing survives). The report ranks the three per `verify.md
   at the end as existing debt.
 - An added interaction no plan covers (rung 1 absent, which `Events: none` is not)
   is not a coverage finding; with no plan there is nothing to cite. One closing
-  line names it as a gap for the spec's events table.
+  line names the gap: in local mode, for the spec's events table; in the
+  external-PR mode, where rung 1 never exists, against the project's own
+  convention, never a bb artifact the other repo does not have.
 - When the repo's `CODE_REVIEW_GUIDE.md` itself states an analytics rule, a
   violation of it is a `rules` finding with the guide cited, not a duplicate here.
   This front judges against the ladder's sources.
-
-## Verify
-
-`instrumentation` candidates verify against the cited source, not a crash. The
-addendum the fan-out appends to the verifier's prompt lives in `verify.md` ("The
-addendum"), beside the other fronts', so both callers of the engine judge from the
-one copy.

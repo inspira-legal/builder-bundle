@@ -17,7 +17,7 @@ Wait for **all** finders across all picked fronts (the barrier), then run
 in one deterministic pass:
 
 ```bash
-python scripts/group_candidates.py < candidates.json
+python3 scripts/group_candidates.py < candidates.json
 ```
 
 Input is `{"scope_files": [...], "candidates": [...]}`; output is the groups, the

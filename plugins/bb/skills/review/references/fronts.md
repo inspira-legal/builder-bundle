@@ -64,17 +64,18 @@ batch of cheap read-only calls (parallel background where possible):
   (or `design/`). One resolving makes `design` available; the resolution order and
   what each rung is worth are `front-design.md`'s.
 - instrumentation ladder, probed when the diff adds interactions or wires
-  analytics. Both signals are executable: the UI grep above names the interaction
-  hunks, and the analytics ones come from a second grep over the same added lines
-  for an emit site (a `track(`/`emit(`/`capture`/`logEvent` call, or an import
-  from the project's analytics or events module), which is what catches an emit
-  added in a service file no UI grep sees. Rung 1 is the branch spec's `## Metric`
-  events table or its explicit `Events: none` line (the spec the
-  lookup above resolved), rung 2 is the analytics convention the project itself
-  shows in source (a typed event map, an emit wrapper, a generated client, found
-  where the diff's hunks or the project's analytics module already route events).
-  Either rung resolving makes `instrumentation` available; what each rung is worth
-  and which checks it funds are `front-instrumentation.md`'s (§1).
+  analytics. Both signals are executable, and neither borrows the UI grep above,
+  whose handler clause counts only new markup: the interaction signal greps the
+  added lines for a handler or listener wired anywhere (`onClick`, `onKeyDown`,
+  `addEventListener`, a form submit or a route change), on new markup or existing,
+  and the analytics signal greps the same lines for an emit site (a
+  `track(`/`emit(`/`capture`/`logEvent` call, or an import from the project's
+  analytics or events module), which is what catches an emit added in a service
+  file no UI grep sees. Rung 1 is the branch spec's `## Metric` events table or
+  its explicit `Events: none` line (the spec the lookup above resolved), rung 2
+  the analytics convention the project's own source shows. Either rung resolving
+  makes `instrumentation` available; what each rung is and which checks it funds
+  are `front-instrumentation.md`'s (§1).
 - `gh pr view --json number,url`: is there an open PR.
 - failing checks: `gh pr checks <n>` when a PR exists, otherwise
   `gh run list --branch <branch> --limit 1`: the branch's last run is evidence
@@ -153,11 +154,14 @@ change it reviewed.
    `front-instrumentation.md` itself), and the spec when there is one, plus ONE
    angle/lens set and its candidate cap. The `design` finder's scope block also
    carries the resolved design sources (`front-design.md`, §1), and the
-   `instrumentation` finder's the resolved rungs (`front-instrumentation.md`, §1),
-   so the finder cites instead of re-resolving. A path a front's reference writes
-   as `${CLAUDE_PLUGIN_ROOT}/...` is resolved by this caller to an absolute path
-   before it enters the scope block; a dispatched agent has no plugin root to
-   expand.
+   `instrumentation` finder's the resolved rungs plus the resolved absolute path
+   of the payload rule's file (`skills/spec/references/spec-format.md`, which its
+   criteria reference names through a plugin-root variable), so the finder cites
+   instead of re-resolving. A path a front's reference writes as
+   `${CLAUDE_PLUGIN_ROOT}/...` is resolved by this caller to an absolute path
+   before it enters the scope block, and when the reference itself is what the
+   agent receives, the paths written inside it are resolved into the block too; a
+   dispatched agent has no plugin root to expand.
 3. **Barrier before verify.** Pool every finder's candidates first: verification
    groups them by `file:line`, which needs all of them (`verify.md`).
 4. **`threads` and `ci` don't fan out**: they're script/`gh` reads followed by
