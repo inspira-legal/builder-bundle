@@ -4,7 +4,7 @@ description: Runs a spec end to end. Selects an unfinished spec (`.bb/<slug>/spe
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.6.1
+  version: 2.7.0
 ---
 
 # Delegate
@@ -23,14 +23,15 @@ and stop.
 ## Workflow
 
 1. **Resolve the target spec** per the spec-state contract (plugin-level
-   `references/spec-state.md`).
-   - **Named** (`/bb:delegate <slug>`): use `.bb/<slug>/spec.md`. If it doesn't
-     exist, report the error, list the available pending slugs, and stop.
-   - **Bare** (`/bb:delegate`): scan `.bb/*/spec.md`, read each frontmatter block,
-     keep those with `status ∈ {pending, in-progress}`, and pick the smallest
-     `created` (tie-break: slug alphabetical). A spec with no frontmatter counts as
-     `pending` with unknown `created` (sorted last). If none qualify, report
-     "no pending specs" and stop.
+   `references/spec-state.md`). `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/scan_specs.py`
+   is that contract's selection rule as code: it resolves the `.bb/` root, reads every
+   `spec.md` frontmatter block, and prints each spec's `status`, `created`, unticked task
+   count and, for a blocked one, the line its `## Open` carries, alongside the `selected`
+   the rule picks and `pending_slugs` for the report.
+   - **Named** (`/bb:delegate <slug>`): pass `--slug <slug>`. `found: false` means report
+     the error, list `pending_slugs`, and stop.
+   - **Bare** (`/bb:delegate`): take `selected`, whatever it is. Null means report "no
+     pending specs" and stop.
    - A spec already `done`: report it's done and ask whether to re-run. A `blocked`
      spec is skipped in bare selection and reported, not silently dropped: name it
      with the blocker its `## Open` carries, and where that blocker sends it. The
@@ -99,10 +100,10 @@ and stop.
 | `/bb:delegate <slug>`, slug exists, not done     | run it end to end                                                                                                                               |
 | `/bb:delegate <slug>`, slug not found            | report the error, list available pending slugs, stop                                                                                            |
 | `/bb:delegate <slug>`, status `done`             | report it's done, ask whether to re-run                                                                                                         |
-| bare `/bb:delegate`, one+ pending                | pick smallest `created` (tie-break slug alpha), run it                                                                                          |
+| bare `/bb:delegate`, one+ pending                | run `scan_specs.py`'s `selected`                                                                                                                |
 | bare `/bb:delegate`, none pending                | report "no pending specs", stop                                                                                                                 |
 | selected spec already `in-progress`              | resume: implement skips checked tasks; status stays `in-progress` until landing                                                                 |
-| spec has no frontmatter                          | treat as `pending`, unknown `created` (sorts last); run it; `/bb:spec` backfills the block next time                                            |
+| spec has no frontmatter                          | the scan still selects it; run it, and `/bb:spec` backfills the block next time                                                                 |
 | implement safety valve fires (underspecified)    | flip `status: blocked`, write the blocker into the spec's `## Open`, point back to `/bb:spec`, stop; do not improvise                           |
 | the build stops (stage zero or a task)           | flip `status: blocked`, write the blocker into the spec's `## Open`, exit without landing                                                       |
 | bare `/bb:delegate`, the oldest spec is blocked  | skipped, and reported with the blocker its `## Open` carries and where that blocker sends it                                                    |

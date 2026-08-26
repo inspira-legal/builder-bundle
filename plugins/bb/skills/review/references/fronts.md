@@ -24,54 +24,57 @@ door as any other run.
 
 ## Probe availability before asking
 
-Ask only about fronts that can actually produce findings. Run the probe as one
-batch of cheap read-only calls (parallel background where possible):
+Ask only about fronts that can actually produce findings. **One call answers the
+whole probe**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/preflight.py` prints every
+field the "Available when" column needs, in one JSON payload, and it is the same
+call `/bb:ship` makes. What each field settles:
 
-- `${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py`: one call returns
-  `base_branch`, `merge_base`, `diff_stat`, `files_changed` and
-  `uncommitted_changes`. **`<merge_base>...HEAD` is the review's diff range for
-  the whole run**. Carry the resolved sha into the scope block so every finder,
-  every front reference and the shared checklists read the same range instead of
-  each resolving a base of its own. Uncommitted changes enter scope, flagged
-  separately.
-- `CODE_REVIEW_GUIDE.md` at the repo root. The `rules` front's only rule source
-  (`front-rules.md`), so its absence is what makes the front unavailable.
-- spec lookup for this branch (plugin-root `references/spec-state.md`).
-- UI in the diff, decided by **what the hunks contain**, never by the file's
-  extension. Grep the added/removed lines (`git diff <range> -U0`) for one of:
-  - rendered markup: a JSX/HTML element, a tagged template with tags,
-    `createElement`, `innerHTML`, server-side HTML in `.erb`/`.hbs`/`.blade.php`
-    or a Django/Jinja template;
-  - an attribute that decides semantics or interaction: `role`, `aria-*`, `alt`,
-    `label`, `tabIndex`, `autoFocus`, `.focus()`, or a keyboard/pointer handler
-    added to an element (`onClick`, `onKeyDown`) as part of new markup;
-  - a stylesheet hunk that decides focus, contrast or visibility (`outline`,
-    `:focus`, `color`, `background`, `display: none`).
-
-  **A touched `.tsx` is not a UI change.** A component file whose diff only moves
-  handler bodies, wires analytics, adds hooks, types or imports leaves the markup
-  as it was, and an a11y finder sent at it burns an agent to report nothing; the
-  front is unavailable and the report doesn't mention it. A `.js` that builds a
-  dialog does activate it. When the grep is ambiguous, read the hunks before
-  offering the front, not after.
-
-- design source, only when the UI grep above passed: a token source the project
-  reads (a `tokens.json`, CSS custom properties, a Tailwind theme config, a brisar
-  prototype's `tokens*.css`), or the branch's `.bb/<slug>/design.md`
-  (or `design/`). One resolving makes `design` available; the resolution order and
-  what each rung is worth are `front-design.md`'s.
-- `gh pr view --json number,url`: is there an open PR.
-- failing checks: `gh pr checks <n>` when a PR exists, otherwise
-  `gh run list --branch <branch> --limit 1`: the branch's last run is evidence
-  enough for `ci` without a PR.
+- `diff_range`, the resolved `<merge_base>...HEAD`, alongside `diff_stat`,
+  `files_changed` and `uncommitted_changes`. **That range is the review's diff
+  range for the whole run.** Carry the resolved sha into the scope block so every
+  finder, every front reference and the shared checklists read the same range
+  instead of each resolving a base of its own. Uncommitted changes enter scope,
+  flagged separately.
+- `code_review_guide`: `CODE_REVIEW_GUIDE.md` at the repo root, the `rules` front's
+  only rule source (`front-rules.md`), so a false is what makes that front
+  unavailable.
+- `branch_spec`: the spec this branch belongs to, resolved through the plugin-root
+  `references/spec-state.md` contract. Null makes `contract` unavailable.
+- `ui`: whether the diff's hunks contain UI, decided by **what the hunks contain**,
+  never by the file's extension. `ui.markers` names which of markup, template,
+  semantics, interaction and style matched and `ui.examples` carries the lines that
+  matched, so an ambiguous hit gets read before the front is offered rather than after.
+  `.bb/` is excluded from the diff it reads: a spec is prose about a UI, never the UI.
+  **A touched `.tsx` is not a UI change**: a component file whose diff only moves
+  handler bodies, wires analytics, adds hooks, types or imports leaves the markup as it
+  was, and an a11y finder sent at it burns an agent to report nothing. `ui.hit` false is
+  the front going unoffered and unmentioned; a `.js` that builds a dialog does
+  activate it.
+- design source, resolved by the caller when `ui.hit` passed (preflight carries no
+  field for it): a token source the project reads (a `tokens.json`, CSS custom
+  properties, a Tailwind theme config, a brisar prototype's `tokens*.css`), or the
+  branch's `.bb/<slug>/design.md` (or `design/`). One resolving makes `design`
+  available; the resolution order and what each rung is worth are `front-design.md`'s.
+- `pr`: an open PR for this branch, the only thing `threads` needs.
+- `checks`: that PR's checks, which is `ci`'s evidence. `failing`, `pending` and
+  `cancelled` are lists of checks, because the name and the run link are what the front
+  needs; `passing` and `skipping` are counts, because a green check has nothing to read.
+  Anything `gh` buckets outside those five lands in `other`, keyed by bucket. A pending
+  check is not evidence yet, and a cancelled one is neither a pass nor a failure: it is
+  a gate that never ran. **`available: false` is the only field that says none of it was
+  measured**: the other keys are there with empty values, so a reader going straight for
+  `failing` gets `[]` and not a missing key, and `exit_code` carries what `gh` returned.
+  Without a PR the branch's last run is evidence enough, and
+  `gh run list --branch <branch> --limit 1` is a probe left to the caller, like the
+  design source above.
+- `gh_authenticated`: false makes `threads` and `ci` unavailable together.
 
 A front whose probe comes back empty is **not offered** and not reported as a
-failure. Only `threads` needs an open PR; `ci` falls back to the branch's last
-run. `gh` unauthenticated makes both unavailable. Say so once, with
-`gh auth login` as the remedy, and offer the rest. No `CODE_REVIEW_GUIDE.md` makes
-`rules` unavailable. One line, with `/bb:review-setup` as the remedy. UI in the diff
-but no design source makes `design` unavailable. One line, naming what would create a
-source (a token file the build reads, or a visual direction from `/bb:brisar`).
+failure. `gh` unauthenticated: say so once, with `gh auth login` as the remedy, and
+offer the rest. No `CODE_REVIEW_GUIDE.md`: one line, with `/bb:review-setup` as the
+remedy. UI in the diff but no design source makes `design` unavailable. One line,
+naming what would create a source (a token file the build reads, or a visual
+direction from `/bb:brisar`).
 
 ## Depth: two tiers by default, a third only when asked
 
