@@ -37,10 +37,14 @@ and everything durable about that work lives inside it:
 - Members are independent. A brisar run that never went through `/bb:discover` leaves a
   folder with `design.md` and no `spec.md`; a specced idea that never touched design has
   only `spec.md`.
-- The `.bb/` root is the nearest ancestor of the cwd that already has one; if none
-  does, it is created in the cwd. **Resolve it that way every time**. A bare relative
-  `.bb/` mints a second root whenever a skill runs from a subfolder, and the slug's
-  members end up in different trees.
+- The `.bb/` root is the nearest ancestor of the cwd that already has one, searching
+  no further up than the repository, the directory holding `.git`; if none inside it
+  does, the root is created in the cwd. **Resolve it that way every time**. A bare
+  relative `.bb/` mints a second root whenever a skill runs from a subfolder, and the
+  slug's members end up in different trees. The repository is where the walk stops
+  because past it the next `.bb/` up belongs to another project, or to the home
+  directory, and a run standing in a repo of its own would adopt someone else's specs.
+  `scripts/scan_specs.py` resolves it, and `find_bb_root` is that rule in code.
 - **The folder may be a symlink into a canonical store** (the pattern used when a
   project's specs live outside the repo). Read through it and write to the canonical
   target. The Edit tool refuses to write through a symlink on purpose, and that refusal
@@ -85,6 +89,12 @@ slug: <kebab-slug> # matches the dir name
 and lands a spec. `spec` only writes the initial block (`status: pending`) on finalize.
 The `## Tasks` checkboxes inside the spec stay `implement`'s concern. A spec without the
 block is treated as `pending` with unknown `created` (sorted last in bare selection).
+
+**Selection is a script, not a scan the reader repeats.**
+`${CLAUDE_PLUGIN_ROOT}/scripts/scan_specs.py` resolves the `.bb/` root the way this file
+says to, parses every block, applies the rule above and prints the whole set plus the
+`selected` one; `preflight.py` imports its `scan()` so a review's probe reads the same
+answer. What stays prose here is the contract; what a caller runs is the script.
 
 **`discovery.md`** opens with the framing's block (the contract is
 `${CLAUDE_PLUGIN_ROOT}/skills/discover/SKILL.md`):

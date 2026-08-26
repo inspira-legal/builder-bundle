@@ -4,7 +4,7 @@ Reached from ship's Step 1 when the destination is a pull request. Step 2 is don
 
 ## Create the PR (only if none exists)
 
-1. Gather context: `python ${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py` → JSON with `branch`, `upstream`, `base_branch`, `commit_log`, `diff_stat`, `uncommitted_changes`, `pr_template`.
+1. Gather context: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py --base <preflight's base_branch> --no-fetch` → JSON with `branch`, `upstream`, `base_branch`, `commit_log`, `diff_stat`, `uncommitted_changes`, `pr_template`. Both flags carry preflight's answer over: it resolved the base against the PR's own and already fetched it, so a bare call here re-derives the repo default and diffs a stacked PR against the wrong ref.
 2. If the branch has no upstream, note that `gh pr create` pushes automatically.
 3. Draft from the commits + diff (and a matching spec if present, since it's the intended scope):
    - **Title**: conventional commit style `<type>(<scope>): <description>` (≤70 chars).
@@ -20,11 +20,11 @@ Reached from ship's Step 1 when the destination is a pull request. Step 2 is don
 
 ## Triage comments → fix → push → reply (automatic, no approval asked)
 
-1. **Fetch comments** (background): `python ${CLAUDE_PLUGIN_ROOT}/scripts/fetch_comments.py`: conversation comments, reviews, and review threads (with `id` and `isResolved`) as JSON.
+1. **Fetch comments** (background): `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/fetch_comments.py`: conversation comments, reviews, and review threads (with `id` and `isResolved`) as JSON.
 2. **Triage** each **unresolved** thread into **fix** (implement the change), **answer** (a short reply, no code), or **unclear** (genuinely needs your call, not resolvable by guessing).
 3. **Handle fix + answer threads automatically.** Nothing to approve first: apply fix-thread code changes in the main context, re-run the project's checks, commit in logical units, and push to the PR branch. Then reply + resolve per thread:
-   - **fix** threads: reply with what was done + the commit sha and resolve; `python ${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py --thread-id <id> --body "Fixed in <sha>: <one-liner>"`
-   - **answer** threads: reply but do NOT resolve (the reviewer closes it); `python ${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py --thread-id <id> --body "..." --no-resolve`
+   - **fix** threads: reply with what was done + the commit sha and resolve; `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py --thread-id <id> --body "Fixed in <sha>: <one-liner>"`
+   - **answer** threads: reply but do NOT resolve (the reviewer closes it); `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py --thread-id <id> --body "..." --no-resolve`
 4. **Unclear threads are the only pause**: surface each with the question it raises and wait for your call; never auto-resolve one by guessing.
 5. Report what was handled as a table: `# | file:line | comment summary | verdict | action taken`.
 
@@ -32,9 +32,10 @@ Pushing fixes to the PR branch is reversible, so ship does it without pausing; m
 
 ## Watch CI until green
 
-1. `gh pr checks <pr> --watch --interval 30` (or poll `python scripts/inspect_pr_checks.py --repo "." --pr <number> --json`).
-2. All green (or the PR has no checks to watch) → enter **Stay and watch** (below) instead of stopping. The watch is the PR path's default end state, not a CI-only step. A PR with nothing to build still gets watched for incoming review.
-3. Non-GitHub-Actions checks (Buildkite, CircleCI, …): report the details URL, don't debug.
+1. Start `gh pr checks <pr> --watch --interval 30` as a **background** command and put the Monitor tool on its output, per `${CLAUDE_PLUGIN_ROOT}/hooks/scheduling-decision.md`, which carries that rule whole. A foreground watch blocks the session for the whole CI cycle, which is 5–20 minutes of nothing else happening; backgrounded, the triage of any comment that lands meanwhile runs while the checks build. Polling `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/inspect_pr_checks.py --repo "." --pr <number> --json` is the fallback where the watch is unavailable.
+2. Green means **every check reached a terminal state and each one passed**. A run still building is not green yet, and neither is a cancelled or skipped required check: those reached a terminal state without producing a verdict, so they get reported as gates that never ran. Keep watching while anything is pending.
+3. All green (or the PR has no checks to watch) → enter **Stay and watch** (below) instead of stopping. The watch is the PR path's default end state, not a CI-only step. A PR with nothing to build still gets watched for incoming review.
+4. Non-GitHub-Actions checks (Buildkite, CircleCI, …): report the details URL, don't debug.
 
 ## Stay and watch (automatic, PR path)
 
@@ -54,7 +55,7 @@ Pace it with `ScheduleWakeup`: ~270s while CI is running or a thread is open; st
 
 Read the actual failure logs before touching any source file (multiple failures → fetch all logs concurrently):
 
-- `python scripts/inspect_pr_checks.py --repo "." --pr <number>` (run IDs + failure snippets), or `gh run view <run_id> --log-failed`.
-  Identify the root cause with a specific log snippet, then fix → commit → push → watch again. Guessing wastes a 5-20 min CI cycle.
+- `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/inspect_pr_checks.py --repo "." --pr <number>` (run IDs + failure snippets), or `gh run view <run_id> --log-failed`.
+  Identify the root cause with a specific log snippet, then fix → commit → push → watch again. Guessing wastes a 5–20 min CI cycle.
 
 **Loop limit:** after 3 failed fix cycles, stop and report the diagnosis of each attempt.
