@@ -47,7 +47,10 @@ jobs:
           changed=$(git -c core.quotePath=false diff --diff-filter=d --name-only "$range" -- '.bb/*/spec.md')
           if ! git diff --quiet "$range" -- plugins/bb/skills/spec/scripts/lint_spec.py; then
             echo "lint_spec.py changed: linting the whole corpus."
-            changed=$(printf '%s\n' .bb/*/spec.md)
+            shopt -s nullglob
+            corpus=(.bb/*/spec.md)
+            shopt -u nullglob
+            changed=$(printf '%s\n' "${corpus[@]}")
           fi
           if [ -z "$changed" ]; then
             echo "No specs touched by this PR: nothing to lint."
