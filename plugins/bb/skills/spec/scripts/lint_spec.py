@@ -357,9 +357,10 @@ def check_body(lines):
         # minimum indent and renders inside its parent, not as a row of its own.
         top = min((indent for indent, _ in behavior_marks), default=0)
         marks = [n for indent, n in behavior_marks if indent == top]
-        # Markers all spelling `1.` are a CommonMark auto-numbered list that renders
-        # 1, 2, 3…; the citable numbers are what the reader sees, not the literals.
-        if len(marks) > 1 and len(set(marks)) == 1:
+        # Any ordered list renders sequentially from its first marker: CommonMark
+        # ignores the literal digits after it, so the citable numbers are the
+        # sequence the reader sees, not the literals an author may have mistyped.
+        if len(marks) > 1:
             rows = set(range(marks[0], marks[0] + len(marks)))
         else:
             rows = set(marks)
