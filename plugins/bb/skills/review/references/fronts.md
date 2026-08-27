@@ -135,6 +135,7 @@ change it reviewed.
    not direction for the run, which is what `bb-review-finder.md` does with it. With
    no PR it is the one line off the branch spec and the commit subjects, and it still
    rides.
+
 3. **Barrier before verify.** Pool every finder's candidates first: verification
    groups them by `file:line`, which needs all of them (`verify.md`).
 4. **`threads` and `ci` don't fan out**: they're script/`gh` reads followed by

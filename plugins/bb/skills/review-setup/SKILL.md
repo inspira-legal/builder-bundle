@@ -72,7 +72,7 @@ No handoff gate, report and stop:
 | WHEN                                             | THEN                                                                  |
 | ------------------------------------------------ | --------------------------------------------------------------------- |
 | update mode, no changes detected by any subagent | report "no significant changes since the last update", stop           |
-| the existing guide reads HIGH / MEDIUM / LOW      | migrate the ladder in the same pass, no interview                      |
+| the existing guide reads HIGH / MEDIUM / LOW     | migrate the ladder in the same pass, no interview                     |
 | repo > 1000 files                                | sample representative files per directory instead of exhaustive scans |
 | maintainer rejects every candidate               | guide ships with confirmed rules only; thin is fine, invented is not  |
 | legacy `.claude/skills/code-review/` present     | flag as superseded; never regenerate it                               |

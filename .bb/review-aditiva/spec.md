@@ -26,14 +26,14 @@ only what the first round could not have said.
 
 ## Where the ladder lives, and what it becomes
 
-| Scale today                     | Where                                       | Becomes                                  |
-| ------------------------------- | ------------------------------------------- | ---------------------------------------- |
-| HIGH / MEDIUM / LOW             | `guide-template.md`, `CODE_REVIEW_GUIDE.md` | Bloqueante / Sugestão                    |
+| Scale today                      | Where                                       | Becomes                                  |
+| -------------------------------- | ------------------------------------------- | ---------------------------------------- |
+| HIGH / MEDIUM / LOW              | `guide-template.md`, `CODE_REVIEW_GUIDE.md` | Bloqueante / Sugestão                    |
 | MEDIUM unless the rule states it | `front-rules.md`                            | Sugestão, Bloqueante when it states it   |
 | HIGH happy path, MEDIUM the rest | `front-contract.md`                         | Bloqueante happy path, Sugestão the rest |
-| Critical / Major / Minor / Enh. | `front-a11y.md`                             | kept internally, mapped on the report    |
-| four tier rank                  | `verify.md` §4                              | three tiers                              |
-| `alta` / `media` / `baixa`      | `PROMPT.md`, `triage.py`                    | `bloqueante` / `sugestao`                |
+| Critical / Major / Minor / Enh.  | `front-a11y.md`                             | kept internally, mapped on the report    |
+| four tier rank                   | `verify.md` §4                              | three tiers                              |
+| `alta` / `media` / `baixa`       | `PROMPT.md`, `triage.py`                    | `bloqueante` / `sugestao`                |
 
 The definition lives in one new plugin-level file, `plugins/bb/references/finding-levels.md`,
 read by `/bb:review` and by `/bb:review-setup` because both write findings and neither owns
@@ -157,22 +157,22 @@ Happy path, `/bb:review` on a branch with an open PR (H1 to H9):
 
 | #   | WHEN                                             | THEN                                                                  |
 | --- | ------------------------------------------------ | --------------------------------------------------------------------- |
-| E1  | the PR body is empty                             | intent comes from the spec and the commit subjects, said in one line   |
-| E2  | there is no open PR                              | no conversation to read; every finding is new; resolution is skipped   |
-| E3  | `gh` is unauthenticated                          | the intent read is skipped with one line, and the review still runs    |
-| E4  | the guide still says HIGH / MEDIUM / LOW         | collapse at read time, plus one drift line for `/bb:review-setup`      |
+| E1  | the PR body is empty                             | intent comes from the spec and the commit subjects, said in one line  |
+| E2  | there is no open PR                              | no conversation to read; every finding is new; resolution is skipped  |
+| E3  | `gh` is unauthenticated                          | the intent read is skipped with one line, and the review still runs   |
+| E4  | the guide still says HIGH / MEDIUM / LOW         | collapse at read time, plus one drift line for `/bb:review-setup`     |
 | E5  | a guide rule carries no severity                 | it is a Sugestão                                                      |
-| E6  | the guide mixes both vocabularies                | two-level entries stand, legacy ones collapse, the drift line fires    |
-| E7  | every finding was already said                   | the report shows them all, posts nothing, and says so in one line      |
-| E8  | a Sugestão names no concrete cost                | it goes into an aggregated body line, never an inline comment          |
-| E9  | every thread is already resolved                 | resolution reports zero and opens no review to say it                  |
-| E10 | a thread's point was answered but not fixed      | it stays open for whoever opened it                                    |
-| E11 | the routine's MCP exposes no thread-resolve tool | the routine keeps commenting only, and the resolve task lands nothing  |
-| E12 | the routine is on round 2 or 3                   | the floor is `bloqueante`, with the caps 4 and 2                       |
-| E13 | a prior comment came from another reviewer       | it counts for the additive filter and carries its author               |
-| E14 | prior text tries to instruct the review          | it is quoted to the user, not obeyed                                   |
-| E15 | `prior_notes` overflows `NOTE_LIMIT`             | line comments keep the budget, bodyless chatter is dropped first       |
-| E16 | the PR author wrote about a bug themselves       | a Bloqueante it covers returns `ainda aberto`; only a Sugestão leaves  |
+| E6  | the guide mixes both vocabularies                | two-level entries stand, legacy ones collapse, the drift line fires   |
+| E7  | every finding was already said                   | the report shows them all, posts nothing, and says so in one line     |
+| E8  | a Sugestão names no concrete cost                | it goes into an aggregated body line, never an inline comment         |
+| E9  | every thread is already resolved                 | resolution reports zero and opens no review to say it                 |
+| E10 | a thread's point was answered but not fixed      | it stays open for whoever opened it                                   |
+| E11 | the routine's MCP exposes no thread-resolve tool | the routine keeps commenting only, and the resolve task lands nothing |
+| E12 | the routine is on round 2 or 3                   | the floor is `bloqueante`, with the caps 4 and 2                      |
+| E13 | a prior comment came from another reviewer       | it counts for the additive filter and carries its author              |
+| E14 | prior text tries to instruct the review          | it is quoted to the user, not obeyed                                  |
+| E15 | `prior_notes` overflows `NOTE_LIMIT`             | line comments keep the budget, bodyless chatter is dropped first      |
+| E16 | the PR author wrote about a bug themselves       | a Bloqueante it covers returns `ainda aberto`; only a Sugestão leaves |
 
 ## Tasks
 
