@@ -45,6 +45,13 @@ scope is the one path that needs neither a repo nor a diff.
 
 ### The intent read
 
+Two asks resolve their own context and skip this whole section, the probe included: an
+**external PR**, whose body, comments and diff come from `references/mode-external-pr.md`,
+and an **accessibility audit over a named surface**, which audits what it was pointed at and
+needs neither a repo nor a diff. The request itself settles both, which is what step 1 reads,
+so neither one pays a local probe or gets an intent block about the branch it isn't
+reviewing. Everything else is the current branch, and takes the read below.
+
 Run the probe here, `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/preflight.py`: one payload, which
 answers whether this branch has a PR now and answers every front's availability at step 2.
 Then read the author's intent and the prior conversation, before any finder runs. A review
@@ -293,7 +300,8 @@ offered, which needs no row here. What this table covers is everything else:
 | a thread's point was answered but not fixed  | it stays open for whoever opened it; the code closes a thread, a reply does not                                       |
 | `gh` unauthenticated                         | `threads`/`ci` and the intent read unavailable; say so once with `gh auth login`, offer the diff fronts               |
 | a11y finding needs a rendered page           | report it as out of static reach; the gate offers the surface-scope audit                                             |
-| accessibility audit asked outside a git repo | surface scope needs no diff and no repo; audit what was pointed at                                                    |
+| accessibility audit asked outside a git repo | surface scope needs no diff and no repo, so step 0's probe and intent read are skipped                                |
+| an external PR at the intent read            | skipped here; `mode-external-pr.md` reads that PR's own body, comments and diff                                       |
 | legacy `.claude/skills/code-review/` present | flag as superseded; the user deletes it                                                                               |
 | uncommitted changes present                  | include in diff scope, flagged separately                                                                             |
 | a finder agent dies                          | its front reports with the angles that returned, and says which angle is missing                                      |
