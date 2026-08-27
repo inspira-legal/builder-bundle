@@ -194,7 +194,7 @@ Happy path, `/bb:review` on a branch with an open PR (H1 to H9):
 - [x] **7. Additive posting**: `act-comment-findings.md` §3 widens to the whole conversation,
       and the report gains the `[já dito: link]` marks and the suppressed count
       → H6, H7, E7, E13 · dep: 5 · verify: reading
-- [ ] **8. Resolve what the code satisfies**: `front-threads.md` gains the rule and `SKILL.md`
+- [x] **8. Resolve what the code satisfies**: `front-threads.md` gains the rule and `SKILL.md`
       places the pass outside curation → H8, E9, E10 · dep: 5 · verify: reading
 - [ ] **9. [routine] two levels**: `PROMPT.md`'s "Severidade e repetição", the agent's JSON
       `severity`, Passo 4's filter; `triage.py`'s `ROUNDS` and `severity_floor_new`;
