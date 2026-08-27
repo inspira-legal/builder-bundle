@@ -53,7 +53,7 @@ module's own `__file__` "when the variable does not reach the process". Untouche
 
 | copy | glob | line endings |
 | --- | --- | --- |
-| install cache | `$HOME/.claude/plugins/cache/*/bb/*` | CRLF |
+| install cache | `$HOME/.claude/plugins/cache/*/bb/*` | CRLF, until this ships |
 | repo | `./plugins/bb` | LF |
 | per-session | `$APPDATA/Claude/local-agent-mode-sessions/*/*/rpm/plugin_*` | LF |
 
@@ -68,10 +68,17 @@ cannot open.
 `$APPDATA` is the Windows spelling and `$HOME/Library/Application Support` the macOS one, so
 `${APPDATA:-$HOME/Library/Application Support}` covers both.
 
-Putting the cache first makes CRLF the normal path rather than an edge. `Workflow` inlines a
-`scriptPath` into the approval dialog as `script` and rejects the CR as a control character
-that would be hidden there, so the dispatch strips it before handing the path over, every run,
-on this machine.
+Putting the cache first would make CRLF the normal path, and `Workflow` inlines a `scriptPath`
+into the approval dialog as `script` and rejects the CR as a control character that would be
+hidden there. That is a packaging bug with a packaging fix, one level up from any document:
+the marketplace clone at `$HOME/.claude/plugins/marketplaces/inspira-legal` is configured
+`core.autocrlf = true`, its checkout converts LF to CRLF, and the cache copy inherits it. This
+repo ships no `.gitattributes`, so nothing overrides that. One does now, and `.gitattributes`
+outranks `core.autocrlf`.
+
+The timing works out on its own: an update re-clones the marketplace before copying the new
+version into the cache, so the release that carries these documents is the first one checked
+out LF. Nothing in the dispatch strips anything.
 
 ## `<bb-root>`
 
@@ -95,8 +102,8 @@ bb_root() {
 ## Decisions
 
 - **One new plugin-level reference, `references/plugin-root.md`**, owns the raw-versus-expanded
-  split, the resolution rule, the `<bb-root>` notation and the CR guard. Every other document
-  points at it and carries no copy of the rule.
+  split, the resolution rule and the `<bb-root>` notation. Every other document points at it
+  and carries no copy of the rule.
 - **The rule is two steps, first hit wins**: `$CLAUDE_PLUGIN_ROOT` when it is non-empty, then
   the search over the copies table in its order, by version inside the cache. A directory
   counts as the root only when `workflows/build-tasks.js` is readable under it, which is what
@@ -110,10 +117,14 @@ bb_root() {
   write it to explain it.
 - **A rewritten file gains one pointer to `references/plugin-root.md`**, at its first
   `<bb-root>`, and no repetition after.
-- **The dispatch proves the file and guards the CR in the same `Bash` call.** The call resolves
-  the root, reads `build-tasks.js`, and when the file carries CR writes a stripped copy to
-  `$(mktemp)`; what it prints is what `scriptPath` takes. The temp copy is per run, never
-  reused, and left for the OS to reap.
+- **The CR is fixed once, in `.gitattributes`, not on every dispatch.** A guard in the
+  documented `Bash` call would run forever against a checkout setting, so the setting is what
+  changes. The dispatch call resolves the root and proves `build-tasks.js` is readable, and
+  what it prints is what `scriptPath` takes.
+- **The CR refusal keeps no fallback of its own.** Both dispatch steps read the same file, so a
+  CR that survived would take out `scriptPath` and the inline `script` together, and stripping
+  it in one place would leave the other broken anyway. If it ever recurs, it recurs as the
+  chain's own last step, which is a build in the main context and a named reason.
 - **The fallback chain's last step stops meaning "the interpolated path did not exist".** The
   in-context build is reached when the whole resolution rule comes back empty, when there is no
   `Workflow` tool, or when both dispatch attempts were refused. A first path that does not
@@ -131,8 +142,8 @@ The happy path, one build dispatch on Desktop:
 1. `/bb:implement <slug>` reaches step 6 and reads `references/build-tasks-workflow.md`.
 2. The documented `Bash` call resolves `<bb-root>`: the variable is empty, so the search
    answers with the newest cache directory.
-3. The call reads `<bb-root>/workflows/build-tasks.js`, finds CR, writes a stripped copy to a
-   temp path and prints that path.
+3. The call reads `<bb-root>/workflows/build-tasks.js`, confirms it is readable, and prints
+   its path.
 4. `Workflow({scriptPath: <printed path>, args})` dispatches. The permission dialog shows the
    script, the user approves, and one agent per task runs.
 5. The run returns, and implement reports it as a dispatched build.
@@ -145,8 +156,8 @@ The happy path, one build dispatch on Desktop:
 | the search runs | the cache answers first, newest version, then the repo, then the per-session copy |
 | more than one location matches | the first one wins, and the run names which copy it took |
 | no location matches | the resolution failed: say so, and the build takes the chain's last step |
-| the resolved `build-tasks.js` carries CR | a stripped copy goes to a temp path, and `scriptPath` takes it |
-| the temp copy cannot be written | step 2 dispatches the inline `script`, CR stripped in flight |
+| the marketplace clone converts line endings | `.gitattributes` pins LF, and the installed copy is LF from this release on |
+| the resolved `build-tasks.js` carries CR anyway | both dispatch steps are refused, and the chain's last step names CR as the reason |
 | the dispatch is refused for its path | step 2 runs: a refusal at step 1 ends the attempt, not the chain |
 | the user denies the permission dialog | report the denial and ask what they want, outside the chain |
 | the session's own rules forbid `Workflow` | build in the main context and name the veto as the reason |
@@ -157,26 +168,31 @@ The happy path, one build dispatch on Desktop:
 ## Tasks
 
 - [ ] **1. `references/plugin-root.md`**: the raw-versus-expanded split, the two step rule with
-      the `bb_root` shape, the `<bb-root>` notation and the CR guard → behaviors 2, 3, 4, 5, 6,
-      7 · dep: — · verify: reading
-- [ ] **2. The dispatch reads the new rule**: `references/build-tasks-workflow.md` gets the
-      resolve-and-guard `Bash` call, the corrected last step of the chain and the session veto
-      as a named non-step → behaviors 6, 7, 8, 9, 10, 11 · dep: 1 · verify: run the documented
-      call in `Bash` and confirm it prints an existing `build-tasks.js`
-- [ ] **3. The `review` and `ship` references**: `fronts.md`, `front-ci.md`, `front-threads.md`,
+      the `bb_root` shape and the `<bb-root>` notation → behaviors 2, 3, 4, 5, 6, 13 · dep: — ·
+      verify: reading
+- [ ] **2. `.gitattributes`**: `* text=auto eol=lf` at the repo root, so a clone configured
+      `core.autocrlf = true` still checks the bundle out LF → behavior 7 · dep: — · verify:
+      `git check-attr text eol -- plugins/bb/workflows/build-tasks.js` reports `eol: lf`
+- [ ] **3. The dispatch reads the new rule**: `references/build-tasks-workflow.md` gets the
+      resolve-and-prove `Bash` call, the corrected last step of the chain, CR as a reason that
+      chain can name, and the session veto as a named non-step → behaviors 6, 8, 9, 10, 11 ·
+      dep: 1 · verify: run the documented call in `Bash` and confirm it prints an existing
+      `build-tasks.js`
+- [ ] **4. The `review` and `ship` references**: `fronts.md`, `front-ci.md`, `front-threads.md`,
       `front-correctness.md`, `intent-read.md`, `act-apply-fixes.md`, `ship-pr.md`,
-      `ship-lexflow.md` → behaviors 1, 4 · dep: 1 · verify: `grep -rn CLAUDE_PLUGIN_ROOT` over
-      those eight files returns nothing
-- [ ] **4. The `brisar` and `spec` references**: `phase-develop.md`, `develop-modes.md`,
+      `ship-lexflow.md` → behavior 1 · dep: 1 · verify: `grep -rn CLAUDE_PLUGIN_ROOT` over those
+      eight files returns nothing
+- [ ] **5. The `brisar` and `spec` references**: `phase-develop.md`, `develop-modes.md`,
       `deliver-modes.md`, `phase-3-scaffold.md`, `references/spec-state.md`,
-      `skills/spec/references/spec-format.md` → behaviors 1, 4 · dep: 1 · verify: `grep -rn
+      `skills/spec/references/spec-format.md` → behavior 1 · dep: 1 · verify: `grep -rn
       CLAUDE_PLUGIN_ROOT` over those six files returns nothing
-- [ ] **5. The skill bodies**: `implement/SKILL.md`, `review/SKILL.md`, `ship/SKILL.md`,
+- [ ] **6. The skill bodies**: `implement/SKILL.md`, `review/SKILL.md`, `ship/SKILL.md`,
       `review-setup/SKILL.md`, `gather-branch-context/SKILL.md`, twenty-one mentions, every one
-      of them a `scripts/*.py` call → behaviors 1, 12, 13 · dep: 1 · verify: `grep -rn
+      of them a `scripts/*.py` call → behaviors 1, 12 · dep: 1 · verify: `grep -rn
       CLAUDE_PLUGIN_ROOT --include=*.md plugins/bb` returns only `plugin-root.md`
-- [ ] **6. The release**: `plugin.json` from 3.1.0 to 3.2.0 and the `CHANGELOG.md` entry that
-      says which copy the rule takes and why → behavior 14 · dep: 2, 3, 4, 5 · verify: reading
+- [ ] **7. The release**: `plugin.json` from 3.1.0 to 3.2.0 and the `CHANGELOG.md` entry that
+      says which copy the rule takes, why, and what `.gitattributes` fixes → behavior 14 · dep:
+      2, 3, 4, 5, 6 · verify: reading
 
 ## Out of scope
 
