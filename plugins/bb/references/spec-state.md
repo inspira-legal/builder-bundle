@@ -87,14 +87,16 @@ and lands a spec, and the `## Tasks` checkboxes inside the spec are the same ski
 `spec` only writes the initial block (`status: pending`) on finalize. A spec without the
 block is treated as `pending` with unknown `created` (sorted last in bare selection).
 
+`<plugin-root>` is this plugin's own directory, and the plugin-root `references/plugin-root.md` is where the rule that resolves it lives.
+
 **Selection is a script, not a scan the reader repeats.**
-`${CLAUDE_PLUGIN_ROOT}/scripts/scan_specs.py` resolves the `.bb/` root the way this file
+`<plugin-root>/scripts/scan_specs.py` resolves the `.bb/` root the way this file
 says to, parses every block, applies the rule above and prints the whole set plus the
 `selected` one; `preflight.py` imports its `scan()` so a review's probe reads the same
 answer. What stays prose here is the contract; what a caller runs is the script.
 
 **`discovery.md`** opens with the framing's block (the contract is
-`${CLAUDE_PLUGIN_ROOT}/skills/discover/SKILL.md`):
+`<plugin-root>/skills/discover/SKILL.md`):
 
 ```yaml
 ---
@@ -106,7 +108,7 @@ verdict: build-mvp | validate-first | pivot | persevere | shelve # omitted befor
 ```
 
 **`design.md`** opens with the journey's block (the contract is
-`${CLAUDE_PLUGIN_ROOT}/skills/brisar/references/brief.md`, which owns the full
+`<plugin-root>/skills/brisar/references/brief.md`, which owns the full
 `surfaces` shape):
 
 ```yaml
@@ -147,4 +149,4 @@ and drafts the spec on top; `## Cuts` is also read from there by `/bb:review`'s 
 front, and `## Hypothesis` by spec's export mode. Those four names inside a `spec.md`
 are dead section names, and `scripts/lint_spec.py` fires `E003` on them pointing here.
 The spec's own format is
-`${CLAUDE_PLUGIN_ROOT}/skills/spec/references/spec-format.md`.
+`<plugin-root>/skills/spec/references/spec-format.md`.

@@ -182,7 +182,7 @@ The happy path, one build dispatch on Desktop:
       `front-correctness.md`, `intent-read.md`, `act-apply-fixes.md`, `ship-pr.md`,
       `ship-lexflow.md` → behavior 1 · dep: 1 · verify: `grep -rn CLAUDE_PLUGIN_ROOT` over those
       eight files returns nothing
-- [ ] **5. The `brisar` and `spec` references**: `phase-develop.md`, `develop-modes.md`,
+- [x] **5. The `brisar` and `spec` references**: `phase-develop.md`, `develop-modes.md`,
       `deliver-modes.md`, `phase-3-scaffold.md`, `references/spec-state.md`,
       `skills/spec/references/spec-format.md` → behavior 1 · dep: 1 · verify: `grep -rn
       CLAUDE_PLUGIN_ROOT` over those six files returns nothing
