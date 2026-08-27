@@ -20,13 +20,13 @@ Inside a git repository with a `.bb/` directory, and a validated spec with a `##
 1. **Resolve the target spec** per the spec-state contract. `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/scan_specs.py` is that contract's selection rule as code: it resolves the `.bb/` root, reads every `spec.md` frontmatter block, and prints each spec's `status`, `created`, unticked task count and, for a blocked one, the line its `## Open` carries, alongside the `selected` the rule picks and `pending_slugs` for the report.
    - **Named** (`/bb:implement <slug>`): pass `--slug <slug>`. `found: false` means report the error, list `pending_slugs`, and stop.
    - **Bare** (`/bb:implement`): **prefer the spec this session is already on**, the one `/bb:spec` just wrote or the one already being built, and confirm it against the scan. The script knows nothing about the session, so this preference is read here. With nothing in context, take `selected`; null means report "no pending specs" and stop.
-   - A spec already `done`: report it's done and ask whether to re-run. A `blocked` spec is skipped in bare selection and reported, not silently dropped: name it with the blocker its `## Open` carries, and where that blocker sends it. The spec's own gap is `/bb:spec`'s to close; a check the run had no permission to execute, a tree already red, and a stop on the way to landing all predate the spec and get fixed where they live, after which implement runs again.
+   - A spec already `done`: report it's done and ask whether to re-run. A `blocked` spec is skipped in bare selection and reported, not silently dropped: name it with the blocker its `## Open` carries, and where that blocker sends it. The spec's own gap is `/bb:spec`'s to close; a check the run had no permission to execute, a tree already red, and a stop on the way to the ship all predate the spec and get fixed where they live, after which implement runs again.
 
 2. **Settle the scope, once.** How far this run goes has no default the skill can derive, so it's asked, one `AskUserQuestion` with four **exclusive** options (plugin-level `references/handoff-gate.md` for the format):
    - **Build only**: every task built, the checks green, the tree committed, and a gate at the end offering the ship.
    - **Build and review**: the build, then `/bb:review` over the branch, with the findings applied before that same gate.
-   - **Build and ship**: the build, then `/bb:ship` settles the destination and lands it.
-   - **Build, review and ship**: all three, the review running on the branch before the landing.
+   - **Build and ship**: the build, then `/bb:ship` settles the destination and ships it.
+   - **Build, review and ship**: all three, the review running on the branch before the ship.
 
    **How it was invoked sets which option leads** and carries `(Recommended)`. "run everything", "build and land the spec", "do it all", "delegate this" lead with build, review and ship; "implement the spec", "build the tasks", "build it" lead with build only. One keystroke confirms either way. **Invoked from `/bb:spec`'s exit gate the question is already answered**: that gate offers the same four, and its pick is the scope. Nothing else about the run is asked; the build itself is dispatched with no question of its own.
 
@@ -52,20 +52,20 @@ Inside a git repository with a `.bb/` directory, and a validated spec with a `##
 
     Every one of them stops the build, and the tree is left as the run left it, for diagnosis. **A stop is recorded, not just reported**: flip `status: blocked` and write the blocker into the spec's own `## Open`, one line naming it and what it needs, committed with the status flip. `status: blocked` alone tells the next run nothing, and by then the context that read the blocker is gone. That's the line step 1 reads back when it skips a blocked spec. Neither review nor ship runs after a stop, whatever the scope said.
 
-11. **Scope included review: run the fronts on the branch, before anything lands.** Follow `/bb:review`'s workflow over what the build produced, at **standard depth across every front its availability probe finds**, with no fronts question and no gate of its own: the scope answer at step 2 is the authorization those would ask for. Before the ship there is no PR, so the probe drops the `threads` and `ci` fronts on its own. A deep pass stays `/bb:review deep`, invoked separately.
+11. **Scope included review: run the fronts on the branch, before anything ships.** Follow `/bb:review`'s workflow over what the build produced, at **standard depth across every front its availability probe finds**, with no fronts question and no gate of its own: the scope answer at step 2 is the authorization those would ask for. Before the ship there is no PR, so the probe drops the `threads` and `ci` fronts on its own. A deep pass stays `/bb:review deep`, invoked separately.
 
     **Apply every CONFIRMED finding, report every PLAUSIBLE one.** There is no PR to comment on yet and no item-by-item curation: the independent verifier's verdict is what decides. Applied fixes go through steps 7 to 9 like any other change, so the checks are green and committed before the ship, and the PR opens from code that was already read. Report both sets, and say so in one line when the review found nothing.
 
-12. **Scope included ship: follow `/bb:ship`'s workflow.** Green the project's checks, commit and land per ship's own destination logic; ship settles the destination, asking only on real doubt, and implement adds no destination logic of its own. If ship hits an unrecoverable stop, flip `status: blocked`, and land the blocker where the run can be found again: the PR description when there is a PR, otherwise the spec's own `## Open` on the pushed branch. Report it, then exit.
+12. **Scope included ship: follow `/bb:ship`'s workflow.** Green the project's checks, commit and ship per ship's own destination logic; ship settles the destination, asking only on real doubt, and implement adds no destination logic of its own. If ship hits an unrecoverable stop, flip `status: blocked`, and put the blocker where the run can be found again: the PR description when there is a PR, otherwise the spec's own `## Open` on the pushed branch. Report it, then exit.
 
-13. **Close the run, flip `status: done`.** Once the landing completes, edit the frontmatter to `done` and commit. **On the PR path that's right after the PR is open and its checks are handled, before the watch settles in**: `land-pr.md` ends resident, so a flip waiting for ship to return would never happen. On a protected branch the landing is the push ship handed over, so `done` waits for it. Either way that commit only reaches the default branch when a human merges, the same gate the `## Tasks` checkboxes already pass through; implement never writes status to a protected branch directly.
+13. **Close the run, flip `status: done`.** Once the ship completes, edit the frontmatter to `done` and commit. **On the PR path that's right after the PR is open and its checks are handled, before the watch settles in**: `ship-pr.md` ends resident, so a flip waiting for ship to return would never happen. On a protected branch the ship is the push ship handed over, so `done` waits for it. Either way that commit only reaches the default branch when a human merges, the same gate the `## Tasks` checkboxes already pass through; implement never writes status to a protected branch directly.
 
-14. **Report, and hand off when the run stopped short of shipping.** Name the slug, what landed (tasks, check results, and the review's two sets when it ran), and the destination when there was one (branch / PR URL / the hand-off command for a protected branch). A build that fell back to this context says so here too, naming the step of the reference's fallback chain the run landed on.
+14. **Report, and hand off when the run stopped short of shipping.** Name the slug, what shipped (tasks, check results, and the review's two sets when it ran), and the destination when there was one (branch / PR URL / the hand-off command for a protected branch). A build that fell back to this context says so here too, naming the step of the reference's fallback chain the run landed on.
     - **The scope did not include ship, and the run was clean**: `status` stays `in-progress`, and one handoff gate offers the ship (plugin-level `references/handoff-gate.md`): lead **"Ship now"** (invoke `/bb:ship`) against **"Stop here"** (print the command and stop). The tree is green and committed by then, so this is a different question from step 2's, asked with the build in hand.
     - **The scope did not include ship, and the run was not clean**: report done/skipped/blocked and hand back where step 10 sends it, with no ship offered. A partial build shouldn't become a PR that claims to satisfy the spec.
-    - **The scope included ship**: the landing is the end of the run. Report and stop.
+    - **The scope included ship**: the ship is the end of the run. Report and stop.
 
-The hard line holds throughout: implement never merges, never approves, never force-pushes; landing on a protected branch stays a human action.
+The hard line holds throughout: implement never merges, never approves, never force-pushes; shipping to a protected branch stays a human action.
 
 ## Edge cases
 
@@ -79,7 +79,7 @@ The hard line holds throughout: implement never merges, never approves, never fo
 | bare, nothing in context, none pending           | report "no pending specs", stop                                                                          |
 | bare, the oldest spec is `blocked`               | skipped, and reported with the blocker its `## Open` carries and where that blocker sends it             |
 | spec has no frontmatter                          | the scan still selects it; run it, and `/bb:spec` backfills the block next time                          |
-| selected spec already `in-progress`              | resume: the build skips ticked tasks; `status` stays `in-progress` until the landing                     |
+| selected spec already `in-progress`              | resume: the build skips ticked tasks; `status` stays `in-progress` until the ship                        |
 | invoked from `/bb:spec`'s exit gate              | that gate's pick is the scope; step 2 asks nothing                                                       |
 | every task already ticked                        | nothing dispatched; the run goes on to whatever the scope has next                                       |
 | safety valve fires (underspecified)              | `status: blocked`, the blocker into the spec's `## Open`, point back to `/bb:spec`, stop; do not improvise |
@@ -88,6 +88,6 @@ The hard line holds throughout: implement never merges, never approves, never fo
 | the review finds nothing                         | say so in one line and go on to the ship                                                                 |
 | a CONFIRMED fix turns a check red                | fixed before the ship, through steps 7 to 9 like any other change                                        |
 | ship hits an unrecoverable stop / blocker        | `status: blocked`; the blocker into the PR description, or into the spec's `## Open` when there is no PR; report; exit |
-| ship lands on the PR path                        | `done` is flipped before the watch settles in                                                            |
-| ship lands on a protected branch                 | ship hands over the push command; `done` waits for that push                                             |
+| ship takes the PR path                           | `done` is flipped before the watch settles in                                                            |
+| ship takes a protected branch                    | ship hands over the push command; `done` waits for that push                                             |
 | not in a git repo / no `.bb/` dir in either root | report the error, stop                                                                                   |
