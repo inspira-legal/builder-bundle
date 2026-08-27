@@ -186,7 +186,7 @@ The happy path, one build dispatch on Desktop:
       `deliver-modes.md`, `phase-3-scaffold.md`, `references/spec-state.md`,
       `skills/spec/references/spec-format.md` → behavior 1 · dep: 1 · verify: `grep -rn
       CLAUDE_PLUGIN_ROOT` over those six files returns nothing
-- [ ] **6. The skill bodies**: `implement/SKILL.md`, `review/SKILL.md`, `ship/SKILL.md`,
+- [x] **6. The skill bodies**: `implement/SKILL.md`, `review/SKILL.md`, `ship/SKILL.md`,
       `review-setup/SKILL.md`, `gather-branch-context/SKILL.md`, twenty-one mentions, every one
       of them a `scripts/*.py` call → behaviors 1, 12 · dep: 1 · verify: `grep -rn
       CLAUDE_PLUGIN_ROOT --include=*.md plugins/bb` returns only `plugin-root.md`
