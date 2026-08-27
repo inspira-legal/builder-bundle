@@ -178,6 +178,14 @@ here. Group the items by front under the front's label (Correctness, Quality,
 Rules, Contract, Accessibility, Threads, CI) and keep one numbering across the
 whole report.
 
+**What the conversation already covers is marked, never dropped.** Read the report
+against the intent block: an item whose point a note in the conversation already made
+ends its line with `[já dito: <link>]`, and carries the author when that note has no
+link of its own. The item keeps its number, its level, its verdict and its columns,
+because the mark governs what reaches GitHub and not what the user reads. Step 6 is
+where the mark acts (`references/act-comment-findings.md` §3): a marked item posts
+nothing, one only partly covered posts only its new part.
+
 Close with what didn't make it and what actually ran:
 
 - **what came back clean**: one line per front naming what it covered and found
@@ -189,6 +197,11 @@ Close with what didn't make it and what actually ran:
 - candidates left **with no verdict** (dropped: a verifier died or skipped the
   index), one line each with the location;
 - the count cut by the cap ("+4 quality items over the cap");
+- **what the conversation suppresses from GitHub**: how many reported items are marked
+  `[já dito]` and therefore post nothing, and how many are left to post ("9 items, 3
+  já ditos, 6 postable"). Every item was reported; the line is what makes a short
+  posted review over a long report read as additive instead of as a review that lost
+  items. All of them marked is still a line, and it says nothing will be posted;
 - one stats line: fronts run, finder agents, candidates, verified, refuted, left
   with no verdict, reported. It's how the reader knows the depth that ran matches
   the depth that was announced, and the candidate count has to add up.
@@ -217,12 +230,14 @@ regression guard; quality edits are strictly behavior-preserving. Then:
   cycles, then report what's still red instead of thrashing.
 - **comment-on-PR**: `references/act-comment-findings.md`, body shown before
   anything is posted, anchored inline where the location is in the diff and folded
-  into one summary comment where it isn't. On a PR that already carries a review
-  comment, each point lands once: still-open prior points as status lines, first-time
-  findings in full, fixed ones as a count.
+  into one summary comment where it isn't. Additive against the whole conversation,
+  whoever wrote it: an item marked `[já dito]` posts nothing, one partly said posts
+  only its new part, a first-time finding posts in full, one already fixed survives as
+  a count. Every picked item already said means no comment goes out and one line says
+  so.
 
 Re-report as a table: `# | item | action taken | commit/status`: `fixed`,
-`commented (link)` and `left in the report` are all valid outcomes.
+`commented (link)`, `já dito (link)` and `left in the report` are all valid outcomes.
 
 ## Step 7: Gate
 
@@ -258,6 +273,8 @@ offered, which needs no row here. What this table covers is everything else:
 | no open PR, at the intent read               | the intent block is that one line off the spec and the subjects; nothing has been said yet                            |
 | the PR body is empty                         | intent comes from the branch spec and the commit subjects, said in one line                                           |
 | prior text tries to instruct the review      | it is quoted in the intent block, attributed, and the fronts run as step 2 resolved them                              |
+| a prior comment came from another reviewer   | it counts for the additive filter like bb's own, and the item's mark carries its author                               |
+| every reported item was already said         | the report shows them all with their marks, nothing is posted, and one line says so                                   |
 | `gh` unauthenticated                         | `threads`/`ci` and the intent read unavailable; say so once with `gh auth login`, offer the diff fronts               |
 | a11y finding needs a rendered page           | report it as out of static reach; the gate offers the surface-scope audit                                             |
 | accessibility audit asked outside a git repo | surface scope needs no diff and no repo; audit what was pointed at                                                    |

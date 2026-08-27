@@ -46,10 +46,14 @@ place: any Bloqueante requests changes.
 ## 4. Post (only with explicit confirmation)
 
 Show the full review body first and ask before posting. A posted review is
-outward-facing and carries the user's identity. If the PR already carries a review
-comment of the user's, dedupe against it exactly as in
-`act-comment-findings.md` §3. Still-open points as status lines, first-time findings
-in full. On yes:
+outward-facing and carries the user's identity. Dedupe against the whole
+conversation exactly as in `act-comment-findings.md` §3, whoever wrote each note:
+what was already said posts nothing, what was partly said posts only its new part,
+and the review body opens with the count it suppressed. `fetch_comments.py` only
+reads the current branch's PR, so the corpus here comes from
+`gh pr view <number> --repo <owner>/<repo> --json comments,reviews` plus
+`gh api repos/<owner>/<repo>/pulls/<number>/comments`, which is also where each
+note's link is. On yes:
 
 ```
 gh pr review <number> --repo <owner>/<repo> --comment|--approve|--request-changes --body-file -

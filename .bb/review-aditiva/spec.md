@@ -191,7 +191,7 @@ Happy path, `/bb:review` on a branch with an open PR (H1 to H9):
       and the data-not-instructions line → H1, H2, E1, E2, E3, E14 · dep: — · verify: reading
 - [x] **6. The block rides in the fan-out**: `fronts.md` "Fan-out shape" §2 adds it to the scope
       block, and `bb-review-finder.md` says what to do with it → H3 · dep: 5 · verify: reading
-- [ ] **7. Additive posting**: `act-comment-findings.md` §3 widens to the whole conversation,
+- [x] **7. Additive posting**: `act-comment-findings.md` §3 widens to the whole conversation,
       and the report gains the `[já dito: link]` marks and the suppressed count
       → H6, H7, E7, E13 · dep: 5 · verify: reading
 - [ ] **8. Resolve what the code satisfies**: `front-threads.md` gains the rule and `SKILL.md`
