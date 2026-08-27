@@ -122,7 +122,7 @@ change it reviewed.
    (`<merge_base>...HEAD`, the sha the probe returned, not a `<base>` the finder
    has to guess), changed files **with `.bb/` already subtracted** (`SKILL.md`,
    step 1), one paragraph of what changed, **the intent block** step 0 wrote
-   (`SKILL.md`, "The intent read"), the repo's
+   (`intent-read.md`), the repo's
    `CODE_REVIEW_GUIDE.md` when there is one, the criteria path its front points at
    (`review-checklist.md` or `quality-checklist.md`, siblings of this file), and
    the spec when there is one, plus ONE angle/lens set and its candidate cap.

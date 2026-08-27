@@ -13,9 +13,9 @@ Required content:
    reads fresh on every run.
 2. **Finding levels**: the two levels and their verdict impact, filled from the
    plugin-root `references/finding-levels.md`.
-3. **Pre-PR checklist**: numbered, actionable, derived from the HIGH rules
-   plus the `LOW` rules whose deviation names a concrete cost, the gate
-   `finding-levels.md` describes (concrete commands: the repo's own test/lint
+3. **Pre-PR checklist**: numbered, actionable, derived from the `HIGH` rules plus
+   every `LOW` rule a repo command already checks, so each item is something the
+   developer runs or looks at (concrete commands: the repo's own test/lint
    invocations).
 4. **Rules by level**: every rule with ID, title, category, description,
    evidence (real paths), and Do/Avoid examples from the repo.
@@ -44,10 +44,10 @@ in the repo is documented here with evidence.
 
 ## Finding levels
 
-| Level    | Meaning                                                                                            | Review impact                                                   |
-| -------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| **HIGH** | Something the change shipped is broken, unusable for someone, or breaks a rule stated as mandatory | Verdict: CHANGES REQUESTED                                      |
-| **LOW**  | Everything else still worth saying                                                                 | Alone it never sets the verdict; 3+ in one PR: NEEDS DISCUSSION |
+| Level | Meaning | Review impact |
+| ----- | ------- | ------------- |
+
+{{LEVELS_TABLE}}
 
 ## Pre-PR checklist
 
@@ -118,13 +118,14 @@ Rule detail block, one per rule:
 ## Generation rules
 
 - The **Level** field carries one of the two levels the plugin-root
-  `references/finding-levels.md` defines, `HIGH` or `LOW`. Read that file
-  before writing the levels section and fill the table's meanings from it. Every rule
+  `references/finding-levels.md` defines, `HIGH` or `LOW`. Read that file before
+  writing `{{LEVELS_TABLE}}`: it is two rows, `HIGH` and `LOW`, each one's meaning
+  and review impact taken from that file's own definition of it. Every rule
   ranks at one of those two, and the finer cut a repo asks for is the concrete-cost
   gate that file describes. A rule the maintainer accepted
   without naming a level enters as **LOW**. An older guide carries the field as
-  **Severity** and may rank a rule `MEDIUM`: `/bb:review` reads that rung as `LOW` at
-  read time by the table in `finding-levels.md`, and `update-delta.md` §4 renames the
+  **Severity** and may rank a rule `MEDIUM`: `/bb:review` reads that rung as a
+  Sugestão at read time by the table in `finding-levels.md`, and `update-delta.md` §4 renames the
   field and collapses the rung in the file itself on the next update. A rule already at
   `HIGH` or `LOW` needs no migration at all.
 - The **Category** field tags the kind of concern the rule is (`correctness`,

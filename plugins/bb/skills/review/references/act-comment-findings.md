@@ -10,7 +10,24 @@ A PR comment is outward-facing and carries the user's identity: print the exact 
 of every comment first and post only on an explicit yes. On no, the items stay in the
 report and nothing is sent.
 
-## 2. Anchor only where an anchor holds
+## 2. Two tests decide inline or summary, in this order
+
+**First the concrete-cost gate** (plugin-root `references/finding-levels.md`), which is what
+earns an item its own comment:
+
+- A **Bloqueante** never passes through the gate: it earns an inline comment by being a
+  Bloqueante, and goes on to the anchor test below.
+- A **Sugestão that names a concrete cost** takes the anchor test too. The cost is what
+  `front-quality.md` asks for in its `custo concreto` column: what exactly is duplicated and
+  where the other copy is, what work is wasted per call, what a future editor has to keep in
+  sync, who reads the wrong value.
+- A **Sugestão that names none** is folded into **one aggregated line** in the summary
+  comment, never posted inline, however good its anchor is. The line carries the count it
+  stands for, so the reader can go find them in the report: "4 sugestões sem custo concreto,
+  no relatório". Its line in the report is untouched, and the re-report records it as
+  `agregado`.
+
+**Then the anchor test**, for what the gate let through:
 
 - **Location inside the diff** → one review comment per item, anchored to the line:
   `gh api repos/<owner>/<repo>/pulls/<n>/comments` with `path`, `line` and
@@ -26,7 +43,7 @@ report and nothing is sent.
 ## 3. Additive: the whole conversation is the corpus
 
 The corpus to match against is everything already said on this PR, not only what bb
-said in an earlier round. It is step 0's intent read (`SKILL.md`, "The intent read"):
+said in an earlier round. It is step 0's intent read (`intent-read.md`):
 the `fetch_comments.py` payload, with the top-level comments, the review bodies and
 the inline threads, each note carrying its `author { login }`. A point another
 reviewer made counts exactly as much as one bb made, and the item that repeats it

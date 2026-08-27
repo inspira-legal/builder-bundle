@@ -33,8 +33,8 @@ improvement, and a "fix" that isn't justified against its finding is a guess.
 
 ## Order of operations
 
-1. In front order: correctness fixes first (the Bloqueantes among them ahead
-   of the rest), then Bloqueante rule deviations, then contract gaps, then quality edits. A
+1. In front order: correctness fixes first, every one of them a Bloqueante,
+   then Bloqueante rule deviations, then contract gaps, then quality edits. A
    quality pass over code about to be fixed is wasted work. Levels are the plugin-root
    `references/finding-levels.md`; within one front the Bloqueantes go first and
    the Sugestões follow.

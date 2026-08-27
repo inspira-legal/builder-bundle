@@ -16,7 +16,8 @@ report and the comments go out. `/bb:review-setup` reads it when it writes a rep
 
 - **Bloqueante**, `HIGH` in a guide: something the diff shipped is broken, unusable for
   someone, or breaks a rule the guide states as mandatory. The verdict is CHANGES REQUESTED.
-- **Sugestão**, `LOW` in a guide: everything else that is still worth saying.
+- **Sugestão**, `LOW` in a guide: everything else that is still worth saying. Alone it
+  never sets the verdict; three or more in one PR make it NEEDS DISCUSSION.
 
 There is no third level. What went is the middle rung, where a reader stops deciding, because
 `MEDIUM` meant "worth saying" in one file and "almost blocking" in the next.
@@ -47,16 +48,16 @@ uppercase wherever a guide states them.
 
 ## Where each front lands
 
-| finding                                                                    | front                  | level      |
-| -------------------------------------------------------------------------- | ---------------------- | ---------- |
-| a bug the diff shipped, at either verdict                                  | `front-correctness.md` | Bloqueante |
-| a deviation from a rule that states the stakes (mandatory, never, quebra)  | `front-rules.md`       | Bloqueante |
-| every other deviation, and every rule the guide states with no level       | `front-rules.md`       | Sugestão   |
-| a missing happy path                                                       | `front-contract.md`    | Bloqueante |
-| a missing mapped edge, a missing test, scope drift, a stylistic divergence | `front-contract.md`    | Sugestão   |
-| a `Critical` or `Major` accessibility failure                              | `front-a11y.md`        | Bloqueante |
-| a `Minor` failure or an `Enhancement`                                      | `front-a11y.md`        | Sugestão   |
-| every cleanup, since the front is behavior-preserving                      | `front-quality.md`     | Sugestão   |
+| finding                                                                   | front                  | level      |
+| ------------------------------------------------------------------------- | ---------------------- | ---------- |
+| a bug the diff shipped, at either verdict                                 | `front-correctness.md` | Bloqueante |
+| a deviation from a rule that states the stakes (mandatory, never, quebra) | `front-rules.md`       | Bloqueante |
+| every other deviation, and every rule the guide states with no level      | `front-rules.md`       | Sugestão   |
+| a missing happy path                                                      | `front-contract.md`    | Bloqueante |
+| a missing mapped edge, a missing test, scope drift                        | `front-contract.md`    | Sugestão   |
+| a `Critical` or `Major` accessibility failure                             | `front-a11y.md`        | Bloqueante |
+| a `Minor` failure or an `Enhancement`                                     | `front-a11y.md`        | Sugestão   |
+| every cleanup, since the front is behavior-preserving                     | `front-quality.md`     | Sugestão   |
 
 `front-a11y.md` keeps `Critical` / `Major` / `Minor` / `Enhancement` internally, because those
 priorities are WCAG's and not bb's. The mapping in the table above happens at the report
@@ -85,11 +86,14 @@ Two things the gate does not touch:
 A `CODE_REVIEW_GUIDE.md` with `MEDIUM` rules collapses them **at read time**. No repository is
 blocked by a three-rung guide.
 
-| in the guide | read as    |
-| ------------ | ---------- |
-| `HIGH`       | Bloqueante |
-| `MEDIUM`     | Sugestão   |
-| no level     | Sugestão   |
+| in the guide | a review reads it as | the migration rewrites it to |
+| ------------ | -------------------- | ---------------------------- |
+| `HIGH`       | Bloqueante           | `HIGH`                       |
+| `MEDIUM`     | Sugestão             | `LOW`                        |
+| no level     | Sugestão             | `LOW`                        |
+
+The third column is `/bb:review-setup`'s, which is what closes the drift instead of
+re-reading it every run (`skills/review-setup/references/update-delta.md`).
 
 A verdict rule the guide states in three rungs ("qualquer MEDIUM ⇒ NEEDS DISCUSSION") reads
 through the same table, so it is the Sugestão count that answers it.
@@ -98,7 +102,7 @@ Whenever the collapse fires, the report carries **one drift line**, separate fro
 deviations as `front-rules.md` §5 keeps every drift finding:
 
 ```
-Guide drift: CODE_REVIEW_GUIDE.md ranks 12 rules MEDIUM, read here as Sugestão. Run
+Ladder drift: CODE_REVIEW_GUIDE.md ranks 12 rules MEDIUM, read here as Sugestão. Run
 `/bb:review-setup` to migrate the guide.
 ```
 

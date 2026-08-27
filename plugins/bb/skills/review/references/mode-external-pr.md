@@ -61,5 +61,8 @@ gh pr review <number> --repo <owner>/<repo> --comment|--approve|--request-change
 
 Inline comments on specific lines go through
 `gh api repos/<owner>/<repo>/pulls/<number>/reviews` with a `comments[]` payload
-when the user wants them attached to the diff. If the user declines, leave the
+when the user wants them attached to the diff. What earns a place in that payload is
+the concrete-cost gate, then the anchor test, the same two in the same order as a local
+run (`act-comment-findings.md` §2): a Sugestão naming no cost is one aggregated line in
+the review body, and its line in the report is untouched. If the user declines, leave the
 review in the transcript and stop.

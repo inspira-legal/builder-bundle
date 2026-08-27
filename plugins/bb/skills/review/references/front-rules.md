@@ -86,7 +86,7 @@ In-code rules enter the checklist by `file:line` instead of an ID.
 ## 5. Verdict impact and drift
 
 - When the guide defines a verdict rule, it decides: e.g. "qualquer HIGH ⇒
-  CHANGES REQUESTED", "3+ LOW ⇒ CHANGES REQUESTED". It states the rule in the guide's own
+  CHANGES REQUESTED", "3+ LOW ⇒ NEEDS DISCUSSION". It states the rule in the guide's own
   two names, and a verdict rule stated in three rungs
   reads through the collapse table in `finding-levels.md`. Carry it into the
   report so the user sees where the diff lands.
