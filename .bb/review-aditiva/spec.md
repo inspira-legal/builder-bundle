@@ -184,7 +184,7 @@ Happy path, `/bb:review` on a branch with an open PR (H1 to H9):
 - [x] **3. The generator speaks two levels**: `guide-template.md`'s ladder table, its
       `### HIGH/MEDIUM/LOW` sections and the `- **Severity**:` line, plus `discovery.md`,
       `interview.md` and `update-delta.md` → H4, E4, E5 · dep: 1 · verify: reading
-- [ ] **4. `builder-bundle/CODE_REVIEW_GUIDE.md` migrates**: the Severities table, every
+- [x] **4. `builder-bundle/CODE_REVIEW_GUIDE.md` migrates**: the Severities table, every
       `- **Severity**:` line, the three `###` sections
       → E4, E6 · dep: 3 · verify: grep returns no HIGH/MEDIUM/LOW
 - [ ] **5. Step 0 reads intent and conversation**: `SKILL.md` gains the reads, the intent block
