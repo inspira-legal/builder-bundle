@@ -28,7 +28,7 @@ Inside a git repository with a `.bb/` directory, and a validated spec with a `##
    - **Build and ship**: the build, then `/bb:ship` settles the destination and ships it.
    - **Build, review and ship**: all three, the review running on the branch before the ship.
 
-   **How it was invoked sets which option leads** and carries `(Recommended)`. "run everything", "build and land the spec", "do it all", "delegate this" lead with build, review and ship; "implement the spec", "build the tasks", "build it" lead with build only. One keystroke confirms either way. **Invoked from `/bb:spec`'s exit gate the question is already answered**: that gate offers the same four, and its pick is the scope. Nothing else about the run is asked; the build itself is dispatched with no question of its own.
+   **How it was invoked sets which option leads** and carries `(Recommended)`. "run everything", "build and ship the spec", "do it all", "delegate this" lead with build, review and ship; "implement the spec", "build the tasks", "build it" lead with build only. One keystroke confirms either way. **Invoked from `/bb:spec`'s exit gate the question is already answered**: that gate offers the same four, and its pick is the scope. Nothing else about the run is asked; the build itself is dispatched with no question of its own.
 
 3. **Open the run, flip `status: in-progress`.** Edit the spec's frontmatter and commit that edit (conventional style; no AI attribution).
 

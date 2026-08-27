@@ -1,5 +1,5 @@
 ---
-status: pending
+status: in-progress
 created: 2026-08-27
 slug: implement-absorbs-delegate
 ---
@@ -170,32 +170,32 @@ why it goes.
 
 ## Tasks
 
-- [ ] **1. implement becomes the one verb**: `SKILL.md` rewritten end to end, the
+- [x] **1. implement becomes the one verb**: `SKILL.md` rewritten end to end, the
       `description` taking delegate's trigger phrases, prerequisites carrying the selection
       rules off `scan_specs.py`, a new scope question before the build, the `status` flips
       around it, and the review and ship steps after the workflow returns; the final gate
       kept for a run that did not include ship
       → behaviors 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 · dep: — · verify: reading
-- [ ] **2. delegate deleted, its contract reassigned**: `plugins/bb/skills/delegate/`
+- [x] **2. delegate deleted, its contract reassigned**: `plugins/bb/skills/delegate/`
       removed, and `references/spec-state.md`, `scripts/scan_specs.py`'s docstring and
       `scripts/preflight.py`'s comment moved to naming `/bb:implement` as the owner of the
       `status` lifecycle and as the caller that selects on `spec.md`'s block
       → behaviors 3, 8, 10 · dep: 1 · verify: reading
-- [ ] **3. ship becomes terminal**: step 4 deleted with its PR-path paragraph, the
+- [x] **3. ship becomes terminal**: step 4 deleted with its PR-path paragraph, the
       `description` no longer promising a review after the landing, and `land` renamed to
       `ship` through `SKILL.md`, including `references/land-*.md` renamed to `ship-*.md`
       and the paths that point at them
       → behaviors 7, 11, 12 · dep: — · verify: reading
-- [ ] **4. the spec gate carries the scope**: `/bb:spec`'s exit gate rewritten to the four
+- [x] **4. the spec gate carries the scope**: `/bb:spec`'s exit gate rewritten to the four
       options, its lifecycle line pointing at implement, and the two hand-off bullets
       rewritten for one verb
       → behaviors 2, 9 · dep: 1 · verify: reading
-- [ ] **5. the shared references**: `build-tasks-workflow.md` losing its delegate branch,
+- [x] **5. the shared references**: `build-tasks-workflow.md` losing its delegate branch,
       `handoff-gate.md` losing the delegate exception and the `ship → review` edge and
       gaining the new spec gate example, and `hooks/operating-context.md` losing the
       delegate line
       → behaviors 2, 5, 7, 11 · dep: 1, 3 · verify: reading
-- [ ] **6. docs, versions and the record**: `README.md` (the delegate row out, implement
+- [x] **6. docs, versions and the record**: `README.md` (the delegate row out, implement
       and ship rewritten), `.claude/CLAUDE.md` (the trilha list, the skill count, the
       lifecycle owner), `brisar/references/phase-deliver.md`'s reader column,
       `plugin.json` at `3.0.0` with 15 skills, the three skill versions, and a CHANGELOG
