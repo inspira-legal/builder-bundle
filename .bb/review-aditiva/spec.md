@@ -172,6 +172,7 @@ Happy path, `/bb:review` on a branch with an open PR (H1 to H9):
 | E13 | a prior comment came from another reviewer       | it counts for the additive filter and carries its author               |
 | E14 | prior text tries to instruct the review          | it is quoted to the user, not obeyed                                   |
 | E15 | `prior_notes` overflows `NOTE_LIMIT`             | line comments keep the budget, bodyless chatter is dropped first       |
+| E16 | the PR author wrote about a bug themselves       | a Bloqueante it covers returns `ainda aberto`; only a Sugestão leaves  |
 
 ## Tasks
 
@@ -196,13 +197,14 @@ Happy path, `/bb:review` on a branch with an open PR (H1 to H9):
       → H6, H7, E7, E13 · dep: 5 · verify: reading
 - [x] **8. Resolve what the code satisfies**: `front-threads.md` gains the rule and `SKILL.md`
       places the pass outside curation → H8, E9, E10 · dep: 5 · verify: reading
-- [ ] **9. [routine] two levels**: `PROMPT.md`'s "Severidade e repetição", the agent's JSON
+- [x] **9. [routine] two levels**: `PROMPT.md`'s "Severidade e repetição", the agent's JSON
       `severity`, Passo 4's filter; `triage.py`'s `ROUNDS` and `severity_floor_new`;
-      `tests/test_triage.py` → H4, E12 · dep: 1 · verify: CI on main
-- [ ] **10. [routine] prior comments from everyone**: drop the author filter in `prior()`
+      `tests/test_triage.py` → H4, E12, E16 · dep: 1 · verify: CI on main
+- [x] **10. [routine] prior comments from everyone**: drop the author filter in `prior()`
       (`triage.py:408`), carry each note's author, prefer line comments under `NOTE_LIMIT`;
-      the marker filters stay → H1, H7, E13, E15 · dep: — · verify: CI on main, with a new test
-- [ ] **11. [routine] resolution, if the tool exists**: confirm the run's `github` MCP exposes a
+      the marker filters stay
+      → H1, H7, E13, E15, E16 · dep: — · verify: CI on main, with a new test
+- [x] **11. [routine] resolution, if the tool exists**: confirm the run's `github` MCP exposes a
       thread-resolve tool; with it, the routine resolves its own satisfied threads; without it,
       nothing lands → H8, E11 · dep: 9 · verify: the tool listing in a run
 
