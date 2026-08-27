@@ -39,12 +39,12 @@ plugins/bb/
 │   ├── gather_context.py               # ship (the PR body), review, gather-branch-context
 │   ├── preflight.py                    # ship (Prerequisites + Step 0), review (the fronts probe)
 │   ├── resolve_checks.py               # implement (step 4 + args.checks), ship (Step 2)
-│   ├── scan_specs.py                   # delegate (selection); preflight.py imports its scan()
+│   ├── scan_specs.py                   # implement (selection); preflight.py imports its scan()
 │   └── inspect_pr_checks.py            # ship (CI failures), review (the ci front)
-├── skills/                            # all 16 skills flat; trilha grouping is a docs concept
+├── skills/                            # all 15 skills flat; trilha grouping is a docs concept
 │   ├── Pensar:        discover, challenge, think, legal-lens
 │   ├── Desenhar:      spec
-│   ├── Construir:     implement, ship, delegate, gather-branch-context
+│   ├── Construir:     implement, ship, gather-branch-context
 │   ├── Revisar:       review, maintain-repo, review-setup
 │   ├── Design:        brisar
 │   ├── Pesquisar/Doc: code-deep-research, write-readme
@@ -162,7 +162,7 @@ three documents and a prototype, and **every skill writes its own document, with
 `spec.md` having exactly one writer**. `/bb:discover` writes `discovery.md` (the
 framing), `/bb:brisar` writes `design.md` (the journey) plus `prototype/` (the clickable
 artifact), and `/bb:spec` writes `spec.md` (the contract, with its
-`status`/`created`/`slug` frontmatter and the status lifecycle owned by `/bb:delegate`).
+`status`/`created`/`slug` frontmatter and the status lifecycle owned by `/bb:implement`).
 The spec reads the two records by path and never copies their prose; where a record and
 the spec disagree the spec wins, and the record's own writer registers the reversal on
 its next round. Members are independent, and a folder can carry any one of them alone.

@@ -1,6 +1,6 @@
 # The build: one agent per task, run by `workflows/build-tasks.js`
 
-`/bb:implement` and `/bb:delegate` build a spec's tasks by dispatching one agent per
+`/bb:implement` builds a spec's tasks by dispatching one agent per
 task as a dynamic workflow. The script that does it is fixed and versioned at
 `plugins/bb/workflows/build-tasks.js`, and **the script is the definition**: the task
 agent's contract is the prompt string inside it, not a paraphrase kept here. This file
@@ -67,7 +67,7 @@ else, so the skills point at it by name and carry no count of their own:
 
 Only step 3 builds in the main context, and only those three conditions reach it. A run
 that has tasks to build and meets none of them dispatches at step 1. Invoking
-`/bb:implement` or `/bb:delegate`, by the command or by the phrases their `description`
+`/bb:implement`, by the command or by the phrases its `description`
 lists, is the request for this workflow, and that request is the opt-in the `Workflow`
 tool asks for. It covers this build and nothing beyond it.
 
@@ -105,7 +105,7 @@ stringified one):
 
 `checks` is `${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py`'s output, passed through
 whole (or `null` when the skill could not run it). The script walks the authority chain,
-so nothing in the run resolves it a second time: it is the same call implement's step 4
+so nothing in the run resolves it a second time: it is the same call implement's step 7
 and ship's Step 2 make. `runnable: false` means local runs are forbidden, and it is what
 makes stage zero skip the checks agent instead of spending it to be refused; `policy.scope`
 says which document forbade them, the repo's own or the user's `~/.claude/CLAUDE.md`.
@@ -245,10 +245,10 @@ and effort; they are doing the same work the main context would have done.
 { slug, built: [<n>], skipped: [<n>], pendingVerify: [<n>], stopped: <the failing result, or null>, conventions }
 ```
 
-The caller reads that and follows its own contract: `/bb:implement` goes to its step 8,
-`/bb:delegate` to ship. A non-null `stopped` means neither proceeds to landing; delegate
-flips `status: blocked`, implement stops at its safety valve. `pendingVerify` names the
-tasks whose proof is CI, which is ship's to close.
+The caller reads that and follows its own contract: `/bb:implement` goes on to whatever
+its scope has next, the review, the ship, or the gate that offers one. A non-null
+`stopped` is its safety valve, so it flips `status: blocked` and nothing further in the
+chain runs. `pendingVerify` names the tasks whose proof is CI, which is ship's to close.
 
 ## What guards the script, and what the skill still checks per run
 

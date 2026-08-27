@@ -282,7 +282,7 @@ One sharp caution: **do not turn the review into a redesign.** The strongest fai
 | Artifact                                   | Produced by                           | Consumed by                                                                        |
 | ------------------------------------------ | ------------------------------------- | ---------------------------------------------------------------------------------- |
 | `.bb/<slug>/design.md`                     | Brief (updated here, living contract) | Human, the implementing dev, later rounds                                          |
-| `.bb/<slug>/spec.md`                       | `/bb:spec`, invoked from the gate     | `/bb:implement`, `/bb:delegate`                                                    |
+| `.bb/<slug>/spec.md`                       | `/bb:spec`, invoked from the gate     | `/bb:implement`                                                                    |
 | `.bb/<slug>/design.md`, `## Design review` | Deliver                               | Human (responds to issues), `/bb:review`, Develop phase (re-prototype if blockers) |
 | `.bb/<slug>/design.md`, `## Accessibility` | Deliver                               | Human (resolves before merge), CI (reference)                                      |
 

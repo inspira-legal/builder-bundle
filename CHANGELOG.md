@@ -1,5 +1,71 @@
 # Changelog
 
+## 3.0.0 (2026-08-27)
+
+**One verb builds a spec, and how far the run goes is asked once.** `/bb:delegate` never
+had a build loop. Its step 3 said "follow `/bb:implement`'s workflow, steps 1 to 7, then
+return here", so what the second verb owned was three bullets: a spec selection rule, the
+`status` lifecycle, and chaining into `/bb:ship` without asking. The other hundred lines
+were implement's, re-narrated well enough to drift, and five files carried the split:
+`build-tasks-workflow.md` explained which of the two goes where after the return,
+`handoff-gate.md` opened a named exception to "never auto-invoke", `operating-context.md`
+carried that exception into everyone's `~/.claude/BUILDER-BUNDLE.md`, and `spec-state.md`
+assigned the lifecycle to a skill that only borrowed the build.
+
+So delegate goes and implement asks instead. One question at the start settles what the run
+covers: build, build and review, build and ship, or all three. The invocation decides which
+option leads, and one keystroke confirms it. That question also makes reachable a capability
+the bundle never had, reviewing the change **before** it ships instead of after: the fixes
+land in the same set of commits the tasks produced, and the PR opens from code that was
+already read.
+
+**The partial reversal of `no-opt-out`.** 2.16.0 deleted a question from the start of
+implement and stated its success as reaching the build with nothing asked. This puts a
+question back in that spot, and it is a different one. What went was **how to build**, which
+had one right answer and was asked anyway. What returns is **how far this run goes**, which
+has no default the skill can derive. The build itself still reaches the workflow with
+nothing asked.
+
+### Breaking
+
+- **`/bb:delegate` is deleted**, skill folder and all, with no stub and no alias.
+  `/bb:delegate <slug>` becomes `/bb:implement <slug>`, picking **build and ship** (or
+  **build, review and ship**) at the scope question, which is one keystroke when the
+  invocation reads as "run everything". Anything that invokes delegate by name, a saved
+  routine, a scheduled task, a project's own `CLAUDE.md`, has to be updated to say
+  implement.
+- **`/bb:ship` is terminal.** Its step 4, the post-landing offer to review, is gone for the
+  chained run and for ship on its own: it reports what shipped and stops. The review that
+  used to sit there now runs before the ship, inside implement's scope. To review after a
+  landing, invoke `/bb:review` yourself.
+
+### Changed
+
+- **`/bb:implement`** (3.0.0) is 14 steps: it selects the spec off `scan_specs.py`, settles
+  the scope, flips `status: in-progress`, builds through `workflows/build-tasks.js` as
+  before, then runs whatever the scope has next. It owns the whole `status` lifecycle now,
+  `in-progress` on opening, `blocked` on any stop with the blocker written into the spec's
+  own `## Open`, and `done` right after the PR is open and its checks are handled, since the
+  PR path ends resident and a flip that waited for ship to return would never happen.
+- **The chained review runs at standard depth over every available front**, with no fronts
+  question. It applies every CONFIRMED finding and reports every PLAUSIBLE one, and reports
+  both sets before the ship starts. `threads` and `ci` drop out on their own, because the
+  availability probe finds no PR yet. A deep review stays `/bb:review deep`, invoked
+  separately.
+- **`/bb:spec`** (2.4.0) closes at a four-way gate, Build, Build and ship, Build review and
+  ship, Stop here, and the pick **is** implement's scope answer, so implement doesn't ask it
+  again.
+- **`/bb:ship`** (4.0.0) renames its `references/land-*.md` to `ship-*.md`, and every text
+  this change writes calls the action **ship**. Both words were in the repo for one action,
+  which is the case `doc-style.md`'s one-name-per-thing rule exists to prevent. Where land
+  means arrive, a comment landing on a PR, it stays.
+- **`references/handoff-gate.md`**'s auto-invoke exception is no longer a skill, it's a
+  chain the user authorized up front. Ship joins the skills with no gate, and the journey
+  map loses the `ship → review` edge.
+- **`references/spec-state.md`** and **`references/build-tasks-workflow.md`** name implement
+  where they named delegate, and `scan_specs.py` plus `preflight.py` say so in their own
+  docstring and comment. Neither script changes shape.
+
 ## 2.19.0 (2026-08-25)
 
 **What a run can look up, it stops asking an agent to derive.** The checks authority chain
