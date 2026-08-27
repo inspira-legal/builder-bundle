@@ -181,7 +181,7 @@ Happy path, `/bb:review` on a branch with an open PR (H1 to H9):
       `front-a11y.md`, `front-quality.md` point at it; `verify.md` §4 ranks in three tiers;
       `act-apply-fixes.md` order and `mode-external-pr.md` verdict follow
       → H4, H5, H9, E4, E8 · dep: 1 · verify: grep for HIGH/MEDIUM/LOW under `skills/review/`
-- [ ] **3. The generator speaks two levels**: `guide-template.md`'s ladder table, its
+- [x] **3. The generator speaks two levels**: `guide-template.md`'s ladder table, its
       `### HIGH/MEDIUM/LOW` sections and the `- **Severity**:` line, plus `discovery.md`,
       `interview.md` and `update-delta.md` → H4, E4, E5 · dep: 1 · verify: reading
 - [ ] **4. `builder-bundle/CODE_REVIEW_GUIDE.md` migrates**: the Severities table, every

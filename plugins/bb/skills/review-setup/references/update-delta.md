@@ -6,9 +6,12 @@ and edit the guide surgically. Untouched rules stay byte-identical.
 
 ## 1. Read the existing guide
 
-Load the full guide first: rule IDs and severities, file categories, rule
+Load the full guide first: rule IDs and levels, file categories, rule
 categories, last-updated date. This is the baseline every subagent compares
 against.
+
+Note which vocabulary the guide is written in. A guide still ranking its rules as
+`HIGH` / `MEDIUM` / `LOW` gets the ladder migration in §4, on top of the delta.
 
 ## 2. Delta discovery: 3 parallel subagents
 
@@ -28,7 +31,7 @@ evidence: []}`.
 
 > You are a code conventions analyst. Read CODE_REVIEW_GUIDE.md, then verify
 > its rules still match reality. Find: (1) rules that no longer describe the
-> code (naming changed, import pattern changed); (2) HIGH rules now followed
+> code (naming changed, import pattern changed); (2) Bloqueante rules now followed
 > inconsistently; (3) new test patterns; (4) new error-handling approaches. For
 > each: `{rule_id, current_description, actual_state, evidence,
 recommendation: update|remove|keep}` with concrete example files.
@@ -47,7 +50,9 @@ recommendation: update|remove|keep}` with concrete example files.
 
 Merge the three results, dedupe, group by type (new / drifted / obsolete). If
 **nothing** was found, report "no significant changes since the guide was last
-updated" and stop, no interview, no edits.
+updated" and stop, no interview, no edits. A legacy ladder is the one exception:
+with no delta but a guide in `HIGH` / `MEDIUM` / `LOW`, say so and run the ladder
+migration alone.
 
 Otherwise print the summary (new patterns / rules to revisit / patterns
 obsoletos, each with evidence) and run the **update-mode interview**
@@ -58,12 +63,22 @@ obsoletos, each with evidence) and run the **update-mode interview**
 Use the **Edit** tool, never rewrite the whole file:
 
 - **Add** approved new rules with the next free ID in their domain (PAT-003
-  exists → PAT-004). Severity from the maintainer's answer; category per the
+  exists → PAT-004). Level from the maintainer's answer; category per the
   guide-template vocabulary (an older guide using **Lens** keeps that heading);
   real Do/Don't examples when available.
 - **Update** approved drifted rules: change only the fields that drifted,
   **preserve the original ID**, never renumber.
 - **Remove** rules the maintainer approved for removal.
 - **Preserve** everything else exactly as-is.
+- **Migrate the ladder** when the guide is still written in `HIGH` / `MEDIUM` /
+  `LOW`. The collapse is deterministic, so it takes no interview: read it from the
+  table in the plugin-root `references/finding-levels.md` (`HIGH` to Bloqueante,
+  `MEDIUM` and `LOW` to Sugestão, a rule with no level to Sugestão), rewrite the
+  levels section from `guide-template.md`, rename each rule's **Severity** field to
+  **Level**, and regroup the rules under `### Bloqueante` and `### Sugestão`. A
+  verdict rule stated in the legacy vocabulary migrates with it. Everything else in
+  each rule stays byte-identical, and this is what clears the drift line
+  `/bb:review` reports.
 - Update the "Last updated" date and append a row to the change history
-  table.
+  table. The ladder migration gets its own row, so a reader can tell the vocabulary
+  change from the rule changes.
