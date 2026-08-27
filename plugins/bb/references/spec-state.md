@@ -3,7 +3,7 @@
 The single on-disk contract for a slug's durable artifacts. **Every skill writes its
 own document, and `spec.md` has exactly one writer.** `/bb:discover` writes
 `discovery.md`, `/bb:brisar` writes `design.md`, `/bb:spec` writes `spec.md`, and
-`/bb:implement`, `/bb:ship` and `/bb:delegate` read the spec. Any skill that reads or
+`/bb:implement` and `/bb:ship` read the spec. Any skill that reads or
 writes this state follows this file. The contract lives here and nowhere else.
 
 ## Location
@@ -82,9 +82,9 @@ slug: <kebab-slug> # matches the dir name
 - `done`: the implement→ship chain completed its landing.
 - `blocked`: implement's safety valve or ship hit an unrecoverable stop; needs a human.
 
-**`/bb:delegate` owns the `status` lifecycle**: it flips the value as it selects, runs
-and lands a spec. `spec` only writes the initial block (`status: pending`) on finalize.
-The `## Tasks` checkboxes inside the spec stay `implement`'s concern. A spec without the
+**`/bb:implement` owns the `status` lifecycle**: it flips the value as it selects, runs
+and lands a spec, and the `## Tasks` checkboxes inside the spec are the same skill's.
+`spec` only writes the initial block (`status: pending`) on finalize. A spec without the
 block is treated as `pending` with unknown `created` (sorted last in bare selection).
 
 **Selection is a script, not a scan the reader repeats.**
@@ -131,7 +131,7 @@ blockers: [<what has to be fixed before merge>]
 ```
 
 Those two `status` and `phase` values are their own document's, not the spec's.
-`/bb:delegate` selects on `spec.md`'s block and neither reads nor writes the records'. A
+`/bb:implement` selects on `spec.md`'s block and neither reads nor writes the records'. A
 `design.md` with no frontmatter reads as `phase: brief`, `round: 1`,
 `status: in-progress`.
 
