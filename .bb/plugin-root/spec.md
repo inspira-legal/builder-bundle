@@ -178,7 +178,7 @@ The happy path, one build dispatch on Desktop:
       chain can name, and the session veto as a named non-step → behaviors 6, 8, 9, 10, 11 ·
       dep: 1 · verify: run the documented call in `Bash` and confirm it prints an existing
       `build-tasks.js`
-- [ ] **4. The `review` and `ship` references**: `fronts.md`, `front-ci.md`, `front-threads.md`,
+- [x] **4. The `review` and `ship` references**: `fronts.md`, `front-ci.md`, `front-threads.md`,
       `front-correctness.md`, `intent-read.md`, `act-apply-fixes.md`, `ship-pr.md`,
       `ship-lexflow.md` → behavior 1 · dep: 1 · verify: `grep -rn CLAUDE_PLUGIN_ROOT` over those
       eight files returns nothing

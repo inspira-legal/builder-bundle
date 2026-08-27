@@ -11,10 +11,11 @@ improvement, and a "fix" that isn't justified against its finding is a guess.
   regression is isolated to a single edit and caught immediately. Never batch a
   pile of edits and check once at the end. Which command that is, and whether it
   may run here at all, is
-  `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py`'s answer, resolved
-  once for the whole pass. With `runnable: false` the local half of this guard is
-  off the table: keep the edits one per commit so the isolation survives, and let
-  the push carry the proof.
+  `python3 <plugin-root>/scripts/resolve_checks.py`'s answer, resolved
+  once for the whole pass; `<plugin-root>` is this plugin's own directory, resolved
+  by the plugin-root `references/plugin-root.md`. With `runnable: false` the local
+  half of this guard is off the table: keep the edits one per commit so the
+  isolation survives, and let the push carry the proof.
 - **Justify before you touch.**
   - A **correctness fix** must map to its finding: state the triggering
     input/scenario the finding named and how the edit closes it.
