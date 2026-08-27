@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Runs a spec (`.bb/<slug>/spec.md`) as far as this run is meant to go. Selects the spec, asks once whether the run is build, build and review, build and ship, or all three, builds every task, tracks the spec's `status`, and chains into `/bb:review` and `/bb:ship` when the scope says so. `/bb:implement <slug>` targets a named spec; bare `/bb:implement` takes the spec this session is on, or the oldest pending one. The single verb of the Construir trilha. Use when the user says "implement the spec", "build the tasks", "build it", "run the task", "build and land the spec", "do it all", "run everything", or right after /bb:spec. Don't use it to align on an idea first (use /bb:spec) or to land a branch that is already built (use /bb:ship).
+description: Runs a spec (`.bb/<slug>/spec.md`) as far as this run is meant to go. Selects the spec, asks once whether the run is build, build and review, build and ship, or all three, builds every task, tracks the spec's `status`, and chains into `/bb:review` and `/bb:ship` when the scope says so. `/bb:implement <slug>` targets a named spec; bare `/bb:implement` takes the spec this session is on, or the oldest pending one. The single verb of the Construir trilha. Use when the user says "implement the spec", "build the tasks", "build it", "run the task", "build and ship the spec", "do it all", "run everything", or right after /bb:spec. Don't use it to align on an idea first (use /bb:spec) or to land a branch that is already built (use /bb:ship).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
@@ -69,25 +69,25 @@ The hard line holds throughout: implement never merges, never approves, never fo
 
 ## Edge cases
 
-| WHEN                                             | THEN                                                                                                     |
-| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| `/bb:implement <slug>`, slug exists, not done    | run it at the scope step 2 settles                                                                       |
-| `/bb:implement <slug>`, slug not found           | report the error, list `pending_slugs`, stop                                                             |
-| `/bb:implement <slug>`, status `done`            | report it's done, ask whether to re-run                                                                  |
-| bare, this session is already on a spec          | take that one, confirmed against the scan                                                                |
-| bare, nothing in context, one or more pending    | take `scan_specs.py`'s `selected`                                                                        |
-| bare, nothing in context, none pending           | report "no pending specs", stop                                                                          |
-| bare, the oldest spec is `blocked`               | skipped, and reported with the blocker its `## Open` carries and where that blocker sends it             |
-| spec has no frontmatter                          | the scan still selects it; run it, and `/bb:spec` backfills the block next time                          |
-| selected spec already `in-progress`              | resume: the build skips ticked tasks; `status` stays `in-progress` until the ship                        |
-| invoked from `/bb:spec`'s exit gate              | that gate's pick is the scope; step 2 asks nothing                                                       |
-| every task already ticked                        | nothing dispatched; the run goes on to whatever the scope has next                                       |
-| safety valve fires (underspecified)              | `status: blocked`, the blocker into the spec's `## Open`, point back to `/bb:spec`, stop; do not improvise |
-| the build stops (stage zero or a task)           | `status: blocked`, the blocker into the spec's `## Open`, no review and no ship                          |
-| the build falls back to this context             | it runs the same way; the reason names which step of the reference's fallback chain, in one line and again in step 14 |
-| the review finds nothing                         | say so in one line and go on to the ship                                                                 |
-| a CONFIRMED fix turns a check red                | fixed before the ship, through steps 7 to 9 like any other change                                        |
+| WHEN                                             | THEN                                                                                                                   |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `/bb:implement <slug>`, slug exists, not done    | run it at the scope step 2 settles                                                                                     |
+| `/bb:implement <slug>`, slug not found           | report the error, list `pending_slugs`, stop                                                                           |
+| `/bb:implement <slug>`, status `done`            | report it's done, ask whether to re-run                                                                                |
+| bare, this session is already on a spec          | take that one, confirmed against the scan                                                                              |
+| bare, nothing in context, one or more pending    | take `scan_specs.py`'s `selected`                                                                                      |
+| bare, nothing in context, none pending           | report "no pending specs", stop                                                                                        |
+| bare, the oldest spec is `blocked`               | skipped, and reported with the blocker its `## Open` carries and where that blocker sends it                           |
+| spec has no frontmatter                          | the scan still selects it; run it, and `/bb:spec` backfills the block next time                                        |
+| selected spec already `in-progress`              | resume: the build skips ticked tasks; `status` stays `in-progress` until the ship                                      |
+| invoked from `/bb:spec`'s exit gate              | that gate's pick is the scope; step 2 asks nothing                                                                     |
+| every task already ticked                        | nothing dispatched; the run goes on to whatever the scope has next                                                     |
+| safety valve fires (underspecified)              | `status: blocked`, the blocker into the spec's `## Open`, point back to `/bb:spec`, stop; do not improvise             |
+| the build stops (stage zero or a task)           | `status: blocked`, the blocker into the spec's `## Open`, no review and no ship                                        |
+| the build falls back to this context             | it runs the same way; the reason names which step of the reference's fallback chain, in one line and again in step 14  |
+| the review finds nothing                         | say so in one line and go on to the ship                                                                               |
+| a CONFIRMED fix turns a check red                | fixed before the ship, through steps 7 to 9 like any other change                                                      |
 | ship hits an unrecoverable stop / blocker        | `status: blocked`; the blocker into the PR description, or into the spec's `## Open` when there is no PR; report; exit |
-| ship takes the PR path                           | `done` is flipped before the watch settles in                                                            |
-| ship takes a protected branch                    | ship hands over the push command; `done` waits for that push                                             |
-| not in a git repo / no `.bb/` dir in either root | report the error, stop                                                                                   |
+| ship takes the PR path                           | `done` is flipped before the watch settles in                                                                          |
+| ship takes a protected branch                    | ship hands over the push command; `done` waits for that push                                                           |
+| not in a git repo / no `.bb/` dir in either root | report the error, stop                                                                                                 |

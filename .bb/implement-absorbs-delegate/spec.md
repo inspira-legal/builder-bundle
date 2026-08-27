@@ -141,32 +141,32 @@ why it goes.
 11. `/bb:ship` invoked on its own reports what shipped and stops, offering no review.
 12. Every file this change rewrites names the action ship.
 
-| WHEN                                             | THEN                                                     |
-| ------------------------------------------------ | -------------------------------------------------------- |
-| `/bb:implement <slug>`, slug exists, not done    | run it at the scope the question settles                 |
-| `/bb:implement <slug>`, slug not found           | report it, list the pending slugs, stop                  |
-| `/bb:implement <slug>`, status `done`            | report it, ask whether to re-run                         |
-| bare, this session already has a spec            | that one, without a sweep                                |
-| bare, nothing in context, one or more pending    | smallest `created`, slug alphabetical to break ties      |
-| bare, nothing in context, none pending           | report "no pending specs", stop                          |
-| bare, the oldest spec is `blocked`               | skipped, reported with the blocker from its `## Open`    |
-| spec has no frontmatter                          | treat as `pending`, unknown `created`, sorted last       |
-| invoked as "run everything"                      | the question leads with build, review and ship           |
-| invoked as "implement the spec"                  | the question leads with build only                       |
-| invoked from `/bb:spec`'s gate                   | the gate's pick is the scope, nothing is asked           |
-| scope is build only, every task green            | gate offers ship, `status` stays `in-progress`           |
-| scope is build and review, every task green      | findings applied, then the same gate                     |
-| every task already ticked                        | nothing dispatched, the run goes to its scope's next step |
-| the build stops for any reason                   | `status: blocked`, no review and no ship                 |
-| review finds nothing                             | say so in one line and go on to the ship                 |
-| a CONFIRMED fix turns a check red                | fixed before the ship, as the build step already does    |
-| review runs and there is no PR yet               | the probe drops `threads` and `ci` on its own            |
-| ship hits an unrecoverable stop                  | `status: blocked`, blocker into the PR or `## Open`      |
-| ship lands on the PR path                        | `done` is flipped before the watch settles in            |
-| ship lands on a protected branch                 | ship hands over the command; `done` waits for the push   |
-| `/bb:ship` invoked on its own                    | it reports and stops, with no review offered             |
-| someone types `/bb:delegate`                     | no such skill; the CHANGELOG names the replacement       |
-| not in a git repo, or no `.bb/` in either root   | report it, stop                                          |
+| WHEN                                           | THEN                                                      |
+| ---------------------------------------------- | --------------------------------------------------------- |
+| `/bb:implement <slug>`, slug exists, not done  | run it at the scope the question settles                  |
+| `/bb:implement <slug>`, slug not found         | report it, list the pending slugs, stop                   |
+| `/bb:implement <slug>`, status `done`          | report it, ask whether to re-run                          |
+| bare, this session already has a spec          | that one, without a sweep                                 |
+| bare, nothing in context, one or more pending  | smallest `created`, slug alphabetical to break ties       |
+| bare, nothing in context, none pending         | report "no pending specs", stop                           |
+| bare, the oldest spec is `blocked`             | skipped, reported with the blocker from its `## Open`     |
+| spec has no frontmatter                        | treat as `pending`, unknown `created`, sorted last        |
+| invoked as "run everything"                    | the question leads with build, review and ship            |
+| invoked as "implement the spec"                | the question leads with build only                        |
+| invoked from `/bb:spec`'s gate                 | the gate's pick is the scope, nothing is asked            |
+| scope is build only, every task green          | gate offers ship, `status` stays `in-progress`            |
+| scope is build and review, every task green    | findings applied, then the same gate                      |
+| every task already ticked                      | nothing dispatched, the run goes to its scope's next step |
+| the build stops for any reason                 | `status: blocked`, no review and no ship                  |
+| review finds nothing                           | say so in one line and go on to the ship                  |
+| a CONFIRMED fix turns a check red              | fixed before the ship, as the build step already does     |
+| review runs and there is no PR yet             | the probe drops `threads` and `ci` on its own             |
+| ship hits an unrecoverable stop                | `status: blocked`, blocker into the PR or `## Open`       |
+| ship lands on the PR path                      | `done` is flipped before the watch settles in             |
+| ship lands on a protected branch               | ship hands over the command; `done` waits for the push    |
+| `/bb:ship` invoked on its own                  | it reports and stops, with no review offered              |
+| someone types `/bb:delegate`                   | no such skill; the CHANGELOG names the replacement        |
+| not in a git repo, or no `.bb/` in either root | report it, stop                                           |
 
 ## Tasks
 

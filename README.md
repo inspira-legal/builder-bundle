@@ -46,11 +46,11 @@ one plugin, `bb`; 15 skills, 14 of them in 6 trilhas and `/bb:profile` beside th
 
 ### construir: write and ship code
 
-| skill                       | description                                                                                                                                                                                                             |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:implement`             | runs a validated spec as far as you say: asks once whether this is build, build and review, build and ship or all three, then selects the spec, builds every task, keeps the checks green and tracks its `status`       |
-| `/bb:ship`                  | takes the branch to shipped, your way. it does not review: it greens the project's checks, commits, then pushes, preps main, opens a PR and tends it, or preps the LexFlow deploy                                       |
-| `/bb:gather-branch-context` | summarizes every change on the branch against main                                                                                                                                                                      |
+| skill                       | description                                                                                                                                                                                                       |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:implement`             | runs a validated spec as far as you say: asks once whether this is build, build and review, build and ship or all three, then selects the spec, builds every task, keeps the checks green and tracks its `status` |
+| `/bb:ship`                  | takes the branch to shipped, your way. it does not review: it greens the project's checks, commits, then pushes, preps main, opens a PR and tends it, or preps the LexFlow deploy                                 |
+| `/bb:gather-branch-context` | summarizes every change on the branch against main                                                                                                                                                                |
 
 ### revisar: quality and maintenance
 
