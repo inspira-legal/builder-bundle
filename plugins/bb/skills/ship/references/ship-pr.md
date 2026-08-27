@@ -1,4 +1,4 @@
-# Land it → Open / finish a PR
+# Ship it → Open / finish a PR
 
 Reached from ship's Step 1 when the destination is a pull request. Step 2 is done: the project's checks are green and the work is committed.
 
