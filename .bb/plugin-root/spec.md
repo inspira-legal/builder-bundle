@@ -29,7 +29,7 @@ documented happy path fails, the failure reads as the fallback's own condition, 
 `/bb:implement` builds in the main context with nobody having refused anything, which is the
 degradation `.bb/build-via-workflow/spec.md` exists to prevent.
 
-This spec gives the bundle one way to name its own root, `<bb-root>`, resolved by a rule that
+This spec gives the bundle one way to name its own root, `<plugin-root>`, resolved by a rule that
 survives both failures, and rewrites every mention that ends in a command. Success:
 `/bb:implement` dispatches on this machine without improvising a path, and `scan_specs.py`,
 `resolve_checks.py`, `preflight.py`, `gather_context.py` and `fetch_comments.py` run on the
@@ -39,8 +39,8 @@ first try from the documents that call them.
 
 | the path is written in | how it arrives | verdict |
 | --- | --- | --- |
-| a reference `.md`, read on demand | raw, so the variable is empty | `<bb-root>` |
-| a `SKILL.md` body | expanded, to a directory scripts cannot open | `<bb-root>` |
+| a reference `.md`, read on demand | raw, so the variable is empty | `<plugin-root>` |
+| a `SKILL.md` body | expanded, to a directory scripts cannot open | `<plugin-root>` |
 | `hooks/hooks.json` | expanded, into a hook's own environment | keep the literal |
 
 The first two rows fail for different reasons and take the same fix. The third is a different
@@ -80,7 +80,7 @@ The timing works out on its own: an update re-clones the marketplace before copy
 version into the cache, so the release that carries these documents is the first one checked
 out LF. Nothing in the dispatch strips anything.
 
-## `<bb-root>`
+## `<plugin-root>`
 
 The notation every document uses from here on: a path with a resolution rule behind it, where
 `${CLAUDE_PLUGIN_ROOT}/scripts/preflight.py` is a path that looks runnable and is not. The
@@ -90,7 +90,7 @@ failing command and then says not to use it has still written the failing comman
 The rule as the reference will carry it:
 
 ```bash
-bb_root() {
+plugin_root() {
   for d in "$CLAUDE_PLUGIN_ROOT" \
            $(ls -d "$HOME"/.claude/plugins/cache/*/bb/* 2>/dev/null | sort -Vr) \
            ./plugins/bb \
@@ -102,7 +102,7 @@ bb_root() {
 ## Decisions
 
 - **One new plugin-level reference, `references/plugin-root.md`**, owns the raw-versus-expanded
-  split, the resolution rule and the `<bb-root>` notation. Every other document points at it
+  split, the resolution rule and the `<plugin-root>` notation. Every other document points at it
   and carries no copy of the rule.
 - **The rule is two steps, first hit wins**: `$CLAUDE_PLUGIN_ROOT` when it is non-empty, then
   the search over the copies table in its order, by version inside the cache. A directory
@@ -111,12 +111,12 @@ bb_root() {
 - **The search is the rule's body, not its fallback.** A task agent inside the build workflow
   has no skill body and no variable, and it resolves the root the same way every other reader
   does.
-- **`<bb-root>` replaces the literal wherever a document is read by the model**, in runnable
+- **`<plugin-root>` replaces the literal wherever a document is read by the model**, in runnable
   commands and in file citations alike, so one directory has one name. `hooks/hooks.json`,
   `check_version.py` and `plugin-root.md` itself keep the literal, the last because it has to
   write it to explain it.
 - **A rewritten file gains one pointer to `references/plugin-root.md`**, at its first
-  `<bb-root>`, and no repetition after.
+  `<plugin-root>`, and no repetition after.
 - **The CR is fixed once, in `.gitattributes`, not on every dispatch.** A guard in the
   documented `Bash` call would run forever against a checkout setting, so the setting is what
   changes. The dispatch call resolves the root and proves `build-tasks.js` is readable, and
@@ -140,9 +140,9 @@ bb_root() {
 The happy path, one build dispatch on Desktop:
 
 1. `/bb:implement <slug>` reaches step 6 and reads `references/build-tasks-workflow.md`.
-2. The documented `Bash` call resolves `<bb-root>`: the variable is empty, so the search
+2. The documented `Bash` call resolves `<plugin-root>`: the variable is empty, so the search
    answers with the newest cache directory.
-3. The call reads `<bb-root>/workflows/build-tasks.js`, confirms it is readable, and prints
+3. The call reads `<plugin-root>/workflows/build-tasks.js`, confirms it is readable, and prints
    its path.
 4. `Workflow({scriptPath: <printed path>, args})` dispatches. The permission dialog shows the
    script, the user approves, and one agent per task runs.
@@ -161,16 +161,16 @@ The happy path, one build dispatch on Desktop:
 | the dispatch is refused for its path | step 2 runs: a refusal at step 1 ends the attempt, not the chain |
 | the user denies the permission dialog | report the denial and ask what they want, outside the chain |
 | the session's own rules forbid `Workflow` | build in the main context and name the veto as the reason |
-| a skill step calls a `scripts/*.py` | it resolves `<bb-root>` first, so the call is not made against the per-session copy |
+| a skill step calls a `scripts/*.py` | it resolves `<plugin-root>` first, so the call is not made against the per-session copy |
 | a task agent runs with no skill body in context | the search alone resolves the root |
 | the documents change and `plugin.json` does not | every install stays on the old copy and no session sees the fix |
 
 ## Tasks
 
-- [ ] **1. `references/plugin-root.md`**: the raw-versus-expanded split, the two step rule with
-      the `bb_root` shape and the `<bb-root>` notation → behaviors 2, 3, 4, 5, 6, 13 · dep: — ·
+- [x] **1. `references/plugin-root.md`**: the raw-versus-expanded split, the two step rule with
+      the `plugin_root` shape and the `<plugin-root>` notation → behaviors 2, 3, 4, 5, 6, 13 · dep: — ·
       verify: reading
-- [ ] **2. `.gitattributes`**: `* text=auto eol=lf` at the repo root, so a clone configured
+- [x] **2. `.gitattributes`**: `* text=auto eol=lf` at the repo root, so a clone configured
       `core.autocrlf = true` still checks the bundle out LF → behavior 7 · dep: — · verify:
       `git check-attr text eol -- plugins/bb/workflows/build-tasks.js` reports `eol: lf`
 - [ ] **3. The dispatch reads the new rule**: `references/build-tasks-workflow.md` gets the
