@@ -35,13 +35,15 @@ and the stats line reports that trimmed count, which is the depth that actually
 ran.
 
 Each set below is in **priority order**. A depth tier that funds two or three
-angles takes them from the left:
+angles takes them from the left, which is why the angle written for that artifact
+kind sits second in its row: an angle a tier never reaches is an angle the set may
+as well not carry.
 
-| Diff is mostly                 | Angle set (priority order)                                                                                            |
-| ------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| code (the default)             | `diff-scan`, `removed-behavior`, `cross-file`, `language-pitfalls`, `wrapper-boundary`                                |
-| prompt / skill / docs markdown | `diff-scan`, `removed-behavior`, `cross-file`, **`instruction-integrity`** (replaces the pitfalls angle)              |
-| config, manifest, IaC, schema  | `diff-scan`, `removed-behavior`, `cross-file`, plus a **validity** angle against the format's own schema or inventory |
+| Diff is mostly                 | Angle set (priority order)                                                                                       |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| code (the default)             | `diff-scan`, `removed-behavior`, `cross-file`, `language-pitfalls`, `wrapper-boundary`                           |
+| prompt / skill / docs markdown | `diff-scan`, **`instruction-integrity`** (replaces the pitfalls angle), `removed-behavior`, `cross-file`         |
+| config, manifest, IaC, schema  | `diff-scan`, a **validity** angle against the format's own schema or inventory, `removed-behavior`, `cross-file` |
 
 For the last two rows `wrapper-boundary` drops out (there's no wrapped type to
 route through), and the async/state material has nothing to attach to. Say which

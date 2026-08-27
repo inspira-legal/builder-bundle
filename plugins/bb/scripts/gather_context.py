@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
 Gather branch context relative to its base: branch/upstream, base + merge-base,
-commit log, diff stat, changed files, full diff, uncommitted changes, and (for PR
-creation) the repo's PR template. Superset consumed by /bb:ship (PR creation),
-/bb:review, and /bb:gather-branch-context (branch summary).
+commit log, diff stat, changed files, full diff, uncommitted changes, the open PR's
+body, and (for PR creation) the repo's PR template. Superset consumed by /bb:ship
+(PR creation), /bb:review, and /bb:gather-branch-context (branch summary).
 
 Requires:
   - inside a git repository
-  - `gh auth login` for base-branch detection and PR template (falls back to "main")
+  - `gh auth login` for base-branch detection, the PR body and the PR template
+    (base falls back to "main", the body to "")
 
 Usage:
   python gather_context.py
@@ -59,6 +60,15 @@ def resolve_merge_base(base: str, cwd: str, fetch: bool = True) -> tuple[str | N
         if mb:
             return mb, ref
     return None, None
+
+
+def get_pr_body(cwd: str) -> str | None:
+    """The open PR's description, for a reader that judges the diff against its intent.
+
+    None when the branch has no PR and when `gh` cannot answer: a missing body is one line
+    in the caller's report, never a failed run.
+    """
+    return run_ok(["gh", "pr", "view", "--json", "body", "--jq", ".body"], cwd=cwd)
 
 
 def find_pr_template(cwd: str) -> str | None:
@@ -117,6 +127,7 @@ def main() -> int:
         "base_branch": base,
         "merge_base": merge_base,
         "uncommitted_changes": run_ok(["git", "status", "--short"], cwd=cwd) or "",
+        "pr_body": get_pr_body(cwd) or "",
     }
 
     if merge_base:

@@ -1,5 +1,49 @@
 # Changelog
 
+## 3.1.0 (2026-08-27)
+
+**A review has two levels, reads what was already said, and adds only what is new.** The
+bundle ranked findings on five ladders at once: the guide's `HIGH` / `MEDIUM` / `LOW`,
+`front-rules.md`'s "MEDIUM unless the rule states the stakes", `front-contract.md`'s "HIGH
+for a missing happy path", `front-a11y.md`'s WCAG `Critical` / `Major` / `Minor` /
+`Enhancement`, and `verify.md` §4's four tier rank. Nothing combined them, so one finding
+came out of two fronts under two names, and the middle rung is where a reader stops
+deciding: `MEDIUM` meant "worth saying" in one file and "almost blocking" in the next.
+
+Two levels now, defined once in the plugin-root `references/finding-levels.md`. A review
+reports them as **Bloqueante** and **Sugestão**; a `CODE_REVIEW_GUIDE.md` states the same
+two as `HIGH` and `LOW`, the field every guide in the org already carries, so a guide
+written before this release reads correctly with no migration. Only the middle rung went,
+and the a11y front keeps WCAG's four priorities internally, mapping `Critical` and `Major`
+to Bloqueante and `Minor` and `Enhancement` to Sugestão at the report boundary. The finer
+cut a review really needs is taken by a bar it already measured: a Sugestão that names a
+concrete cost earns an inline comment, one that cannot goes into a single aggregated line
+in the review body.
+
+**The review also stops reading the diff in a vacuum.** Step 0 reads the PR body and the
+whole prior conversation before any finder runs, and writes an intent block that rides in
+every finder's scope: what the change set out to do, what a comment already settled, what is
+still open. From there the run is additive. An item someone already made is marked
+`[já dito]` in the report and is not posted again, and a thread the current code satisfies
+is replied to and resolved, which is a pass of its own now, outside curation.
+
+### Changed
+
+- **`/bb:review`** (2.7.0) gains the intent read at step 0 and the thread resolution as
+  step 6, reports in three tiers with a `level` column, and counts what it suppressed. The
+  external PR and the surface scope accessibility audit skip the intent read: each one
+  resolves its own context.
+- **`/bb:review-setup`** writes every rule at `HIGH` or `LOW`, and on the next update
+  collapses a rule still ranked `MEDIUM` with no interview, because that collapse is
+  deterministic. A rule already at one of the two levels keeps its text byte-identical.
+- **`CODE_REVIEW_GUIDE.md`** in this repo is migrated: 32 rules, every one at `HIGH` or
+  `LOW`, so the repo that ships the generator carries no `MEDIUM` rule of its own.
+- **`gather_context.py`** returns `pr_body`, the open PR's description, so the reader that
+  judges the diff against its intent gets it from the same payload as the diff.
+- **A guide that still ranks a rule `MEDIUM`** blocks nothing: the rung collapses at read
+  time to a Sugestão, and the report carries one drift line with the rule count and
+  `/bb:review-setup`.
+
 ## 3.0.0 (2026-08-27)
 
 **One verb builds a spec, and how far the run goes is asked once.** `/bb:delegate` never

@@ -31,7 +31,8 @@ plugins/bb/
 │   ├── spec-state.md                   # the .bb/<slug>/ folder contract
 │   ├── bb-config.md                    # ~/.claude/bb.config.json: the schema and who reads it
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
-│   └── build-tasks-workflow.md         # how the skills call workflows/build-tasks.js, and what it returns
+│   ├── build-tasks-workflow.md         # how the skills call workflows/build-tasks.js, and what it returns
+│   └── finding-levels.md               # Bloqueante / Sugestão, HIGH / LOW in a guide: review, review-setup
 ├── scripts/                           # shared executables (2+ skills), ref via ${CLAUDE_PLUGIN_ROOT}/scripts/
 │   ├── fetch_comments.py               # ship, review
 │   ├── reply_resolve_thread.py         # ship, review

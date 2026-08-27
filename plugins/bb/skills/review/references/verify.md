@@ -17,7 +17,7 @@ Wait for **all** finders across all picked fronts (the barrier), then run
 in one deterministic pass:
 
 ```bash
-python scripts/group_candidates.py < candidates.json
+python3 scripts/group_candidates.py < candidates.json
 ```
 
 Input is `{"scope_files": [...], "candidates": [...]}`; output is the groups, the
@@ -105,13 +105,14 @@ sweep is a real answer.
 - **Dedupe by root cause**, across fronts: same defect, same reason → keep the
   entry with the most concrete failure scenario, and note the other locations on
   it (`[same cause also in: …]`).
-- **Rank**, most severe first:
-  1. CONFIRMED correctness bugs, HIGH rule deviations, **Critical** a11y failures
-     (something the diff shipped is unusable for someone)
-  2. PLAUSIBLE correctness bugs, missing happy-path contract rows, **Major** a11y
-  3. MEDIUM rule deviations, remaining contract findings, **Minor** a11y
-  4. quality findings and a11y **Enhancement**s (always last: a cleanup never
-     outranks a bug)
+- **Rank**, most severe first. The level says how bad the finding is and the verdict
+  says how sure the reviewer is, two axes (plugin-root
+  `references/finding-levels.md`); this is where they combine, into three tiers:
+  1. **Bloqueante CONFIRMED**: a Bloqueante as `finding-levels.md` defines one, and the
+     verifier reproduced it
+  2. **Bloqueante PLAUSIBLE**: the same weight, one verdict short of proven
+  3. **Sugestão**, at either verdict, with the quality findings at the bottom of the
+     tier (a cleanup never outranks a bug)
 - **Cap** at the depth's report cap. Cuts come off the bottom, so quality is what
   gets trimmed, never a correctness bug. A front that states **no cap for its own
   scope** wins over a depth cap resolved from a diff. A surface-scope a11y audit
