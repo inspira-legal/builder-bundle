@@ -30,11 +30,11 @@ when it ranks.
 
 ## Which name goes where
 
-| surface                                                                 | vocabulary                    |
-| ----------------------------------------------------------------------- | ----------------------------- |
-| the review's report, its item labels, a PR comment body, a verdict line | **Bloqueante** / **Sugestão** |
-| a guide's **Level** field, its levels table, a verdict rule it states   | `HIGH` / `LOW`                |
-| a JSON field, a script argument, any other machine value                | `high` / `low`                |
+| surface                                                                 | vocabulary                            |
+| ----------------------------------------------------------------------- | ------------------------------------- |
+| the review's report, its item labels, a PR comment body, a verdict line | **Bloqueante** / **Sugestão**         |
+| a guide's **Level** field, its levels table, a verdict rule it states   | `HIGH` / `LOW`                        |
+| a JSON field, a script argument, any other machine value                | `bloqueante` / `sugestao`, unaccented |
 
 The guide keeps `HIGH` and `LOW` because that is the field every `CODE_REVIEW_GUIDE.md` in the
 org already carries: a guide written before this page reads correctly with no migration, and a

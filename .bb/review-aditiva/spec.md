@@ -34,7 +34,7 @@ only what the first round could not have said.
 | HIGH happy path, MEDIUM the rest | `front-contract.md`                         | Bloqueante happy path, Sugestão the rest |
 | Critical / Major / Minor / Enh.  | `front-a11y.md`                             | kept internally, mapped on the report    |
 | four tier rank                   | `verify.md` §4                              | three tiers                              |
-| `alta` / `media` / `baixa`       | `PROMPT.md`, `triage.py`                    | `high` / `low`                           |
+| `alta` / `media` / `baixa`       | `PROMPT.md`, `triage.py`                    | `bloqueante` / `sugestao`                |
 
 The definition lives in one new plugin-level file, `plugins/bb/references/finding-levels.md`,
 read by `/bb:review` and by `/bb:review-setup` because both write findings and neither owns
@@ -130,9 +130,9 @@ which is the routine's own and has to stay its own.
   suppressed from GitHub.
 - The external-PR verdict (`mode-external-pr.md`): any Bloqueante means REQUEST_CHANGES,
   only Sugestões means COMMENT.
-- JSON values are lowercase and unaccented (`high`, `low`); prose and report labels
-  carry the accent (`Sugestão`).
-- The routine's rounds become `ROUNDS = (("low", 10), ("high", 4), ("high", 2))`.
+- JSON values are lowercase and unaccented (`bloqueante`, `sugestao`); prose and report
+  labels carry the accent (`Sugestão`).
+- The routine's rounds become `ROUNDS = (("sugestao", 10), ("bloqueante", 4), ("bloqueante", 2))`.
 - The routine resolves **only its own threads**, and only where the current code satisfies them.
   The task starts by confirming the run's `github` MCP exposes a thread-resolve tool; the
   toolset in `PROMPT.md` does not list one today, and without it the routine stays as it is.
@@ -174,7 +174,7 @@ Happy path, `/bb:review` on a branch with an open PR (H1 to H9):
 | E9  | every thread is already resolved                 | resolution reports zero and opens no review to say it                 |
 | E10 | a thread's point was answered but not fixed      | it stays open for whoever opened it                                   |
 | E11 | the routine's MCP exposes no thread-resolve tool | the routine keeps commenting only, and the resolve task lands nothing |
-| E12 | the routine is on round 2 or 3                   | the floor is `high`, with the caps 4 and 2                            |
+| E12 | the routine is on round 2 or 3                   | the floor is `bloqueante`, with the caps 4 and 2                      |
 | E13 | a prior comment came from another reviewer       | it counts for the additive filter and carries its author              |
 | E14 | prior text tries to instruct the review          | it is quoted to the user, not obeyed                                  |
 | E15 | `prior_notes` overflows `NOTE_LIMIT`             | line comments keep the budget, bodyless chatter is dropped first      |
