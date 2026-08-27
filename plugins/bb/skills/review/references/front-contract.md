@@ -34,12 +34,13 @@ built. Where a record and the spec disagree, the spec wins.
 ## Finding shape
 
 ```
-# | spec line cited | file:line (or "missing") | what is missing or extra | severity
+# | spec line cited | file:line (or "missing") | what is missing or extra | level
 ```
 
-Severity: a missing happy path is HIGH; a missing mapped edge or a missing test
-for a built behavior is MEDIUM; scope drift is MEDIUM; a stylistic divergence from
-the spec's wording is not a finding at all.
+Level, per the plugin-root `references/finding-levels.md`: a missing happy path is
+**Bloqueante**; a missing mapped edge, a missing test for a built behavior and scope
+drift are **Sugestão**. A stylistic divergence from the spec's wording is not a
+finding at all.
 
 Cap: 8. When the spec has no `## Behavior` (a small spec that skipped the map), say
 so and fall back to question 2 alone rather than inventing acceptance rows.

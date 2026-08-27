@@ -37,9 +37,11 @@ list is what `verify.md` canonicalizes paths against.
 ## 3. Verdict
 
 State a verdict with the reasoning: **APPROVE**, **COMMENT**, or
-**REQUEST_CHANGES**. When the repo's guide defines a verdict rule (e.g. any HIGH
-⇒ changes requested), follow it; otherwise: confirmed correctness bugs ⇒
-REQUEST_CHANGES; only quality smells ⇒ COMMENT.
+**REQUEST_CHANGES**, and read it off the levels (plugin-root
+`references/finding-levels.md`): **any Bloqueante ⇒ REQUEST_CHANGES**, **only
+Sugestões ⇒ COMMENT**. When the repo's guide defines a verdict rule of its own it
+decides instead, a legacy one through the collapse table, which lands on the same
+place: any Bloqueante requests changes.
 
 ## 4. Post (only with explicit confirmation)
 

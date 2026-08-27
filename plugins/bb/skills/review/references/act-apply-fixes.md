@@ -33,9 +33,11 @@ improvement, and a "fix" that isn't justified against its finding is a guess.
 
 ## Order of operations
 
-1. In front order: correctness fixes first (highest severity first), then HIGH
-   rule deviations, then contract gaps, then quality edits. A quality pass over
-   code about to be fixed is wasted work.
+1. In front order: correctness fixes first (the Bloqueantes among them ahead of the
+   rest), then Bloqueante rule deviations, then contract gaps, then quality edits. A
+   quality pass over code about to be fixed is wasted work. Levels are the plugin-root
+   `references/finding-levels.md`; within one front the Bloqueantes go first and the
+   Sugestões follow.
    - A **rule deviation** fix is applied the way the cited rule states it, and
      the commit body quotes the rule ID. When following the rule would change
      behavior, it stops being a mechanical fix: treat it as a correctness fix
