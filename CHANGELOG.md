@@ -1,5 +1,50 @@
 # Changelog
 
+## 3.2.0 (2026-08-27)
+
+**Every document resolves the plugin's own directory instead of naming a variable nobody
+expands.** `${CLAUDE_PLUGIN_ROOT}` reaches a command in one place, `hooks/hooks.json`, where
+the platform expands it into the hook process's environment. A `SKILL.md` body is expanded
+too, and that is the row that looked fine and was not: on Windows it expands to the
+per-session copy under `AppData\Roaming\Claude`, a directory MSYS tools list and native
+processes report as non-existent, so `python3` against it comes back `can't open file`. A
+reference `.md` is worse still, because a `Read` is a file read and nothing interpolates it:
+the variable arrives raw, empty in the tool call, and `cat "$CLAUDE_PLUGIN_ROOT/..."` runs
+against `/`.
+
+The new plugin-root `references/plugin-root.md` owns that split and states the rule that
+replaces it: `$CLAUDE_PLUGIN_ROOT` when it is non-empty, then a search that takes the
+**install cache first** (`~/.claude/plugins/cache/*/bb/*`, highest version first), the repo
+checkout second, the per-session copy last, with `workflows/build-tasks.js` readable under a
+directory as the proof it is the root. The installed copy answers first because it is the
+version the session is running, it is where an update lands, and every process on the machine
+can open it. Documents now write `<plugin-root>` and shell calls `$(plugin_root)`.
+
+**The dispatch that this was breaking says what refused it.** `/bb:implement` proved the
+script with a `cat` whose failure was indistinguishable from the fallback chain's own last
+step, so a resolution that never found the file read as "the workflow declined". The probe
+resolves the root first and prints the path it proved, and the chain names two non-steps it
+could not name before: a session that vetoes `Workflow` without an explicit request, and a
+CR that takes out both dispatch paths at once.
+
+### Fixed
+
+- **`.gitattributes`** pins the repo to `eol=lf`. The marketplace clone at
+  `~/.claude/plugins/marketplaces/<owner>` runs `core.autocrlf = true` and was handing the
+  install cache a CRLF `build-tasks.js`; `Workflow` inlines a `scriptPath` into the approval
+  dialog as `script` and refuses the CR as a control character that would be hidden there, so
+  the build dispatched neither by path nor inline. The fix belongs to the checkout, and
+  nothing downstream strips anything.
+
+### Changed
+
+- **The five skill bodies** that call a shared script (`implement`, `review`, `ship`,
+  `review-setup`, `gather-branch-context`) and the sixteen references that name the root go
+  through `plugin_root`. `hooks/hooks.json` keeps the literal, which is the one file where it
+  opens something.
+- **`.claude/CLAUDE.md`** states the convention as `<plugin-root>/scripts/<x>.py`, so the
+  repo's own instructions stop asking for the variable back.
+
 ## 3.1.0 (2026-08-27)
 
 **A review has two levels, reads what was already said, and adds only what is new.** The

@@ -190,7 +190,7 @@ The happy path, one build dispatch on Desktop:
       `review-setup/SKILL.md`, `gather-branch-context/SKILL.md`, twenty-one mentions, every one
       of them a `scripts/*.py` call → behaviors 1, 12 · dep: 1 · verify: `grep -rn
       CLAUDE_PLUGIN_ROOT --include=*.md plugins/bb` returns only `plugin-root.md`
-- [ ] **7. The release**: `plugin.json` from 3.1.0 to 3.2.0 and the `CHANGELOG.md` entry that
+- [x] **7. The release**: `plugin.json` from 3.1.0 to 3.2.0 and the `CHANGELOG.md` entry that
       says which copy the rule takes, why, and what `.gitattributes` fixes → behavior 14 · dep:
       2, 3, 4, 5, 6 · verify: reading
 
