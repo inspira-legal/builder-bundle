@@ -1,10 +1,10 @@
 ---
 name: spec
-description: Align on the idea before building. Develops a draft, iterates the gray areas with you through the question tool, maps the expected behavior (happy path plus edges), runs an adversarial completeness pass and closes at a 3 way gate, implement / delegate / stop. Reads the framing from /bb:discover and the journey from /bb:brisar when they are there. Use when the user says "write the spec", "spec this out", "let's plan", "shape this", "what should we build", "let's discuss before building", or starts a non trivial feature. Don't use it for small mechanical changes (just do those) or to find bugs (use /bb:review).
+description: Align on the idea before building. Develops a draft, iterates the gray areas with you through the question tool, maps the expected behavior (happy path plus edges), runs an adversarial completeness pass and closes at a gate that also settles how far the build goes: build, build and ship, build review and ship, or stop. Reads the framing from /bb:discover and the journey from /bb:brisar when they are there. Use when the user says "write the spec", "spec this out", "let's plan", "shape this", "what should we build", "let's discuss before building", or starts a non trivial feature. Don't use it for small mechanical changes (just do those) or to find bugs (use /bb:review).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.3.0
+  version: 2.4.0
 ---
 
 # Spec
@@ -75,7 +75,7 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
 
 7. **The exit gate: blocks on open load-bearing decisions.** Don't gate blind: first **show the artifact the user is signing off on**, a tight recap of the happy path, the full edge→outcome table, the **coverage table** (behavior → task → test) with `⚠️` on any unmapped row plus a one-line counter (`N behaviors, M mapped, K open`), and (Medium+) the **independent reviewer's verdict** in one line (clean, or what it flagged and how it was resolved), so "is this complete?" is answerable at a glance instead of forcing them to reopen the file. Then list what's **still open** (unresolved load-bearing decisions + parked questions). Then ask one `AskUserQuestion` (a handoff gate, with the format in the plugin-level `references/handoff-gate.md`):
    - **If any load-bearing decision is still open:** do NOT offer a clean "build". The only options are **resolve it now** or **defer explicitly** ("decide at build time", recorded as such in the spec). Never a silent "build anyway".
-   - **If nothing load-bearing is open:** finalize `.bb/<slug>/spec.md` (with its frontmatter block; see "Capture the alignment"), then offer three paths: **Implement** (invoke `/bb:implement` now: build every task and stop ready to ship, where it offers `/bb:ship`), **Delegate** (invoke `/bb:delegate <slug>` now: build every task _and_ land it, the full `implement → ship` run), or **Stop here** (leave the spec; the user picks up later). Choosing to adjust instead is always available. That loops back into the question tool; an Implement or Delegate pick is the affirmative start, not a silent roll-through.
+   - **If nothing load-bearing is open:** finalize `.bb/<slug>/spec.md` (with its frontmatter block; see "Capture the alignment"), then offer four paths, three of which invoke `/bb:implement <slug>` now and differ only in **how far the run goes**: **Build** (every task, then it offers the ship), **Build and ship** (the tasks, then `/bb:ship`), **Build, review and ship** (the tasks, `/bb:review` over the branch, then `/bb:ship`), or **Stop here** (leave the spec; the user picks up later). **The pick is implement's scope answer**, so implement doesn't ask it again. Choosing to adjust instead is always available. That loops back into the question tool; a build pick is the affirmative start, not a silent roll-through.
 
 Size the ask to the stakes: cheap-to-reverse decisions lead with your pick (the user vetoes if wrong); expensive-to-undo ones lay the options out and let them choose. Full playbook in `references/draft-first.md`.
 
@@ -109,7 +109,7 @@ Write a single `.bb/<slug>/spec.md`, the converged draft itself, written as some
 
 The on-disk contract (location, frontmatter schema, status lifecycle) is the plugin-level `references/spec-state.md`; follow it. In short: specs go to `.bb/<slug>/spec.md`. If a spec already exists for a _different_ idea under the same slug, suffix it (`-2`) or ask; never silently overwrite another spec.
 
-On finalize, open the spec with the frontmatter block (`status: pending`, `created: <today>`, `slug: <slug>`). This skill is the file's only writer, so the block is there from the first write. A spec landed before that rule can be missing it; backfill it on finalize. Leave the lifecycle after this to delegate; spec only seeds `pending`.
+On finalize, open the spec with the frontmatter block (`status: pending`, `created: <today>`, `slug: <slug>`). This skill is the file's only writer, so the block is there from the first write. A spec landed before that rule can be missing it; backfill it on finalize. Leave the lifecycle after this to implement; spec only seeds `pending`.
 
 **Large** work carries `## Behavior` and `## Tasks` as their own sections: the acceptance contract and the vertical tasks the build side consumes. **Medium** work keeps both inline in the decisions.
 
@@ -123,11 +123,12 @@ Before asserting how something works: check the codebase, then its docs, then th
 
 ## Hand off: the gate decides whether to roll on
 
-spec always ends at a validated `.bb/<slug>/spec.md`; the spec is the durable asset either way. What changes is what happens next, and the gate's 3-way pick (above) decides it. The step from speccing to building is a checkpoint the user crosses on purpose, not a stop.
+spec always ends at a validated `.bb/<slug>/spec.md`; the spec is the durable asset either way. What changes is what happens next, and the gate's 4-way pick (above) decides it. The step from speccing to building is a checkpoint the user crosses on purpose, not a stop. Every build path is the same skill, `/bb:implement <slug>`, at the scope the pick sets:
 
-- **Implement:** invoke `/bb:implement` now. It loads this spec as the intent, builds every task, and stops ready to ship, where it offers `/bb:ship`. The "build it, I'll decide on shipping after" path.
-- **Delegate:** invoke `/bb:delegate <slug>` now. It loads this spec as the intent, builds every task, _and_ lands it (the full `/bb:implement` → `/bb:ship` run). The "I'm happy, run the whole thing" path.
-- **Stop here:** leave the spec and say the next step plainly: "Spec saved at `.bb/<slug>/spec.md`. To build it later: `/bb:implement` (builds, then offers ship), or `/bb:delegate <slug>` to build and land in one run."
+- **Build:** it loads this spec as the intent, builds every task, and stops ready to ship, where it offers `/bb:ship`. The "build it, I'll decide on shipping after" path.
+- **Build and ship:** the tasks, then `/bb:ship` settles the destination and ships it. The "I'm happy, run the whole thing" path.
+- **Build, review and ship:** the same, with `/bb:review` over the branch first, so the fixes land in the same commits the tasks produced and the PR opens from code that was already read.
+- **Stop here:** leave the spec and say the next step plainly: "Spec saved at `.bb/<slug>/spec.md`. To build it later: `/bb:implement <slug>`, which asks how far to go."
 
 **Safety valve:** if building later reveals the idea was underspecified (surprises pile up), STOP and re-spec. That's the signal alignment was incomplete, not a license to improvise.
 
