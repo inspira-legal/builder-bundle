@@ -13,8 +13,8 @@ Required content:
    reads fresh on every run.
 2. **Finding levels**: the two levels and their verdict impact, filled from the
    plugin-root `references/finding-levels.md`.
-3. **Pre-PR checklist**: numbered, actionable, derived from the Bloqueante rules
-   plus the Sugestões whose deviation names a concrete cost, the gate
+3. **Pre-PR checklist**: numbered, actionable, derived from the HIGH rules
+   plus the `LOW` rules whose deviation names a concrete cost, the gate
    `finding-levels.md` describes (concrete commands: the repo's own test/lint
    invocations).
 4. **Rules by level**: every rule with ID, title, category, description,
@@ -44,10 +44,10 @@ in the repo is documented here with evidence.
 
 ## Finding levels
 
-| Level          | Meaning                                                                                            | Review impact                                                   |
-| -------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| **Bloqueante** | Something the change shipped is broken, unusable for someone, or breaks a rule stated as mandatory | Verdict: CHANGES REQUESTED                                      |
-| **Sugestão**   | Everything else still worth saying                                                                 | Alone it never sets the verdict; 3+ in one PR: NEEDS DISCUSSION |
+| Level    | Meaning                                                                                            | Review impact                                                   |
+| -------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| **HIGH** | Something the change shipped is broken, unusable for someone, or breaks a rule stated as mandatory | Verdict: CHANGES REQUESTED                                      |
+| **LOW**  | Everything else still worth saying                                                                 | Alone it never sets the verdict; 3+ in one PR: NEEDS DISCUSSION |
 
 ## Pre-PR checklist
 
@@ -55,18 +55,18 @@ in the repo is documented here with evidence.
 
 ## Rules
 
-### Bloqueante
+### HIGH
 
 | ID  | Title | Category |
 | --- | ----- | -------- |
 
-{{BLOQUEANTE_RULES_TABLE}}
+{{HIGH_RULES_TABLE}}
 
-{{BLOQUEANTE_RULES_DETAIL}}
+{{HIGH_RULES_DETAIL}}
 
-### Sugestão
+### LOW
 
-{{SUGESTAO_RULES_TABLE_AND_DETAIL}}
+{{LOW_RULES_TABLE_AND_DETAIL}}
 
 ## File categories
 
@@ -99,7 +99,7 @@ Rule detail block, one per rule:
 #### {{ID}}: {{TITLE}}
 
 - **Category**: correctness | contracts | security | a11y | quality
-- **Level**: Bloqueante | Sugestão
+- **Level**: HIGH | LOW
 - **Description**: what the rule guarantees and why
 - **Evidence**: repo paths that show the pattern
 - **Do**:
@@ -118,14 +118,15 @@ Rule detail block, one per rule:
 ## Generation rules
 
 - The **Level** field carries one of the two levels the plugin-root
-  `references/finding-levels.md` defines, `Bloqueante` or `Sugestão`. Read that file
+  `references/finding-levels.md` defines, `HIGH` or `LOW`. Read that file
   before writing the levels section and fill the table's meanings from it. Every rule
   ranks at one of those two, and the finer cut a repo asks for is the concrete-cost
   gate that file describes. A rule the maintainer accepted
-  without naming a level enters as **Sugestão**. Older guides carry the field as
-  **Severity** with the values `HIGH` / `MEDIUM` / `LOW`; `/bb:review` collapses those
-  at read time by the table in `finding-levels.md`, and `update-delta.md` §4 migrates
-  the file itself on the next update.
+  without naming a level enters as **LOW**. An older guide carries the field as
+  **Severity** and may rank a rule `MEDIUM`: `/bb:review` reads that rung as `LOW` at
+  read time by the table in `finding-levels.md`, and `update-delta.md` §4 renames the
+  field and collapses the rung in the file itself on the next update. A rule already at
+  `HIGH` or `LOW` needs no migration at all.
 - The **Category** field tags the kind of concern the rule is (`correctness`,
   `contracts`, `security`, `a11y`, `quality`): the vocabulary shared by the review
   skill's `references/review-checklist.md` and the review fronts. `/bb:review`'s `rules`

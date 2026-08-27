@@ -19,17 +19,17 @@ the plugin writes. A rule below that restates one of them cites it as evidence.
 
 ## Finding levels
 
-| Level          | Meaning                                                                                                       | Review impact                                                   |
-| -------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| **Bloqueante** | Something the change shipped is broken, unusable for someone, or breaks a rule this guide states as mandatory | Verdict: CHANGES REQUESTED                                      |
-| **Sugestão**   | Everything else that is still worth saying                                                                    | Alone it never sets the verdict; 3+ in one PR: NEEDS DISCUSSION |
+| Level    | Meaning                                                                                                       | Review impact                                                   |
+| -------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| **HIGH** | Something the change shipped is broken, unusable for someone, or breaks a rule this guide states as mandatory | Verdict: CHANGES REQUESTED                                      |
+| **LOW**  | Everything else that is still worth saying                                                                    | Alone it never sets the verdict; 3+ in one PR: NEEDS DISCUSSION |
 
-There is no third level. Where a review needs a finer cut than two, the bar is whether the
-Sugestão names a concrete cost: one that does can be posted as an inline comment, one that
+There is no third level. Where a review needs a finer cut than two, the bar is whether a
+`LOW` names a concrete cost: one that does can be posted as an inline comment, one that
 cannot goes into a single aggregated line in the review body.
 
 Five rules are enforced by a program instead of by a reader: BB001, BB002, BB022, BB024 and
-BB027. They fail the branch instead of collecting a comment, so they sit at Bloqueante.
+BB027. They fail the branch instead of collecting a comment, so they sit at HIGH.
 
 ## Pre-PR checklist
 
@@ -53,7 +53,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 
 ## Rules
 
-### Bloqueante
+### HIGH
 
 | ID    | Title                                           | Category    |
 | ----- | ----------------------------------------------- | ----------- |
@@ -78,7 +78,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB001: Frontmatter carries `name` and `description`
 
 - **Category**: contracts
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: every `SKILL.md` and every `.md` directly under an `agents/` directory opens
   with a YAML frontmatter block carrying a string `name` and a string `description`. Without
   them the harness has nothing to register the skill under and nothing to decide when to invoke
@@ -97,7 +97,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB002: An agent is read-only by its `tools:` list
 
 - **Category**: security
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: an agent definition carries `tools:`, and that list never names `Write`,
   `Edit`, `MultiEdit`, `NotebookEdit` or `*`. Omitting the field inherits every tool, which is
   the same defect written shorter. With `Bash` on the list the surface is narrowed and not
@@ -113,7 +113,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB003: The skill folder is named after its `name`
 
 - **Category**: contracts
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: a skill lives at `plugins/bb/skills/<name>/SKILL.md`, and `<name>` is
   identical to the frontmatter `name`, because that name is what `/bb:<name>` resolves. Names
   are verb led where the skill does something, and carry no trilha prefix: the trilha grouping
@@ -124,7 +124,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB004: A phased `SKILL.md` is a router
 
 - **Category**: quality
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: a skill with phases or modes keeps `SKILL.md` lean: what the skill is, how it
   decides which phase applies, and one line per phase pointing at its reference. The per-phase
   material lives in the skill's `references/` and is loaded only when that phase runs.
@@ -136,7 +136,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB008: No dash in the prose
 
 - **Category**: quality
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: where a dash would go, write a comma, a colon, a period, or rewrite the
   sentence. Two things keep the character: a functional token (inside a command, a regex, a path
   or a value a format reserves) and a verbatim quote, which keeps its source's punctuation. A
@@ -151,7 +151,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB009: Positive guidance, no anti-pattern catalog
 
 - **Category**: quality
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: guidance is stated as what to do. A catalog of anti-patterns writes the
   unwanted behavior into the prompt, which primes it; one sharp caution is allowed where
   negation is the clearest signal. An irreversible hazard is enforced by capability scoping
@@ -161,7 +161,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB015: Python, stdlib only
 
 - **Category**: contracts
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: a script in this repo imports from the standard library and nothing else.
   Scripts run on whatever machine has the plugin installed, so a third-party import is a
   dependency the caller never agreed to install.
@@ -177,7 +177,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB016: Deterministic work goes in a script
 
 - **Category**: quality
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: parsing, formatting, data transformation, file manipulation and JSON
   processing belong in a Python script the workflow calls. Model reasoning is reserved for
   judgment, synthesis and creative decisions. A deterministic step written as prose is a step
@@ -189,7 +189,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB017: A session hook never blocks the session
 
 - **Category**: correctness
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: a hook runs on every session in every repo where the plugin is enabled, so
   its failure mode has to be silence and exit 0. Input that is missing, unreadable or malformed
   reads as absent, never as an error the person has to fix first.
@@ -207,7 +207,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB022: A spec carries its frontmatter and its sections
 
 - **Category**: contracts
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: `.bb/<slug>/spec.md` opens with a frontmatter block carrying `status` (a valid
   value), `created` as `YYYY-MM-DD` and `slug`, and carries the fixed sections the other skills
   read. The lint answers `E001` for the block, `E002` for a missing section, `E003` for a dead
@@ -226,7 +226,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB023: A spec describes what to build now
 
 - **Category**: quality
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: a spec in `.bb/` says what to build as it stands. How it got there, what a
   closer read corrected, which alternative lost, goes in the commit body. Recounting the
   conversation inside the document is what makes specs unreadable.
@@ -237,7 +237,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB024: No AI attribution
 
 - **Category**: contracts
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: no commit message, pull request body or code comment carries a co-author
   trailer, a generated-by line or any other AI attribution.
 - **Evidence**: the Commits section of `.claude/CLAUDE.md`; `git log` across the repo.
@@ -245,7 +245,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB025: Conventional commit subject
 
 - **Category**: contracts
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: `<type>(<scope>): <description>`, where the scope is the skill name (`spec`,
   `brisar`, `review`), `hooks` for the hook layer, or `repo` for a repo wide change. The subject
   may stay in Portuguese; see BB031.
@@ -258,7 +258,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB026: The commit body carries the rationale
 
 - **Category**: quality
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: the body says why the decision changed, what a closer read of the source
   corrected, and which alternative lost and on what grounds. It is the half of the change that
   the file itself must not carry (BB023).
@@ -267,7 +267,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB027: `oxfmt --check .` is clean
 
 - **Category**: contracts
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: markdown and JSON are formatted by `oxfmt` at the version `package.json`
   pins. Table alignment is the usual cause of a red run, because editing one cell shifts a whole
   column. `bun run fmt` writes the fix, and `lefthook.yml` runs it on staged files.
@@ -281,7 +281,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB030: Removing a field removes its readers
 
 - **Category**: correctness
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: when a commit removes a field, a page or a file, it removes every pointer at
   it in the same commit. A pointer left behind is worse than a broken link, because the model
   obeys it: an instruction to update `current_phase` writes a field nothing reads, and a
@@ -297,7 +297,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 #### BB032: Python is invoked as `python3`
 
 - **Category**: correctness
-- **Level**: Bloqueante
+- **Level**: HIGH
 - **Description**: every command a skill, a hook or a workflow prints or runs calls `python3`. On
   a machine where only `python3` is on the PATH, a hook command that says `python` fails at
   session start, and because a hook must not block (BB017) it fails in silence: the frame simply
@@ -309,7 +309,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
   { "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/sync_instructions.py\"" }
   ```
 
-### Sugestão
+### LOW
 
 | ID    | Title                                    | Category  | What it guarantees                                                                                                                                              | Evidence                                                    |
 | ----- | ---------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
@@ -356,7 +356,7 @@ here is the contract page a change has to stay consistent with: `doc-style.md` f
 ### The product is prose the model obeys
 
 Most files are instructions a model reads at runtime, so a stale sentence behaves like dead code
-that still executes. That is why BB030 sits at Bloqueante and why the prose rules are not
+that still executes. That is why BB030 sits at HIGH and why the prose rules are not
 cosmetic: a heading, a field name and a path are the interface.
 
 ### Commits
@@ -393,4 +393,4 @@ where a red run is the point.
 | Date       | Type    | Description                                                               |
 | ---------- | ------- | ------------------------------------------------------------------------- |
 | 2026-08-19 | Created | Guide generated by /bb:review-setup, 32 rules validated by the maintainer |
-| 2026-08-27 | Updated | Ladder migrated to the two levels, Bloqueante and Sugestão                |
+| 2026-08-27 | Updated | The middle rung is gone: every rule ranks HIGH or LOW                     |

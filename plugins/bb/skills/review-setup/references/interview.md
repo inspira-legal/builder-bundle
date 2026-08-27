@@ -8,14 +8,14 @@ Processing each answer, always in this order:
 1. Read the selected option from the tool result.
 2. Confirm it in one printed line, `"Rule {ID}: you picked [{option}]."`, so the
    user sees it registered.
-3. Apply the decision **before** presenting the next item. "Confirm as Sugestão"
-   means the rule enters the guide as Sugestão; "Ignore" means it's gone.
+3. Apply the decision **before** presenting the next item. "Confirm as LOW"
+   means the rule enters the guide as LOW; "Ignore" means it's gone.
 4. Free-text via "Other" gets interpreted and applied (level change,
    rewording, merge, skip).
 
 The two levels are the plugin-root `references/finding-levels.md`'s, and the interview
 offers those two. A maintainer who asks in free text for a rung between them gets the
-concrete-cost gate that file describes, applied to the Sugestão.
+concrete-cost gate that file describes, applied to the `LOW`.
 
 ## Setup mode
 
@@ -46,8 +46,8 @@ question: "Rule {ID}, {Title} (suggested: {LEVEL}). Confirm, adjust or ignore?"
 header: "{ID}"
 options:
   - "Confirm {LEVEL}": accept it at the suggested level.
-  - "Confirm as Bloqueante": mandatory, a change breaking it does not ship.
-  - "Confirm as Sugestão": worth saying, and a judgment call.
+  - "Confirm as HIGH": mandatory, a change breaking it does not ship.
+  - "Confirm as LOW": worth saying, and a judgment call.
   - "Ignore": not a valid rule for this repo.
 ```
 
@@ -60,7 +60,7 @@ Only after confirming the answer does the next candidate appear.
 
 Never re-ask about rules that didn't change. Three question shapes:
 
-- **New pattern detected:** "New pattern detected: {description}. Create a rule?", options: "Yes, Bloqueante" / "Yes, Sugestão" / "No, ignore".
+- **New pattern detected:** "New pattern detected: {description}. Create a rule?", options: "Yes, HIGH" / "Yes, LOW" / "No, ignore".
 - **Drifted rule:** "Rule {ID} looks out of date: {evidence}. What do we do?",
   options: "Update it with the new pattern" / "Remove it from the guide" / "Keep
   it as it is".

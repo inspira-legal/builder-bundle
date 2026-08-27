@@ -20,10 +20,12 @@ its own reference, loaded only when that phase runs.
 
 ## Finding levels
 
-Every rule in the guide carries one of two levels, `Bloqueante` or `Sugestão`, defined
+Every rule in the guide carries one of two levels, `HIGH` or `LOW`, defined
 once in the plugin-root `references/finding-levels.md`: what each one means, the
-concrete-cost gate that separates an inline comment from a body line, and how a guide
-still written in `HIGH` / `MEDIUM` / `LOW` reads. Read it before discovery suggests a
+concrete-cost gate that separates an inline comment from a body line, and how a rule
+still ranked `MEDIUM` reads. The guide is the surface that states them as `HIGH` and
+`LOW`; a review reports the same two as Bloqueante and Sugestão, and that file carries
+which name goes where. Read it before discovery suggests a
 level, and again before the guide is written. `/bb:review` reads the same file, which
 is why the scale lives outside both skills.
 
@@ -72,7 +74,7 @@ No handoff gate, report and stop:
 | WHEN                                             | THEN                                                                  |
 | ------------------------------------------------ | --------------------------------------------------------------------- |
 | update mode, no changes detected by any subagent | report "no significant changes since the last update", stop           |
-| the existing guide reads HIGH / MEDIUM / LOW     | migrate the ladder in the same pass, no interview                     |
+| the existing guide still ranks a rule `MEDIUM`   | migrate the ladder in the same pass, no interview                     |
 | repo > 1000 files                                | sample representative files per directory instead of exhaustive scans |
 | maintainer rejects every candidate               | guide ships with confirmed rules only; thin is fine, invented is not  |
 | legacy `.claude/skills/code-review/` present     | flag as superseded; never regenerate it                               |
@@ -87,4 +89,4 @@ No handoff gate, report and stop:
 
 References (plugin root):
 
-- `${CLAUDE_PLUGIN_ROOT}/references/finding-levels.md`: `Bloqueante` / `Sugestão`, the concrete-cost gate and the legacy collapse. Shared with `/bb:review`.
+- `${CLAUDE_PLUGIN_ROOT}/references/finding-levels.md`: `HIGH` / `LOW` in the guide (Bloqueante / Sugestão in a review), the concrete-cost gate and the `MEDIUM` collapse. Shared with `/bb:review`.

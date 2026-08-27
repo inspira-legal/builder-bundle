@@ -40,7 +40,7 @@ State a verdict with the reasoning: **APPROVE**, **COMMENT**, or
 **REQUEST_CHANGES**, and read it off the levels (plugin-root
 `references/finding-levels.md`): **any Bloqueante ⇒ REQUEST_CHANGES**, **only
 Sugestões ⇒ COMMENT**. When the repo's guide defines a verdict rule of its own it
-decides instead, a legacy one through the collapse table, which lands on the same
+decides instead, a three rung one through the collapse table, which lands on the same
 place: any Bloqueante requests changes.
 
 ## 4. Post (only with explicit confirmation)

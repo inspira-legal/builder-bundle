@@ -84,13 +84,13 @@ Consolidate the findings into candidate rules. Each rule gets:
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **ID**       | `{DOMAIN}-{NUMBER}`: `CMT` commits, `PAT` patterns, `TST` tests, `SEC` security, `DEP` dependencies, `ERR` errors, `API` contracts, plus detected custom domains |
 | **Title**    | short descriptive name                                                                                                                                           |
-| **Level**    | suggested `Bloqueante` or `Sugestão`, per the plugin-root `references/finding-levels.md`                                                                         |
+| **Level**    | suggested `HIGH` or `LOW`, per the plugin-root `references/finding-levels.md`                                                                                    |
 | **Category** | the kind of concern the rule is: `correctness`, `contracts`, `security`, `a11y`, or `quality`                                                                    |
 | **Evidence** | file paths / snippets supporting the rule                                                                                                                        |
 | **Status**   | `Confirmed` (80%+ of relevant files) or `Candidate` (needs validation)                                                                                           |
 | **Do/Don't** | real examples from the repo, correct and incorrect                                                                                                               |
 
-Group by domain, order by level (Bloqueante first). A rule whose stakes the repo never
-states is a Sugestão; suggesting Bloqueante takes evidence that the repo treats the
+Group by domain, order by level (HIGH first). A rule whose stakes the repo never
+states is a LOW; suggesting HIGH takes evidence that the repo treats the
 pattern as mandatory. Cap candidates at ~15–20: merge near-duplicates rather than
 flooding the interview.

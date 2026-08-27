@@ -27,10 +27,11 @@ scope is the one path that needs neither a repo nor a diff.
 
 ## Step 0: Load the review context
 
-- **Finding levels:** every finding this review writes is a `Bloqueante` or a
-  `Sugestão`, defined once in the plugin-root `references/finding-levels.md`: what each
-  one means, where each front lands, the concrete-cost gate, and how a guide written in
-  the old ladder collapses. The fronts, the verify pass and the comments all read it.
+- **Finding levels:** every finding this review writes is a **Bloqueante** or a
+  **Sugestão**, defined once in the plugin-root `references/finding-levels.md`: what each
+  one means, which name goes on which surface (a guide states the same two as `HIGH` and
+  `LOW`), where each front lands, the concrete-cost gate, and how a rule still
+  ranked `MEDIUM` collapses. The fronts, the verify pass and the comments all read it.
 - **Repo guide:** if `CODE_REVIEW_GUIDE.md` exists at the repo root, read it fresh
   (never cached): it's the `rules` front's whole rule source, and its levels
   rank the whole report. No guide → the front is unavailable and the report carries
@@ -176,7 +177,7 @@ large diffs, then dedupe, rank and cap.
 ## Step 4: Report
 
 One unified report, numbered items across all fronts, in the three tiers `verify.md`
-§4 ranked. Each item carries its front, its **level** (`Bloqueante` or `Sugestão`, the
+§4 ranked. Each item carries its front, its **level** (**Bloqueante** or **Sugestão**, the
 only two the report speaks), its verdict, and the columns of **its own front's Finding
 shape**. An a11y item shows its WCAG priority in its own columns and the level it maps
 to. The row format lives in each `front-*.md` next to the method that
@@ -219,7 +220,7 @@ Clean everywhere → say so and jump to the gate (step 8).
 
 One `AskUserQuestion` (`multiSelect`): which numbered items to handle now,
 and **how**. Fixing is one outcome, leaving the finding on the PR is another.
-Options group naturally ("Every Bloqueante", "Every correctness item",
+Options group naturally ("Todo Bloqueante", "Every correctness item",
 "Only the threads", specific numbers via "Other"). "Comment the items on the PR
 instead of fixing" is offered when the probe found an open PR, and fix and comment
 can both be picked: fix 1–3, comment 4–6. "None, stop here" is always an option.
@@ -346,7 +347,7 @@ Pipeline agents (plugin root, dispatched by the fan-out):
 
 References (plugin root):
 
-- `${CLAUDE_PLUGIN_ROOT}/references/finding-levels.md`: `Bloqueante` / `Sugestão`, the per-front mapping, the concrete-cost gate and the legacy collapse. Shared with `/bb:review-setup`.
+- `${CLAUDE_PLUGIN_ROOT}/references/finding-levels.md`: Bloqueante / Sugestão (`HIGH` / `LOW` in a guide), the per-front mapping, the concrete-cost gate and the legacy collapse. Shared with `/bb:review-setup`.
 
 Scripts (plugin root):
 

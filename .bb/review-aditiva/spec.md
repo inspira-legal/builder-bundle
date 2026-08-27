@@ -14,7 +14,8 @@ them back together at the end. `pr-review-routine` speaks a sixth, `alta` / `med
 `baixa`, and gates each round's noise budget on it. Nobody reading a report can say what
 separates a MEDIUM from a LOW, and the middle rung is where a finding goes to be ignored.
 
-This spec collapses that to **two levels**, `Bloqueante` and `Sugestão`, and spends the
+This spec collapses that to **two levels**, Bloqueante and Sugestão in a review and
+`HIGH` and `LOW` in a repo guide, and spends the
 rung it removes on something the review does not do at all today: **read the PR before
 reviewing it**. The author's intent and the whole prior conversation load at step 0, ride
 in every finder's scope block, and then govern what the review says out loud. What was
@@ -28,27 +29,28 @@ only what the first round could not have said.
 
 | Scale today                      | Where                                       | Becomes                                  |
 | -------------------------------- | ------------------------------------------- | ---------------------------------------- |
-| HIGH / MEDIUM / LOW              | `guide-template.md`, `CODE_REVIEW_GUIDE.md` | Bloqueante / Sugestão                    |
+| HIGH / MEDIUM / LOW              | `guide-template.md`, `CODE_REVIEW_GUIDE.md` | HIGH / LOW                               |
 | MEDIUM unless the rule states it | `front-rules.md`                            | Sugestão, Bloqueante when it states it   |
 | HIGH happy path, MEDIUM the rest | `front-contract.md`                         | Bloqueante happy path, Sugestão the rest |
 | Critical / Major / Minor / Enh.  | `front-a11y.md`                             | kept internally, mapped on the report    |
 | four tier rank                   | `verify.md` §4                              | three tiers                              |
-| `alta` / `media` / `baixa`       | `PROMPT.md`, `triage.py`                    | `bloqueante` / `sugestao`                |
+| `alta` / `media` / `baixa`       | `PROMPT.md`, `triage.py`                    | `high` / `low`                           |
 
 The definition lives in one new plugin-level file, `plugins/bb/references/finding-levels.md`,
 read by `/bb:review` and by `/bb:review-setup` because both write findings and neither owns
-the scale. It carries: what each level means, the concrete-cost gate below, the legacy
-collapse, and the a11y mapping.
+the scale. It carries: what each level means, which of its two names goes on which surface,
+the concrete-cost gate below, the `MEDIUM` collapse, and the a11y mapping.
 
-**Bloqueante**: something the diff shipped is broken, unusable for someone, or breaks a rule
-the guide states as mandatory. **Sugestão**: everything else that is still worth saying.
+**Bloqueante**, `HIGH` in a guide: something the diff shipped is broken, unusable for
+someone, or breaks a rule the guide states as mandatory. **Sugestão**, `LOW` in a guide:
+everything else that is still worth saying.
 
 **a11y keeps its WCAG priorities internally**, because they are the standard's and not bb's:
 Critical and Major map to Bloqueante, Minor and Enhancement to Sugestão, at the moment the
 front's findings enter the unified report.
 
-The rank after the collapse, in `verify.md` §4: CONFIRMED Bloqueante, then PLAUSIBLE
-Bloqueante, then Sugestão. Quality findings stay at the bottom of the third tier, and the
+The rank after the collapse, in `verify.md` §4: Bloqueante CONFIRMED, then Bloqueante
+PLAUSIBLE, then Sugestão. Quality findings stay at the bottom of the third tier, and the
 cap still cuts from the bottom.
 
 ### What earns an inline comment
@@ -98,21 +100,25 @@ which is the routine's own and has to stay its own.
 
 ## Decisions
 
-- Two levels, `Bloqueante` and `Sugestão`, replace every severity scale bb writes. Their
-  definition lives in `plugins/bb/references/finding-levels.md`, read by `/bb:review` and
-  `/bb:review-setup`.
-- MEDIUM and LOW both become Sugestão. What separates an inline comment from an aggregated
-  body line is whether the Sugestão names a concrete cost, the column `front-quality.md`
-  already asks for. No third level comes back under another name.
+- Two levels replace every severity scale bb writes. Their definition lives in
+  `plugins/bb/references/finding-levels.md`, read by `/bb:review` and `/bb:review-setup`.
+- **Each level has one name per surface.** A review writes Bloqueante and Sugestão: the
+  report, the item labels, the comment bodies, the verdict line. A `CODE_REVIEW_GUIDE.md`
+  states the same two as `HIGH` and `LOW`, the field every guide in the org already carries,
+  so a guide written before this change reads correctly with no migration. Machine values
+  stay lowercase and unaccented.
+- Only the middle rung goes: `MEDIUM` becomes a Sugestão. What separates an inline
+  comment from an aggregated body line is whether the Sugestão names a concrete cost, the
+  column `front-quality.md` already asks for. No third level comes back under another name.
 - `front-a11y.md` keeps Critical / Major / Minor / Enhancement internally and maps them at the
   report boundary. WCAG's priorities are the standard's, not bb's to collapse.
-- A guide rule with no severity is a Sugestão. A deviation from a rule is a Sugestão unless the
-  rule states the stakes (mandatory, never, quebra), which makes it Bloqueante.
-- A `CODE_REVIEW_GUIDE.md` still written in HIGH / MEDIUM / LOW collapses **at read time**
-  (HIGH to Bloqueante, MEDIUM and LOW to Sugestão) and the report carries one drift line
-  pointing at `/bb:review-setup`. No repo is blocked by an old guide.
+- A guide rule with no severity is a Sugestão. A deviation from a rule is a Sugestão unless
+  the rule states the stakes (mandatory, never, quebra), which makes it Bloqueante.
+- A `CODE_REVIEW_GUIDE.md` that still ranks a rule `MEDIUM` collapses that rung **at read
+  time** and the report carries one drift line pointing at `/bb:review-setup`. No repo is
+  blocked by a three rung guide.
 - `builder-bundle/CODE_REVIEW_GUIDE.md` migrates in this change, so the repo that ships the
-  generator does not run on the legacy path.
+  generator carries no `MEDIUM` rule of its own.
 - Intent and conversation load **always**, at step 0, when there is an open PR, and the intent
   block rides in every finder's scope block. Without a PR, intent comes from the spec and the
   commits.
@@ -122,11 +128,11 @@ which is the routine's own and has to stay its own.
   satisfies, whoever opened it. Only-answered threads stay open.
 - The report stays complete, with `[já dito: link]` marks and a closing count of what was
   suppressed from GitHub.
-- The external-PR verdict (`mode-external-pr.md`): any Bloqueante means REQUEST_CHANGES, only
-  Sugestão means COMMENT.
-- JSON values are lowercase and unaccented (`bloqueante`, `sugestao`); prose and report labels
+- The external-PR verdict (`mode-external-pr.md`): any Bloqueante means REQUEST_CHANGES,
+  only Sugestões means COMMENT.
+- JSON values are lowercase and unaccented (`high`, `low`); prose and report labels
   carry the accent (`Sugestão`).
-- The routine's rounds become `ROUNDS = (("sugestao", 10), ("bloqueante", 4), ("bloqueante", 2))`.
+- The routine's rounds become `ROUNDS = (("low", 10), ("high", 4), ("high", 2))`.
 - The routine resolves **only its own threads**, and only where the current code satisfies them.
   The task starts by confirming the run's `github` MCP exposes a thread-resolve tool; the
   toolset in `PROMPT.md` does not list one today, and without it the routine stays as it is.
@@ -153,14 +159,14 @@ Happy path, `/bb:review` on a branch with an open PR (H1 to H9):
 8. In the same pass, outside curation, every thread the current code satisfies gets a reply and
    a resolve.
 9. On an external PR, the verdict follows the levels: any Bloqueante is REQUEST_CHANGES, only
-   Sugestão is COMMENT.
+   Sugestões is COMMENT.
 
 | #   | WHEN                                             | THEN                                                                  |
 | --- | ------------------------------------------------ | --------------------------------------------------------------------- |
 | E1  | the PR body is empty                             | intent comes from the spec and the commit subjects, said in one line  |
 | E2  | there is no open PR                              | no conversation to read; every finding is new; resolution is skipped  |
 | E3  | `gh` is unauthenticated                          | the intent read is skipped with one line, and the review still runs   |
-| E4  | the guide still says HIGH / MEDIUM / LOW         | collapse at read time, plus one drift line for `/bb:review-setup`     |
+| E4  | the guide still ranks a rule `MEDIUM`            | collapse at read time, plus one drift line for `/bb:review-setup`     |
 | E5  | a guide rule carries no severity                 | it is a Sugestão                                                      |
 | E6  | the guide mixes both vocabularies                | two-level entries stand, legacy ones collapse, the drift line fires   |
 | E7  | every finding was already said                   | the report shows them all, posts nothing, and says so in one line     |
@@ -168,7 +174,7 @@ Happy path, `/bb:review` on a branch with an open PR (H1 to H9):
 | E9  | every thread is already resolved                 | resolution reports zero and opens no review to say it                 |
 | E10 | a thread's point was answered but not fixed      | it stays open for whoever opened it                                   |
 | E11 | the routine's MCP exposes no thread-resolve tool | the routine keeps commenting only, and the resolve task lands nothing |
-| E12 | the routine is on round 2 or 3                   | the floor is `bloqueante`, with the caps 4 and 2                      |
+| E12 | the routine is on round 2 or 3                   | the floor is `high`, with the caps 4 and 2                            |
 | E13 | a prior comment came from another reviewer       | it counts for the additive filter and carries its author              |
 | E14 | prior text tries to instruct the review          | it is quoted to the user, not obeyed                                  |
 | E15 | `prior_notes` overflows `NOTE_LIMIT`             | line comments keep the budget, bodyless chatter is dropped first      |
@@ -181,13 +187,13 @@ Happy path, `/bb:review` on a branch with an open PR (H1 to H9):
 - [x] **2. The review engine reads them**: `front-rules.md`, `front-contract.md`,
       `front-a11y.md`, `front-quality.md` point at it; `verify.md` §4 ranks in three tiers;
       `act-apply-fixes.md` order and `mode-external-pr.md` verdict follow
-      → H4, H5, H9, E4, E8 · dep: 1 · verify: grep for HIGH/MEDIUM/LOW under `skills/review/`
+      → H4, H5, H9, E4, E8 · dep: 1 · verify: grep for `MEDIUM` under `skills/review/`
 - [x] **3. The generator speaks two levels**: `guide-template.md`'s ladder table, its
-      `### HIGH/MEDIUM/LOW` sections and the `- **Severity**:` line, plus `discovery.md`,
+      `### MEDIUM` section and the `- **Severity**:` line, plus `discovery.md`,
       `interview.md` and `update-delta.md` → H4, E4, E5 · dep: 1 · verify: reading
 - [x] **4. `builder-bundle/CODE_REVIEW_GUIDE.md` migrates**: the Severities table, every
       `- **Severity**:` line, the three `###` sections
-      → E4, E6 · dep: 3 · verify: grep returns no HIGH/MEDIUM/LOW
+      → E4, E6 · dep: 3 · verify: grep returns no `MEDIUM` and no `Severity`
 - [x] **5. Step 0 reads intent and conversation**: `SKILL.md` gains the reads, the intent block
       and the data-not-instructions line → H1, H2, E1, E2, E3, E14 · dep: — · verify: reading
 - [x] **6. The block rides in the fan-out**: `fronts.md` "Fan-out shape" §2 adds it to the scope

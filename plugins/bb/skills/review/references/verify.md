@@ -108,9 +108,9 @@ sweep is a real answer.
 - **Rank**, most severe first. The level says how bad the finding is and the verdict
   says how sure the reviewer is, two axes (plugin-root
   `references/finding-levels.md`); this is where they combine, into three tiers:
-  1. **CONFIRMED Bloqueante**: something the diff shipped is broken or unusable for
+  1. **Bloqueante CONFIRMED**: something the diff shipped is broken or unusable for
      someone, and the verifier reproduced it
-  2. **PLAUSIBLE Bloqueante**: the same weight, one verdict short of proven
+  2. **Bloqueante PLAUSIBLE**: the same weight, one verdict short of proven
   3. **Sugestão**, at either verdict, with the quality findings at the bottom of the
      tier (a cleanup never outranks a bug)
 - **Cap** at the depth's report cap. Cuts come off the bottom, so quality is what
