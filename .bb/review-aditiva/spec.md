@@ -175,7 +175,7 @@ Happy path, `/bb:review` on a branch with an open PR (H1 to H9):
 
 ## Tasks
 
-- [ ] **1. `finding-levels.md`**: the two levels, the concrete-cost gate, the legacy collapse,
+- [x] **1. `finding-levels.md`**: the two levels, the concrete-cost gate, the legacy collapse,
       the a11y mapping → H4, E4, E5, E6, E8 · dep: — · verify: reading
 - [ ] **2. The review engine reads them**: `front-rules.md`, `front-contract.md`,
       `front-a11y.md`, `front-quality.md` point at it; `verify.md` §4 ranks in three tiers;
