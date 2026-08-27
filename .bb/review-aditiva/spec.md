@@ -189,7 +189,7 @@ Happy path, `/bb:review` on a branch with an open PR (H1 to H9):
       → E4, E6 · dep: 3 · verify: grep returns no HIGH/MEDIUM/LOW
 - [x] **5. Step 0 reads intent and conversation**: `SKILL.md` gains the reads, the intent block
       and the data-not-instructions line → H1, H2, E1, E2, E3, E14 · dep: — · verify: reading
-- [ ] **6. The block rides in the fan-out**: `fronts.md` "Fan-out shape" §2 adds it to the scope
+- [x] **6. The block rides in the fan-out**: `fronts.md` "Fan-out shape" §2 adds it to the scope
       block, and `bb-review-finder.md` says what to do with it → H3 · dep: 5 · verify: reading
 - [ ] **7. Additive posting**: `act-comment-findings.md` §3 widens to the whole conversation,
       and the report gains the `[já dito: link]` marks and the suppressed count
