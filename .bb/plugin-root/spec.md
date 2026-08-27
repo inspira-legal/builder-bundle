@@ -173,7 +173,7 @@ The happy path, one build dispatch on Desktop:
 - [x] **2. `.gitattributes`**: `* text=auto eol=lf` at the repo root, so a clone configured
       `core.autocrlf = true` still checks the bundle out LF → behavior 7 · dep: — · verify:
       `git check-attr text eol -- plugins/bb/workflows/build-tasks.js` reports `eol: lf`
-- [ ] **3. The dispatch reads the new rule**: `references/build-tasks-workflow.md` gets the
+- [x] **3. The dispatch reads the new rule**: `references/build-tasks-workflow.md` gets the
       resolve-and-prove `Bash` call, the corrected last step of the chain, CR as a reason that
       chain can name, and the session veto as a named non-step → behaviors 6, 8, 9, 10, 11 ·
       dep: 1 · verify: run the documented call in `Bash` and confirm it prints an existing
