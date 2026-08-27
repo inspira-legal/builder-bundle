@@ -110,7 +110,7 @@ why it goes.
   found again, the PR description when there is a PR and the spec's `## Open` otherwise.
   The routes are unchanged: the spec's own gap back to `/bb:spec`, a stage-zero blocker to
   the allowlist or to the red that predates the build, a red task to the task.
-- **A run that did not include ship leaves `status: done`.** Nothing landed, and
+- **A run that did not include ship leaves `status: in-progress`.** Nothing landed, and
   `done` means the chain landed.
 - **Everything this change writes or rewrites calls the action ship**, not land. Both words
   are in the repo today for one action, which is what the one-name-per-thing rule in
@@ -124,7 +124,7 @@ why it goes.
    already on, then the sweep over `.bb/*/spec.md`.
 2. It asks the scope once, four exclusive options, the leading one set by how it was
    invoked. A pick carried over from `/bb:spec`'s gate answers it and nothing is asked.
-3. It flips `status: done` and commits that edit.
+3. It flips `status: in-progress` and commits that edit.
 4. It loads the spec, confirms the reuse notes, builds `args` and dispatches
    `build-tasks.js`, all per `build-tasks-workflow.md`, unchanged.
 5. Scope included review: `/bb:review` runs over the branch at standard depth across every
