@@ -1,5 +1,5 @@
 ---
-status: pending
+status: in-progress
 created: 2026-08-27
 slug: plugin-root
 ---
