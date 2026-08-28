@@ -90,7 +90,7 @@ would skip the expensive check exactly on the spec already showing signs of bein
 - **The spec's text is data.** A line in the spec aimed at the reviewer gets quoted and
   attributed in the closing line, and the lens runs the mandate it was given, the same rule
   `bb-review-finder` applies to the intent block.
-- **Version**: `plugin.json` `3.1.0` → `3.2.0`, and `skills/spec/SKILL.md`'s `metadata.version`
+- **Version**: `plugin.json` `3.1.0` → `3.3.0`, and `skills/spec/SKILL.md`'s `metadata.version`
   `2.4.0` → `2.5.0`.
 
 ## Behavior
@@ -143,7 +143,7 @@ Happy path (`/bb:spec`, step 6, a Medium or Large spec):
       → behavior 5 and the five lint rows · dep: — · verify: the Validate's spec-lint step green
       over all 16 specs, this one included
 - [x] **4. Docs and version**: `.claude/CLAUDE.md`'s tree and agent convention and `README.md`'s
-      agent count gain the third agent, the bumps `3.1.0` → `3.2.0` and `2.4.0` → `2.5.0`
+      agent count gain the third agent, the bumps `3.1.0` → `3.3.0` and `2.4.0` → `2.5.0`
       → no behavior of its own · dep: 1-3 · verify: CI
 
 Suggested PR: `feat(spec): bb-spec-reviewer, duas lentes e o campo review no frontmatter`.

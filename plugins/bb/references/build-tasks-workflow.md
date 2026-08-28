@@ -47,13 +47,33 @@ read-only.
 
 ## How the skills invoke it
 
-The path is resolved and the file proved in one `Bash` call:
+The root is resolved and the file proved in one `Bash` call. `${CLAUDE_PLUGIN_ROOT}` is
+expanded where the platform composes the text itself and read as plain text everywhere else,
+and a reference is a file read: the literal arrives here raw, so
+`cat "$CLAUDE_PLUGIN_ROOT/workflows/build-tasks.js"` runs as `cat /workflows/build-tasks.js`
+and exits 1. The rule below is what a reader resolves instead. A `Bash` call is a fresh
+shell, so the function travels with the call that uses it:
 
 ```bash
-cat "$CLAUDE_PLUGIN_ROOT/workflows/build-tasks.js" > /dev/null && echo "$CLAUDE_PLUGIN_ROOT/workflows/build-tasks.js"
+plugin_root() {
+  for d in "$CLAUDE_PLUGIN_ROOT" \
+           $(ls -d "$HOME"/.claude/plugins/cache/*/bb/* 2>/dev/null | sort -Vr) \
+           ./plugins/bb; do
+    [ -n "$d" ] && [ -f "$d/workflows/build-tasks.js" ] && { printf '%s\n' "${d%/}"; return 0; }
+  done
+  return 1
+}
+r="$(plugin_root)" && cat "$r/workflows/build-tasks.js" > /dev/null && echo "$r/workflows/build-tasks.js"
 ```
 
-A non-zero exit is the missing-file case. The printed path is what goes into
+The installed copy answers before the repo checkout: it is where an update lands, and every
+process on the machine can open it, which the per-session copy under `AppData\Roaming` fails
+at on Windows. The `[ -f ... ]` guard is what keeps a step that resolved to the wrong
+directory from winning, so it falls through to the next one instead; set `CLAUDE_PLUGIN_ROOT`
+to a checkout when that has to win.
+
+A non-zero exit covers both ways this fails: the rule found no copy of the plugin, or the
+copy it found has no readable `build-tasks.js`. The printed path is what goes into
 `scriptPath`, already expanded, because the tool takes a literal path.
 
 The **fallback chain**, one attempt each, in this order. It is stated here and nowhere
@@ -62,14 +82,30 @@ else, so the skills point at it by name and carry no count of their own:
 1. `Workflow` with `scriptPath` set to the printed path. This is the dispatch.
 2. `scriptPath` refused: an inline `script` read off the same file. Still a dispatch, so
    a refusal at step 1 ends that attempt and not the chain.
-3. Step 2 refused too, or no `Workflow` tool in the session, or a `Bash` call that
-   cannot read the file: the in-context build, with the reason named.
+3. Step 2 refused too, no `Workflow` tool in the session, or the `Bash` call came back
+   non-zero, whether because the resolution found no copy or because the copy it found has
+   no readable `build-tasks.js`: the in-context build, with the reason named. Those two are
+   different lines to say, so say which one it was.
 
-Only step 3 builds in the main context, and only those three conditions reach it. A run
-that has tasks to build and meets none of them dispatches at step 1. Invoking
+Only step 3 builds in the main context, and only the conditions it names reach it. A first
+path that does not resolve is a step of the resolution rule and not a step of this chain,
+so a `Bash` call that comes back empty is step 3 only after the whole rule has been walked.
+A run that has tasks to build and meets none of the three dispatches at step 1. Invoking
 `/bb:implement`, by the command or by the phrases its `description`
 lists, is the request for this workflow, and that request is the opt-in the `Workflow`
 tool asks for. It covers this build and nothing beyond it.
+
+**A session that forbids workflows outright is a fourth way to end up here, and it is not a
+step of the chain.** An account or session level rule saying not to use workflows unless the
+user asked outranks the opt-in above, and the tool never runs. The build proceeds in the
+main context like step 3, and the line the skill owes says the session's own rules vetoed
+the dispatch, so the reason reads as a veto and not as a missing file.
+
+`build-tasks.js` carrying CR is a fifth, and it takes out both dispatch steps at once:
+`Workflow` inlines a `scriptPath` into the approval dialog as `script` and refuses the CR
+as a control character that would be hidden there, so the inline `script` of step 2 is
+refused for the same reason the path was. The repo's `.gitattributes` is what keeps that
+from happening, and if it happens anyway, CR is the reason step 3 names.
 
 Two stops sit outside the chain, and neither is a step of it. A user who denies the
 permission dialog has declined this dispatch: report the denial and ask what they want
@@ -103,7 +139,7 @@ stringified one):
 }
 ```
 
-`checks` is `${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py`'s output, passed through
+`checks` is `scripts/resolve_checks.py`'s output, passed through
 whole (or `null` when the skill could not run it). The script walks the authority chain,
 so nothing in the run resolves it a second time: it is the same call implement's step 7
 and ship's Step 2 make. `runnable: false` means local runs are forbidden, and it is what
