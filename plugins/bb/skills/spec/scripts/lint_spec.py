@@ -66,7 +66,7 @@ def split_row(line):
 def check_frontmatter(lines):
     """Yield problems with the `---` block the spec-state contract requires."""
     if not lines or lines[0].strip() != "---":
-        yield 1, "E001", "no frontmatter: the `---` block with status/created/slug opens the file"
+        yield 1, "E001", "no frontmatter: the `---` block with status/created/slug/review opens the file"
         return
 
     end = next((i for i, line in enumerate(lines[1:], start=1) if line.strip() == "---"), None)

@@ -74,6 +74,7 @@ first.
 status: pending # pending | in-progress | done | blocked
 created: 2026-07-23 # YYYY-MM-DD, set when the spec is first written
 slug: <kebab-slug> # matches the dir name
+# review takes no inline comment, the lint reads everything after the first colon
 review: clean
 ---
 ```
@@ -86,8 +87,11 @@ review: clean
 `review:` is what the two `bb-spec-reviewer` lenses left behind, written by `/bb:spec` on
 finalize. Its three values are `clean` (both lenses returned nothing), `resolved`
 (findings came back and every one was dealt with: folded into the draft, rejected on a
-stated ground, or promoted to `## Open`) and `not-run` (no Agent tool in the host, or
-both lenses died). They stay out of the block above because
+stated ground, or promoted to `## Open`) and `not-run` (the two-lens pass did not
+complete, whether the host had no Agent tool or a lens died). `clean` and `resolved` both
+assert that two lenses ran, so a run that lost one records `not-run` even though the
+survivor's findings still folded into the draft, and the gate names which lens is
+missing. The values stay out of the block above because
 `skills/spec/scripts/lint_spec.py` reads the whole string after the first `:` as the
 value, so a block copied with its inline comment attached would fire `E006` on a spec
 that is fine. That lint is what makes the field a guarantee instead of a habit: a spec

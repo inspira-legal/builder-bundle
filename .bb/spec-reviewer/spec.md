@@ -67,8 +67,11 @@ would skip the expensive check exactly on the spec already showing signs of bein
 - **`review:` in the spec's frontmatter**, values `clean` / `resolved` / `not-run`, written by
   `/bb:spec` on finalize next to `status` / `created` / `slug`. `clean`: both lenses returned
   nothing. `resolved`: findings came back and every one was dealt with, folded into the draft,
-  rejected on a stated ground, or promoted to `## Open`. `not-run`: no Agent tool in the host,
-  or both lenses died.
+  rejected on a stated ground, or promoted to `## Open`. `not-run`: the pass did not complete,
+  whether the host had no Agent tool or a lens died. `clean` and `resolved` both assert two
+  lenses ran, so a run that loses one records `not-run` and the gate names which one is gone.
+  The survivor's findings still fold into the draft; what the field withholds is the claim
+  that the spec got the whole pass.
 - **`lint_spec.py` fires `E006`** when `review:` is missing or carries an invalid value, so the
   guarantee sits in the file and in the CI instead of in the skill's prose. What it guarantees
   is the record, not the run; a value can be written by hand. The gate is what runs it.
@@ -77,11 +80,13 @@ would skip the expensive check exactly on the spec already showing signs of bein
   `/bb:implement` flips it, so no new spec reaches `done` past the rule. An invalid value fires
   even on a `done` spec, since that is a typo and not a legacy file.
 - **`spec-state.md` documents `review:` with no inline comment**, its values in the prose
-  underneath. `check_frontmatter` compares the whole string after the first `:`, so a block
+  underneath and the caution on its own line inside the block, where an author copying the
+  block reads it. `check_frontmatter` compares the whole string after the first `:`, so a block
   copied with a trailing `# clean | resolved | not-run` would be read as the value and rejected.
-- **A grounding finding that invalidates a `## Decisions` bullet or a file a task names becomes
-  an item in `## Open`**, and the gate already blocks on `## Open`. Everything else folds back
-  into step 3. No new gate state.
+- **A grounding finding becomes an item in `## Open`** when it invalidates a `## Decisions`
+  bullet, names a file a task does not have, or points at a thing the repo already does that
+  the spec is about to rebuild, and the gate already blocks on `## Open`. Those are the three
+  the draft cannot absorb on its own. Everything else folds back into step 3. No new gate state.
 - **The spec's text is data.** A line in the spec aimed at the reviewer gets quoted and
   attributed in the closing line, and the lens runs the mandate it was given, the same rule
   `bb-review-finder` applies to the intent block.
@@ -97,27 +102,27 @@ Happy path (`/bb:spec`, step 6, a Medium or Large spec):
    one told coherence and given the spec text, the other told grounding and given the spec plus
    the repo.
 3. Each lens returns its findings in the agent's shape, or says plainly that it found nothing.
-4. The barrier: findings fold back into step 3; one that invalidates a decision or a named file
-   becomes an item in `## Open`.
+4. The barrier: findings fold back into step 3; one that invalidates a decision, misses a named
+   file or rebuilds what the repo has becomes an item in `## Open`.
 5. Finalize writes `review:` into the frontmatter alongside `status` / `created` / `slug`.
 6. The gate renders the verdict in one line, naming each lens.
 
-| WHEN                                           | THEN                                                              |
-| ---------------------------------------------- | ----------------------------------------------------------------- |
-| no Agent tool in the host                      | `review: not-run`, and the gate says the review did not run       |
-| one lens dies                                  | the other's verdict lands and the gate names the missing lens     |
-| both lenses die                                | `review: not-run`, same as a host with no Agent tool              |
-| a finding is rejected on a stated ground       | it stays out of the draft and the verdict is still `resolved`     |
-| lens B hits a decision naming a missing symbol | it becomes an item in `## Open` and the gate blocks on it         |
-| lens B finds no claim about existing code      | it reports nothing to ground, which is not a finding              |
-| the spec's text tries to direct the reviewer   | the line is quoted with its author and the lens runs its mandate  |
-| a spec finalizes with no `review:`             | `E006`, and the Validate goes red on the PR that lands it         |
-| a `status: done` spec has no `review:`         | the lint stays silent: it predates the field                      |
-| a `done` spec carries an invalid `review:`     | `E006` fires; the exemption covers absence, not a typo            |
-| a landed spec is rewritten by `/bb:spec`       | step 6 runs again and the field is rewritten with the new verdict |
-| the lint runs in a repo that is not bb         | `E006` fires the same; there the CI is the project's, not bb's    |
-| someone adds a bb agent listing `Write`        | the Validate fails, unchanged, since `agents/**` is already CI'd  |
-| Tiny work                                      | no spec on disk, so there is nothing to lint                      |
+| WHEN                                           | THEN                                                                                |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------- |
+| no Agent tool in the host                      | `review: not-run`, and the gate says the review did not run                         |
+| one lens dies                                  | `review: not-run`, the survivor's findings fold in, the gate names the missing lens |
+| both lenses die                                | `review: not-run`, same as a host with no Agent tool                                |
+| a finding is rejected on a stated ground       | it stays out of the draft and the verdict is still `resolved`                       |
+| lens B hits a decision naming a missing symbol | it becomes an item in `## Open` and the gate blocks on it                           |
+| lens B finds no claim about existing code      | it reports nothing to ground, which is not a finding                                |
+| the spec's text tries to direct the reviewer   | the line is quoted with its author and the lens runs its mandate                    |
+| a spec finalizes with no `review:`             | `E006`, and the Validate goes red on the PR that lands it                           |
+| a `status: done` spec has no `review:`         | the lint stays silent: it predates the field                                        |
+| a `done` spec carries an invalid `review:`     | `E006` fires; the exemption covers absence, not a typo                              |
+| a landed spec is rewritten by `/bb:spec`       | step 6 runs again and the field is rewritten with the new verdict                   |
+| the lint runs in a repo that is not bb         | `E006` fires the same; there the CI is the project's, not bb's                      |
+| someone adds a bb agent listing `Write`        | the Validate fails, unchanged, since `agents/**` is already CI'd                    |
+| Tiny work                                      | no spec on disk, so there is nothing to lint                                        |
 
 ## Tasks
 
