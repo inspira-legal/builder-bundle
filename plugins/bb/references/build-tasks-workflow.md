@@ -53,9 +53,16 @@ resolution rule it implements lives:
 
 ```bash
 plugin_root() {
-  for d in "$CLAUDE_PLUGIN_ROOT"            $(ls -d "$HOME"/.claude/plugins/cache/*/bb/* 2>/dev/null | sort -Vr)            ./plugins/bb            $(ls -dt "${APPDATA:-$HOME/Library/Application Support}"/Claude/local-agent-mode-sessions/*/*/rpm/plugin_* 2>/dev/null); do
-    [ -n "$d" ] && [ -f "$d/workflows/build-tasks.js" ] && { printf '%s
-' "${d%/}"; return 0; }
+  cc="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
+  for d in "$CLAUDE_PLUGIN_ROOT" \
+           $(ls -d "$cc"/plugins/cache/*/bb/*/ 2>/dev/null | sed 's:/*$::' \
+             | awk -F/ '{split($NF,v,"."); printf "%05d.%05d.%05d\t%s\n", v[1],v[2],v[3], $0}' \
+             | sort -r | cut -f2-) \
+           ./plugins/bb \
+           $(ls -dt "$APPDATA"/Claude/local-agent-mode-sessions/*/*/rpm/plugin_* \
+                    "$HOME"/Library/Application\ Support/Claude/local-agent-mode-sessions/*/*/rpm/plugin_* \
+                    "${XDG_CONFIG_HOME:-$HOME/.config}"/Claude/local-agent-mode-sessions/*/*/rpm/plugin_* 2>/dev/null); do
+    [ -n "$d" ] && [ -f "$d/workflows/build-tasks.js" ] && { printf '%s\n' "${d%/}"; return 0; }
   done
   return 1
 }

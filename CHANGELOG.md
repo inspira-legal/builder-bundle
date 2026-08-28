@@ -30,6 +30,15 @@ CR that takes out both dispatch paths at once.
 
 ### Fixed
 
+- **`plugin_root` resolves on macOS and Linux, not only on Windows.** The version order was
+  `sort -V`, a GNU extension the macOS sort rejects outright, which took the install-cache
+  step down on the system where that step usually wins; it is now a zero-padded key over plain
+  `sort -r`. The per-session copy had a Windows path and a macOS one and no Linux one, and now
+  globs `${XDG_CONFIG_HOME:-$HOME/.config}` alongside them. The cache lives under
+  `CLAUDE_CONFIG_DIR` when a multi-account setup has moved it, rather than under a hardcoded
+  `$HOME/.claude`. One more, found while testing the other three: `ls -d` on a `*/` glob can
+  emit the trailing slash twice, which empties the last path component and orders the cache by
+  name.
 - **`.gitattributes`** pins the repo to `eol=lf`, so the marketplace clone stops handing the
   install cache a CRLF `build-tasks.js` that `Workflow` refuses to dispatch. Why a CR takes
   out both dispatch paths, and why the guard belongs to the checkout rather than to the
