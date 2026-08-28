@@ -74,6 +74,7 @@ first.
 status: pending # pending | in-progress | done | blocked
 created: 2026-07-23 # YYYY-MM-DD, set when the spec is first written
 slug: <kebab-slug> # matches the dir name
+review: clean
 ---
 ```
 
@@ -81,6 +82,16 @@ slug: <kebab-slug> # matches the dir name
 - `in-progress`: some tasks done, not landed (resumable).
 - `done`: the implement→ship chain completed its landing.
 - `blocked`: implement's safety valve or ship hit an unrecoverable stop; needs a human.
+
+`review:` is what the two `bb-spec-reviewer` lenses left behind, written by `/bb:spec` on
+finalize. Its three values are `clean` (both lenses returned nothing), `resolved`
+(findings came back and every one was dealt with: folded into the draft, rejected on a
+stated ground, or promoted to `## Open`) and `not-run` (no Agent tool in the host, or
+both lenses died). They stay out of the block above because
+`skills/spec/scripts/lint_spec.py` reads the whole string after the first `:` as the
+value, so a block copied with its inline comment attached would fire `E006` on a spec
+that is fine. That lint is what makes the field a guarantee instead of a habit: a spec
+that closes without it goes red in CI.
 
 **`/bb:implement` owns the `status` lifecycle**: it flips the value as it selects, runs
 and lands a spec, and the `## Tasks` checkboxes inside the spec are the same skill's.

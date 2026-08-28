@@ -131,7 +131,7 @@ Happy path (`/bb:spec`, step 6, a Medium or Large spec):
       where finalize learns to write `review:`
       → behaviors 1, 2, 4, 5, 6 and the no-tool, dead-lens, rejected, blocking and rewrite rows
       · dep: 1 · verify: reading
-- [ ] **3. The field and the lint**: `references/spec-state.md` gains `review:` in the spec's
+- [x] **3. The field and the lint**: `references/spec-state.md` gains `review:` in the spec's
       block, commentless, with its values in the prose; `spec-format.md` gains the `E006` row
       and its closing paragraph stops describing a single reviewer; `lint_spec.py` implements
       the code with the `status: done` exemption
