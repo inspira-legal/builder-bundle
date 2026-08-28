@@ -137,7 +137,7 @@ Happy path (`/bb:spec`, step 6, a Medium or Large spec):
       the code with the `status: done` exemption
       → behavior 5 and the five lint rows · dep: — · verify: the Validate's spec-lint step green
       over all 16 specs, this one included
-- [ ] **4. Docs and version**: `.claude/CLAUDE.md`'s tree and agent convention and `README.md`'s
+- [x] **4. Docs and version**: `.claude/CLAUDE.md`'s tree and agent convention and `README.md`'s
       agent count gain the third agent, the bumps `3.1.0` → `3.2.0` and `2.4.0` → `2.5.0`
       → no behavior of its own · dep: 1-3 · verify: CI
 

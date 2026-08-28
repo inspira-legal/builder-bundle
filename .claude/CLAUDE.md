@@ -16,7 +16,8 @@ plugins/bb/
 ├── .claude-plugin/plugin.json
 ├── agents/                            # pipeline roles (auto-discovered, no plugin.json entry)
 │   ├── bb-review-finder.md             # review fan-out: finds candidates, read-only by `tools:`
-│   └── bb-review-verifier.md           # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
+│   ├── bb-review-verifier.md           # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
+│   └── bb-spec-reviewer.md             # spec step 6: the two lenses, coherence and grounding
 ├── hooks/                             # session infra (auto-active, no skill)
 │   ├── hooks.json                      # SessionStart: BUILDER-BUNDLE.md, and bb's own update
 │   ├── enter_worktree.py               # worktree isolation for local autonomous runs
@@ -69,8 +70,9 @@ plugins/bb/
   That single ownership is the reason to reach for an agent; the skill references
   defer to it rather than restating it. The `tools:` list narrows the surface on top
   of that (CI fails a bb agent that lists a write tool), but with `Bash` on the list
-  it narrows the surface without closing it, so don't write it up as a guarantee. Name
-  agents by **role in the pipeline**, not by front or phase: what varies between
+  it narrows the surface without closing it, so don't write it up as a guarantee.
+  Without it, the way `bb-spec-reviewer` is, the surface does close and the guarantee
+  is real. Name agents by **role in the pipeline**, not by front or phase: what varies between
   fronts is prompt content the caller already assembles. The `description` sits in
   context globally, so keep it narrow and name the skill that is the real entry
   point.

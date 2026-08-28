@@ -17,7 +17,7 @@ claude plugin install bb@inspira-legal
 
 it keeps itself current. once a day, on a session start, a detached worker runs `claude plugin marketplace update` and `claude plugin update` for you, and only when the marketplace clone sits on its default branch with a clean tree. nothing is asked, nothing waits and nothing is printed: the session you are in keeps the version it loaded, the new one starts on the next session, and the only trace is a stamp under `~/.claude/plugins/data`. `custom_instructions: false` does not turn this off, it governs `~/.claude/BUILDER-BUNDLE.md` alone.
 
-it writes its operating context into `~/.claude/BUILDER-BUNDLE.md`, imported by your `CLAUDE.md` and carrying the profile set by `/bb:profile`, and it ships two read-only agents (`bb-review-finder`, `bb-review-verifier`) that review dispatches in parallel: internal pipeline roles, not entry points. skills are invoked as `/bb:<skill>` (e.g. `/bb:discover`, `/bb:spec`, `/bb:ship`). every skill with a natural next step ends at a gate that **suggests** the next trilha, and never auto-invokes.
+it writes its operating context into `~/.claude/BUILDER-BUNDLE.md`, imported by your `CLAUDE.md` and carrying the profile set by `/bb:profile`, and it ships three read-only agents: `bb-review-finder` and `bb-review-verifier`, which review dispatches in parallel, and `bb-spec-reviewer`, the two lenses spec runs over a draft before the gate. internal pipeline roles, not entry points. skills are invoked as `/bb:<skill>` (e.g. `/bb:discover`, `/bb:spec`, `/bb:ship`). every skill with a natural next step ends at a gate that **suggests** the next trilha, and never auto-invokes.
 
 ## what is inside
 
