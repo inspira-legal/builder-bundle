@@ -1,5 +1,5 @@
 ---
-status: in-progress
+status: done
 created: 2026-08-27
 slug: plugin-root
 ---
@@ -184,12 +184,12 @@ The happy path, one build dispatch on Desktop:
       eight files returns nothing
 - [x] **5. The `brisar` and `spec` references**: `phase-develop.md`, `develop-modes.md`,
       `deliver-modes.md`, `phase-3-scaffold.md`, `references/spec-state.md`,
-      `skills/spec/references/spec-format.md` → behavior 1 · dep: 1 · verify: `grep -rn
-    CLAUDE_PLUGIN_ROOT` over those six files returns nothing
+      `skills/spec/references/spec-format.md` → behavior 1 · dep: 1 · verify:
+      `grep -rn CLAUDE_PLUGIN_ROOT` over those six files returns nothing
 - [x] **6. The skill bodies**: `implement/SKILL.md`, `review/SKILL.md`, `ship/SKILL.md`,
       `review-setup/SKILL.md`, `gather-branch-context/SKILL.md`, twenty-one mentions, every one
-      of them a `scripts/*.py` call → behaviors 1, 12 · dep: 1 · verify: `grep -rn
-    CLAUDE_PLUGIN_ROOT --include=*.md plugins/bb` returns only `plugin-root.md`
+      of them a `scripts/*.py` call → behaviors 1, 12 · dep: 1 · verify:
+      `grep -rn CLAUDE_PLUGIN_ROOT --include=*.md plugins/bb` returns only `plugin-root.md`
 - [x] **7. The release**: `plugin.json` from 3.1.0 to 3.2.0 and the `CHANGELOG.md` entry that
       says which copy the rule takes, why, and what `.gitattributes` fixes → behavior 14 · dep:
       2, 3, 4, 5, 6 · verify: reading
