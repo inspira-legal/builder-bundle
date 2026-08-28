@@ -47,11 +47,18 @@ read-only.
 
 ## How the skills invoke it
 
-The root is resolved and the file proved in one `Bash` call. `plugin_root` is the function
-the plugin-root `references/plugin-root.md` defines, and that file is where the resolution
-rule lives; paste it into the call:
+The root is resolved and the file proved in one `Bash` call. A `Bash` call is a fresh shell,
+so the function travels with it; the plugin-root `references/plugin-root.md` is where the
+resolution rule it implements lives:
 
 ```bash
+plugin_root() {
+  for d in "$CLAUDE_PLUGIN_ROOT"            $(ls -d "$HOME"/.claude/plugins/cache/*/bb/* 2>/dev/null | sort -Vr)            ./plugins/bb            $(ls -dt "${APPDATA:-$HOME/Library/Application Support}"/Claude/local-agent-mode-sessions/*/*/rpm/plugin_* 2>/dev/null); do
+    [ -n "$d" ] && [ -f "$d/workflows/build-tasks.js" ] && { printf '%s
+' "${d%/}"; return 0; }
+  done
+  return 1
+}
 r="$(plugin_root)" && cat "$r/workflows/build-tasks.js" > /dev/null && echo "$r/workflows/build-tasks.js"
 ```
 
@@ -65,10 +72,12 @@ else, so the skills point at it by name and carry no count of their own:
 1. `Workflow` with `scriptPath` set to the printed path. This is the dispatch.
 2. `scriptPath` refused: an inline `script` read off the same file. Still a dispatch, so
    a refusal at step 1 ends that attempt and not the chain.
-3. Step 2 refused too, no `Workflow` tool in the session, or the resolution came back
-   empty: the in-context build, with the reason named.
+3. Step 2 refused too, no `Workflow` tool in the session, or the `Bash` call came back
+   non-zero, whether because the resolution found no copy or because the copy it found has
+   no readable `build-tasks.js`: the in-context build, with the reason named. Those two are
+   different lines to say, so say which one it was.
 
-Only step 3 builds in the main context, and only those three conditions reach it. A first
+Only step 3 builds in the main context, and only the conditions it names reach it. A first
 path that does not resolve is a step of the resolution rule and not a step of this chain,
 so a `Bash` call that comes back empty is step 3 only after the whole rule has been walked.
 A run that has tasks to build and meets none of the three dispatches at step 1. Invoking

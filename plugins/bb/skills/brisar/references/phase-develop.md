@@ -2,9 +2,9 @@
 
 Loaded when the builder chooses to build surfaces (Phase 5 gate, the `develop-direct` shortcut, or re-entry). You build a **clickable prototype** of the journey: its screens navigating between each other, each screen's states, the DS tokens applied. Mock data, no integrations, no error handling, no tests. That is not a degradation, it is what a prototype is for; the product code is `/bb:implement`'s job, written from the spec.
 
-The discipline here is **fidelity to contracts**:
-
 `<plugin-root>` is this plugin's own directory, and the plugin-root `references/plugin-root.md` is where the rule that resolves it lives.
+
+The discipline here is **fidelity to contracts**:
 
 - Read the design system from the plugin: `<plugin-root>/skills/brisar/references/ds/`, or `BRISAR_DS_PATH` when the builder set it.
 - Read the surface's direction, `## Surfaces` in `.bb/<slug>/design.md`, written in Phase 4.

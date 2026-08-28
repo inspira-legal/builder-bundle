@@ -38,12 +38,15 @@ with a path nothing can open.
 | repo checkout | `./plugins/bb` |
 | per-session | `$APPDATA/Claude/local-agent-mode-sessions/*/*/rpm/plugin_*` |
 
-The installed copy answers first: it is the version the session is running, it is where an
-update lands, and every process on the machine can read it. Order those directories by
-version and not by modification time, which is a different order. The repo checkout follows,
-so someone editing the bundle resolves to the files they are editing. The per-session copy is
-last, for the machine where it is the only one. `$APPDATA` is the Windows spelling and
-`$HOME/Library/Application Support` the macOS one.
+The installed copy answers first: it is where an update lands, and every process on the
+machine can open it, which is exactly what the per-session copy fails at. It is not
+necessarily the version this session is running, because a session delivered inline carries
+its own copy; what the order buys is a path that opens. Order those directories by version
+and not by modification time, which is a different order. The repo checkout follows, so
+someone editing the bundle resolves to the files they are editing, which the cache outranks
+wherever an install exists: set `CLAUDE_PLUGIN_ROOT` to the checkout when it has to win. The
+per-session copy is last, for the machine where it is the only one. `$APPDATA` is the
+Windows spelling and `$HOME/Library/Application Support` the macOS one.
 
 The search is the rule's body and not its fallback. A task agent inside a build workflow has
 no skill body and no variable, and it resolves the root exactly this way.
@@ -65,6 +68,18 @@ plugin_root() {
 Then `python3 "$(plugin_root)/scripts/scan_specs.py" ...`, and a non-zero exit from `plugin_root` is
 the resolution failing, which is worth saying out loud instead of running a command against
 an empty string.
+
+## Two notations, and which one runs
+
+A document writes `<plugin-root>` and a shell writes `$(plugin_root)`. The first is a
+placeholder: it names the directory in prose and in a path citation, and a reader resolves it
+into a real path before opening anything. It is never text to paste into a shell, where `<`
+and `>` are redirection operators and the command would not run at all.
+
+`$(plugin_root)` is the runnable form, and it carries one requirement: **every `Bash` call is
+a fresh shell**, so the function has to be defined in the same call that uses it. Paste the
+block above at the top of that call, or resolve the root once and reuse the path it printed
+in the calls that follow.
 
 ## Line endings
 

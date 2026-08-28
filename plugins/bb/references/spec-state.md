@@ -87,8 +87,6 @@ and lands a spec, and the `## Tasks` checkboxes inside the spec are the same ski
 `spec` only writes the initial block (`status: pending`) on finalize. A spec without the
 block is treated as `pending` with unknown `created` (sorted last in bare selection).
 
-`<plugin-root>` is this plugin's own directory, and the plugin-root `references/plugin-root.md` is where the rule that resolves it lives.
-
 **Selection is a script, not a scan the reader repeats.**
 `<plugin-root>/scripts/scan_specs.py` resolves the `.bb/` root the way this file
 says to, parses every block, applies the rule above and prints the whole set plus the

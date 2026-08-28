@@ -60,8 +60,6 @@ Ship doesn't run this; `/bb:review` does, when you pick it at ship's Step 4 gate
 run it yourself. It lives here
 because the lenses are this artifact's, and the review engine has no LexFlow chapter.
 
-`<plugin-root>` is this plugin's own directory, and the plugin-root `references/plugin-root.md` is where the rule that resolves it lives.
-
 The **depth table in
 `<plugin-root>/skills/review/references/fronts.md` sizes the fan-out** here
 too. A three-file manifest change is a tiny diff whatever it's made of, and every

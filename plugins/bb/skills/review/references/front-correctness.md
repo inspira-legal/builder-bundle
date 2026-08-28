@@ -45,8 +45,6 @@ as well not carry.
 | prompt / skill / docs markdown | `diff-scan`, **`instruction-integrity`** (replaces the pitfalls angle), `removed-behavior`, `cross-file`         |
 | config, manifest, IaC, schema  | `diff-scan`, a **validity** angle against the format's own schema or inventory, `removed-behavior`, `cross-file` |
 
-`<plugin-root>` is this plugin's own directory, and the plugin-root `references/plugin-root.md` is where the rule that resolves it lives.
-
 For the last two rows `wrapper-boundary` drops out (there's no wrapped type to
 route through), and the async/state material has nothing to attach to. Say which
 angles ran, and name the dropped ones with the reason, so the depth that's reported

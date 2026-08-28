@@ -140,27 +140,27 @@ A drop-in `.claude/loop.md` that makes a bare `/loop` route the PR-tending triad
 
 Shared scripts live at the plugin root (`<plugin-root>/scripts/`); `check_lexflow_manifest.py` is ship-owned and stays relative.
 
-### scripts/preflight.py
+### <plugin-root>/scripts/preflight.py
 
 The ground for the whole run in one call: `gh_authenticated`, branch, base, `merge_base` and the `diff_range` every reader shares, the `pr` with its `checks` buckets, `code_review_guide`, `project_kind`, the branch's spec and whether the diff's hunks contain UI. Shared with `/bb:review`, whose fronts probe reads the same payload. Prints JSON.
 
-### scripts/resolve_checks.py
+### <plugin-root>/scripts/resolve_checks.py
 
 Walk the checks authority chain without running anything. Its docstring states the chain, tier by tier, and is the one place that does. Prints `{commands, source, truncated, resolved_count, runnable, policy, notes, unresolved, candidates, git_root}`, where `unresolved` is what it saw and could not resolve, so an empty `commands` is never mistaken for a project with no checks. Shared with `/bb:implement`, which also hands it to `workflows/build-tasks.js` as `args.checks`.
 
-### scripts/inspect_pr_checks.py
+### <plugin-root>/scripts/inspect_pr_checks.py
 
 Fetch failing PR checks, pull GitHub Actions logs, and extract a failure snippet. Exits non-zero while failures remain. Shared with `/bb:review`, whose `ci` front reads it instead of re-specifying `gh`.
 
-### scripts/gather_context.py
+### <plugin-root>/scripts/gather_context.py
 
 Collect branch, upstream, base + merge-base, commit log, diff stat, changed files, full diff, uncommitted changes, and PR template in one call. Shared with `/bb:gather-branch-context`. Prints JSON.
 
-### scripts/fetch_comments.py
+### <plugin-root>/scripts/fetch_comments.py
 
 Fetch all PR conversation comments, reviews, and review threads (with thread IDs and resolved state) via `gh api graphql`. Shared with `/bb:review`. Prints JSON.
 
-### scripts/reply_resolve_thread.py
+### <plugin-root>/scripts/reply_resolve_thread.py
 
 Reply to a review thread and/or resolve it. `--thread-id` from fetch_comments.py; `--body` for the reply; `--no-resolve` to reply without resolving. Shared with `/bb:review`.
 

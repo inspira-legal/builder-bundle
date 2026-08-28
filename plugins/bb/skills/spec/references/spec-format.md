@@ -60,8 +60,6 @@ changed goes in the commit body.
 Say each thing once. A fact that appears in the opening, again in a decision, and again
 in a behavior row is one fact and two copies to keep in sync.
 
-`<plugin-root>` is this plugin's own directory, and the plugin-root `references/plugin-root.md` is where the rule that resolves it lives.
-
 **Name things the way the repo names them.** The spec is the document the builder rereads,
 so its words become the words of the build. `<plugin-root>/references/doc-style.md`
 carries the principle.

@@ -16,9 +16,9 @@ every medium, but the target and the tooling change:
 | `figma`         | frames in a Figma file                      | Figma MCP  | Reuse the file's components and variables before creating new nodes.                                    |
 | `pencil`        | nodes in a `.pen` file                      | Pencil MCP | `.pen` files are only reachable through the MCP, never Read/Grep them.                                  |
 
-**Rules that hold in every medium:**
-
 `<plugin-root>` is this plugin's own directory, and the plugin-root `references/plugin-root.md` is where the rule that resolves it lives.
+
+**Rules that hold in every medium:**
 
 - **Tokens first, from the source.** The DS ships with the plugin, at
   `<plugin-root>/skills/brisar/references/ds/` (or `BRISAR_DS_PATH`). What this project

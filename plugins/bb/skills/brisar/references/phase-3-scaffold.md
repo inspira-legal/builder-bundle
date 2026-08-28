@@ -285,8 +285,6 @@ For a formal spec: `/bb:spec`.
 
 ## Step 4: where the design system comes from
 
-`<plugin-root>` is this plugin's own directory, and the plugin-root `references/plugin-root.md` is where the rule that resolves it lives.
-
 Nothing is generated here. The Develop phase reads the design system live from
 `<plugin-root>/skills/brisar/references/ds/`, with `BRISAR_DS_PATH` overriding it when
 the builder points somewhere else. A per-project synthesis would be a copy that never

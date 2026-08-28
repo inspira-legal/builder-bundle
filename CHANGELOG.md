@@ -16,9 +16,10 @@ The new plugin-root `references/plugin-root.md` owns that split and states the r
 replaces it: `$CLAUDE_PLUGIN_ROOT` when it is non-empty, then a search that takes the
 **install cache first** (`~/.claude/plugins/cache/*/bb/*`, highest version first), the repo
 checkout second, the per-session copy last, with `workflows/build-tasks.js` readable under a
-directory as the proof it is the root. The installed copy answers first because it is the
-version the session is running, it is where an update lands, and every process on the machine
-can open it. Documents now write `<plugin-root>` and shell calls `$(plugin_root)`.
+directory as the proof it is the root. The installed copy answers first because it is where
+an update lands and every process on the machine can open it, not because it is guaranteed to
+be the version the session is running. Documents now write `<plugin-root>` and shell calls
+`$(plugin_root)`.
 
 **The dispatch that this was breaking says what refused it.** `/bb:implement` proved the
 script with a `cat` whose failure was indistinguishable from the fallback chain's own last
@@ -29,12 +30,10 @@ CR that takes out both dispatch paths at once.
 
 ### Fixed
 
-- **`.gitattributes`** pins the repo to `eol=lf`. The marketplace clone at
-  `~/.claude/plugins/marketplaces/<owner>` runs `core.autocrlf = true` and was handing the
-  install cache a CRLF `build-tasks.js`; `Workflow` inlines a `scriptPath` into the approval
-  dialog as `script` and refuses the CR as a control character that would be hidden there, so
-  the build dispatched neither by path nor inline. The fix belongs to the checkout, and
-  nothing downstream strips anything.
+- **`.gitattributes`** pins the repo to `eol=lf`, so the marketplace clone stops handing the
+  install cache a CRLF `build-tasks.js` that `Workflow` refuses to dispatch. Why a CR takes
+  out both dispatch paths, and why the guard belongs to the checkout rather than to the
+  caller, is the "Line endings" section of `references/plugin-root.md`.
 
 ### Changed
 
