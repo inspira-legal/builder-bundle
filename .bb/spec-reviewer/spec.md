@@ -121,7 +121,7 @@ Happy path (`/bb:spec`, step 6, a Medium or Large spec):
 
 ## Tasks
 
-- [ ] **1. The agent**: `plugins/bb/agents/bb-spec-reviewer.md`, frontmatter (`name`, a narrow
+- [x] **1. The agent**: `plugins/bb/agents/bb-spec-reviewer.md`, frontmatter (`name`, a narrow
       PT-BR `description` pointing at `/bb:spec`, `tools: ["Read", "Grep", "Glob"]`, no `model`)
       and an English prompt with the invariant contract, both lenses and the finding shape
       → behaviors 2, 3, the data and no-claim rows · dep: — · verify: CI
