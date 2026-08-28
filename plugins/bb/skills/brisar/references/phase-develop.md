@@ -238,9 +238,9 @@ One sharp caution: **never edit `tokens.md` or `components.md`**. The DS source 
 
 ## Cooperation contract
 
-| Artifact                                   | Produced by | Consumed by            |
-| ------------------------------------------ | ----------- | ---------------------- |
-| `<plugin-root>/.../references/ds/` | the plugin  | Develop (Step 0, read) |
-| `.bb/<slug>/design.md` (or `design/*.md`)  | Phase 4     | Develop (Step 2)       |
-| `<project>/src/<surface>.tsx` (or .html)   | Develop     | Deliver, dev           |
-| `.bb/<slug>/design.md`, `## Built`         | Develop     | Deliver, human builder |
+| Artifact                                  | Produced by | Consumed by            |
+| ----------------------------------------- | ----------- | ---------------------- |
+| `<plugin-root>/.../references/ds/`        | the plugin  | Develop (Step 0, read) |
+| `.bb/<slug>/design.md` (or `design/*.md`) | Phase 4     | Develop (Step 2)       |
+| `<project>/src/<surface>.tsx` (or .html)  | Develop     | Deliver, dev           |
+| `.bb/<slug>/design.md`, `## Built`        | Develop     | Deliver, human builder |

@@ -37,11 +37,11 @@ first try from the documents that call them.
 
 ## Where the literal stays, and where it goes
 
-| the path is written in | how it arrives | verdict |
-| --- | --- | --- |
-| a reference `.md`, read on demand | raw, so the variable is empty | `<plugin-root>` |
-| a `SKILL.md` body | expanded, to a directory scripts cannot open | `<plugin-root>` |
-| `hooks/hooks.json` | expanded, into a hook's own environment | keep the literal |
+| the path is written in            | how it arrives                               | verdict          |
+| --------------------------------- | -------------------------------------------- | ---------------- |
+| a reference `.md`, read on demand | raw, so the variable is empty                | `<plugin-root>`  |
+| a `SKILL.md` body                 | expanded, to a directory scripts cannot open | `<plugin-root>`  |
+| `hooks/hooks.json`                | expanded, into a hook's own environment      | keep the literal |
 
 The first two rows fail for different reasons and take the same fix. The third is a different
 environment: a hook is not a tool call, this run has no evidence about what a hook's
@@ -51,11 +51,11 @@ module's own `__file__` "when the variable does not reach the process". Untouche
 
 ## The three copies, and which one the rule takes
 
-| copy | glob | line endings |
-| --- | --- | --- |
-| install cache | `$HOME/.claude/plugins/cache/*/bb/*` | CRLF, until this ships |
-| repo | `./plugins/bb` | LF |
-| per-session | `$APPDATA/Claude/local-agent-mode-sessions/*/*/rpm/plugin_*` | LF |
+| copy          | glob                                                         | line endings           |
+| ------------- | ------------------------------------------------------------ | ---------------------- |
+| install cache | `$HOME/.claude/plugins/cache/*/bb/*`                         | CRLF, until this ships |
+| repo          | `./plugins/bb`                                               | LF                     |
+| per-session   | `$APPDATA/Claude/local-agent-mode-sessions/*/*/rpm/plugin_*` | LF                     |
 
 **The installed copy is the answer.** It is the version the session is running, it is where an
 update lands, and it is readable by every process on the machine. Its directories are many and
@@ -148,22 +148,22 @@ The happy path, one build dispatch on Desktop:
    script, the user approves, and one agent per task runs.
 5. The run returns, and implement reports it as a dispatched build.
 
-| WHEN | THEN |
-| --- | --- |
-| a document read by the model writes the literal | the sweep is incomplete, and `grep` is the check |
-| `$CLAUDE_PLUGIN_ROOT` is non-empty and its `build-tasks.js` is readable | it is the root, and nothing is searched |
-| it is non-empty and that file is not readable | it is not a match: the search runs |
-| the search runs | the cache answers first, newest version, then the repo, then the per-session copy |
-| more than one location matches | the first one wins, and the run names which copy it took |
-| no location matches | the resolution failed: say so, and the build takes the chain's last step |
-| the marketplace clone converts line endings | `.gitattributes` pins LF, and the installed copy is LF from this release on |
-| the resolved `build-tasks.js` carries CR anyway | both dispatch steps are refused, and the chain's last step names CR as the reason |
-| the dispatch is refused for its path | step 2 runs: a refusal at step 1 ends the attempt, not the chain |
-| the user denies the permission dialog | report the denial and ask what they want, outside the chain |
-| the session's own rules forbid `Workflow` | build in the main context and name the veto as the reason |
-| a skill step calls a `scripts/*.py` | it resolves `<plugin-root>` first, so the call is not made against the per-session copy |
-| a task agent runs with no skill body in context | the search alone resolves the root |
-| the documents change and `plugin.json` does not | every install stays on the old copy and no session sees the fix |
+| WHEN                                                                    | THEN                                                                                    |
+| ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| a document read by the model writes the literal                         | the sweep is incomplete, and `grep` is the check                                        |
+| `$CLAUDE_PLUGIN_ROOT` is non-empty and its `build-tasks.js` is readable | it is the root, and nothing is searched                                                 |
+| it is non-empty and that file is not readable                           | it is not a match: the search runs                                                      |
+| the search runs                                                         | the cache answers first, newest version, then the repo, then the per-session copy       |
+| more than one location matches                                          | the first one wins, and the run names which copy it took                                |
+| no location matches                                                     | the resolution failed: say so, and the build takes the chain's last step                |
+| the marketplace clone converts line endings                             | `.gitattributes` pins LF, and the installed copy is LF from this release on             |
+| the resolved `build-tasks.js` carries CR anyway                         | both dispatch steps are refused, and the chain's last step names CR as the reason       |
+| the dispatch is refused for its path                                    | step 2 runs: a refusal at step 1 ends the attempt, not the chain                        |
+| the user denies the permission dialog                                   | report the denial and ask what they want, outside the chain                             |
+| the session's own rules forbid `Workflow`                               | build in the main context and name the veto as the reason                               |
+| a skill step calls a `scripts/*.py`                                     | it resolves `<plugin-root>` first, so the call is not made against the per-session copy |
+| a task agent runs with no skill body in context                         | the search alone resolves the root                                                      |
+| the documents change and `plugin.json` does not                         | every install stays on the old copy and no session sees the fix                         |
 
 ## Tasks
 
@@ -185,11 +185,11 @@ The happy path, one build dispatch on Desktop:
 - [x] **5. The `brisar` and `spec` references**: `phase-develop.md`, `develop-modes.md`,
       `deliver-modes.md`, `phase-3-scaffold.md`, `references/spec-state.md`,
       `skills/spec/references/spec-format.md` → behavior 1 · dep: 1 · verify: `grep -rn
-      CLAUDE_PLUGIN_ROOT` over those six files returns nothing
+    CLAUDE_PLUGIN_ROOT` over those six files returns nothing
 - [x] **6. The skill bodies**: `implement/SKILL.md`, `review/SKILL.md`, `ship/SKILL.md`,
       `review-setup/SKILL.md`, `gather-branch-context/SKILL.md`, twenty-one mentions, every one
       of them a `scripts/*.py` call → behaviors 1, 12 · dep: 1 · verify: `grep -rn
-      CLAUDE_PLUGIN_ROOT --include=*.md plugins/bb` returns only `plugin-root.md`
+    CLAUDE_PLUGIN_ROOT --include=*.md plugins/bb` returns only `plugin-root.md`
 - [x] **7. The release**: `plugin.json` from 3.1.0 to 3.2.0 and the `CHANGELOG.md` entry that
       says which copy the rule takes, why, and what `.gitattributes` fixes → behavior 14 · dep:
       2, 3, 4, 5, 6 · verify: reading

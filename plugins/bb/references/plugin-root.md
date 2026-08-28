@@ -9,10 +9,10 @@ the bundle the machine has, and a reader resolves it before running anything und
 `${CLAUDE_PLUGIN_ROOT}` is expanded by the platform in two places and read as plain text
 everywhere else.
 
-| the path is written in | how it arrives |
-| --- | --- |
-| `hooks/hooks.json` | expanded, into the hook process's own environment |
-| a `SKILL.md` body | expanded, to the per-session copy of the plugin |
+| the path is written in            | how it arrives                                            |
+| --------------------------------- | --------------------------------------------------------- |
+| `hooks/hooks.json`                | expanded, into the hook process's own environment         |
+| a `SKILL.md` body                 | expanded, to the per-session copy of the plugin           |
 | a reference `.md`, read on demand | raw: a `Read` is a file read, and nothing interpolates it |
 
 The third row is empty in a tool call, so `cat "$CLAUDE_PLUGIN_ROOT/workflows/build-tasks.js"`
@@ -32,11 +32,11 @@ with a path nothing can open.
 1. `$CLAUDE_PLUGIN_ROOT`, when it is non-empty.
 2. The search, in this order:
 
-| copy | glob |
-| --- | --- |
-| install cache | `$HOME/.claude/plugins/cache/*/bb/*`, highest version first |
-| repo checkout | `./plugins/bb` |
-| per-session | `$APPDATA/Claude/local-agent-mode-sessions/*/*/rpm/plugin_*` |
+| copy          | glob                                                         |
+| ------------- | ------------------------------------------------------------ |
+| install cache | `$HOME/.claude/plugins/cache/*/bb/*`, highest version first  |
+| repo checkout | `./plugins/bb`                                               |
+| per-session   | `$APPDATA/Claude/local-agent-mode-sessions/*/*/rpm/plugin_*` |
 
 The installed copy answers first: it is where an update lands, and every process on the
 machine can open it, which is exactly what the per-session copy fails at. It is not

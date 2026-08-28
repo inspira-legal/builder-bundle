@@ -65,11 +65,11 @@ with every thread already resolved, there is nothing to judge and the line repor
 
 ## Handle (only threads the user picked)
 
-| Verdict | Action                                                                                                                                                                                               |
-| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Verdict | Action                                                                                                                                                                                       |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | fix     | apply the change per `act-apply-fixes.md`, commit, push to the PR branch, then `python3 <plugin-root>/scripts/reply_resolve_thread.py --thread-id <id> --body "Fixed in <sha>: <one-liner>"` |
 | answer  | `python3 <plugin-root>/scripts/reply_resolve_thread.py --thread-id <id> --body "..." --no-resolve`; the reviewer closes it                                                                   |
-| unclear | ask the user what the reply should be, then answer-flow with their wording                                                                                                                           |
+| unclear | ask the user what the reply should be, then answer-flow with their wording                                                                                                                   |
 
 Replies match the language of the thread they answer. Pushing
 fixes to the PR branch is reversible, so it proceeds without pausing; merge,
