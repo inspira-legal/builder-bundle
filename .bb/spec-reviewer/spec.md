@@ -125,7 +125,7 @@ Happy path (`/bb:spec`, step 6, a Medium or Large spec):
       PT-BR `description` pointing at `/bb:spec`, `tools: ["Read", "Grep", "Glob"]`, no `model`)
       and an English prompt with the invariant contract, both lenses and the finding shape
       → behaviors 2, 3, the data and no-claim rows · dep: — · verify: CI
-- [ ] **2. The skill dispatches and records**: `skills/spec/SKILL.md` step 6 (the
+- [x] **2. The skill dispatches and records**: `skills/spec/SKILL.md` step 6 (the
       `subagent_type`, the two lenses in one message, what each one gets, the no-Agent-tool
       path), step 7 (the verdict line, the `## Open` promotion) and **Capture the alignment**,
       where finalize learns to write `review:`
