@@ -1,5 +1,29 @@
 # Changelog
 
+## 3.2.0 (2026-08-27)
+
+**`/bb:implement` dispatches its build workflow again.** Two things were stopping it, and
+either one alone was enough.
+
+### Fixed
+
+- **The probe that proves `build-tasks.js` ran against `/`.** `references/build-tasks-workflow.md`
+  is a reference read on demand, and a `Read` is a file read: `${CLAUDE_PLUGIN_ROOT}` arrives
+  raw and empty there, so `cat "$CLAUDE_PLUGIN_ROOT/workflows/build-tasks.js"` exited 1 and the
+  skill read that as the workflow declining, which is the last step of its own fallback chain.
+  The reference resolves the root before it proves the file: `$CLAUDE_PLUGIN_ROOT` when it is
+  non-empty, then the install cache (`~/.claude/plugins/cache/*/bb/*`, highest version first),
+  then the repo checkout, with a readable `workflows/build-tasks.js` as the proof a directory
+  is the root.
+- **`.gitattributes` pins the repo to `eol=lf`.** The marketplace clone runs with
+  `core.autocrlf = true` and was handing the install cache a CRLF `build-tasks.js`. `Workflow`
+  inlines a `scriptPath` into the approval dialog as `script` and refuses the CR as a control
+  character that would be hidden there, so the file dispatched neither by path nor inline.
+
+`${CLAUDE_PLUGIN_ROOT}` stays where it already opens something: `hooks/hooks.json`, where the
+platform puts it in the hook process's environment, and the skill bodies, which the platform
+expands when it composes them.
+
 ## 3.1.0 (2026-08-27)
 
 **A review has two levels, reads what was already said, and adds only what is new.** The
