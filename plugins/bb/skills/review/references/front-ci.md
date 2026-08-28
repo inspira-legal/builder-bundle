@@ -6,10 +6,8 @@ familiar failure is how a wrong fix lands on top of a real one.
 
 ## 1. Evidence
 
-`<plugin-root>` is this plugin's own directory, and the plugin-root `references/plugin-root.md` is where the rule that resolves it lives.
-
 Collect, read-only. One call is the collection:
-`python3 <plugin-root>/scripts/inspect_pr_checks.py --repo "." --pr <number>`
+`python3 ${CLAUDE_PLUGIN_ROOT}/scripts/inspect_pr_checks.py --repo "." --pr <number>`
 lists the failing checks, resolves their run IDs, pulls the GitHub Actions logs and
 extracts each failure snippet. Read the log it returns, not just the check name.
 
@@ -57,7 +55,7 @@ an assertion to make CI green needs the user's explicit say-so, never a default.
 
 Watch the affected workflow re-run: `gh pr checks <number> --watch` (or
 `gh run watch`) as a **background** command with the Monitor tool on its output.
-`<plugin-root>/hooks/scheduling-decision.md` carries that rule whole, alert
+`${CLAUDE_PLUGIN_ROOT}/hooks/scheduling-decision.md` carries that rule whole, alert
 condition included; follow it there. Cap the loop at **3 diagnose→fix cycles per check**; after that,
 stop editing and report what's still red with the evidence. A check that
 survives three informed fixes needs a human decision, not a fourth guess.

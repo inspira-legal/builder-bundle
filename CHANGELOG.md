@@ -2,56 +2,27 @@
 
 ## 3.2.0 (2026-08-27)
 
-**Every document resolves the plugin's own directory instead of naming a variable nobody
-expands.** `${CLAUDE_PLUGIN_ROOT}` reaches a command in one place, `hooks/hooks.json`, where
-the platform expands it into the hook process's environment. A `SKILL.md` body is expanded
-too, and that is the row that looked fine and was not: on Windows it expands to the
-per-session copy under `AppData\Roaming\Claude`, a directory MSYS tools list and native
-processes report as non-existent, so `python3` against it comes back `can't open file`. A
-reference `.md` is worse still, because a `Read` is a file read and nothing interpolates it:
-the variable arrives raw, empty in the tool call, and `cat "$CLAUDE_PLUGIN_ROOT/..."` runs
-against `/`.
-
-The new plugin-root `references/plugin-root.md` owns that split and states the rule that
-replaces it: `$CLAUDE_PLUGIN_ROOT` when it is non-empty, then a search that takes the
-**install cache first** (`~/.claude/plugins/cache/*/bb/*`, highest version first), the repo
-checkout second, the per-session copy last, with `workflows/build-tasks.js` readable under a
-directory as the proof it is the root. The installed copy answers first because it is where
-an update lands and every process on the machine can open it, not because it is guaranteed to
-be the version the session is running. Documents now write `<plugin-root>` and shell calls
-`$(plugin_root)`.
-
-**The dispatch that this was breaking says what refused it.** `/bb:implement` proved the
-script with a `cat` whose failure was indistinguishable from the fallback chain's own last
-step, so a resolution that never found the file read as "the workflow declined". The probe
-resolves the root first and prints the path it proved, and the chain names two non-steps it
-could not name before: a session that vetoes `Workflow` without an explicit request, and a
-CR that takes out both dispatch paths at once.
+**`/bb:implement` dispatches its build workflow again.** Two things were stopping it, and
+either one alone was enough.
 
 ### Fixed
 
-- **`plugin_root` resolves on macOS and Linux, not only on Windows.** The version order was
-  `sort -V`, a GNU extension the macOS sort rejects outright, which took the install-cache
-  step down on the system where that step usually wins; it is now a zero-padded key over plain
-  `sort -r`. The per-session copy had a Windows path and a macOS one and no Linux one, and now
-  globs `${XDG_CONFIG_HOME:-$HOME/.config}` alongside them. The cache lives under
-  `CLAUDE_CONFIG_DIR` when a multi-account setup has moved it, rather than under a hardcoded
-  `$HOME/.claude`. One more, found while testing the other three: `ls -d` on a `*/` glob can
-  emit the trailing slash twice, which empties the last path component and orders the cache by
-  name.
-- **`.gitattributes`** pins the repo to `eol=lf`, so the marketplace clone stops handing the
-  install cache a CRLF `build-tasks.js` that `Workflow` refuses to dispatch. Why a CR takes
-  out both dispatch paths, and why the guard belongs to the checkout rather than to the
-  caller, is the "Line endings" section of `references/plugin-root.md`.
+- **The probe that proves `build-tasks.js` ran against `/`.** `references/build-tasks-workflow.md`
+  is a reference read on demand, and a `Read` is a file read: `${CLAUDE_PLUGIN_ROOT}` arrives
+  raw and empty there, so `cat "$CLAUDE_PLUGIN_ROOT/workflows/build-tasks.js"` exited 1 and the
+  skill read that as the workflow declining, which is the last step of its own fallback chain.
+  The reference resolves the root before it proves the file: `$CLAUDE_PLUGIN_ROOT` when it is
+  non-empty, then the install cache (`~/.claude/plugins/cache/*/bb/*`, highest version first),
+  then the repo checkout, with a readable `workflows/build-tasks.js` as the proof a directory
+  is the root.
+- **`.gitattributes` pins the repo to `eol=lf`.** The marketplace clone runs with
+  `core.autocrlf = true` and was handing the install cache a CRLF `build-tasks.js`. `Workflow`
+  inlines a `scriptPath` into the approval dialog as `script` and refuses the CR as a control
+  character that would be hidden there, so the file dispatched neither by path nor inline.
 
-### Changed
-
-- **The five skill bodies** that call a shared script (`implement`, `review`, `ship`,
-  `review-setup`, `gather-branch-context`) and the sixteen references that name the root go
-  through `plugin_root`. `hooks/hooks.json` keeps the literal, which is the one file where it
-  opens something.
-- **`.claude/CLAUDE.md`** states the convention as `<plugin-root>/scripts/<x>.py`, so the
-  repo's own instructions stop asking for the variable back.
+`${CLAUDE_PLUGIN_ROOT}` stays where it already opens something: `hooks/hooks.json`, where the
+platform puts it in the hook process's environment, and the skill bodies, which the platform
+expands when it composes them.
 
 ## 3.1.0 (2026-08-27)
 

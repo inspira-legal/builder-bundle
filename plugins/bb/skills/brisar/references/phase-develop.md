@@ -2,11 +2,9 @@
 
 Loaded when the builder chooses to build surfaces (Phase 5 gate, the `develop-direct` shortcut, or re-entry). You build a **clickable prototype** of the journey: its screens navigating between each other, each screen's states, the DS tokens applied. Mock data, no integrations, no error handling, no tests. That is not a degradation, it is what a prototype is for; the product code is `/bb:implement`'s job, written from the spec.
 
-`<plugin-root>` is this plugin's own directory, and the plugin-root `references/plugin-root.md` is where the rule that resolves it lives.
-
 The discipline here is **fidelity to contracts**:
 
-- Read the design system from the plugin: `<plugin-root>/skills/brisar/references/ds/`, or `BRISAR_DS_PATH` when the builder set it.
+- Read the design system from the plugin: `${CLAUDE_PLUGIN_ROOT}/skills/brisar/references/ds/`, or `BRISAR_DS_PATH` when the builder set it.
 - Read the surface's direction, `## Surfaces` in `.bb/<slug>/design.md`, written in Phase 4.
 - Build React + Tailwind (or plain static HTML if `prototype-hosted`) into `.bb/<slug>/prototype/`, applying tokens faithfully.
 - When something is not in the DS, **ask** before inventing.
@@ -51,7 +49,7 @@ If it does not exist: the builder reached Develop without Phase 3. Offer to run 
 It ships with the plugin, so there is nothing per-project to find:
 
 ```bash
-DS_PATH="${BRISAR_DS_PATH:-$(plugin_root)/skills/brisar/references/ds}"
+DS_PATH="${BRISAR_DS_PATH:-${CLAUDE_PLUGIN_ROOT}/skills/brisar/references/ds}"
 test -d "$DS_PATH/brand"
 ```
 
@@ -238,9 +236,9 @@ One sharp caution: **never edit `tokens.md` or `components.md`**. The DS source 
 
 ## Cooperation contract
 
-| Artifact                                  | Produced by | Consumed by            |
-| ----------------------------------------- | ----------- | ---------------------- |
-| `<plugin-root>/.../references/ds/`        | the plugin  | Develop (Step 0, read) |
-| `.bb/<slug>/design.md` (or `design/*.md`) | Phase 4     | Develop (Step 2)       |
-| `<project>/src/<surface>.tsx` (or .html)  | Develop     | Deliver, dev           |
-| `.bb/<slug>/design.md`, `## Built`        | Develop     | Deliver, human builder |
+| Artifact                                   | Produced by | Consumed by            |
+| ------------------------------------------ | ----------- | ---------------------- |
+| `${CLAUDE_PLUGIN_ROOT}/.../references/ds/` | the plugin  | Develop (Step 0, read) |
+| `.bb/<slug>/design.md` (or `design/*.md`)  | Phase 4     | Develop (Step 2)       |
+| `<project>/src/<surface>.tsx` (or .html)   | Develop     | Deliver, dev           |
+| `.bb/<slug>/design.md`, `## Built`         | Develop     | Deliver, human builder |

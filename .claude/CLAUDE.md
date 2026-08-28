@@ -32,9 +32,8 @@ plugins/bb/
 │   ├── bb-config.md                    # ~/.claude/bb.config.json: the schema and who reads it
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
 │   ├── build-tasks-workflow.md         # how the skills call workflows/build-tasks.js, and what it returns
-│   ├── plugin-root.md                  # <plugin-root>: the resolution rule for the plugin's own files
 │   └── finding-levels.md               # Bloqueante / Sugestão, HIGH / LOW in a guide: review, review-setup
-├── scripts/                           # shared executables (2+ skills), ref via <plugin-root>/scripts/
+├── scripts/                           # shared executables (2+ skills), ref via ${CLAUDE_PLUGIN_ROOT}/scripts/
 │   ├── fetch_comments.py               # ship, review
 │   ├── reply_resolve_thread.py         # ship, review
 │   ├── gather_context.py               # ship (the PR body), review, gather-branch-context
@@ -131,14 +130,12 @@ TypeScript.
 - Trigger descriptions should be specific; list exact phrases the user might say
 - Skill workflows reference their **own** scripts relatively (e.g.
   `scripts/foo.py`). Scripts shared by 2+ skills live at the plugin root in
-  `plugins/bb/scripts/` and are referenced with `<plugin-root>/scripts/<x>.py`,
-  the notation `plugins/bb/references/plugin-root.md` defines and resolves. A
-  skill's own, non-shared script stays relative. `${CLAUDE_PLUGIN_ROOT}` is
-  written literally in `hooks/hooks.json` alone, which is the one place the
-  platform expands it into something a command can open.
+  `plugins/bb/scripts/` and are referenced with
+  `${CLAUDE_PLUGIN_ROOT}/scripts/<x>.py` (hooks use it for their own files too). A
+  skill's own, non-shared script stays relative.
 - **Borrowing another skill's reference** is allowed when one skill owns a method
   two entry points must share, and duplicating it would mean two definitions that
-  drift. Path it via `<plugin-root>/skills/<owner>/references/<x>.md` and
+  drift. Path it via `${CLAUDE_PLUGIN_ROOT}/skills/<owner>/references/<x>.md` and
   say in both skills who owns it. Reading a reference is not invoking a skill;
   the borrower still orchestrates its own run, which is why borrowing beats
   invoking when the owner's router would ask questions the borrower answers by

@@ -47,27 +47,30 @@ read-only.
 
 ## How the skills invoke it
 
-The root is resolved and the file proved in one `Bash` call. A `Bash` call is a fresh shell,
-so the function travels with it; the plugin-root `references/plugin-root.md` is where the
-resolution rule it implements lives:
+The root is resolved and the file proved in one `Bash` call. `${CLAUDE_PLUGIN_ROOT}` is
+expanded where the platform composes the text itself and read as plain text everywhere else,
+and a reference is a file read: the literal arrives here raw, so
+`cat "$CLAUDE_PLUGIN_ROOT/workflows/build-tasks.js"` runs as `cat /workflows/build-tasks.js`
+and exits 1. The rule below is what a reader resolves instead. A `Bash` call is a fresh
+shell, so the function travels with the call that uses it:
 
 ```bash
 plugin_root() {
-  cc="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
   for d in "$CLAUDE_PLUGIN_ROOT" \
-           $(ls -d "$cc"/plugins/cache/*/bb/*/ 2>/dev/null | sed 's:/*$::' \
-             | awk -F/ '{split($NF,v,"."); printf "%05d.%05d.%05d\t%s\n", v[1],v[2],v[3], $0}' \
-             | sort -r | cut -f2-) \
-           ./plugins/bb \
-           $(ls -dt "$APPDATA"/Claude/local-agent-mode-sessions/*/*/rpm/plugin_* \
-                    "$HOME"/Library/Application\ Support/Claude/local-agent-mode-sessions/*/*/rpm/plugin_* \
-                    "${XDG_CONFIG_HOME:-$HOME/.config}"/Claude/local-agent-mode-sessions/*/*/rpm/plugin_* 2>/dev/null); do
+           $(ls -d "$HOME"/.claude/plugins/cache/*/bb/* 2>/dev/null | sort -Vr) \
+           ./plugins/bb; do
     [ -n "$d" ] && [ -f "$d/workflows/build-tasks.js" ] && { printf '%s\n' "${d%/}"; return 0; }
   done
   return 1
 }
 r="$(plugin_root)" && cat "$r/workflows/build-tasks.js" > /dev/null && echo "$r/workflows/build-tasks.js"
 ```
+
+The installed copy answers before the repo checkout: it is where an update lands, and every
+process on the machine can open it, which the per-session copy under `AppData\Roaming` fails
+at on Windows. The `[ -f ... ]` guard is what keeps a step that resolved to the wrong
+directory from winning, so it falls through to the next one instead; set `CLAUDE_PLUGIN_ROOT`
+to a checkout when that has to win.
 
 A non-zero exit covers both ways this fails: the rule found no copy of the plugin, or the
 copy it found has no readable `build-tasks.js`. The printed path is what goes into
@@ -136,7 +139,7 @@ stringified one):
 }
 ```
 
-`checks` is `<plugin-root>/scripts/resolve_checks.py`'s output, passed through
+`checks` is `scripts/resolve_checks.py`'s output, passed through
 whole (or `null` when the skill could not run it). The script walks the authority chain,
 so nothing in the run resolves it a second time: it is the same call implement's step 7
 and ship's Step 2 make. `runnable: false` means local runs are forbidden, and it is what

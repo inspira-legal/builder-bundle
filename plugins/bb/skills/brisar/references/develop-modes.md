@@ -16,12 +16,10 @@ every medium, but the target and the tooling change:
 | `figma`         | frames in a Figma file                      | Figma MCP  | Reuse the file's components and variables before creating new nodes.                                    |
 | `pencil`        | nodes in a `.pen` file                      | Pencil MCP | `.pen` files are only reachable through the MCP, never Read/Grep them.                                  |
 
-`<plugin-root>` is this plugin's own directory, and the plugin-root `references/plugin-root.md` is where the rule that resolves it lives.
-
 **Rules that hold in every medium:**
 
 - **Tokens first, from the source.** The DS ships with the plugin, at
-  `<plugin-root>/skills/brisar/references/ds/` (or `BRISAR_DS_PATH`). What this project
+  `${CLAUDE_PLUGIN_ROOT}/skills/brisar/references/ds/` (or `BRISAR_DS_PATH`). What this project
   changed or invented is the token delta in `.bb/<slug>/design.md`, and on a canvas medium the
   values the research front read are the same authority, one step earlier.
 - **The chosen direction is the contract.** Same five parts (bet, composition, copy, rationale,
@@ -42,7 +40,7 @@ every medium, but the target and the tooling change:
 
 ### Inputs
 
-- `<plugin-root>/skills/brisar/references/ds/` (or `BRISAR_DS_PATH`): the tokens and the
+- `${CLAUDE_PLUGIN_ROOT}/skills/brisar/references/ds/` (or `BRISAR_DS_PATH`): the tokens and the
   components the DS offers
 - `.bb/<slug>/design.md`, `## Surfaces`: the visual direction written by Phase 4 (hierarchy, components, states, sketch), with the surfaces listed in the document's frontmatter
 - `.bb/<slug>/spec.md`: cuts, hypothesis, appetite

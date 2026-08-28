@@ -15,12 +15,10 @@ Gather all changes on the current branch relative to the base branch (main/maste
 
 ### 1. Gather context
 
-`<plugin-root>` is this plugin's own directory, and the plugin-root `references/plugin-root.md` is where the rule that resolves it lives.
-
 Run the shared plugin-root script:
 
 ```
-python3 $(plugin_root)/scripts/gather_context.py
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py
 ```
 
 Optional flags:

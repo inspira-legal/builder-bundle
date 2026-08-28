@@ -87,8 +87,6 @@ No handoff gate, report and stop:
 - `references/guide-template.md`: the CODE_REVIEW_GUIDE.md template and generation rules.
 - `references/update-delta.md`: delta discovery, incremental interview, surgical edits.
 
-`<plugin-root>` is this plugin's own directory, and the plugin-root `references/plugin-root.md` is where the rule that resolves it lives.
-
 References (plugin root):
 
-- `<plugin-root>/references/finding-levels.md`: `HIGH` / `LOW` in the guide (Bloqueante / Sugestão in a review), the concrete-cost gate and the `MEDIUM` collapse. Shared with `/bb:review`.
+- `${CLAUDE_PLUGIN_ROOT}/references/finding-levels.md`: `HIGH` / `LOW` in the guide (Bloqueante / Sugestão in a review), the concrete-cost gate and the `MEDIUM` collapse. Shared with `/bb:review`.

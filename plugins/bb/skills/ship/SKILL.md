@@ -13,9 +13,7 @@ Take the current branch all the way to shipped (checks green, committed), then s
 
 ## Prerequisites
 
-`<plugin-root>` is this plugin's own directory, and the plugin-root `references/plugin-root.md` is where the rule that resolves it lives.
-
-One call answers the whole ground this run stands on: `python3 <plugin-root>/scripts/preflight.py` prints `gh_authenticated`, the branch with its `base_branch`, `merge_base` and resolved `diff_range`, the `pr` for this branch with its `checks` buckets, `project_kind`, `code_review_guide`, the spec the branch belongs to and whether the diff's hunks contain `ui`. Every step below reads that one payload instead of probing again.
+One call answers the whole ground this run stands on: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/preflight.py` prints `gh_authenticated`, the branch with its `base_branch`, `merge_base` and resolved `diff_range`, the `pr` for this branch with its `checks` buckets, `project_kind`, `code_review_guide`, the spec the branch belongs to and whether the diff's hunks contain `ui`. Every step below reads that one payload instead of probing again.
 
 - For the PR path: `gh_authenticated: false` means `gh auth status` came back non-zero, so either nobody is logged in or `gh` is not on the PATH at all; instruct the user to run `gh auth login`. Authenticated is not the same as sufficient: the PR path needs the `repo` and `workflow` scopes, and a login predating the `workflow` scope fails on the first push that touches `.github/workflows/`. `gh auth refresh -s repo,workflow` is the remedy for that one.
 - A non-null `pr` is the default destination ("finish the PR").
@@ -62,7 +60,7 @@ before the build, and ran it on this branch before handing over. What ship owns 
 part with no judgment in it: the checks CI would run anyway, and a clean commit.
 
 1. **The project's checks** (background):
-   `python3 <plugin-root>/scripts/resolve_checks.py` walks the authority chain its
+   `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py` walks the authority chain its
    own docstring states and prints
    `{commands, source, truncated, resolved_count, runnable, policy, notes, unresolved, candidates, git_root}`.
    Run every command it returns as
@@ -138,29 +136,29 @@ The LexFlow path: what a LexFlow app is (the remote is the platform; `push` is n
 
 A drop-in `.claude/loop.md` that makes a bare `/loop` route the PR-tending triad (review comments / failed CI / merge conflicts) through ship's PR flow while keeping merge a human action. Copy it into the target repo or `~/.claude`.
 
-Shared scripts live at the plugin root (`<plugin-root>/scripts/`); `check_lexflow_manifest.py` is ship-owned and stays relative.
+Shared scripts live at the plugin root (`${CLAUDE_PLUGIN_ROOT}/scripts/`); `check_lexflow_manifest.py` is ship-owned and stays relative.
 
-### <plugin-root>/scripts/preflight.py
+### ${CLAUDE_PLUGIN_ROOT}/scripts/preflight.py
 
 The ground for the whole run in one call: `gh_authenticated`, branch, base, `merge_base` and the `diff_range` every reader shares, the `pr` with its `checks` buckets, `code_review_guide`, `project_kind`, the branch's spec and whether the diff's hunks contain UI. Shared with `/bb:review`, whose fronts probe reads the same payload. Prints JSON.
 
-### <plugin-root>/scripts/resolve_checks.py
+### ${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py
 
 Walk the checks authority chain without running anything. Its docstring states the chain, tier by tier, and is the one place that does. Prints `{commands, source, truncated, resolved_count, runnable, policy, notes, unresolved, candidates, git_root}`, where `unresolved` is what it saw and could not resolve, so an empty `commands` is never mistaken for a project with no checks. Shared with `/bb:implement`, which also hands it to `workflows/build-tasks.js` as `args.checks`.
 
-### <plugin-root>/scripts/inspect_pr_checks.py
+### ${CLAUDE_PLUGIN_ROOT}/scripts/inspect_pr_checks.py
 
 Fetch failing PR checks, pull GitHub Actions logs, and extract a failure snippet. Exits non-zero while failures remain. Shared with `/bb:review`, whose `ci` front reads it instead of re-specifying `gh`.
 
-### <plugin-root>/scripts/gather_context.py
+### ${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py
 
 Collect branch, upstream, base + merge-base, commit log, diff stat, changed files, full diff, uncommitted changes, and PR template in one call. Shared with `/bb:gather-branch-context`. Prints JSON.
 
-### <plugin-root>/scripts/fetch_comments.py
+### ${CLAUDE_PLUGIN_ROOT}/scripts/fetch_comments.py
 
 Fetch all PR conversation comments, reviews, and review threads (with thread IDs and resolved state) via `gh api graphql`. Shared with `/bb:review`. Prints JSON.
 
-### <plugin-root>/scripts/reply_resolve_thread.py
+### ${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py
 
 Reply to a review thread and/or resolve it. `--thread-id` from fetch_comments.py; `--body` for the reply; `--no-resolve` to reply without resolving. Shared with `/bb:review`.
 

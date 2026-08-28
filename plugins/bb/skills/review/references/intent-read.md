@@ -15,15 +15,13 @@ Everything else is the current branch, and takes the read below.
 
 ## 1. The probe, then the two reads
 
-`<plugin-root>` is this plugin's own directory, and the plugin-root `references/plugin-root.md` is where the rule that resolves it lives.
-
-Run the probe here, `python3 <plugin-root>/scripts/preflight.py`: one payload, which
+Run the probe here, `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/preflight.py`: one payload, which
 answers whether this branch has a PR now and answers every front's availability at step 2.
 
 The branch context comes next, and it comes on every run, PR or no PR:
 
 ```
-python3 $(plugin_root)/scripts/gather_context.py --base <the probe's base_branch> --no-fetch
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py --base <the probe's base_branch> --no-fetch
 ```
 
 → `commit_log`, the subjects behind the branch, and `pr_body`, the open PR's description as it
@@ -34,7 +32,7 @@ from the repo default and diffs a stacked PR against the wrong ref.
 Then, **with a non-null `pr` in the probe's payload**, the conversation:
 
 ```
-python3 $(plugin_root)/scripts/fetch_comments.py
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/fetch_comments.py
 ```
 
 → the whole conversation: the top-level comments, the review bodies, and the inline threads
