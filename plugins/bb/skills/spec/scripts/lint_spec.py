@@ -2,8 +2,10 @@
 """Check the mechanical shape of a spec.
 
 Judgment (is it too long, does it repeat itself, is it recounting the conversation)
-belongs to the independent reviewer. This only catches what is decidable by reading
-the bytes: the required sections, dead names, frontmatter, and malformed tables.
+belongs to the two `bb-spec-reviewer` lenses. This only catches what is decidable by
+reading the bytes: the required sections, dead names, frontmatter, and malformed tables.
+`E006` is where the two meet: it checks that the lenses' verdict was recorded, never
+what it says.
 
 Usage: lint_spec.py <path>...
 Output: `path:line CODE message` on stdout. Exit 1 when any E-code fired.
@@ -40,6 +42,7 @@ DEAD_SECTIONS = {
     "cuts": MOVED_TO_DISCOVERY,
 }
 VALID_STATUS = ("pending", "in-progress", "done", "blocked")
+VALID_REVIEW = ("clean", "resolved", "not-run")
 MAX_CELL = 100
 
 HEADING = re.compile(r"^##\s+(.+?)\s*$")
@@ -63,7 +66,7 @@ def split_row(line):
 def check_frontmatter(lines):
     """Yield problems with the `---` block the spec-state contract requires."""
     if not lines or lines[0].strip() != "---":
-        yield 1, "E001", "no frontmatter: the `---` block with status/created/slug opens the file"
+        yield 1, "E001", "no frontmatter: the `---` block with status/created/slug/review opens the file"
         return
 
     end = next((i for i, line in enumerate(lines[1:], start=1) if line.strip() == "---"), None)
@@ -90,6 +93,21 @@ def check_frontmatter(lines):
         line_no, value = fields["created"]
         if not DATE.match(value):
             yield line_no, "E001", f"created `{value}` is not in YYYY-MM-DD format"
+
+    # `review` records what the two bb-spec-reviewer lenses returned. A `done` spec with
+    # no key at all landed before the field existed; an invalid value is a typo, so it
+    # fires wherever it appears.
+    if "review" in fields:
+        line_no, value = fields["review"]
+        if value not in VALID_REVIEW:
+            yield line_no, "E006", f"review `{value}` is invalid: use {', '.join(VALID_REVIEW)}"
+    elif fields.get("status", (0, ""))[1] != "done":
+        yield (
+            1,
+            "E006",
+            "frontmatter without `review`: `/bb:spec` records the two lenses' verdict there "
+            "on finalize, and a spec that closes without one was never reviewed",
+        )
 
 
 def check_body(lines):

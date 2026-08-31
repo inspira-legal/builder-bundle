@@ -1,5 +1,53 @@
 # Changelog
 
+## 3.3.0 (2026-08-27)
+
+**The spec's independent reviewer becomes an agent, gains a second lens, and leaves a
+record the CI can read.** Step 6 of `/bb:spec` spawned a reviewer through the generic
+Agent tool with its mandate written inline, and that tool takes no per-call `tools:` list.
+So the one agent in the bundle whose whole job is to report inherited `Write` and `Edit`
+while being told to find what is missing in a document it can reach, which is the shape
+that fixes a spec instead of reporting it, past the alignment the user was about to give.
+As `plugins/bb/agents/bb-spec-reviewer.md` it carries `Read`, `Grep` and `Glob` and
+nothing else, and CI has been failing a bb agent that lists a write tool since the review
+agents landed.
+
+**Two lenses, one definition, dispatched together.** The coherence lens gets the spec's
+text and nothing else, so it reads the way a builder with no memory of the conversation
+reads. The grounding lens gets the repo and checks only what the spec claims about
+existing code: a symbol named in `## Decisions` that does not exist, a signature stated
+differently from the real one, a file a task names that is not there, something the repo
+already does that the spec is about to rebuild. They run in one message, because gating
+the expensive one on the cheap one coming back empty would skip it exactly on the spec
+already showing signs of being sloppy. What varies between the two is prompt content the
+caller assembles, the same split `bb-review-finder` uses across fronts.
+
+**And the step stops being a promise in prose.** The verdict lands in the spec's own
+frontmatter as `review:`, `clean` / `resolved` / `not-run`, and `lint_spec.py` fires
+`E006` on a spec that closes without one, so a skipped review goes red in CI instead of
+passing unnoticed. What that guarantees is the record and not the run, since a value can
+be written by hand; the gate is what runs the lenses. The 15 specs that landed before the
+field are grandfathered: `E006` stays silent when `status: done` and the key is absent
+entirely, and every new spec is linted while it is still `pending`, before implement flips
+it, so none of them reaches the exemption.
+
+### Changed
+
+- **`bb-spec-reviewer`** is the third read-only agent, and the first with no `Bash`, so
+  its surface is closed and not merely narrowed. It owns the contract and the finding
+  shape (`section | what | why it matters`, sharpest first, capped at 8 rows); the caller
+  writes which lens this one is.
+- **`/bb:spec`** (2.5.0) dispatches both lenses at step 6 and names them separately in the
+  gate's verdict line. A grounding finding that invalidates a `## Decisions` bullet or a
+  file a task names becomes an item in `## Open`, which the gate already blocks on, so
+  there is no new gate state. One lens dying leaves the other's verdict standing.
+- **`review:` joins the spec's frontmatter block**, documented in `spec-state.md` without
+  an inline comment: `check_frontmatter` reads the whole string after the first `:`, so a
+  block copied with its comment attached would fire on a spec that is fine.
+- **`E006`** is the one lint code that reaches past the document's own bytes. Its message
+  names what was skipped, and an invalid value fires even on a `done` spec, because that
+  is a typo and not a legacy file.
+
 ## 3.2.0 (2026-08-27)
 
 **`/bb:implement` dispatches its build workflow again.** Two things were stopping it, and

@@ -4,7 +4,7 @@ description: Align on the idea before building. Develops a draft, iterates the g
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.4.0
+  version: 2.5.0
 ---
 
 # Spec
@@ -61,7 +61,7 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
 
    What you're hunting: (a) **unresolved load-bearing decisions** (a technical fork building can't proceed without, still blank or "TBD"); (b) **unmapped or unanswered behavior** (a happy-path step glossed over, an edge with no decided outcome); (c) **material contradictions**. Load-bearing gaps, behavior holes, and real conflicts only. Don't manufacture nitpicks, or the loop never closes.
 
-6. **Check the spec: the lint, then an independent reviewer. Every Medium-and-up spec, every time.** This is a step of its own because it's the one an author skips: you cannot see your own omissions, and the pass that would catch them is the pass that feels redundant.
+6. **Check the spec: the lint, then two independent lenses. Every Medium-and-up spec, every time.** This is a step of its own because it's the one an author skips: you cannot see your own omissions, and the pass that would catch them is the pass that feels redundant.
 
    First the lint (dead section names, malformed tables, a missing required section), so the gate spends its attention on completeness instead:
 
@@ -69,11 +69,13 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
    python3 scripts/lint_spec.py .bb/<slug>/spec.md
    ```
 
-   Then spawn a reviewer (Agent tool, fresh context) given ONLY the spec and this mandate: _"you did not write this. Find what is missing, what is unmapped, what contradicts itself, and what is surplus: a fact repeated in more than one section, prose that retells the conversation instead of describing what to build."_ A reviewer with no memory of the conversation that produced the spec reads it the way the builder will. Fold what it finds back into step 3, and carry its verdict to the gate in one line.
+   Then the two lenses, both of them `bb-spec-reviewer` (read only by its own `tools:`), dispatched with `subagent_type: bb-spec-reviewer` **in one message** so they run together. One is told **coherence** and gets the spec's full text and nothing else; the other is told **grounding** and gets the spec plus its path and the repo root, because it is the one that opens files. The agent owns the rest, the contract and the finding shape, so what you write is which lens this one is and what it reads. Running the grounding lens only when the coherence one came back empty would skip the expensive check exactly on the spec already showing signs of being sloppy.
 
-   Without an Agent tool in this context, say so at the gate rather than showing a verdict that never ran.
+   Fold what they return back into step 3, with one exception: a **grounding finding that invalidates a `## Decisions` bullet, that names a file a task does not have, or that points at a thing the repo already does and the spec is about to rebuild, becomes an item in `## Open`**, which the gate already blocks on. Those three are what the grounding lens finds that the draft cannot absorb on its own. A finding rejected on a stated ground counts as dealt with; what none of them can be is quietly dropped. Carry both verdicts to the gate.
 
-7. **The exit gate: blocks on open load-bearing decisions.** Don't gate blind: first **show the artifact the user is signing off on**, a tight recap of the happy path, the full edge→outcome table, the **coverage table** (behavior → task → test) with `⚠️` on any unmapped row plus a one-line counter (`N behaviors, M mapped, K open`), and (Medium+) the **independent reviewer's verdict** in one line (clean, or what it flagged and how it was resolved), so "is this complete?" is answerable at a glance instead of forcing them to reopen the file. Then list what's **still open** (unresolved load-bearing decisions + parked questions). Then ask one `AskUserQuestion` (a handoff gate, with the format in the plugin-level `references/handoff-gate.md`):
+   Without an Agent tool in this context, the review did not run: say so at the gate rather than showing a verdict that never ran. A lens dying is the same record, `not-run`, whether it took one lens or both: the survivor's findings still fold into step 3, and the gate says which lens is missing, because `clean` and `resolved` are what a whole two-lens pass leaves behind.
+
+7. **The exit gate: blocks on open load-bearing decisions.** Don't gate blind: first **show the artifact the user is signing off on**, a tight recap of the happy path, the full edge→outcome table, the **coverage table** (behavior → task → test) with `⚠️` on any unmapped row plus a one-line counter (`N behaviors, M mapped, K open`), and (Medium+) the **two lenses' verdict** in one line naming each of them (clean, what it flagged and how that was resolved, or that it did not run), so "is this complete?" is answerable at a glance instead of forcing them to reopen the file. Then list what's **still open** (unresolved load-bearing decisions + parked questions). Then ask one `AskUserQuestion` (a handoff gate, with the format in the plugin-level `references/handoff-gate.md`):
    - **If any load-bearing decision is still open:** do NOT offer a clean "build". The only options are **resolve it now** or **defer explicitly** ("decide at build time", recorded as such in the spec). Never a silent "build anyway".
    - **If nothing load-bearing is open:** finalize `.bb/<slug>/spec.md` (with its frontmatter block; see "Capture the alignment"), then offer four paths, three of which invoke `/bb:implement <slug>` now and differ only in **how far the run goes**: **Build** (every task, then it offers the ship), **Build and ship** (the tasks, then `/bb:ship`), **Build, review and ship** (the tasks, `/bb:review` over the branch, then `/bb:ship`), or **Stop here** (leave the spec; the user picks up later). **The pick is implement's scope answer**, so implement doesn't ask it again. Choosing to adjust instead is always available. That loops back into the question tool; a build pick is the affirmative start, not a silent roll-through.
 
@@ -109,7 +111,9 @@ Write a single `.bb/<slug>/spec.md`, the converged draft itself, written as some
 
 The on-disk contract (location, frontmatter schema, status lifecycle) is the plugin-level `references/spec-state.md`; follow it. In short: specs go to `.bb/<slug>/spec.md`. If a spec already exists for a _different_ idea under the same slug, suffix it (`-2`) or ask; never silently overwrite another spec.
 
-On finalize, open the spec with the frontmatter block (`status: pending`, `created: <today>`, `slug: <slug>`). This skill is the file's only writer, so the block is there from the first write. A spec landed before that rule can be missing it; backfill it on finalize. Leave the lifecycle after this to implement; spec only seeds `pending`.
+On finalize, open the spec with the frontmatter block (`status: pending`, `created: <today>`, `slug: <slug>`, `review: <verdict>`). This skill is the file's only writer, so the block is there from the first write. A spec landed before that rule can be missing it; backfill it on finalize. Leave the lifecycle after this to implement; spec only seeds `pending`.
+
+`review:` is step 6's verdict, its three values defined in that same `references/spec-state.md`, and `scripts/lint_spec.py` fires `E006` on a spec that closes without one. A landed spec rewritten by a later run gets the field rewritten with that run's verdict.
 
 **Large** work carries `## Behavior` and `## Tasks` as their own sections: the acceptance contract and the vertical tasks the build side consumes. **Medium** work keeps both inline in the decisions.
 
