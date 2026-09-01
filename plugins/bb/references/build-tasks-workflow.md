@@ -47,34 +47,19 @@ read-only.
 
 ## How the skills invoke it
 
-The root is resolved and the file proved in one `Bash` call. `${CLAUDE_PLUGIN_ROOT}` is
-expanded where the platform composes the text itself and read as plain text everywhere else,
-and a reference is a file read: the literal arrives here raw, so
-`cat "$CLAUDE_PLUGIN_ROOT/workflows/build-tasks.js"` runs as `cat /workflows/build-tasks.js`
-and exits 1. The rule below is what a reader resolves instead. A `Bash` call is a fresh
-shell, so the function travels with the call that uses it:
+The script is at `<plugin-root>/workflows/build-tasks.js`, and the root is the one the
+SessionStart hook published into this session. That hook resolved it from a directory an
+interpreter on this machine had already opened, so the path is proven before any skill
+reads this line, and nothing here searches for it. Substitute it, then prove the file and
+print what `scriptPath` takes, in one `Bash` call:
 
 ```bash
-plugin_root() {
-  for d in "$CLAUDE_PLUGIN_ROOT" \
-           $(ls -d "$HOME"/.claude/plugins/cache/*/bb/* 2>/dev/null | sort -Vr) \
-           ./plugins/bb; do
-    [ -n "$d" ] && [ -f "$d/workflows/build-tasks.js" ] && { printf '%s\n' "${d%/}"; return 0; }
-  done
-  return 1
-}
-r="$(plugin_root)" && cat "$r/workflows/build-tasks.js" > /dev/null && echo "$r/workflows/build-tasks.js"
+f="<plugin-root>/workflows/build-tasks.js"; cat "$f" > /dev/null && echo "$f"
 ```
 
-The installed copy answers before the repo checkout: it is where an update lands, and every
-process on the machine can open it, which the per-session copy under `AppData\Roaming` fails
-at on Windows. The `[ -f ... ]` guard is what keeps a step that resolved to the wrong
-directory from winning, so it falls through to the next one instead; set `CLAUDE_PLUGIN_ROOT`
-to a checkout when that has to win.
-
-A non-zero exit covers both ways this fails: the rule found no copy of the plugin, or the
-copy it found has no readable `build-tasks.js`. The printed path is what goes into
-`scriptPath`, already expanded, because the tool takes a literal path.
+A non-zero exit means the file is not under the published root, and it is the same
+condition the chain's last step names. With no root in the session at all, the chain goes
+straight to that step: a guess at the path is what the hook exists to replace.
 
 The **fallback chain**, one attempt each, in this order. It is stated here and nowhere
 else, so the skills point at it by name and carry no count of their own:
@@ -83,8 +68,8 @@ else, so the skills point at it by name and carry no count of their own:
 2. `scriptPath` refused: an inline `script` read off the same file. Still a dispatch, so
    a refusal at step 1 ends that attempt and not the chain.
 3. Step 2 refused too, no `Workflow` tool in the session, or the `Bash` call came back
-   non-zero, whether because the resolution found no copy or because the copy it found has
-   no readable `build-tasks.js`: the in-context build, with the reason named. Those two are
+   non-zero, whether because the session carries no published root or because the file is
+   not readable under it: the in-context build, with the reason named. Those two are
    different lines to say, so say which one it was.
 
 Only step 3 builds in the main context, and only the conditions it names reach it. A first

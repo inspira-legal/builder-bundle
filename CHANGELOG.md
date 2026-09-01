@@ -1,5 +1,36 @@
 # Changelog
 
+## 3.4.0 (2026-08-31)
+
+**The plugin's own directory is resolved once, by the hook, and published to the
+session.** 3.2.0 taught one reference to search for the root in shell. Every other
+document in the bundle had the same hazard and no such rule, so the answer moved to the
+one process that already knows it.
+
+### Changed
+
+- **`hooks/sync_instructions.py` publishes the root.** It resolves the directory it is
+  running from, proves it with `.claude-plugin/plugin.json`, and emits one line of
+  `additionalContext` naming it. An interpreter that read the hook can open the directory
+  the hook sits in, so the published path is proven openable by the fact that the hook ran
+  at all, which is the guarantee `python3 <root>/scripts/x.py` needs and the per-session
+  copy under `AppData\Roaming` does not carry on Windows. The line goes out on all three
+  of the hook's paths, the `custom_instructions: false` opt out included: where the plugin
+  sits is a fact about the install, not part of the frame anyone declined.
+- **Every document writes `<plugin-root>` and substitutes that line.** Nineteen skill and
+  reference documents, the repo's own `.claude/CLAUDE.md`, and `BB005` in
+  `CODE_REVIEW_GUIDE.md`. A skill body's `${CLAUDE_PLUGIN_ROOT}` was expanded by the
+  platform into the per-session copy, which `cat` opens and `python3` does not; a
+  reference's arrived raw and empty. Both now name the same proven directory.
+- **`references/build-tasks-workflow.md` drops its shell resolver.** The eight lines that
+  searched `$CLAUDE_PLUGIN_ROOT`, the install cache and the repo checkout become one `cat`
+  that proves the file under the published root. `sort -Vr` went with them, which was a
+  GNU extension the BSD `sort` on macOS answers with `invalid option`.
+
+`${CLAUDE_PLUGIN_ROOT}` stays in `hooks/hooks.json`, where the platform composes the
+command, and in `hooks/check_version.py`, which reads it from a hook's own environment.
+Those are the two places a process really gets it.
+
 ## 3.3.0 (2026-08-27)
 
 **The spec's independent reviewer becomes an agent, gains a second lens, and leaves a

@@ -89,4 +89,4 @@ No handoff gate, report and stop:
 
 References (plugin root):
 
-- `${CLAUDE_PLUGIN_ROOT}/references/finding-levels.md`: `HIGH` / `LOW` in the guide (Bloqueante / Sugestão in a review), the concrete-cost gate and the `MEDIUM` collapse. Shared with `/bb:review`.
+- `<plugin-root>/references/finding-levels.md`: `HIGH` / `LOW` in the guide (Bloqueante / Sugestão in a review), the concrete-cost gate and the `MEDIUM` collapse. Shared with `/bb:review`.

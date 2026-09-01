@@ -61,7 +61,7 @@ Say each thing once. A fact that appears in the opening, again in a decision, an
 in a behavior row is one fact and two copies to keep in sync.
 
 **Name things the way the repo names them.** The spec is the document the builder rereads,
-so its words become the words of the build. `${CLAUDE_PLUGIN_ROOT}/references/doc-style.md`
+so its words become the words of the build. `<plugin-root>/references/doc-style.md`
 carries the principle.
 
 ## Tables carry short cells

@@ -18,7 +18,7 @@ Gather all changes on the current branch relative to the base branch (main/maste
 Run the shared plugin-root script:
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py
+python3 <plugin-root>/scripts/gather_context.py
 ```
 
 Optional flags:

@@ -299,18 +299,18 @@ Actions and modes:
 
 Pipeline agents (plugin root, dispatched by the fan-out):
 
-- `${CLAUDE_PLUGIN_ROOT}/agents/bb-review-finder.md`: the finder's contract, and the narrowed `tools:` list.
-- `${CLAUDE_PLUGIN_ROOT}/agents/bb-review-verifier.md`: the CONFIRMED / PLAUSIBLE / REFUTED rubric.
+- `<plugin-root>/agents/bb-review-finder.md`: the finder's contract, and the narrowed `tools:` list.
+- `<plugin-root>/agents/bb-review-verifier.md`: the CONFIRMED / PLAUSIBLE / REFUTED rubric.
 
 - `references/review-checklist.md`, `references/quality-checklist.md`: the correctness and quality criteria the fronts operationalize.
 
 References (plugin root):
 
-- `${CLAUDE_PLUGIN_ROOT}/references/finding-levels.md`: Bloqueante / Sugestão (`HIGH` / `LOW` in a guide), the per-front mapping, the concrete-cost gate and the legacy collapse. Shared with `/bb:review-setup`.
+- `<plugin-root>/references/finding-levels.md`: Bloqueante / Sugestão (`HIGH` / `LOW` in a guide), the per-front mapping, the concrete-cost gate and the legacy collapse. Shared with `/bb:review-setup`.
 
 Scripts (plugin root):
 
-- `${CLAUDE_PLUGIN_ROOT}/scripts/preflight.py`: the whole availability probe in one call, run at step 0. Resolves the review's diff range, answers every front's "Available when" (`fronts.md`), and its `pr` is what decides whether the intent read has a conversation to read.
-- `${CLAUDE_PLUGIN_ROOT}/scripts/gather_context.py`: the same branch context plus the commit log, the full diff and `pr_body`, the PR description the intent read works from, for a scope paragraph the probe's diff stat cannot carry. Called with `--base <the probe's base_branch> --no-fetch`, because the probe resolved that base against the PR's own and already paid the fetch: without both flags this second call re-derives the base from the repo default and diffs a stacked PR against the wrong ref.
-- `${CLAUDE_PLUGIN_ROOT}/scripts/inspect_pr_checks.py`: failing checks, their run IDs and the failure snippets, for the `ci` front (`front-ci.md`).
-- `${CLAUDE_PLUGIN_ROOT}/scripts/fetch_comments.py`, `${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py`: thread I/O via `gh api graphql`. `fetch_comments.py` is also the conversation half of step 0's intent read: the comments, the review bodies and the inline threads in one payload.
+- `<plugin-root>/scripts/preflight.py`: the whole availability probe in one call, run at step 0. Resolves the review's diff range, answers every front's "Available when" (`fronts.md`), and its `pr` is what decides whether the intent read has a conversation to read.
+- `<plugin-root>/scripts/gather_context.py`: the same branch context plus the commit log, the full diff and `pr_body`, the PR description the intent read works from, for a scope paragraph the probe's diff stat cannot carry. Called with `--base <the probe's base_branch> --no-fetch`, because the probe resolved that base against the PR's own and already paid the fetch: without both flags this second call re-derives the base from the repo default and diffs a stacked PR against the wrong ref.
+- `<plugin-root>/scripts/inspect_pr_checks.py`: failing checks, their run IDs and the failure snippets, for the `ci` front (`front-ci.md`).
+- `<plugin-root>/scripts/fetch_comments.py`, `<plugin-root>/scripts/reply_resolve_thread.py`: thread I/O via `gh api graphql`. `fetch_comments.py` is also the conversation half of step 0's intent read: the comments, the review bodies and the inline threads in one payload.
