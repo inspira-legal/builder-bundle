@@ -6,7 +6,7 @@ fetch through reply/resolve.
 
 ## Fetch
 
-`python3 ${CLAUDE_PLUGIN_ROOT}/scripts/fetch_comments.py` prints conversation
+`python3 <plugin-root>/scripts/fetch_comments.py` prints conversation
 comments, reviews, and review threads (with `id` and `isResolved`) as JSON.
 Resolved threads are not shown in the report.
 
@@ -46,7 +46,7 @@ The reply says where the code satisfies it, so the opener can check the claim in
 taking it: the file and line as they stand now, and the sha that got them there.
 
 ```
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py --thread-id <id> \
+python3 <plugin-root>/scripts/reply_resolve_thread.py --thread-id <id> \
   --body "Already satisfied in <sha>: <file>:<line>, <one-liner>"
 ```
 
@@ -63,11 +63,11 @@ with every thread already resolved, there is nothing to judge and the line repor
 
 ## Handle (only threads the user picked)
 
-| Verdict | Action                                                                                                                                                                                               |
-| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| fix     | apply the change per `act-apply-fixes.md`, commit, push to the PR branch, then `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py --thread-id <id> --body "Fixed in <sha>: <one-liner>"` |
-| answer  | `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/reply_resolve_thread.py --thread-id <id> --body "..." --no-resolve`; the reviewer closes it                                                                   |
-| unclear | ask the user what the reply should be, then answer-flow with their wording                                                                                                                           |
+| Verdict | Action                                                                                                                                                                                       |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| fix     | apply the change per `act-apply-fixes.md`, commit, push to the PR branch, then `python3 <plugin-root>/scripts/reply_resolve_thread.py --thread-id <id> --body "Fixed in <sha>: <one-liner>"` |
+| answer  | `python3 <plugin-root>/scripts/reply_resolve_thread.py --thread-id <id> --body "..." --no-resolve`; the reviewer closes it                                                                   |
+| unclear | ask the user what the reply should be, then answer-flow with their wording                                                                                                                   |
 
 Replies match the language of the thread they answer. Pushing
 fixes to the PR branch is reversible, so it proceeds without pausing; merge,

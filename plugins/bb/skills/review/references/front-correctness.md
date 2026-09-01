@@ -50,7 +50,7 @@ route through), and the async/state material has nothing to attach to. Say which
 angles ran, and name the dropped ones with the reason, so the depth that's reported
 is the depth that happened. A caller can override the lens _content_ for its own
 artifact the way `/bb:ship` does for LexFlow manifests
-(`${CLAUDE_PLUGIN_ROOT}/skills/ship/references/ship-lexflow.md`).
+(`<plugin-root>/skills/ship/references/ship-lexflow.md`).
 
 ### Angle `instruction-integrity`: for a diff that instructs a model
 

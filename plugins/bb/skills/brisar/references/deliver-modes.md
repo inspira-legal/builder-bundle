@@ -17,7 +17,7 @@ execution of the wrong question.
 - `.bb/<slug>/design.md`, `## Built` plus the surfaces list in its frontmatter: the locator, `variants[]`, `states_built[]`, `states_not_built[]` and `deviations[]`
 - `.bb/<slug>/design.md`, `## Surfaces`: the visual direction per surface, with the surfaces listed in the document's frontmatter.
 - **The artifact, opened through the reader for its medium**: files, preview, or Paper/Figma/Pencil MCP. Resolved in Step 0.1 of `phase-deliver.md`. On a canvas, read structure and computed values through the MCP; a screenshot judges composition and **never** supplies numbers.
-- The design system, read from the plugin: `${CLAUDE_PLUGIN_ROOT}/skills/brisar/references/ds/`, or `BRISAR_DS_PATH` when the builder set it, plus the token delta recorded in `design.md`.
+- The design system, read from the plugin: `<plugin-root>/skills/brisar/references/ds/`, or `BRISAR_DS_PATH` when the builder set it, plus the token delta recorded in `design.md`.
 
 ### The unit of review is surface × variant
 

@@ -34,7 +34,7 @@ plugins/bb/
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
 │   ├── build-tasks-workflow.md         # how the skills call workflows/build-tasks.js, and what it returns
 │   └── finding-levels.md               # Bloqueante / Sugestão, HIGH / LOW in a guide: review, review-setup
-├── scripts/                           # shared executables (2+ skills), ref via ${CLAUDE_PLUGIN_ROOT}/scripts/
+├── scripts/                           # shared executables (2+ skills), ref via <plugin-root>/scripts/
 │   ├── fetch_comments.py               # ship, review
 │   ├── reply_resolve_thread.py         # ship, review
 │   ├── gather_context.py               # ship (the PR body), review, gather-branch-context
@@ -77,7 +77,25 @@ plugins/bb/
   context globally, so keep it narrow and name the skill that is the real entry
   point.
 - The plugin ships hooks in `plugins/bb/hooks/hooks.json` (auto-activate when the
-  plugin is enabled). Hook commands reference files via `${CLAUDE_PLUGIN_ROOT}/...`.
+  plugin is enabled). Hook commands reference files via `${CLAUDE_PLUGIN_ROOT}/...`,
+  which is one of the two places the platform expands that variable into something a
+  command can open; a document read off disk is not, which is why documents write
+  `<plugin-root>` instead (below).
+
+## `<plugin-root>`, and who fills it in
+
+Every document in the bundle writes the plugin's own directory as `<plugin-root>`,
+and `plugins/bb/hooks/sync_instructions.py` is what turns it into a path. The hook
+resolves the directory it is running from, proves it with `.claude-plugin/plugin.json`,
+and publishes it as one line of `additionalContext` on every session start, before any
+skill is read. A reader substitutes that line's path and uses it.
+
+The line goes out on all three of the hook's paths, the opt out included: where the
+plugin sits is a fact about the install, not part of the frame `/bb:profile` governs.
+
+`${CLAUDE_PLUGIN_ROOT}` stays in `plugins/bb/hooks/hooks.json` and in
+`plugins/bb/hooks/check_version.py`, the two places a process really does get it: the
+platform composes the hook command, and a hook's own environment is not a tool call's.
 
 ## Skills
 
@@ -133,11 +151,11 @@ TypeScript.
 - Skill workflows reference their **own** scripts relatively (e.g.
   `scripts/foo.py`). Scripts shared by 2+ skills live at the plugin root in
   `plugins/bb/scripts/` and are referenced with
-  `${CLAUDE_PLUGIN_ROOT}/scripts/<x>.py` (hooks use it for their own files too). A
+  `<plugin-root>/scripts/<x>.py`. A
   skill's own, non-shared script stays relative.
 - **Borrowing another skill's reference** is allowed when one skill owns a method
   two entry points must share, and duplicating it would mean two definitions that
-  drift. Path it via `${CLAUDE_PLUGIN_ROOT}/skills/<owner>/references/<x>.md` and
+  drift. Path it via `<plugin-root>/skills/<owner>/references/<x>.md` and
   say in both skills who owns it. Reading a reference is not invoking a skill;
   the borrower still orchestrates its own run, which is why borrowing beats
   invoking when the owner's router would ask questions the borrower answers by

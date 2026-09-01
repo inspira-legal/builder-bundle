@@ -24,7 +24,7 @@ door as any other run.
 ## Probe availability before asking
 
 Ask only about fronts that can actually produce findings. **One call answers the
-whole probe**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/preflight.py` prints every
+whole probe**: `python3 <plugin-root>/scripts/preflight.py` prints every
 field the "Available when" column needs, in one JSON payload, and it is the same
 call `/bb:ship` makes. What each field settles:
 

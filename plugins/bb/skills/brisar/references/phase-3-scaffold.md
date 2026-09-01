@@ -286,7 +286,7 @@ For a formal spec: `/bb:spec`.
 ## Step 4: where the design system comes from
 
 Nothing is generated here. The Develop phase reads the design system live from
-`${CLAUDE_PLUGIN_ROOT}/skills/brisar/references/ds/`, with `BRISAR_DS_PATH` overriding it when
+`<plugin-root>/skills/brisar/references/ds/`, with `BRISAR_DS_PATH` overriding it when
 the builder points somewhere else. A per-project synthesis would be a copy that never
 revalidates: the DS moves in the plugin and the copy keeps asserting last month's values.
 

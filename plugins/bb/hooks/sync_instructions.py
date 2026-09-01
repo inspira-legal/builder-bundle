@@ -21,6 +21,10 @@ The same hook carries bb's own update: a detached worker is spawned when today's
 check is still owed, and it says nothing in the session either way. Nothing waits
 on it, and it is outside the opt out, which only ever governed the instructions
 file.
+
+It also publishes where the plugin sits, once per session, as the one line every
+bb document resolves `<plugin-root>` against. That line is outside the opt out
+too: it is a fact about this install, not part of the frame anyone declined.
 """
 
 from __future__ import annotations
@@ -79,6 +83,17 @@ INVITATION = (
 HEADING = "\n## Who is on the other side\n\n"
 
 WORKER = "check_version.py"
+
+# What proves a directory is the plugin rather than something shaped like it.
+SENTINEL = os.path.join(".claude-plugin", "plugin.json")
+
+ROOT_LINE = (
+    "- **The bb plugin lives at `{root}` on this machine.** Where a bb document "
+    "writes `<plugin-root>`, that directory is what it names: put it in and use "
+    "the path as it stands, in a `Bash` call, a `Read`, or a `Workflow` script "
+    "path. It is resolved once per session, here, so nothing downstream searches "
+    "for it."
+)
 
 # Windows has no fork: a child stays attached to the parent's console unless it is
 # told to detach, and a console it owns alone would flash a window on every start.
@@ -162,6 +177,22 @@ def with_block(text: str | None) -> str | None:
     body = "" if text is None else (text if stripped is None else stripped)
     body = body.rstrip("\r\n")
     return (body + nl + nl if body else "") + block + nl
+
+
+def plugin_root(here: str) -> str:
+    """The plugin directory, in the form a tool call can open, or "".
+
+    The parent of this file and nothing else. An interpreter that read this
+    script can open the directory it sits in, so a path published from here is
+    proven openable by the fact that this line runs at all, which is the whole
+    guarantee a `python3 <root>/scripts/x.py` needs. The sentinel is what keeps a
+    launcher handing over some other directory from publishing it. Forward
+    slashes, because the readers are shell calls and JSON.
+    """
+    root = os.path.dirname(here)
+    if not os.path.isfile(os.path.join(root, SENTINEL)):
+        return ""
+    return root.replace(os.sep, "/")
 
 
 def read_frame(here: str) -> str:
@@ -327,7 +358,7 @@ def sync(here: str, config: dict) -> None:
 def main() -> int:
     here = os.path.dirname(os.path.abspath(__file__))
     spawn_update(here)
-    frame = ""
+    parts: list[str] = []
     config = read_config()
     if not config:
         # Nobody calibrated anything, so nothing is written into anyone's files.
@@ -335,7 +366,7 @@ def main() -> int:
         # will live once it is asked for.
         carried = read_frame(here)
         if carried:
-            frame = carried + "\n" + profile_block(None)
+            parts.append(carried + "\n" + profile_block(None))
     elif config.get("custom_instructions", True) is False:
         # Only an explicit false opts out. An absent or unparsable value reads as
         # yes, the same direction as a missing profile flag: more context, never
@@ -344,8 +375,15 @@ def main() -> int:
         remove()
     else:
         sync(here, config)
-    if frame:
-        emit(frame)
+    # The root goes out on all three paths, including the two the instructions
+    # file never reaches: nobody has run /bb:profile yet, and the opt out took
+    # the file off the disk. A document naming `<plugin-root>` is read on every
+    # one of them.
+    root = plugin_root(here)
+    if root:
+        parts.append(ROOT_LINE.format(root=root))
+    if parts:
+        emit("\n\n".join(parts))
     return 0
 
 
