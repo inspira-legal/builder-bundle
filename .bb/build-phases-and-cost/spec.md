@@ -199,7 +199,7 @@ The happy path, one line per step:
 
 ### The floor under stage zero
 
-- [ ] **5. `bb-reuse-check`**: `plugins/bb/agents/bb-reuse-check.md` with
+- [x] **5. `bb-reuse-check`**: `plugins/bb/agents/bb-reuse-check.md` with
       `tools: Read, Grep, Glob`, the role, and the read protocol that keeps whole-file reads
       out
       → behavior 5 · dep: — · verify: CI
