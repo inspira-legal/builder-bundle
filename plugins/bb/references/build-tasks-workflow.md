@@ -172,15 +172,33 @@ task.
 
 ## Stage zero: prove the ground before task 1
 
-One agent per reuse note, plus the checks agent when there is something to run, all
-inside a single `parallel()`. This is a legitimate barrier: nothing starts until every
-verdict is in. These agents are read-only lookups, so they run at `effort: 'low'`.
+Two thunks at most, inside a single `parallel()`: one `bb-reuse-check` carrying every
+reuse note the spec has, and the checks agent when there is something to run. This is a
+legitimate barrier: nothing starts until every verdict is in. Both are read-only lookups,
+so they run at `effort: 'low'`.
 
-Each reuse-note agent returns:
+The reuse agent is dispatched **once per build and not once per note**, because a
+subagent's context floor is paid per agent and re-read on every turn it takes: on the run
+that measured it, eight notes over eight agents cost ~44k of prefix each for lookups of
+three to five tool calls and a few hundred tokens of answer. One agent pays that floor
+once. With no reuse note in the spec, no reuse thunk is sent at all, and stage zero is the
+checks agent alone.
+
+The role and the read protocol are `agents/bb-reuse-check.md`'s, delivered as the system
+prompt through `opts.agentType`. `reusePrompt()` carries what only the caller has: the
+numbered notes, the return shape, and one line of that protocol, so an `agentType` that
+does not resolve leaves a generic agent working from a floor rather than an unbounded one.
+That is the same fallback the review fan-out sets for `bb-finder`. It returns:
 
 ```
-{ verdict: "intact" | "moved" | "gone", note: "<the note>", where: "<new path, if moved>" }
+{ verdicts: [{ index: 0, verdict: "intact" | "moved" | "gone", note: "<what it looked for, plus file:line>", where: "<new path, if moved>" }] }
 ```
+
+`index` is the note the entry answers, numbered as the prompt sent them. **The script
+checks the count against the number of notes before it calls the ground proven**: a
+verdict list shorter than the note list is a stop naming how many went unanswered, since a
+note nobody looked for would otherwise read as `intact` and the build would extend code
+that is not there.
 
 The checks agent confirms the list `args.checks` carries and then **runs all of them
 once**. Running them is the point: it proves the run has permission to execute each one,
@@ -202,7 +220,7 @@ note, and from task 1 on it outranks the path the spec's reuse note names.
 
 A stage-zero stop is normalized into the shape a task result has, so the caller has one
 thing to read and a blocker to name:
-`{ n: 0, status: "red", blocker: "<which note died, or which command, and why>" }`.
+`{ n: 0, status: "red", blocker: "<which note is gone, how many went unanswered, or which command and why>" }`.
 
 A repo whose top authority forbids running checks locally fails here by policy and not by
 breakage, so it is not a stop. The policy arrives as `runnable: false`, stage zero sends no
@@ -322,6 +340,7 @@ invoking:
   `resolve_checks.py`'s output passed through whole.
 - The branch the commits belong on already exists and is checked out; the agents commit
   where the run puts them.
-- The agent count is `tasks.length + reuseNotes.length`, plus one for the checks agent
-  when `checks.runnable` is not false. Over the size guideline the session declares, say so
+- The agent count is `tasks.length`, plus one for the reuse agent when `reuseNotes` is not
+  empty, plus one for the checks agent when `checks.runnable` is not false: stage zero is
+  two agents at most, whatever the note count. Over the size guideline the session declares, say so
   in one line and invoke anyway; the real cap is 1000 agents per run.

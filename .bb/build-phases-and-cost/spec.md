@@ -203,7 +203,7 @@ The happy path, one line per step:
       `tools: Read, Grep, Glob`, the role, and the read protocol that keeps whole-file reads
       out
       → behavior 5 · dep: — · verify: CI
-- [ ] **6. One agent for every note**: `reusePrompt` takes the list and one line of the
+- [x] **6. One agent for every note**: `reusePrompt` takes the list and one line of the
       protocol, the schema becomes the indexed array, the thunk carries `agentType`, the
       verdict count is checked before the ground is called proven, and the reference's
       stage-zero section stops describing one agent per note

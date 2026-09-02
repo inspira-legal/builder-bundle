@@ -20,13 +20,26 @@ const NOTE_CEILING = 1500;
 
 const MANIFESTO_REF = "plugin-level references/consult-manifesto.md";
 
-const REUSE_VERDICT = {
+// One agent answers every note, so the shape is an array and `index` is what pairs an
+// answer back to the note it answers. The count is what the script checks: an agent that
+// dropped a note would otherwise leave that note reading as `intact`.
+const REUSE_VERDICTS = {
   type: "object",
-  required: ["verdict", "note"],
+  required: ["verdicts"],
   properties: {
-    verdict: { type: "string", enum: ["intact", "moved", "gone"] },
-    note: { type: "string" },
-    where: { type: "string", description: "the new path, when moved" },
+    verdicts: {
+      type: "array",
+      items: {
+        type: "object",
+        required: ["index", "verdict", "note"],
+        properties: {
+          index: { type: "number", description: "the note this answers, numbered as sent" },
+          verdict: { type: "string", enum: ["intact", "moved", "gone"] },
+          note: { type: "string" },
+          where: { type: "string", description: "the new path, when moved" },
+        },
+      },
+    },
   },
 };
 
@@ -61,15 +74,27 @@ const TASK_RESULT = {
   },
 };
 
-function reusePrompt(note) {
-  return `A spec's reuse note says the build should extend existing code. Find out whether it still exists.
+// The role and the whole read protocol belong to `agents/bb-reuse-check.md`, which the
+// harness delivers as the system prompt. What is left here is what only the caller has: the
+// notes, the shape, and one line of that protocol, so an `agentType` that fails to resolve
+// degrades into a generic agent working from a floor instead of an unbounded one.
+function reusePrompt(notes) {
+  const numbered = notes.map((note, i) => `${i}. ${note}`).join("\n");
+  return `A spec's reuse notes say the build should extend code that already exists. Find out whether each one still does.
 
-The note: ${note}
+The notes, numbered by the index your answer carries:
 
-Read the repo. Return "intact" if the code the note names is where it says, "moved" with
-the path you found in "where" when it exists elsewhere, and "gone" when nothing in the repo
-answers to it any more. Do not edit anything. A near-match under a different name is
-"moved", not "gone"; only nothing at all is "gone".`;
+${numbered}
+
+Confirm each one with \`Grep\` on the symbol it names, and where the code has to be seen,
+\`Read\` a window of some 40 lines around the line the hits cite, never a whole file.
+
+Return "verdicts" with one entry per note, in that order: "index" the number above, "note"
+what you looked for plus the \`file:line\` that settled it, and "verdict" one of "intact"
+when the code is where the note says, "moved" with the path you found in "where" when it
+lives elsewhere, and "gone" when nothing in the repo answers to it any more. A near-match
+under a different name is "moved", not "gone"; only nothing at all is "gone". Answer every
+note, and do not edit anything.`;
 }
 
 // `scripts/resolve_checks.py` walks the authority chain before the dispatch, so this agent
@@ -236,16 +261,22 @@ const resolved = args.checks || null;
 // instead of over the code.
 const runChecks = !resolved || resolved.runnable !== false;
 
+// Two thunks at most, and the reuse one carries every note: a subagent's context floor is
+// paid per agent and re-read on every turn it takes, so eight notes over eight agents pay
+// that floor eight times for eight lookups of three tool calls each.
 const ground = await parallel([
-  ...reuseNotes.map(
-    (note) => () =>
-      agent(reusePrompt(note), {
-        label: `reuse: ${note.slice(0, 40)}`,
-        phase: GROUND_PHASE,
-        schema: REUSE_VERDICT,
-        effort: "low",
-      }),
-  ),
+  ...(reuseNotes.length
+    ? [
+        () =>
+          agent(reusePrompt(reuseNotes), {
+            label: `reuse: ${counted(reuseNotes.length, "note")}`,
+            phase: GROUND_PHASE,
+            agentType: "bb-reuse-check",
+            schema: REUSE_VERDICTS,
+            effort: "low",
+          }),
+      ]
+    : []),
   ...(runChecks
     ? [
         () =>
@@ -259,7 +290,8 @@ const ground = await parallel([
     : []),
 ]);
 
-const verdicts = ground.slice(0, reuseNotes.length);
+const reuseResult = reuseNotes.length ? ground[0] : null;
+const verdicts = (reuseResult && reuseResult.verdicts) || [];
 
 // With no agent sent, the baseline is the policy itself, and `commands` is empty because an
 // empty list is what the task agents may execute here.
@@ -270,11 +302,22 @@ if (!runChecks) {
   );
 }
 
-// A lost stage-zero agent is a stop of its own: proceeding would build on ground nobody proved.
+// A lost stage-zero agent is a stop of its own: proceeding would build on ground nobody
+// proved. A short answer is the same stop, because the notes with no verdict would read as
+// `intact` and the build would extend code nobody looked for.
 let stopped = null;
-const lost = verdicts.filter((v) => !v).length;
-if (lost) {
-  stopped = { n: 0, status: "red", blocker: `${lost} reuse-note agent(s) returned nothing` };
+if (reuseNotes.length && !reuseResult) {
+  stopped = { n: 0, status: "red", blocker: "the reuse agent returned nothing" };
+} else if (verdicts.length !== reuseNotes.length) {
+  const short = reuseNotes.length - verdicts.length;
+  stopped = {
+    n: 0,
+    status: "red",
+    blocker:
+      short > 0
+        ? `${counted(short, "reuse note")} of ${reuseNotes.length} went unanswered; stage zero proved nothing`
+        : `the reuse agent returned ${counted(verdicts.length, "verdict")} for ${counted(reuseNotes.length, "note")}`,
+  };
 } else if (!checks) {
   stopped = { n: 0, status: "red", blocker: "the checks agent returned nothing" };
 }
