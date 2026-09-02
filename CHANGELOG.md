@@ -1,5 +1,50 @@
 # Changelog
 
+## 3.5.0 (2026-09-02)
+
+**The spec's frontmatter drops `review:`.** 3.3.0 wrote the two lenses' verdict into the
+spec as a field and had `lint_spec.py` fire `E006` on a spec that closed without one. That
+verdict is about the run that produced the spec, not about the document a later session
+opens, so on disk it outlived what earned it: a value a reader takes as a fact about the
+file, a `not-run` nobody can act on any more, and a landed spec that has to restate it
+every time it is rewritten. What the lenses find still reaches the person who can act on
+it, in the line that opens the gate, and step 6 itself is unchanged: both lenses, one
+message, the findings folded back into the loop.
+
+**And step 6 becomes unconditional, which is where the guarantee moves.** The field made a
+skipped review visible after the fact, in CI, on a document already written. The step now
+runs on every spec and on every pass that reaches the gate, the size no longer an
+exemption and a reopened spec no exception: resolving an item from `## Open`, folding in a
+late answer, revising a landed decision, all of them send the spec back through the two
+lenses before any build option is offered. They read it as it stands, so a spec changed
+since the last pass counts as unread. The cost is real and it is the point: a reopen pays
+two agents to look for the hole the author cannot see.
+
+**A question carries what it takes to decide.** `AskUserQuestion` renders a dialog, and
+whoever answers is reading that and not the transcript above it. So the context travels
+inside the call: the `question` names what is being decided and why it is open, and each
+option's `description` says what that pick does next and what it costs. The test is
+whether the answer would change depending on something the caller knew and did not write
+down.
+
+### Changed
+
+- **`review:` is out of the block** in `references/spec-state.md`, which now says where the
+  verdict goes instead, and out of `/bb:spec`'s finalize (2.6.0). `E006` and its
+  `status: done` exemption go with it, so `lint_spec.py` reads the document's own bytes
+  again and nothing else. `.bb/spec-reviewer/spec.md` drops the key it carried; its body
+  stays as the record of the release that added it.
+- **`/bb:spec`'s step 6 loses its two escapes**, the `Medium-and-up` size gate and the
+  first pass. "Always required" at the top of the skill names the check alongside the
+  alignment and the behavior map, the gate's verdict line drops its `(Medium+)`, and
+  `references/draft-first.md` says the same in the playbook's own words.
+- **`references/handoff-gate.md`** states the context rule for every question, gates
+  included, next to the reason the tool is used at all. It also names where the substance
+  cannot go: the `label` is a name of one to five words and the `header` a chip of twelve
+  characters.
+- **`hooks/operating-context.md`** carries the same rule in one clause, so a session that
+  reads only the frame it publishes still gets it.
+
 ## 3.4.0 (2026-08-31)
 
 **The plugin's own directory is resolved once, by the hook, and published to the

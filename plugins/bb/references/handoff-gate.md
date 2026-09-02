@@ -12,6 +12,16 @@ as plain text has no response path, so the flow stalls. The tool auto-provides
 an "Other" free-text option; a manual "Other"/"Change something" option is
 redundant.
 
+**The call carries what it takes to decide.** Whoever answers is looking at the
+dialog, not at the transcript above it, so the reasoning has to travel inside the
+call: the `question` names what is being decided and why it is open, and each
+option's `description` says what that pick does next and what it costs. The
+`label` is a name (1–5 words) and the `header` a chip of 12 characters, so
+neither of them is where the substance goes. The test: if the answer would change
+depending on something you know and did not write down, the call is incomplete.
+Explaining the fork in prose and then asking "A or B" makes the person scroll
+back to answer, which is the same stall as printing the question as text.
+
 ## The rule
 
 - **Suggest, never auto-invoke.** A gate offers; the user picks. The one exception
