@@ -212,7 +212,7 @@ The happy path, one line per step:
 
 ### Landing
 
-- [ ] **7. Docs and version**: `README.md`'s agent count and `.claude/CLAUDE.md`'s tree gain
+- [x] **7. Docs and version**: `README.md`'s agent count and `.claude/CLAUDE.md`'s tree gain
       the fourth agent and the new script, `CHANGELOG.md` gains the entry, and the bumps are
       plugin `3.5.0` to `3.6.0` and implement `3.0.0` to `3.1.0`
       → no behavior of its own · dep: 1-6 · verify: CI

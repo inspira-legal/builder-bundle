@@ -1,5 +1,81 @@
 # Changelog
 
+## 3.6.0 (2026-09-02)
+
+**A build announces the phases the spec named.** `build-tasks.js` declared its progress
+groups in `meta`, which the platform reads before the script runs, so every spec ever built
+showed the same two headers, `Ground` and `Build`, and someone watching a run learned
+nothing from them. The `###` headings inside `## Tasks` are the phase titles now: the
+heading's own text, its tasks as the members, document order as run order. `meta.phases` is
+gone, which is what frees `phase()` to take a computed title, and `meta` stays the literal
+the platform needs. The titles are read off the spec and never invented at dispatch time, a
+name written per run being both unreviewed and a miss on the resume cache, which keys on the
+prompt and the label. Grouping is optional: a flat `## Tasks` runs under one fallback title,
+and the ground keeps `Ground` either way, since stage zero belongs to the script and not to
+any task.
+
+**And the dispatch works from a Windows install.** Every installed copy of the workflow
+script carries CR, the version cache and the marketplace clone alike, because the installer
+does not honor `.gitattributes`. `Workflow` inlines a `scriptPath` into the approval dialog
+as `script`, the permission layer refuses the CR as a control character hidden there, and
+the documented fallback chain ended in the in-context build every time. The fix normalizes
+at the point of use: the dispatch runs a script that writes a CR-free copy and points
+`scriptPath` at that. Where the CR comes from stays broken, on purpose.
+
+**Stage zero pays one context floor instead of eight.** It dispatched one agent per reuse
+note, and on the run that measured it those eight agents cost more than the build they
+introduced: ~44k of context prefix each, re-read on every turn, for lookups of three to five
+tool calls and a few hundred tokens of answer. One agent carries every note now, and the
+whole-file `Read` that the old prompt's `Read the repo.` invited is what the new read
+protocol closes.
+
+### Added
+
+- **`scripts/normalize_workflow.py`**, stdlib, `<source> [--out <dir>]`. It reads the source
+  as bytes, drops every `\r`, writes the copy under the out dir and prints that one path,
+  nothing else, so the caller hands it straight to `scriptPath`. The strip is unconditional,
+  because a conditional one is a branch that saves microseconds and only runs on the machines
+  where it is wrong; an already-LF source comes out byte-identical. `--out` defaults to a
+  directory under the system temp, so nothing has to be published to it, and the skill passes
+  its session scratchpad when it has one. It sits at the plugin root because its reader is
+  the plugin-level `references/build-tasks-workflow.md`, which is what any future dispatcher
+  of a workflow reads.
+- **`agents/bb-reuse-check.md`** is the fourth read-only agent, `Read`, `Grep` and `Glob`. It
+  owns the role and the read protocol: confirm by `Grep` on the symbol the note names, and
+  when code has to be seen, `Read` a window of some 40 lines around the line the hits cited,
+  never a whole file, never an edit. `reusePrompt()` keeps what only the caller has, the
+  numbered notes, the return shape, and one line of that protocol, so an `agentType` that
+  fails to resolve leaves a generic agent working from a floor instead of an unbounded one.
+  That is the fallback the review fan-out already sets for its finder.
+
+### Changed
+
+- **`workflows/build-tasks.js`** logs its first line as the slug in prose plus the counts,
+  `Build phases and cost · 7 tasks, 4 phases`, which is where the identification went when
+  `meta` stayed a literal. The build loop gains an outer level over `args.phases`, and a
+  stopped task still ends the run and not just its phase, so the later phases never announce.
+  A group whose every task was already ticked is dropped before the walk, since `phase()`
+  fires as its group is entered and a header over nothing lies about the run. Nothing loops
+  above the fan-out, which is the validator's line at `validate-workflow-script.ts:39`.
+- **Stage zero keeps two thunks**, so the single-`parallel()` invariant holds untouched: one
+  `bb-reuse-check` carrying every note, one checks agent. The schema is
+  `{verdicts: [{index, verdict, note, where}]}`, `index` pointing back at the note the entry
+  answers, and **the script checks the count before it calls the ground proven**, because a
+  note nobody looked for would otherwise read as `intact`. With no reuse note, no reuse thunk
+  is sent at all.
+- **`references/build-tasks-workflow.md`** carries the normalizer call, the `phases` field of
+  `args`, and a fallback chain of two conditions instead of three: dispatch, or the
+  in-context build with the reason named. The inline `script` step went with the CR, an
+  inline read off the same bytes adding nothing once the copy exists, and the agent count
+  line now reads stage zero as two agents at most, whatever the note count.
+- **`/bb:implement`** (3.1.0) builds `phases` from the `###` groups at step 6, alongside the
+  `tasks` it already trimmed to the unticked ones, and its table answers a `## Tasks` with no
+  heading in it.
+- **`skills/spec/references/spec-format.md`** documents the grouping under the task shape,
+  where the person writing the spec is. `lint_spec.py` does not change: `HEADING` is
+  `^##\s+`, so the `###` groups are invisible to it and to `scan_specs.py`, which counts
+  tasks by their checkbox.
+
 ## 3.5.0 (2026-09-02)
 
 **The spec's frontmatter drops `review:`.** 3.3.0 wrote the two lenses' verdict into the

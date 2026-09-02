@@ -4,7 +4,7 @@ description: Runs a spec (`.bb/<slug>/spec.md`) as far as this run is meant to g
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 3.0.0
+  version: 3.1.0
 ---
 
 # Implement

@@ -15,6 +15,7 @@ first `/bb:profile` on.
 plugins/bb/
 ├── .claude-plugin/plugin.json
 ├── agents/                            # pipeline roles (auto-discovered, no plugin.json entry)
+│   ├── bb-reuse-check.md               # build stage zero: one run, every reuse note, read-only by `tools:`
 │   ├── bb-review-finder.md             # review fan-out: finds candidates, read-only by `tools:`
 │   ├── bb-review-verifier.md           # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
 │   └── bb-spec-reviewer.md             # spec step 6: the two lenses, coherence and grounding
@@ -34,13 +35,14 @@ plugins/bb/
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
 │   ├── build-tasks-workflow.md         # how the skills call workflows/build-tasks.js, and what it returns
 │   └── finding-levels.md               # Bloqueante / Sugestão, HIGH / LOW in a guide: review, review-setup
-├── scripts/                           # shared executables (2+ skills), ref via <plugin-root>/scripts/
+├── scripts/                           # shared executables (2+ skills, or a plugin-level reference), ref via <plugin-root>/scripts/
 │   ├── fetch_comments.py               # ship, review
 │   ├── reply_resolve_thread.py         # ship, review
 │   ├── gather_context.py               # ship (the PR body), review, gather-branch-context
 │   ├── preflight.py                    # ship (Prerequisites + Step 0), review (the fronts probe)
 │   ├── resolve_checks.py               # implement (step 4 + args.checks), ship (Step 2)
 │   ├── scan_specs.py                   # implement (selection); preflight.py imports its scan()
+│   ├── normalize_workflow.py           # the dispatch (references/build-tasks-workflow.md): the CR-free copy
 │   └── inspect_pr_checks.py            # ship (CI failures), review (the ci front)
 ├── skills/                            # all 15 skills flat; trilha grouping is a docs concept
 │   ├── Pensar:        discover, challenge, think, legal-lens
@@ -151,7 +153,9 @@ TypeScript.
 - Skill workflows reference their **own** scripts relatively (e.g.
   `scripts/foo.py`). Scripts shared by 2+ skills live at the plugin root in
   `plugins/bb/scripts/` and are referenced with
-  `<plugin-root>/scripts/<x>.py`. A
+  `<plugin-root>/scripts/<x>.py`, and so does a script whose reader is a
+  plugin-level reference rather than a skill, the way
+  `normalize_workflow.py` is read by `references/build-tasks-workflow.md`. A
   skill's own, non-shared script stays relative.
 - **Borrowing another skill's reference** is allowed when one skill owns a method
   two entry points must share, and duplicating it would mean two definitions that
