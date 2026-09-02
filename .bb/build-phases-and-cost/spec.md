@@ -187,7 +187,7 @@ The happy path, one line per step:
 
 ### Phases from the spec
 
-- [ ] **3. The script takes phases**: `meta.phases` deleted, the `log()` first line with the
+- [x] **3. The script takes phases**: `meta.phases` deleted, the `log()` first line with the
       slug as prose, and the phase walk after the ground, with the two-title fallback and
       the return shape untouched
       → behaviors 4, 6, 7 and the absent-phases, pre-`###`, empty-phase and stopped rows ·

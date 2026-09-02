@@ -1,11 +1,15 @@
+// The platform reads this before the script runs, so it is a literal and the same on every
+// run. Declaring no `phases` is what frees `phase()` to take a title computed from the spec:
+// a call with no matching entry gets a progress group of its own.
 export const meta = {
   name: "build-tasks",
   description: "Builds a bb spec one agent per task, after proving the ground",
-  phases: [
-    { title: "Ground", detail: "reuse notes and the project's checks, once" },
-    { title: "Build", detail: "one agent per task, sequential, one working tree" },
-  ],
 };
+
+// Stage zero belongs to the script and not to any task, so its title is fixed. The one the
+// spec did not name is the group a task before the first `###` heading joins.
+const GROUND_PHASE = "Ground";
+const IMPLICIT_PHASE = "Build";
 
 // A check that failed and then passed on a re-run with no file changed in between is
 // the whole definition of a flake here. Nothing else earns a retry.
@@ -165,11 +169,52 @@ the tree as it is for diagnosis and return the blocker. A \`verify:\` still "pen
 green task: it commits, and the pending rides out to ship.`;
 }
 
+// `meta` is a literal, so the card's name and description read the same for every spec. The
+// slug is the only identification left, and prose is how it reads like a title instead of a
+// path fragment: `build-phases-and-cost` becomes `Build phases and cost`.
+function asProse(slug) {
+  const words = slug.split("-").join(" ");
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
+function counted(n, noun) {
+  return `${n} ${noun}${n === 1 ? "" : "s"}`;
+}
+
+// `args.phases` names its members by `n`, so a task travels once in the payload and the walk
+// keeps the spec's document order. Two things the caller cannot promise are settled here: a
+// task no group claims sat before the first `###` heading, so it runs first under the
+// fallback title, and a group whose every task was already ticked is dropped, because
+// `phase()` fires as its group is entered and a header over nothing lies about the run.
+function phaseGroups(tasks, phases) {
+  if (!phases || !phases.length) return tasks.length ? [{ title: IMPLICIT_PHASE, tasks }] : [];
+
+  const named = phases.map((p) => ({
+    title: p.title,
+    tasks: tasks.filter((t) => (p.tasks || []).includes(t.n)),
+  }));
+  const claimed = named.flatMap((g) => g.tasks.map((t) => t.n));
+  const loose = tasks.filter((t) => !claimed.includes(t.n));
+
+  return (loose.length ? [{ title: IMPLICIT_PHASE, tasks: loose }] : []).concat(
+    named.filter((g) => g.tasks.length),
+  );
+}
+
+const taskList = args.tasks || [];
+// The count is the groups that will actually announce, not the ones the payload declares: on
+// a resumed run a `###` group can arrive with no unticked task left in it.
+const groups = phaseGroups(taskList, args.phases);
+
+log(
+  `${asProse(args.slug || "the spec")} · ${counted(taskList.length, "task")}, ${counted(groups.length, "phase")}`,
+);
+
 // Nothing unticked is nothing to build, and stage zero exists to prove the ground before
 // task 1: with no task 1 it would run the project's checks and re-read every reuse note for
 // a build that never happens. The skill checks this before invoking; the script holds the
 // line for a caller that did not.
-if (!args.tasks || args.tasks.length === 0) {
+if (!taskList.length) {
   return {
     slug: args.slug,
     built: [],
@@ -180,7 +225,7 @@ if (!args.tasks || args.tasks.length === 0) {
   };
 }
 
-phase("Ground");
+phase(GROUND_PHASE);
 
 const reuseNotes = args.reuseNotes || [];
 const resolved = args.checks || null;
@@ -196,7 +241,7 @@ const ground = await parallel([
     (note) => () =>
       agent(reusePrompt(note), {
         label: `reuse: ${note.slice(0, 40)}`,
-        phase: "Ground",
+        phase: GROUND_PHASE,
         schema: REUSE_VERDICT,
         effort: "low",
       }),
@@ -206,7 +251,7 @@ const ground = await parallel([
         () =>
           agent(checksPrompt(resolved), {
             label: "checks: confirm and run",
-            phase: "Ground",
+            phase: GROUND_PHASE,
             schema: CHECKS_RESULT,
             effort: "low",
           }),
@@ -274,45 +319,51 @@ const skipped = [];
 const pendingVerify = [];
 
 if (!stopped) {
-  phase("Build");
-  for (const t of args.tasks) {
-    const r = await agent(taskPrompt(t, conventions, checks.commands, args.specPath), {
-      label: `task ${t.n}: ${t.title}`,
-      phase: "Build",
-      schema: TASK_RESULT,
-    });
-    // A null return carries no blocker of its own, so the script writes one: assigning it
-    // straight to `stopped` would read to the caller as a clean run over a half-built spec.
-    if (!r) {
-      stopped = { n: t.n, status: "red", blocker: "lost agent (null return)" };
-      break;
-    }
-    if (r.status === "skipped") {
-      skipped.push(r.n);
-      continue;
-    }
-    if (r.status !== "green") {
-      stopped = r;
-      break;
-    }
-    // A task whose `verify:` did not run is not done, so green over a missing or failed
-    // verify is a contradiction the caller cannot see: `built` would name the task and
-    // ship would read it as proven.
-    const proven = r.verify && (r.verify.result === "passed" || r.verify.result === "pending");
-    if (!proven) {
-      stopped = {
-        n: r.n,
-        status: "red",
-        blocker: r.verify
-          ? `task ${r.n} returned green with verify ${r.verify.result}`
-          : `task ${r.n} returned green with no verify result`,
-      };
-      break;
-    }
+  for (const g of groups) {
+    phase(g.title);
+    for (const t of g.tasks) {
+      const r = await agent(taskPrompt(t, conventions, checks.commands, args.specPath), {
+        label: `task ${t.n}: ${t.title}`,
+        phase: g.title,
+        schema: TASK_RESULT,
+      });
+      // A null return carries no blocker of its own, so the script writes one: assigning it
+      // straight to `stopped` would read to the caller as a clean run over a half-built spec.
+      if (!r) {
+        stopped = { n: t.n, status: "red", blocker: "lost agent (null return)" };
+        break;
+      }
+      if (r.status === "skipped") {
+        skipped.push(r.n);
+        continue;
+      }
+      if (r.status !== "green") {
+        stopped = r;
+        break;
+      }
+      // A task whose `verify:` did not run is not done, so green over a missing or failed
+      // verify is a contradiction the caller cannot see: `built` would name the task and
+      // ship would read it as proven.
+      const proven = r.verify && (r.verify.result === "passed" || r.verify.result === "pending");
+      if (!proven) {
+        stopped = {
+          n: r.n,
+          status: "red",
+          blocker: r.verify
+            ? `task ${r.n} returned green with verify ${r.verify.result}`
+            : `task ${r.n} returned green with no verify result`,
+        };
+        break;
+      }
 
-    conventions = r.conventions;
-    if (r.verify.result === "pending") pendingVerify.push(r.n);
-    built.push(r.n);
+      conventions = r.conventions;
+      if (r.verify.result === "pending") pendingVerify.push(r.n);
+      built.push(r.n);
+    }
+    // A stop ends the run and not just its phase: the tasks share one working tree, so the
+    // next phase would build on ground the stop left half-made. The later phases are never
+    // announced either, because `phase()` fires as its group is entered.
+    if (stopped) break;
   }
 }
 
