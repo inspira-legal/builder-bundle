@@ -50,47 +50,52 @@ read-only.
 The script is at `<plugin-root>/workflows/build-tasks.js`, and the root is the one the
 SessionStart hook published into this session. That hook resolved it from a directory an
 interpreter on this machine had already opened, so the path is proven before any skill
-reads this line, and nothing here searches for it. Substitute it, then prove the file and
-print what `scriptPath` takes, in one `Bash` call:
+reads this line, and nothing here searches for it.
+
+**The dispatch points at a copy of that file, never at the file.** Every installed copy
+carries CR, and `Workflow` inlines a `scriptPath` into the approval dialog as `script`,
+where the permission layer refuses a control character that would be hidden there.
+`<plugin-root>/scripts/normalize_workflow.py` reads the source as bytes, drops every `\r`,
+writes the copy under its out dir and prints that one path, which is what `scriptPath`
+takes. Substitute the root and run it, in one `Bash` call:
 
 ```bash
-f="<plugin-root>/workflows/build-tasks.js"; cat "$f" > /dev/null && echo "$f"
+python3 "<plugin-root>/scripts/normalize_workflow.py" "<plugin-root>/workflows/build-tasks.js"
 ```
 
-A non-zero exit means the file is not under the published root, and it is the same
-condition the chain's last step names. With no root in the session at all, the chain goes
-straight to that step: a guess at the path is what the hook exists to replace.
+The strip is unconditional, so a source that is already LF comes out byte-identical and
+the dispatch proceeds the same way. `--out <dir>` chooses where the copy lands: pass the
+session's scratchpad when there is one, and the default is a directory under the system
+temp, which needs nothing published to it. The copy keeps the source's basename, so the
+path the approval dialog shows is the same one on every run.
+
+A non-zero exit is the one failure the chain reads, and the message on stderr names the
+path it choked on: the source is missing or unreadable, the file is not under the published
+root, or the out dir cannot be written. With no root in the session at all, the chain goes
+straight to its last step: a guess at the path is what the hook exists to replace.
 
 The **fallback chain**, one attempt each, in this order. It is stated here and nowhere
 else, so the skills point at it by name and carry no count of their own:
 
-1. `Workflow` with `scriptPath` set to the printed path. This is the dispatch.
-2. `scriptPath` refused: an inline `script` read off the same file. Still a dispatch, so
-   a refusal at step 1 ends that attempt and not the chain.
-3. Step 2 refused too, no `Workflow` tool in the session, or the `Bash` call came back
-   non-zero, whether because the session carries no published root or because the file is
-   not readable under it: the in-context build, with the reason named. Those two are
-   different lines to say, so say which one it was.
+1. `Workflow` with `scriptPath` set to the printed copy. This is the dispatch.
+2. No `Workflow` tool in the session, or the `Bash` call came back non-zero, whether
+   because the session carries no published root, because the source is not readable under
+   it, or because the out dir could not be written: the in-context build, with the reason
+   named. Those are different lines to say, so say which one it was.
 
-Only step 3 builds in the main context, and only the conditions it names reach it. A first
+Only step 2 builds in the main context, and only the conditions it names reach it. A first
 path that does not resolve is a step of the resolution rule and not a step of this chain,
-so a `Bash` call that comes back empty is step 3 only after the whole rule has been walked.
-A run that has tasks to build and meets none of the three dispatches at step 1. Invoking
+so a `Bash` call that comes back empty is step 2 only after the whole rule has been walked.
+A run that has tasks to build and meets neither condition dispatches at step 1. Invoking
 `/bb:implement`, by the command or by the phrases its `description`
 lists, is the request for this workflow, and that request is the opt-in the `Workflow`
 tool asks for. It covers this build and nothing beyond it.
 
-**A session that forbids workflows outright is a fourth way to end up here, and it is not a
+**A session that forbids workflows outright is a third way to end up here, and it is not a
 step of the chain.** An account or session level rule saying not to use workflows unless the
 user asked outranks the opt-in above, and the tool never runs. The build proceeds in the
-main context like step 3, and the line the skill owes says the session's own rules vetoed
+main context like step 2, and the line the skill owes says the session's own rules vetoed
 the dispatch, so the reason reads as a veto and not as a missing file.
-
-`build-tasks.js` carrying CR is a fifth, and it takes out both dispatch steps at once:
-`Workflow` inlines a `scriptPath` into the approval dialog as `script` and refuses the CR
-as a control character that would be hidden there, so the inline `script` of step 2 is
-refused for the same reason the path was. The repo's `.gitattributes` is what keeps that
-from happening, and if it happens anyway, CR is the reason step 3 names.
 
 Two stops sit outside the chain, and neither is a step of it. A user who denies the
 permission dialog has declined this dispatch: report the denial and ask what they want

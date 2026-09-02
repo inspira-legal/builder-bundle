@@ -180,7 +180,7 @@ The happy path, one line per step:
       decision states, reading bytes and writing the copy with `write_bytes`
       → behavior 2 and the missing-source, unwritable-out and already-LF rows · dep: — ·
       verify: command, running it over the repo's own workflow and counting CR in the copy
-- [ ] **2. The chain shrinks to two**: `references/build-tasks-workflow.md` invokes through
+- [x] **2. The chain shrinks to two**: `references/build-tasks-workflow.md` invokes through
       the normalizer, loses step 2 and loses the CR paragraph, and `implement/SKILL.md`
       step 6 follows it
       → behavior 3 and the denial row · dep: 1 · verify: reading
