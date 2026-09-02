@@ -176,7 +176,7 @@ The happy path, one line per step:
 
 ### The dispatch
 
-- [ ] **1. The normalizer**: `plugins/bb/scripts/normalize_workflow.py` with the CLI the
+- [x] **1. The normalizer**: `plugins/bb/scripts/normalize_workflow.py` with the CLI the
       decision states, reading bytes and writing the copy with `write_bytes`
       → behavior 2 and the missing-source, unwritable-out and already-LF rows · dep: — ·
       verify: command, running it over the repo's own workflow and counting CR in the copy
