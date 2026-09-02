@@ -4,7 +4,7 @@ description: Align on the idea before building. Develops a draft, iterates the g
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.5.0
+  version: 2.6.0
 ---
 
 # Spec
@@ -19,7 +19,7 @@ Reach a **shared understanding of the idea before any code**. What matters is th
 - **Medium** (a clear feature): the loop (gray areas + reuse scan + the load-bearing technical forks + the behavior map: happy path + edges), then the gate.
 - **Large / fuzzy** (new domain, real ambiguity): the full loop (reuse, the components and how data moves between them, the technical forks, the behavior map, break it into tasks), then the gate.
 
-Always required: reach alignment, **close the load-bearing technical decisions, map the behavior**, and stop at a validated spec. Size is a running estimate, not locked at the start. If a "Tiny/Medium" task keeps surfacing gray areas mid-flow, re-size up and spec it properly.
+Always required: reach alignment, **close the load-bearing technical decisions, map the behavior, run the check at step 6**, and stop at a validated spec. Size is a running estimate, not locked at the start. If a "Tiny/Medium" task keeps surfacing gray areas mid-flow, re-size up and spec it properly.
 
 ## Read the upstream records first
 
@@ -61,7 +61,9 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
 
    What you're hunting: (a) **unresolved load-bearing decisions** (a technical fork building can't proceed without, still blank or "TBD"); (b) **unmapped or unanswered behavior** (a happy-path step glossed over, an edge with no decided outcome); (c) **material contradictions**. Load-bearing gaps, behavior holes, and real conflicts only. Don't manufacture nitpicks, or the loop never closes.
 
-6. **Check the spec: the lint, then two independent lenses. Every Medium-and-up spec, every time.** This is a step of its own because it's the one an author skips: you cannot see your own omissions, and the pass that would catch them is the pass that feels redundant.
+6. **Check the spec: the lint, then two independent lenses. Every spec, every pass that reaches the gate.** This is a step of its own because it's the one an author skips: you cannot see your own omissions, and the pass that would catch them is the pass that feels redundant.
+
+   **Unconditional.** It runs on the first pass and on every later one that reopens the spec: resolving an item from `## Open`, folding in an answer that arrived after the gate, revising a decision on a landed spec. The lenses read the spec **as it stands now**, so a spec changed since the last pass has not been read, and the size is no exemption either. Whichever build option the gate is about to offer, the lenses read the document first.
 
    First the lint (dead section names, malformed tables, a missing required section), so the gate spends its attention on completeness instead:
 
@@ -73,9 +75,9 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
 
    Fold what they return back into step 3, with one exception: a **grounding finding that invalidates a `## Decisions` bullet, that names a file a task does not have, or that points at a thing the repo already does and the spec is about to rebuild, becomes an item in `## Open`**, which the gate already blocks on. Those three are what the grounding lens finds that the draft cannot absorb on its own. A finding rejected on a stated ground counts as dealt with; what none of them can be is quietly dropped. Carry both verdicts to the gate.
 
-   Without an Agent tool in this context, the review did not run: say so at the gate rather than showing a verdict that never ran. A lens dying is the same record, `not-run`, whether it took one lens or both: the survivor's findings still fold into step 3, and the gate says which lens is missing, because `clean` and `resolved` are what a whole two-lens pass leaves behind.
+   Without an Agent tool in this context, the review did not run: say so at the gate rather than showing a verdict that never ran. A lens dying reads the same way, whether it took one lens or both: the survivor's findings still fold into step 3, and the gate names the lens that is missing, because a verdict shown without that caveat claims a pass the spec never got.
 
-7. **The exit gate: blocks on open load-bearing decisions.** Don't gate blind: first **show the artifact the user is signing off on**, a tight recap of the happy path, the full edge→outcome table, the **coverage table** (behavior → task → test) with `⚠️` on any unmapped row plus a one-line counter (`N behaviors, M mapped, K open`), and (Medium+) the **two lenses' verdict** in one line naming each of them (clean, what it flagged and how that was resolved, or that it did not run), so "is this complete?" is answerable at a glance instead of forcing them to reopen the file. Then list what's **still open** (unresolved load-bearing decisions + parked questions). Then ask one `AskUserQuestion` (a handoff gate, with the format in the plugin-level `references/handoff-gate.md`):
+7. **The exit gate: blocks on open load-bearing decisions.** Don't gate blind: first **show the artifact the user is signing off on**, a tight recap of the happy path, the full edge→outcome table, the **coverage table** (behavior → task → test) with `⚠️` on any unmapped row plus a one-line counter (`N behaviors, M mapped, K open`), and the **two lenses' verdict** in one line naming each of them (clean, what it flagged and how that was resolved, or that it did not run), so "is this complete?" is answerable at a glance instead of forcing them to reopen the file. Then list what's **still open** (unresolved load-bearing decisions + parked questions). Then ask one `AskUserQuestion` (a handoff gate, with the format in the plugin-level `references/handoff-gate.md`):
    - **If any load-bearing decision is still open:** do NOT offer a clean "build". The only options are **resolve it now** or **defer explicitly** ("decide at build time", recorded as such in the spec). Never a silent "build anyway".
    - **If nothing load-bearing is open:** finalize `.bb/<slug>/spec.md` (with its frontmatter block; see "Capture the alignment"), then offer four paths, three of which invoke `/bb:implement <slug>` now and differ only in **how far the run goes**: **Build** (every task, then it offers the ship), **Build and ship** (the tasks, then `/bb:ship`), **Build, review and ship** (the tasks, `/bb:review` over the branch, then `/bb:ship`), or **Stop here** (leave the spec; the user picks up later). **The pick is implement's scope answer**, so implement doesn't ask it again. Choosing to adjust instead is always available. That loops back into the question tool; a build pick is the affirmative start, not a silent roll-through.
 
@@ -111,9 +113,9 @@ Write a single `.bb/<slug>/spec.md`, the converged draft itself, written as some
 
 The on-disk contract (location, frontmatter schema, status lifecycle) is the plugin-level `references/spec-state.md`; follow it. In short: specs go to `.bb/<slug>/spec.md`. If a spec already exists for a _different_ idea under the same slug, suffix it (`-2`) or ask; never silently overwrite another spec.
 
-On finalize, open the spec with the frontmatter block (`status: pending`, `created: <today>`, `slug: <slug>`, `review: <verdict>`). This skill is the file's only writer, so the block is there from the first write. A spec landed before that rule can be missing it; backfill it on finalize. Leave the lifecycle after this to implement; spec only seeds `pending`.
+On finalize, open the spec with the frontmatter block (`status: pending`, `created: <today>`, `slug: <slug>`). This skill is the file's only writer, so the block is there from the first write. A spec landed before that rule can be missing it; backfill it on finalize. Leave the lifecycle after this to implement; spec only seeds `pending`.
 
-`review:` is step 6's verdict, its three values defined in that same `references/spec-state.md`, and `scripts/lint_spec.py` fires `E006` on a spec that closes without one. A landed spec rewritten by a later run gets the field rewritten with that run's verdict.
+Step 6's verdict is not part of the block: it belongs to this run, and it reaches the user at the gate, which is where a person can still act on it.
 
 **Large** work carries `## Behavior` and `## Tasks` as their own sections: the acceptance contract and the vertical tasks the build side consumes. **Medium** work keeps both inline in the decisions.
 

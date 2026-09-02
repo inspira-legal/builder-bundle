@@ -124,7 +124,6 @@ python3 plugins/bb/skills/spec/scripts/lint_spec.py .bb/<slug>/spec.md
 | E003 | error   | a dead section name (`## design`, `## still open`)                 |
 | E004 | error   | a table cell above 100 characters                                  |
 | E005 | error   | a row whose cell count differs from the header                     |
-| E006 | error   | `review:` missing, or carrying a value outside the three           |
 | W001 | warning | no `## Behavior`                                                   |
 | W002 | warning | no `## Tasks`                                                      |
 | W004 | warning | no `## Out of scope`                                               |
@@ -135,10 +134,6 @@ one reading the spec as text and the grounding one checking its claims about exi
 code against the repo. A line ceiling on a document meant to be read just rebuilds the
 form.
 
-`E006` is the one code that reaches past the document: it fires when the frontmatter
-carries no `review:`, the verdict those two lenses leave behind (the three values are in
-the plugin-level `references/spec-state.md`). What it guarantees is the record and not
-the run, since a value can always be written by hand; the gate is what runs the lenses.
-It stays silent on a spec that is already `status: done` and has no such key, which
-grandfathers the ones that landed before the field existed. An invalid value fires even
-there, because that is a typo and not a legacy file.
+Every code reads the document's own bytes, and what those two lenses returned is not
+among them: their verdict reaches the user at the gate, and the plugin-level
+`references/spec-state.md` says why it stays out of the frontmatter.
