@@ -123,6 +123,7 @@ stringified one):
     unresolved: [{ command: "...", reason: "unrecognized-runner" | "shell-dependent", where: "<file>" }]
   },
   reuseNotes: ["<one string per reuse note in ## Decisions>"],
+  phases: [{ title: "<the ### heading>", tasks: [1, 2] }],
   tasks: [
     { n: 1, title: "...", delivers: "...", behaviors: [2, 3], dep: [], verify: "..." }
   ]
@@ -154,6 +155,15 @@ open the file. The alternative is a confident empty list over a suite that exist
 `tasks` carries only the ones still unticked at invoke time, in an order that already
 satisfies `dep:`. The agents re-read the spec anyway: `args` is the plan, the file on
 disk is the truth.
+
+`phases` is what the progress card shows as its group headers, and it mirrors the `###`
+headings inside `## Tasks`: one entry per heading, in document order, the heading's own
+text as `title` and its tasks named by `n`. It is read off the section as written, ticked
+tasks included, because the script keeps only the members `tasks` still carries and drops
+a group left with none, so a resumed run announces the phases it will actually run. A
+`## Tasks` with no `###` heading sends no `phases` at all, and the script falls back to
+its two fixed titles; the ground keeps `Ground` either way, since stage zero belongs to
+the script and not to any task.
 
 An empty `tasks` is not a run. The skill sees it first and reports nothing to build
 without invoking; the script returns the empty report before stage zero, so a caller that
@@ -307,7 +317,8 @@ review of a change to this script, not a step in a build run.
 **The skill** owns the three that are genuinely per-run, and confirms them before
 invoking:
 
-- `args` is passed as a JSON value, `tasks` holds only unticked tasks, and `checks` is
+- `args` is passed as a JSON value, `tasks` holds only unticked tasks, `phases` repeats the
+  `###` headings of the same `## Tasks` in document order, and `checks` is
   `resolve_checks.py`'s output passed through whole.
 - The branch the commits belong on already exists and is checked out; the agents commit
   where the run puts them.

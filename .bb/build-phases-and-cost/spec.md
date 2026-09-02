@@ -192,7 +192,7 @@ The happy path, one line per step:
       the return shape untouched
       → behaviors 4, 6, 7 and the absent-phases, pre-`###`, empty-phase and stopped rows ·
       dep: — · verify: reading
-- [ ] **4. The payload and the format**: `implement/SKILL.md` builds `phases` from the `###`
+- [x] **4. The payload and the format**: `implement/SKILL.md` builds `phases` from the `###`
       groups, the reference's `args` section carries the field, and `spec-format.md`
       documents the grouping under the task shape
       → behavior 1 and the every-ticked row · dep: 3 · verify: reading

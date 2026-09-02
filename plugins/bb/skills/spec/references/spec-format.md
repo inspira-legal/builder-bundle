@@ -92,6 +92,33 @@ Every task cites at least one behavior and every behavior is cited by at least o
 task. That two-way trace is what the gate renders as the coverage table; an unlinked
 row on either side is an omission made visible.
 
+### The `###` headings inside `## Tasks` are the build's phases
+
+Group the tasks under `###` headings whenever the spec has more than one movement in it:
+
+```
+## Tasks
+
+### Prove the ground
+
+- [ ] **1. The normalizer**: …
+
+### Migrate the callers
+
+- [ ] **2. The chain shrinks to two**: …
+```
+
+The heading is the phase title, the tasks under it are its members, and document order is
+run order. `/bb:implement` passes them to the build as `args.phases`, and the progress card
+shows them as its group headers, so someone watching a run over this spec reads the work
+this spec describes. Name a heading after what that group of tasks does, the way you would
+name a section: `Prove the ground`, `Migrate the callers`, `Drop the old path`.
+
+Grouping is optional and costs nothing to skip. A flat list runs under one fallback title,
+and a task that sits before the first `###` runs first, under that same title. Nothing else
+reads the headings either: `lint_spec.py` matches `^##\s+` and `scan_specs.py` counts tasks
+by their checkbox, so both see the same flat list they always did.
+
 ## Dead names
 
 `## design` is not a spec section. Inside bb the word already means screen design:
