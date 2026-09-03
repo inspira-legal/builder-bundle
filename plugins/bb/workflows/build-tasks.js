@@ -18,6 +18,15 @@ const RETRY_CAP = 3;
 // Past this many characters the agent condenses its oldest entries itself.
 const NOTE_CEILING = 1500;
 
+// Cost is bought with the model and capability is kept with `effort`, so the two dials move
+// together and only one of them is about price. A tier that cut the reasoning of the case that
+// needs it would be saving money on the answer instead of on the lookup.
+const CHEAP_MODEL = "haiku";
+
+// A name the platform does not know takes down the dispatch, and every one of these arrives from
+// a caller that read a spec, so the set is checked here rather than trusted.
+const KNOWN_MODELS = ["haiku", "sonnet", "opus"];
+
 const MANIFESTO_REF = "plugin-level references/consult-manifesto.md";
 
 // One agent answers every note, so the shape is an array and `index` is what pairs an
@@ -199,6 +208,29 @@ function counted(n, noun) {
   return `${n} ${noun}${n === 1 ? "" : "s"}`;
 }
 
+// The checks agent has two jobs behind one label, and only one of them is mechanical. Confirming
+// a list `resolve_checks.py` already produced and running it reads a payload and executes it.
+// Walking the authority chain with no list at all, opening the files the `unresolved` leads name
+// to decide whether each one is a check, and confirming the rest of a truncated list from its own
+// source are the judgments the resolver could not make, and that one keeps the session's tier.
+function checksTier(resolved) {
+  const mechanical =
+    resolved &&
+    resolved.commands &&
+    resolved.commands.length &&
+    !resolved.truncated &&
+    !(resolved.unresolved && resolved.unresolved.length);
+  return mechanical ? { model: CHEAP_MODEL, effort: "low" } : {};
+}
+
+// How hard a task is, is what only the reader of the spec knows, so it travels in the payload
+// instead of being guessed from the task's own line here. Nothing is returned when the payload
+// says nothing: an absent key is what makes an agent inherit the session's model, and passing
+// `model: null` is not the same thing.
+function taskTier(t) {
+  return t.model && KNOWN_MODELS.includes(t.model) ? { model: t.model } : {};
+}
+
 // `args.phases` names its members by `n`, so a task travels once in the payload and the walk
 // keeps the spec's document order. Two things the caller cannot promise are settled here: a
 // task no group claims sat before the first `###` heading, so it runs first under the
@@ -228,6 +260,17 @@ log(
   `${asProse(args.slug || "the spec")} · ${counted(taskList.length, "task")}, ${counted(groups.length, "phase")}`,
 );
 
+// Every name is read before stage zero and not at the call that uses it: a typo reaching the
+// platform would take down a run that had already proved its ground, and a whole stage zero is
+// what it would waste. Dropped rather than fatal, and said out loud, because a silent fallback
+// to the session's model reads as the tier the caller asked for.
+const unknownTier = taskList.filter((t) => t.model && !KNOWN_MODELS.includes(t.model));
+if (unknownTier.length) {
+  log(
+    `${counted(unknownTier.length, "task")} asked for a model this script does not know (${unknownTier.map((t) => `${t.n}: ${t.model}`).join(", ")}); the session's model is used instead`,
+  );
+}
+
 // Nothing unticked is nothing to build, and stage zero exists to prove the ground before
 // task 1: with no task 1 it would run the project's checks and re-read every reuse note for
 // a build that never happens. The skill checks this before invoking; the script holds the
@@ -254,6 +297,15 @@ const resolved = args.checks || null;
 // instead of over the code.
 const runChecks = !resolved || resolved.runnable !== false;
 
+// The tier is read before the fan-out so the run can say which of the checks agent's two jobs
+// this payload gave it. Silent, the expensive branch reads as the cheap one.
+const groundTier = checksTier(resolved);
+if (runChecks && !groundTier.model) {
+  log(
+    "the check list needs judgment the resolver could not make; that agent keeps the session's model",
+  );
+}
+
 // Two thunks at most, and the reuse one carries every note: a subagent's context floor is
 // paid per agent and re-read on every turn it takes, so eight notes over eight agents pay
 // that floor eight times for eight lookups of three tool calls each.
@@ -266,7 +318,10 @@ const ground = await parallel([
             phase: GROUND_PHASE,
             agentType: "bb-reuse-check",
             schema: REUSE_VERDICTS,
+            // `Grep` on a symbol and a verdict per note is the whole job, and the schema is
+            // what shapes the answer, so nothing here is bought by a stronger model.
             effort: "low",
+            model: CHEAP_MODEL,
           }),
       ]
     : []),
@@ -277,7 +332,7 @@ const ground = await parallel([
             label: "checks: confirm and run",
             phase: GROUND_PHASE,
             schema: CHECKS_RESULT,
-            effort: "low",
+            ...groundTier,
           }),
       ]
     : []),
@@ -382,6 +437,7 @@ if (!stopped) {
         label: `task ${t.n}: ${t.title}`,
         phase: g.title,
         schema: TASK_RESULT,
+        ...taskTier(t),
       });
       // A null return carries no blocker of its own, so the script writes one: assigning it
       // straight to `stopped` would read to the caller as a clean run over a half-built spec.

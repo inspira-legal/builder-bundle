@@ -128,7 +128,7 @@ stringified one):
   reuseNotes: ["<one string per reuse note in ## Decisions>"],
   phases: [{ title: "<the ### heading>", tasks: [1, 2] }],
   tasks: [
-    { n: 1, title: "...", delivers: "...", behaviors: [2, 3], dep: [], verify: "..." }
+    { n: 1, title: "...", delivers: "...", behaviors: [2, 3], dep: [], verify: "...", model: "haiku" }
   ]
 }
 ```
@@ -159,6 +159,16 @@ open the file. The alternative is a confident empty list over a suite that exist
 satisfies `dep:`. The agents re-read the spec anyway: `args` is the plan, the file on
 disk is the truth.
 
+`model` on a task is **optional and the only tier the payload sets**, because how hard a task
+is, is the one thing about it the script cannot read. It takes `haiku`, `sonnet` or `opus`; the
+script drops any other name, says so in one line and runs that task on the session's model,
+since a typo passed through would take down a run that had already proved its ground. Omitted,
+the task inherits the session's model, which is the default and the right answer for most
+tasks: the agent is doing the work the main context would have done. `## Effort and model`
+below is the rule the skill applies to decide, and resume is what makes it a rule rather than
+a judgment per run: the cache is keyed on the agent's `(prompt, opts)`, so a task whose model
+moved between two runs of the same spec re-runs from scratch.
+
 `phases` is the `###` headings inside `## Tasks` on the wire, one entry per heading in
 document order, the heading's own text as `title` and its tasks named by `n`. The rule
 those headings follow is `skills/spec/references/spec-format.md`'s. Read the section as
@@ -177,8 +187,9 @@ task.
 
 Two thunks at most, inside a single `parallel()`: one `bb-reuse-check` carrying every
 reuse note the spec has, and the checks agent when there is something to run. This is a
-legitimate barrier: nothing starts until every verdict is in. Both are read-only lookups,
-so they run at `effort: 'low'`.
+legitimate barrier: nothing starts until every verdict is in. Both are read-only, and their
+tiers are the script's own, computed from the payload: `## Effort and model` below is where
+that rule is stated.
 
 The reuse agent is dispatched **once per build and not once per note**, because a
 subagent's context floor is paid per agent and re-read on every turn it takes: on the run
@@ -296,8 +307,34 @@ from stage zero. What does not: anything already written in the spec.
 
 ## Effort and model
 
-Stage zero at `effort: 'low'`, read-only lookup. Task agents inherit the session model
-and effort; they are doing the same work the main context would have done.
+One dispatch, and each agent on the model its own job earns. Cost is bought with the
+**model** and capability is kept with **`effort`**, so the two move together: a cheap
+tier is never a strong model with its reasoning cut, which would be saving on the
+answer instead of on the lookup.
+
+The rule is the script's, computed from the payload it already has, so the same spec
+dispatches the same tiers twice and the decision is readable in one place:
+
+- **The reuse agent: `haiku` at `effort: 'low'`, always.** `Grep` on the symbol a note
+  names and a verdict per note is the whole job, and `REUSE_VERDICTS` is what shapes
+  the answer. Nothing here is bought by a stronger model.
+- **The checks agent: the payload decides.** Confirming a list `resolve_checks.py`
+  already produced and running it is mechanical, so that one is `haiku` at
+  `effort: 'low'` too. A `checks` that is `null`, `truncated`, or carrying `unresolved`
+  leads hands the agent the judgment the resolver could not make, and that one keeps
+  the session's model and effort. The run logs which of the two it got, because silent,
+  the expensive branch reads as the cheap one.
+- **Task agents inherit the session's model and effort**, unless the task's own `model`
+  says otherwise. They are doing the work the main context would have done, against a
+  spec that was reviewed before it got here.
+
+`model` on a task is the skill's to set, and it is set from the task's own line rather
+than from a fresh judgment each run: a doc-only cut, a mechanical rename, a `verify:`
+that is one command all earn the cheap tier; the one task the spec's `## Decisions`
+turned on earns the strong one; everything else says nothing and inherits. Two runs of
+the same spec have to reach the same answer, or resume re-runs the tasks whose tier
+drifted. Set none, and every task runs on the session's model, which is what the build
+did before this rule existed.
 
 ## What the script returns
 
@@ -344,6 +381,9 @@ invoking:
 - `args` is passed as a JSON value, `tasks` holds only unticked tasks, `phases` repeats the
   `###` headings of the same `## Tasks` in document order, and `checks` is
   `resolve_checks.py`'s output passed through whole.
+- A task carries `model` only where its own line earns a tier other than the session's, by
+  the rule in `## Effort and model`, and the same spec earns the same answer on a re-run.
+  Stage zero's two tiers are the script's and take nothing from the payload.
 - The branch the commits belong on already exists and is checked out; the agents commit
   where the run puts them.
 - The agent count is `tasks.length`, plus one for the reuse agent when `reuseNotes` is not
