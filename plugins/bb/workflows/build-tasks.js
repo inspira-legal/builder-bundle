@@ -21,7 +21,7 @@ const NOTE_CEILING = 1500;
 const MANIFESTO_REF = "plugin-level references/consult-manifesto.md";
 
 // One agent answers every note, so the shape is an array and `index` is what pairs an
-// answer back to the note it answers. The count is what the script checks: an agent that
+// answer back to the note it answers. The index set is what the script checks: an agent that
 // dropped a note would otherwise leave that note reading as `intact`.
 const REUSE_VERDICTS = {
   type: "object",
@@ -36,7 +36,7 @@ const REUSE_VERDICTS = {
           index: { type: "number", description: "the note this answers, numbered as sent" },
           verdict: { type: "string", enum: ["intact", "moved", "gone"] },
           note: { type: "string" },
-          where: { type: "string", description: "the new path, when moved" },
+          where: { type: "string", description: "the new path, required when moved" },
         },
       },
     },
@@ -76,8 +76,8 @@ const TASK_RESULT = {
 
 // The role and the whole read protocol belong to `agents/bb-reuse-check.md`, which the
 // harness delivers as the system prompt. What is left here is what only the caller has: the
-// notes, the shape, and one line of that protocol, so an `agentType` that fails to resolve
-// degrades into a generic agent working from a floor instead of an unbounded one.
+// notes and their numbering, plus one line of that protocol, so an `agentType` that fails to
+// resolve degrades into a generic agent working from a floor instead of an unbounded one.
 function reusePrompt(notes) {
   const numbered = notes.map((note, i) => `${i}. ${note}`).join("\n");
   return `A spec's reuse notes say the build should extend code that already exists. Find out whether each one still does.
@@ -86,15 +86,8 @@ The notes, numbered by the index your answer carries:
 
 ${numbered}
 
-Confirm each one with \`Grep\` on the symbol it names, and where the code has to be seen,
-\`Read\` a window of some 40 lines around the line the hits cite, never a whole file.
-
-Return "verdicts" with one entry per note, in that order: "index" the number above, "note"
-what you looked for plus the \`file:line\` that settled it, and "verdict" one of "intact"
-when the code is where the note says, "moved" with the path you found in "where" when it
-lives elsewhere, and "gone" when nothing in the repo answers to it any more. A near-match
-under a different name is "moved", not "gone"; only nothing at all is "gone". Answer every
-note, and do not edit anything.`;
+Confirm each one against the repo before you judge it, with \`Grep\` on the symbol it names.
+Answer every note, one entry per index, and do not edit anything.`;
 }
 
 // `scripts/resolve_checks.py` walks the authority chain before the dispatch, so this agent
@@ -302,21 +295,41 @@ if (!runChecks) {
   );
 }
 
+// The index set is what proves coverage, and the count is not: an answer that repeats one
+// index and drops another has the right length, and the dropped note never reaches the
+// filters below, which read the answers and cannot look for one that is missing. So it would
+// read as `intact` and the build would extend code nobody looked for.
+const answered = new Set(verdicts.map((v) => v.index));
+const unanswered = reuseNotes.map((_, i) => i).filter((i) => !answered.has(i));
+const stray = verdicts.filter((v) => !(v.index >= 0 && v.index < reuseNotes.length));
+
+// `moved` is the one verdict that carries a path, and a schema cannot make a field required
+// on a single enum value. Unchecked, a missing `where` renders as the literal `undefined` in
+// the convention note every task agent then reads.
+const placeless = verdicts.filter((v) => v.verdict === "moved" && !v.where);
+
 // A lost stage-zero agent is a stop of its own: proceeding would build on ground nobody
-// proved. A short answer is the same stop, because the notes with no verdict would read as
-// `intact` and the build would extend code nobody looked for.
+// proved. A malformed answer is the same stop.
 let stopped = null;
 if (reuseNotes.length && !reuseResult) {
   stopped = { n: 0, status: "red", blocker: "the reuse agent returned nothing" };
-} else if (verdicts.length !== reuseNotes.length) {
-  const short = reuseNotes.length - verdicts.length;
+} else if (unanswered.length) {
   stopped = {
     n: 0,
     status: "red",
-    blocker:
-      short > 0
-        ? `${counted(short, "reuse note")} of ${reuseNotes.length} went unanswered; stage zero proved nothing`
-        : `the reuse agent returned ${counted(verdicts.length, "verdict")} for ${counted(reuseNotes.length, "note")}`,
+    blocker: `${counted(unanswered.length, "reuse note")} of ${reuseNotes.length} went unanswered (${unanswered.join(", ")}); stage zero proved nothing`,
+  };
+} else if (stray.length) {
+  stopped = {
+    n: 0,
+    status: "red",
+    blocker: `the reuse agent returned ${counted(stray.length, "verdict")} against an index no note carries; stage zero proved nothing`,
+  };
+} else if (placeless.length) {
+  stopped = {
+    n: 0,
+    status: "red",
+    blocker: `a reuse target moved with no path to it: ${placeless.map((v) => v.note).join("; ")}`,
   };
 } else if (!checks) {
   stopped = { n: 0, status: "red", blocker: "the checks agent returned nothing" };

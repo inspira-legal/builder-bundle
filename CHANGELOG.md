@@ -24,8 +24,9 @@ at the point of use: the dispatch runs a script that writes a CR-free copy and p
 
 **Stage zero pays one context floor instead of eight.** It dispatched one agent per reuse
 note, and on the run that measured it those eight agents cost more than the build they
-introduced: ~44k of context prefix each, re-read on every turn, for lookups of three to five
-tool calls and a few hundred tokens of answer. One agent carries every note now, and the
+introduced: a context prefix each, re-read on every turn, for lookups of three to five tool
+calls and a few hundred tokens of answer. The measurement is in
+`references/build-tasks-workflow.md`. One agent carries every note now, and the
 whole-file `Read` that the old prompt's `Read the repo.` invited is what the new read
 protocol closes.
 
@@ -60,14 +61,16 @@ protocol closes.
 - **Stage zero keeps two thunks**, so the single-`parallel()` invariant holds untouched: one
   `bb-reuse-check` carrying every note, one checks agent. The schema is
   `{verdicts: [{index, verdict, note, where}]}`, `index` pointing back at the note the entry
-  answers, and **the script checks the count before it calls the ground proven**, because a
-  note nobody looked for would otherwise read as `intact`. With no reuse note, no reuse thunk
-  is sent at all.
-- **`references/build-tasks-workflow.md`** carries the normalizer call, the `phases` field of
-  `args`, and a fallback chain of two conditions instead of three: dispatch, or the
-  in-context build with the reason named. The inline `script` step went with the CR, an
-  inline read off the same bytes adding nothing once the copy exists, and the agent count
-  line now reads stage zero as two agents at most, whatever the note count.
+  answers, and **the script checks the index set before it calls the ground proven**, because
+  a note nobody looked for would otherwise read as `intact` and a count alone cannot tell one
+  note answered twice from two notes answered once. A `moved` verdict with no `where` stops
+  the run for the same reason: the path it omits is what every task prompt would carry. With
+  no reuse note, no reuse thunk is sent at all.
+- **`references/build-tasks-workflow.md`** carries the normalizer call and the `phases` field
+  of `args`. The fallback chain keeps its three steps: the normalizer answers for CR, and a
+  `scriptPath` refused for anything else still has the inline `script` to try before the
+  build comes back to the main context. The agent count line now reads stage zero as two
+  agents at most, whatever the note count.
 - **`/bb:implement`** (3.1.0) builds `phases` from the `###` groups at step 6, alongside the
   `tasks` it already trimmed to the unticked ones, and its table answers a `## Tasks` with no
   heading in it.

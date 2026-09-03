@@ -111,8 +111,11 @@ grounding read of a task will otherwise find them unsupported:
 - **One `bb-reuse-check` carries every note.** One floor instead of eight. The schema is
   `{verdicts: [{index, verdict, note, where}]}`, one entry per note, `index` into the array
   the prompt sent, `verdict` the existing `intact` / `moved` / `gone`, and `where` the path
-  only when the verdict is `moved`. Stage zero's `parallel()` keeps two thunks, reuse and
-  checks, so the validator's single-`parallel()` invariant holds untouched.
+  only when the verdict is `moved`, and required there: the script stops the run on a `moved`
+  with no `where`, because that path is what every task prompt would carry. What proves the
+  ground is the **index set**, not the count: one note answered twice and another not at all
+  adds up the same way. Stage zero's `parallel()` keeps two thunks, reuse and checks, so the
+  validator's single-`parallel()` invariant holds untouched.
 - **The reuse contract splits by kind, and the prompt keeps a floor.** The agent owns the
   role and the read protocol: confirm by `Grep` on the symbol, and when code must be seen,
   read the window around the cited line, never a whole file, never an edit. The script owns
@@ -130,9 +133,10 @@ grounding read of a task will otherwise find them unsupported:
 - **The dispatch normalizes unconditionally.** A conditional strip is a branch that saves
   microseconds and only runs on the machines where it is wrong. `scriptPath` points at the
   copy.
-- **The fallback chain loses step 2.** With the normalizer between the file and the tool, an
-  inline `script` read off the same bytes adds nothing, and the CR paragraph goes with it.
-  The chain becomes two conditions: dispatch, or the in-context build with the reason named.
+- **The fallback chain keeps its three steps, and loses only the CR paragraph.** The
+  normalizer answers for CR, which is what that paragraph explained; it does not answer for
+  a `scriptPath` refused on any other ground, so the inline `script` stays as the step
+  between the dispatch and the in-context build.
 - **Task parallelism is not in this spec.** See `## Out of scope`.
 
 ## Behavior
@@ -158,13 +162,16 @@ The happy path, one line per step:
 | the source script is missing or unreadable | the normalizer exits non-zero and the run builds in context         |
 | the out dir cannot be written              | the same: the normalizer is the one failure the chain reads         |
 | the source is already LF                   | the copy is byte-identical and the dispatch proceeds                |
+| `scriptPath` is refused for anything else  | the inline `script` runs off the copy's text before the chain ends  |
 | the user denies the approval dialog        | report the denial and ask, outside the chain, as today              |
 | `args.phases` is absent                    | the script falls back to `Ground` and `Build`, as today             |
 | a task sits before the first `###`         | it joins an implicit `Build` phase, in list order                   |
 | a phase has no unticked task               | no `phase()` fires for it, and an empty group is never announced    |
 | every task is already ticked               | nothing is dispatched and the run reads as clean                    |
 | a task stops mid-run                       | the run ends there and the later phases never announce              |
-| the reuse agent returns fewer verdicts     | stage zero stops, naming how many notes went unanswered             |
+| a reuse note goes unanswered               | stage zero stops, naming which notes and how many                   |
+| a verdict carries an index no note has     | stage zero stops: the answer cannot be placed                       |
+| a `moved` verdict carries no `where`       | stage zero stops, naming the note whose new path is missing         |
 | a note comes back `gone`                   | stop, and the safety valve hands back to `/bb:spec`                 |
 | a note comes back `moved`                  | the new path travels in the convention note                         |
 | there are no reuse notes                   | no reuse thunk is sent                                              |
@@ -180,8 +187,8 @@ The happy path, one line per step:
       decision states, reading bytes and writing the copy with `write_bytes`
       → behavior 2 and the missing-source, unwritable-out and already-LF rows · dep: — ·
       verify: command, running it over the repo's own workflow and counting CR in the copy
-- [x] **2. The chain shrinks to two**: `references/build-tasks-workflow.md` invokes through
-      the normalizer, loses step 2 and loses the CR paragraph, and `implement/SKILL.md`
+- [x] **2. The chain loses the CR paragraph**: `references/build-tasks-workflow.md` invokes
+      through the normalizer and keeps its three steps, and `implement/SKILL.md`
       step 6 follows it
       → behavior 3 and the denial row · dep: 1 · verify: reading
 
@@ -205,7 +212,7 @@ The happy path, one line per step:
       → behavior 5 · dep: — · verify: CI
 - [x] **6. One agent for every note**: `reusePrompt` takes the list and one line of the
       protocol, the schema becomes the indexed array, the thunk carries `agentType`, the
-      verdict count is checked before the ground is called proven, and the reference's
+      verdict index set is checked before the ground is called proven, and the reference's
       stage-zero section stops describing one agent per note
       → behavior 5 and the reuse, checks-forbidden, empty-fan-out and unresolved rows ·
       dep: 5 · verify: reading

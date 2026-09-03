@@ -63,38 +63,41 @@ takes. Substitute the root and run it, in one `Bash` call:
 python3 "<plugin-root>/scripts/normalize_workflow.py" "<plugin-root>/workflows/build-tasks.js"
 ```
 
-The strip is unconditional, so a source that is already LF comes out byte-identical and
-the dispatch proceeds the same way. `--out <dir>` chooses where the copy lands: pass the
-session's scratchpad when there is one, and the default is a directory under the system
-temp, which needs nothing published to it. The copy keeps the source's basename, so the
-path the approval dialog shows is the same one on every run.
+`--out <dir>` chooses where the copy lands: pass the session's scratchpad when there is
+one, and the default is a directory under the system temp, which needs nothing published
+to it. The copy keeps the source's basename, so the path the approval dialog shows is the
+same one on every run. The script's own docstring owns why the strip is unconditional.
 
 A non-zero exit is the one failure the chain reads, and the message on stderr names the
-path it choked on: the source is missing or unreadable, the file is not under the published
-root, or the out dir cannot be written. With no root in the session at all, the chain goes
-straight to its last step: a guess at the path is what the hook exists to replace.
+path it choked on: the source is missing or unreadable, or the out dir cannot be written.
+With no root in the session at all, the chain goes straight to its last step: a guess at
+the path is what the hook exists to replace.
 
 The **fallback chain**, one attempt each, in this order. It is stated here and nowhere
 else, so the skills point at it by name and carry no count of their own:
 
 1. `Workflow` with `scriptPath` set to the printed copy. This is the dispatch.
-2. No `Workflow` tool in the session, or the `Bash` call came back non-zero, whether
+2. The `scriptPath` dispatch came back refused: `Workflow` with `script` set to the copy's
+   text, read from the printed path. The normalize step only answers for CR, and a refusal
+   has other causes, so the inline form is the attempt that does not depend on which one it
+   was.
+3. No `Workflow` tool in the session, or the `Bash` call came back non-zero, whether
    because the session carries no published root, because the source is not readable under
    it, or because the out dir could not be written: the in-context build, with the reason
    named. Those are different lines to say, so say which one it was.
 
-Only step 2 builds in the main context, and only the conditions it names reach it. A first
+Only step 3 builds in the main context, and only the conditions it names reach it. A first
 path that does not resolve is a step of the resolution rule and not a step of this chain,
-so a `Bash` call that comes back empty is step 2 only after the whole rule has been walked.
-A run that has tasks to build and meets neither condition dispatches at step 1. Invoking
-`/bb:implement`, by the command or by the phrases its `description`
-lists, is the request for this workflow, and that request is the opt-in the `Workflow`
-tool asks for. It covers this build and nothing beyond it.
+so a `Bash` call that comes back empty is step 3 only after the whole rule has been walked.
+A run that has tasks to build and meets none of these conditions dispatches at step 1.
+Invoking `/bb:implement`, by the command or by the phrases its `description` lists, is the
+request for this workflow, and that request is the opt-in the `Workflow` tool asks for. It
+covers this build and nothing beyond it.
 
 **A session that forbids workflows outright is a third way to end up here, and it is not a
 step of the chain.** An account or session level rule saying not to use workflows unless the
 user asked outranks the opt-in above, and the tool never runs. The build proceeds in the
-main context like step 2, and the line the skill owes says the session's own rules vetoed
+main context like step 3, and the line the skill owes says the session's own rules vetoed
 the dispatch, so the reason reads as a veto and not as a missing file.
 
 Two stops sit outside the chain, and neither is a step of it. A user who denies the
@@ -156,14 +159,14 @@ open the file. The alternative is a confident empty list over a suite that exist
 satisfies `dep:`. The agents re-read the spec anyway: `args` is the plan, the file on
 disk is the truth.
 
-`phases` is what the progress card shows as its group headers, and it mirrors the `###`
-headings inside `## Tasks`: one entry per heading, in document order, the heading's own
-text as `title` and its tasks named by `n`. It is read off the section as written, ticked
-tasks included, because the script keeps only the members `tasks` still carries and drops
-a group left with none, so a resumed run announces the phases it will actually run. A
-`## Tasks` with no `###` heading sends no `phases` at all, and the script falls back to
-its two fixed titles; the ground keeps `Ground` either way, since stage zero belongs to
-the script and not to any task.
+`phases` is the `###` headings inside `## Tasks` on the wire, one entry per heading in
+document order, the heading's own text as `title` and its tasks named by `n`. The rule
+those headings follow is `skills/spec/references/spec-format.md`'s. Read the section as
+written, ticked tasks included: the script keeps only the members `tasks` still carries
+and drops a group left with none, so a resumed run announces the phases it will actually
+run. A `## Tasks` with no `###` heading sends no `phases` at all, and the script falls
+back to its own fixed titles; the ground keeps `Ground` either way, since stage zero
+belongs to the script and not to any task.
 
 An empty `tasks` is not a run. The skill sees it first and reports nothing to build
 without invoking; the script returns the empty report before stage zero, so a caller that
@@ -185,20 +188,23 @@ once. With no reuse note in the spec, no reuse thunk is sent at all, and stage z
 checks agent alone.
 
 The role and the read protocol are `agents/bb-reuse-check.md`'s, delivered as the system
-prompt through `opts.agentType`. `reusePrompt()` carries what only the caller has: the
-numbered notes, the return shape, and one line of that protocol, so an `agentType` that
-does not resolve leaves a generic agent working from a floor rather than an unbounded one.
-That is the same fallback the review fan-out sets for `bb-finder`. It returns:
+prompt through `opts.agentType`. `reusePrompt()` carries what only the caller has, the
+numbered notes and one line of that protocol, and the schema carries the return shape, so
+an `agentType` that does not resolve leaves a generic agent working from a floor rather
+than an unbounded one. That is the same fallback the review fan-out sets for
+`bb-review-finder`. It returns:
 
 ```
-{ verdicts: [{ index: 0, verdict: "intact" | "moved" | "gone", note: "<what it looked for, plus file:line>", where: "<new path, if moved>" }] }
+{ verdicts: [{ index: 0, verdict: "intact" | "moved" | "gone", note: "<what it looked for, plus file:line>", where: "<new path, required when moved>" }] }
 ```
 
 `index` is the note the entry answers, numbered as the prompt sent them. **The script
-checks the count against the number of notes before it calls the ground proven**: a
-verdict list shorter than the note list is a stop naming how many went unanswered, since a
-note nobody looked for would otherwise read as `intact` and the build would extend code
-that is not there.
+checks the index set before it calls the ground proven**, not the count: a note left
+unanswered and an index no note carries are each a stop naming what happened, since a note
+nobody looked for would otherwise read as `intact` and the build would extend code that is
+not there, and a count alone reads one note answered twice as two notes answered. A `moved`
+verdict with no `where` is a stop for the same reason: that path is what the convention note
+would otherwise render as `undefined` into every task prompt.
 
 The checks agent confirms the list `args.checks` carries and then **runs all of them
 once**. Running them is the point: it proves the run has permission to execute each one,
@@ -220,7 +226,7 @@ note, and from task 1 on it outranks the path the spec's reuse note names.
 
 A stage-zero stop is normalized into the shape a task result has, so the caller has one
 thing to read and a blocker to name:
-`{ n: 0, status: "red", blocker: "<which note is gone, how many went unanswered, or which command and why>" }`.
+`{ n: 0, status: "red", blocker: "<which note is gone, which went unanswered, which verdict cannot be placed, or which command and why>" }`.
 
 A repo whose top authority forbids running checks locally fails here by policy and not by
 breakage, so it is not a stop. The policy arrives as `runnable: false`, stage zero sends no
