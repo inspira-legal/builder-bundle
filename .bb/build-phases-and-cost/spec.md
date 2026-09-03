@@ -1,5 +1,5 @@
 ---
-status: in-progress
+status: done
 created: 2026-09-02
 slug: build-phases-and-cost
 ---
