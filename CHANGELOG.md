@@ -1,5 +1,110 @@
 # Changelog
 
+## 3.6.0 (2026-09-02)
+
+**A build announces the phases the spec named.** `build-tasks.js` declared its progress
+groups in `meta`, which the platform reads before the script runs, so every spec ever built
+showed the same two headers, `Ground` and `Build`, and someone watching a run learned
+nothing from them. The `###` headings inside `## Tasks` are the phase titles now: the
+heading's own text, its tasks as the members, document order as run order. `meta.phases` is
+gone, which is what frees `phase()` to take a computed title, and `meta` stays the literal
+the platform needs. The titles are read off the spec and never invented at dispatch time, a
+name written per run being both unreviewed and a miss on the resume cache, which keys on the
+prompt and the label. Grouping is optional: a flat `## Tasks` runs under one fallback title,
+and the ground keeps `Ground` either way, since stage zero belongs to the script and not to
+any task.
+
+**And the dispatch works from a Windows install.** Every installed copy of the workflow
+script carries CR, the version cache and the marketplace clone alike, because the installer
+does not honor `.gitattributes`. `Workflow` inlines a `scriptPath` into the approval dialog
+as `script`, the permission layer refuses the CR as a control character hidden there, and
+the documented fallback chain ended in the in-context build every time. The fix normalizes
+at the point of use: the dispatch runs a script that writes a CR-free copy and points
+`scriptPath` at that. Where the CR comes from stays broken, on purpose.
+
+**Stage zero pays one context floor instead of eight.** It dispatched one agent per reuse
+note, and on the run that measured it those eight agents cost more than the build they
+introduced: a context prefix each, re-read on every turn, for lookups of three to five tool
+calls and a few hundred tokens of answer. The measurement is in
+`references/build-tasks-workflow.md`. One agent carries every note now, and the
+whole-file `Read` that the old prompt's `Read the repo.` invited is what the new read
+protocol closes.
+
+**And each agent runs on the model its own job earns.** Nothing chose a model before:
+stage zero ran at `effort: 'low'` on whatever the session was on, which is a frontier
+model paid to `Grep` a symbol and read back a verdict per note. The tiers belong to the
+script now, computed from the payload it already has, so the same spec dispatches the
+same tiers twice and the decision is readable in one place instead of being made afresh
+per run. Cost is bought with the model and capability is kept with `effort`, so the two
+dials move together: a cheap tier is never a strong model with its reasoning cut, which
+would be saving on the answer instead of on the lookup.
+
+### Added
+
+- **`scripts/normalize_workflow.py`**, stdlib, `<source> [--out <dir>]`. It reads the source
+  as bytes, drops every `\r`, writes the copy under the out dir and prints that one path,
+  nothing else, so the caller hands it straight to `scriptPath`. The strip is unconditional,
+  because a conditional one is a branch that saves microseconds and only runs on the machines
+  where it is wrong; an already-LF source comes out byte-identical. `--out` defaults to a
+  directory under the system temp, so nothing has to be published to it, and the skill passes
+  its session scratchpad when it has one. It sits at the plugin root because its reader is
+  the plugin-level `references/build-tasks-workflow.md`, which is what any future dispatcher
+  of a workflow reads.
+- **`agents/bb-reuse-check.md`** is the fourth read-only agent, `Read`, `Grep` and `Glob`. It
+  owns the role and the read protocol: confirm by `Grep` on the symbol the note names, and
+  when code has to be seen, `Read` a window of some 40 lines around the line the hits cited,
+  never a whole file, never an edit. `reusePrompt()` keeps what only the caller has, the
+  numbered notes, the return shape, and one line of that protocol, so an `agentType` that
+  fails to resolve leaves a generic agent working from a floor instead of an unbounded one.
+  That is the fallback the review fan-out already sets for its finder.
+
+### Changed
+
+- **`workflows/build-tasks.js`** logs its first line as the slug in prose plus the counts,
+  `Build phases and cost · 7 tasks, 4 phases`, which is where the identification went when
+  `meta` stayed a literal. The build loop gains an outer level over `args.phases`, and a
+  stopped task still ends the run and not just its phase, so the later phases never announce.
+  A group whose every task was already ticked is dropped before the walk, since `phase()`
+  fires as its group is entered and a header over nothing lies about the run. Nothing loops
+  above the fan-out, which is the validator's line at `validate-workflow-script.ts:39`.
+- **Stage zero keeps two thunks**, so the single-`parallel()` invariant holds untouched: one
+  `bb-reuse-check` carrying every note, one checks agent. The schema is
+  `{verdicts: [{index, verdict, note, where}]}`, `index` pointing back at the note the entry
+  answers, and **the script checks the index set before it calls the ground proven**, because
+  a note nobody looked for would otherwise read as `intact` and a count alone cannot tell one
+  note answered twice from two notes answered once. A `moved` verdict with no `where` stops
+  the run for the same reason: the path it omits is what every task prompt would carry. With
+  no reuse note, no reuse thunk is sent at all.
+- **Stage zero's two tiers are the script's own.** `bb-reuse-check` is `haiku` at
+  `effort: 'low'`, one `Grep` per note against a schema being the whole job. The checks agent
+  is that same tier when `args.checks` hands it a resolved, untruncated list with no
+  `unresolved` lead, and it keeps the session's model and effort when it has to walk the
+  authority chain itself or open the files those leads name, which is the judgment the
+  resolver could not make. The run logs which of the two it got, because silent, the
+  expensive branch reads as the cheap one.
+- **A task can carry `model`**, `haiku`, `sonnet` or `opus`, and it is the only tier the
+  payload sets, because how hard a task is, is the one thing about it the script cannot read.
+  Omitted, the task inherits the session's model, which stays the right answer for most of
+  them. Any other name is dropped with a line naming it, before stage zero rather than at the
+  call that would have used it: a typo reaching the platform would take down a run that had
+  already proved its ground. `/bb:implement` sets it from the task's own line and not from a
+  fresh judgment each run, resume keying on each agent's own `(prompt, opts)`.
+- **`references/build-tasks-workflow.md`** carries the normalizer call and the `phases` field
+  of `args`. The fallback chain keeps its three steps: the normalizer answers for CR, and a
+  `scriptPath` refused for anything else still has the inline `script` to try before the
+  build comes back to the main context. The agent count line now reads stage zero as two
+  agents at most, whatever the note count, and `## Effort and model` states the tier rule
+  whole: the script's two stage-zero tiers, and the one field the payload sets.
+- **`/bb:implement`** (3.1.0) builds `phases` from the `###` groups at step 6, alongside the
+  `tasks` it already trimmed to the unticked ones, and its table answers a `## Tasks` with no
+  heading in it. Step 6 gains a fourth per-run item, the task's `model`, held to the same
+  discipline as the phase titles and for the same reason, and it owes one line naming the
+  tasks that did not run on the session's model.
+- **`skills/spec/references/spec-format.md`** documents the grouping under the task shape,
+  where the person writing the spec is. `lint_spec.py` does not change: `HEADING` is
+  `^##\s+`, so the `###` groups are invisible to it and to `scan_specs.py`, which counts
+  tasks by their checkbox.
+
 ## 3.5.0 (2026-09-02)
 
 **The spec's frontmatter drops `review:`.** 3.3.0 wrote the two lenses' verdict into the
