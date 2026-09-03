@@ -137,6 +137,17 @@ grounding read of a task will otherwise find them unsupported:
   normalizer answers for CR, which is what that paragraph explained; it does not answer for
   a `scriptPath` refused on any other ground, so the inline `script` stays as the step
   between the dispatch and the in-context build.
+- **Each agent runs on the model its own job earns, and the rule lives in the script.** Stage
+  zero's two tiers are computed from the payload it already has: the reuse agent is `haiku` at
+  `effort: 'low'`, and the checks agent is that same tier when `args.checks` hands it a
+  resolved, untruncated list with no `unresolved` lead, the session's model and effort when it
+  has to walk the authority chain itself or open the files those leads name. Cost is bought
+  with the model and capability is kept with `effort`, so the two dials move together. The one
+  tier the payload sets is `model` on a task, `haiku` / `sonnet` / `opus`, because how hard a
+  task is, is what only the spec's reader knows; an unknown name is dropped with a line naming
+  it, before stage zero rather than at the call, and that task inherits the session's model.
+  The skill reads it off the task's own line and not fresh each run, resume keying on each
+  agent's own `(prompt, opts)`.
 - **Task parallelism is not in this spec.** See `## Out of scope`.
 
 ## Behavior
@@ -178,6 +189,9 @@ The happy path, one line per step:
 | local checks are forbidden                 | stage zero sends the reuse thunk alone                              |
 | neither notes nor runnable checks          | `parallel([])` returns `[]` and the synthetic green baseline stands |
 | `bb-reuse-check` does not resolve          | the generic agent runs on the prompt's own floor, as review does    |
+| a task carries no `model`                  | the session's model runs it, as every task did before               |
+| a task's `model` is a name unknown here    | it is dropped with a line naming it, before stage zero              |
+| `checks` is null, truncated or has leads   | the checks agent keeps the session's model and effort               |
 
 ## Tasks
 
@@ -217,12 +231,21 @@ The happy path, one line per step:
       → behavior 5 and the reuse, checks-forbidden, empty-fan-out and unresolved rows ·
       dep: 5 · verify: reading
 
+### The tier per agent
+
+- [x] **7. The model each agent earns**: `build-tasks.js` pins stage zero's two tiers from
+      the payload it already has and reads a task's optional `model`, dropping an unknown
+      name before stage zero; the reference's `## Effort and model` states the rule whole
+      and its `args` section carries the field; `implement/SKILL.md` step 6 takes it as a
+      fourth per-run item
+      → the three model rows · dep: 6 · verify: reading
+
 ### Landing
 
-- [x] **7. Docs and version**: `README.md`'s agent count and `.claude/CLAUDE.md`'s tree gain
+- [x] **8. Docs and version**: `README.md`'s agent count and `.claude/CLAUDE.md`'s tree gain
       the fourth agent and the new script, `CHANGELOG.md` gains the entry, and the bumps are
       plugin `3.5.0` to `3.6.0` and implement `3.0.0` to `3.1.0`
-      → no behavior of its own · dep: 1-6 · verify: CI
+      → no behavior of its own · dep: 1-7 · verify: CI
 
 Suggested PR: `feat(build): fases vindas da spec, dispatch sem CR e um agente de reuse`.
 

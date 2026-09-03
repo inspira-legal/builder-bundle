@@ -30,6 +30,15 @@ calls and a few hundred tokens of answer. The measurement is in
 whole-file `Read` that the old prompt's `Read the repo.` invited is what the new read
 protocol closes.
 
+**And each agent runs on the model its own job earns.** Nothing chose a model before:
+stage zero ran at `effort: 'low'` on whatever the session was on, which is a frontier
+model paid to `Grep` a symbol and read back a verdict per note. The tiers belong to the
+script now, computed from the payload it already has, so the same spec dispatches the
+same tiers twice and the decision is readable in one place instead of being made afresh
+per run. Cost is bought with the model and capability is kept with `effort`, so the two
+dials move together: a cheap tier is never a strong model with its reasoning cut, which
+would be saving on the answer instead of on the lookup.
+
 ### Added
 
 - **`scripts/normalize_workflow.py`**, stdlib, `<source> [--out <dir>]`. It reads the source
@@ -66,14 +75,31 @@ protocol closes.
   note answered twice from two notes answered once. A `moved` verdict with no `where` stops
   the run for the same reason: the path it omits is what every task prompt would carry. With
   no reuse note, no reuse thunk is sent at all.
+- **Stage zero's two tiers are the script's own.** `bb-reuse-check` is `haiku` at
+  `effort: 'low'`, one `Grep` per note against a schema being the whole job. The checks agent
+  is that same tier when `args.checks` hands it a resolved, untruncated list with no
+  `unresolved` lead, and it keeps the session's model and effort when it has to walk the
+  authority chain itself or open the files those leads name, which is the judgment the
+  resolver could not make. The run logs which of the two it got, because silent, the
+  expensive branch reads as the cheap one.
+- **A task can carry `model`**, `haiku`, `sonnet` or `opus`, and it is the only tier the
+  payload sets, because how hard a task is, is the one thing about it the script cannot read.
+  Omitted, the task inherits the session's model, which stays the right answer for most of
+  them. Any other name is dropped with a line naming it, before stage zero rather than at the
+  call that would have used it: a typo reaching the platform would take down a run that had
+  already proved its ground. `/bb:implement` sets it from the task's own line and not from a
+  fresh judgment each run, resume keying on each agent's own `(prompt, opts)`.
 - **`references/build-tasks-workflow.md`** carries the normalizer call and the `phases` field
   of `args`. The fallback chain keeps its three steps: the normalizer answers for CR, and a
   `scriptPath` refused for anything else still has the inline `script` to try before the
   build comes back to the main context. The agent count line now reads stage zero as two
-  agents at most, whatever the note count.
+  agents at most, whatever the note count, and `## Effort and model` states the tier rule
+  whole: the script's two stage-zero tiers, and the one field the payload sets.
 - **`/bb:implement`** (3.1.0) builds `phases` from the `###` groups at step 6, alongside the
   `tasks` it already trimmed to the unticked ones, and its table answers a `## Tasks` with no
-  heading in it.
+  heading in it. Step 6 gains a fourth per-run item, the task's `model`, held to the same
+  discipline as the phase titles and for the same reason, and it owes one line naming the
+  tasks that did not run on the session's model.
 - **`skills/spec/references/spec-format.md`** documents the grouping under the task shape,
   where the person writing the spec is. `lint_spec.py` does not change: `HEADING` is
   `^##\s+`, so the `###` groups are invisible to it and to `scan_specs.py`, which counts
