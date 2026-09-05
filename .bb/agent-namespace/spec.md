@@ -166,7 +166,7 @@ baseline, and the build proceeds to task 1.
       → behaviors happy path, 6 · dep: 1 · verify: command, the task 1 guard stops reporting
       `workflows/build-tasks.js`; the four prose sites still fail until task 4
 
-- [ ] **3. The cause reaches the blocker**: a `.catch()` on both stage-zero thunks records the
+- [x] **3. The cause reaches the blocker**: a `.catch()` on both stage-zero thunks records the
       platform's message, logs it and re-throws; the two `stopped` branches read it; the
       reference's stage-zero stop list gains the new kind
       → behaviors 1, 2, 3, 4, 5 · dep: 2 · verify: reading

@@ -234,7 +234,16 @@ note, and from task 1 on it outranks the path the spec's reuse note names.
 
 A stage-zero stop is normalized into the shape a task result has, so the caller has one
 thing to read and a blocker to name:
-`{ n: 0, status: "red", blocker: "<which note is gone, which went unanswered, which verdict cannot be placed, or which command and why>" }`.
+`{ n: 0, status: "red", blocker: "<which note is gone, which went unanswered, which verdict cannot be placed, which command and why, or which agent could not be dispatched and what the platform said>" }`.
+
+A dispatch that never happens is the newest of those kinds. When the platform refuses the name
+an agent is sent under, the thunk throws before any agent exists, and the slot `parallel()`
+hands back is empty in exactly the way a lost answer is. So each stage-zero thunk records the
+platform's message on the way past, logs it and re-throws: the run keeps the platform's own
+failure record, and the stop reads `the reuse agent could not run: <message>`, or the same
+sentence with `the checks agent` in front. With no message recorded the two branches keep
+saying `returned nothing`, which is then true. When both agents fail the reuse blocker is the
+one reported, since the branches are a chain; the checks cause sits in the log beside it.
 
 A repo whose top authority forbids running checks locally fails here by policy and not by
 breakage, so it is not a stop. The policy arrives as `runnable: false`, stage zero sends no

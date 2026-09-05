@@ -207,6 +207,13 @@ function counted(n, noun) {
   return `${n} ${noun}${n === 1 ? "" : "s"}`;
 }
 
+// The platform rejects with an `Error`, but a thunk may reject with a plain value, and a blocker
+// that reads `[object Object]` names nothing. The string form is the floor: at worst it repeats
+// what the run's own `<failures>` already says.
+function messageOf(err) {
+  return (err && err.message) || String(err);
+}
+
 // The checks agent has two jobs behind one label, and only one of them is mechanical. Confirming
 // a list `resolve_checks.py` already produced and running it reads a payload and executes it.
 // Walking the authority chain with no list at all, opening the files the `unresolved` leads name
@@ -305,6 +312,11 @@ if (runChecks && !groundTier.model) {
   );
 }
 
+// A dispatch that never happened and an agent that ran and answered nothing reach the code below
+// the same way, as an empty slot, and only the platform's message tells them apart. Each thunk
+// records its own cause on the way past, so the stop can name it.
+const dispatchError = { reuse: "", checks: "" };
+
 // Two thunks at most, and the reuse one carries every note: a subagent's context floor is
 // paid per agent and re-read on every turn it takes, so eight notes over eight agents pay
 // that floor eight times for eight lookups of three tool calls each.
@@ -321,6 +333,12 @@ const ground = await parallel([
             // what shapes the answer, so nothing here is bought by a stronger model.
             effort: "low",
             model: CHEAP_MODEL,
+          }).catch((err) => {
+            dispatchError.reuse = messageOf(err);
+            log(`the reuse agent could not run: ${dispatchError.reuse}`);
+            // Re-thrown rather than swallowed: the slot stays empty, `parallel()` still reports
+            // the failure, and the script runs on to build the stop out of what was recorded.
+            throw err;
           }),
       ]
     : []),
@@ -332,6 +350,10 @@ const ground = await parallel([
             phase: GROUND_PHASE,
             schema: CHECKS_RESULT,
             ...groundTier,
+          }).catch((err) => {
+            dispatchError.checks = messageOf(err);
+            log(`the checks agent could not run: ${dispatchError.checks}`);
+            throw err;
           }),
       ]
     : []),
@@ -366,7 +388,13 @@ const placeless = verdicts.filter((v) => v.verdict === "moved" && !v.where);
 // proved. A malformed answer is the same stop.
 let stopped = null;
 if (reuseNotes.length && !reuseResult) {
-  stopped = { n: 0, status: "red", blocker: "the reuse agent returned nothing" };
+  stopped = {
+    n: 0,
+    status: "red",
+    blocker: dispatchError.reuse
+      ? `the reuse agent could not run: ${dispatchError.reuse}`
+      : "the reuse agent returned nothing",
+  };
 } else if (unanswered.length) {
   stopped = {
     n: 0,
@@ -386,7 +414,13 @@ if (reuseNotes.length && !reuseResult) {
     blocker: `a reuse target moved with no path to it: ${placeless.map((v) => v.note).join("; ")}`,
   };
 } else if (!checks) {
-  stopped = { n: 0, status: "red", blocker: "the checks agent returned nothing" };
+  stopped = {
+    n: 0,
+    status: "red",
+    blocker: dispatchError.checks
+      ? `the checks agent could not run: ${dispatchError.checks}`
+      : "the checks agent returned nothing",
+  };
 }
 
 let conventions = "";
