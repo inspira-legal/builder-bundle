@@ -16,18 +16,20 @@
  * current.
  *
  * Usage:
- *   bun validate-agent-names.ts                     # scan current directory
+ *   bun validate-agent-names.ts                     # scan plugins/bb/
  *   bun validate-agent-names.ts /path/to/dir        # scan specific directory
  *   bun validate-agent-names.ts a.js b.md           # validate specific files
  */
 
-import { parse as parseYaml } from "yaml";
 import { readFile } from "fs/promises";
-import { basename, dirname, join, resolve, sep } from "path";
+import { basename, join, resolve, sep } from "path";
 
 import {
   type FileIssues,
   type ValidationIssue,
+  isAgentFile,
+  lineOf,
+  parseFrontmatter,
   reportAndExit,
   resolveTargets,
   runMain,
@@ -51,8 +53,6 @@ const PLUGIN_MANIFEST = join(PLUGIN_DIR, ".claude-plugin", "plugin.json");
 const DISPATCH_REGEX =
   /\b(agentType|subagent_type)\s*:\s*(?:"([^"\n]+)"|'([^'\n]+)'|`([^`\n]+)`|([A-Za-z0-9:_-]+))/g;
 
-const FRONTMATTER_REGEX = /^---\s*\n([\s\S]*?)---\s*\n?/;
-
 interface KnownAgents {
   /** The plugin's own name, the namespace the platform publishes its agents under. */
   prefix: string;
@@ -60,6 +60,8 @@ interface KnownAgents {
   names: Set<string>;
   /** What the derivation found wrong, by agent file. */
   issues: Map<string, ValidationIssue[]>;
+  /** What left the set underivable, so the run reports it instead of checking against nothing. */
+  fatal: ValidationIssue[];
 }
 
 function keep(filePath: string): boolean {
@@ -67,44 +69,31 @@ function keep(filePath: string): boolean {
   return filePath.endsWith(".js") || filePath.endsWith(".md");
 }
 
-function lineOf(source: string, index: number): number {
-  let line = 1;
-  for (let i = 0; i < index && i < source.length; i++) {
-    if (source[i] === "\n") line++;
-  }
-  return line;
-}
-
 function frontmatterName(markdown: string): string | null {
-  const match = markdown.match(FRONTMATTER_REGEX);
-  if (!match) return null;
-
-  try {
-    const parsed = parseYaml(match[1] || "");
-    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-      const name = (parsed as Record<string, unknown>)["name"];
-      return typeof name === "string" && name.trim() ? name.trim() : null;
-    }
-  } catch {
-    return null;
-  }
-  return null;
+  const { frontmatter } = parseFrontmatter(markdown);
+  const name = frontmatter["name"];
+  return typeof name === "string" && name.trim() ? name.trim() : null;
 }
 
-/** Reads the manifest and the agent files. A set that cannot be derived is fatal, not clean. */
+/**
+ * Reads the manifest and the agent files. A set that cannot be derived is not a clean run:
+ * it comes back in `fatal`, so it reaches the caller on stdout with every other finding
+ * rather than on a channel of its own.
+ */
 async function deriveKnownAgents(): Promise<KnownAgents> {
   const manifest = JSON.parse(await readFile(PLUGIN_MANIFEST, "utf-8")) as Record<string, unknown>;
-  const prefix = manifest["name"];
+  const declared = manifest["name"];
+  const prefix = typeof declared === "string" ? declared.trim() : "";
+  const fatal: ValidationIssue[] = [];
 
-  if (typeof prefix !== "string" || !prefix.trim()) {
-    console.error(`${PLUGIN_MANIFEST}: no "name" field, so no namespace to check against`);
-    process.exit(2);
+  if (!prefix) {
+    fatal.push({
+      level: "error",
+      message: `${PLUGIN_MANIFEST}: no "name" field, so no namespace to check against`,
+    });
   }
 
-  const agentFiles = await walkFiles(
-    AGENTS_DIR,
-    (p) => p.endsWith(".md") && basename(dirname(p)) === "agents",
-  );
+  const agentFiles = await walkFiles(AGENTS_DIR, isAgentFile);
 
   const names = new Set<string>();
   const issues = new Map<string, ValidationIssue[]>();
@@ -132,7 +121,14 @@ async function deriveKnownAgents(): Promise<KnownAgents> {
     if (found.length > 0) issues.set(path, found);
   }
 
-  return { prefix: prefix.trim(), names, issues };
+  if (names.size === 0) {
+    fatal.push({
+      level: "error",
+      message: `${AGENTS_DIR}: no agent names derived, which would read every correct dispatch as unknown`,
+    });
+  }
+
+  return { prefix, names, issues, fatal };
 }
 
 function dispatchIssues(source: string, known: KnownAgents): ValidationIssue[] {
@@ -165,14 +161,19 @@ function dispatchIssues(source: string, known: KnownAgents): ValidationIssue[] {
 async function main() {
   const known = await deriveKnownAgents();
 
-  if (known.names.size === 0) {
-    console.error(
-      `${AGENTS_DIR}: no agent names derived, which would read every correct dispatch as unknown`,
-    );
-    process.exit(1);
+  if (known.fatal.length > 0) {
+    console.log("No dispatch was checked: the set of agent names could not be derived.\n");
+    reportAndExit(PLUGIN_DIR, [], known.fatal, "files");
+    return;
   }
 
-  const { baseDir, files, notes } = await resolveTargets(process.argv.slice(2), keep);
+  // `keep()` already narrows to the plugin, so a bare run starts there instead of walking the
+  // repo down to a directory it computed two lines above. It runs on every commit.
+  const args = process.argv.slice(2);
+  const { baseDir, files, notes } = await resolveTargets(
+    args.length > 0 ? args : [PLUGIN_DIR],
+    keep,
+  );
 
   console.log(
     `Validating ${files.length} files under plugins/bb/ against ${known.names.size} agent names...\n`,

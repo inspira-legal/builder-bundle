@@ -5,10 +5,21 @@
  * once.
  */
 
+import { parse as parseYaml } from "yaml";
 import { readdir, stat } from "fs/promises";
-import { join, relative, resolve } from "path";
+import { basename, dirname, join, relative, resolve } from "path";
 
 const SKIP_DIRS = new Set(["node_modules", ".git"]);
+
+/**
+ * Frontmatter is the block the file opens with, and its closing `---` has to sit alone on
+ * its own line: a `---` inside a YAML scalar, a description carrying a horizontal rule or a
+ * quoted document separator, would otherwise close the block early and leave the parse
+ * reading half a document as the whole of it. The `m` flag is what anchors the closer to a
+ * line start; `parseFrontmatter` is what checks the opener is the file's first byte, which
+ * `m` would otherwise let float down the file.
+ */
+const FRONTMATTER_REGEX = /^---[ \t]*\r?\n([\s\S]*?)^---[ \t]*(?:\r?\n|$)/m;
 
 export interface ValidationIssue {
   level: "error" | "warning";
@@ -133,4 +144,44 @@ export function runMain(main: () => Promise<void>): void {
     console.error("Fatal error:", err);
     process.exit(2);
   });
+}
+
+export interface ParseResult {
+  frontmatter: Record<string, unknown>;
+  error?: string;
+}
+
+/** The frontmatter block of a Markdown file, parsed. Every validator that reads one reads it here. */
+export function parseFrontmatter(markdown: string): ParseResult {
+  const match = markdown.match(FRONTMATTER_REGEX);
+
+  if (!match || match.index !== 0) {
+    return { frontmatter: {}, error: "No frontmatter found" };
+  }
+
+  try {
+    const parsed = parseYaml(match[1] || "");
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      return { frontmatter: parsed as Record<string, unknown> };
+    }
+    return {
+      frontmatter: {},
+      error: `YAML parsed but result is not an object (got ${typeof parsed})`,
+    };
+  } catch (err) {
+    return {
+      frontmatter: {},
+      error: `YAML parse failed: ${err instanceof Error ? err.message : err}`,
+    };
+  }
+}
+
+/** An agent definition is any `.md` directly under an `agents/` directory. */
+export function isAgentFile(filePath: string): boolean {
+  return filePath.endsWith(".md") && basename(dirname(filePath)) === "agents";
+}
+
+/** The 1-based line a byte offset falls on, for a message that points at something openable. */
+export function lineOf(source: string, index: number): number {
+  return source.slice(0, index).split("\n").length;
 }
