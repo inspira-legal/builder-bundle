@@ -1,5 +1,24 @@
 # Changelog
 
+## 3.6.1 (2026-09-04)
+
+**Agent names carry the plugin's namespace.** The platform publishes a plugin's agents under its own name: `plugins/bb/agents/bb-reuse-check.md` answers to `bb:bb-reuse-check`, not to `bb-reuse-check` bare. The workflow and skills must send the namespaced name in their dispatches, or the agent does not resolve and stage zero stops the build at task 1. `plugins/bb/workflows/build-tasks.js:319` now sends `bb:bb-reuse-check` as the `agentType`, and the four prose dispatches in `/bb:review` and `/bb:spec` are respelled with the same prefix: `bb:bb-review-finder`, `bb:bb-review-verifier` and `bb:bb-spec-reviewer`.
+
+**The degradation promise is deleted, not implemented.** The script and reference documented that an `agentType` failing to resolve would degrade into a generic agent working from the prompt and schema. That mechanism does not exist, and building it would be wrong: it trades away the guarantee the agent type selects. A read-only agent like `bb-reuse-check` is marked read-only by its `tools:` list in frontmatter, enforced by CI before commit, so a runtime fallback that routes around that enforcement is the wrong shape of insurance. The insurance goes into CI instead: a name that does not resolve to a shipped agent now fails the validation script and stops the commit. The comment at `plugins/bb/workflows/build-tasks.js:86-89` and the reference's paragraph at `plugins/bb/references/build-tasks-workflow.md:202-206` are both deleted.
+
+**Stage zero's blocker names its cause.** Both stage-zero thunks now catch the platform's error message when a dispatch fails, log it and re-throw it. The reuse blocker then reads `the reuse agent could not run: <message>` and the checks blocker reads `the checks agent could not run: <message>`, so the person who hits the stop knows whether the name was not found, the plugin was not installed, or something else went wrong. With no recorded message, the two branches keep the original wording, `returned nothing`, which is then accurate as written.
+
+**The new validator guards the whole surface.** `validate-agent-names.ts` is a TypeScript guard that runs over `.js` and `.md` under `plugins/bb/`, deriving the set of valid agent names from each agent's frontmatter `name:` combined with the plugin's `name` in `plugin.json`. It anchors on the two keys, `agentType:` and `subagent_type:`, and rejects exactly two shapes: a bb agent's name without the plugin prefix, and a prefixed name with no such agent. It is wired into `package.json`'s `validate` script and into `.github/workflows/validate.yml` as its own step, and `lefthook.yml`'s oxfmt glob gains `ts` alongside `json`, `md` and `js` so the new script is formatted pre-commit. The reference's section on CI guards is updated with the validator and the corrected oxfmt line.
+
+### Changed
+
+- **`plugins/bb/workflows/build-tasks.js`** sends `bb:bb-reuse-check` as the namespaced agent type in stage zero. Both stage-zero thunks wrap the dispatch in `.catch()` to record the platform's error message, log it and re-throw, preserving the workflow's `stopped` return with the blocker cause and keeping the platform's own `<failures>` record intact.
+- **`plugins/bb/references/build-tasks-workflow.md`** removes the degradation promise and its supporting paragraph, updates the stage-zero stops list to include the new `the reuse/checks agent could not run` kind, and documents the oxfmt correction.
+
+### Added
+
+- **`validate-agent-names.ts`**, a guard that validates all agent dispatches in the plugin to carry the namespace prefix and to resolve to shipped agents. It reads agent frontmatter from `plugins/bb/agents/`, derives the valid set with the plugin name as prefix, and fails the commit when an agent name is bare or unknown. It runs in CI and in the pre-commit hook.
+
 ## 3.6.0 (2026-09-02)
 
 **A build announces the phases the spec named.** `build-tasks.js` declared its progress

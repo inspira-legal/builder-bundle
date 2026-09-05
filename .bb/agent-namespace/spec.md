@@ -185,7 +185,7 @@ baseline, and the build proceeds to task 1.
       reference's CI list gains the validator and the corrected oxfmt line
       → behaviors 17, 18 · dep: 2, 3, 4 · verify: `bun run validate` and `bun run fmt:check`
 
-- [ ] **6. `3.6.1` and its entry**: the `version` in `plugins/bb/.claude-plugin/plugin.json`
+- [x] **6. `3.6.1` and its entry**: the `version` in `plugins/bb/.claude-plugin/plugin.json`
       and a `CHANGELOG.md` section in the prose the file already uses
       → behaviors 19 · dep: 5 · verify: reading
 
