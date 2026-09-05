@@ -94,7 +94,6 @@ The notes, numbered by the index your answer carries:
 
 ${numbered}
 
-Confirm each one against the repo before you judge it, with \`Grep\` on the symbol it names.
 Answer every note, one entry per index, and do not edit anything.`;
 }
 

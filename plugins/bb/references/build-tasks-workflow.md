@@ -200,7 +200,7 @@ checks agent alone.
 
 The role and the read protocol are `agents/bb-reuse-check.md`'s, delivered as the system
 prompt through `opts.agentType`. `reusePrompt()` carries what only the caller has, the
-numbered notes and the schema carries the return shape. It returns:
+numbered notes, and the schema carries the return shape. It returns:
 
 ```
 { verdicts: [{ index: 0, verdict: "intact" | "moved" | "gone", note: "<what it looked for, plus file:line>", where: "<new path, required when moved>" }] }
