@@ -152,7 +152,7 @@ baseline, and the build proceeds to task 1.
 
 ### The guard first, while the offenses are still there
 
-- [ ] **1. `validate-agent-names.ts`**: the script, on `validate-common.ts`, deriving the valid
+- [x] **1. `validate-agent-names.ts`**: the script, on `validate-common.ts`, deriving the valid
       set from each agent's frontmatter `name:` and from `plugin.json`, anchored on the two
       keys, scoped by its `keep()` predicate to `.js` and `.md` under `plugins/bb/`
       → behaviors 8, 9, 10, 11, 12, 13, 14, 15, 16 · dep: — · verify: command, run over the
