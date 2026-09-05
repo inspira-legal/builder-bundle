@@ -124,7 +124,7 @@ The catalog in `fronts.md` maps each picked front to its `references/front-*.md`
 that mapping is the list, so a front added to the engine reaches this router with no
 edit here. Load only the picked fronts' references, build the shared scope block
 (the resolved diff range included), and send every finder agent in **one message**
-(Agent tool, `subagent_type: bb-review-finder`, which carries the finder contract in its
+(Agent tool, `subagent_type: bb:bb-review-finder`, which carries the finder contract in its
 own prompt; the main context is the only writer). `threads` and `ci` don't fan out: script/`gh` reads plus
 judgment here.
 

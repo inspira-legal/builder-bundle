@@ -173,7 +173,7 @@ baseline, and the build proceeds to task 1.
 
 ### Fix the prose
 
-- [ ] **4. The four dispatch names in the skills**: the namespaced spelling in `fronts.md`,
+- [x] **4. The four dispatch names in the skills**: the namespaced spelling in `fronts.md`,
       `review/SKILL.md`, `verify.md` and `spec/SKILL.md`
       → behaviors 7 · dep: 1 · verify: command, the task 1 guard stops reporting the four
       prose sites, leaving it clean

@@ -53,7 +53,7 @@ agents reading it five times.
 
 ## 2. One verifier per file, up to 4 agents
 
-Each verifier goes out as `subagent_type: "bb-review-verifier"`
+Each verifier goes out as `subagent_type: "bb:bb-review-verifier"`
 (`plugins/bb/agents/bb-review-verifier.md`), which owns the rubric: the three verdicts, the
 PLAUSIBLE default and what makes a REFUTED constructible from the code all live in
 that prompt, so both callers of this engine judge the same way without a second copy
