@@ -85,8 +85,7 @@ const TASK_RESULT = {
 
 // The role and the whole read protocol belong to `agents/bb-reuse-check.md`, which the
 // harness delivers as the system prompt. What is left here is what only the caller has: the
-// notes and their numbering, plus one line of that protocol, so an `agentType` that fails to
-// resolve degrades into a generic agent working from a floor instead of an unbounded one.
+// notes and their numbering.
 function reusePrompt(notes) {
   const numbered = notes.map((note, i) => `${i}. ${note}`).join("\n");
   return `A spec's reuse notes say the build should extend code that already exists. Find out whether each one still does.
@@ -316,7 +315,7 @@ const ground = await parallel([
           agent(reusePrompt(reuseNotes), {
             label: `reuse: ${counted(reuseNotes.length, "note")}`,
             phase: GROUND_PHASE,
-            agentType: "bb-reuse-check",
+            agentType: "bb:bb-reuse-check",
             schema: REUSE_VERDICTS,
             // `Grep` on a symbol and a verdict per note is the whole job, and the schema is
             // what shapes the answer, so nothing here is bought by a stronger model.

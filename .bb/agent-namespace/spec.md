@@ -160,7 +160,7 @@ baseline, and the build proceeds to task 1.
 
 ### Fix the dispatch
 
-- [ ] **2. The name carries the namespace**: `agentType: "bb:bb-reuse-check"` in
+- [x] **2. The name carries the namespace**: `agentType: "bb:bb-reuse-check"` in
       `plugins/bb/workflows/build-tasks.js`, and the degradation promise deleted from its
       comment and from `plugins/bb/references/build-tasks-workflow.md`, orphan clause included
       → behaviors happy path, 6 · dep: 1 · verify: command, the task 1 guard stops reporting
