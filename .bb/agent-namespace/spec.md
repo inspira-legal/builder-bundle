@@ -155,15 +155,15 @@ baseline, and the build proceeds to task 1.
       set from each agent's frontmatter `name:` and from `plugin.json`, anchored on the two
       keys, scoped by its `keep()` predicate to `.js` and `.md` under `plugins/bb/`
       → behaviors 8, 9, 10, 11, 12, 13, 14, 15, 16 · dep: — · verify: command, run over the
-      current tree and read its five errors
+      current tree; it names five errors, one per site, and nothing outside `plugins/bb/`
 
 ### Fix the dispatch
 
 - [ ] **2. The name carries the namespace**: `agentType: "bb:bb-reuse-check"` in
       `plugins/bb/workflows/build-tasks.js`, and the degradation promise deleted from its
       comment and from `plugins/bb/references/build-tasks-workflow.md`, orphan clause included
-      → behaviors happy path, 6 · dep: 1 · verify: command, the task 1 guard over the tree,
-      which is what proves the string names a shipped agent
+      → behaviors happy path, 6 · dep: 1 · verify: command, the task 1 guard stops reporting
+      `workflows/build-tasks.js`; the four prose sites still fail until task 4
 
 - [ ] **3. The cause reaches the blocker**: a `.catch()` on both stage-zero thunks records the
       platform's message, logs it and re-throws; the two `stopped` branches read it; the
@@ -174,7 +174,8 @@ baseline, and the build proceeds to task 1.
 
 - [ ] **4. The four dispatch names in the skills**: the namespaced spelling in `fronts.md`,
       `review/SKILL.md`, `verify.md` and `spec/SKILL.md`
-      → behaviors 7 · dep: 1 · verify: reading
+      → behaviors 7 · dep: 1 · verify: command, the task 1 guard stops reporting the four
+      prose sites, leaving it clean
 
 ### Wire it up and ship
 
