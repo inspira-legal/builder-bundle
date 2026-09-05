@@ -373,9 +373,15 @@ template and regex bodies are blanked first, so only code is read:
 - `Date.now()`, `new Date()` and `Math.random()` appear nowhere, in any spelling: optional
   chaining is flattened before the scan, and `Date[...]` or `Math[...]` fails on its own.
 
-It runs inside `package.json`'s `validate`, which is what lefthook's pre-commit job runs,
-so the guard fires before the commit and not only in CI. oxfmt formats `js` alongside
-`json` and `md`.
+`.github/scripts/validate-agent-names.ts` is the third validator, and it reads a wider
+tree: every `.js` and `.md` under `plugins/bb/`, anchored on the keys `agentType:` and
+`subagent_type:`. A bb agent's name written without the plugin prefix fails, and so does a
+`bb:` name with no such agent. Any other name passes in silence, so a dispatch of a
+platform agent is not a false failure.
+
+All three run inside `package.json`'s `validate`, which is what lefthook's pre-commit job
+runs, so the guards fire before the commit and not only in CI. oxfmt formats `js` and `ts`
+alongside `json` and `md`.
 
 **A one-time PR review** owns what only reading the code settles: `schema` on every
 `agent()` that needs a typed answer, and every result null-checked before use. That is a

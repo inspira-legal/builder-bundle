@@ -27,6 +27,9 @@ jobs:
       - name: Validate workflow scripts
         run: bun .github/scripts/validate-workflow-script.ts
 
+      - name: Validate agent names
+        run: bun .github/scripts/validate-agent-names.ts
+
       - name: Lint specs
         run: |
           shopt -s nullglob

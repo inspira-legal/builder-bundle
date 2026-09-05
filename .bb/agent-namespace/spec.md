@@ -180,7 +180,7 @@ baseline, and the build proceeds to task 1.
 
 ### Wire it up and ship
 
-- [ ] **5. Wired into the three places that run it**: `package.json`'s `validate` script, a step
+- [x] **5. Wired into the three places that run it**: `package.json`'s `validate` script, a step
       in `.github/workflows/validate.yml`, and `ts` in `lefthook.yml`'s oxfmt glob; the
       reference's CI list gains the validator and the corrected oxfmt line
       → behaviors 17, 18 · dep: 2, 3, 4 · verify: `bun run validate` and `bun run fmt:check`
