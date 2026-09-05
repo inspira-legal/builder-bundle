@@ -70,9 +70,10 @@ string in the script still names a shipped agent, which is the guard's job.
   false on its own terms too: no fan-out in `/bb:review` sets any fallback.
 - Both stage-zero thunks record the platform's error message, log it and re-throw it, on the
   evidence above.
-- The blocker carries that message with the agent named: `the reuse agent could not run:
-  <message>` and `the checks agent could not run: <message>`. With no recorded message the two
-  branches keep the wording they have, `returned nothing`, which is then true.
+- The blocker names the agent and then the platform's message, so the reuse one reads
+  `the reuse agent could not run: <message>` and the checks one reads the same with its own
+  name in front. With no recorded message the two branches keep the wording they have,
+  `returned nothing`, which is then true.
 - The existing chain stays a chain, so when both stage-zero agents fail the reuse blocker is
   the one reported. The checks cause is not lost: `log()` carries it into the run's own output,
   next to the platform's `<failures>`.
@@ -125,27 +126,27 @@ Stage zero sends the reuse agent as `bb:bb-reuse-check`; the harness resolves it
 agent to reading. The agent returns one verdict per note, the checks agent returns the green
 baseline, and the build proceeds to task 1.
 
-| #   | WHEN                                                    | THEN                                                             |
-| --- | ------------------------------------------------------- | ---------------------------------------------------------------- |
-| 1   | the reuse agent's name does not resolve                  | the blocker reads `the reuse agent could not run: <message>`       |
-| 2   | the reuse agent is dispatched and returns nothing         | the blocker stays `the reuse agent returned nothing`               |
-| 3   | the checks agent cannot be dispatched                     | the blocker reads `the checks agent could not run: <message>`      |
-| 4   | both stage-zero agents fail                               | the reuse blocker is reported, the checks cause goes to `log()`    |
-| 5   | a stage-zero thunk throws                                 | its slot is preserved empty and the script still returns `stopped` |
-| 6   | the spec carries no reuse note                            | no reuse thunk is sent and nothing on this path changes            |
-| 7   | a review or spec skill dispatches one of the bb agents    | it writes the namespaced name and the dispatch resolves first try  |
-| 8   | a `.js` under `plugins/bb/` writes a bare bb `agentType:` | the guard errors, naming file, line and the namespaced spelling    |
-| 9   | a `.md` under `plugins/bb/` gives a bare `subagent_type:` | the same error, for the value quoted, bare or backticked           |
-| 10  | either key names `bb:` plus no such agent                 | the guard errors, calling the agent unknown                        |
-| 11  | either key names an agent that is not this plugin's       | the guard passes it in silence                                     |
-| 12  | a bb agent's name appears with neither key                | the guard does not read it                                         |
-| 13  | a path outside `plugins/bb/` holds a bare name            | the guard never opens it, `.bb/` and `CHANGELOG.md` included       |
-| 14  | an agent's basename disagrees with its frontmatter `name:` | the guard errors on that file                                     |
-| 15  | the derived set of valid names comes out empty            | the guard exits non-zero saying so, rather than reporting clean    |
-| 16  | the guard runs over the tree as it stands today           | it names the five bare dispatches, one per site                    |
-| 17  | the guard runs once every task has landed                 | zero errors, and `bun run validate` is green                       |
-| 18  | the new `.ts` is committed                                | lefthook formats it and CI's `fmt:check` stays green               |
-| 19  | an installed bb runs its daily self-update                | `3.6.1` is what carries the fix into the copy a run reads          |
+| #   | WHEN                                                       | THEN                                                               |
+| --- | ---------------------------------------------------------- | ------------------------------------------------------------------ |
+| 1   | the reuse agent's name does not resolve                    | the blocker reads `the reuse agent could not run: <message>`       |
+| 2   | the reuse agent is dispatched and returns nothing          | the blocker stays `the reuse agent returned nothing`               |
+| 3   | the checks agent cannot be dispatched                      | the blocker reads `the checks agent could not run: <message>`      |
+| 4   | both stage-zero agents fail                                | the reuse blocker is reported, the checks cause goes to `log()`    |
+| 5   | a stage-zero thunk throws                                  | its slot is preserved empty and the script still returns `stopped` |
+| 6   | the spec carries no reuse note                             | no reuse thunk is sent and nothing on this path changes            |
+| 7   | a review or spec skill dispatches one of the bb agents     | it writes the namespaced name and the dispatch resolves first try  |
+| 8   | a `.js` under `plugins/bb/` writes a bare bb `agentType:`  | the guard errors, naming file, line and the namespaced spelling    |
+| 9   | a `.md` under `plugins/bb/` gives a bare `subagent_type:`  | the same error, for the value quoted, bare or backticked           |
+| 10  | either key names `bb:` plus no such agent                  | the guard errors, calling the agent unknown                        |
+| 11  | either key names an agent that is not this plugin's        | the guard passes it in silence                                     |
+| 12  | a bb agent's name appears with neither key                 | the guard does not read it                                         |
+| 13  | a path outside `plugins/bb/` holds a bare name             | the guard never opens it, `.bb/` and `CHANGELOG.md` included       |
+| 14  | an agent's basename disagrees with its frontmatter `name:` | the guard errors on that file                                      |
+| 15  | the derived set of valid names comes out empty             | the guard exits non-zero saying so, rather than reporting clean    |
+| 16  | the guard runs over the tree as it stands today            | it names the five bare dispatches, one per site                    |
+| 17  | the guard runs once every task has landed                  | zero errors, and `bun run validate` is green                       |
+| 18  | the new `.ts` is committed                                 | lefthook formats it and CI's `fmt:check` stays green               |
+| 19  | an installed bb runs its daily self-update                 | `3.6.1` is what carries the fix into the copy a run reads          |
 
 ## Tasks
 
