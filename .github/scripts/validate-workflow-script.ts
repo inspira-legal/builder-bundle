@@ -15,6 +15,7 @@ import { basename, dirname } from "path";
 import {
   type FileIssues,
   type ValidationIssue,
+  lineOf,
   reportAndExit,
   resolveTargets,
   runMain,
@@ -252,10 +253,6 @@ function findMetaBlock(code: string): MetaBlock | null {
  */
 function probeOf(source: string): string {
   return `async function __probe() {${source.replace(/\bexport\s+const\b/g, "const")}\n}`;
-}
-
-function lineOf(source: string, index: number): number {
-  return source.slice(0, index).split("\n").length;
 }
 
 /** The bare words a literal may contain; every other identifier is a reference. */

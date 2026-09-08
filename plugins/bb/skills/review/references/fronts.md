@@ -111,7 +111,7 @@ change it reviewed.
 ## Fan-out shape
 
 1. **One message, all finder agents.** Every picked front's finders go out
-   concurrently via the Agent tool as `subagent_type: "bb-review-finder"`, whose prompt
+   concurrently via the Agent tool as `subagent_type: "bb:bb-review-finder"`, whose prompt
    carries the finder contract and whose `tools:` has no editing tool
    (`plugins/bb/agents/bb-review-finder.md`). Pass `model: "opus"` on every call when the
    run is deep, and nothing when it isn't. The agent's own `model: sonnet` is the

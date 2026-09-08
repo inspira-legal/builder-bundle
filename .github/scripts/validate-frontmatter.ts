@@ -9,13 +9,14 @@
  *   bun validate-frontmatter.ts file1.md file2.md  # validate specific files
  */
 
-import { parse as parseYaml } from "yaml";
 import { readFile } from "fs/promises";
-import { basename, dirname } from "path";
+import { basename } from "path";
 
 import {
   type FileIssues,
   type ValidationIssue,
+  isAgentFile,
+  parseFrontmatter,
   reportAndExit,
   resolveTargets,
   runMain,
@@ -24,42 +25,11 @@ import {
 /** Agents in this plugin are read-only roles; a write tool there is a defect, not a choice. */
 const FORBIDDEN_AGENT_TOOLS = ["Write", "Edit", "MultiEdit", "NotebookEdit"];
 
-const FRONTMATTER_REGEX = /^---\s*\n([\s\S]*?)---\s*\n?/;
-
-interface ParseResult {
-  frontmatter: Record<string, unknown>;
-  error?: string;
-}
-
-function parseFrontmatter(markdown: string): ParseResult {
-  const match = markdown.match(FRONTMATTER_REGEX);
-
-  if (!match) {
-    return { frontmatter: {}, error: "No frontmatter found" };
-  }
-
-  try {
-    const parsed = parseYaml(match[1] || "");
-    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-      return { frontmatter: parsed as Record<string, unknown> };
-    }
-    return {
-      frontmatter: {},
-      error: `YAML parsed but result is not an object (got ${typeof parsed})`,
-    };
-  } catch (err) {
-    return {
-      frontmatter: {},
-      error: `YAML parse failed: ${err instanceof Error ? err.message : err}`,
-    };
-  }
-}
-
 type FileKind = "skill" | "agent";
 
 function classify(filePath: string): FileKind | null {
   if (basename(filePath) === "SKILL.md") return "skill";
-  if (filePath.endsWith(".md") && basename(dirname(filePath)) === "agents") return "agent";
+  if (isAgentFile(filePath)) return "agent";
   return null;
 }
 

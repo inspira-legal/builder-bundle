@@ -200,10 +200,7 @@ checks agent alone.
 
 The role and the read protocol are `agents/bb-reuse-check.md`'s, delivered as the system
 prompt through `opts.agentType`. `reusePrompt()` carries what only the caller has, the
-numbered notes and one line of that protocol, and the schema carries the return shape, so
-an `agentType` that does not resolve leaves a generic agent working from a floor rather
-than an unbounded one. That is the same fallback the review fan-out sets for
-`bb-review-finder`. It returns:
+numbered notes, and the schema carries the return shape. It returns:
 
 ```
 { verdicts: [{ index: 0, verdict: "intact" | "moved" | "gone", note: "<what it looked for, plus file:line>", where: "<new path, required when moved>" }] }
@@ -237,7 +234,16 @@ note, and from task 1 on it outranks the path the spec's reuse note names.
 
 A stage-zero stop is normalized into the shape a task result has, so the caller has one
 thing to read and a blocker to name:
-`{ n: 0, status: "red", blocker: "<which note is gone, which went unanswered, which verdict cannot be placed, or which command and why>" }`.
+`{ n: 0, status: "red", blocker: "<which note is gone, which went unanswered, which verdict cannot be placed, which command and why, or which agent could not be dispatched and what the platform said>" }`.
+
+A dispatch that never happens is the newest of those kinds. When the platform refuses the name
+an agent is sent under, the thunk throws before any agent exists, and the slot `parallel()`
+hands back is empty in exactly the way a lost answer is. So each stage-zero thunk records the
+platform's message on the way past, logs it and re-throws: the run keeps the platform's own
+failure record, and the stop reads `the reuse agent could not run: <message>`, or the same
+sentence with `the checks agent` in front. With no message recorded the two branches keep
+saying `returned nothing`, which is then true. When both agents fail the reuse blocker is the
+one reported, since the branches are a chain; the checks cause sits in the log beside it.
 
 A repo whose top authority forbids running checks locally fails here by policy and not by
 breakage, so it is not a stop. The policy arrives as `runnable: false`, stage zero sends no
@@ -367,9 +373,15 @@ template and regex bodies are blanked first, so only code is read:
 - `Date.now()`, `new Date()` and `Math.random()` appear nowhere, in any spelling: optional
   chaining is flattened before the scan, and `Date[...]` or `Math[...]` fails on its own.
 
-It runs inside `package.json`'s `validate`, which is what lefthook's pre-commit job runs,
-so the guard fires before the commit and not only in CI. oxfmt formats `js` alongside
-`json` and `md`.
+`.github/scripts/validate-agent-names.ts` is the third validator, and it reads a wider
+tree: every `.js` and `.md` under `plugins/bb/`, anchored on the keys `agentType:` and
+`subagent_type:`. A bb agent's name written without the plugin prefix fails, and so does a
+`bb:` name with no such agent. Any other name passes in silence, so a dispatch of a
+platform agent is not a false failure.
+
+All three run inside `package.json`'s `validate`, which is what lefthook's pre-commit job
+runs, so the guards fire before the commit and not only in CI. oxfmt formats `js` and `ts`
+alongside `json` and `md`.
 
 **A one-time PR review** owns what only reading the code settles: `schema` on every
 `agent()` that needs a typed answer, and every result null-checked before use. That is a
