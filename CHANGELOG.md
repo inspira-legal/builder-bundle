@@ -1,5 +1,49 @@
 # Changelog
 
+## 2.21.0 (2026-08-25)
+
+**The cycle learns to measure.** A spec names its metric with provenance and the
+events its behaviors emit, instrumentation enters the build as ordinary tasks, and
+review gains the front that checks coverage against the convention the project
+itself uses. The reasoning is `.bb/metricas-no-ciclo/` (discovery and spec).
+
+### New
+
+- **`## Metric` joins the spec's fixed set**, between `## Behavior` and `## Tasks`:
+  the metric block (metric, baseline, target, each value with provenance or an
+  honest per-value `skipped: <reason>`, an optional `okr:` line) or one explicit
+  section-level skip. User-triggered work adds the events table, one row per event
+  citing the behavior rows it instruments, under the payload rule (IDs and enums,
+  never free text or document content). An instrumentation task cites event rows
+  and covers behaviors through them; implement resolves that citation into numbers
+  when it loads the spec (`spec-format.md`, the single home of the shapes).
+- **Lint warnings W005, W006 and W007** (`lint_spec.py`): no `## Metric`, a missing
+  or provenance-less `Baseline:`/`Target:`, and an event row citing a numbered
+  behavior row that does not exist. Warnings, never errors: a spec that predates
+  the section stays valid, and CI lints the specs a PR touches.
+- **The `instrumentation` front in `/bb:review`**: the diff's added interactions
+  against the plan and the convention a two-rung ladder resolves (the spec's events
+  table, `Events: none` included, or the analytics convention detected in the
+  project's own source). Semantic checks, not presence: coverage, naming, payload,
+  channel, each finding citing its source (`front-instrumentation.md`); available
+  in the external-PR mode on rung 2, its findings ranked like design's and, there,
+  posted on the PR rather than applied.
+- **Discover captures baseline and target** on the success signal, with provenance
+  in spec-format's shape, and fit hardens the hypothesis to "from <baseline> to
+  <target> within <timeframe>"; `skipped: not-instrumented` is a valid baseline
+  that flags the instrumentation as first work.
+
+### Changed
+
+- The export renders the hypothesis-OKR-metric trio from `discovery.md` and the
+  spec instead of asking: values bare (provenance stays in the spec), a per-value
+  skip as "not yet measured", the four fields together or not at all, and the
+  spec's values winning where the two disagree. It asks only for a field genuinely
+  absent from both documents.
+- The spec's exit gate renders `## Metric` beside the coverage counter and holds a
+  value without real provenance as an open item; seeding and gate rules live in
+  `draft-first.md`.
+
 ## 2.20.0 (2026-08-25)
 
 **Design becomes a calibrated, reviewable dimension.** The profile learns how the

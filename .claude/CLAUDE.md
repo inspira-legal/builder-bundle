@@ -138,10 +138,15 @@ TypeScript.
   say in both skills who owns it. Reading a reference is not invoking a skill;
   the borrower still orchestrates its own run, which is why borrowing beats
   invoking when the owner's router would ask questions the borrower answers by
-  policy. Today nothing is borrowed. The review engine (the fronts, the verify pass, the
-  apply guard and the `{review,quality,design}-checklist.md` criteria they point at) is
-  `/bb:review`'s alone and lives under `skills/review/references/`; `/bb:ship`
-  stopped reading it when it stopped reviewing. The one guard it still needs (one
+  policy. The borrows that exist today: `/bb:ship`'s LexFlow landing reads review's
+  `fronts.md` and `verify.md`, review's `front-correctness.md` points at ship's
+  `land-lexflow.md`, review's `front-instrumentation.md` reads the payload rule from
+  spec's `spec-format.md`, and `/bb:discover`'s frame capture reads the provenance
+  shape from the same file. The rest of the review engine (the fronts' methods, the
+  verify pass, the apply guard and the `{review,quality,design}-checklist.md`
+  criteria they point at) stays `/bb:review`'s alone under
+  `skills/review/references/`; `/bb:ship` stopped reading the review method when it
+  stopped reviewing. The one guard it still needs (one
   change at a time, untested code left flagged) is two lines in its own Step 2,
   which beats a cross-skill read for a principle that short.
 
@@ -169,9 +174,9 @@ Skills reference that file instead of restating the contract.
 
 The spec's **form** belongs to `plugins/bb/skills/spec/references/spec-format.md`:
 a free top half (opening plus whatever sections the problem asks for) over a fixed
-set (`Decisions`, `Behavior`, `Tasks`, `Out of scope`, `Open`), fixed because each
-member has a reader. `skills/spec/scripts/lint_spec.py` enforces the
-mechanical half of that and runs in CI over every `.bb/*/spec.md`.
+set (`Decisions`, `Behavior`, `Metric`, `Tasks`, `Out of scope`, `Open`), fixed
+because each member has a reader. `skills/spec/scripts/lint_spec.py` enforces the
+mechanical half of that and runs in CI over the `.bb/*/spec.md` files a PR touches.
 
 ## Commits
 

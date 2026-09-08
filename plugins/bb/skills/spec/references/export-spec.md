@@ -10,16 +10,52 @@ the loop; the export never introduces new decisions.
 
 The export carries the minimum shaping of the product team's modus operandi. The
 hypothesis, OKR, and metric fields are **inseparable**. They come together or
-not at all.
+not at all; the one value that outlives them is the operational measure internal
+work names, kept by the No branch below.
 
 **Test:** "Will the user change any behavior because of this?"
 
-- **Yes** → `Hypothesis` required → trio (`Connected OKR` + `Expected Impact` +
-  `Metric`) required. If `.bb/<slug>/discovery.md` carries a `## Hypothesis`,
-  render it here; if the trio can't be filled from the spec or that record,
-  ask; don't invent.
-- **No** (internal feature, design pattern, compliance) → trio omitted entirely,
-  no placeholder, no "N/A".
+- **Yes** → the four fields render together: `Hypothesis`, `Connected OKR`,
+  `Expected Impact` and `Metric`, from `discovery.md` and the spec, per the
+  sources below.
+- **No** (internal feature, design pattern, compliance) → the product fields
+  (`Hypothesis`, `Connected OKR`, `Expected Impact`) omitted entirely, no
+  placeholder, no "N/A". The measure itself does not vanish with them: internal
+  work's `## Metric` names an operational measure (error rate, runtime,
+  adoption; `spec-format.md`), and the export renders it as the lone `Metric`
+  line, so the measure the landing is judged by survives the rendering.
+
+When the spec's `## Metric` is `skipped: <reason>`, all four are omitted whole
+under the same all-or-nothing rule, the hypothesis included: the discovery's
+hypothesis stays in its record, the skip's reason stays in the spec, and the
+export carries neither.
+
+### Where each field reads from
+
+The four fields render from records already written, without asking:
+
+- **Hypothesis**: the `## Hypothesis` section of `.bb/<slug>/discovery.md`,
+  which arrives in testable form from the discover phase.
+- **Metric**: the `Metric:` bullet of the spec's `## Metric` section.
+- **Expected Impact**: the `Baseline:` and `Target:` bullets of `## Metric`, as
+  `baseline → target`, keeping the target's timeframe.
+- **Connected OKR**: the `okr:` line of `## Metric`. The spec omits that line
+  when no OKR connects (`spec-format.md`), and its absence is that settled
+  state, not a gap: render the other three fields, omit `Connected OKR`, and
+  ask nothing.
+
+Three rendering rules, because the audience is outside the cycle. The values
+render bare: the parenthesized provenance note stays in the spec, never in the
+export. A per-value skip never renders literally: where a bullet reads
+`skipped: <reason>`, the export writes "not yet measured", in the impact and in
+the hypothesis alike. And where the hypothesis's baseline or target disagrees
+with `## Metric`'s, the spec's values win (the reversal rule in the plugin-level
+`references/spec-state.md`): render the hypothesis with the spec's values.
+
+A field genuinely absent from both records is asked for, alone, the `okr:` line
+excepted (its absence is an answer, per its bullet above); the closing
+"Don't invent" rule below is the single home of how asking works, and a spec
+that predates `## Metric` resolves through it the same way.
 
 ## Auto-sizing the export
 
@@ -38,6 +74,7 @@ where the user wants them (default: alongside the spec in
 
 Map from the spec: the opening and the free top half → context and framing;
 `## Decisions` → Decision rationale; `## Out of scope` → Out of scope; `## Behavior` → Behaviors;
+`## Metric` → the trio's `Metric`, `Expected Impact`, and `Connected OKR` (per the trio rule above);
 the behavior map's `WHEN … THEN …` rows → Definition of done criteria. A spec written before
 the rename spells those `## decisions`, `## out of scope` and `## behavior`, same sections,
 mapped the same way. The framing this export opens with comes from
@@ -53,9 +90,9 @@ mapped the same way. The framing this export opens with comes from
 
 **Problem:** [what pain, for whom, how often]
 
-<!-- Trio below: only if the feature changes user behavior (see trio rule). -->
+<!-- Trio below: only if the feature changes user behavior (see trio rule); internal work keeps only the Metric line. -->
 
-**Hypothesis:** If we deliver X, we expect to see Y in metric Z
+**Hypothesis:** If [change], the [metric] moves from [baseline] to [target] within [timeframe], because [mechanism]
 **Connected OKR:** [metric name]: [how this initiative moves that indicator]
 **Expected Impact:** [baseline → target]
 **Metric:** [how to measure]
@@ -178,6 +215,6 @@ Spec exported. What to carry to each destination:
 
 ## Don't invent
 
-Every field renders from the spec or from an answer the user gave. A field the
-spec doesn't settle gets asked (one round, batched) or left blank; blank beats
-invented.
+Every field renders from the spec, from the discovery record, or from an answer
+the user gave. A field neither record settles gets asked (one round, batched) or
+left blank; blank beats invented.
