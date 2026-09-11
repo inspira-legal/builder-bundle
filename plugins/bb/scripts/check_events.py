@@ -18,8 +18,9 @@ otherwise, warnings included. The script reads and never writes, and every malfo
 input is a coded line rather than a traceback.
 
 Codes:
-  C001 E  the convention file is malformed (a part missing, a table without header,
-          a prefix or field twice, a value outside its closed list)
+  C001 E  the convention file is malformed (a part missing or written twice, a table
+          without header or a second table under a part, a prefix or field twice, a
+          value outside its closed list)
   C002 E  a name starts with no registered prefix (an empty name included)
   C003 E  the type slot is not in the Grammar table
   C004 E  the element is not lowercase words joined by underscores
@@ -77,7 +78,8 @@ LEGACY = "legacy"
 
 HEADING = re.compile(r"^##\s+(.+?)\s*$")
 FENCE = re.compile(r"^\s*(```|~~~)")
-SEPARATOR_CELL = re.compile(r"^:?-{2,}:?$")
+# GFM asks one or more dashes per delimiter cell; `|-|-|` is a table too.
+SEPARATOR_CELL = re.compile(r"^:?-+:?$")
 # A `|` escaped as `\|` is content, not a column boundary.
 CELL_SPLIT = re.compile(r"(?<!\\)\|")
 BACKTICKED = re.compile(r"`([^`]+)`")
@@ -258,11 +260,20 @@ def parse_convention(path, lines):
     conv = Convention(path=path)
     problems = []
     by_name = {}
-    for section in sections(lines):
-        by_name.setdefault(section.name, section)
 
     def problem(line, message):
         problems.append((path, line, "C001", message))
+
+    for section in sections(lines):
+        if section.name in by_name:
+            if section.name in PARTS:
+                problem(
+                    section.line,
+                    f"`## {section.name}` appears twice (first at line {by_name[section.name].line}); "
+                    "each part is one heading, so a second one is never read in silence",
+                )
+            continue
+        by_name[section.name] = section
 
     def table_for(part):
         section = by_name.get(part)
@@ -271,6 +282,13 @@ def parse_convention(path, lines):
             return None
         if not section.tables:
             problem(section.line, f"`## {part}` has no table")
+            return None
+        if len(section.tables) > 1:
+            problem(
+                section.tables[1][0][0],
+                f"`## {part}` carries a second table (the first starts at line {section.tables[0][0][0]}); "
+                "each part is one table, so rows split across two are merged into one",
+            )
             return None
         rows = section.tables[0]
         parsed = header_of(rows)

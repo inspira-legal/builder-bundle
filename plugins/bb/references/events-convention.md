@@ -26,8 +26,10 @@ the name exactly:
 - `## Exceptions`
 - `## Catalog`
 
-Anything else on the page, an opening paragraph, a note to the team, a changelog, is
-free: the checker only reads these five sections and the tables inside them.
+Each heading appears once and carries one table: a part written twice, or a second
+table under a part, is a malformed file (`C001`), never a half-read one. Anything else
+on the page, an opening paragraph, a note to the team, a changelog, is free: the checker
+only reads these five sections and the tables inside them.
 
 ## Grammar
 
