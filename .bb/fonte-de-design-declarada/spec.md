@@ -168,8 +168,8 @@ Happy path, once built:
   offered or asks, never silent, read by hand from the review reports over the dogfood
   window (operational measure; internal tooling).
 - Baseline: skipped: not-instrumented
-- Target: 100% of such runs over the first five landings after this ships, within 6
-  weeks of landing (the author's estimate, to harden at this spec's gate).
+- Target: 80% of such runs over the first five landings after this ships, within 8
+  weeks of landing (Leonardo's estimate at this spec's gate, 2026-09-11).
 - Events: none; internal tooling, and the review reports themselves are the measurement
   surface.
 
