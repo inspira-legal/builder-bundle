@@ -243,7 +243,7 @@ line 0, so the shape stays `path:line CODE message` for every reader.
 
 ## Tasks
 
-- [ ] **1. The format reference**: `plugins/bb/references/events-convention.md`, the five
+- [x] **1. The format reference**: `plugins/bb/references/events-convention.md`, the five
       parts, their table shapes, the template, the granularity guidance, the catalog's
       `legacy` mark and append duty, and who reads each part, named in `.claude/CLAUDE.md`'s
       structure tree and the README → behaviors 1, 2, 9 · dep: — · verify: reading; the
