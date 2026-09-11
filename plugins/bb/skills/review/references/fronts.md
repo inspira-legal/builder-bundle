@@ -61,7 +61,8 @@ call `/bb:ship` makes. What each field settles:
 - instrumentation ladder, resolved by the caller when the diff adds interactions or
   wires analytics (preflight carries no field for it either). Both signals are
   executable greps over the added lines of the resolved `diff_range`, and neither
-  borrows `ui`'s interaction marker, which counts only new markup: the interaction
+  borrows `ui`'s interaction marker, whose pattern stops at the JSX `on*` props
+  (`preflight.py`, `UI_MARKERS`): the interaction
   signal greps for a handler or listener wired anywhere (`onClick`, `onKeyDown`,
   `addEventListener`, a form submit or a route change), on new markup or existing,
   and the analytics signal greps the same lines for an emit site (a
