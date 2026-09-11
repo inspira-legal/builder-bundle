@@ -110,7 +110,7 @@ citing the event rows it wires (`→ events <name>, <name>` in place of the beha
 citation). An event row's own behavior citations are what the coverage table counts, so
 an instrumentation task covers its behaviors through the event row it cites; the build
 side resolves that citation into behavior numbers when it loads the spec (implement's
-step 1), and the machinery downstream consumes numbers the way it always did.
+step 4), and the machinery downstream consumes numbers the way it always did.
 
 A Medium spec carries its behaviors inline, so an event row there has no numbered row to
 cite; its `behaviors` cell names the inline behavior in a short phrase instead. The
