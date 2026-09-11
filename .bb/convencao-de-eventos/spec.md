@@ -264,7 +264,7 @@ line 0, so the shape stays `path:line CODE message` for every reader.
       caller runs the checker before the fan-out, `front-instrumentation.md` carries three
       rungs and the citation, the fan-out scope block passes the checker output and the
       resolved path → behaviors 6, 7 · dep: 2 · verify: reading
-- [ ] **5. The Inspira draft, run dry**: the convention file seeded from the registry
+- [x] **5. The Inspira draft, run dry**: the convention file seeded from the registry
       sheet and the typed map, the checker run over the 190 names and the dictionary, the
       file and the report handed to the user → behaviors 1, 7 · dep: 2 · verify: the report
       lists the known deviation set (task-level target in `## Metric`)
