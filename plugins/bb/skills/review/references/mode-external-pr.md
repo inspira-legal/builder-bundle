@@ -13,8 +13,10 @@ pushes**. The output is a review, optionally posted.
 - If the target repo publishes a `CODE_REVIEW_GUIDE.md` on its default branch
   (`gh api repos/<owner>/<repo>/contents/CODE_REVIEW_GUIDE.md`), fetch it and
   apply its rules exactly as in local mode.
-- If the PR touches UI files, list the head tree once
-  (`gh api repos/<owner>/<repo>/git/trees/<headRefName>?recursive=1 --jq '.tree[].path'`)
+- If the PR touches UI files, list the head tree once, by the sha of the PR's last
+  commit (`commits[-1].oid` above), never by `headRefName`: a fork's branch does not
+  exist in the target repo, while the base repo holds every commit of the PR
+  (`gh api repos/<owner>/<repo>/git/trees/<head sha>?recursive=1 --jq '.tree[].path'`),
   and look in it for a token source the build reads: a `tokens.json`, a stylesheet of
   CSS custom properties, a Tailwind theme config, rung 1 of `front-design.md`'s ladder.
   Rung 2 doesn't apply, there's no local spec folder. Fetch what resolves through the
@@ -38,7 +40,7 @@ Run the picked fronts and the verify pass exactly as documented
 (`front-correctness.md`, `front-quality.md`, `front-rules.md`, `front-a11y.md`,
 `front-design.md`, `front-instrumentation.md`, `verify.md`), with
 one caveat: "open the file" here means fetching contents via
-`gh api repos/<owner>/<repo>/contents/<path>?ref=<headRefName>` for hunks that
+`gh api repos/<owner>/<repo>/contents/<path>?ref=<head sha>` for hunks that
 need surrounding context, and finder agents get that command in their scope block.
 The diff range comes from the PR itself, so the scope block carries the PR's
 changed-file list where a local run carries the probe's `<merge_base>...HEAD`, that
