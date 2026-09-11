@@ -14,7 +14,10 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
+      # Full history: the Lint specs step diffs against the PR's base.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: oven-sh/setup-bun@v2
 
@@ -30,14 +33,33 @@ jobs:
       - name: Validate agent names
         run: bun .github/scripts/validate-agent-names.ts
 
+      # Lint the specs the PR touches, plus the whole corpus whenever the linter
+      # itself changed: that corpus run is the only executable coverage the script
+      # has, so a PR that edits it proves it against every landed spec. The specs
+      # that predate `## Metric` warn on every corpus run by design (W005, no
+      # rewrite of history); the diff-aware default keeps that noise off the PRs
+      # that leave the linter alone. The diff lands in an assignment so a failed
+      # resolve fails the step instead of reading as "nothing to lint".
       - name: Lint specs
         run: |
-          shopt -s nullglob
-          specs=(.bb/*/spec.md)
-          if [ ${#specs[@]} -eq 0 ]; then
-            echo "No specs in .bb/: nothing to lint."
+          if [ -z "${GITHUB_BASE_REF}" ]; then
+            echo "::error::no base ref to diff against: this step expects a pull_request run"
+            exit 1
+          fi
+          range="origin/${GITHUB_BASE_REF}...HEAD"
+          changed=$(git -c core.quotePath=false diff --diff-filter=d --name-only "$range" -- '.bb/*/spec.md')
+          if ! git diff --quiet "$range" -- plugins/bb/skills/spec/scripts/lint_spec.py; then
+            echo "lint_spec.py changed: linting the whole corpus."
+            shopt -s nullglob
+            corpus=(.bb/*/spec.md)
+            shopt -u nullglob
+            changed=$(printf '%s\n' "${corpus[@]}")
+          fi
+          if [ -z "$changed" ]; then
+            echo "No specs touched by this PR: nothing to lint."
             exit 0
           fi
+          mapfile -t specs <<< "$changed"
           python3 plugins/bb/skills/spec/scripts/lint_spec.py "${specs[@]}"
 
       - name: Check formatting
