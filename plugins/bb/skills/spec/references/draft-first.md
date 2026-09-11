@@ -30,6 +30,37 @@ that value is unmeasured, or write the one-line `skipped: <reason>` when no hone
 measure exists at all. An honest skip beats an invented number; the shape and the
 events table live in `spec-format.md`.
 
+## Propose the events table
+
+A project with `EVENTS.md` at its root (`plugins/bb/references/events-convention.md`)
+gets its `## Metric` events table proposed the same draft-first way as the rest of the
+spec: read the file, then write the table instead of leaving it blank.
+
+- **Name**: `{prefix}_{type}_{element}`, the prefix from `## Prefix registry`, the type
+  from `## Grammar`, the element a short lowercase phrase for what happened.
+- **Payload**: the fields `## Dictionary` already lists for the behavior's feature,
+  backticked in the cell.
+- **Granularity**: the file's own guidance, 8–12 events per feature, never one per
+  form field.
+
+Two gaps the file can't close on its own, and the draft never guesses past them:
+
+- **No registered prefix for the feature**: don't invent one. Add a task that
+  registers the prefix in `## Prefix registry` of `EVENTS.md`, and write the row's
+  name cell as plain prose citing that task (no backticks) instead of a name, for
+  example `waits on task 4, registers the prefix`. The checker reads an unbacktickable
+  cell as the event name, so it cannot match the grammar and flags the row (`C002`);
+  that is the open item the gate holds until the task lands and the row carries its
+  real name.
+- **No dictionary entry for a payload field**: add a task that adds the field to
+  `## Dictionary` of `EVENTS.md`, the same way, but write the row complete: name and
+  payload field both, backticked as usual. The checker warns instead of blocking
+  (`C005`); the gate shows it, and the person keeps the last word while the dictionary
+  task is pending.
+
+Without `EVENTS.md`, the events table is proposed the way it always was, from the
+behavior rows alone; nothing here changes.
+
 ## Surfacing the forks (the only thing you ask about)
 
 A decision earns a question only when it **genuinely could go more than one way**

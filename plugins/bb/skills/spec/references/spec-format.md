@@ -98,19 +98,27 @@ row per event:
 | -------------------- | --------- | ------------------------- | -------- |
 | `vault_doc_uploaded` | 2, 3      | `doc_id`, `source` (enum) | internal |
 
-The event name follows the project's own convention. `behaviors` cites the numbered
-happy-path rows the event instruments. `channel` names the sink, and the column exists
-only when the project has more than one. Payload fields are IDs and enums, never free
-text and never document content: that rule is what keeps mandatory instrumentation
-compatible with a legaltech's data duties, and this paragraph is its single home; the
-gate and the review front cite it here instead of restating it.
+The event name follows the project's own convention, `EVENTS.md` at the repository
+root when the project has one (`plugins/bb/references/events-convention.md`).
+`behaviors` cites the numbered happy-path rows the event instruments. `channel` names
+the sink, and the column exists only when the project has more than one. Payload
+fields hold one of four closed types: `id`, `enum`, `number`, `boolean`. None of the
+four carries free text or document content, which is what keeps mandatory
+instrumentation compatible with a legaltech's data duties, and this paragraph is its
+single home; the gate and the review front cite it here instead of restating it. A
+project's own `EVENTS.md` can widen the vocabulary by one, a named `text` field
+recorded there as an exception with a status, a justification and a retention window;
+without a convention file, the four types above are the whole list.
 
 Instrumentation enters `## Tasks` as ordinary tasks with their own `verify:`, each
 citing the event rows it wires (`→ events <name>, <name>` in place of the behavior
 citation). An event row's own behavior citations are what the coverage table counts, so
 an instrumentation task covers its behaviors through the event row it cites; the build
 side resolves that citation into behavior numbers when it loads the spec (implement's
-step 1), and the machinery downstream consumes numbers the way it always did.
+step 1), and the machinery downstream consumes numbers the way it always did. When the
+project has `EVENTS.md`, the same task appends each name it wires to the file's `##
+Catalog` in the change that lands it, an empty `status` cell, so the next spec's
+duplicate check sees it (`plugins/bb/references/events-convention.md`).
 
 A Medium spec carries its behaviors inline, so an event row there has no numbered row to
 cite; its `behaviors` cell names the inline behavior in a short phrase instead. The

@@ -74,6 +74,8 @@ one plugin, `bb`; 16 skills, 15 of them in 6 trilhas and `/bb:profile` beside th
 | `/bb:code-deep-research` | finds, clones and explores repos, then verifies the findings adversarially against source |
 | `/bb:write-readme`       | generates a minimal centered-header README out of the repo's own facts                    |
 
+plugin-level reference docs live in `plugins/bb/references/`, read across skills instead of owned by one: the doc-style rules every sentence follows, the handoff-gate contract, the `.bb/<slug>/` spec-state layout, the manifesto consult for stack decisions, and the event convention format (`events-convention.md`) that `/bb:spec` and `/bb:review` read once a project ships its own `EVENTS.md`.
+
 ## migrating from ofc?
 
 see the [CHANGELOG](CHANGELOG.md): the full mapping from the 28 old skills to the new ones, the coexistence notice, and how to swap the plugin.

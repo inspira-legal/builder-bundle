@@ -31,6 +31,7 @@ plugins/bb/
 │   ├── spec-state.md                   # the .bb/<slug>/ folder contract
 │   ├── bb-config.md                    # ~/.claude/bb.config.json: the schema and who reads it
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
+│   ├── events-convention.md            # EVENTS.md's format: five parts, the template, closed payload types
 │   └── build-tasks-workflow.md         # how the skills call workflows/build-tasks.js, and what it returns
 ├── scripts/                           # shared executables (2+ skills), ref via ${CLAUDE_PLUGIN_ROOT}/scripts/
 │   ├── fetch_comments.py               # ship, review
@@ -39,6 +40,7 @@ plugins/bb/
 │   ├── preflight.py                    # ship (Prerequisites + Step 0), review (the fronts probe)
 │   ├── resolve_checks.py               # implement (step 4 + args.checks), ship (Step 2)
 │   ├── scan_specs.py                   # delegate (selection); preflight.py imports its scan()
+│   ├── check_events.py                 # spec (step 6), review (the instrumentation front): EVENTS.md checker
 │   └── inspect_pr_checks.py            # ship (CI failures), review (the ci front)
 ├── skills/                            # all 16 skills flat; trilha grouping is a docs concept
 │   ├── Pensar:        discover, challenge, think, legal-lens

@@ -248,7 +248,7 @@ Per-front method (loaded only when that front is picked):
 - `references/front-contract.md`: the spec's `## Behavior` map as the acceptance contract.
 - `references/front-a11y.md`: WCAG AA: diff scope (static) and surface scope (folder, files or a rendered page).
 - `references/front-design.md`: design-system deviations: the source ladder, both scopes, the citation discipline.
-- `references/front-instrumentation.md`: events coverage against the spec's plan and the project's convention: the two-rung ladder, criteria inline, diff scope this lap.
+- `references/front-instrumentation.md`: events coverage against the spec's plan and the project's convention: the three-rung ladder (the spec's plan, `EVENTS.md`, the convention in source), criteria inline, diff scope this lap.
 - `references/front-threads.md`: PR review threads: fetch, triage, fix/answer, reply/resolve.
 - `references/front-ci.md`: CI failures: evidence → diagnosis → fix → verify.
 
