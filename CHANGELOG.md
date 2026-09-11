@@ -1,5 +1,47 @@
 # Changelog
 
+## 2.22.0 (2026-09-11)
+
+**The event convention becomes a file bb reads.** A project states its event grammar,
+prefixes, payload dictionary, exceptions and catalog in one `EVENTS.md` at its root; bb
+defines the format and ships the checker, and three moments of the cycle read the file.
+The reasoning is `.bb/convencao-de-eventos/` (discovery and spec).
+
+### New
+
+- **`plugins/bb/references/events-convention.md`**, the format of a project's `EVENTS.md`:
+  five parts found by heading (Grammar, Prefix registry, Dictionary, Exceptions,
+  Catalog), the three-slot template `{prefix}_{type}_{element}` split by the longest
+  registered prefix, the closed payload types (`id`, `enum`, `number`, `boolean`, and
+  `text` only under an exception row with status, justification and retention), the
+  catalog's `legacy` mark and its append duty at landing, plus a worked example.
+- **`plugins/bb/scripts/check_events.py`**, shared by spec and review: reads a spec's
+  `## Metric` events table (`--spec`) or a list of emitted names (`--names`, a file or
+  stdin) against the resolved `EVENTS.md`, prints `path:line CODE message` for ten codes
+  (`C001` to `C010`, E or W), exits 1 only on an E-code, and always prints at least one
+  line (`checked N names, clean`). A name read from stdin anchors to the `EVENTS.md` row
+  or section that caught it, so the review's finder has a line to cite.
+- **`/bb:spec` reads the file**: `draft-first.md` proposes the events table from it
+  (names on the grammar, prefixes from the registry, fields from the dictionary), a
+  missing prefix or dictionary field becomes a task on the convention file, step 6 runs
+  the checker beside the lint, and step 7 treats its E-codes as open items (a malformed
+  file or an unreadable input is fixed outside the spec and deferred meanwhile).
+- **`/bb:review`'s instrumentation front gains a middle rung**: the spec's plan, then
+  `EVENTS.md`, then the convention inferred from code. The caller runs the checker once
+  over the emitted names before the fan-out and passes its output and the file's path in
+  the scope block; the finder cites the file's rows, and a malformed file is one finding
+  against the file rather than a rung with nothing to cite. The external-PR mode fetches
+  the file through the same contents API.
+
+### Changed
+
+- The payload rule in `spec-format.md` names four closed types instead of "IDs and
+  enums": `id`, `enum`, `number`, `boolean`, none carrying free text or document content;
+  a project's `EVENTS.md` may widen the list by one, a named `text` exception. The
+  instrumentation task shape appends each name it wires to the file's `## Catalog`.
+- `verify.md`'s instrumentation addendum accepts `EVENTS.md`'s own row and the checker's
+  output line as citable sources, and `review/SKILL.md` names the three-rung ladder.
+
 ## 2.21.0 (2026-08-25)
 
 **The cycle learns to measure.** A spec names its metric with provenance and the
