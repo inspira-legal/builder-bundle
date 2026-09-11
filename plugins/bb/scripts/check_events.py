@@ -33,7 +33,10 @@ Codes:
 
 The convention resolves before the plan is read, so a missing file is one C009 line
 even for a plan of zero events. A finding with no path of its own anchors to the spec
-path when one was given and to the working directory otherwise, at line 0.
+path when one was given and to the working directory otherwise, at line 0. A name read
+from stdin has no line of its own either, so its finding lands on the `EVENTS.md` row
+or section that caught it (the catalog row, `## Prefix registry`, `## Grammar`), a line
+the review's finder can cite and a reader can open.
 """
 
 from __future__ import annotations
@@ -46,8 +49,12 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 CONVENTION_NAME = "EVENTS.md"
-FORMAT_REFERENCE = "plugins/bb/references/events-convention.md"
-PAYLOAD_RULE = "the payload rule in `skills/spec/references/spec-format.md`, `### The events table`"
+# The two documents a message points at live in the plugin, not in the project the checker
+# runs in, so the pointer is plugin-rooted: the real root when the harness publishes it, and
+# a marker a reader can substitute otherwise. A cwd-relative path would open nothing there.
+PLUGIN_ROOT = os.environ.get("CLAUDE_PLUGIN_ROOT") or "<plugin-root>"
+FORMAT_REFERENCE = f"{PLUGIN_ROOT}/references/events-convention.md"
+PAYLOAD_RULE = f"the payload rule in `{PLUGIN_ROOT}/skills/spec/references/spec-format.md`, `### The events table`"
 
 SEVERITY = {
     "C001": "E",
@@ -104,6 +111,7 @@ class Convention:
     exceptions: dict = field(default_factory=dict)  # field -> (status, line)
     catalog: list = field(default_factory=list)  # (name, is_legacy, line)
     catalog_lines: dict = field(default_factory=dict)  # name -> line
+    parts: dict = field(default_factory=dict)  # part heading -> line
 
     def is_legacy(self, name):
         return any(legacy for n, legacy, _ in self.catalog if n == name)
@@ -274,6 +282,7 @@ def parse_convention(path, lines):
                 )
             continue
         by_name[section.name] = section
+    conv.parts = {name: s.line for name, s in by_name.items() if name in PARTS}
 
     def table_for(part):
         section = by_name.get(part)
@@ -366,11 +375,13 @@ def plan_from_spec(path, lines):
     metric = next((s for s in sections(lines) if s.name.lower() == "metric"), None)
     if metric is None or not metric.tables:
         return [], None
+    headed = None  # the last run that parsed as a table: (header line, header cells)
     for rows in metric.tables:
         parsed = header_of(rows)
         if parsed is None:
             continue
         header, body = parsed
+        headed = (rows[0][0], header)
         if "event" not in header:
             continue
         event_column = header.index("event")
@@ -385,9 +396,16 @@ def plan_from_spec(path, lines):
             fields = [f.strip() for f in BACKTICKED.findall(cell_at(cells, payload_column))]
             plan.append(PlanRow(line=line, name=name, fields=fields))
         return plan, None
-    first_line, first_cells = metric.tables[0][0]
-    shown = " | ".join(first_cells)
-    return [], (path, first_line, "C009", f"the events table header (`{shown}`) has no `event` column")
+    if headed is None:
+        return [], (
+            path,
+            metric.tables[0][0][0],
+            "C009",
+            "no table with a header row under `## Metric`: a run of `|` lines without its "
+            "`| --- |` delimiter row is a paragraph, not the events table",
+        )
+    line, header = headed
+    return [], (path, line, "C009", f"the events table header (`{' | '.join(header)}`) has no `event` column")
 
 
 def plan_from_names(text, numbered):
@@ -447,24 +465,36 @@ def check_catalog(conv):
 
 
 def check_plan(plan, conv, path):
+    def at(row, code, name):
+        """Where a finding lands: the plan row when it has a line. A name read from stdin
+        has none, so it lands on the `EVENTS.md` row or section that caught it, a line a
+        reader can open: the catalog row (C007), `## Prefix registry` (C002), `## Grammar`
+        (C003, C004)."""
+        if row.line:
+            return path, row.line
+        if code == "C007" and name in conv.catalog_lines:
+            return conv.path, conv.catalog_lines[name]
+        part = {"C002": "Prefix registry", "C003": "Grammar", "C004": "Grammar", "C007": "Catalog"}.get(code)
+        return conv.path, conv.parts.get(part, 0)
+
     planned = {}
     for row in plan:
         name = row.name
         if name and name in conv.catalog_lines:
             marked = ", marked `legacy`" if conv.is_legacy(name) else ""
             yield (
-                path,
-                row.line,
+                *at(row, "C007", name),
                 "C007",
                 f"`{name}` is already in the catalog ({conv.path}:{conv.catalog_lines[name]}{marked})",
             )
         elif name and name in planned:
-            yield path, row.line, "C007", f"`{name}` is planned twice (first at line {planned[name]})"
+            first = f"first at line {planned[name]}" if row.line else "twice in the names list"
+            yield *at(row, "C007", name), "C007", f"`{name}` is planned twice ({first})"
         else:
             found = grammar_finding(name, conv)
             if found:
                 code, message = found
-                yield path, row.line, code, message
+                yield *at(row, code, name), code, message
         planned.setdefault(name, row.line)
 
         for fld in row.fields:
@@ -502,9 +532,8 @@ def check_plan(plan, conv, path):
 # ----------------------------------------------------------------------- main
 
 
-def run(args, cwd):
+def run(args, cwd, anchor):
     """Return (findings, names checked). Every path in here ends in a list, never a raise."""
-    anchor = args.spec if args.spec is not None else str(cwd)
     conv_path, missing = resolve_convention(args.convention, cwd, anchor)
     if missing:
         return [missing], 0
@@ -563,10 +592,11 @@ def main(argv):
         sys.stdout.reconfigure(errors="replace")
     except (AttributeError, ValueError):
         pass
+    # A finding with no path of its own anchors here: the spec when one was given, else the cwd.
+    anchor = args.spec if args.spec is not None else str(cwd)
     try:
-        findings, count = run(args, cwd)
+        findings, count = run(args, cwd, anchor)
     except Exception as err:  # the last resort: unexpected content is a coded line, never a trace
-        anchor = args.spec if args.spec is not None else str(cwd)
         findings = [(anchor, 0, "C010", f"the checker could not process the input ({type(err).__name__}: {err})")]
         count = 0
 
