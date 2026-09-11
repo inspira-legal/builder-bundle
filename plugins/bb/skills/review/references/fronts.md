@@ -168,9 +168,6 @@ change it reviewed.
    receives, the paths written inside it are resolved into the block too; a
    dispatched agent has no plugin root of its own.
 
-   (`review-checklist.md` or `quality-checklist.md`, siblings of this file), and
-   the spec when there is one, plus ONE angle/lens set and its candidate cap.
-
    The intent block travels verbatim, its three parts intact: what this PR sets out
    to do, what the conversation settled with who said it and the link, what is still
    open. Every finder of every picked front gets the same text, because the choice a
