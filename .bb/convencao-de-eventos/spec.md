@@ -254,7 +254,7 @@ line 0, so the shape stays `path:line CODE message` for every reader.
       verify: the reference's sample file parses without C001; run over a fixture pair (one
       clean file plus one spec, one file seeded with each defect) every code fires exactly
       where the fixture places it, and a clean run prints the one line
-- [ ] **3. Spec reads the file**: `draft-first.md` proposes the table from it and writes
+- [x] **3. Spec reads the file**: `draft-first.md` proposes the table from it and writes
       the prefix and dictionary tasks, `spec-format.md` names the file beside the payload
       rule, widens that rule's paragraph to the four types and adds the catalog append to
       the instrumentation task shape, `SKILL.md` step 6 runs the checker and says how to
