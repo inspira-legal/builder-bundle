@@ -1,5 +1,5 @@
 ---
-status: in-progress
+status: done
 created: 2026-09-10
 slug: convencao-de-eventos
 ---
