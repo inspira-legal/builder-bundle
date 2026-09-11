@@ -1,7 +1,7 @@
 pre-commit:
   jobs:
     - name: oxfmt
-      glob: "*.{json,md,js}"
+      glob: "*.{json,md,js,ts}"
       run: bunx oxfmt --write {staged_files}
       stage_fixed: true
     - name: validate

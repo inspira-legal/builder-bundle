@@ -1,6 +1,6 @@
 # The build: one agent per task, run by `workflows/build-tasks.js`
 
-`/bb:implement` and `/bb:delegate` build a spec's tasks by dispatching one agent per
+`/bb:implement` builds a spec's tasks by dispatching one agent per
 task as a dynamic workflow. The script that does it is fixed and versioned at
 `plugins/bb/workflows/build-tasks.js`, and **the script is the definition**: the task
 agent's contract is the prompt string inside it, not a paraphrase kept here. This file
@@ -47,29 +47,58 @@ read-only.
 
 ## How the skills invoke it
 
-The path is resolved and the file proved in one `Bash` call:
+The script is at `<plugin-root>/workflows/build-tasks.js`, and the root is the one the
+SessionStart hook published into this session. That hook resolved it from a directory an
+interpreter on this machine had already opened, so the path is proven before any skill
+reads this line, and nothing here searches for it.
+
+**The dispatch points at a copy of that file, never at the file.** Every installed copy
+carries CR, and `Workflow` inlines a `scriptPath` into the approval dialog as `script`,
+where the permission layer refuses a control character that would be hidden there.
+`<plugin-root>/scripts/normalize_workflow.py` reads the source as bytes, drops every `\r`,
+writes the copy under its out dir and prints that one path, which is what `scriptPath`
+takes. Substitute the root and run it, in one `Bash` call:
 
 ```bash
-cat "$CLAUDE_PLUGIN_ROOT/workflows/build-tasks.js" > /dev/null && echo "$CLAUDE_PLUGIN_ROOT/workflows/build-tasks.js"
+python3 "<plugin-root>/scripts/normalize_workflow.py" "<plugin-root>/workflows/build-tasks.js"
 ```
 
-A non-zero exit is the missing-file case. The printed path is what goes into
-`scriptPath`, already expanded, because the tool takes a literal path.
+`--out <dir>` chooses where the copy lands: pass the session's scratchpad when there is
+one, and the default is a directory under the system temp, which needs nothing published
+to it. The copy keeps the source's basename, so the path the approval dialog shows is the
+same one on every run. The script's own docstring owns why the strip is unconditional.
+
+A non-zero exit is the one failure the chain reads, and the message on stderr names the
+path it choked on: the source is missing or unreadable, or the out dir cannot be written.
+With no root in the session at all, the chain goes straight to its last step: a guess at
+the path is what the hook exists to replace.
 
 The **fallback chain**, one attempt each, in this order. It is stated here and nowhere
 else, so the skills point at it by name and carry no count of their own:
 
-1. `Workflow` with `scriptPath` set to the printed path. This is the dispatch.
-2. `scriptPath` refused: an inline `script` read off the same file. Still a dispatch, so
-   a refusal at step 1 ends that attempt and not the chain.
-3. Step 2 refused too, or no `Workflow` tool in the session, or a `Bash` call that
-   cannot read the file: the in-context build, with the reason named.
+1. `Workflow` with `scriptPath` set to the printed copy. This is the dispatch.
+2. The `scriptPath` dispatch came back refused: `Workflow` with `script` set to the copy's
+   text, read from the printed path. The normalize step only answers for CR, and a refusal
+   has other causes, so the inline form is the attempt that does not depend on which one it
+   was.
+3. No `Workflow` tool in the session, or the `Bash` call came back non-zero, whether
+   because the session carries no published root, because the source is not readable under
+   it, or because the out dir could not be written: the in-context build, with the reason
+   named. Those are different lines to say, so say which one it was.
 
-Only step 3 builds in the main context, and only those three conditions reach it. A run
-that has tasks to build and meets none of them dispatches at step 1. Invoking
-`/bb:implement` or `/bb:delegate`, by the command or by the phrases their `description`
-lists, is the request for this workflow, and that request is the opt-in the `Workflow`
-tool asks for. It covers this build and nothing beyond it.
+Only step 3 builds in the main context, and only the conditions it names reach it. A first
+path that does not resolve is a step of the resolution rule and not a step of this chain,
+so a `Bash` call that comes back empty is step 3 only after the whole rule has been walked.
+A run that has tasks to build and meets none of these conditions dispatches at step 1.
+Invoking `/bb:implement`, by the command or by the phrases its `description` lists, is the
+request for this workflow, and that request is the opt-in the `Workflow` tool asks for. It
+covers this build and nothing beyond it.
+
+**A session that forbids workflows outright is a third way to end up here, and it is not a
+step of the chain.** An account or session level rule saying not to use workflows unless the
+user asked outranks the opt-in above, and the tool never runs. The build proceeds in the
+main context like step 3, and the line the skill owes says the session's own rules vetoed
+the dispatch, so the reason reads as a veto and not as a missing file.
 
 Two stops sit outside the chain, and neither is a step of it. A user who denies the
 permission dialog has declined this dispatch: report the denial and ask what they want
@@ -97,15 +126,16 @@ stringified one):
     unresolved: [{ command: "...", reason: "unrecognized-runner" | "shell-dependent", where: "<file>" }]
   },
   reuseNotes: ["<one string per reuse note in ## Decisions>"],
+  phases: [{ title: "<the ### heading>", tasks: [1, 2] }],
   tasks: [
-    { n: 1, title: "...", delivers: "...", behaviors: [2, 3], dep: [], verify: "..." }
+    { n: 1, title: "...", delivers: "...", behaviors: [2, 3], dep: [], verify: "...", model: "haiku" }
   ]
 }
 ```
 
-`checks` is `${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py`'s output, passed through
+`checks` is `scripts/resolve_checks.py`'s output, passed through
 whole (or `null` when the skill could not run it). The script walks the authority chain,
-so nothing in the run resolves it a second time: it is the same call implement's step 4
+so nothing in the run resolves it a second time: it is the same call implement's step 7
 and ship's Step 2 make. `runnable: false` means local runs are forbidden, and it is what
 makes stage zero skip the checks agent instead of spending it to be refused; `policy.scope`
 says which document forbade them, the repo's own or the user's `~/.claude/CLAUDE.md`.
@@ -132,6 +162,25 @@ prompt and the coverage count read the same contract every other task gets; the
 resolution and its failure modes are that step's. The agents re-read the spec anyway:
 `args` is the plan, the file on disk is the truth.
 
+`model` on a task is **optional and the only tier the payload sets**, because how hard a task
+is, is the one thing about it the script cannot read. It takes `haiku`, `sonnet` or `opus`; the
+script drops any other name, says so in one line and runs that task on the session's model,
+since a typo passed through would take down a run that had already proved its ground. Omitted,
+the task inherits the session's model, which is the default and the right answer for most
+tasks: the agent is doing the work the main context would have done. `## Effort and model`
+below is the rule the skill applies to decide, and resume is what makes it a rule rather than
+a judgment per run: the cache is keyed on the agent's `(prompt, opts)`, so a task whose model
+moved between two runs of the same spec re-runs from scratch.
+
+`phases` is the `###` headings inside `## Tasks` on the wire, one entry per heading in
+document order, the heading's own text as `title` and its tasks named by `n`. The rule
+those headings follow is `skills/spec/references/spec-format.md`'s. Read the section as
+written, ticked tasks included: the script keeps only the members `tasks` still carries
+and drops a group left with none, so a resumed run announces the phases it will actually
+run. A `## Tasks` with no `###` heading sends no `phases` at all, and the script falls
+back to its own fixed titles; the ground keeps `Ground` either way, since stage zero
+belongs to the script and not to any task.
+
 An empty `tasks` is not a run. The skill sees it first and reports nothing to build
 without invoking; the script returns the empty report before stage zero, so a caller that
 invoked anyway does not pay for the project's checks and every reuse note to build no
@@ -139,15 +188,34 @@ task.
 
 ## Stage zero: prove the ground before task 1
 
-One agent per reuse note, plus the checks agent when there is something to run, all
-inside a single `parallel()`. This is a legitimate barrier: nothing starts until every
-verdict is in. These agents are read-only lookups, so they run at `effort: 'low'`.
+Two thunks at most, inside a single `parallel()`: one `bb-reuse-check` carrying every
+reuse note the spec has, and the checks agent when there is something to run. This is a
+legitimate barrier: nothing starts until every verdict is in. Both are read-only, and their
+tiers are the script's own, computed from the payload: `## Effort and model` below is where
+that rule is stated.
 
-Each reuse-note agent returns:
+The reuse agent is dispatched **once per build and not once per note**, because a
+subagent's context floor is paid per agent and re-read on every turn it takes: on the run
+that measured it, eight notes over eight agents cost ~44k of prefix each for lookups of
+three to five tool calls and a few hundred tokens of answer. One agent pays that floor
+once. With no reuse note in the spec, no reuse thunk is sent at all, and stage zero is the
+checks agent alone.
+
+The role and the read protocol are `agents/bb-reuse-check.md`'s, delivered as the system
+prompt through `opts.agentType`. `reusePrompt()` carries what only the caller has, the
+numbered notes, and the schema carries the return shape. It returns:
 
 ```
-{ verdict: "intact" | "moved" | "gone", note: "<the note>", where: "<new path, if moved>" }
+{ verdicts: [{ index: 0, verdict: "intact" | "moved" | "gone", note: "<what it looked for, plus file:line>", where: "<new path, required when moved>" }] }
 ```
+
+`index` is the note the entry answers, numbered as the prompt sent them. **The script
+checks the index set before it calls the ground proven**, not the count: a note left
+unanswered and an index no note carries are each a stop naming what happened, since a note
+nobody looked for would otherwise read as `intact` and the build would extend code that is
+not there, and a count alone reads one note answered twice as two notes answered. A `moved`
+verdict with no `where` is a stop for the same reason: that path is what the convention note
+would otherwise render as `undefined` into every task prompt.
 
 The checks agent confirms the list `args.checks` carries and then **runs all of them
 once**. Running them is the point: it proves the run has permission to execute each one,
@@ -169,7 +237,16 @@ note, and from task 1 on it outranks the path the spec's reuse note names.
 
 A stage-zero stop is normalized into the shape a task result has, so the caller has one
 thing to read and a blocker to name:
-`{ n: 0, status: "red", blocker: "<which note died, or which command, and why>" }`.
+`{ n: 0, status: "red", blocker: "<which note is gone, which went unanswered, which verdict cannot be placed, which command and why, or which agent could not be dispatched and what the platform said>" }`.
+
+A dispatch that never happens is the newest of those kinds. When the platform refuses the name
+an agent is sent under, the thunk throws before any agent exists, and the slot `parallel()`
+hands back is empty in exactly the way a lost answer is. So each stage-zero thunk records the
+platform's message on the way past, logs it and re-throws: the run keeps the platform's own
+failure record, and the stop reads `the reuse agent could not run: <message>`, or the same
+sentence with `the checks agent` in front. With no message recorded the two branches keep
+saying `returned nothing`, which is then true. When both agents fail the reuse blocker is the
+one reported, since the branches are a chain; the checks cause sits in the log beside it.
 
 A repo whose top authority forbids running checks locally fails here by policy and not by
 breakage, so it is not a stop. The policy arrives as `runnable: false`, stage zero sends no
@@ -239,8 +316,34 @@ from stage zero. What does not: anything already written in the spec.
 
 ## Effort and model
 
-Stage zero at `effort: 'low'`, read-only lookup. Task agents inherit the session model
-and effort; they are doing the same work the main context would have done.
+One dispatch, and each agent on the model its own job earns. Cost is bought with the
+**model** and capability is kept with **`effort`**, so the two move together: a cheap
+tier is never a strong model with its reasoning cut, which would be saving on the
+answer instead of on the lookup.
+
+The rule is the script's, computed from the payload it already has, so the same spec
+dispatches the same tiers twice and the decision is readable in one place:
+
+- **The reuse agent: `haiku` at `effort: 'low'`, always.** `Grep` on the symbol a note
+  names and a verdict per note is the whole job, and `REUSE_VERDICTS` is what shapes
+  the answer. Nothing here is bought by a stronger model.
+- **The checks agent: the payload decides.** Confirming a list `resolve_checks.py`
+  already produced and running it is mechanical, so that one is `haiku` at
+  `effort: 'low'` too. A `checks` that is `null`, `truncated`, or carrying `unresolved`
+  leads hands the agent the judgment the resolver could not make, and that one keeps
+  the session's model and effort. The run logs which of the two it got, because silent,
+  the expensive branch reads as the cheap one.
+- **Task agents inherit the session's model and effort**, unless the task's own `model`
+  says otherwise. They are doing the work the main context would have done, against a
+  spec that was reviewed before it got here.
+
+`model` on a task is the skill's to set, and it is set from the task's own line rather
+than from a fresh judgment each run: a doc-only cut, a mechanical rename, a `verify:`
+that is one command all earn the cheap tier; the one task the spec's `## Decisions`
+turned on earns the strong one; everything else says nothing and inherits. Two runs of
+the same spec have to reach the same answer, or resume re-runs the tasks whose tier
+drifted. Set none, and every task runs on the session's model, which is what the build
+did before this rule existed.
 
 ## What the script returns
 
@@ -248,10 +351,10 @@ and effort; they are doing the same work the main context would have done.
 { slug, built: [<n>], skipped: [<n>], pendingVerify: [<n>], stopped: <the failing result, or null>, conventions }
 ```
 
-The caller reads that and follows its own contract: `/bb:implement` goes to its step 8,
-`/bb:delegate` to ship. A non-null `stopped` means neither proceeds to landing; delegate
-flips `status: blocked`, implement stops at its safety valve. `pendingVerify` names the
-tasks whose proof is CI, which is ship's to close.
+The caller reads that and follows its own contract: `/bb:implement` goes on to whatever
+its scope has next, the review, the ship, or the gate that offers one. A non-null
+`stopped` is its safety valve, so it flips `status: blocked` and nothing further in the
+chain runs. `pendingVerify` names the tasks whose proof is CI, which is ship's to close.
 
 ## What guards the script, and what the skill still checks per run
 
@@ -273,9 +376,15 @@ template and regex bodies are blanked first, so only code is read:
 - `Date.now()`, `new Date()` and `Math.random()` appear nowhere, in any spelling: optional
   chaining is flattened before the scan, and `Date[...]` or `Math[...]` fails on its own.
 
-It runs inside `package.json`'s `validate`, which is what lefthook's pre-commit job runs,
-so the guard fires before the commit and not only in CI. oxfmt formats `js` alongside
-`json` and `md`.
+`.github/scripts/validate-agent-names.ts` is the third validator, and it reads a wider
+tree: every `.js` and `.md` under `plugins/bb/`, anchored on the keys `agentType:` and
+`subagent_type:`. A bb agent's name written without the plugin prefix fails, and so does a
+`bb:` name with no such agent. Any other name passes in silence, so a dispatch of a
+platform agent is not a false failure.
+
+All three run inside `package.json`'s `validate`, which is what lefthook's pre-commit job
+runs, so the guards fire before the commit and not only in CI. oxfmt formats `js` and `ts`
+alongside `json` and `md`.
 
 **A one-time PR review** owns what only reading the code settles: `schema` on every
 `agent()` that needs a typed answer, and every result null-checked before use. That is a
@@ -284,10 +393,15 @@ review of a change to this script, not a step in a build run.
 **The skill** owns the three that are genuinely per-run, and confirms them before
 invoking:
 
-- `args` is passed as a JSON value, `tasks` holds only unticked tasks, and `checks` is
+- `args` is passed as a JSON value, `tasks` holds only unticked tasks, `phases` repeats the
+  `###` headings of the same `## Tasks` in document order, and `checks` is
   `resolve_checks.py`'s output passed through whole.
+- A task carries `model` only where its own line earns a tier other than the session's, by
+  the rule in `## Effort and model`, and the same spec earns the same answer on a re-run.
+  Stage zero's two tiers are the script's and take nothing from the payload.
 - The branch the commits belong on already exists and is checked out; the agents commit
   where the run puts them.
-- The agent count is `tasks.length + reuseNotes.length`, plus one for the checks agent
-  when `checks.runnable` is not false. Over the size guideline the session declares, say so
+- The agent count is `tasks.length`, plus one for the reuse agent when `reuseNotes` is not
+  empty, plus one for the checks agent when `checks.runnable` is not false: stage zero is
+  two agents at most, whatever the note count. Over the size guideline the session declares, say so
   in one line and invoke anyway; the real cap is 1000 agents per run.

@@ -1,14 +1,36 @@
 # Changelog
 
-## 2.21.0 (2026-08-25)
+## 3.7.0 (2026-09-10)
 
-**The cycle learns to measure.** A spec names its metric with provenance and the
-events its behaviors emit, instrumentation enters the build as ordinary tasks, and
-review gains the front that checks coverage against the convention the project
-itself uses. The reasoning is `.bb/metricas-no-ciclo/` (discovery and spec).
+**Design becomes a calibrated, reviewable dimension, and the cycle learns to measure.**
+The profile learns how the person designs, the design journey leans on that answer, and
+the review engine gains the front that checks the design system. A spec names its metric
+with provenance and the events its behaviors emit, instrumentation enters the build as
+ordinary tasks, and review gains the front that checks coverage against the convention
+the project itself uses. Four specs carry the reasoning: `.bb/design-no-perfil/`,
+`.bb/frente-de-design/`, `.bb/metricas-no-ciclo/` (discovery and spec) and
+`.bb/exportar-pro-observador/` (the last one pending: it frames exporting bb's records to
+an observer and builds nothing yet).
 
 ### New
 
+- **`profile.design_tools` in `~/.claude/bb.config.json`**: `/bb:profile` asks one
+  more question, which of Figma, Paper and Pencil are part of the person's day. An
+  empty list is an answer ("none of them"); a missing key is a config written before
+  the question and reads as not asked. `hooks/sync_instructions.py` renders the answer
+  as one line in the profile block of `~/.claude/BUILDER-BUNDLE.md`.
+- **`medium_default` on a product entry** (`product-registry.yaml`): a product with a
+  settled design workflow leans the medium question for everyone who works on it,
+  above the person's own habit. Both levels order the question and set the
+  recommendation; neither answers it, the medium stays always asked.
+- **The `design` front in `/bb:review`**: deviations from the design system the
+  project actually has. Raw values where a token exists, rebuilt components, missing
+  documented states, drift from the branch's visual direction, each finding citing
+  the source it deviates from (`front-design.md` + `design-checklist.md`). Available
+  when the diff touches UI and a design source resolves; also runs standalone over a
+  surface (a folder, files, or a running page), like the accessibility front, which
+  is the design review loop on its own. brisar's Deliver gate offers it next to the
+  deep accessibility audit.
 - **`## Metric` joins the spec's fixed set**, between `## Behavior` and `## Tasks`:
   the metric block (metric, baseline, target, each value with provenance or an
   honest per-value `skipped: <reason>`, an optional `okr:` line) or one explicit
@@ -35,6 +57,11 @@ itself uses. The reasoning is `.bb/metricas-no-ciclo/` (discovery and spec).
 
 ### Changed
 
+- `phase-medium.md` orders its options by the product's `medium_default`, then the
+  person's `design_tools`, then the fit signals, and the trim keeps the product
+  default and the person's tools, in that order; a lean tool whose MCP is absent is
+  named once in the intro line, never forced.
+- `preflight-tooling.md` cross-references `design_tools` alongside `uses_terminal`.
 - The export renders the hypothesis-OKR-metric trio from `discovery.md` and the
   spec instead of asking: values bare (provenance stays in the spec), a per-value
   skip as "not yet measured", the four fields together or not at all, and the
@@ -43,43 +70,394 @@ itself uses. The reasoning is `.bb/metricas-no-ciclo/` (discovery and spec).
 - The spec's exit gate renders `## Metric` beside the coverage counter and holds a
   value without real provenance as an open item; seeding and gate rules live in
   `draft-first.md`.
+- The `design` and `instrumentation` fronts keep their `High` / `Medium` / `Low`
+  priorities inside their own references and map onto the two finding levels at the
+  report boundary, the way a11y's WCAG priorities do (`references/finding-levels.md`):
+  `High` is a Bloqueante, `Medium` and `Low` are Sugestões. The rank tiers, the fix
+  order and the report read the level, so the two fronts arrive in the report the
+  same way every other front does.
 
-## 2.20.0 (2026-08-25)
+## 3.6.1 (2026-09-04)
 
-**Design becomes a calibrated, reviewable dimension.** The profile learns how the
-person designs, the design journey leans on that answer, and the review engine gains
-the front that checks the design system. Three specs carry the reasoning:
-`.bb/design-no-perfil/`, `.bb/frente-de-design/`, and `.bb/exportar-pro-observador/`
-(the last one pending: it frames exporting bb's records to an observer and builds
-nothing yet).
+**Agent names carry the plugin's namespace.** The platform publishes a plugin's agents under its own name: `plugins/bb/agents/bb-reuse-check.md` answers to `bb:bb-reuse-check`, not to `bb-reuse-check` bare. The workflow and skills must send the namespaced name in their dispatches, or the agent does not resolve and stage zero stops the build at task 1. The stage-zero dispatch in `plugins/bb/workflows/build-tasks.js` now sends `bb:bb-reuse-check` as its `agentType`, and the four prose dispatches in `/bb:review` and `/bb:spec` are respelled with the same prefix: `bb:bb-review-finder`, `bb:bb-review-verifier` and `bb:bb-spec-reviewer`.
 
-### New
+**The degradation promise is deleted, not implemented.** The script and reference documented that an `agentType` failing to resolve would degrade into a generic agent working from the prompt and schema, and the 3.6.0 entry below states that mechanism as a fact, which it never was: `agent()` throws on a name the platform cannot resolve, and nothing catches it into a generic run. Building it would be wrong: it trades away the guarantee the agent type selects. A read-only agent like `bb-reuse-check` is marked read-only by its `tools:` list in frontmatter, enforced by CI before commit, so a runtime fallback that routes around that enforcement is the wrong shape of insurance. The insurance goes into CI instead: a name that does not resolve to a shipped agent now fails the validation script and stops the commit. The clause is gone from the comment above `reusePrompt()` in `plugins/bb/workflows/build-tasks.js` and from the paragraph on the reuse agent in `plugins/bb/references/build-tasks-workflow.md`; both keep the sentence that says the role and the read protocol are the agent's. The one line of that protocol the prompt still restated goes with it, since `agents/bb-reuse-check.md` carries it whole.
 
-- **`profile.design_tools` in `~/.claude/bb.config.json`**: `/bb:profile` asks one
-  more question, which of Figma, Paper and Pencil are part of the person's day. An
-  empty list is an answer ("none of them"); a missing key is a config written before
-  the question and reads as not asked. `hooks/sync_instructions.py` renders the answer
-  as one line in the profile block of `~/.claude/BUILDER-BUNDLE.md`.
-- **`medium_default` on a product entry** (`product-registry.yaml`): a product with a
-  settled design workflow leans the medium question for everyone who works on it,
-  above the person's own habit. Both levels order the question and set the
-  recommendation; neither answers it, the medium stays always asked.
-- **The `design` front in `/bb:review`**: deviations from the design system the
-  project actually has. Raw values where a token exists, rebuilt components, missing
-  documented states, drift from the branch's visual direction, each finding citing
-  the source it deviates from (`front-design.md` + `design-checklist.md`). Available
-  when the diff touches UI and a design source resolves; also runs standalone over a
-  surface (a folder, files, or a running page), like the accessibility front, which
-  is the design review loop on its own. brisar's Deliver gate offers it next to the
-  deep accessibility audit.
+**Stage zero's blocker names its cause.** Both stage-zero thunks now catch the platform's error message when a dispatch fails, log it and re-throw it. The reuse blocker then reads `the reuse agent could not run: <message>` and the checks blocker reads `the checks agent could not run: <message>`, so the person who hits the stop knows whether the name was not found, the plugin was not installed, or something else went wrong. With no recorded message, the two branches keep the original wording, `returned nothing`, which is then accurate as written.
+
+**The new validator guards the whole surface.** `validate-agent-names.ts` is a TypeScript guard that runs over `.js` and `.md` under `plugins/bb/`, deriving the set of valid agent names from each agent's frontmatter `name:` combined with the plugin's `name` in `plugin.json`. It anchors on the two keys, `agentType:` and `subagent_type:`, and rejects exactly two shapes: a bb agent's name without the plugin prefix, and a prefixed name with no such agent. It is wired into `package.json`'s `validate` script and into `.github/workflows/validate.yml` as its own step, and `lefthook.yml`'s oxfmt glob gains `ts` alongside `json`, `md` and `js` so the new script is formatted pre-commit. The reference's section on CI guards is updated with the validator and the corrected oxfmt line.
 
 ### Changed
 
-- `phase-medium.md` orders its options by the product's `medium_default`, then the
-  person's `design_tools`, then the fit signals, and the trim keeps the product
-  default and the person's tools, in that order; a lean tool whose MCP is absent is
-  named once in the intro line, never forced.
-- `preflight-tooling.md` cross-references `design_tools` alongside `uses_terminal`.
+- **`plugins/bb/workflows/build-tasks.js`** sends `bb:bb-reuse-check` as the namespaced agent type in stage zero. `reusePrompt()` stops restating the agent's own read protocol, so the prompt carries what only the caller has, the numbered notes. Both stage-zero thunks wrap the dispatch in `.catch()` to record the platform's error message, log it and re-throw, preserving the workflow's `stopped` return with the blocker cause and keeping the platform's own `<failures>` record intact.
+- **`plugins/bb/references/build-tasks-workflow.md`** removes the degradation clause from the reuse agent's paragraph, updates the stage-zero stops list to include the new `the reuse/checks agent could not run` kind, and documents the oxfmt correction.
+
+### Added
+
+- **`validate-agent-names.ts`**, a guard that validates all agent dispatches in the plugin to carry the namespace prefix and to resolve to shipped agents. It reads agent frontmatter from `plugins/bb/agents/`, derives the valid set with the plugin name as prefix, and fails the commit when an agent name is bare or unknown. It runs in CI and in the pre-commit hook.
+
+## 3.6.0 (2026-09-02)
+
+**A build announces the phases the spec named.** `build-tasks.js` declared its progress
+groups in `meta`, which the platform reads before the script runs, so every spec ever built
+showed the same two headers, `Ground` and `Build`, and someone watching a run learned
+nothing from them. The `###` headings inside `## Tasks` are the phase titles now: the
+heading's own text, its tasks as the members, document order as run order. `meta.phases` is
+gone, which is what frees `phase()` to take a computed title, and `meta` stays the literal
+the platform needs. The titles are read off the spec and never invented at dispatch time, a
+name written per run being both unreviewed and a miss on the resume cache, which keys on the
+prompt and the label. Grouping is optional: a flat `## Tasks` runs under one fallback title,
+and the ground keeps `Ground` either way, since stage zero belongs to the script and not to
+any task.
+
+**And the dispatch works from a Windows install.** Every installed copy of the workflow
+script carries CR, the version cache and the marketplace clone alike, because the installer
+does not honor `.gitattributes`. `Workflow` inlines a `scriptPath` into the approval dialog
+as `script`, the permission layer refuses the CR as a control character hidden there, and
+the documented fallback chain ended in the in-context build every time. The fix normalizes
+at the point of use: the dispatch runs a script that writes a CR-free copy and points
+`scriptPath` at that. Where the CR comes from stays broken, on purpose.
+
+**Stage zero pays one context floor instead of eight.** It dispatched one agent per reuse
+note, and on the run that measured it those eight agents cost more than the build they
+introduced: a context prefix each, re-read on every turn, for lookups of three to five tool
+calls and a few hundred tokens of answer. The measurement is in
+`references/build-tasks-workflow.md`. One agent carries every note now, and the
+whole-file `Read` that the old prompt's `Read the repo.` invited is what the new read
+protocol closes.
+
+**And each agent runs on the model its own job earns.** Nothing chose a model before:
+stage zero ran at `effort: 'low'` on whatever the session was on, which is a frontier
+model paid to `Grep` a symbol and read back a verdict per note. The tiers belong to the
+script now, computed from the payload it already has, so the same spec dispatches the
+same tiers twice and the decision is readable in one place instead of being made afresh
+per run. Cost is bought with the model and capability is kept with `effort`, so the two
+dials move together: a cheap tier is never a strong model with its reasoning cut, which
+would be saving on the answer instead of on the lookup.
+
+### Added
+
+- **`scripts/normalize_workflow.py`**, stdlib, `<source> [--out <dir>]`. It reads the source
+  as bytes, drops every `\r`, writes the copy under the out dir and prints that one path,
+  nothing else, so the caller hands it straight to `scriptPath`. The strip is unconditional,
+  because a conditional one is a branch that saves microseconds and only runs on the machines
+  where it is wrong; an already-LF source comes out byte-identical. `--out` defaults to a
+  directory under the system temp, so nothing has to be published to it, and the skill passes
+  its session scratchpad when it has one. It sits at the plugin root because its reader is
+  the plugin-level `references/build-tasks-workflow.md`, which is what any future dispatcher
+  of a workflow reads.
+- **`agents/bb-reuse-check.md`** is the fourth read-only agent, `Read`, `Grep` and `Glob`. It
+  owns the role and the read protocol: confirm by `Grep` on the symbol the note names, and
+  when code has to be seen, `Read` a window of some 40 lines around the line the hits cited,
+  never a whole file, never an edit. `reusePrompt()` keeps what only the caller has, the
+  numbered notes, the return shape, and one line of that protocol, so an `agentType` that
+  fails to resolve leaves a generic agent working from a floor instead of an unbounded one.
+  That is the fallback the review fan-out already sets for its finder.
+
+### Changed
+
+- **`workflows/build-tasks.js`** logs its first line as the slug in prose plus the counts,
+  `Build phases and cost · 7 tasks, 4 phases`, which is where the identification went when
+  `meta` stayed a literal. The build loop gains an outer level over `args.phases`, and a
+  stopped task still ends the run and not just its phase, so the later phases never announce.
+  A group whose every task was already ticked is dropped before the walk, since `phase()`
+  fires as its group is entered and a header over nothing lies about the run. Nothing loops
+  above the fan-out, which is the validator's line at `validate-workflow-script.ts:39`.
+- **Stage zero keeps two thunks**, so the single-`parallel()` invariant holds untouched: one
+  `bb-reuse-check` carrying every note, one checks agent. The schema is
+  `{verdicts: [{index, verdict, note, where}]}`, `index` pointing back at the note the entry
+  answers, and **the script checks the index set before it calls the ground proven**, because
+  a note nobody looked for would otherwise read as `intact` and a count alone cannot tell one
+  note answered twice from two notes answered once. A `moved` verdict with no `where` stops
+  the run for the same reason: the path it omits is what every task prompt would carry. With
+  no reuse note, no reuse thunk is sent at all.
+- **Stage zero's two tiers are the script's own.** `bb-reuse-check` is `haiku` at
+  `effort: 'low'`, one `Grep` per note against a schema being the whole job. The checks agent
+  is that same tier when `args.checks` hands it a resolved, untruncated list with no
+  `unresolved` lead, and it keeps the session's model and effort when it has to walk the
+  authority chain itself or open the files those leads name, which is the judgment the
+  resolver could not make. The run logs which of the two it got, because silent, the
+  expensive branch reads as the cheap one.
+- **A task can carry `model`**, `haiku`, `sonnet` or `opus`, and it is the only tier the
+  payload sets, because how hard a task is, is the one thing about it the script cannot read.
+  Omitted, the task inherits the session's model, which stays the right answer for most of
+  them. Any other name is dropped with a line naming it, before stage zero rather than at the
+  call that would have used it: a typo reaching the platform would take down a run that had
+  already proved its ground. `/bb:implement` sets it from the task's own line and not from a
+  fresh judgment each run, resume keying on each agent's own `(prompt, opts)`.
+- **`references/build-tasks-workflow.md`** carries the normalizer call and the `phases` field
+  of `args`. The fallback chain keeps its three steps: the normalizer answers for CR, and a
+  `scriptPath` refused for anything else still has the inline `script` to try before the
+  build comes back to the main context. The agent count line now reads stage zero as two
+  agents at most, whatever the note count, and `## Effort and model` states the tier rule
+  whole: the script's two stage-zero tiers, and the one field the payload sets.
+- **`/bb:implement`** (3.1.0) builds `phases` from the `###` groups at step 6, alongside the
+  `tasks` it already trimmed to the unticked ones, and its table answers a `## Tasks` with no
+  heading in it. Step 6 gains a fourth per-run item, the task's `model`, held to the same
+  discipline as the phase titles and for the same reason, and it owes one line naming the
+  tasks that did not run on the session's model.
+- **`skills/spec/references/spec-format.md`** documents the grouping under the task shape,
+  where the person writing the spec is. `lint_spec.py` does not change: `HEADING` is
+  `^##\s+`, so the `###` groups are invisible to it and to `scan_specs.py`, which counts
+  tasks by their checkbox.
+
+## 3.5.0 (2026-09-02)
+
+**The spec's frontmatter drops `review:`.** 3.3.0 wrote the two lenses' verdict into the
+spec as a field and had `lint_spec.py` fire `E006` on a spec that closed without one. That
+verdict is about the run that produced the spec, not about the document a later session
+opens, so on disk it outlived what earned it: a value a reader takes as a fact about the
+file, a `not-run` nobody can act on any more, and a landed spec that has to restate it
+every time it is rewritten. What the lenses find still reaches the person who can act on
+it, in the line that opens the gate, and step 6 itself is unchanged: both lenses, one
+message, the findings folded back into the loop.
+
+**And step 6 becomes unconditional, which is where the guarantee moves.** The field made a
+skipped review visible after the fact, in CI, on a document already written. The step now
+runs on every spec and on every pass that reaches the gate, the size no longer an
+exemption and a reopened spec no exception: resolving an item from `## Open`, folding in a
+late answer, revising a landed decision, all of them send the spec back through the two
+lenses before any build option is offered. They read it as it stands, so a spec changed
+since the last pass counts as unread. The cost is real and it is the point: a reopen pays
+two agents to look for the hole the author cannot see.
+
+**A question carries what it takes to decide.** `AskUserQuestion` renders a dialog, and
+whoever answers is reading that and not the transcript above it. So the context travels
+inside the call: the `question` names what is being decided and why it is open, and each
+option's `description` says what that pick does next and what it costs. The test is
+whether the answer would change depending on something the caller knew and did not write
+down.
+
+### Changed
+
+- **`review:` is out of the block** in `references/spec-state.md`, which now says where the
+  verdict goes instead, and out of `/bb:spec`'s finalize (2.6.0). `E006` and its
+  `status: done` exemption go with it, so `lint_spec.py` reads the document's own bytes
+  again and nothing else. `.bb/spec-reviewer/spec.md` drops the key it carried; its body
+  stays as the record of the release that added it.
+- **`/bb:spec`'s step 6 loses its two escapes**, the `Medium-and-up` size gate and the
+  first pass. "Always required" at the top of the skill names the check alongside the
+  alignment and the behavior map, the gate's verdict line drops its `(Medium+)`, and
+  `references/draft-first.md` says the same in the playbook's own words.
+- **`references/handoff-gate.md`** states the context rule for every question, gates
+  included, next to the reason the tool is used at all. It also names where the substance
+  cannot go: the `label` is a name of one to five words and the `header` a chip of twelve
+  characters.
+- **`hooks/operating-context.md`** carries the same rule in one clause, so a session that
+  reads only the frame it publishes still gets it.
+
+## 3.4.0 (2026-08-31)
+
+**The plugin's own directory is resolved once, by the hook, and published to the
+session.** 3.2.0 taught one reference to search for the root in shell. Every other
+document in the bundle had the same hazard and no such rule, so the answer moved to the
+one process that already knows it.
+
+### Changed
+
+- **`hooks/sync_instructions.py` publishes the root.** It resolves the directory it is
+  running from, proves it with `.claude-plugin/plugin.json`, and emits one line of
+  `additionalContext` naming it. An interpreter that read the hook can open the directory
+  the hook sits in, so the published path is proven openable by the fact that the hook ran
+  at all, which is the guarantee `python3 <root>/scripts/x.py` needs and the per-session
+  copy under `AppData\Roaming` does not carry on Windows. The line goes out on all three
+  of the hook's paths, the `custom_instructions: false` opt out included: where the plugin
+  sits is a fact about the install, not part of the frame anyone declined.
+- **Every document writes `<plugin-root>` and substitutes that line.** Nineteen skill and
+  reference documents, the repo's own `.claude/CLAUDE.md`, and `BB005` in
+  `CODE_REVIEW_GUIDE.md`. A skill body's `${CLAUDE_PLUGIN_ROOT}` was expanded by the
+  platform into the per-session copy, which `cat` opens and `python3` does not; a
+  reference's arrived raw and empty. Both now name the same proven directory.
+- **`references/build-tasks-workflow.md` drops its shell resolver.** The eight lines that
+  searched `$CLAUDE_PLUGIN_ROOT`, the install cache and the repo checkout become one `cat`
+  that proves the file under the published root. `sort -Vr` went with them, which was a
+  GNU extension the BSD `sort` on macOS answers with `invalid option`.
+
+`${CLAUDE_PLUGIN_ROOT}` stays in `hooks/hooks.json`, where the platform composes the
+command, and in `hooks/check_version.py`, which reads it from a hook's own environment.
+Those are the two places a process really gets it.
+
+## 3.3.0 (2026-08-27)
+
+**The spec's independent reviewer becomes an agent, gains a second lens, and leaves a
+record the CI can read.** Step 6 of `/bb:spec` spawned a reviewer through the generic
+Agent tool with its mandate written inline, and that tool takes no per-call `tools:` list.
+So the one agent in the bundle whose whole job is to report inherited `Write` and `Edit`
+while being told to find what is missing in a document it can reach, which is the shape
+that fixes a spec instead of reporting it, past the alignment the user was about to give.
+As `plugins/bb/agents/bb-spec-reviewer.md` it carries `Read`, `Grep` and `Glob` and
+nothing else, and CI has been failing a bb agent that lists a write tool since the review
+agents landed.
+
+**Two lenses, one definition, dispatched together.** The coherence lens gets the spec's
+text and nothing else, so it reads the way a builder with no memory of the conversation
+reads. The grounding lens gets the repo and checks only what the spec claims about
+existing code: a symbol named in `## Decisions` that does not exist, a signature stated
+differently from the real one, a file a task names that is not there, something the repo
+already does that the spec is about to rebuild. They run in one message, because gating
+the expensive one on the cheap one coming back empty would skip it exactly on the spec
+already showing signs of being sloppy. What varies between the two is prompt content the
+caller assembles, the same split `bb-review-finder` uses across fronts.
+
+**And the step stops being a promise in prose.** The verdict lands in the spec's own
+frontmatter as `review:`, `clean` / `resolved` / `not-run`, and `lint_spec.py` fires
+`E006` on a spec that closes without one, so a skipped review goes red in CI instead of
+passing unnoticed. What that guarantees is the record and not the run, since a value can
+be written by hand; the gate is what runs the lenses. The 15 specs that landed before the
+field are grandfathered: `E006` stays silent when `status: done` and the key is absent
+entirely, and every new spec is linted while it is still `pending`, before implement flips
+it, so none of them reaches the exemption.
+
+### Changed
+
+- **`bb-spec-reviewer`** is the third read-only agent, and the first with no `Bash`, so
+  its surface is closed and not merely narrowed. It owns the contract and the finding
+  shape (`section | what | why it matters`, sharpest first, capped at 8 rows); the caller
+  writes which lens this one is.
+- **`/bb:spec`** (2.5.0) dispatches both lenses at step 6 and names them separately in the
+  gate's verdict line. A grounding finding that invalidates a `## Decisions` bullet or a
+  file a task names becomes an item in `## Open`, which the gate already blocks on, so
+  there is no new gate state. One lens dying leaves the other's verdict standing.
+- **`review:` joins the spec's frontmatter block**, documented in `spec-state.md` without
+  an inline comment: `check_frontmatter` reads the whole string after the first `:`, so a
+  block copied with its comment attached would fire on a spec that is fine.
+- **`E006`** is the one lint code that reaches past the document's own bytes. Its message
+  names what was skipped, and an invalid value fires even on a `done` spec, because that
+  is a typo and not a legacy file.
+
+## 3.2.0 (2026-08-27)
+
+**`/bb:implement` dispatches its build workflow again.** Two things were stopping it, and
+either one alone was enough.
+
+### Fixed
+
+- **The probe that proves `build-tasks.js` ran against `/`.** `references/build-tasks-workflow.md`
+  is a reference read on demand, and a `Read` is a file read: `${CLAUDE_PLUGIN_ROOT}` arrives
+  raw and empty there, so `cat "$CLAUDE_PLUGIN_ROOT/workflows/build-tasks.js"` exited 1 and the
+  skill read that as the workflow declining, which is the last step of its own fallback chain.
+  The reference resolves the root before it proves the file: `$CLAUDE_PLUGIN_ROOT` when it is
+  non-empty, then the install cache (`~/.claude/plugins/cache/*/bb/*`, highest version first),
+  then the repo checkout, with a readable `workflows/build-tasks.js` as the proof a directory
+  is the root.
+- **`.gitattributes` pins the repo to `eol=lf`.** The marketplace clone runs with
+  `core.autocrlf = true` and was handing the install cache a CRLF `build-tasks.js`. `Workflow`
+  inlines a `scriptPath` into the approval dialog as `script` and refuses the CR as a control
+  character that would be hidden there, so the file dispatched neither by path nor inline.
+
+`${CLAUDE_PLUGIN_ROOT}` stays where it already opens something: `hooks/hooks.json`, where the
+platform puts it in the hook process's environment, and the skill bodies, which the platform
+expands when it composes them.
+
+## 3.1.0 (2026-08-27)
+
+**A review has two levels, reads what was already said, and adds only what is new.** The
+bundle ranked findings on five ladders at once: the guide's `HIGH` / `MEDIUM` / `LOW`,
+`front-rules.md`'s "MEDIUM unless the rule states the stakes", `front-contract.md`'s "HIGH
+for a missing happy path", `front-a11y.md`'s WCAG `Critical` / `Major` / `Minor` /
+`Enhancement`, and `verify.md` §4's four tier rank. Nothing combined them, so one finding
+came out of two fronts under two names, and the middle rung is where a reader stops
+deciding: `MEDIUM` meant "worth saying" in one file and "almost blocking" in the next.
+
+Two levels now, defined once in the plugin-root `references/finding-levels.md`. A review
+reports them as **Bloqueante** and **Sugestão**; a `CODE_REVIEW_GUIDE.md` states the same
+two as `HIGH` and `LOW`, the field every guide in the org already carries, so a guide
+written before this release reads correctly with no migration. Only the middle rung went,
+and the a11y front keeps WCAG's four priorities internally, mapping `Critical` and `Major`
+to Bloqueante and `Minor` and `Enhancement` to Sugestão at the report boundary. The finer
+cut a review really needs is taken by a bar it already measured: a Sugestão that names a
+concrete cost earns an inline comment, one that cannot goes into a single aggregated line
+in the review body.
+
+**The review also stops reading the diff in a vacuum.** Step 0 reads the PR body and the
+whole prior conversation before any finder runs, and writes an intent block that rides in
+every finder's scope: what the change set out to do, what a comment already settled, what is
+still open. From there the run is additive. An item someone already made is marked
+`[já dito]` in the report and is not posted again, and a thread the current code satisfies
+is replied to and resolved, which is a pass of its own now, outside curation.
+
+### Changed
+
+- **`/bb:review`** (2.7.0) gains the intent read at step 0 and the thread resolution as
+  step 6, reports in three tiers with a `level` column, and counts what it suppressed. The
+  external PR and the surface scope accessibility audit skip the intent read: each one
+  resolves its own context.
+- **`/bb:review-setup`** writes every rule at `HIGH` or `LOW`, and on the next update
+  collapses a rule still ranked `MEDIUM` with no interview, because that collapse is
+  deterministic. A rule already at one of the two levels keeps its text byte-identical.
+- **`CODE_REVIEW_GUIDE.md`** in this repo is migrated: 32 rules, every one at `HIGH` or
+  `LOW`, so the repo that ships the generator carries no `MEDIUM` rule of its own.
+- **`gather_context.py`** returns `pr_body`, the open PR's description, so the reader that
+  judges the diff against its intent gets it from the same payload as the diff.
+- **A guide that still ranks a rule `MEDIUM`** blocks nothing: the rung collapses at read
+  time to a Sugestão, and the report carries one drift line with the rule count and
+  `/bb:review-setup`.
+
+## 3.0.0 (2026-08-27)
+
+**One verb builds a spec, and how far the run goes is asked once.** `/bb:delegate` never
+had a build loop. Its step 3 said "follow `/bb:implement`'s workflow, steps 1 to 7, then
+return here", so what the second verb owned was three bullets: a spec selection rule, the
+`status` lifecycle, and chaining into `/bb:ship` without asking. The other hundred lines
+were implement's, re-narrated well enough to drift, and five files carried the split:
+`build-tasks-workflow.md` explained which of the two goes where after the return,
+`handoff-gate.md` opened a named exception to "never auto-invoke", `operating-context.md`
+carried that exception into everyone's `~/.claude/BUILDER-BUNDLE.md`, and `spec-state.md`
+assigned the lifecycle to a skill that only borrowed the build.
+
+So delegate goes and implement asks instead. One question at the start settles what the run
+covers: build, build and review, build and ship, or all three. The invocation decides which
+option leads, and one keystroke confirms it. That question also makes reachable a capability
+the bundle never had, reviewing the change **before** it ships instead of after: the fixes
+land in the same set of commits the tasks produced, and the PR opens from code that was
+already read.
+
+**The partial reversal of `no-opt-out`.** 2.16.0 deleted a question from the start of
+implement and stated its success as reaching the build with nothing asked. This puts a
+question back in that spot, and it is a different one. What went was **how to build**, which
+had one right answer and was asked anyway. What returns is **how far this run goes**, which
+has no default the skill can derive. The build itself still reaches the workflow with
+nothing asked.
+
+### Breaking
+
+- **`/bb:delegate` is deleted**, skill folder and all, with no stub and no alias.
+  `/bb:delegate <slug>` becomes `/bb:implement <slug>`, picking **build and ship** (or
+  **build, review and ship**) at the scope question, which is one keystroke when the
+  invocation reads as "run everything". Anything that invokes delegate by name, a saved
+  routine, a scheduled task, a project's own `CLAUDE.md`, has to be updated to say
+  implement.
+- **`/bb:ship` is terminal.** Its step 4, the post-landing offer to review, is gone for the
+  chained run and for ship on its own: it reports what shipped and stops. The review that
+  used to sit there now runs before the ship, inside implement's scope. To review after a
+  landing, invoke `/bb:review` yourself.
+
+### Changed
+
+- **`/bb:implement`** (3.0.0) is 14 steps: it selects the spec off `scan_specs.py`, settles
+  the scope, flips `status: in-progress`, builds through `workflows/build-tasks.js` as
+  before, then runs whatever the scope has next. It owns the whole `status` lifecycle now,
+  `in-progress` on opening, `blocked` on any stop with the blocker written into the spec's
+  own `## Open`, and `done` right after the PR is open and its checks are handled, since the
+  PR path ends resident and a flip that waited for ship to return would never happen.
+- **The chained review runs at standard depth over every available front**, with no fronts
+  question. It applies every CONFIRMED finding and reports every PLAUSIBLE one, and reports
+  both sets before the ship starts. `threads` and `ci` drop out on their own, because the
+  availability probe finds no PR yet. A deep review stays `/bb:review deep`, invoked
+  separately.
+- **`/bb:spec`** (2.4.0) closes at a four-way gate, Build, Build and ship, Build review and
+  ship, Stop here, and the pick **is** implement's scope answer, so implement doesn't ask it
+  again.
+- **`/bb:ship`** (4.0.0) renames its `references/land-*.md` to `ship-*.md`, and every text
+  this change writes calls the action **ship**. Both words were in the repo for one action,
+  which is the case `doc-style.md`'s one-name-per-thing rule exists to prevent. Where land
+  means arrive, a comment landing on a PR, it stays.
+- **`references/handoff-gate.md`**'s auto-invoke exception is no longer a skill, it's a
+  chain the user authorized up front. Ship joins the skills with no gate, and the journey
+  map loses the `ship → review` edge.
+- **`references/spec-state.md`** and **`references/build-tasks-workflow.md`** name implement
+  where they named delegate, and `scan_specs.py` plus `preflight.py` say so in their own
+  docstring and comment. Neither script changes shape.
 
 ## 2.19.0 (2026-08-25)
 

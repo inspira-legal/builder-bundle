@@ -1,11 +1,15 @@
+// The platform reads this before the script runs, so it is a literal and the same on every
+// run. Declaring no `phases` is what frees `phase()` to take a title computed from the spec:
+// a call with no matching entry gets a progress group of its own.
 export const meta = {
   name: "build-tasks",
   description: "Builds a bb spec one agent per task, after proving the ground",
-  phases: [
-    { title: "Ground", detail: "reuse notes and the project's checks, once" },
-    { title: "Build", detail: "one agent per task, sequential, one working tree" },
-  ],
 };
+
+// Stage zero belongs to the script and not to any task, so its title is fixed. The one the
+// spec did not name is the group a task before the first `###` heading joins.
+const GROUND_PHASE = "Ground";
+const IMPLICIT_PHASE = "Build";
 
 // A check that failed and then passed on a re-run with no file changed in between is
 // the whole definition of a flake here. Nothing else earns a retry.
@@ -14,15 +18,37 @@ const RETRY_CAP = 3;
 // Past this many characters the agent condenses its oldest entries itself.
 const NOTE_CEILING = 1500;
 
+// Cost is bought with the model and capability is kept with `effort`, so the two dials move
+// together and only one of them is about price. A tier that cut the reasoning of the case that
+// needs it would be saving money on the answer instead of on the lookup.
+const CHEAP_MODEL = "haiku";
+
+// A name the platform does not know takes down the dispatch, and every one of these arrives from
+// a caller that read a spec, so the set is checked here rather than trusted.
+const KNOWN_MODELS = ["haiku", "sonnet", "opus"];
+
 const MANIFESTO_REF = "plugin-level references/consult-manifesto.md";
 
-const REUSE_VERDICT = {
+// One agent answers every note, so the shape is an array and `index` is what pairs an
+// answer back to the note it answers. The index set is what the script checks: an agent that
+// dropped a note would otherwise leave that note reading as `intact`.
+const REUSE_VERDICTS = {
   type: "object",
-  required: ["verdict", "note"],
+  required: ["verdicts"],
   properties: {
-    verdict: { type: "string", enum: ["intact", "moved", "gone"] },
-    note: { type: "string" },
-    where: { type: "string", description: "the new path, when moved" },
+    verdicts: {
+      type: "array",
+      items: {
+        type: "object",
+        required: ["index", "verdict", "note"],
+        properties: {
+          index: { type: "number", description: "the note this answers, numbered as sent" },
+          verdict: { type: "string", enum: ["intact", "moved", "gone"] },
+          note: { type: "string" },
+          where: { type: "string", description: "the new path, required when moved" },
+        },
+      },
+    },
   },
 };
 
@@ -57,15 +83,18 @@ const TASK_RESULT = {
   },
 };
 
-function reusePrompt(note) {
-  return `A spec's reuse note says the build should extend existing code. Find out whether it still exists.
+// The role and the whole read protocol belong to `agents/bb-reuse-check.md`, which the
+// harness delivers as the system prompt. What is left here is what only the caller has: the
+// notes and their numbering.
+function reusePrompt(notes) {
+  const numbered = notes.map((note, i) => `${i}. ${note}`).join("\n");
+  return `A spec's reuse notes say the build should extend code that already exists. Find out whether each one still does.
 
-The note: ${note}
+The notes, numbered by the index your answer carries:
 
-Read the repo. Return "intact" if the code the note names is where it says, "moved" with
-the path you found in "where" when it exists elsewhere, and "gone" when nothing in the repo
-answers to it any more. Do not edit anything. A near-match under a different name is
-"moved", not "gone"; only nothing at all is "gone".`;
+${numbered}
+
+Answer every note, one entry per index, and do not edit anything.`;
 }
 
 // `scripts/resolve_checks.py` walks the authority chain before the dispatch, so this agent
@@ -165,11 +194,93 @@ the tree as it is for diagnosis and return the blocker. A \`verify:\` still "pen
 green task: it commits, and the pending rides out to ship.`;
 }
 
+// `meta` is a literal, so the card's name and description read the same for every spec. The
+// slug is the only identification left, and prose is how it reads like a title instead of a
+// path fragment: `build-phases-and-cost` becomes `Build phases and cost`.
+function asProse(slug) {
+  const words = slug.split("-").join(" ");
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
+function counted(n, noun) {
+  return `${n} ${noun}${n === 1 ? "" : "s"}`;
+}
+
+// The platform rejects with an `Error`, but a thunk may reject with a plain value, and a blocker
+// that reads `[object Object]` names nothing. The string form is the floor: at worst it repeats
+// what the run's own `<failures>` already says.
+function messageOf(err) {
+  return (err && err.message) || String(err);
+}
+
+// The checks agent has two jobs behind one label, and only one of them is mechanical. Confirming
+// a list `resolve_checks.py` already produced and running it reads a payload and executes it.
+// Walking the authority chain with no list at all, opening the files the `unresolved` leads name
+// to decide whether each one is a check, and confirming the rest of a truncated list from its own
+// source are the judgments the resolver could not make, and that one keeps the session's tier.
+function checksTier(resolved) {
+  const mechanical =
+    resolved &&
+    resolved.commands &&
+    resolved.commands.length &&
+    !resolved.truncated &&
+    !(resolved.unresolved && resolved.unresolved.length);
+  return mechanical ? { model: CHEAP_MODEL, effort: "low" } : {};
+}
+
+// How hard a task is, is what only the reader of the spec knows, so it travels in the payload
+// instead of being guessed from the task's own line here. Nothing is returned when the payload
+// says nothing: an absent key is what makes an agent inherit the session's model, and passing
+// `model: null` is not the same thing.
+function taskTier(t) {
+  return t.model && KNOWN_MODELS.includes(t.model) ? { model: t.model } : {};
+}
+
+// `args.phases` names its members by `n`, so a task travels once in the payload and the walk
+// keeps the spec's document order. Two things the caller cannot promise are settled here: a
+// task no group claims sat before the first `###` heading, so it runs first under the
+// fallback title, and a group whose every task was already ticked is dropped, because
+// `phase()` fires as its group is entered and a header over nothing lies about the run.
+function phaseGroups(tasks, phases) {
+  if (!phases || !phases.length) return tasks.length ? [{ title: IMPLICIT_PHASE, tasks }] : [];
+
+  const named = phases.map((p) => ({
+    title: p.title,
+    tasks: tasks.filter((t) => (p.tasks || []).includes(t.n)),
+  }));
+  const claimed = named.flatMap((g) => g.tasks.map((t) => t.n));
+  const loose = tasks.filter((t) => !claimed.includes(t.n));
+
+  return (loose.length ? [{ title: IMPLICIT_PHASE, tasks: loose }] : []).concat(
+    named.filter((g) => g.tasks.length),
+  );
+}
+
+const taskList = args.tasks || [];
+// The count is the groups that will actually announce, not the ones the payload declares: on
+// a resumed run a `###` group can arrive with no unticked task left in it.
+const groups = phaseGroups(taskList, args.phases);
+
+log(
+  `${asProse(args.slug || "the spec")} · ${counted(taskList.length, "task")}, ${counted(groups.length, "phase")}`,
+);
+
+// Every name is read before stage zero and not at the call that uses it: a typo reaching the
+// platform would take down a run that had already proved its ground, and a whole stage zero is
+// what it would waste. Dropped rather than fatal, and said out loud, because a silent fallback
+// to the session's model reads as the tier the caller asked for.
+const unknownTier = taskList.filter((t) => t.model && !KNOWN_MODELS.includes(t.model));
+if (unknownTier.length) {
+  log(
+    `${counted(unknownTier.length, "task")} asked for a model this script does not know (${unknownTier.map((t) => `${t.n}: ${t.model}`).join(", ")}); the session's model is used instead`,
+  );
+}
+
 // Nothing unticked is nothing to build, and stage zero exists to prove the ground before
 // task 1: with no task 1 it would run the project's checks and re-read every reuse note for
 // a build that never happens. The skill checks this before invoking; the script holds the
 // line for a caller that did not.
-if (!args.tasks || args.tasks.length === 0) {
+if (!taskList.length) {
   return {
     slug: args.slug,
     built: [],
@@ -180,7 +291,7 @@ if (!args.tasks || args.tasks.length === 0) {
   };
 }
 
-phase("Ground");
+phase(GROUND_PHASE);
 
 const reuseNotes = args.reuseNotes || [];
 const resolved = args.checks || null;
@@ -191,30 +302,64 @@ const resolved = args.checks || null;
 // instead of over the code.
 const runChecks = !resolved || resolved.runnable !== false;
 
+// The tier is read before the fan-out so the run can say which of the checks agent's two jobs
+// this payload gave it. Silent, the expensive branch reads as the cheap one.
+const groundTier = checksTier(resolved);
+if (runChecks && !groundTier.model) {
+  log(
+    "the check list needs judgment the resolver could not make; that agent keeps the session's model",
+  );
+}
+
+// A dispatch that never happened and an agent that ran and answered nothing reach the code below
+// the same way, as an empty slot, and only the platform's message tells them apart. Each thunk
+// records its own cause on the way past, so the stop can name it.
+const dispatchError = { reuse: "", checks: "" };
+
+// Two thunks at most, and the reuse one carries every note: a subagent's context floor is
+// paid per agent and re-read on every turn it takes, so eight notes over eight agents pay
+// that floor eight times for eight lookups of three tool calls each.
 const ground = await parallel([
-  ...reuseNotes.map(
-    (note) => () =>
-      agent(reusePrompt(note), {
-        label: `reuse: ${note.slice(0, 40)}`,
-        phase: "Ground",
-        schema: REUSE_VERDICT,
-        effort: "low",
-      }),
-  ),
+  ...(reuseNotes.length
+    ? [
+        () =>
+          agent(reusePrompt(reuseNotes), {
+            label: `reuse: ${counted(reuseNotes.length, "note")}`,
+            phase: GROUND_PHASE,
+            agentType: "bb:bb-reuse-check",
+            schema: REUSE_VERDICTS,
+            // `Grep` on a symbol and a verdict per note is the whole job, and the schema is
+            // what shapes the answer, so nothing here is bought by a stronger model.
+            effort: "low",
+            model: CHEAP_MODEL,
+          }).catch((err) => {
+            dispatchError.reuse = messageOf(err);
+            log(`the reuse agent could not run: ${dispatchError.reuse}`);
+            // Re-thrown rather than swallowed: the slot stays empty, `parallel()` still reports
+            // the failure, and the script runs on to build the stop out of what was recorded.
+            throw err;
+          }),
+      ]
+    : []),
   ...(runChecks
     ? [
         () =>
           agent(checksPrompt(resolved), {
             label: "checks: confirm and run",
-            phase: "Ground",
+            phase: GROUND_PHASE,
             schema: CHECKS_RESULT,
-            effort: "low",
+            ...groundTier,
+          }).catch((err) => {
+            dispatchError.checks = messageOf(err);
+            log(`the checks agent could not run: ${dispatchError.checks}`);
+            throw err;
           }),
       ]
     : []),
 ]);
 
-const verdicts = ground.slice(0, reuseNotes.length);
+const reuseResult = reuseNotes.length ? ground[0] : null;
+const verdicts = (reuseResult && reuseResult.verdicts) || [];
 
 // With no agent sent, the baseline is the policy itself, and `commands` is empty because an
 // empty list is what the task agents may execute here.
@@ -225,13 +370,56 @@ if (!runChecks) {
   );
 }
 
-// A lost stage-zero agent is a stop of its own: proceeding would build on ground nobody proved.
+// The index set is what proves coverage, and the count is not: an answer that repeats one
+// index and drops another has the right length, and the dropped note never reaches the
+// filters below, which read the answers and cannot look for one that is missing. So it would
+// read as `intact` and the build would extend code nobody looked for.
+const answered = new Set(verdicts.map((v) => v.index));
+const unanswered = reuseNotes.map((_, i) => i).filter((i) => !answered.has(i));
+const stray = verdicts.filter((v) => !(v.index >= 0 && v.index < reuseNotes.length));
+
+// `moved` is the one verdict that carries a path, and a schema cannot make a field required
+// on a single enum value. Unchecked, a missing `where` renders as the literal `undefined` in
+// the convention note every task agent then reads.
+const placeless = verdicts.filter((v) => v.verdict === "moved" && !v.where);
+
+// A lost stage-zero agent is a stop of its own: proceeding would build on ground nobody
+// proved. A malformed answer is the same stop.
 let stopped = null;
-const lost = verdicts.filter((v) => !v).length;
-if (lost) {
-  stopped = { n: 0, status: "red", blocker: `${lost} reuse-note agent(s) returned nothing` };
+if (reuseNotes.length && !reuseResult) {
+  stopped = {
+    n: 0,
+    status: "red",
+    blocker: dispatchError.reuse
+      ? `the reuse agent could not run: ${dispatchError.reuse}`
+      : "the reuse agent returned nothing",
+  };
+} else if (unanswered.length) {
+  stopped = {
+    n: 0,
+    status: "red",
+    blocker: `${counted(unanswered.length, "reuse note")} of ${reuseNotes.length} went unanswered (${unanswered.join(", ")}); stage zero proved nothing`,
+  };
+} else if (stray.length) {
+  stopped = {
+    n: 0,
+    status: "red",
+    blocker: `the reuse agent returned ${counted(stray.length, "verdict")} against an index no note carries; stage zero proved nothing`,
+  };
+} else if (placeless.length) {
+  stopped = {
+    n: 0,
+    status: "red",
+    blocker: `a reuse target moved with no path to it: ${placeless.map((v) => v.note).join("; ")}`,
+  };
 } else if (!checks) {
-  stopped = { n: 0, status: "red", blocker: "the checks agent returned nothing" };
+  stopped = {
+    n: 0,
+    status: "red",
+    blocker: dispatchError.checks
+      ? `the checks agent could not run: ${dispatchError.checks}`
+      : "the checks agent returned nothing",
+  };
 }
 
 let conventions = "";
@@ -274,45 +462,52 @@ const skipped = [];
 const pendingVerify = [];
 
 if (!stopped) {
-  phase("Build");
-  for (const t of args.tasks) {
-    const r = await agent(taskPrompt(t, conventions, checks.commands, args.specPath), {
-      label: `task ${t.n}: ${t.title}`,
-      phase: "Build",
-      schema: TASK_RESULT,
-    });
-    // A null return carries no blocker of its own, so the script writes one: assigning it
-    // straight to `stopped` would read to the caller as a clean run over a half-built spec.
-    if (!r) {
-      stopped = { n: t.n, status: "red", blocker: "lost agent (null return)" };
-      break;
-    }
-    if (r.status === "skipped") {
-      skipped.push(r.n);
-      continue;
-    }
-    if (r.status !== "green") {
-      stopped = r;
-      break;
-    }
-    // A task whose `verify:` did not run is not done, so green over a missing or failed
-    // verify is a contradiction the caller cannot see: `built` would name the task and
-    // ship would read it as proven.
-    const proven = r.verify && (r.verify.result === "passed" || r.verify.result === "pending");
-    if (!proven) {
-      stopped = {
-        n: r.n,
-        status: "red",
-        blocker: r.verify
-          ? `task ${r.n} returned green with verify ${r.verify.result}`
-          : `task ${r.n} returned green with no verify result`,
-      };
-      break;
-    }
+  for (const g of groups) {
+    phase(g.title);
+    for (const t of g.tasks) {
+      const r = await agent(taskPrompt(t, conventions, checks.commands, args.specPath), {
+        label: `task ${t.n}: ${t.title}`,
+        phase: g.title,
+        schema: TASK_RESULT,
+        ...taskTier(t),
+      });
+      // A null return carries no blocker of its own, so the script writes one: assigning it
+      // straight to `stopped` would read to the caller as a clean run over a half-built spec.
+      if (!r) {
+        stopped = { n: t.n, status: "red", blocker: "lost agent (null return)" };
+        break;
+      }
+      if (r.status === "skipped") {
+        skipped.push(r.n);
+        continue;
+      }
+      if (r.status !== "green") {
+        stopped = r;
+        break;
+      }
+      // A task whose `verify:` did not run is not done, so green over a missing or failed
+      // verify is a contradiction the caller cannot see: `built` would name the task and
+      // ship would read it as proven.
+      const proven = r.verify && (r.verify.result === "passed" || r.verify.result === "pending");
+      if (!proven) {
+        stopped = {
+          n: r.n,
+          status: "red",
+          blocker: r.verify
+            ? `task ${r.n} returned green with verify ${r.verify.result}`
+            : `task ${r.n} returned green with no verify result`,
+        };
+        break;
+      }
 
-    conventions = r.conventions;
-    if (r.verify.result === "pending") pendingVerify.push(r.n);
-    built.push(r.n);
+      conventions = r.conventions;
+      if (r.verify.result === "pending") pendingVerify.push(r.n);
+      built.push(r.n);
+    }
+    // A stop ends the run and not just its phase: the tasks share one working tree, so the
+    // next phase would build on ground the stop left half-made. The later phases are never
+    // announced either, because `phase()` fires as its group is entered.
+    if (stopped) break;
   }
 }
 

@@ -53,7 +53,7 @@ agents reading it five times.
 
 ## 2. One verifier per file, up to 4 agents
 
-Each verifier goes out as `subagent_type: "bb-review-verifier"`
+Each verifier goes out as `subagent_type: "bb:bb-review-verifier"`
 (`plugins/bb/agents/bb-review-verifier.md`), which owns the rubric: the three verdicts, the
 PLAUSIBLE default and what makes a REFUTED constructible from the code all live in
 that prompt, so both callers of this engine judge the same way without a second copy
@@ -114,15 +114,14 @@ sweep is a real answer.
 - **Dedupe by root cause**, across fronts: same defect, same reason → keep the
   entry with the most concrete failure scenario, and note the other locations on
   it (`[same cause also in: …]`).
-- **Rank**, most severe first:
-  1. CONFIRMED correctness bugs, HIGH rule deviations, **Critical** a11y failures
-     (something the diff shipped is unusable for someone)
-  2. PLAUSIBLE correctness bugs, missing happy-path contract rows, **Major** a11y,
-     **High** design and **High** instrumentation deviations
-  3. MEDIUM rule deviations, remaining contract findings, **Minor** a11y, **Medium**
-     design and **Medium** instrumentation
-  4. quality findings, a11y **Enhancement**s, **Low** design drift and **Low**
-     instrumentation drift (always last: a cleanup never outranks a bug)
+- **Rank**, most severe first. The level says how bad the finding is and the verdict
+  says how sure the reviewer is, two axes (plugin-root
+  `references/finding-levels.md`); this is where they combine, into three tiers:
+  1. **Bloqueante CONFIRMED**: a Bloqueante as `finding-levels.md` defines one, and the
+     verifier reproduced it
+  2. **Bloqueante PLAUSIBLE**: the same weight, one verdict short of proven
+  3. **Sugestão**, at either verdict, with the quality findings at the bottom of the
+     tier (a cleanup never outranks a bug)
 - **Cap** at the depth's report cap. Cuts come off the bottom, so quality is what
   gets trimmed, never a correctness bug. A front that states **no cap for its own
   scope** wins over a depth cap resolved from a diff. A surface-scope a11y audit

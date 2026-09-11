@@ -60,6 +60,13 @@ Exactly one priority per finding: **Critical** (blocks access entirely),
 **Enhancement** (better, not required). Cap 8 in diff scope; no cap in surface
 scope.
 
+Those four are WCAG's priorities, so they stay this front's vocabulary and this
+front's alone. At the **report boundary**, where the front's findings enter the
+unified report, each one also carries the level the rest of bb reads, per the
+plugin-root `references/finding-levels.md`: Critical and Major are **Bloqueante**,
+Minor and Enhancement are **Sugestão**. The priority stays in the finding row above;
+the level is what `verify.md` ranks by and what the report and the PR comments show.
+
 ## Scope discipline (diff scope)
 
 - Only elements the diff added or changed. Pre-existing a11y debt in a file the

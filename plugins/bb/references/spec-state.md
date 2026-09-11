@@ -3,7 +3,7 @@
 The single on-disk contract for a slug's durable artifacts. **Every skill writes its
 own document, and `spec.md` has exactly one writer.** `/bb:discover` writes
 `discovery.md`, `/bb:brisar` writes `design.md`, `/bb:spec` writes `spec.md`, and
-`/bb:implement`, `/bb:ship` and `/bb:delegate` read the spec. Any skill that reads or
+`/bb:implement` and `/bb:ship` read the spec. Any skill that reads or
 writes this state follows this file. The contract lives here and nowhere else.
 
 ## Location
@@ -85,19 +85,24 @@ slug: <kebab-slug> # matches the dir name
 - `done`: the implement→ship chain completed its landing.
 - `blocked`: implement's safety valve or ship hit an unrecoverable stop; needs a human.
 
-**`/bb:delegate` owns the `status` lifecycle**: it flips the value as it selects, runs
-and lands a spec. `spec` only writes the initial block (`status: pending`) on finalize.
-The `## Tasks` checkboxes inside the spec stay `implement`'s concern. A spec without the
+**Step 6's two lenses report at the gate, not in the block.** Their verdict is about the
+run that produced the spec, so it reaches the user in the line `/bb:spec` renders there
+and stops being state; a value on disk would outlive the run that earned it, and every
+later session would read it as a fact about the document.
+
+**`/bb:implement` owns the `status` lifecycle**: it flips the value as it selects, runs
+and lands a spec, and the `## Tasks` checkboxes inside the spec are the same skill's.
+`spec` only writes the initial block (`status: pending`) on finalize. A spec without the
 block is treated as `pending` with unknown `created` (sorted last in bare selection).
 
 **Selection is a script, not a scan the reader repeats.**
-`${CLAUDE_PLUGIN_ROOT}/scripts/scan_specs.py` resolves the `.bb/` root the way this file
+`<plugin-root>/scripts/scan_specs.py` resolves the `.bb/` root the way this file
 says to, parses every block, applies the rule above and prints the whole set plus the
 `selected` one; `preflight.py` imports its `scan()` so a review's probe reads the same
 answer. What stays prose here is the contract; what a caller runs is the script.
 
 **`discovery.md`** opens with the framing's block (the contract is
-`${CLAUDE_PLUGIN_ROOT}/skills/discover/SKILL.md`):
+`<plugin-root>/skills/discover/SKILL.md`):
 
 ```yaml
 ---
@@ -109,7 +114,7 @@ verdict: build-mvp | validate-first | pivot | persevere | shelve # omitted befor
 ```
 
 **`design.md`** opens with the journey's block (the contract is
-`${CLAUDE_PLUGIN_ROOT}/skills/brisar/references/brief.md`, which owns the full
+`<plugin-root>/skills/brisar/references/brief.md`, which owns the full
 `surfaces` shape):
 
 ```yaml
@@ -134,7 +139,7 @@ blockers: [<what has to be fixed before merge>]
 ```
 
 Those two `status` and `phase` values are their own document's, not the spec's.
-`/bb:delegate` selects on `spec.md`'s block and neither reads nor writes the records'. A
+`/bb:implement` selects on `spec.md`'s block and neither reads nor writes the records'. A
 `design.md` with no frontmatter reads as `phase: brief`, `round: 1`,
 `status: in-progress`.
 
@@ -150,4 +155,4 @@ and drafts the spec on top; `## Cuts` is also read from there by `/bb:review`'s 
 front, and `## Hypothesis` by spec's export mode. Those four names inside a `spec.md`
 are dead section names, and `scripts/lint_spec.py` fires `E003` on them pointing here.
 The spec's own format is
-`${CLAUDE_PLUGIN_ROOT}/skills/spec/references/spec-format.md`.
+`<plugin-root>/skills/spec/references/spec-format.md`.

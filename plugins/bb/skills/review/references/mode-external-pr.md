@@ -41,17 +41,23 @@ list is what `verify.md` canonicalizes paths against.
 ## 3. Verdict
 
 State a verdict with the reasoning: **APPROVE**, **COMMENT**, or
-**REQUEST_CHANGES**. When the repo's guide defines a verdict rule (e.g. any HIGH
-⇒ changes requested), follow it; otherwise: confirmed correctness bugs ⇒
-REQUEST_CHANGES; only quality smells ⇒ COMMENT.
+**REQUEST_CHANGES**, and read it off the levels (plugin-root
+`references/finding-levels.md`): **any Bloqueante ⇒ REQUEST_CHANGES**, **only
+Sugestões ⇒ COMMENT**. When the repo's guide defines a verdict rule of its own it
+decides instead, a three rung one through the collapse table, which lands on the same
+place: any Bloqueante requests changes.
 
 ## 4. Post (only with explicit confirmation)
 
 Show the full review body first and ask before posting. A posted review is
-outward-facing and carries the user's identity. If the PR already carries a review
-comment of the user's, dedupe against it exactly as in
-`act-comment-findings.md` §3. Still-open points as status lines, first-time findings
-in full. On yes:
+outward-facing and carries the user's identity. Dedupe against the whole
+conversation exactly as in `act-comment-findings.md` §3, whoever wrote each note:
+what was already said posts nothing, what was partly said posts only its new part,
+and the review body opens with the count it suppressed. `fetch_comments.py` only
+reads the current branch's PR, so the corpus here comes from
+`gh pr view <number> --repo <owner>/<repo> --json comments,reviews` plus
+`gh api repos/<owner>/<repo>/pulls/<number>/comments`, which is also where each
+note's link is. On yes:
 
 ```
 gh pr review <number> --repo <owner>/<repo> --comment|--approve|--request-changes --body-file -
@@ -59,5 +65,8 @@ gh pr review <number> --repo <owner>/<repo> --comment|--approve|--request-change
 
 Inline comments on specific lines go through
 `gh api repos/<owner>/<repo>/pulls/<number>/reviews` with a `comments[]` payload
-when the user wants them attached to the diff. If the user declines, leave the
+when the user wants them attached to the diff. What earns a place in that payload is
+the concrete-cost gate, then the anchor test, the same two in the same order as a local
+run (`act-comment-findings.md` §2): a Sugestão naming no cost is one aggregated line in
+the review body, and its line in the report is untouched. If the user declines, leave the
 review in the transcript and stop.

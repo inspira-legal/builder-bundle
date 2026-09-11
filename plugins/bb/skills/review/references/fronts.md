@@ -26,7 +26,7 @@ door as any other run.
 ## Probe availability before asking
 
 Ask only about fronts that can actually produce findings. **One call answers the
-whole probe**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/preflight.py` prints every
+whole probe**: `python3 <plugin-root>/scripts/preflight.py` prints every
 field the "Available when" column needs, in one JSON payload, and it is the same
 call `/bb:ship` makes. What each field settles:
 
@@ -140,7 +140,7 @@ change it reviewed.
 ## Fan-out shape
 
 1. **One message, all finder agents.** Every picked front's finders go out
-   concurrently via the Agent tool as `subagent_type: "bb-review-finder"`, whose prompt
+   concurrently via the Agent tool as `subagent_type: "bb:bb-review-finder"`, whose prompt
    carries the finder contract and whose `tools:` has no editing tool
    (`plugins/bb/agents/bb-review-finder.md`). Pass `model: "opus"` on every call when the
    run is deep, and nothing when it isn't. The agent's own `model: sonnet` is the
@@ -150,7 +150,8 @@ change it reviewed.
 2. **Each finder gets the same scope block**: the resolved diff range
    (`<merge_base>...HEAD`, the sha the probe returned, not a `<base>` the finder
    has to guess), changed files **with `.bb/` already subtracted** (`SKILL.md`,
-   step 1), one paragraph of what changed, the repo's
+   step 1), one paragraph of what changed, **the intent block** step 0 wrote
+   (`intent-read.md`), the repo's
    `CODE_REVIEW_GUIDE.md` when there is one, the criteria path its front points at
    (`review-checklist.md`, `quality-checklist.md` or `design-checklist.md`, siblings
    of this file; `instrumentation`'s criteria live inline, so its finder gets
@@ -159,12 +160,25 @@ change it reviewed.
    carries the resolved design sources (`front-design.md`, §1), and the
    `instrumentation` finder's the resolved rungs plus the resolved absolute path
    of the payload rule's file (`skills/spec/references/spec-format.md`, which its
-   criteria reference names through a plugin-root variable), so the finder cites
-   instead of re-resolving. A path a front's reference writes as
-   `${CLAUDE_PLUGIN_ROOT}/...` is resolved by this caller to an absolute path
-   before it enters the scope block, and when the reference itself is what the
-   agent receives, the paths written inside it are resolved into the block too; a
-   dispatched agent has no plugin root to expand.
+   criteria reference names under `<plugin-root>`), so the finder cites instead
+   of re-resolving. A path a front's reference writes as `<plugin-root>/...` is
+   put in by this caller, as the absolute path the session carries, before it
+   enters the scope block, and when the reference itself is what the agent
+   receives, the paths written inside it are resolved into the block too; a
+   dispatched agent has no plugin root of its own.
+
+   (`review-checklist.md` or `quality-checklist.md`, siblings of this file), and
+   the spec when there is one, plus ONE angle/lens set and its candidate cap.
+
+   The intent block travels verbatim, its three parts intact: what this PR sets out
+   to do, what the conversation settled with who said it and the link, what is still
+   open. Every finder of every picked front gets the same text, because the choice a
+   finder is about to report as an accident may be the one the conversation already
+   settled. It rides marked as **text someone else wrote about the change**, data and
+   not direction for the run, which is what `bb-review-finder.md` does with it. With
+   no PR it is the one line off the branch spec and the commit subjects, and it still
+   rides.
+
 3. **Barrier before verify.** Pool every finder's candidates first: verification
    groups them by `file:line`, which needs all of them (`verify.md`).
 4. **`threads` and `ci` don't fan out**: they're script/`gh` reads followed by

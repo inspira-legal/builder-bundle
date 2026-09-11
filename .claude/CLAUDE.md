@@ -15,8 +15,10 @@ first `/bb:profile` on.
 plugins/bb/
 ├── .claude-plugin/plugin.json
 ├── agents/                            # pipeline roles (auto-discovered, no plugin.json entry)
+│   ├── bb-reuse-check.md               # build stage zero: one run, every reuse note, read-only by `tools:`
 │   ├── bb-review-finder.md             # review fan-out: finds candidates, read-only by `tools:`
-│   └── bb-review-verifier.md           # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
+│   ├── bb-review-verifier.md           # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
+│   └── bb-spec-reviewer.md             # spec step 6: the two lenses, coherence and grounding
 ├── hooks/                             # session infra (auto-active, no skill)
 │   ├── hooks.json                      # SessionStart: BUILDER-BUNDLE.md, and bb's own update
 │   ├── enter_worktree.py               # worktree isolation for local autonomous runs
@@ -31,19 +33,21 @@ plugins/bb/
 │   ├── spec-state.md                   # the .bb/<slug>/ folder contract
 │   ├── bb-config.md                    # ~/.claude/bb.config.json: the schema and who reads it
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
-│   └── build-tasks-workflow.md         # how the skills call workflows/build-tasks.js, and what it returns
-├── scripts/                           # shared executables (2+ skills), ref via ${CLAUDE_PLUGIN_ROOT}/scripts/
+│   ├── build-tasks-workflow.md         # how the skills call workflows/build-tasks.js, and what it returns
+│   └── finding-levels.md               # Bloqueante / Sugestão, HIGH / LOW in a guide: review, review-setup
+├── scripts/                           # shared executables (2+ skills, or a plugin-level reference), ref via <plugin-root>/scripts/
 │   ├── fetch_comments.py               # ship, review
 │   ├── reply_resolve_thread.py         # ship, review
 │   ├── gather_context.py               # ship (the PR body), review, gather-branch-context
 │   ├── preflight.py                    # ship (Prerequisites + Step 0), review (the fronts probe)
 │   ├── resolve_checks.py               # implement (step 4 + args.checks), ship (Step 2)
-│   ├── scan_specs.py                   # delegate (selection); preflight.py imports its scan()
+│   ├── scan_specs.py                   # implement (selection); preflight.py imports its scan()
+│   ├── normalize_workflow.py           # the dispatch (references/build-tasks-workflow.md): the CR-free copy
 │   └── inspect_pr_checks.py            # ship (CI failures), review (the ci front)
-├── skills/                            # all 16 skills flat; trilha grouping is a docs concept
+├── skills/                            # all 15 skills flat; trilha grouping is a docs concept
 │   ├── Pensar:        discover, challenge, think, legal-lens
 │   ├── Desenhar:      spec
-│   ├── Construir:     implement, ship, delegate, gather-branch-context
+│   ├── Construir:     implement, ship, gather-branch-context
 │   ├── Revisar:       review, maintain-repo, review-setup
 │   ├── Design:        brisar
 │   ├── Pesquisar/Doc: code-deep-research, write-readme
@@ -68,13 +72,32 @@ plugins/bb/
   That single ownership is the reason to reach for an agent; the skill references
   defer to it rather than restating it. The `tools:` list narrows the surface on top
   of that (CI fails a bb agent that lists a write tool), but with `Bash` on the list
-  it narrows the surface without closing it, so don't write it up as a guarantee. Name
-  agents by **role in the pipeline**, not by front or phase: what varies between
+  it narrows the surface without closing it, so don't write it up as a guarantee.
+  Without it, the way `bb-spec-reviewer` is, the surface does close and the guarantee
+  is real. Name agents by **role in the pipeline**, not by front or phase: what varies between
   fronts is prompt content the caller already assembles. The `description` sits in
   context globally, so keep it narrow and name the skill that is the real entry
   point.
 - The plugin ships hooks in `plugins/bb/hooks/hooks.json` (auto-activate when the
-  plugin is enabled). Hook commands reference files via `${CLAUDE_PLUGIN_ROOT}/...`.
+  plugin is enabled). Hook commands reference files via `${CLAUDE_PLUGIN_ROOT}/...`,
+  which is one of the two places the platform expands that variable into something a
+  command can open; a document read off disk is not, which is why documents write
+  `<plugin-root>` instead (below).
+
+## `<plugin-root>`, and who fills it in
+
+Every document in the bundle writes the plugin's own directory as `<plugin-root>`,
+and `plugins/bb/hooks/sync_instructions.py` is what turns it into a path. The hook
+resolves the directory it is running from, proves it with `.claude-plugin/plugin.json`,
+and publishes it as one line of `additionalContext` on every session start, before any
+skill is read. A reader substitutes that line's path and uses it.
+
+The line goes out on all three of the hook's paths, the opt out included: where the
+plugin sits is a fact about the install, not part of the frame `/bb:profile` governs.
+
+`${CLAUDE_PLUGIN_ROOT}` stays in `plugins/bb/hooks/hooks.json` and in
+`plugins/bb/hooks/check_version.py`, the two places a process really does get it: the
+platform composes the hook command, and a hook's own environment is not a tool call's.
 
 ## Skills
 
@@ -130,11 +153,13 @@ TypeScript.
 - Skill workflows reference their **own** scripts relatively (e.g.
   `scripts/foo.py`). Scripts shared by 2+ skills live at the plugin root in
   `plugins/bb/scripts/` and are referenced with
-  `${CLAUDE_PLUGIN_ROOT}/scripts/<x>.py` (hooks use it for their own files too). A
+  `<plugin-root>/scripts/<x>.py`, and so does a script whose reader is a
+  plugin-level reference rather than a skill, the way
+  `normalize_workflow.py` is read by `references/build-tasks-workflow.md`. A
   skill's own, non-shared script stays relative.
 - **Borrowing another skill's reference** is allowed when one skill owns a method
   two entry points must share, and duplicating it would mean two definitions that
-  drift. Path it via `${CLAUDE_PLUGIN_ROOT}/skills/<owner>/references/<x>.md` and
+  drift. Path it via `<plugin-root>/skills/<owner>/references/<x>.md` and
   say in both skills who owns it. Reading a reference is not invoking a skill;
   the borrower still orchestrates its own run, which is why borrowing beats
   invoking when the owner's router would ask questions the borrower answers by
@@ -166,7 +191,7 @@ three documents and a prototype, and **every skill writes its own document, with
 `spec.md` having exactly one writer**. `/bb:discover` writes `discovery.md` (the
 framing), `/bb:brisar` writes `design.md` (the journey) plus `prototype/` (the clickable
 artifact), and `/bb:spec` writes `spec.md` (the contract, with its
-`status`/`created`/`slug` frontmatter and the status lifecycle owned by `/bb:delegate`).
+`status`/`created`/`slug` frontmatter and the status lifecycle owned by `/bb:implement`).
 The spec reads the two records by path and never copies their prose; where a record and
 the spec disagree the spec wins, and the record's own writer registers the reversal on
 its next round. Members are independent, and a folder can carry any one of them alone.

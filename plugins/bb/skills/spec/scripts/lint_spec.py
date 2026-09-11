@@ -2,9 +2,10 @@
 """Check the mechanical shape of a spec.
 
 Judgment (is it too long, does it repeat itself, is it recounting the conversation)
-belongs to the independent reviewer. This only catches what is decidable by reading
-the bytes: the required sections, dead names, frontmatter, malformed tables, and the
-Metric section's shape (provenance notes and event-row citations).
+belongs to the two `bb-spec-reviewer` lenses, which report at the spec's gate. This only
+catches what is decidable by reading the bytes: the required sections, dead names,
+frontmatter, malformed tables, and the Metric section's shape (provenance notes and
+event-row citations).
 
 Usage: lint_spec.py <path>...
 Output: `path:line CODE message` on stdout. Exit 1 when any E-code fired.

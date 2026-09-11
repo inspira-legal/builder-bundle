@@ -29,12 +29,21 @@ What this front adds is how to _hunt_ with them:
 # | file:line | smell | custo concreto | edit sugerido
 ```
 
+Every finding here is a **Sugestão**, the front being behavior-preserving: the
+plugin-root `references/finding-levels.md` maps it that way and this front assigns no
+level of its own.
+
 ## Failure scenario, for cleanup
 
 The `failure_scenario` field states the **concrete cost** instead of a crash:
 what exactly is duplicated (and where the existing helper is), what work is
 wasted per call, what a future editor has to keep in sync. "This could be more
 limpo" is not a cost.
+
+That column is also the **gate** `finding-levels.md` reads: a Sugestão naming a
+concrete cost can be posted as an inline comment, one that cannot goes into a single
+aggregated line in the review body. It still gets its full line in the report either
+way, so writing the cost is what decides whether GitHub sees the finding.
 
 ## Hold back when the cleanup hurts
 

@@ -54,9 +54,9 @@ to read.
   a finding citing the convention's source.
 - **Payload**: payload fields hold only what the payload rule allows. The rule's
   single home is the events-table paragraph of
-  `${CLAUDE_PLUGIN_ROOT}/skills/spec/references/spec-format.md` (spec's reference;
+  `<plugin-root>/skills/spec/references/spec-format.md` (spec's reference;
   read it there, this front cites it and never restates it). A dispatched finder
-  cannot expand that variable, so the caller resolves it into the scope block
+  has no plugin root of its own, so the caller puts the resolved path into the scope block
   beside the rungs (`fronts.md`, fan-out step 2). A field past the rule is a
   finding citing it.
 - **Channel**: events flow to the channel the plan names. An event routed to a sink
