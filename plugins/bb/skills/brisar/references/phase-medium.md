@@ -35,12 +35,12 @@ registry, when either exists:
 | **Pencil**        | `mcps.pencil` | Pencil MCP                                |
 
 Cap the list at four options (the question tool's limit). When more than four qualify,
-the survivors in order are **Code**, **Claude design**, the detected product's
-`medium_default` when it carries one, and then the person's own `design_tools`; the
-remaining canvas tools follow in registry order, and whatever falls off the end is
-mentioned in the intro line rather than dropped silently. A canvas tool neither lean
-names is the first to leave the list; the product's default is the last, because the
-strongest lean cannot recommend an option the trim already cut.
+the survivors in order are **Code**, **Claude design**, then what the two leans name,
+in the precedence Step 1 states below (strongest lean first); the remaining canvas
+tools follow in registry order, and whatever falls off the end is mentioned in the
+intro line rather than dropped silently. A canvas tool neither lean names is the first
+to leave the list; the strongest lean's pick is the last, because a lean cannot
+recommend an option the trim already cut.
 
 If `preflight.mcps.scope_read` is `global-only`, the check was partial: a project-scoped server
 may exist and be invisible. Say the check was partial instead of asserting a clean absence.
