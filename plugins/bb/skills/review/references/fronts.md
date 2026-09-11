@@ -55,8 +55,9 @@ call `/bb:ship` makes. What each field settles:
   `instrumentation`, when a ladder rung below resolves.
 - design source, resolved by the caller when `ui.hit` passed (preflight carries no
   field for it): a token source the project reads (a `tokens.json`, CSS custom
-  properties, a Tailwind theme config, a brisar prototype's `tokens*.css`), or the
-  branch's `.bb/<slug>/design.md` (or `design/`). One resolving makes `design`
+  properties, a Tailwind theme config, a brisar prototype's `tokens-brand.css` or
+  `styles.css`), or the branch's `.bb/<slug>/design.md` (or `design/`). One resolving
+  makes `design`
   available; the resolution order and what each rung is worth are `front-design.md`'s.
 - instrumentation ladder, resolved by the caller when the diff adds interactions or
   wires analytics (preflight carries no field for it either). Both signals are

@@ -22,8 +22,9 @@ resolves (they supplement each other):
 1. **A token source the project itself reads**: a `tokens.json`, a stylesheet of CSS
    custom properties, or a Tailwind theme config. The file the build consumes is the
    authority on what a token is; a brand package that nothing imports is not one. In
-   a brisar prototype that file is `.bb/<slug>/prototype/src/tokens-brand.css`, the
-   one token stylesheet the scaffold writes and `index.css` imports.
+   a brisar prototype that file is `.bb/<slug>/prototype/src/tokens-brand.css` on the
+   scaffolded variant, imported by `index.css`, and `.bb/<slug>/prototype/styles.css`
+   on the prototype-hosted one, whose `:root` carries the brand tokens.
 2. **The branch's visual direction**: `.bb/<slug>/design.md`, or `design/<surface>.md`
    plus its index, when the branch's spec folder carries one. It supplements the token
    source with the intended hierarchy, components, and states for the surfaces this
