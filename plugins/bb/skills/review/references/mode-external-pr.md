@@ -21,10 +21,12 @@ Fronts available here: `correctness`, `quality`, `rules` (only when the target r
 publishes a `CODE_REVIEW_GUIDE.md`, fetched above), `a11y` when the PR touches UI
 files, `design` when the PR touches UI files and a design source resolves in the
 fetched repo (`front-design.md`'s ladder, read through the same contents API), and
-`instrumentation` when the PR wires analytics and the project's convention resolves
-in the fetched repo (rung 2 of `front-instrumentation.md`'s ladder, same API; rung 1
-doesn't apply, there's no local spec): those three are static, so the fetched source
-is enough. `contract`, `threads`, and `ci`
+`instrumentation` when the PR wires analytics and a source resolves in the fetched
+repo: its `EVENTS.md` at the root (rung 2 of `front-instrumentation.md`'s ladder,
+fetched through the same contents API, saved to a scratch file and handed to
+`check_events.py --names - --convention <that file>` before the fan-out) or the
+project's convention in source (rung 3, same API); rung 1 doesn't apply, there's no
+local spec. Those three are static, so the fetched source is enough. `contract`, `threads`, and `ci`
 don't apply, there's no local spec, the threads aren't yours to resolve, and the CI
 isn't yours to fix. Ask which of the available fronts to run, same as local mode.
 

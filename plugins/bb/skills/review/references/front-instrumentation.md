@@ -33,7 +33,11 @@ Keep every rung that resolves; they answer different questions:
    absolute path to the finder in the scope block (`fronts.md`, the instrumentation
    ladder and the fan-out step 2); the finder cites those lines and the file's rows
    instead of re-running the checker. A repository with no `EVENTS.md` skips this
-   rung, and nothing else about the front changes.
+   rung, and nothing else about the front changes. A file that resolves but comes back
+   from the checker as `C001` alone is malformed (a part missing or written twice, a
+   table without its header): that rung did not resolve for this run, so the front
+   reports the `C001` line once, as a finding against the file itself, and reads naming
+   and payload from rung 3 below.
 3. **The analytics convention the project itself shows in source**: a typed event
    map, an emit wrapper, a generated client, whatever the code the diff touches
    already routes events through. This rung is the **convention inferred from
@@ -94,7 +98,8 @@ rung missing, say in the front's section which checks had no source to read.
 ```
 
 `source cited` is the citation the discipline demands: the events table row,
-`EVENTS.md`'s own row (or the checker's `path:line CODE` line reporting it), the
+`EVENTS.md`'s own row (or the checker's `path:line CODE` line reporting it, which in
+the review's names mode points at the `EVENTS.md` row or section that caught the name), the
 convention's file and line, or the payload rule's paragraph. Priorities are
 **High** (a payload or channel finding, the data duty the mandate protects),
 **Medium** (a planned event missing, or emitted off-plan), and **Low** (a name off
