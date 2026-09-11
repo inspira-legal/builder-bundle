@@ -40,6 +40,7 @@ plugins/bb/
 │   ├── preflight.py                    # ship (Prerequisites + Step 0), review (the fronts probe)
 │   ├── resolve_checks.py               # implement (step 4 + args.checks), ship (Step 2)
 │   ├── scan_specs.py                   # delegate (selection); preflight.py imports its scan()
+│   ├── check_events.py                 # spec (step 6), review (the instrumentation front): EVENTS.md checker
 │   └── inspect_pr_checks.py            # ship (CI failures), review (the ci front)
 ├── skills/                            # all 16 skills flat; trilha grouping is a docs concept
 │   ├── Pensar:        discover, challenge, think, legal-lens

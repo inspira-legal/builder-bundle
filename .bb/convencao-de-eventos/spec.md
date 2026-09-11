@@ -248,7 +248,7 @@ line 0, so the shape stays `path:line CODE message` for every reader.
       `legacy` mark and append duty, and who reads each part, named in `.claude/CLAUDE.md`'s
       structure tree and the README → behaviors 1, 2, 9 · dep: — · verify: reading; the
       sample file's parse is task 2's verify
-- [ ] **2. The checker**: `plugins/bb/scripts/check_events.py`, root resolution, parsing,
+- [x] **2. The checker**: `plugins/bb/scripts/check_events.py`, root resolution, parsing,
       the ten codes, the two input modes, the clean line, named in `.claude/CLAUDE.md`'s
       shared-scripts list → behaviors 1, 4, 7, 8 · dep: 1 ·
       verify: the reference's sample file parses without C001; run over a fixture pair (one
