@@ -73,8 +73,10 @@ NUMBERED_CELL = re.compile(r"^(\d+)[.)]?$")
 # do a `>` quote and a thematic break: CommonMark interrupts a paragraph there, so
 # the rendered document does not keep them inside the bullet. Anything else directly
 # under an open bullet is a wrapped or lazy continuation of it.
+# The three spellings of a thematic break, shared with BLOCK_START below.
+THEMATIC_BREAK = r"(?:-\s*){3,}$|(?:\*\s*){3,}$|(?:_\s*){3,}$"
 NEW_ITEM = re.compile(
-    r"^\s{0,3}(?:[-*+]\s|\d+[.)]\s|>|okr\s*:|skipped\s*:|(?:-\s*){3,}$|(?:\*\s*){3,}$|(?:_\s*){3,}$)",
+    r"^\s{0,3}(?:[-*+]\s|\d+[.)]\s|>|okr\s*:|skipped\s*:|" + THEMATIC_BREAK + r")",
     re.IGNORECASE,
 )
 # A citation cell is numbers, commas and ranges once parenthesized notes are stripped;
@@ -164,7 +166,7 @@ def cited_rows(cell):
 
 # A line that opens a block of its own at the list's indent closes the list, blank line
 # or not: a heading, a bullet (a change of list type), a blockquote, a thematic break.
-BLOCK_START = re.compile(r"^\s{0,3}(?:#{1,6}\s|[-*+]\s|>|(?:-\s*){3,}$|(?:\*\s*){3,}$|(?:_\s*){3,}$)")
+BLOCK_START = re.compile(r"^\s{0,3}(?:#{1,6}\s|[-*+]\s|>|" + THEMATIC_BREAK + r")")
 
 
 def behavior_runs(lines):
