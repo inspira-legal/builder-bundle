@@ -62,7 +62,11 @@ VALUE_SKIP = re.compile(r"\**skipped\**\s*:\s*\S", re.IGNORECASE)
 # skip replaces the whole section, so a `skipped:` arriving after other content is
 # a continuation or a sub-note, never the skip. check_body enforces that ordering.
 METRIC_SKIP = re.compile(r"^\s{0,3}(?:[-*+]\s+)?\**skipped\**\s*:\s*\S", re.IGNORECASE)
+# Two parenthesis patterns on purpose: a provenance note has to say something, so an
+# empty `()` is no provenance, while a citation cell sheds every note, empty ones
+# included, before it is judged (`cited_rows`, `check_citations`).
 PROVENANCE = re.compile(r"\([^)]+\)")
+PAREN_NOTE = re.compile(r"\([^)]*\)")
 BEHAVIOR_ROW = re.compile(r"^(\s*)(\d+)[.)]\s")
 NUMBERED_CELL = re.compile(r"^(\d+)[.)]?$")
 # A new list item, an `okr:` or a `skipped:` line closes the bullet above it, and so
@@ -75,7 +79,6 @@ NEW_ITEM = re.compile(
 )
 # A citation cell is numbers, commas and ranges once parenthesized notes are stripped;
 # anything else is prose naming an inline behavior, judged by the gate, not here.
-PAREN_NOTE = re.compile(r"\([^)]*\)")
 CITATION_CELL = re.compile(r"^[\d\s,;.–-]+$")
 CITED_RANGE = re.compile(r"(\d+)\s*[–-]\s*(\d+)")
 CITED_NUMBER = re.compile(r"\d+")
