@@ -63,14 +63,14 @@ this needs judgment, not a table cell.
 ## Prefix registry
 
 One namespace: a prefix is registered once, whatever feature it belongs to. The table
-places each prefix in the project's own hierarchy, header row `prefix`, `grupo`,
-`produto`, `feature`:
+places each prefix in the project's own hierarchy, header row `prefix`, `group`,
+`product`, `feature`:
 
-| prefix  | grupo     | produto | feature |
+| prefix  | group     | product | feature |
 | ------- | --------- | ------- | ------- |
 | `board` | Workspace | Orbit   | Boards  |
 
-The checker asks only whether a prefix is registered; the `grupo`, `produto` and
+The checker asks only whether a prefix is registered; the `group`, `product` and
 `feature` columns are documentary, read by a person and by the spec draft choosing
 which prefix a new behavior belongs under.
 
@@ -91,10 +91,12 @@ Every payload field a project's events carry, one row each, header row `field`,
 - `boolean`: a true or false flag.
 - `text`: free text: what a person typed, not a count or a label.
 
-The first four never carry document content or free text; `text` is the field that
-lets a project name the exception instead of hiding it, and it always needs a matching
-row in `## Exceptions`, keyed by the same field name. The other four never do.
-`feature scope` is documentary, the same way the registry's columns are: the spec draft
+`text` is the field that lets a project name the exception instead of hiding it, and it
+always needs a matching row in `## Exceptions`, keyed by the same field name. Why the
+other four are the whole list without a convention file, and what free text costs a
+legaltech's data duties, is the payload rule's own paragraph, in
+`skills/spec/references/spec-format.md` under `### The events table`; this file names
+the types and points there. `feature scope` is documentary, the same way the registry's columns are: the spec draft
 reads it to find a feature's fields, and the checker ignores it. A field the dictionary
 does not list is not a block; the checker warns, and the draft proposes the missing row
 as a task.
@@ -124,15 +126,20 @@ Every event name the project has ever sent, one row each, header row `event` and
 | `LegacyBoardOpened` | legacy |
 
 A name that predates this file carries the literal `legacy` in its `status` cell, and
-the grammar and duplicate checks skip it: renaming it is out of scope for the checker
-and for this convention. Every name after the file exists is held to the grammar, an
-empty `status` cell, and gains the checker's full set of checks.
+the grammar check skips it (the duplicate check, below, does not): renaming it is out
+of scope for the checker and for this convention. Every name after the file exists is
+held to the grammar, an empty `status` cell, and gains the checker's full set of
+checks. A pre-file name left without the mark is held to the grammar the same way, on
+every run and for every spec, so a catalog seeded from a product that already emits
+marks every inherited name `legacy` and renames later; otherwise that debt blocks
+specs that never touched it.
 
 The catalog is how a duplicate gets caught before it ships: a new name the checker sees
 is compared against every row here, `legacy` or not. Landing an event is landing its
-row. The task that wires an event appends its name to the catalog in the same change
-that ships the event, an empty `status` cell, so the next spec's duplicate check sees
-it. The checker only reads this table; nothing here writes it.
+row: the instrumentation task shape in `skills/spec/references/spec-format.md` (its
+events-table paragraph) is what appends the name here, in the change that ships the
+event, with an empty `status` cell. The checker only reads this table; nothing here
+writes it.
 
 ## Readers
 
@@ -173,7 +180,7 @@ Aim for 8–12 events per feature, never one per form field.
 
 ## Prefix registry
 
-| prefix       | grupo     | produto | feature       |
+| prefix       | group     | product | feature       |
 | ------------ | --------- | ------- | ------------- |
 | `board`      | Workspace | Orbit   | Boards        |
 | `search`     | Workspace | Orbit   | Global search |
