@@ -250,7 +250,7 @@ def check_body(lines):
         header_no, header = rows[0]
         width = len(header)
         delimiter = delimiter_row(rows)
-        body = table_body(rows)
+        body = rows[2:] if delimiter else rows[1:]  # table_body, off the delimiter in hand
         # The delimiter row is width-checked like any other: GFM needs it to match the
         # header, and a short one turns the whole table back into a paragraph of pipes.
         for line_no, cells in rows:
