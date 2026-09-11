@@ -31,8 +31,10 @@ resolves (they supplement each other):
 
 Nothing resolving makes the front **unavailable**, the same way no
 `CODE_REVIEW_GUIDE.md` makes `rules` unavailable: with no source there is nothing to
-cite, and the engine does not ship opinion. The report does not mention an unavailable
-front; the probe (`fronts.md`) is where the decision lives.
+cite, and the engine does not ship opinion. The probe (`fronts.md`) is where the
+decision lives, and its one line naming what would create a source, printed before the
+fronts question, is the run's only mention of it: the report carries no section for an
+unavailable front.
 
 Report at the top of the front's section which sources resolved and were judged
 against. The two rungs disagreeing on a value is itself a finding: a delta the
