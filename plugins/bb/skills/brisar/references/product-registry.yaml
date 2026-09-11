@@ -20,6 +20,9 @@
 # were removed for this build because their repo_url fields were still TODO at
 # the time the bundle was packaged. Only greenfield paths are active in the beta.
 # Re-add product entries when canonical repo_urls are finalized.
+# Until then no entry carries medium_default: the field is documented for those
+# entries' return, and the medium question orders by design_tools and the fit
+# signals alone (references/phase-medium.md).
 
 version: 1
 last_updated: "2026-05-12"
