@@ -260,7 +260,7 @@ line 0, so the shape stays `path:line CODE message` for every reader.
       the instrumentation task shape, `SKILL.md` step 6 runs the checker and says how to
       create the file when none resolves, step 7 treats E-codes as open items → behaviors
       2, 3, 4, 5, 8, 9 · dep: 2 · verify: reading, and `lint_spec.py` clean on this spec
-- [ ] **4. Review cites the file**: `fronts.md` probe resolves the middle rung and the
+- [x] **4. Review cites the file**: `fronts.md` probe resolves the middle rung and the
       caller runs the checker before the fan-out, `front-instrumentation.md` carries three
       rungs and the citation, the fan-out scope block passes the checker output and the
       resolved path → behaviors 6, 7 · dep: 2 · verify: reading
