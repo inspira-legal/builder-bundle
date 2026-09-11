@@ -48,15 +48,9 @@ token exists), **components** (a rebuild of something the DS ships, or a compone
 past its API), **states** (interaction missing the states its component documents), and
 **consistency** (the same thing done two ways inside the diff, or drift from the
 branch's visual direction). The checklist carries the full definitions, the priorities,
-and the boundaries; read it before finding anything.
-
-The boundaries in one line each, because three neighbors border this front:
-
-- Contrast, accessible names, keyboard, focus: the `a11y` front, even when the failing
-  value is a color.
-- Generic code reuse: the `quality` front; a duplicated **DS component** is this
-  front's, cited against the component it rebuilds.
-- Copy and voice: brisar's Deliver phase, not a review front.
+and the boundaries with the three fronts that border this one (`a11y`, `quality`, and
+brisar's Deliver phase, under `## What this checklist is not`); read it before finding
+anything.
 
 ## Finding shape
 
