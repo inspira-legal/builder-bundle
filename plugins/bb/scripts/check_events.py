@@ -116,12 +116,14 @@ class Convention:
     prefixes: dict = field(default_factory=dict)  # prefix -> line
     fields: dict = field(default_factory=dict)  # field -> (type, line)
     exceptions: dict = field(default_factory=dict)  # field -> (status, line)
-    catalog: list = field(default_factory=list)  # (name, is_legacy, line)
-    catalog_lines: dict = field(default_factory=dict)  # name -> line
+    catalog: dict = field(default_factory=dict)  # name -> (is_legacy, line)
     parts: dict = field(default_factory=dict)  # part heading -> line
 
     def is_legacy(self, name):
-        return any(legacy for n, legacy, _ in self.catalog if n == name)
+        return self.catalog.get(name, (False, 0))[0]
+
+    def line_of(self, name):
+        return self.catalog[name][1]
 
 
 @dataclass
@@ -415,8 +417,7 @@ def parse_convention(path, lines):
         conv.exceptions[value] = (status, line)
     for line, value, cells, columns in keyed_rows("Catalog", "event"):
         legacy = word(cell_at(cells, columns["status"])).lower() == LEGACY
-        conv.catalog.append((value, legacy, line))
-        conv.catalog_lines[value] = line
+        conv.catalog[value] = (legacy, line)
 
     problems.sort(key=lambda p: (p[1], p[3]))
     return conv, problems
@@ -585,7 +586,7 @@ def check_catalog(conv, owned=()):
     the change as the subject, and repeating them here would fold the diff's own bad name into
     a finding about the file.
     """
-    for name, legacy, line in conv.catalog:
+    for name, (legacy, line) in conv.catalog.items():
         if legacy or name in owned:
             continue
         found = grammar_finding(name, conv)
@@ -596,7 +597,7 @@ def check_catalog(conv, owned=()):
 
 def registered_in(conv, name):
     """Whether the catalog already carries the name."""
-    return bool(name) and name in conv.catalog_lines
+    return bool(name) and name in conv.catalog
 
 
 def check_plan(plan, conv, path, mode):
@@ -616,8 +617,8 @@ def check_plan(plan, conv, path, mode):
         (C003, C004)."""
         if row.line:
             return path, row.line
-        if name in conv.catalog_lines:
-            return conv.path, conv.catalog_lines[name]
+        if name in conv.catalog:
+            return conv.path, conv.line_of(name)
         part = {"C002": "Prefix registry", "C003": "Grammar", "C004": "Grammar", "C007": "Catalog"}.get(code)
         return conv.path, conv.parts.get(part, 0)
 
@@ -641,7 +642,7 @@ def check_plan(plan, conv, path, mode):
             yield (
                 *at(row, "C007", name),
                 "C007",
-                f"`{name}` is already in the catalog ({conv.path}:{conv.catalog_lines[name]}{marked}): "
+                f"`{name}` is already in the catalog ({conv.path}:{conv.line_of(name)}{marked}): "
                 "a name is registered once, so two branches planning the same new name collide "
                 "here; a spec re-read after its own events landed is already registered and plans "
                 "nothing new",
