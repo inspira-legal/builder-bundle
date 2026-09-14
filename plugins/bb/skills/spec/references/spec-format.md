@@ -101,16 +101,24 @@ row per event:
 The event name follows the project's own convention, `EVENTS.md` at the repository
 root when the project has one (`plugins/bb/references/events-convention.md`).
 `behaviors` cites the numbered happy-path rows the event instruments. `channel` names
-the sink, and the column exists only when the project has more than one. A payload
-field is a backticked token in the cell; a parenthesised note beside one, like the type
-in the row above, annotates that field and is not another field. Payload
-fields hold one of four closed types: `id`, `enum`, `number`, `boolean`. None of the
-four carries free text or document content, which is what keeps mandatory
-instrumentation compatible with a legaltech's data duties, and this paragraph is its
-single home; the gate and the review front cite it here instead of restating it. A
-project's own `EVENTS.md` can widen the vocabulary by one, a named `text` field
-recorded there as an exception with a status, a justification and a retention window;
-without a convention file, the four types above are the whole list.
+the sink, and the column exists only when the project has more than one. A payload field
+is a backticked token in the cell; a parenthesised note beside one, like the type in the
+row above, annotates that field and is not another field. Payload fields hold one of four
+closed types: `id`, `enum`, `number`, `boolean`. None of the four carries free text or
+document content, which is what keeps mandatory instrumentation compatible with a
+legaltech's data duties, and this paragraph is its single home; the gate and the review
+front cite it here instead of restating it. A project's own `EVENTS.md` can widen the
+vocabulary by one, a named `text` field recorded there as an exception with a status, a
+justification and a retention window; without a convention file, the four types above are
+the whole list.
+
+Document content is the floor no exception reaches. The text of a contract, a petition, a
+decision or a clause never travels in a payload, in any project and under any status, and
+neither does a slice of one. What an exception can cover is what a person typed into a
+field of the product, a query they searched or a title they wrote. That floor is also who
+reads an `approved` row: the status records that someone weighed a free text field, and
+the next reader holds the row to this paragraph, the same way an `under-review` row waits
+on the legal-lens round.
 
 Instrumentation enters `## Tasks` as ordinary tasks with their own `verify:`, each
 citing the event rows it wires (`→ events <name>, <name>` in place of the behavior
