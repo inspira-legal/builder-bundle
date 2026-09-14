@@ -99,7 +99,7 @@ row per event:
 | `vault_doc_uploaded` | 2, 3      | `doc_id`, `source` (enum) | internal |
 
 The event name follows the project's own convention, `EVENTS.md` at the repository
-root when the project has one (`plugins/bb/references/events-convention.md`).
+root when the project has one (`${CLAUDE_PLUGIN_ROOT}/references/events-convention.md`).
 `behaviors` cites the numbered happy-path rows the event instruments. `channel` names
 the sink, and the column exists only when the project has more than one. A payload field
 is a backticked token in the cell; a parenthesised note beside one, like the type in the
@@ -128,7 +128,7 @@ side resolves that citation into behavior numbers when it loads the spec (implem
 step 1), and the machinery downstream consumes numbers the way it always did. When the
 project has `EVENTS.md`, the same task appends each name it wires to the file's `##
 Catalog` in the change that lands it, an empty `status` cell, so the next spec's
-duplicate check sees it (`plugins/bb/references/events-convention.md`).
+duplicate check sees it (`${CLAUDE_PLUGIN_ROOT}/references/events-convention.md`).
 
 A Medium spec carries its behaviors inline, so an event row there has no numbered row to
 cite; its `behaviors` cell names the inline behavior in a short phrase instead. The
