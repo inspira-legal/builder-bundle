@@ -23,8 +23,9 @@ check not run at all. All five are closed.
   error, and so did a spec re-read after its events landed. The spec's own plan still
   collides, with a message naming both causes.
 - **The events table is read whole.** The plan stopped at the first run of rows, so a line
-  of prose splitting the table hid every row after it. A table with no `payload` column now
-  says so instead of passing clean with no payload checked.
+  of prose splitting the table hid every row after it, whether or not the rows after the
+  break repeat the header. A table with no `payload` column now says so instead of passing
+  clean with no payload checked.
 - **Four shapes of a valid `EVENTS.md` no longer reject the file**: a table written without
   its outer pipes, a table under a third-level subheading, a byte order mark on the first
   part heading, and the empty `## Exceptions` table, which now has a documented shape.
@@ -51,7 +52,13 @@ check not run at all. All five are closed.
   every run, whatever the input, and now fold into one finding against the file.
 - **The external PR mode's checker line is a command that runs**, with `python3` and the
   plugin-root path.
-- **Eight pointers open from where they are read**: the format and the payload rule are
+- **A name the run carries is the run's own.** When the author does the duty of appending an
+  event name to the catalog in the change that emits it, the name is registered by the time
+  the review reads it back. The duplicate check is right to stay quiet there, but the grammar
+  check went quiet with it, and the only line left came from the pass that reports the file's
+  backlog. A name the emitted list carries is now the plan's, reported at its catalog row as
+  a finding about that name; the file's own rows keep their prefix and their folding.
+- **Ten pointers open from where they are read**: the format and the payload rule are
   named through the plugin-root variable, and the checker derives its own root instead of
   printing a literal marker when the variable does not reach the process.
 - **A task whose behavior is named in prose reaches its agent with that prose.**
