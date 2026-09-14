@@ -29,7 +29,8 @@ Codes:
   C007 E  a name duplicates a catalog name or another planned name
   C008 W  an Exceptions row was used, named with its status
   C009 W  a source the check cannot fully read: no file, no repository root, no
-          `event` column, or an events table with no `payload` column
+          `event` column, an events table with no `payload` column, or a run of `|`
+          lines under `## Metric` with no `| --- |` delimiter row
   C010 E  an input could not be read: the spec path, the names file, a bad encoding
 
 The convention resolves before the plan is read, so a missing file is one C009 line
