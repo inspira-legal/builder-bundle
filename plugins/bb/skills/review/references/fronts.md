@@ -73,11 +73,15 @@ call `/bb:ship` makes. What each field settles:
   `check_events.py` resolves it (the nearest `.git` upward from the working
   directory); when it resolves, the caller reads the names the emit sites above
   pass and runs `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/check_events.py --names -`
-  once, before the fan-out, piping that list on stdin; each line it prints anchors
-  to the `EVENTS.md` row or section that caught the name, and an output that is one
-  `C001` line means the file is malformed: rung 2 is dropped for the run and that
-  line rides into the scope block as the one finding to report against the file
-  (`front-instrumentation.md`, §1). Rung 3 is the analytics convention the project's
+  once, before the fan-out, piping that list on stdin. Each line it prints anchors
+  to the `EVENTS.md` row or section that caught it, and two kinds come back: a line
+  about a name the list carried, and a line about the file itself, prefixed
+  `catalog row:` or `dictionary row:`, which the checker prints on every run
+  whatever the input and often about a row the diff never touched. An output that
+  is one `C001` line means the file is malformed: rung 2 is dropped for the run and
+  that line rides into the scope block as the one finding to report against the
+  file (`front-instrumentation.md`, §1, which is also where the prefixed lines fold
+  into a single finding). Rung 3 is the analytics convention the project's
   own source shows, read when the file is silent, malformed or absent. Any rung resolving makes `instrumentation` available; what each rung is
   and which checks it funds are `front-instrumentation.md`'s (§1). The checker's
   output and `EVENTS.md`'s own resolved absolute path travel into the finder's
