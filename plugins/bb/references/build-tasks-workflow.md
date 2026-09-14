@@ -98,7 +98,8 @@ stringified one):
   },
   reuseNotes: ["<one string per reuse note in ## Decisions>"],
   tasks: [
-    { n: 1, title: "...", delivers: "...", behaviors: [2, 3], dep: [], verify: "..." }
+    { n: 1, title: "...", delivers: "...", behaviors: [2, 3], dep: [], verify: "..." },
+    { n: 2, title: "...", delivers: "...", behaviors: [], acceptance: "<the prose cell>", dep: [1], verify: "..." }
   ]
 }
 ```
@@ -131,6 +132,13 @@ satisfies `dep:`. `behaviors` holds the numbers implement's step 1 resolved, a
 prompt and the coverage count read the same contract every other task gets; the
 resolution and its failure modes are that step's. The agents re-read the spec anyway:
 `args` is the plan, the file on disk is the truth.
+
+`acceptance` is the one field that carries what `behaviors` could not. A task citing an
+event row whose `behaviors` cell is prose, which is how a Medium spec cites a behavior it
+carries inline, resolves to no numbers at all, and that cell's phrase is what states the
+task's contract instead. Empty `behaviors` alone reaches `taskPrompt()` as "none cited",
+so the phrase travels beside it and the prompt reads whichever of the two the task has.
+A task with numbers carries no `acceptance`; the field is absent, not empty.
 
 An empty `tasks` is not a run. The skill sees it first and reports nothing to build
 without invoking; the script returns the empty report before stage zero, so a caller that
