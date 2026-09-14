@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Hold planned or emitted event names to a project's `EVENTS.md`.
 
-The convention file's format is `plugins/bb/references/events-convention.md`: five
+The convention file's format is `${CLAUDE_PLUGIN_ROOT}/references/events-convention.md`: five
 parts found by heading, each a table this script reads. The plan it checks is either a
 spec's `## Metric` events table (`--spec`) or a list of emitted names (`--names`, a
 file or `-` for stdin). Two skills call it: `/bb:spec` at step 6, beside
@@ -51,9 +51,10 @@ from pathlib import Path
 
 CONVENTION_NAME = "EVENTS.md"
 # The two documents a message points at live in the plugin, not in the project the checker
-# runs in, so the pointer is plugin-rooted: the real root when the harness publishes it, and
-# a marker a reader can substitute otherwise. A cwd-relative path would open nothing there.
-PLUGIN_ROOT = os.environ.get("CLAUDE_PLUGIN_ROOT") or "<plugin-root>"
+# runs in, so the pointer is plugin-rooted: the root the harness publishes, and otherwise the
+# one this file sits in, since it lives at `<plugin-root>/scripts/`. A cwd-relative path would
+# open nothing there, and a literal marker is a path nobody can open at all.
+PLUGIN_ROOT = os.environ.get("CLAUDE_PLUGIN_ROOT") or str(Path(__file__).resolve().parent.parent)
 FORMAT_REFERENCE = f"{PLUGIN_ROOT}/references/events-convention.md"
 PAYLOAD_RULE = f"the payload rule in `{PLUGIN_ROOT}/skills/spec/references/spec-format.md`, `### The events table`"
 

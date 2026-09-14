@@ -26,7 +26,7 @@ Keep every rung that resolves; they answer different questions:
    plans zero events, not an absent one: every emit the diff adds is then the
    reverse finding, citing that line.
 2. **The project's `EVENTS.md`**, at the repository root (the format is
-   `plugins/bb/references/events-convention.md`). This rung is the **file**: the
+   `${CLAUDE_PLUGIN_ROOT}/references/events-convention.md`). This rung is the **file**: the
    registered prefixes, the type abbreviations, the dictionary and its exceptions.
    The caller resolves it and runs the checker over the emitted names the diff
    adds, once, before the fan-out, and hands its output and the file's resolved

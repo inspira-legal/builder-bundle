@@ -83,7 +83,7 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
    prefix or a missing dictionary field is already a task by then, per
    `references/draft-first.md`. Without an `EVENTS.md`, there is nothing to check; say
    so in one line, that the project has no event convention yet and where the format
-   lives (`plugins/bb/references/events-convention.md`), and move on unchanged.
+   lives (`${CLAUDE_PLUGIN_ROOT}/references/events-convention.md`), and move on unchanged.
 
    Then spawn a reviewer (Agent tool, fresh context) given ONLY the spec and this mandate: _"you did not write this. Find what is missing, what is unmapped, what contradicts itself, and what is surplus: a fact repeated in more than one section, prose that retells the conversation instead of describing what to build."_ A reviewer with no memory of the conversation that produced the spec reads it the way the builder will. Fold what it finds back into step 3, and carry its verdict to the gate in one line.
 

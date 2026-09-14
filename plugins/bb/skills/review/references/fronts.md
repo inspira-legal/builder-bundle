@@ -174,8 +174,8 @@ change it reviewed.
    angle/lens set and its candidate cap. The `design` finder's scope block also
    carries the resolved design sources (`front-design.md`, §1), and the
    `instrumentation` finder's the resolved rungs, the resolved absolute path of
-   the payload rule's file (`skills/spec/references/spec-format.md`, which its
-   criteria reference names through a plugin-root variable), and, when
+   the payload rule's file (`${CLAUDE_PLUGIN_ROOT}/skills/spec/references/spec-format.md`,
+   resolved here because a dispatched finder cannot expand that variable), and, when
    `EVENTS.md` resolved, the checker's own output plus its resolved absolute
    path, so the finder cites instead of re-resolving or re-running it. A path a
    front's reference writes as

@@ -32,9 +32,9 @@ events table live in `spec-format.md`.
 
 ## Propose the events table
 
-A project with `EVENTS.md` at its root (`plugins/bb/references/events-convention.md`)
-gets its `## Metric` events table proposed the same draft-first way as the rest of the
-spec: read the file, then write the table instead of leaving it blank.
+A project with `EVENTS.md` at its root
+(`${CLAUDE_PLUGIN_ROOT}/references/events-convention.md`) gets its `## Metric` events
+table proposed the same draft-first way as the rest of the spec: read the file, then write the table instead of leaving it blank.
 
 - **Name**: `{prefix}_{type}_{element}`, the prefix from `## Prefix registry`, the type
   from `## Grammar`, the element a short lowercase phrase for what happened.

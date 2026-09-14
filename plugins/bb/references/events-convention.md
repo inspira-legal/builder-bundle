@@ -7,8 +7,8 @@ this line for specs: bb owns the format, the project owns the content. This file
 that same split for events. bb fixes the file's name, its five parts and each part's
 table shape; the project fills every cell.
 
-`plugins/bb/scripts/check_events.py`, the checker, reads a project's `EVENTS.md` by
-this contract. A convention file that drifts from the shape below is a file the checker
+`${CLAUDE_PLUGIN_ROOT}/scripts/check_events.py`, the checker, reads a project's
+`EVENTS.md` by this contract. A convention file that drifts from the shape below is a file the checker
 cannot read, reported as `C001` rather than guessed at.
 
 ## The file
@@ -95,9 +95,10 @@ Every payload field a project's events carry, one row each, header row `field`,
 always needs a matching row in `## Exceptions`, keyed by the same field name. Why the
 other four are the whole list without a convention file, and what free text costs a
 legaltech's data duties, is the payload rule's own paragraph, in
-`skills/spec/references/spec-format.md` under `### The events table`; this file names
-the types and points there. `feature scope` is documentary, the same way the registry's columns are: the spec draft
-reads it to find a feature's fields, and the checker ignores it. A field the dictionary
+`${CLAUDE_PLUGIN_ROOT}/skills/spec/references/spec-format.md` under
+`### The events table`; this file names the types and points there. `feature scope` is
+documentary, the same way the registry's columns are: the spec draft reads it to find a
+feature's fields, and the checker ignores it. A field the dictionary
 does not list is not a block; the checker warns, and the draft proposes the missing row
 as a task.
 
@@ -147,10 +148,11 @@ specs that never touched it.
 The catalog is how a duplicate gets caught before it ships: a name a **spec plans** is
 compared against every row here, `legacy` or not. A name a change **already emits** is
 not, because by then the row is the one that change just added; what still collides
-there is the same name emitted twice. Landing an event is landing its
-row: the instrumentation task shape in `skills/spec/references/spec-format.md` (its
-events-table paragraph) is what appends the name here, in the change that ships the
-event, with an empty `status` cell. The checker only reads this table; nothing here
+there is the same name emitted twice. Landing an event is landing its row: the
+instrumentation task shape in
+`${CLAUDE_PLUGIN_ROOT}/skills/spec/references/spec-format.md` (its events-table
+paragraph) is what appends the name here, in the change that ships the event, with an
+empty `status` cell. The checker only reads this table; nothing here
 writes it.
 
 ## Readers
