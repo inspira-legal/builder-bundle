@@ -175,6 +175,18 @@ def word(cell):
     return cell.strip().strip("`").strip()
 
 
+def name_cell(cell):
+    """The one name a cell names: the first backticked token, else the cell read as a word.
+
+    Both sides of the check read a name this way, so a note beside the name in a catalog row
+    resolves to the same key the spec's row does. Read as one whole word, a catalog cell like
+    `` `board_clk_rename` (since 2.4) `` was a name no grammar could match and a key no
+    duplicate check could find, so the same name could be planned again.
+    """
+    ticked = BACKTICKED.findall(cell)
+    return ticked[0].strip() if ticked else word(cell)
+
+
 def is_prose(cell):
     """Whether a cell holds a sentence instead of a name.
 
@@ -367,7 +379,7 @@ def parse_convention(path, lines):
         body, columns = table
         seen = {}
         for line, cells in body:
-            value = word(cell_at(cells, columns[key]))
+            value = name_cell(cell_at(cells, columns[key]))
             if not value:
                 problem(line, f"`## {part}`: a row with an empty `{key}` cell")
                 continue
@@ -452,10 +464,9 @@ def plan_from_spec(path, lines):
             )
         for line, cells in body:
             event_cell = cell_at(cells, event_column)
-            # The cell is the name, backticked or bare; a note beside a backticked name
-            # is left alone. The payload fields are the backticked tokens, nothing else.
-            ticked = BACKTICKED.findall(event_cell)
-            name = ticked[0].strip() if ticked else event_cell.strip()
+            # The cell is the name, backticked or bare, read by `name_cell` the same way the
+            # catalog's own rows are. The payload fields are the backticked tokens, nothing else.
+            name = name_cell(event_cell)
             fields = [f.strip() for f in BACKTICKED.findall(cell_at(cells, payload_column))]
             plan.append(PlanRow(line=line, name=name, fields=fields, prose=is_prose(event_cell)))
     if found:
