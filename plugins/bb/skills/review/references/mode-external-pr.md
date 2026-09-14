@@ -24,7 +24,8 @@ fetched repo (`front-design.md`'s ladder, read through the same contents API), a
 `instrumentation` when the PR wires analytics and a source resolves in the fetched
 repo: its `EVENTS.md` at the root (rung 2 of `front-instrumentation.md`'s ladder,
 fetched through the same contents API, saved to a scratch file and handed to
-`check_events.py --names - --convention <that file>` before the fan-out) or the
+`python3 ${CLAUDE_PLUGIN_ROOT}/scripts/check_events.py --names - --convention <that file>`
+before the fan-out) or the
 project's convention in source (rung 3, same API); rung 1 doesn't apply, there's no
 local spec. Those three are static, so the fetched source is enough. `contract`, `threads`, and `ci`
 don't apply, there's no local spec, the threads aren't yours to resolve, and the CI
