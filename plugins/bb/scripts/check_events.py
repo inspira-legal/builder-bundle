@@ -84,7 +84,9 @@ PAYLOAD_TYPES = ("id", "enum", "number", "boolean", "text")
 EXCEPTION_STATUSES = ("approved", "under-review")
 LEGACY = "legacy"
 
-HEADING = re.compile(r"^##\s+(.+?)\s*$")
+# Any ATX heading, with its level: a part is a `##`, and a deeper heading is a boundary
+# all the same, so a table under a `###` subsection is not read as the part's second table.
+HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
 FENCE = re.compile(r"^\s*(```|~~~)")
 # GFM asks one or more dashes per delimiter cell; `|-|-|` is a table too.
 SEPARATOR_CELL = re.compile(r"^:?-+:?$")
@@ -129,9 +131,14 @@ class PlanRow:
 
 
 def read_text(path):
-    """Return (text, None) or (None, message) when the file cannot be read as UTF-8."""
+    """Return (text, None) or (None, message) when the file cannot be read as UTF-8.
+
+    `utf-8-sig` drops a byte order mark when one opens the file. Editors on Windows write
+    it, it is invisible, and read as content it glues itself to the first line: a file whose
+    first line is `## Grammar` lost that heading and the whole convention was rejected.
+    """
     try:
-        with open(path, encoding="utf-8") as handle:
+        with open(path, encoding="utf-8-sig") as handle:
             return handle.read(), None
     except OSError as err:
         return None, f"could not read `{path}`: {err.strerror or err}"
@@ -141,7 +148,7 @@ def read_text(path):
 
 def read_stdin():
     try:
-        return sys.stdin.buffer.read().decode("utf-8"), None
+        return sys.stdin.buffer.read().decode("utf-8-sig"), None
     except (OSError, UnicodeDecodeError) as err:
         return None, f"could not read the names from stdin: {err}"
 
@@ -171,7 +178,8 @@ def sections(lines):
     """Return the `##` sections in order, each carrying its runs of table rows.
 
     Content inside a fence is skipped, so a fenced example of a table is not a table.
-    Only the marker that opened a fence closes it.
+    Only the marker that opened a fence closes it. A heading of any level ends the section
+    above it; only a `##` names one, so a `### Notes` and its table belong to neither part.
     """
     result = []
     current = Section(name="", line=0)
@@ -183,6 +191,22 @@ def sections(lines):
             current.tables.append(list(table))
             table.clear()
 
+    def is_row(line, index):
+        """A table row: a line with an unescaped `|` that continues an open run, starts with
+        the pipe, or carries the cells a delimiter row on the next line counts. GFM lets the
+        outer pipes go, and a table written that way was read as prose and its part as empty.
+        """
+        if not line.strip() or not CELL_SPLIT.search(line):
+            return False
+        if table or line.strip().startswith("|"):
+            return True
+        following = split_row(lines[index]) if index < len(lines) else []
+        return (
+            len(following) > 1
+            and len(following) == len(split_row(line))
+            and all(SEPARATOR_CELL.match(c) for c in following)
+        )
+
     for i, line in enumerate(lines, start=1):
         fence = FENCE.match(line)
         if fence_marker is not None:
@@ -193,14 +217,17 @@ def sections(lines):
             fence_marker = fence.group(1)
             close_table()
             continue
-        if line.strip().startswith("|"):
+        match = HEADING.match(line)
+        if match:
+            close_table()
+            result.append(current)
+            level, text = len(match.group(1)), match.group(2).strip()
+            current = Section(name=text if level == 2 else "", line=i)
+            continue
+        if is_row(line, i):
             table.append((i, split_row(line)))
             continue
         close_table()
-        match = HEADING.match(line)
-        if match:
-            result.append(current)
-            current = Section(name=match.group(1).strip(), line=i)
     close_table()
     result.append(current)
     return result

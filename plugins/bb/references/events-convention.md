@@ -115,6 +115,16 @@ field through; a `text` field with no row at all is what the checker blocks on. 
 file records the retention window; nothing checks that the data actually expires
 there.
 
+A project with no `text` field writes the part all the same, as its heading over the
+header and delimiter rows with no row under them:
+
+| field | status | justification | retention |
+| ----- | ------ | ------------- | --------- |
+
+The part is one of the five, so a heading with no table under it is a malformed file
+and every spec in the project blocks on it. An empty table is the shape that says
+there is nothing to except.
+
 ## Catalog
 
 Every event name the project has ever sent, one row each, header row `event` and
@@ -134,8 +144,10 @@ every run and for every spec, so a catalog seeded from a product that already em
 marks every inherited name `legacy` and renames later; otherwise that debt blocks
 specs that never touched it.
 
-The catalog is how a duplicate gets caught before it ships: a new name the checker sees
-is compared against every row here, `legacy` or not. Landing an event is landing its
+The catalog is how a duplicate gets caught before it ships: a name a **spec plans** is
+compared against every row here, `legacy` or not. A name a change **already emits** is
+not, because by then the row is the one that change just added; what still collides
+there is the same name emitted twice. Landing an event is landing its
 row: the instrumentation task shape in `skills/spec/references/spec-format.md` (its
 events-table paragraph) is what appends the name here, in the change that ships the
 event, with an empty `status` cell. The checker only reads this table; nothing here
