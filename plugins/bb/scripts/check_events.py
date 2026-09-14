@@ -440,6 +440,22 @@ def plan_from_spec(path, lines):
     metric = next((s for s in sections(lines) if s.name.lower() == "metric"), None)
     if metric is None or not metric.tables:
         return [], None, []
+
+    def row_of(line, cells):
+        """One plan row, read the same way on both sides of a break in the table.
+
+        The event cell is the name, backticked or bare, read by `name_cell` the same way the
+        catalog's own rows are. The payload fields are the backticked tokens, nothing else.
+        """
+        event_cell = cell_at(cells, event_column)
+        payload = ANNOTATION.sub(" ", cell_at(cells, payload_column))
+        return PlanRow(
+            line=line,
+            name=name_cell(event_cell),
+            fields=[f.strip() for f in BACKTICKED.findall(payload)],
+            prose=is_prose(event_cell),
+        )
+
     headed = None  # the last run that parsed as a table: (header line, header cells)
     found = False  # a run carried an `event` column, so there is a plan, empty or not
     plan = []
@@ -454,13 +470,8 @@ def plan_from_spec(path, lines):
             # A run with no header under a heading whose events table already parsed: the
             # prose line that split the table closed the run, and these rows continue it,
             # read through the columns that header named.
-            body = rows
-            for line, cells in body:
-                event_cell = cell_at(cells, event_column)
-                name = name_cell(event_cell)
-                payload = ANNOTATION.sub(" ", cell_at(cells, payload_column))
-                fields = [f.strip() for f in BACKTICKED.findall(payload)]
-                plan.append(PlanRow(line=line, name=name, fields=fields, prose=is_prose(event_cell)))
+            for line, cells in rows:
+                plan.append(row_of(line, cells))
             continue
         header, body = parsed
         headed = (rows[0][0], header)
@@ -483,13 +494,7 @@ def plan_from_spec(path, lines):
                 )
             )
         for line, cells in body:
-            event_cell = cell_at(cells, event_column)
-            # The cell is the name, backticked or bare, read by `name_cell` the same way the
-            # catalog's own rows are. The payload fields are the backticked tokens, nothing else.
-            name = name_cell(event_cell)
-            payload = ANNOTATION.sub(" ", cell_at(cells, payload_column))
-            fields = [f.strip() for f in BACKTICKED.findall(payload)]
-            plan.append(PlanRow(line=line, name=name, fields=fields, prose=is_prose(event_cell)))
+            plan.append(row_of(line, cells))
     if found:
         return plan, None, notes
     if headed is None:
