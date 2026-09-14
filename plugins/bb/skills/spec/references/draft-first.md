@@ -48,10 +48,11 @@ Two gaps the file can't close on its own, and the draft never guesses past them:
 - **No registered prefix for the feature**: don't invent one. Add a task that
   registers the prefix in `## Prefix registry` of `EVENTS.md`, and write the row's
   name cell as plain prose citing that task (no backticks) instead of a name, for
-  example `waits on task 4, registers the prefix`. The checker reads an unbacktickable
-  cell as the event name, so it cannot match the grammar and flags the row (`C002`);
-  that is the open item the gate holds until the task lands and the row carries its
-  real name.
+  example `waits on task 4, registers the prefix`. The checker reads a cell that does
+  not open with a backtick and holds a space as prose, so it says the row names no
+  event yet and flags it (`C002`), one line per row and never a collision between two
+  rows waiting on the same task; that is the open item the gate holds until the task
+  lands and the row carries its real name.
 - **No dictionary entry for a payload field**: add a task that adds the field to
   `## Dictionary` of `EVENTS.md`, the same way, but write the row complete: name and
   payload field both, backticked as usual. The checker warns instead of blocking

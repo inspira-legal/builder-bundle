@@ -125,6 +125,7 @@ class PlanRow:
     line: int
     name: str
     fields: list
+    prose: bool = False  # the cell holds a sentence, so the row names no event yet
 
 
 # ---------------------------------------------------------------- reading markdown
@@ -172,6 +173,20 @@ def split_row(line):
 def word(cell):
     """A cell compared as a word: the backticks the format wraps values in come off."""
     return cell.strip().strip("`").strip()
+
+
+def is_prose(cell):
+    """Whether a cell holds a sentence instead of a name.
+
+    A cell that opens with a backtick is a name, with or without a note beside it. Anything
+    else holding whitespace is prose: `draft-first.md` tells the draft to write the reason in
+    the event cell while a name waits on a registry row, and the same sentence on eight rows
+    is one unnamed row eight times, not a name planned twice.
+    """
+    text = cell.strip()
+    if text.startswith("`"):
+        return False
+    return bool(re.search(r"\s", word(text)))
 
 
 def sections(lines):
@@ -442,7 +457,7 @@ def plan_from_spec(path, lines):
             ticked = BACKTICKED.findall(event_cell)
             name = ticked[0].strip() if ticked else event_cell.strip()
             fields = [f.strip() for f in BACKTICKED.findall(cell_at(cells, payload_column))]
-            plan.append(PlanRow(line=line, name=name, fields=fields))
+            plan.append(PlanRow(line=line, name=name, fields=fields, prose=is_prose(event_cell)))
     if found:
         return plan, None, notes
     if headed is None:
@@ -471,7 +486,9 @@ def plan_from_names(text, numbered):
     for i, raw in enumerate(split_lines(text), start=1):
         name = raw.strip().strip("`'\"").strip()
         if name:
-            plan.append(PlanRow(line=i if numbered else 0, name=name, fields=[]))
+            plan.append(
+                PlanRow(line=i if numbered else 0, name=name, fields=[], prose=is_prose(raw))
+            )
     return plan
 
 
@@ -521,6 +538,11 @@ def check_catalog(conv):
             yield conv.path, line, code, f"catalog row: {message}"
 
 
+def registered_in(conv, name):
+    """Whether the catalog already carries the name."""
+    return bool(name) and name in conv.catalog_lines
+
+
 def check_plan(plan, conv, path, mode):
     """`mode` is `spec` (a plan of new names) or `names` (the names a change already emits).
 
@@ -546,8 +568,18 @@ def check_plan(plan, conv, path, mode):
     planned = {}
     for row in plan:
         name = row.name
-        registered = bool(name) and name in conv.catalog_lines
-        if registered and mode == "spec":
+        if row.prose:
+            # The row names no event, so the grammar has nothing to hold and the duplicate
+            # check has no key: eight rows waiting on the same registry row carry the same
+            # sentence, and comparing sentences reported seven collisions that do not exist.
+            yield (
+                *at(row, "C002", ""),
+                "C002",
+                "the event cell carries prose, not a name: the row records what the name waits "
+                "on, and a name in `{prefix}_{type}_{element}` takes its place once the row it "
+                f"waits on is in `{CONVENTION_NAME}`",
+            )
+        elif registered_in(conv, name) and mode == "spec":
             marked = ", marked `legacy`" if conv.is_legacy(name) else ""
             yield (
                 *at(row, "C007", name),
@@ -560,15 +592,18 @@ def check_plan(plan, conv, path, mode):
         elif name and name in planned:
             first = f"first at line {planned[name]}" if row.line else "twice in the names list"
             yield *at(row, "C007", name), "C007", f"`{name}` is planned twice ({first})"
-        elif not registered:
+        elif not registered_in(conv, name):
             found = grammar_finding(name, conv)
             if found:
                 code, message = found
                 yield *at(row, code, name), code, message
         # A registered name in `names` mode falls through on purpose: the catalog row is the one
         # this change added, and `check_catalog` holds that row to the grammar on its own.
-        planned.setdefault(name, row.line)
+        if not row.prose:
+            planned.setdefault(name, row.line)
 
+        # The payload is read either way: a row still waiting on its name carries real fields,
+        # and the free-text check is the one the payload rule exists for.
         for fld in row.fields:
             if fld not in conv.fields:
                 yield (
