@@ -431,9 +431,10 @@ def plan_from_spec(path, lines):
     No table under `## Metric` (`Events: none`, a `skipped:` line, no section at all) is
     a plan of zero events, not a missing source.
 
-    Every run under the heading that parses with an `event` column is part of one plan.
-    A table a line of prose splits in two is still the events table, and reading only the
-    first run would pass every row after the break in silence.
+    Every run under the heading that parses with an `event` column is part of one plan, and
+    so is a run with no header of its own that follows one: a line of prose inside the table
+    closes the run, and the rows after it carry no `| --- |` of their own, so reading them as
+    a paragraph passed every row after the break in silence.
     """
     metric = next((s for s in sections(lines) if s.name.lower() == "metric"), None)
     if metric is None or not metric.tables:
@@ -442,9 +443,23 @@ def plan_from_spec(path, lines):
     found = False  # a run carried an `event` column, so there is a plan, empty or not
     plan = []
     notes = []
+    event_column = None
+    payload_column = None
     for rows in metric.tables:
         parsed = header_of(rows)
         if parsed is None:
+            if not found:
+                continue
+            # A run with no header under a heading whose events table already parsed: the
+            # prose line that split the table closed the run, and these rows continue it,
+            # read through the columns that header named.
+            body = rows
+            for line, cells in body:
+                event_cell = cell_at(cells, event_column)
+                name = name_cell(event_cell)
+                payload = ANNOTATION.sub(" ", cell_at(cells, payload_column))
+                fields = [f.strip() for f in BACKTICKED.findall(payload)]
+                plan.append(PlanRow(line=line, name=name, fields=fields, prose=is_prose(event_cell)))
             continue
         header, body = parsed
         headed = (rows[0][0], header)
