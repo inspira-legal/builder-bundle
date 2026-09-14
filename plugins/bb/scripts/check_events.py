@@ -436,6 +436,13 @@ def plan_from_spec(path, lines):
     so is a run with no header of its own that follows one: a line of prose inside the table
     closes the run, and the rows after it carry no `| --- |` of their own, so reading them as
     a paragraph passed every row after the break in silence.
+
+    A headerless run continues that table only where it has the table's shape, which is what
+    keeps a second, unrelated table under the same heading from being read through the events
+    table's columns. A row continues it when it carries the header's cell count and is not the
+    header written again without its delimiter. The count has to match exactly: a narrower row
+    is what another table looks like, so the one short row GFM would have allowed on this side
+    of the break is the price of telling the two apart.
     """
     metric = next((s for s in sections(lines) if s.name.lower() == "metric"), None)
     if metric is None or not metric.tables:
@@ -462,6 +469,7 @@ def plan_from_spec(path, lines):
     notes = []
     event_column = None
     payload_column = None
+    plan_header = None  # the events table's own header: the shape a continuation has to have
     for rows in metric.tables:
         parsed = header_of(rows)
         if parsed is None:
@@ -471,6 +479,10 @@ def plan_from_spec(path, lines):
             # prose line that split the table closed the run, and these rows continue it,
             # read through the columns that header named.
             for line, cells in rows:
+                if len(cells) != len(plan_header):
+                    continue  # another table under the same heading, not the rest of this one
+                if [word(c).lower() for c in cells] == plan_header:
+                    continue  # the header written again with no `| --- |`: a label, not a row
                 plan.append(row_of(line, cells))
             continue
         header, body = parsed
@@ -478,6 +490,7 @@ def plan_from_spec(path, lines):
         if "event" not in header:
             continue
         found = True
+        plan_header = header
         event_column = header.index("event")
         payload_column = header.index("payload") if "payload" in header else None
         if payload_column is None:
