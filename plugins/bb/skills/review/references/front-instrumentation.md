@@ -73,7 +73,10 @@ rung missing, say in the front's section which checks had no source to read.
   and prefix registry where the file resolves, the project's own source where it
   doesn't, the table's names where neither does. A name that matches none of them
   is a finding citing the convention's source, the checker's `C002` to `C004`
-  line when the file is what caught it.
+  line when the file is what caught it. A `C007` line here is one name emitted
+  twice by the diff, and it is a finding of this check; a name the catalog already
+  carries is not one, because the instrumentation task registers each name in the
+  change that emits it, and the checker says nothing about it in this mode.
 - **Payload**: payload fields hold only what the payload rule allows. The rule's
   single home is the events-table paragraph of
   `${CLAUDE_PLUGIN_ROOT}/skills/spec/references/spec-format.md` (spec's reference;

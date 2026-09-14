@@ -494,7 +494,16 @@ def check_catalog(conv):
             yield conv.path, line, code, f"catalog row: {message}"
 
 
-def check_plan(plan, conv, path):
+def check_plan(plan, conv, path, mode):
+    """`mode` is `spec` (a plan of new names) or `names` (the names a change already emits).
+
+    The two modes read a catalog hit in opposite directions. A spec plans names that do not
+    exist yet, so a hit is a collision. A list of emitted names is read after the change, and
+    the instrumentation task appends each name to the catalog in the same change that emits
+    it, so a hit there is the registry doing its job and says nothing. The repeat inside one
+    list still collides, in both modes.
+    """
+
     def at(row, code, name):
         """Where a finding lands: the plan row when it has a line. A name read from stdin
         has none, so it lands on the `EVENTS.md` row or section that caught it, a line a
@@ -510,21 +519,27 @@ def check_plan(plan, conv, path):
     planned = {}
     for row in plan:
         name = row.name
-        if name and name in conv.catalog_lines:
+        registered = bool(name) and name in conv.catalog_lines
+        if registered and mode == "spec":
             marked = ", marked `legacy`" if conv.is_legacy(name) else ""
             yield (
                 *at(row, "C007", name),
                 "C007",
-                f"`{name}` is already in the catalog ({conv.path}:{conv.catalog_lines[name]}{marked})",
+                f"`{name}` is already in the catalog ({conv.path}:{conv.catalog_lines[name]}{marked}): "
+                "a name is registered once, so two branches planning the same new name collide "
+                "here; a spec re-read after its own events landed is already registered and plans "
+                "nothing new",
             )
         elif name and name in planned:
             first = f"first at line {planned[name]}" if row.line else "twice in the names list"
             yield *at(row, "C007", name), "C007", f"`{name}` is planned twice ({first})"
-        else:
+        elif not registered:
             found = grammar_finding(name, conv)
             if found:
                 code, message = found
                 yield *at(row, code, name), code, message
+        # A registered name in `names` mode falls through on purpose: the catalog row is the one
+        # this change added, and `check_catalog` holds that row to the grammar on its own.
         planned.setdefault(name, row.line)
 
         for fld in row.fields:
@@ -575,6 +590,7 @@ def run(args, cwd, anchor):
         return problems, 0
 
     notes = []
+    mode = "spec" if args.spec is not None else "names"
     if args.spec is not None:
         text, error = read_text(args.spec)
         if error:
@@ -598,7 +614,7 @@ def run(args, cwd, anchor):
 
     findings = list(check_catalog(conv))
     findings.extend(notes)
-    findings.extend(check_plan(plan, conv, plan_path))
+    findings.extend(check_plan(plan, conv, plan_path, mode))
     return findings, len(plan)
 
 
