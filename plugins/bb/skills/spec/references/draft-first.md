@@ -112,6 +112,15 @@ Ask the forks through the **`AskUserQuestion` tool**: concrete options the user 
   stays silent here; on a Large spec it walks event rows to behavior rows only,
   so the reverse direction, every user-triggered behavior row having its event,
   is yours to judge at the gate.
+- **A checker line whose path is the project's `EVENTS.md` is an external blocker**, whatever
+  its code: there is no row in this spec to fix, so it is resolved in that file and deferred
+  until it is. Three shapes arrive that way. `C001` is the file malformed, a part missing or
+  written twice or a table without its header. A line prefixed `catalog row:` or
+  `dictionary row:` is the file held to its own rules, and the remedy is in the file: a name
+  that predates the file carries the literal `legacy` in its `status` cell, which is what
+  keeps a name nobody here planned from blocking every spec in the project, and a `text`
+  field owes its row in `## Exceptions`. `C010` is an input that could not be read, fixed at
+  that path.
 - **Reflect back:** "So we're building X, for Y, and NOT doing Z, right?"
 - **Alignment is active, not silent.** It's confirmed when the user restates the
   idea in their own words or explicitly approves the written spec, never by the
