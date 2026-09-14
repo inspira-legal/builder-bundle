@@ -542,6 +542,24 @@ def grammar_finding(name, conv):
     return None
 
 
+def check_dictionary(conv):
+    """The file is held to its own payload rule: every `text` field carries its exception row.
+
+    The convention states it (`## Dictionary`: a `text` field always needs a matching row in
+    `## Exceptions`), and nothing read it. A `text` row with no exception let the field pass
+    every spec that used it, which is the guarantee the payload rule exists to hold.
+    """
+    for name, (kind, line) in conv.fields.items():
+        if kind == "text" and name not in conv.exceptions:
+            yield (
+                conv.path,
+                line,
+                "C006",
+                f"dictionary row: `{name}` is typed `text` with no row in `## Exceptions`; the "
+                f"file's own rule is that every `text` field carries one, per {PAYLOAD_RULE}",
+            )
+
+
 def check_catalog(conv):
     """The file is held to its own grammar: every catalog row not marked `legacy`."""
     for name, legacy, line in conv.catalog:
@@ -689,7 +707,8 @@ def run(args, cwd, anchor):
         plan = plan_from_names(text, numbered=True)
         plan_path = args.names
 
-    findings = list(check_catalog(conv))
+    findings = list(check_dictionary(conv))
+    findings.extend(check_catalog(conv))
     findings.extend(notes)
     findings.extend(check_plan(plan, conv, plan_path, mode))
     return findings, len(plan)

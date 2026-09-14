@@ -57,7 +57,10 @@ Two gaps the file can't close on its own, and the draft never guesses past them:
   `## Dictionary` of `EVENTS.md`, the same way, but write the row complete: name and
   payload field both, backticked as usual. The checker warns instead of blocking
   (`C005`); the gate shows it, and the person keeps the last word while the dictionary
-  task is pending.
+  task is pending. A field the dictionary does not carry has no type yet, so the free
+  text check cannot run on it and that one warning is the whole signal: when the field
+  is free text, the task that adds the dictionary row carries its `## Exceptions` row
+  too, with status, justification and retention, and the task says so in its own line.
 
 Without `EVENTS.md`, the events table is proposed the way it always was, from the
 behavior rows alone; nothing here changes.

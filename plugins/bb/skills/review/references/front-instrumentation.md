@@ -87,7 +87,13 @@ rung missing, say in the front's section which checks had no source to read.
   unexcepted (`C005`, `C006`) is the same finding, citing the checker's line
   beside the payload rule. A field the checker passed under an exception (`C008`)
   is not a finding; the front names it in the report the way `## Exceptions`
-  itself does, `approved` clean and `under-review` pending legal-lens.
+  itself does, `approved` clean and `under-review` pending legal-lens. Those three
+  codes reach this front only from a spec's own gate run, because the run the
+  caller makes here reads names and no payload: what it can print about payload is
+  one `dictionary row:` line per `text` field the file leaves without its exception
+  row. So the payload check reads the fields the diff's emit sites actually pass,
+  against the file's `## Dictionary` and `## Exceptions` rows and the payload rule,
+  and cites the checker's line only where there is one.
 - **Channel**: events flow to the channel the plan names. An event routed to a sink
   the plan does not name is a finding citing the channel column, or the event's own
   table row where the plan carries no channel column (a single-sink project's table
