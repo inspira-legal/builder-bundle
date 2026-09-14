@@ -576,10 +576,17 @@ def check_dictionary(conv):
             )
 
 
-def check_catalog(conv):
-    """The file is held to its own grammar: every catalog row not marked `legacy`."""
+def check_catalog(conv, owned=()):
+    """The file is held to its own grammar: every catalog row not marked `legacy`.
+
+    `owned` holds the names the run itself carries, which is the emitted-names mode only. The
+    instrumentation task appends a name to the catalog in the change that emits it, so those
+    rows are the ones the change just wrote: the plan pass reports them at this same line with
+    the change as the subject, and repeating them here would fold the diff's own bad name into
+    a finding about the file.
+    """
     for name, legacy, line in conv.catalog:
-        if legacy:
+        if legacy or name in owned:
             continue
         found = grammar_finding(name, conv)
         if found:
@@ -609,7 +616,7 @@ def check_plan(plan, conv, path, mode):
         (C003, C004)."""
         if row.line:
             return path, row.line
-        if code == "C007" and name in conv.catalog_lines:
+        if name in conv.catalog_lines:
             return conv.path, conv.catalog_lines[name]
         part = {"C002": "Prefix registry", "C003": "Grammar", "C004": "Grammar", "C007": "Catalog"}.get(code)
         return conv.path, conv.parts.get(part, 0)
@@ -617,6 +624,7 @@ def check_plan(plan, conv, path, mode):
     planned = {}
     for row in plan:
         name = row.name
+        registered = registered_in(conv, name)
         if row.prose:
             # The row names no event, so the grammar has nothing to hold and the duplicate
             # check has no key: eight rows waiting on the same registry row carry the same
@@ -628,7 +636,7 @@ def check_plan(plan, conv, path, mode):
                 "on, and a name in `{prefix}_{type}_{element}` takes its place once the row it "
                 f"waits on is in `{CONVENTION_NAME}`",
             )
-        elif registered_in(conv, name) and mode == "spec":
+        elif registered and mode == "spec":
             marked = ", marked `legacy`" if conv.is_legacy(name) else ""
             yield (
                 *at(row, "C007", name),
@@ -641,13 +649,15 @@ def check_plan(plan, conv, path, mode):
         elif name and name in planned:
             first = f"first at line {planned[name]}" if row.line else "twice in the names list"
             yield *at(row, "C007", name), "C007", f"`{name}` is planned twice ({first})"
-        elif not registered_in(conv, name):
+        elif not (registered and conv.is_legacy(name)):
+            # A name the catalog carries is checked here too, in `names` mode: the row is the
+            # one this change appended, so its grammar is this change's business, at the row's
+            # own line. The `legacy` mark is the one exemption, the same one the catalog pass
+            # honours, because renaming an inherited name is out of scope for the checker.
             found = grammar_finding(name, conv)
             if found:
                 code, message = found
                 yield *at(row, code, name), code, message
-        # A registered name in `names` mode falls through on purpose: the catalog row is the one
-        # this change added, and `check_catalog` holds that row to the grammar on its own.
         if not row.prose:
             planned.setdefault(name, row.line)
 
@@ -723,8 +733,9 @@ def run(args, cwd, anchor):
         plan = plan_from_names(text, numbered=True)
         plan_path = args.names
 
+    owned = {row.name for row in plan if row.name} if mode == "names" else set()
     findings = list(check_dictionary(conv))
-    findings.extend(check_catalog(conv))
+    findings.extend(check_catalog(conv, owned))
     findings.extend(notes)
     findings.extend(check_plan(plan, conv, plan_path, mode))
     return findings, len(plan)

@@ -36,7 +36,11 @@ Keep every rung that resolves; they answer different questions:
    `dictionary row:` is the checker holding the file to its own rules, and it prints
    on every run, about rows nobody in this run asked about and usually rows the diff
    never touched: those lines fold into one finding against the file, listing the
-   rows it names, never one finding per row and never a finding against the diff. A
+   rows it names, never one finding per row and never a finding against the diff. The
+   prefix is what carries that, and it is absent exactly where it should be: a name
+   the emitted list carried is reported unprefixed, at its catalog row, because the
+   instrumentation task appends that row in the change that emits it, so a name off
+   the grammar there is this diff's, not the file's backlog. A
    repository with no `EVENTS.md` skips this rung, and nothing else about the front
    changes. A file that resolves but comes back from the checker as `C001` alone is
    malformed (a part missing or written twice, a table without its header): that rung
@@ -77,8 +81,9 @@ rung missing, say in the front's section which checks had no source to read.
   and prefix registry where the file resolves, the project's own source where it
   doesn't, the table's names where neither does. A name that matches none of them
   is a finding citing the convention's source, the checker's `C002` to `C004`
-  line when the file is what caught it, and a line prefixed `catalog row:` is not
-  that finding: it is about the file, folded once per §1. A `C007` line here is one
+  line when the file is what caught it, including a line at a catalog row whose name
+  this diff emits; only a line prefixed `catalog row:` is not that finding, being
+  about the file and folded once per §1. A `C007` line here is one
   name emitted twice by the diff, and it is a finding of this check; a name the
   catalog already carries is not one, because the instrumentation task registers each
   name in the change that emits it, and the checker says nothing about it in this mode.
