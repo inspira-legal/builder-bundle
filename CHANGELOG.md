@@ -22,10 +22,14 @@ check not run at all. All five are closed.
   the review then read those names back: every correctly registered name came back as an
   error, and so did a spec re-read after its events landed. The spec's own plan still
   collides, with a message naming both causes.
-- **The events table is read whole.** The plan stopped at the first run of rows, so a line
-  of prose splitting the table hid every row after it, whether or not the rows after the
-  break repeat the header. A table with no `payload` column now says so instead of passing
-  clean with no payload checked.
+- **The events table is read whole, and only it.** The plan stopped at the first run of
+  rows, so a line of prose splitting the table hid every row after it, whether or not the
+  rows after the break repeat the header. Reading past the break then had to learn where the
+  table ends: a run of pipe lines continues it only in its shape, the header's cell count and
+  not the header line written again, so a second, narrower table under `## Metric` is not
+  read through the events table's columns. A table with no `payload` column now says so
+  instead of passing clean with no payload checked, and the checker's own list of what C009
+  covers names all five cases it prints.
 - **Four shapes of a valid `EVENTS.md` no longer reject the file**: a table written without
   its outer pipes, a table under a third-level subheading, a byte order mark on the first
   part heading, and the empty `## Exceptions` table, which now has a documented shape.
