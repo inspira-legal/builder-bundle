@@ -28,7 +28,8 @@ Codes:
   C006 E  a payload field typed `text` has no Exceptions row
   C007 E  a name duplicates a catalog name or another planned name
   C008 W  an Exceptions row was used, named with its status
-  C009 W  no source to check against: no file, no repository root, no `event` column
+  C009 W  a source the check cannot fully read: no file, no repository root, no
+          `event` column, or an events table with no `payload` column
   C010 E  an input could not be read: the spec path, the names file, a bad encoding
 
 The convention resolves before the plan is read, so a missing file is one C009 line
@@ -367,15 +368,22 @@ def parse_convention(path, lines):
 
 
 def plan_from_spec(path, lines):
-    """Return (rows, None) from the spec's `## Metric` events table, or ([], C009).
+    """Return (rows, the no-source C009 or None, notes about the table that parsed).
 
     No table under `## Metric` (`Events: none`, a `skipped:` line, no section at all) is
     a plan of zero events, not a missing source.
+
+    Every run under the heading that parses with an `event` column is part of one plan.
+    A table a line of prose splits in two is still the events table, and reading only the
+    first run would pass every row after the break in silence.
     """
     metric = next((s for s in sections(lines) if s.name.lower() == "metric"), None)
     if metric is None or not metric.tables:
-        return [], None
+        return [], None, []
     headed = None  # the last run that parsed as a table: (header line, header cells)
+    found = False  # a run carried an `event` column, so there is a plan, empty or not
+    plan = []
+    notes = []
     for rows in metric.tables:
         parsed = header_of(rows)
         if parsed is None:
@@ -384,9 +392,22 @@ def plan_from_spec(path, lines):
         headed = (rows[0][0], header)
         if "event" not in header:
             continue
+        found = True
         event_column = header.index("event")
         payload_column = header.index("payload") if "payload" in header else None
-        plan = []
+        if payload_column is None:
+            # Without the column there are no fields to read, so C005, C006 and C008 never
+            # run. Silence there reads as a payload that passed, which is the one thing the
+            # payload rule exists to catch, so the missing column is said out loud.
+            notes.append(
+                (
+                    path,
+                    rows[0][0],
+                    "C009",
+                    f"the events table header (`{' | '.join(header)}`) has no `payload` column: "
+                    "the names are checked and no payload field is",
+                )
+            )
         for line, cells in body:
             event_cell = cell_at(cells, event_column)
             # The cell is the name, backticked or bare; a note beside a backticked name
@@ -395,17 +416,26 @@ def plan_from_spec(path, lines):
             name = ticked[0].strip() if ticked else event_cell.strip()
             fields = [f.strip() for f in BACKTICKED.findall(cell_at(cells, payload_column))]
             plan.append(PlanRow(line=line, name=name, fields=fields))
-        return plan, None
+    if found:
+        return plan, None, notes
     if headed is None:
-        return [], (
-            path,
-            metric.tables[0][0][0],
-            "C009",
-            "no table with a header row under `## Metric`: a run of `|` lines without its "
-            "`| --- |` delimiter row is a paragraph, not the events table",
+        return (
+            [],
+            (
+                path,
+                metric.tables[0][0][0],
+                "C009",
+                "no table with a header row under `## Metric`: a run of `|` lines without its "
+                "`| --- |` delimiter row is a paragraph, not the events table",
+            ),
+            [],
         )
     line, header = headed
-    return [], (path, line, "C009", f"the events table header (`{' | '.join(header)}`) has no `event` column")
+    return (
+        [],
+        (path, line, "C009", f"the events table header (`{' | '.join(header)}`) has no `event` column"),
+        [],
+    )
 
 
 def plan_from_names(text, numbered):
@@ -544,11 +574,12 @@ def run(args, cwd, anchor):
     if problems:
         return problems, 0
 
+    notes = []
     if args.spec is not None:
         text, error = read_text(args.spec)
         if error:
             return [(args.spec, 0, "C010", error)], 0
-        plan, unreadable = plan_from_spec(args.spec, split_lines(text))
+        plan, unreadable, notes = plan_from_spec(args.spec, split_lines(text))
         if unreadable:
             return [unreadable], 0
         plan_path = args.spec
@@ -566,6 +597,7 @@ def run(args, cwd, anchor):
         plan_path = args.names
 
     findings = list(check_catalog(conv))
+    findings.extend(notes)
     findings.extend(check_plan(plan, conv, plan_path))
     return findings, len(plan)
 
