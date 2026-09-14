@@ -101,7 +101,9 @@ row per event:
 The event name follows the project's own convention, `EVENTS.md` at the repository
 root when the project has one (`plugins/bb/references/events-convention.md`).
 `behaviors` cites the numbered happy-path rows the event instruments. `channel` names
-the sink, and the column exists only when the project has more than one. Payload
+the sink, and the column exists only when the project has more than one. A payload
+field is a backticked token in the cell; a parenthesised note beside one, like the type
+in the row above, annotates that field and is not another field. Payload
 fields hold one of four closed types: `id`, `enum`, `number`, `boolean`. None of the
 four carries free text or document content, which is what keeps mandatory
 instrumentation compatible with a legaltech's data duties, and this paragraph is its

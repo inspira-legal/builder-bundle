@@ -93,6 +93,9 @@ SEPARATOR_CELL = re.compile(r"^:?-+:?$")
 # A `|` escaped as `\|` is content, not a column boundary.
 CELL_SPLIT = re.compile(r"(?<!\\)\|")
 BACKTICKED = re.compile(r"`([^`]+)`")
+# A parenthesised note in a cell: the type of a field, or an enum's own values, which the
+# convention writes backticked. It annotates the fields beside it and is never one of them.
+ANNOTATION = re.compile(r"\([^)]*\)")
 # The element slot: lowercase words joined by single underscores. This is the checker's
 # own shape; no pattern is ever built from project text, cells are compared as words.
 ELEMENT = re.compile(r"^[a-z0-9]+(?:_[a-z0-9]+)*$")
@@ -467,7 +470,8 @@ def plan_from_spec(path, lines):
             # The cell is the name, backticked or bare, read by `name_cell` the same way the
             # catalog's own rows are. The payload fields are the backticked tokens, nothing else.
             name = name_cell(event_cell)
-            fields = [f.strip() for f in BACKTICKED.findall(cell_at(cells, payload_column))]
+            payload = ANNOTATION.sub(" ", cell_at(cells, payload_column))
+            fields = [f.strip() for f in BACKTICKED.findall(payload)]
             plan.append(PlanRow(line=line, name=name, fields=fields, prose=is_prose(event_cell)))
     if found:
         return plan, None, notes
