@@ -93,13 +93,18 @@ input is a coded line), and it always prints at least one line: the findings, or
 | C006 | E        | a payload field typed `text` has no exception row                                                 |
 | C007 | E        | a new name duplicates a catalog name or another planned name                                      |
 | C008 | W        | an exception row was used, named with its status (`approved` or `under-review`)                   |
-| C009 | W        | no source to check against: no convention file, no repository root, or no `event` column          |
+| C009 | W        | a source the check cannot fully read: the four cases named under this table                       |
 | C010 | E        | an input could not be read: the spec path, the names file, a bad encoding                         |
+
+C009 covers four cases: no convention file, no repository root, an events table with no
+`event` column, and an events table with no `payload` column. The fourth one still checks
+every name; what it says is that no payload field was checked, because silence over a
+payload reads as a payload that passed.
 
 A catalog name marked `legacy` is exempt from C002 to C004 and collides on C007 when a spec
 plans it again. A plan of zero events (`Events: none`, a `skipped:` section, a table with a
 header and no rows) is not a missing source: the checker prints the clean line with zero
-names. In the events table the payload fields are the backticked tokens of the
+names, unless that header has no `payload` column, which is the fourth C009 case above. In the events table the payload fields are the backticked tokens of the
 cell; anything else in the cell is a note and is left alone.
 
 The convention file resolves before any plan is read, so a missing file is the C009 line
@@ -201,8 +206,9 @@ line 0, so the shape stays `path:line CODE message` for every reader.
 | the spec path or the names file cannot be read                                    | C010 naming the path, exit 1                                                      |
 | the spec's `## Metric` reads `Events: none`                                       | nothing to check, the clean line                                                  |
 | the spec's `## Metric` is one `skipped:` line                                     | nothing to check, the clean line                                                  |
-| the events table has a header and no rows                                         | nothing to check, the clean line                                                  |
+| the events table has a header with a `payload` column and no rows                 | nothing to check, the clean line                                                  |
 | the events table has no `event` column                                            | C009 naming the header, exit 0                                                    |
+| the events table has no `payload` column                                          | C009 naming the header, the names still checked, exit 0                           |
 | a row's event cell is empty                                                       | C002, the message names the empty cell                                            |
 | a name starts with no registered prefix                                           | C002, the remedy names the registry task                                          |
 | a name uses `erro`, `click`, `impression` as its type                             | C003 with the closed list                                                         |
