@@ -1,5 +1,65 @@
 # Changelog
 
+## 2.22.1 (2026-09-14)
+
+**The event checker and the documents around it, held to what they actually do.** A deep
+review of the branch that shipped 2.22.0 found thirteen blocking items: seven ways the
+checker read a valid file wrong or read a wrong file as valid, and six documents that
+described behavior the code does not have. Nothing about the format changed, so a project's
+`EVENTS.md` needs no edit; what changed is which files are accepted, which lines are
+reported, and what each document promises. The reasoning is in `git log` for
+`claude/convencao-de-eventos`, one commit per item.
+
+The free-text guarantee is the part worth reading twice. The payload rule's one job is that
+no event carries document content, and the paragraph that owns it had lost its absolute
+floor, its `approved` status had no reader after it, and four separate paths let a payload
+check not run at all. All five are closed.
+
+### Fixed
+
+- **A name already in the catalog is not a duplicate in the emitted-names mode.** The
+  instrumentation task appends each name to the catalog in the change that emits it, and
+  the review then read those names back: every correctly registered name came back as an
+  error, and so did a spec re-read after its events landed. The spec's own plan still
+  collides, with a message naming both causes.
+- **The events table is read whole.** The plan stopped at the first run of rows, so a line
+  of prose splitting the table hid every row after it. A table with no `payload` column now
+  says so instead of passing clean with no payload checked.
+- **Four shapes of a valid `EVENTS.md` no longer reject the file**: a table written without
+  its outer pipes, a table under a third-level subheading, a byte order mark on the first
+  part heading, and the empty `## Exceptions` table, which now has a documented shape.
+- **Document content is the floor no exception reaches**, back in the paragraph that owns
+  the payload rule: never a contract, a petition, a decision or a clause, in any project and
+  under any status. An exception covers what a person typed into a field, and `approved`
+  records that someone weighed it, with the next reader holding the row to that floor.
+- **The free-text guarantee loses its remaining ways not to run.** The checker holds the
+  file to its own rule that every `text` field carries an exception row, one line per row;
+  the review's payload criterion says which run produces which code; and the draft's
+  instruction for an undocumented field carries the consequence that no type check can run
+  on it.
+- **A prose event cell is one unnamed row**, not a name planned twice. Every row waiting on
+  a prefix registration carries the same sentence, and comparing sentences reported
+  collisions that do not exist. The payload of such a row is still read.
+- **The catalog's name cell is read the way the spec's is**, so a note beside a name no
+  longer produces a false naming error and a key the duplicate check cannot find.
+- **An enum's own values in a payload cell are not fields.** A parenthesised note annotates
+  the field beside it.
+- **The spec's gate routes every `EVENTS.md` line to the external blocker**, whatever its
+  code, and names the remedy for each shape, the `legacy` mark included. It used to name two
+  codes and send the rest to a spec row that does not exist.
+- **The checker's lines about the file are not findings against the diff.** They print on
+  every run, whatever the input, and now fold into one finding against the file.
+- **The external PR mode's checker line is a command that runs**, with `python3` and the
+  plugin-root path.
+- **Eight pointers open from where they are read**: the format and the payload rule are
+  named through the plugin-root variable, and the checker derives its own root instead of
+  printing a literal marker when the variable does not reach the process.
+- **A task whose behavior is named in prose reaches its agent with that prose.**
+  `workflows/build-tasks.js` handed the agent `none cited` when a task cited an event row
+  instead of numbered behavior rows, which is exactly the shape a Medium spec writes. The
+  row's own prose now travels in the task prompt. This one rode along on the same branch
+  without belonging to its spec, and it is described here rather than shipped unnamed.
+
 ## 2.22.0 (2026-09-11)
 
 **The event convention becomes a file bb reads.** A project states its event grammar,
