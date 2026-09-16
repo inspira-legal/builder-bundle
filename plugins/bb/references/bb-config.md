@@ -1,6 +1,6 @@
 # The config: `~/.claude/bb.config.json`
 
-One question, asked once, that every bb skill reads. What the person does is a fact
+One calibration, asked once, that every bb skill reads. What the person does is a fact
 about the person, so it is not asked per project and it is not stored per project. The
 same file carries the one setting that is about the plugin instead of the person:
 whether bb writes its custom instructions into `~/.claude` at all.
@@ -27,6 +27,7 @@ and `json` is stdlib; a hook that must never fail cannot carry a dependency.
     "uses_terminal": true,
     "technical_instructions": true,
     "technical_vocabulary": true,
+    "design_tools": ["figma"],
     "calibrated_at": "2026-08-19"
   }
 }
@@ -41,6 +42,11 @@ and `json` is stdlib; a hook that must never fail cannot carry a dependency.
 
 `calibrated_at` is an ISO date, written by `/bb:profile` and read by nobody. It is there
 so a person can see how old the answers are.
+
+`design_tools` is a list, not a flag: the canvas design tools that are part of the
+person's day, drawn from `figma`, `paper` and `pencil`. Code and Claude design are not
+values here because they need nothing and are always offered. The list has one rule of
+its own, missing and empty are different answers, and it lives under Reading it below.
 
 ## `custom_instructions`
 
@@ -95,7 +101,7 @@ stop.
 
 ## Reading it
 
-Three rules, and they are what keep a hook from ever blocking a session:
+The rules below are what keep a hook from ever blocking a session:
 
 - **Missing file: no profile.** Not an error, not a warning. The frame carries the
   invitation to run `/bb:profile`.
@@ -104,6 +110,12 @@ Three rules, and they are what keep a hook from ever blocking a session:
 - **A missing flag is `false`.** A file written by an older version stays valid, and the
   safe default is more explanation, not less. All four flags point the same way, so this
   holds on every one of them: absent reads as the person not being used to it yet.
+- **A missing `design_tools` is not an empty one.** Absent means the question was never
+  asked, so no reader renders or leans on it; `[]` means the person answered "none".
+  The flags collapse absent into `false` because more explanation is always safe; a
+  list collapsed into "none" would invent an answer, which is why this key keeps the
+  distinction. A value the reader does not recognize is skipped, and a list holding
+  nothing it recognizes reads the same as unasked: silence beats inverting the answer.
 - **Only an explicit `false` opts out.** `custom_instructions` absent, or holding
   anything other than `false`, reads as `true`. A file nobody has answered yet keeps the
   instructions.
@@ -119,6 +131,7 @@ inferring a whole person from a single id.
 | `uses_terminal`          | scaffold or hosted, and whether the preflight walks through git |
 | `technical_instructions` | whether a command prints as one line or as numbered steps       |
 | `technical_vocabulary`   | whether `scaffold`, `embed`, `MCP` and `branch` are replaced    |
+| `design_tools`           | the medium question's option order in `/bb:brisar`              |
 
 `uses_terminal` is about knowing how, not about having it installed. What is installed
 and authenticated is the preflight's question, detected and never asked.

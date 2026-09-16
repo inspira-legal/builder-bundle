@@ -156,8 +156,11 @@ files to read rather than as a list to confirm, so the judgment lands with the a
 open the file. The alternative is a confident empty list over a suite that exists.
 
 `tasks` carries only the ones still unticked at invoke time, in an order that already
-satisfies `dep:`. The agents re-read the spec anyway: `args` is the plan, the file on
-disk is the truth.
+satisfies `dep:`. `behaviors` holds the numbers implement's step 4 resolved, a
+`→ events <name>` citation (`spec-format.md`'s task shape) included, so the agent's
+prompt and the coverage count read the same contract every other task gets; the
+resolution and its failure modes are that step's. The agents re-read the spec anyway:
+`args` is the plan, the file on disk is the truth.
 
 `model` on a task is **optional and the only tier the payload sets**, because how hard a task
 is, is the one thing about it the script cannot read. It takes `haiku`, `sonnet` or `opus`; the

@@ -131,7 +131,8 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
   `.claude/CLAUDE.md` calls a monolithic `SKILL.md` that inlines every phase a defect, not a
   style choice.
 - **Evidence**: "Progressive disclosure (mandatory for fused skills)" in `.claude/CLAUDE.md`;
-  `plugins/bb/skills/review/SKILL.md` routing to seven `references/front-*.md`.
+  `plugins/bb/skills/review/SKILL.md` routing to the `references/front-*.md` files, one
+  per front, so the count never goes stale here when a front lands.
 
 #### BB008: No dash in the prose
 
@@ -210,8 +211,8 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 - **Level**: HIGH
 - **Description**: `.bb/<slug>/spec.md` opens with a frontmatter block carrying `status` (a valid
   value), `created` as `YYYY-MM-DD` and `slug`, and carries the fixed sections the other skills
-  read. The lint answers `E001` for the block, `E002` for a missing section, `E003` for a dead
-  section name and `W003` naming the current one.
+  read. The lint answers `E001` for the block, `E002` for a missing section, and `E003` for a
+  dead section name, its message naming the current one.
 - **Evidence**: `plugins/bb/skills/spec/scripts/lint_spec.py`, the `Lint specs` step of
   `.github/workflows/validate.yml`, and the contract in `plugins/bb/references/spec-state.md`.
 - **Do**:
@@ -373,8 +374,8 @@ time. `__pycache__/` is ignored by `.gitignore`.
 ### Error handling
 
 The hook layer's rule is silence over failure (BB017). The spec lint takes the opposite stance:
-it names a code (`E001` to `E005`, `W001` to `W004`) and exits non-zero, because it runs in CI
-where a red run is the point.
+it names a code (`E001` to `E005`, `W001` to `W007`; `W003` is retired) and exits non-zero on
+the E codes, because it runs in CI where a red run is the point.
 
 ## Reference files
 

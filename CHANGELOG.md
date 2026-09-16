@@ -1,5 +1,82 @@
 # Changelog
 
+## 3.7.0 (2026-09-10)
+
+**Design becomes a calibrated, reviewable dimension, and the cycle learns to measure.**
+The profile learns how the person designs, the design journey leans on that answer, and
+the review engine gains the front that checks the design system. A spec names its metric
+with provenance and the events its behaviors emit, instrumentation enters the build as
+ordinary tasks, and review gains the front that checks coverage against the convention
+the project itself uses. Four specs carry the reasoning: `.bb/design-no-perfil/`,
+`.bb/frente-de-design/`, `.bb/metricas-no-ciclo/` (discovery and spec) and
+`.bb/exportar-pro-observador/` (the last one pending: it frames exporting bb's records to
+an observer and builds nothing yet).
+
+### New
+
+- **`profile.design_tools` in `~/.claude/bb.config.json`**: `/bb:profile` asks one
+  more question, which of Figma, Paper and Pencil are part of the person's day. An
+  empty list is an answer ("none of them"); a missing key is a config written before
+  the question and reads as not asked. `hooks/sync_instructions.py` renders the answer
+  as one line in the profile block of `~/.claude/BUILDER-BUNDLE.md`.
+- **`medium_default` on a product entry** (`product-registry.yaml`): a product with a
+  settled design workflow leans the medium question for everyone who works on it,
+  above the person's own habit. Both levels order the question and set the
+  recommendation; neither answers it, the medium stays always asked.
+- **The `design` front in `/bb:review`**: deviations from the design system the
+  project actually has. Raw values where a token exists, rebuilt components, missing
+  documented states, drift from the branch's visual direction, each finding citing
+  the source it deviates from (`front-design.md` + `design-checklist.md`). Available
+  when the diff touches UI and a design source resolves; also runs standalone over a
+  surface (a folder, files, or a running page), like the accessibility front, which
+  is the design review loop on its own. brisar's Deliver gate offers it next to the
+  deep accessibility audit.
+- **`## Metric` joins the spec's fixed set**, between `## Behavior` and `## Tasks`:
+  the metric block (metric, baseline, target, each value with provenance or an
+  honest per-value `skipped: <reason>`, an optional `okr:` line) or one explicit
+  section-level skip. User-triggered work adds the events table, one row per event
+  citing the behavior rows it instruments, under the payload rule (IDs and enums,
+  never free text or document content). An instrumentation task cites event rows
+  and covers behaviors through them; implement resolves that citation into numbers
+  when it loads the spec (`spec-format.md`, the single home of the shapes).
+- **Lint warnings W005, W006 and W007** (`lint_spec.py`): no `## Metric`, a missing
+  or provenance-less `Baseline:`/`Target:`, and an event row citing a numbered
+  behavior row that does not exist. Warnings, never errors: a spec that predates
+  the section stays valid, and CI lints the specs a PR touches.
+- **The `instrumentation` front in `/bb:review`**: the diff's added interactions
+  against the plan and the convention a two-rung ladder resolves (the spec's events
+  table, `Events: none` included, or the analytics convention detected in the
+  project's own source). Semantic checks, not presence: coverage, naming, payload,
+  channel, each finding citing its source (`front-instrumentation.md`); available
+  in the external-PR mode on rung 2, its findings ranked like design's and, there,
+  posted on the PR rather than applied.
+- **Discover captures baseline and target** on the success signal, with provenance
+  in spec-format's shape, and fit hardens the hypothesis to "from <baseline> to
+  <target> within <timeframe>"; `skipped: not-instrumented` is a valid baseline
+  that flags the instrumentation as first work.
+
+### Changed
+
+- `phase-medium.md` orders its options by the product's `medium_default`, then the
+  person's `design_tools`, then the fit signals, and the trim keeps the product
+  default and the person's tools, in that order; a lean tool whose MCP is absent is
+  named once in the intro line, never forced.
+- `preflight-tooling.md` cross-references `design_tools` alongside `uses_terminal`.
+- The export renders the hypothesis-OKR-metric trio from `discovery.md` and the
+  spec instead of asking: values bare (provenance stays in the spec), a per-value
+  skip as "not yet measured", the four fields together or not at all, and the
+  spec's values winning where the two disagree. It asks only for a field genuinely
+  absent from both documents.
+- The spec's exit gate renders `## Metric` beside the coverage counter and holds a
+  value without real provenance as an open item; seeding and gate rules live in
+  `draft-first.md`.
+- The `design` and `instrumentation` fronts keep their `High` / `Medium` / `Low`
+  priorities inside their own references and map onto the two finding levels at the
+  report boundary, the way a11y's WCAG priorities do (`references/finding-levels.md`):
+  `High` is a Bloqueante, `Medium` and `Low` are Sugestões. The rank tiers, the fix
+  order and the report read the level, so the two fronts arrive in the report the
+  same way every other front does.
+
 ## 3.6.1 (2026-09-04)
 
 **Agent names carry the plugin's namespace.** The platform publishes a plugin's agents under its own name: `plugins/bb/agents/bb-reuse-check.md` answers to `bb:bb-reuse-check`, not to `bb-reuse-check` bare. The workflow and skills must send the namespaced name in their dispatches, or the agent does not resolve and stage zero stops the build at task 1. The stage-zero dispatch in `plugins/bb/workflows/build-tasks.js` now sends `bb:bb-reuse-check` as its `agentType`, and the four prose dispatches in `/bb:review` and `/bb:spec` are respelled with the same prefix: `bb:bb-review-finder`, `bb:bb-review-verifier` and `bb:bb-spec-reviewer`.
