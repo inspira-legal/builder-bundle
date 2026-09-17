@@ -30,6 +30,41 @@ that value is unmeasured, or write the one-line `skipped: <reason>` when no hone
 measure exists at all. An honest skip beats an invented number; the shape and the
 events table live in `spec-format.md`.
 
+## Propose the events table
+
+A project with `EVENTS.md` at its root
+(`<plugin-root>/references/events-convention.md`) gets its `## Metric` events
+table proposed the same draft-first way as the rest of the spec: read the file, then write the table instead of leaving it blank.
+
+- **Name**: `{prefix}_{type}_{element}`, the prefix from `## Prefix registry`, the type
+  from `## Grammar`, the element a short lowercase phrase for what happened.
+- **Payload**: the fields `## Dictionary` already lists for the behavior's feature,
+  backticked in the cell.
+- **Granularity**: the file's own guidance, 8–12 events per feature, never one per
+  form field.
+
+Two gaps the file can't close on its own, and the draft never guesses past them:
+
+- **No registered prefix for the feature**: don't invent one. Add a task that
+  registers the prefix in `## Prefix registry` of `EVENTS.md`, and write the row's
+  name cell as plain prose citing that task (no backticks) instead of a name, for
+  example `waits on task 4, registers the prefix`. The checker reads a cell that does
+  not open with a backtick and holds a space as prose, so it says the row names no
+  event yet and flags it (`C002`), one line per row and never a collision between two
+  rows waiting on the same task; that is the open item the gate holds until the task
+  lands and the row carries its real name.
+- **No dictionary entry for a payload field**: add a task that adds the field to
+  `## Dictionary` of `EVENTS.md`, the same way, but write the row complete: name and
+  payload field both, backticked as usual. The checker warns instead of blocking
+  (`C005`); the gate shows it, and the person keeps the last word while the dictionary
+  task is pending. A field the dictionary does not carry has no type yet, so the free
+  text check cannot run on it and that one warning is the whole signal: when the field
+  is free text, the task that adds the dictionary row carries its `## Exceptions` row
+  too, with status, justification and retention, and the task says so in its own line.
+
+Without `EVENTS.md`, the events table is proposed the way it always was, from the
+behavior rows alone; nothing here changes.
+
 ## Surfacing the forks (the only thing you ask about)
 
 A decision earns a question only when it **genuinely could go more than one way**
@@ -78,6 +113,15 @@ Ask the forks through the **`AskUserQuestion` tool**: concrete options the user 
   stays silent here; on a Large spec it walks event rows to behavior rows only,
   so the reverse direction, every user-triggered behavior row having its event,
   is yours to judge at the gate.
+- **A checker line whose path is the project's `EVENTS.md` is an external blocker**, whatever
+  its code: there is no row in this spec to fix, so it is resolved in that file and deferred
+  until it is. Three shapes arrive that way. `C001` is the file malformed, a part missing or
+  written twice or a table without its header. A line prefixed `catalog row:` or
+  `dictionary row:` is the file held to its own rules, and the remedy is in the file: a name
+  that predates the file carries the literal `legacy` in its `status` cell, which is what
+  keeps a name nobody here planned from blocking every spec in the project, and a `text`
+  field owes its row in `## Exceptions`. `C010` is an input that could not be read, fixed at
+  that path.
 - **Reflect back:** "So we're building X, for Y, and NOT doing Z, right?"
 - **Alignment is active, not silent.** It's confirmed when the user restates the
   idea in their own words or explicitly approves the written spec, never by the

@@ -128,7 +128,8 @@ stringified one):
   reuseNotes: ["<one string per reuse note in ## Decisions>"],
   phases: [{ title: "<the ### heading>", tasks: [1, 2] }],
   tasks: [
-    { n: 1, title: "...", delivers: "...", behaviors: [2, 3], dep: [], verify: "...", model: "haiku" }
+    { n: 1, title: "...", delivers: "...", behaviors: [2, 3], dep: [], verify: "...", model: "haiku" },
+    { n: 2, title: "...", delivers: "...", behaviors: [], acceptance: "<the prose cell>", dep: [1], verify: "..." }
   ]
 }
 ```
@@ -161,6 +162,13 @@ satisfies `dep:`. `behaviors` holds the numbers implement's step 4 resolved, a
 prompt and the coverage count read the same contract every other task gets; the
 resolution and its failure modes are that step's. The agents re-read the spec anyway:
 `args` is the plan, the file on disk is the truth.
+
+`acceptance` is the one field that carries what `behaviors` could not. A task citing an
+event row whose `behaviors` cell is prose, which is how a Medium spec cites a behavior it
+carries inline, resolves to no numbers at all, and that cell's phrase is what states the
+task's contract instead. Empty `behaviors` alone reaches `taskPrompt()` as "none cited",
+so the phrase travels beside it and the prompt reads whichever of the two the task has.
+A task with numbers carries no `acceptance`; the field is absent, not empty.
 
 `model` on a task is **optional and the only tier the payload sets**, because how hard a task
 is, is the one thing about it the script cannot read. It takes `haiku`, `sonnet` or `opus`; the

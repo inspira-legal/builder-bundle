@@ -92,8 +92,11 @@ colors.
 source instead of the guide: the verifier opens what the finding cites, for design
 the token file and line, the component's path, the states it documents, or the
 section of the branch's `design.md`, and for instrumentation the events table row,
-the convention's source, or the payload rule's paragraph, and checks that the source
-says what the finding claims and that the diff line actually deviates from it. A
+`EVENTS.md`'s own row, the checker's `path:line CODE` line (in the review's names mode
+it points at the `EVENTS.md` row or section that caught the name: the verifier opens
+that row and reads the table it sits in, never only the message), the convention's
+source, or the payload rule's paragraph, and checks that the source says what the
+finding claims and that the diff line actually deviates from it. A
 citation that does not hold up is REFUTED, the same discipline that kills
 hallucinated rules.
 

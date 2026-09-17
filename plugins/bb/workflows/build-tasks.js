@@ -147,7 +147,16 @@ do not edit any file: you are the baseline, not the first task.`;
 
 function taskPrompt(t, conventions, checks, specPath) {
   const deps = t.dep && t.dep.length ? t.dep.join(", ") : "nothing";
-  const behaviors = t.behaviors && t.behaviors.length ? t.behaviors.join(", ") : "none cited";
+  // A task citing an event row whose `behaviors` cell is prose resolves to no numbers, and
+  // implement's step 1 passes that cell's phrase as `acceptance` instead. Reading the numbers
+  // alone would hand the agent "none cited" over a task that does have an acceptance
+  // contract, just not a numbered one.
+  const behaviors =
+    t.behaviors && t.behaviors.length
+      ? t.behaviors.join(", ")
+      : t.acceptance
+        ? `no numbered row; the event row it cites names its behavior in prose: ${t.acceptance}`
+        : "none cited";
   return `Build one task of a spec you did not write, in a repo you have not seen.
 
 The spec: ${specPath}. Read it whole before touching anything: the opening and the free top

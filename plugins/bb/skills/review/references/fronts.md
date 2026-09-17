@@ -63,17 +63,33 @@ call `/bb:ship` makes. What each field settles:
   wires analytics (preflight carries no field for it either). Both signals are
   executable greps over the added lines of the resolved `diff_range`, and neither
   borrows `ui`'s interaction marker, whose pattern stops at the JSX `on*` props
-  (`preflight.py`, `UI_MARKERS`): the interaction
+  (`preflight.py`, `UI_MARKERS`) and counts only new markup: the interaction
   signal greps for a handler or listener wired anywhere (`onClick`, `onKeyDown`,
   `addEventListener`, a form submit or a route change), on new markup or existing,
   and the analytics signal greps the same lines for an emit site (a
   `track(`/`emit(`/`capture`/`logEvent` call, or an import from the project's
   analytics or events module), which is what catches an emit added in a service
   file no UI probe sees. Rung 1 is the branch spec's `## Metric` events table or
-  its explicit `Events: none` line (the spec `branch_spec` resolved), rung 2 the
-  analytics convention the project's own source shows. Either rung resolving
-  makes `instrumentation` available; what each rung is and which checks it funds
-  are `front-instrumentation.md`'s (§1).
+  its explicit `Events: none` line (the spec `branch_spec` resolved). Rung 2 is
+  the project's `EVENTS.md`, resolved at the repository root the same way
+  `check_events.py` resolves it (the nearest `.git` upward from the working
+  directory); when it resolves, the caller reads the names the emit sites above
+  pass and runs `python3 <plugin-root>/scripts/check_events.py --names -`
+  once, before the fan-out, piping that list on stdin. Each line it prints anchors
+  to the `EVENTS.md` row or section that caught it, and two kinds come back: a line
+  about a name the list carried, and a line about the file itself, prefixed
+  `catalog row:` or `dictionary row:`, which the checker prints on every run
+  whatever the input and often about a row the diff never touched. An output that
+  is one `C001` line means the file is malformed: rung 2 is dropped for the run and
+  that line rides into the scope block as the one finding to report against the
+  file (`front-instrumentation.md`, §1, which is also where the prefixed lines fold
+  into a single finding). Rung 3 is the analytics convention the project's
+  own source shows, read when the file is silent, malformed or absent. Any rung resolving makes `instrumentation` available; what each rung is
+  and which checks it funds are `front-instrumentation.md`'s (§1). The checker's
+  output and `EVENTS.md`'s own resolved absolute path travel into the finder's
+  scope block the same way the payload rule's path already does (Fan-out shape,
+  step 2, below); a repository with no `EVENTS.md` skips rung 2, and nothing else
+  here changes.
 - `pr`: an open PR for this branch, the only thing `threads` needs.
 - `checks`: that PR's checks, which is `ci`'s evidence. `failing`, `pending` and
   `cancelled` are lists of checks, because the name and the run link are what the front
@@ -93,9 +109,9 @@ failure. `gh` unauthenticated: say so once, with `gh auth login` as the remedy, 
 offer the rest. No `CODE_REVIEW_GUIDE.md`: one line, with `/bb:review-setup` as the
 remedy. UI in the diff but no design source makes `design` unavailable. One line,
 naming what would create a source (a token file the build reads, or a visual
-direction from `/bb:brisar`). Interactions or analytics wiring in the diff but
-neither ladder rung resolving makes `instrumentation` unavailable, never a degraded
-run. One line, naming the remedy (write the events table in the spec's `## Metric`,
+direction from `/bb:brisar`). Interactions or analytics wiring in the diff but no
+ladder rung resolving makes `instrumentation` unavailable, never a degraded run.
+One line, naming the remedy (write the events table in the spec's `## Metric`,
 or point at the project's emit wrapper).
 
 ## Depth: two tiers by default, a third only when asked
@@ -160,14 +176,16 @@ change it reviewed.
    `front-instrumentation.md` itself), and the spec when there is one, plus ONE
    angle/lens set and its candidate cap. The `design` finder's scope block also
    carries the resolved design sources (`front-design.md`, §1), and the
-   `instrumentation` finder's the resolved rungs plus the resolved absolute path
+   `instrumentation` finder's the resolved rungs, the resolved absolute path
    of the payload rule's file (`skills/spec/references/spec-format.md`, which its
-   criteria reference names under `<plugin-root>`), so the finder cites instead
-   of re-resolving. A path a front's reference writes as `<plugin-root>/...` is
-   put in by this caller, as the absolute path the session carries, before it
-   enters the scope block, and when the reference itself is what the agent
-   receives, the paths written inside it are resolved into the block too; a
-   dispatched agent has no plugin root of its own.
+   criteria reference names under `<plugin-root>`) and, when `EVENTS.md`
+   resolved, the checker's own output plus its resolved absolute path, so the
+   finder cites instead of re-resolving or re-running it. A path a front's
+   reference writes as `<plugin-root>/...` is put in by this caller, as the
+   absolute path the session carries, before it enters the scope block, and when
+   the reference itself is what the agent receives, the paths written inside it
+   are resolved into the block too; a dispatched agent has no plugin root of its
+   own.
 
    The intent block travels verbatim, its three parts intact: what this PR sets out
    to do, what the conversation settled with who said it and the link, what is still
