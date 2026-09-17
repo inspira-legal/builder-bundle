@@ -75,7 +75,8 @@ testable hypothesis hardens from "the metric moves" to "the metric moves from
 <baseline> to <target> within <timeframe>". Downstream, the export's
 hypothesis-OKR-metric trio stops asking at render time: the hypothesis comes from the
 discovery record as today, the metric and the OKR come from `## Metric` by path, the
-export asks only for a field genuinely absent from both records, and a skipped
+export asks only for a field genuinely absent from both records (a missing `okr:`
+line is an answer, not an absence: `Connected OKR` drops out alone), and a skipped
 section omits the trio whole under the existing all-or-nothing rule.
 
 ## Decisions
@@ -119,18 +120,19 @@ Happy path, once built:
    <timeframe>" with provenance.
 7. The export renders the trio from the two records without asking.
 
-| WHEN                                            | THEN                                                             |
-| ----------------------------------------------- | ---------------------------------------------------------------- |
-| the work is internal, no user-visible behavior  | `## Metric` carries an operational measure or a reasoned skip    |
-| a spec predates the landing                     | the warnings fire but nothing fails; no rewrite of history       |
-| a metric value has no provenance                | the lint warns and the gate blocks it as an open item to resolve |
-| the diff only wires analytics, no UI change     | the probe activates the instrumentation front                    |
-| neither ladder rung resolves                    | the front is unavailable and the report names the remedy         |
-| a payload field carries free text or content    | the front reports a finding citing the payload rule              |
-| an event flows to a sink the plan does not name | the front reports a finding citing the channel                   |
-| `## Metric` is skipped and the export runs      | the trio is omitted whole, no placeholder                        |
-| a Medium spec carries behaviors inline          | the citation warning stays silent; the gate judges the trace     |
-| the trio needs an OKR and no record carries one | the export asks for that field alone, and never invents it       |
+| WHEN                                                        | THEN                                                                        |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------- |
+| the work is internal, no user-visible behavior              | `## Metric` carries an operational measure or a reasoned skip               |
+| a spec predates the landing                                 | the warnings fire but nothing fails; no rewrite of history                  |
+| a metric value has no provenance                            | the lint warns and the gate blocks it as an open item to resolve            |
+| the diff only wires analytics, no UI change                 | the probe activates the instrumentation front                               |
+| neither ladder rung resolves                                | the front is unavailable and the report names the remedy                    |
+| a payload field carries free text or content                | the front reports a finding citing the payload rule                         |
+| an event flows to a sink the plan does not name             | the front reports a finding citing the channel                              |
+| `## Metric` is skipped and the export runs                  | the trio is omitted whole, no placeholder                                   |
+| a Medium spec carries behaviors inline                      | the citation warning stays silent; the gate judges the trace                |
+| the spec carries no `okr:` line and the export runs         | `Connected OKR` is omitted alone, the other fields render, nothing is asked |
+| a trio field other than the OKR is absent from both records | the export asks for that field alone, and never invents it                  |
 
 ## Metric
 

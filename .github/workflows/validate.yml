@@ -30,6 +30,9 @@ jobs:
       - name: Validate workflow scripts
         run: bun .github/scripts/validate-workflow-script.ts
 
+      - name: Validate agent names
+        run: bun .github/scripts/validate-agent-names.ts
+
       # Lint the specs the PR touches, plus the whole corpus whenever the linter
       # itself changed: that corpus run is the only executable coverage the script
       # has, so a PR that edits it proves it against every landed spec. The specs

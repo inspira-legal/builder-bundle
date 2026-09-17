@@ -99,7 +99,7 @@ row per event:
 | `vault_doc_uploaded` | 2, 3      | `doc_id`, `source` (enum) | internal |
 
 The event name follows the project's own convention, `EVENTS.md` at the repository
-root when the project has one (`${CLAUDE_PLUGIN_ROOT}/references/events-convention.md`).
+root when the project has one (`<plugin-root>/references/events-convention.md`).
 `behaviors` cites the numbered happy-path rows the event instruments. `channel` names
 the sink, and the column exists only when the project has more than one. A payload field
 is a backticked token in the cell; a parenthesised note beside one, like the type in the
@@ -125,10 +125,10 @@ citing the event rows it wires (`→ events <name>, <name>` in place of the beha
 citation). An event row's own behavior citations are what the coverage table counts, so
 an instrumentation task covers its behaviors through the event row it cites; the build
 side resolves that citation into behavior numbers when it loads the spec (implement's
-step 1), and the machinery downstream consumes numbers the way it always did. When the
+step 4), and the machinery downstream consumes numbers the way it always did. When the
 project has `EVENTS.md`, the same task appends each name it wires to the file's `##
 Catalog` in the change that lands it, an empty `status` cell, so the next spec's
-duplicate check sees it (`${CLAUDE_PLUGIN_ROOT}/references/events-convention.md`).
+duplicate check sees it (`<plugin-root>/references/events-convention.md`).
 
 A Medium spec carries its behaviors inline, so an event row there has no numbered row to
 cite; its `behaviors` cell names the inline behavior in a short phrase instead. The
@@ -148,7 +148,7 @@ Say each thing once. A fact that appears in the opening, again in a decision, an
 in a behavior row is one fact and two copies to keep in sync.
 
 **Name things the way the repo names them.** The spec is the document the builder rereads,
-so its words become the words of the build. `${CLAUDE_PLUGIN_ROOT}/references/doc-style.md`
+so its words become the words of the build. `<plugin-root>/references/doc-style.md`
 carries the principle.
 
 ## Tables carry short cells
@@ -180,6 +180,33 @@ task. That two-way trace is what the gate renders as the coverage table; an unli
 row on either side is an omission made visible. An instrumentation task cites event
 rows instead, and counts as citing the behaviors those rows cite (the Metric section
 above).
+
+### The `###` headings inside `## Tasks` are the build's phases
+
+Group the tasks under `###` headings whenever the spec has more than one movement in it:
+
+```
+## Tasks
+
+### Prove the ground
+
+- [ ] **1. The normalizer**: …
+
+### Migrate the callers
+
+- [ ] **2. The chain shrinks to two**: …
+```
+
+The heading is the phase title, the tasks under it are its members, and document order is
+run order. `/bb:implement` passes them to the build as `args.phases`, and the progress card
+shows them as its group headers, so someone watching a run over this spec reads the work
+this spec describes. Name a heading after what that group of tasks does, the way you would
+name a section: `Prove the ground`, `Migrate the callers`, `Drop the old path`.
+
+Grouping is optional and costs nothing to skip. A flat list runs under one fallback title,
+and a task that sits before the first `###` runs first, under that same title. Nothing else
+reads the headings either: `lint_spec.py` matches `^##\s+` and `scan_specs.py` counts tasks
+by their checkbox, so both see the same flat list they always did.
 
 ## Dead names
 
@@ -221,5 +248,11 @@ python3 plugins/bb/skills/spec/scripts/lint_spec.py .bb/<slug>/spec.md
 | W007 | warning | an event row citing a numbered behavior row that does not exist       |
 
 Whether the document is too long, repeats itself, or recounts the conversation is not a
-lint check; it's what the independent reviewer is asked to find. A line ceiling on a
-document meant to be read just rebuilds the form.
+lint check; it's what the two `bb-spec-reviewer` lenses are asked to find, the coherence
+one reading the spec as text and the grounding one checking its claims about existing
+code against the repo. A line ceiling on a document meant to be read just rebuilds the
+form.
+
+Every code reads the document's own bytes, and what those two lenses returned is not
+among them: their verdict reaches the user at the gate, and the plugin-level
+`references/spec-state.md` says why it stays out of the frontmatter.

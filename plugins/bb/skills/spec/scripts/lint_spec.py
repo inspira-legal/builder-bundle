@@ -2,9 +2,10 @@
 """Check the mechanical shape of a spec.
 
 Judgment (is it too long, does it repeat itself, is it recounting the conversation)
-belongs to the independent reviewer. This only catches what is decidable by reading
-the bytes: the required sections, dead names, frontmatter, malformed tables, and the
-Metric section's shape (provenance notes and event-row citations).
+belongs to the two `bb-spec-reviewer` lenses, which report at the spec's gate. This only
+catches what is decidable by reading the bytes: the required sections, dead names,
+frontmatter, malformed tables, and the Metric section's shape (provenance notes and
+event-row citations).
 
 Usage: lint_spec.py <path>...
 Output: `path:line CODE message` on stdout. Exit 1 when any E-code fired.
@@ -61,20 +62,25 @@ VALUE_SKIP = re.compile(r"\**skipped\**\s*:\s*\S", re.IGNORECASE)
 # skip replaces the whole section, so a `skipped:` arriving after other content is
 # a continuation or a sub-note, never the skip. check_body enforces that ordering.
 METRIC_SKIP = re.compile(r"^\s{0,3}(?:[-*+]\s+)?\**skipped\**\s*:\s*\S", re.IGNORECASE)
+# Two parenthesis patterns on purpose: a provenance note has to say something, so an
+# empty `()` is no provenance, while a citation cell sheds every note, empty ones
+# included, before it is judged (`cited_rows`, `check_citations`).
 PROVENANCE = re.compile(r"\([^)]+\)")
+PAREN_NOTE = re.compile(r"\([^)]*\)")
 BEHAVIOR_ROW = re.compile(r"^(\s*)(\d+)[.)]\s")
 NUMBERED_CELL = re.compile(r"^(\d+)[.)]?$")
 # A new list item, an `okr:` or a `skipped:` line closes the bullet above it, and so
 # do a `>` quote and a thematic break: CommonMark interrupts a paragraph there, so
 # the rendered document does not keep them inside the bullet. Anything else directly
 # under an open bullet is a wrapped or lazy continuation of it.
+# The three spellings of a thematic break, shared with BLOCK_START below.
+THEMATIC_BREAK = r"(?:-\s*){3,}$|(?:\*\s*){3,}$|(?:_\s*){3,}$"
 NEW_ITEM = re.compile(
-    r"^\s{0,3}(?:[-*+]\s|\d+[.)]\s|>|okr\s*:|skipped\s*:|(?:-\s*){3,}$|(?:\*\s*){3,}$|(?:_\s*){3,}$)",
+    r"^\s{0,3}(?:[-*+]\s|\d+[.)]\s|>|okr\s*:|skipped\s*:|" + THEMATIC_BREAK + r")",
     re.IGNORECASE,
 )
 # A citation cell is numbers, commas and ranges once parenthesized notes are stripped;
 # anything else is prose naming an inline behavior, judged by the gate, not here.
-PAREN_NOTE = re.compile(r"\([^)]*\)")
 CITATION_CELL = re.compile(r"^[\d\s,;.–-]+$")
 CITED_RANGE = re.compile(r"(\d+)\s*[–-]\s*(\d+)")
 CITED_NUMBER = re.compile(r"\d+")
@@ -158,6 +164,39 @@ def cited_rows(cell):
     return cited
 
 
+# A line that opens a block of its own at the list's indent closes the list, blank line
+# or not: a heading, a bullet (a change of list type), a blockquote, a thematic break.
+BLOCK_START = re.compile(r"^\s{0,3}(?:#{1,6}\s|[-*+]\s|>|" + THEMATIC_BREAK + r")")
+
+
+def behavior_runs(lines):
+    """Group `## Behavior`'s top-level list markers into runs, one per list the reader sees.
+
+    CommonMark renumbers inside a list and starts over at the next one, so two ordered
+    lists with a paragraph between them are two runs, each citable from its own first
+    marker. A run closes at the first block that is not an item of it: a paragraph at
+    the list's indent after a blank line, a heading, a bullet, a table or a fence. Blank
+    lines alone (a loose list), an indented continuation, a lazy one right under an item,
+    and sub-items deeper than the list's indent all stay inside the run. Only the list's
+    own rows are citable: a sub-item renders inside its parent, not as a row of its own.
+    """
+    top = min((indent for kind, indent, _ in lines if kind == "item"), default=0)
+    runs, current, after_blank = [], [], False
+    for kind, indent, value in lines:
+        closes = kind == "block" or (
+            kind == "text" and indent <= top and (after_blank or BLOCK_START.match(value))
+        )
+        if closes and current:
+            runs.append(current)
+            current = []
+        if kind == "item" and indent == top:
+            current.append(value)
+        after_blank = kind == "blank"
+    if current:
+        runs.append(current)
+    return runs
+
+
 def check_citations(metric_tables, behavior_rows):
     """Yield W007 for event rows citing a numbered behavior row that does not exist."""
     for rows in metric_tables:
@@ -196,7 +235,7 @@ def check_body(lines):
     fence_marker = None  # the marker (``` or ~~~) that opened the current fence
     section = None  # the current `##` heading, lowercased
     table = []  # (line_no, cells) of the current run of table rows
-    behavior_marks = []  # (indent, number) of list markers under `## Behavior`, in order
+    behavior_lines = []  # (kind, indent, value) per line under `## Behavior`: item, blank, text or block
     table_rows = set()  # numbered rows collected from a `## Behavior` table
     metric_line = None  # the `## Metric` heading's line, anchors section-level warnings
     metric_values = []  # [line_no, key, text] of the Baseline and Target bullets
@@ -211,7 +250,7 @@ def check_body(lines):
         header_no, header = rows[0]
         width = len(header)
         delimiter = delimiter_row(rows)
-        body = table_body(rows)
+        body = rows[2:] if delimiter else rows[1:]  # table_body, off the delimiter in hand
         # The delimiter row is width-checked like any other: GFM needs it to match the
         # header, and a short one turns the whole table back into a paragraph of pipes.
         for line_no, cells in rows:
@@ -264,6 +303,8 @@ def check_body(lines):
         if fence:
             fence_marker = fence.group(1)
             open_value = None
+            if section == "behavior":
+                behavior_lines.append(("block", 0, ""))
             if table:
                 yield from drain_table()
                 table = []
@@ -273,6 +314,8 @@ def check_body(lines):
             open_value = None
             if section == "metric":
                 metric_body = True
+            elif section == "behavior":
+                behavior_lines.append(("block", 0, ""))
             table.append((i, split_row(line)))
             continue
         if table:
@@ -296,7 +339,11 @@ def check_body(lines):
         if section == "behavior":
             row = BEHAVIOR_ROW.match(line)
             if row and len(row.group(2)) <= 3:
-                behavior_marks.append((len(row.group(1)), int(row.group(2))))
+                behavior_lines.append(("item", len(row.group(1)), int(row.group(2))))
+            elif not line.strip():
+                behavior_lines.append(("blank", 0, ""))
+            else:
+                behavior_lines.append(("text", len(line) - len(line.lstrip()), line))
         elif section == "metric":
             if line.strip():
                 if not metric_body and METRIC_SKIP.match(line):
@@ -353,18 +400,13 @@ def check_body(lines):
                     f"`{key}:` without provenance: name the source in a parenthesized "
                     "note on the same bullet (a query, a log, a named person's estimate)",
                 )
-        # Only the list's own rows are citable: a sub-item sits deeper than the
-        # minimum indent and renders inside its parent, not as a row of its own.
-        top = min((indent for indent, _ in behavior_marks), default=0)
-        marks = [n for indent, n in behavior_marks if indent == top]
         # Any ordered list renders sequentially from its first marker: CommonMark
         # ignores the literal digits after it, so the citable numbers are the
         # sequence the reader sees, not the literals an author may have mistyped.
-        if len(marks) > 1:
-            rows = set(range(marks[0], marks[0] + len(marks)))
-        else:
-            rows = set(marks)
-        rows |= table_rows
+        # Two lists are two sequences, each from its own first marker (`behavior_runs`).
+        rows = set(table_rows)
+        for run in behavior_runs(behavior_lines):
+            rows.update(range(run[0], run[0] + len(run)))
         # A `## Behavior` in prose, or a table with no numbered rows, leaves nothing
         # to cite; the gate judges the trace there, the same as a Medium spec.
         if rows:

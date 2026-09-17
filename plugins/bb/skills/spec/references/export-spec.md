@@ -10,14 +10,17 @@ the loop; the export never introduces new decisions.
 
 The export carries the minimum shaping of the product team's modus operandi. The
 hypothesis, OKR, and metric fields are **inseparable**. They come together or
-not at all; the one value that outlives them is the operational measure internal
-work names, kept by the No branch below.
+not at all, and the rule opens exactly two exceptions: the operational measure
+internal work names outlives them, kept by the No branch below, and `Connected
+OKR` is omitted alone when the spec carries no `okr:` line, because that absence
+is a settled answer and not a gap (its bullet under the sources below).
 
 **Test:** "Will the user change any behavior because of this?"
 
 - **Yes** → the four fields render together: `Hypothesis`, `Connected OKR`,
   `Expected Impact` and `Metric`, from `discovery.md` and the spec, per the
-  sources below.
+  sources below, `Connected OKR` dropping out alone when no `okr:` line
+  connects one.
 - **No** (internal feature, design pattern, compliance) → the product fields
   (`Hypothesis`, `Connected OKR`, `Expected Impact`) omitted entirely, no
   placeholder, no "N/A". The measure itself does not vanish with them: internal

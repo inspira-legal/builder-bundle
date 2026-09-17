@@ -1,7 +1,7 @@
-# Land it → Deploy on LexFlow
+# Ship it → Deploy on LexFlow
 
 Reached from ship's Step 1 when the destination is a LexFlow app. Load this right
-after Step 1. It carries this path's checks and its review lens set, not just the landing.
+after Step 1. It carries this path's checks and its review lens set, not just the ship.
 
 LexFlow is Inspira's declarative workflow platform: an app is a `lexflow.toml`
 manifest plus workflow YAMLs, deployed with the `lexflow` CLI. Three facts shape this
@@ -61,10 +61,10 @@ run it yourself. It lives here
 because the lenses are this artifact's, and the review engine has no LexFlow chapter.
 
 The **depth table in
-`${CLAUDE_PLUGIN_ROOT}/skills/review/references/fronts.md` sizes the fan-out** here
+`<plugin-root>/skills/review/references/fronts.md` sizes the fan-out** here
 too. A three-file manifest change is a tiny diff whatever it's made of, and every
 candidate goes through the verify pass in
-`${CLAUDE_PLUGIN_ROOT}/skills/review/references/verify.md` (owned by `/bb:review`),
+`<plugin-root>/skills/review/references/verify.md` (owned by `/bb:review`),
 returned as `file:line | summary | failure_scenario | suggested fix`. The verdict is
 the verifier's column, not the finder's. What changes is the `correctness` front's
 lens _content_: swap the generic angles for the three below, since a lens about async
@@ -84,7 +84,7 @@ CI, and the generating skill only validates the syntax of the YAML it just wrote
 so the three checks above are syntax and existence, and nothing reads the logic
 unless a review does.
 
-## Land it
+## Ship it
 
 1. Commit in logical units (conventional style; no AI attribution).
 2. Push: `git push` (or `lexflow push`, interchangeable: the credential helper makes
@@ -98,13 +98,13 @@ unless a review does.
      weak evidence rather than a verdict. Read the YAMLs and call it: a workflow that
      pulls the file in dynamically still deploys, while a README, a fixture, or design
      notes mean nothing deployable changed. Then **omit the command** and say the push
-     was the whole landing. Either way, say which way you called it and why.
+     was the whole ship. Either way, say which way you called it and why.
 5. Report, then hand over the command. Never run it.
 
 ## Report template
 
 ```
-Landed in the app repo. The deploy is yours.
+Shipped to the app repo. The deploy is yours.
 
 App: <name> (<team>/<slug>)
 Commits: <n> · sha <short-sha>

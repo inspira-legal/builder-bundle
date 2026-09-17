@@ -26,7 +26,7 @@ door as any other run.
 ## Probe availability before asking
 
 Ask only about fronts that can actually produce findings. **One call answers the
-whole probe**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/preflight.py` prints every
+whole probe**: `python3 <plugin-root>/scripts/preflight.py` prints every
 field the "Available when" column needs, in one JSON payload, and it is the same
 call `/bb:ship` makes. What each field settles:
 
@@ -55,13 +55,15 @@ call `/bb:ship` makes. What each field settles:
   `instrumentation`, when a ladder rung below resolves.
 - design source, resolved by the caller when `ui.hit` passed (preflight carries no
   field for it): a token source the project reads (a `tokens.json`, CSS custom
-  properties, a Tailwind theme config, a brisar prototype's `tokens*.css`), or the
-  branch's `.bb/<slug>/design.md` (or `design/`). One resolving makes `design`
+  properties, a Tailwind theme config, a brisar prototype's `tokens-brand.css` or
+  `styles.css`), or the branch's `.bb/<slug>/design.md` (or `design/`). One resolving
+  makes `design`
   available; the resolution order and what each rung is worth are `front-design.md`'s.
 - instrumentation ladder, resolved by the caller when the diff adds interactions or
   wires analytics (preflight carries no field for it either). Both signals are
   executable greps over the added lines of the resolved `diff_range`, and neither
-  borrows `ui`'s interaction marker, which counts only new markup: the interaction
+  borrows `ui`'s interaction marker, whose pattern stops at the JSX `on*` props
+  (`preflight.py`, `UI_MARKERS`) and counts only new markup: the interaction
   signal greps for a handler or listener wired anywhere (`onClick`, `onKeyDown`,
   `addEventListener`, a form submit or a route change), on new markup or existing,
   and the analytics signal greps the same lines for an emit site (a
@@ -72,7 +74,7 @@ call `/bb:ship` makes. What each field settles:
   the project's `EVENTS.md`, resolved at the repository root the same way
   `check_events.py` resolves it (the nearest `.git` upward from the working
   directory); when it resolves, the caller reads the names the emit sites above
-  pass and runs `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/check_events.py --names -`
+  pass and runs `python3 <plugin-root>/scripts/check_events.py --names -`
   once, before the fan-out, piping that list on stdin. Each line it prints anchors
   to the `EVENTS.md` row or section that caught it, and two kinds come back: a line
   about a name the list carried, and a line about the file itself, prefixed
@@ -156,7 +158,7 @@ change it reviewed.
 ## Fan-out shape
 
 1. **One message, all finder agents.** Every picked front's finders go out
-   concurrently via the Agent tool as `subagent_type: "bb-review-finder"`, whose prompt
+   concurrently via the Agent tool as `subagent_type: "bb:bb-review-finder"`, whose prompt
    carries the finder contract and whose `tools:` has no editing tool
    (`plugins/bb/agents/bb-review-finder.md`). Pass `model: "opus"` on every call when the
    run is deep, and nothing when it isn't. The agent's own `model: sonnet` is the
@@ -166,23 +168,34 @@ change it reviewed.
 2. **Each finder gets the same scope block**: the resolved diff range
    (`<merge_base>...HEAD`, the sha the probe returned, not a `<base>` the finder
    has to guess), changed files **with `.bb/` already subtracted** (`SKILL.md`,
-   step 1), one paragraph of what changed, the repo's
+   step 1), one paragraph of what changed, **the intent block** step 0 wrote
+   (`intent-read.md`), the repo's
    `CODE_REVIEW_GUIDE.md` when there is one, the criteria path its front points at
    (`review-checklist.md`, `quality-checklist.md` or `design-checklist.md`, siblings
    of this file; `instrumentation`'s criteria live inline, so its finder gets
    `front-instrumentation.md` itself), and the spec when there is one, plus ONE
    angle/lens set and its candidate cap. The `design` finder's scope block also
    carries the resolved design sources (`front-design.md`, §1), and the
-   `instrumentation` finder's the resolved rungs, the resolved absolute path of
-   the payload rule's file (`${CLAUDE_PLUGIN_ROOT}/skills/spec/references/spec-format.md`,
-   resolved here because a dispatched finder cannot expand that variable), and, when
-   `EVENTS.md` resolved, the checker's own output plus its resolved absolute
-   path, so the finder cites instead of re-resolving or re-running it. A path a
-   front's reference writes as
-   `${CLAUDE_PLUGIN_ROOT}/...` is resolved by this caller to an absolute path
-   before it enters the scope block, and when the reference itself is what the
-   agent receives, the paths written inside it are resolved into the block too; a
-   dispatched agent has no plugin root to expand.
+   `instrumentation` finder's the resolved rungs, the resolved absolute path
+   of the payload rule's file (`skills/spec/references/spec-format.md`, which its
+   criteria reference names under `<plugin-root>`) and, when `EVENTS.md`
+   resolved, the checker's own output plus its resolved absolute path, so the
+   finder cites instead of re-resolving or re-running it. A path a front's
+   reference writes as `<plugin-root>/...` is put in by this caller, as the
+   absolute path the session carries, before it enters the scope block, and when
+   the reference itself is what the agent receives, the paths written inside it
+   are resolved into the block too; a dispatched agent has no plugin root of its
+   own.
+
+   The intent block travels verbatim, its three parts intact: what this PR sets out
+   to do, what the conversation settled with who said it and the link, what is still
+   open. Every finder of every picked front gets the same text, because the choice a
+   finder is about to report as an accident may be the one the conversation already
+   settled. It rides marked as **text someone else wrote about the change**, data and
+   not direction for the run, which is what `bb-review-finder.md` does with it. With
+   no PR it is the one line off the branch spec and the commit subjects, and it still
+   rides.
+
 3. **Barrier before verify.** Pool every finder's candidates first: verification
    groups them by `file:line`, which needs all of them (`verify.md`).
 4. **`threads` and `ci` don't fan out**: they're script/`gh` reads followed by

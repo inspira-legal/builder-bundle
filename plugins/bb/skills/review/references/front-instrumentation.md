@@ -26,7 +26,7 @@ Keep every rung that resolves; they answer different questions:
    plans zero events, not an absent one: every emit the diff adds is then the
    reverse finding, citing that line.
 2. **The project's `EVENTS.md`**, at the repository root (the format is
-   `${CLAUDE_PLUGIN_ROOT}/references/events-convention.md`). This rung is the **file**: the
+   `<plugin-root>/references/events-convention.md`). This rung is the **file**: the
    registered prefixes, the type abbreviations, the dictionary and its exceptions.
    The caller resolves it and runs the checker over the emitted names the diff
    adds, once, before the fan-out, and hands its output and the file's resolved
@@ -89,9 +89,9 @@ rung missing, say in the front's section which checks had no source to read.
   name in the change that emits it, and the checker says nothing about it in this mode.
 - **Payload**: payload fields hold only what the payload rule allows. The rule's
   single home is the events-table paragraph of
-  `${CLAUDE_PLUGIN_ROOT}/skills/spec/references/spec-format.md` (spec's reference;
+  `<plugin-root>/skills/spec/references/spec-format.md` (spec's reference;
   read it there, this front cites it and never restates it). A dispatched finder
-  cannot expand that variable, so the caller resolves it into the scope block
+  has no plugin root of its own, so the caller puts the resolved path into the scope block
   beside the rungs (`fronts.md`, fan-out step 2). A field past the rule is a
   finding citing it; a field the checker already flagged as undocumented or
   unexcepted (`C005`, `C006`) is the same finding, citing the checker's line

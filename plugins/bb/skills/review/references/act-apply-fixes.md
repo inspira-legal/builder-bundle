@@ -11,7 +11,7 @@ improvement, and a "fix" that isn't justified against its finding is a guess.
   regression is isolated to a single edit and caught immediately. Never batch a
   pile of edits and check once at the end. Which command that is, and whether it
   may run here at all, is
-  `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/resolve_checks.py`'s answer, resolved
+  `python3 <plugin-root>/scripts/resolve_checks.py`'s answer, resolved
   once for the whole pass. With `runnable: false` the local half of this guard is
   off the table: keep the edits one per commit so the isolation survives, and let
   the push carry the proof.
@@ -33,11 +33,14 @@ improvement, and a "fix" that isn't justified against its finding is a guess.
 
 ## Order of operations
 
-1. In front order: correctness fixes first (highest severity first), then HIGH
-   rule deviations, then Critical and Major a11y failures, High design deviations
-   and High instrumentation findings (payload and channel), then contract gaps,
-   then the remaining a11y, design and instrumentation findings, then quality
-   edits. A quality pass over code about to be fixed is wasted work.
+1. In front order: correctness fixes first, every one of them a Bloqueante,
+   then Bloqueante rule deviations, then the Bloqueante a11y, design and
+   instrumentation findings (a Critical or Major failure, a High deviation, a
+   High payload or channel finding), then contract gaps, then the remaining
+   a11y, design and instrumentation findings, then quality edits. A quality
+   pass over code about to be fixed is wasted work. Levels are the plugin-root
+   `references/finding-levels.md`; within one front the Bloqueantes go first and
+   the Sugestões follow.
    - A **rule deviation** fix is applied the way the cited rule states it, and
      the commit body quotes the rule ID. When following the rule would change
      behavior, it stops being a mechanical fix: treat it as a correctness fix

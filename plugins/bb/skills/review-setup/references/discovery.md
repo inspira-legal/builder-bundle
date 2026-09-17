@@ -84,10 +84,13 @@ Consolidate the findings into candidate rules. Each rule gets:
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **ID**       | `{DOMAIN}-{NUMBER}`: `CMT` commits, `PAT` patterns, `TST` tests, `SEC` security, `DEP` dependencies, `ERR` errors, `API` contracts, plus detected custom domains |
 | **Title**    | short descriptive name                                                                                                                                           |
-| **Severity** | suggested `HIGH` / `MEDIUM` / `LOW`                                                                                                                              |
+| **Level**    | suggested `HIGH` or `LOW`, per the plugin-root `references/finding-levels.md`                                                                                    |
 | **Category** | the kind of concern the rule is: `correctness`, `contracts`, `security`, `a11y`, or `quality`                                                                    |
 | **Evidence** | file paths / snippets supporting the rule                                                                                                                        |
 | **Status**   | `Confirmed` (80%+ of relevant files) or `Candidate` (needs validation)                                                                                           |
 | **Do/Don't** | real examples from the repo, correct and incorrect                                                                                                               |
 
-Group by domain, order by severity (HIGH first). Cap candidates at ~15–20: merge near-duplicates rather than flooding the interview.
+Group by domain, order by level (HIGH first). A rule whose stakes the repo never
+states is a LOW; suggesting HIGH takes evidence that the repo treats the
+pattern as mandatory. Cap candidates at ~15–20: merge near-duplicates rather than
+flooding the interview.

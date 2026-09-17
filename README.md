@@ -4,7 +4,7 @@
 
 [![github](https://img.shields.io/badge/github-inspira--legal%2Fbuilder--bundle-111111?style=flat-square&logo=github)](https://github.com/inspira-legal/builder-bundle)
 
-_Builder Bundle (`bb`): the unified skill set for Inspira builders, 16 skills across 6 trilhas, from the problem to the PR._
+_Builder Bundle (`bb`): the unified skill set for Inspira builders, 15 skills across 6 trilhas, from the problem to the PR._
 
 </div>
 
@@ -17,11 +17,11 @@ claude plugin install bb@inspira-legal
 
 it keeps itself current. once a day, on a session start, a detached worker runs `claude plugin marketplace update` and `claude plugin update` for you, and only when the marketplace clone sits on its default branch with a clean tree. nothing is asked, nothing waits and nothing is printed: the session you are in keeps the version it loaded, the new one starts on the next session, and the only trace is a stamp under `~/.claude/plugins/data`. `custom_instructions: false` does not turn this off, it governs `~/.claude/BUILDER-BUNDLE.md` alone.
 
-it writes its operating context into `~/.claude/BUILDER-BUNDLE.md`, imported by your `CLAUDE.md` and carrying the profile set by `/bb:profile`, and it ships two read-only agents (`bb-review-finder`, `bb-review-verifier`) that review dispatches in parallel: internal pipeline roles, not entry points. skills are invoked as `/bb:<skill>` (e.g. `/bb:discover`, `/bb:spec`, `/bb:ship`). every skill with a natural next step ends at a gate that **suggests** the next trilha, and never auto-invokes.
+it writes its operating context into `~/.claude/BUILDER-BUNDLE.md`, imported by your `CLAUDE.md` and carrying the profile set by `/bb:profile`, and it ships four read-only agents: `bb-review-finder` and `bb-review-verifier`, which review dispatches in parallel, `bb-spec-reviewer`, the two lenses spec runs over a draft before the gate, and `bb-reuse-check`, which confirms a spec's reuse notes still hold before implement builds task 1. internal pipeline roles, not entry points. skills are invoked as `/bb:<skill>` (e.g. `/bb:discover`, `/bb:spec`, `/bb:ship`). every skill with a natural next step ends at a gate that **suggests** the next trilha, and never auto-invokes.
 
 ## what is inside
 
-one plugin, `bb`; 16 skills, 15 of them in 6 trilhas and `/bb:profile` beside them.
+one plugin, `bb`; 15 skills, 14 of them in 6 trilhas and `/bb:profile` beside them.
 
 ### configurar: who is on the other side
 
@@ -44,14 +44,13 @@ one plugin, `bb`; 16 skills, 15 of them in 6 trilhas and `/bb:profile` beside th
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `/bb:spec` | align on the idea before the code: develops the draft, iterates the gray areas as questions, validates a spec at `.bb/<slug>/spec.md` |
 
-### construir: write and land code
+### construir: write and ship code
 
-| skill                       | description                                                                                                                                                                                                             |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:implement`             | builds a validated spec: builds the tasks, keeps the project's checks green, then offers to land it                                                                                                                     |
-| `/bb:ship`                  | takes the branch to landed, your way. it does not review: it greens the project's checks, commits, then pushes, preps main, opens a PR and tends it, or preps the LexFlow deploy. after landing, it offers `/bb:review` |
-| `/bb:delegate`              | runs a spec end to end: selects it, builds every task and lands it (implement then ship), tracking the `status`                                                                                                         |
-| `/bb:gather-branch-context` | summarizes every change on the branch against main                                                                                                                                                                      |
+| skill                       | description                                                                                                                                                                                                       |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:implement`             | runs a validated spec as far as you say: asks once whether this is build, build and review, build and ship or all three, then selects the spec, builds every task, keeps the checks green and tracks its `status` |
+| `/bb:ship`                  | takes the branch to shipped, your way. it does not review: it greens the project's checks, commits, then pushes, preps main, opens a PR and tends it, or preps the LexFlow deploy                                 |
+| `/bb:gather-branch-context` | summarizes every change on the branch against main                                                                                                                                                                |
 
 ### revisar: quality and maintenance
 

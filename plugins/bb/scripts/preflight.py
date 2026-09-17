@@ -290,7 +290,7 @@ def main() -> None:
         "code_review_guide": (root / "CODE_REVIEW_GUIDE.md").is_file(),
         "project_kind": "lexflow" if (root / "lexflow.toml").is_file() else "git",
         # The one thing this probe wants out of the spec scan. Selecting a spec is
-        # `/bb:delegate`'s, off `scan_specs.py`'s own stdout, so the rest of that
+        # `/bb:implement`'s, off `scan_specs.py`'s own stdout, so the rest of that
         # payload has no reader here and is not copied into this one.
         "branch_spec": branch_spec(specs["specs"], branch),
         "ui": probe_ui(cwd, diff_range) if diff_range else {"hit": False, "markers": [], "examples": {}},
