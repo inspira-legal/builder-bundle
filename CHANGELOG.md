@@ -1,5 +1,118 @@
 # Changelog
 
+## 3.8.1 (2026-09-14)
+
+**The event checker and the documents around it, held to what they actually do.** A deep
+review of the branch that shipped 3.8.0 found thirteen blocking items: seven ways the
+checker read a valid file wrong or read a wrong file as valid, and six documents that
+described behavior the code does not have. Nothing about the format changed, so a project's
+`EVENTS.md` needs no edit; what changed is which files are accepted, which lines are
+reported, and what each document promises. The reasoning is in `git log` for
+`claude/convencao-de-eventos`, one commit per item.
+
+The free-text guarantee is the part worth reading twice. The payload rule's one job is that
+no event carries document content, and the paragraph that owns it had lost its absolute
+floor, its `approved` status had no reader after it, and four separate paths let a payload
+check not run at all. All five are closed.
+
+### Fixed
+
+- **A name already in the catalog is not a duplicate in the emitted-names mode.** The
+  instrumentation task appends each name to the catalog in the change that emits it, and
+  the review then read those names back: every correctly registered name came back as an
+  error, and so did a spec re-read after its events landed. The spec's own plan still
+  collides, with a message naming both causes.
+- **The events table is read whole, and only it.** The plan stopped at the first run of
+  rows, so a line of prose splitting the table hid every row after it, whether or not the
+  rows after the break repeat the header. Reading past the break then had to learn where the
+  table ends: a run of pipe lines continues it only in its shape, the header's cell count and
+  not the header line written again, so a second, narrower table under `## Metric` is not
+  read through the events table's columns. A table with no `payload` column now says so
+  instead of passing clean with no payload checked, and the checker's own list of what C009
+  covers names all five cases it prints.
+- **Four shapes of a valid `EVENTS.md` no longer reject the file**: a table written without
+  its outer pipes, a table under a third-level subheading, a byte order mark on the first
+  part heading, and the empty `## Exceptions` table, which now has a documented shape.
+- **Document content is the floor no exception reaches**, back in the paragraph that owns
+  the payload rule: never a contract, a petition, a decision or a clause, in any project and
+  under any status. An exception covers what a person typed into a field, and `approved`
+  records that someone weighed it, with the next reader holding the row to that floor.
+- **The free-text guarantee loses its remaining ways not to run.** The checker holds the
+  file to its own rule that every `text` field carries an exception row, one line per row;
+  the review's payload criterion says which run produces which code; and the draft's
+  instruction for an undocumented field carries the consequence that no type check can run
+  on it.
+- **A prose event cell is one unnamed row**, not a name planned twice. Every row waiting on
+  a prefix registration carries the same sentence, and comparing sentences reported
+  collisions that do not exist. The payload of such a row is still read.
+- **The catalog's name cell is read the way the spec's is**, so a note beside a name no
+  longer produces a false naming error and a key the duplicate check cannot find.
+- **An enum's own values in a payload cell are not fields.** A parenthesised note annotates
+  the field beside it.
+- **The spec's gate routes every `EVENTS.md` line to the external blocker**, whatever its
+  code, and names the remedy for each shape, the `legacy` mark included. It used to name two
+  codes and send the rest to a spec row that does not exist.
+- **The checker's lines about the file are not findings against the diff.** They print on
+  every run, whatever the input, and now fold into one finding against the file.
+- **The external PR mode's checker line is a command that runs**, with `python3` and the
+  plugin-root path.
+- **A name the run carries is the run's own.** When the author does the duty of appending an
+  event name to the catalog in the change that emits it, the name is registered by the time
+  the review reads it back. The duplicate check is right to stay quiet there, but the grammar
+  check went quiet with it, and the only line left came from the pass that reports the file's
+  backlog. A name the emitted list carries is now the plan's, reported at its catalog row as
+  a finding about that name; the file's own rows keep their prefix and their folding.
+- **Ten pointers open from where they are read**: the format and the payload rule are
+  named through the plugin-root variable, and the checker derives its own root instead of
+  printing a literal marker when the variable does not reach the process.
+- **A task whose behavior is named in prose reaches its agent with that prose.**
+  `workflows/build-tasks.js` handed the agent `none cited` when a task cited an event row
+  instead of numbered behavior rows, which is exactly the shape a Medium spec writes. The
+  row's own prose now travels in the task prompt. This one rode along on the same branch
+  without belonging to its spec, and it is described here rather than shipped unnamed.
+
+## 3.8.0 (2026-09-11)
+
+**The event convention becomes a file bb reads.** A project states its event grammar,
+prefixes, payload dictionary, exceptions and catalog in one `EVENTS.md` at its root; bb
+defines the format and ships the checker, and three moments of the cycle read the file.
+The reasoning is `.bb/convencao-de-eventos/` (discovery and spec).
+
+### New
+
+- **`plugins/bb/references/events-convention.md`**, the format of a project's `EVENTS.md`:
+  five parts found by heading (Grammar, Prefix registry, Dictionary, Exceptions,
+  Catalog), the three-slot template `{prefix}_{type}_{element}` split by the longest
+  registered prefix, the closed payload types (`id`, `enum`, `number`, `boolean`, and
+  `text` only under an exception row with status, justification and retention), the
+  catalog's `legacy` mark and its append duty at landing, plus a worked example.
+- **`plugins/bb/scripts/check_events.py`**, shared by spec and review: reads a spec's
+  `## Metric` events table (`--spec`) or a list of emitted names (`--names`, a file or
+  stdin) against the resolved `EVENTS.md`, prints `path:line CODE message` for ten codes
+  (`C001` to `C010`, E or W), exits 1 only on an E-code, and always prints at least one
+  line (`checked N names, clean`). A name read from stdin anchors to the `EVENTS.md` row
+  or section that caught it, so the review's finder has a line to cite.
+- **`/bb:spec` reads the file**: `draft-first.md` proposes the events table from it
+  (names on the grammar, prefixes from the registry, fields from the dictionary), a
+  missing prefix or dictionary field becomes a task on the convention file, step 6 runs
+  the checker beside the lint, and step 7 treats its E-codes as open items (a malformed
+  file or an unreadable input is fixed outside the spec and deferred meanwhile).
+- **`/bb:review`'s instrumentation front gains a middle rung**: the spec's plan, then
+  `EVENTS.md`, then the convention inferred from code. The caller runs the checker once
+  over the emitted names before the fan-out and passes its output and the file's path in
+  the scope block; the finder cites the file's rows, and a malformed file is one finding
+  against the file rather than a rung with nothing to cite. The external-PR mode fetches
+  the file through the same contents API.
+
+### Changed
+
+- The payload rule in `spec-format.md` names four closed types instead of "IDs and
+  enums": `id`, `enum`, `number`, `boolean`, none carrying free text or document content;
+  a project's `EVENTS.md` may widen the list by one, a named `text` exception. The
+  instrumentation task shape appends each name it wires to the file's `## Catalog`.
+- `verify.md`'s instrumentation addendum accepts `EVENTS.md`'s own row and the checker's
+  output line as citable sources, and `review/SKILL.md` names the three-rung ladder.
+
 ## 3.7.0 (2026-09-10)
 
 **Design becomes a calibrated, reviewable dimension, and the cycle learns to measure.**
