@@ -31,7 +31,8 @@ files, `design` when the PR touches UI files and the token source located above 
 (nothing resolving leaves the front unoffered, as in local mode), and
 `instrumentation` when the PR wires analytics and a source resolves in the fetched
 repo: its `EVENTS.md` at the root (rung 2 of `front-instrumentation.md`'s ladder,
-fetched through the same contents API, saved to a scratch file and handed to
+fetched through the same contents API and saved to a scratch file, with the names the
+PR's emit sites pass piped on stdin into
 `python3 <plugin-root>/scripts/check_events.py --names - --convention <that file>`
 before the fan-out) or the
 project's convention in source (rung 3, same API); rung 1 doesn't apply, there's no

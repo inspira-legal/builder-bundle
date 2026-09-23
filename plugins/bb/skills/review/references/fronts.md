@@ -79,9 +79,9 @@ call `/bb:ship` makes. What each field settles:
   to the `EVENTS.md` row or section that caught it, and two kinds come back: a line
   about a name the list carried, and a line about the file itself, prefixed
   `catalog row:` or `dictionary row:`, which the checker prints on every run
-  whatever the input and often about a row the diff never touched. An output that
-  is one `C001` line means the file is malformed: rung 2 is dropped for the run and
-  that line rides into the scope block as the one finding to report against the
+  whatever the input and often about a row the diff never touched. An output whose
+  lines are all `C001` means the file is malformed: rung 2 is dropped for the run and
+  every one of those lines rides into the scope block as the finding to report against the
   file (`front-instrumentation.md`, §1, which is also where the prefixed lines fold
   into a single finding). Rung 3 is the analytics convention the project's
   own source shows, read when the file is silent, malformed or absent. Any rung resolving makes `instrumentation` available; what each rung is
