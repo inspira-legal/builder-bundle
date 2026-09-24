@@ -81,8 +81,8 @@ call `/bb:ship` makes. What each field settles:
   `catalog row:` or `dictionary row:`, which the checker prints on every run
   whatever the input and often about a row the diff never touched. An output whose
   lines are all `C001` means the file is malformed: rung 2 is dropped for the run and
-  every one of those lines rides into the scope block as the finding to report against the
-  file (`front-instrumentation.md`, §1, which is also where the prefixed lines fold
+  those lines ride into the scope block as one finding against the file, every line
+  listed (`front-instrumentation.md`, §1, which is also where the prefixed lines fold
   into a single finding). Rung 3 is the analytics convention the project's
   own source shows, read when the file is silent, malformed or absent. Any rung resolving makes `instrumentation` available; what each rung is
   and which checks it funds are `front-instrumentation.md`'s (§1). The checker's
