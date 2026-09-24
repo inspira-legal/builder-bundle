@@ -18,7 +18,8 @@ what still needs validation before it becomes code:
   _why_ it would (the mechanism). Phase 2 hardens this into a testable form;
   here it's the directional bet.
 - **Success signal**: the observable thing that shifts if the problem is being
-  solved. One metric beats five.
+  solved. One metric beats five, and it travels with a baseline (its current
+  reading) and a target (where it should land), each with provenance.
 - **Appetite**: how much this is worth (a budget in time, Shaping-style, "duas
   semanas", not an estimate). It bounds the solution before one exists.
 
@@ -43,10 +44,21 @@ the spec-state contract), and set `phase: frame`:
 - who & impact: <who, how many, how badly>  [confidence: low]
 - appetite: <budget, e.g. "~2 weeks">
 - success signal: <the one observable metric>  [confidence: med]
+- baseline: <the metric's current reading> (<provenance>)
+- target: <where it should land>, within <timeframe> (<provenance>)
 
 ## Hypothesis
 If <change>, the <success signal> moves, because <mechanism>.  [confidence: low]
 ```
+
+The `baseline:` and `target:` bullets each carry their value's provenance as a
+parenthesized note on the same bullet, in the shape the spec's `## Metric` uses:
+the rule's owner is
+`<plugin-root>/skills/spec/references/spec-format.md` (spec's reference),
+and keeping one shape is what lets `/bb:spec` seed its bullets from these. When
+nothing measures the signal yet,
+`baseline: skipped: not-instrumented` is a valid baseline: it invents no number,
+and it flags the instrumentation as work for the spec's tasks.
 
 Then move to Phase 2 (`references/fit.md`). The frame decided what the problem
 is; fit decides whether and how much of it survives to design.

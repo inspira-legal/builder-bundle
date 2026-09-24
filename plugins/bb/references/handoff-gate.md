@@ -65,6 +65,6 @@ options:
 - `implement` → ship / stop, only when the scope didn't already include it
 - `ship` → no gate; it reports what shipped and stops
 - `review` → apply more items / run the fronts that were skipped / audit the running UI / review-setup / ship (when there is no PR) · three at most, by priority, plus stop
-- `brisar` (on delivery) → review (accessibility audit) / spec / stop
+- `brisar` (on delivery) → review (accessibility or design audit) / spec / stop
 - `think` (once it converged) → spec / discover / stop
 - `challenge` → hands the thesis back to its owner; offers spec when the thesis survived and is buildable

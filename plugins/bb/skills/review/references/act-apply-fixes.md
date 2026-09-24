@@ -34,14 +34,27 @@ improvement, and a "fix" that isn't justified against its finding is a guess.
 ## Order of operations
 
 1. In front order: correctness fixes first, every one of them a Bloqueante,
-   then Bloqueante rule deviations, then contract gaps, then quality edits. A
-   quality pass over code about to be fixed is wasted work. Levels are the plugin-root
+   then Bloqueante rule deviations, then the Bloqueante a11y, design and
+   instrumentation findings (a Critical or Major failure, a High deviation, a
+   High payload or channel finding), then contract gaps, then the remaining
+   a11y, design and instrumentation findings, then quality edits. A quality
+   pass over code about to be fixed is wasted work. Levels are the plugin-root
    `references/finding-levels.md`; within one front the Bloqueantes go first and
    the Sugestões follow.
    - A **rule deviation** fix is applied the way the cited rule states it, and
      the commit body quotes the rule ID. When following the rule would change
      behavior, it stops being a mechanical fix: treat it as a correctness fix
      and justify it as one.
+   - A **design deviation** fix replaces the deviating value or component with
+     what the cited source names, the token, the DS component, the documented
+     state, and the commit body cites that source. When the source itself is
+     what is wrong, that is design-system debt to note, not a review edit.
+   - An **instrumentation finding** is fixed toward the cited source: wire the
+     planned event, rename to the convention, trim the payload to the rule, or
+     reroute to the planned channel. Wiring an event or renaming a live one adds
+     or changes a side effect, so it is justified and checked as a correctness
+     fix, never applied as a mechanical one. An event the plan lacks is a gap for
+     the spec's events table to flag, never an event to invent here.
    - A **contract gap** is closed by building the missing behavior or the missing
      test, not by editing the spec. When the spec itself turns out to be wrong,
      that's a `/bb:spec` conversation, not a review edit.

@@ -33,6 +33,7 @@ plugins/bb/
 │   ├── spec-state.md                   # the .bb/<slug>/ folder contract
 │   ├── bb-config.md                    # ~/.claude/bb.config.json: the schema and who reads it
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
+│   ├── events-convention.md            # EVENTS.md's format: five parts, the template, closed payload types
 │   ├── build-tasks-workflow.md         # how the skills call workflows/build-tasks.js, and what it returns
 │   └── finding-levels.md               # Bloqueante / Sugestão, HIGH / LOW in a guide: review, review-setup
 ├── scripts/                           # shared executables (2+ skills, or a plugin-level reference), ref via <plugin-root>/scripts/
@@ -42,6 +43,7 @@ plugins/bb/
 │   ├── preflight.py                    # ship (Prerequisites + Step 0), review (the fronts probe)
 │   ├── resolve_checks.py               # implement (step 4 + args.checks), ship (Step 2)
 │   ├── scan_specs.py                   # implement (selection); preflight.py imports its scan()
+│   ├── check_events.py                 # spec (step 6), review (the instrumentation front): EVENTS.md checker
 │   ├── normalize_workflow.py           # the dispatch (references/build-tasks-workflow.md): the CR-free copy
 │   └── inspect_pr_checks.py            # ship (CI failures), review (the ci front)
 ├── skills/                            # all 15 skills flat; trilha grouping is a docs concept
@@ -163,10 +165,15 @@ TypeScript.
   say in both skills who owns it. Reading a reference is not invoking a skill;
   the borrower still orchestrates its own run, which is why borrowing beats
   invoking when the owner's router would ask questions the borrower answers by
-  policy. Today nothing is borrowed. The review engine (the fronts, the verify pass, the
-  apply guard and the `{review,quality}-checklist.md` criteria they point at) is
-  `/bb:review`'s alone and lives under `skills/review/references/`; `/bb:ship`
-  stopped reading it when it stopped reviewing. The one guard it still needs (one
+  policy. The borrows that exist today: `/bb:ship`'s LexFlow landing reads review's
+  `fronts.md` and `verify.md`, review's `front-correctness.md` points at ship's
+  `land-lexflow.md`, review's `front-instrumentation.md` reads the payload rule from
+  spec's `spec-format.md`, and `/bb:discover`'s frame capture reads the provenance
+  shape from the same file. The rest of the review engine (the fronts' methods, the
+  verify pass, the apply guard and the `{review,quality,design}-checklist.md`
+  criteria they point at) stays `/bb:review`'s alone under
+  `skills/review/references/`; `/bb:ship` stopped reading the review method when it
+  stopped reviewing. The one guard it still needs (one
   change at a time, untested code left flagged) is two lines in its own Step 2,
   which beats a cross-skill read for a principle that short.
 
@@ -194,9 +201,9 @@ Skills reference that file instead of restating the contract.
 
 The spec's **form** belongs to `plugins/bb/skills/spec/references/spec-format.md`:
 a free top half (opening plus whatever sections the problem asks for) over a fixed
-set (`Decisions`, `Behavior`, `Tasks`, `Out of scope`, `Open`), fixed because each
-member has a reader. `skills/spec/scripts/lint_spec.py` enforces the
-mechanical half of that and runs in CI over every `.bb/*/spec.md`.
+set (`Decisions`, `Behavior`, `Metric`, `Tasks`, `Out of scope`, `Open`), fixed
+because each member has a reader. `skills/spec/scripts/lint_spec.py` enforces the
+mechanical half of that and runs in CI over the `.bb/*/spec.md` files a PR touches.
 
 ## Commits
 

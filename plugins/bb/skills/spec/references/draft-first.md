@@ -17,6 +17,54 @@ patterns or modules this builds on, the cheapest guard against reinventing somet
 exists. Second, the **smallest version still worth shipping**, which is what turns a scope
 edge into a line you can actually hold.
 
+`## Metric` is part of the arrival, not a blank left for later. Seed the baseline and
+the target from the discovery record when it carries them, carrying each value's own
+source into the seeded note with the record named beside it
+(`(XRAY query 2026-08, via discovery.md)`): the materialized value keeps a source the
+gate can judge, not just a pointer to where it came from, and after the gate hardens
+it the spec's value wins, per the reversal rule in the plugin-level
+`references/spec-state.md`. Guess what
+remains with each value's provenance on its own bullet (an estimate marked as such
+reads as a guess the user corrects), keep a value's own `skipped: <reason>` when only
+that value is unmeasured, or write the one-line `skipped: <reason>` when no honest
+measure exists at all. An honest skip beats an invented number; the shape and the
+events table live in `spec-format.md`.
+
+## Propose the events table
+
+A project with `EVENTS.md` at its root
+(`<plugin-root>/references/events-convention.md`) gets its `## Metric` events
+table proposed the same draft-first way as the rest of the spec: read the file, then write the table instead of leaving it blank.
+
+- **Name**: `{prefix}_{type}_{element}`, the prefix from `## Prefix registry`, the type
+  from `## Grammar`, the element a short lowercase phrase for what happened.
+- **Payload**: the fields `## Dictionary` already lists for the behavior's feature,
+  backticked in the cell.
+- **Granularity**: the file's own guidance, 8–12 events per feature, never one per
+  form field.
+
+Two gaps the file can't close on its own, and the draft never guesses past them:
+
+- **No registered prefix for the feature**: don't invent one. Add a task that
+  registers the prefix in `## Prefix registry` of `EVENTS.md`, and write the row's
+  name cell as plain prose citing that task (no backticks) instead of a name, for
+  example `waits on task 4, registers the prefix`. The checker reads a cell that does
+  not open with a backtick and holds a space as prose, so it says the row names no
+  event yet and flags it (`C002`), one line per row and never a collision between two
+  rows waiting on the same task; that is the open item the gate holds until the task
+  lands and the row carries its real name.
+- **No dictionary entry for a payload field**: add a task that adds the field to
+  `## Dictionary` of `EVENTS.md`, the same way, but write the row complete: name and
+  payload field both, backticked as usual. The checker warns instead of blocking
+  (`C005`); the gate shows it, and the person keeps the last word while the dictionary
+  task is pending. A field the dictionary does not carry has no type yet, so the free
+  text check cannot run on it and that one warning is the whole signal: when the field
+  is free text, the task that adds the dictionary row carries its `## Exceptions` row
+  too, with status, justification and retention, and the task says so in its own line.
+
+Without `EVENTS.md`, the events table is proposed the way it always was, from the
+behavior rows alone; nothing here changes.
+
 ## Surfacing the forks (the only thing you ask about)
 
 A decision earns a question only when it **genuinely could go more than one way**
@@ -50,6 +98,30 @@ Ask the forks through the **`AskUserQuestion` tool**: concrete options the user 
 - **The gate blocks on open load-bearing decisions.** Never offer a clean "build"
   while one is unresolved. The user must resolve it or defer it explicitly
   ("decide at build time", recorded in the spec). No silent "build anyway".
+- **The gate renders `## Metric` beside the coverage counter and holds it where
+  the lint cannot.** A `Baseline:` or `Target:` without provenance is an open item
+  the gate blocks on like any fork, resolved or explicitly deferred; the lint
+  checks the note's shape, and whether it names a real source is your judgment at
+  the gate. A value whose own `skipped: <reason>` names the missing measurement is
+  not an open item; it is the honest state, and the instrumentation it flags is
+  work for `## Tasks`. The `Events:` line is held here too: the block carries the
+  table or its explicit `none`, because the review front's plan rung resolves on
+  exactly that line and the lint does not check it. On a Medium spec, whose
+  behaviors live inline, judge the event trace yourself: each event row against
+  the inline behavior it instruments, payload fields against the rule stated in
+  `spec-format.md`. The lint's citation check needs numbered behavior rows and
+  stays silent here; on a Large spec it walks event rows to behavior rows only,
+  so the reverse direction, every user-triggered behavior row having its event,
+  is yours to judge at the gate.
+- **A checker line whose path is the project's `EVENTS.md` is an external blocker**, whatever
+  its code: there is no row in this spec to fix, so it is resolved in that file and deferred
+  until it is. Three shapes arrive that way. `C001` is the file malformed, a part missing or
+  written twice or a table without its header. A line prefixed `catalog row:` or
+  `dictionary row:` is the file held to its own rules, and the remedy is in the file: a name
+  that predates the file carries the literal `legacy` in its `status` cell, which is what
+  keeps a name nobody here planned from blocking every spec in the project, and a `text`
+  field owes its row in `## Exceptions`. `C010` is an input that could not be read, fixed at
+  that path.
 - **Reflect back:** "So we're building X, for Y, and NOT doing Z, right?"
 - **Alignment is active, not silent.** It's confirmed when the user restates the
   idea in their own words or explicitly approves the written spec, never by the
