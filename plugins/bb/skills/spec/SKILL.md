@@ -4,7 +4,7 @@ description: Align on the idea before building. Develops a draft, iterates the g
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.7.0
+  version: 2.8.0
 ---
 
 # Spec
@@ -57,7 +57,7 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
 
 5. **Adversarial completeness pass (when the gray areas run dry).** Don't _review_ the spec: try to **break** it; the same model that wrote the map approves it on a re-read. Two moves, looping anything they surface back to step 3:
    - **Run the generators** (`references/completeness-generators.md`) to manufacture questions along the axes omission hides in: input dimensions, external outputs' empty/limit/shape-change cases, state & lifecycle, failure & recovery, concurrency, trust boundary, data lifecycle, observability. Output is questions, not filled sections.
-   - **Render the trace**: lay out behavior → task → test as a coverage table, not a mental check; every mapped behavior traces to a task and every task to a behavior. An unlinked row IS the omission, made visible rather than asserted. This is the table the gate shows; "I checked traceability" becomes proof the user can see.
+   - **Render the trace**: lay out behavior → task → test as a coverage table, not a mental check; every mapped behavior traces to a task and every task to a behavior. An unlinked row IS the omission, made visible rather than asserted. The gate shows the table's counter and its unlinked rows; "I checked traceability" becomes proof the user can see.
 
    What you're hunting: (a) **unresolved load-bearing decisions** (a technical fork building can't proceed without, still blank or "TBD"); (b) **unmapped or unanswered behavior** (a happy-path step glossed over, an edge with no decided outcome); (c) **material contradictions**. Load-bearing gaps, behavior holes, and real conflicts only. Don't manufacture nitpicks, or the loop never closes.
 
@@ -102,7 +102,14 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
 
    **When `review_pass.py` fails** (exit 1, with a `review_pass:` line on stderr), stop calling it for this run. The remaining passes run full for both lenses, a pass runs when the spec changed since the last one, the run keeps the count in its own context, and the same three passes and the same routing hold. The verdict line names the failure.
 
-7. **The exit gate: blocks on open load-bearing decisions.** Don't gate blind: first **show the artifact the user is signing off on**, a tight recap of the happy path, the full edge→outcome table, the **coverage table** (behavior → task → test) with `⚠️` on any unmapped row plus a one-line counter (`N behaviors, M mapped, K open`), and the **verdict line** (below), so "is this complete?" is answerable at a glance instead of forcing them to reopen the file. Then list what's **still open** (unresolved load-bearing decisions + parked questions), and after it the **leftover list** from step 6, marked as not blocking: the user decides there whether any of it becomes a change, and a change runs one delta pass before the gate shows again. Then ask one `AskUserQuestion` (a handoff gate, with the format in the plugin-level `references/handoff-gate.md`):
+7. **The exit gate: blocks on open load-bearing decisions.** Don't gate blind: first **show what the user is signing off on**, in the order a person reads to understand what gets built, so neither the what nor the order stays locked in the file:
+   - **What it does and why**: two or three lines, the spec's opening said again.
+   - **The tasks, in run order**: under their `###` phase headings (`references/spec-format.md`), one line per task saying what it changes, plus its `dep:` when something blocks it. This is the step by step. A spec with no phases lists its tasks flat, in document order.
+   - **The load-bearing edges**: only the `WHEN … THEN …` rows whose wrong outcome would contradict the `why` (the litmus in "Map the behavior"), then a pointer to `## Behavior` for the rest.
+   - **Coverage as a counter**: the line `N behaviors, M mapped, K open`, plus each unmapped row marked `⚠️` when there is one. The whole trace lives in the tasks' `→ behaviors` fields, so the gate shows only what is missing from it.
+   - **The verdict line** (below).
+
+   Then list what's **still open** (unresolved load-bearing decisions + parked questions), and after it the **leftover list** from step 6, marked as not blocking: the user decides there whether any of it becomes a change, and a change runs one delta pass before the gate shows again. Then ask one `AskUserQuestion` (a handoff gate, with the format in the plugin-level `references/handoff-gate.md`):
    - **If any load-bearing decision is still open:** do NOT offer a clean "build". The only options are **resolve it now** or **defer explicitly** ("decide at build time", recorded as such in the spec). Never a silent "build anyway".
    - **If nothing load-bearing is open:** finalize `.bb/<slug>/spec.md` (with its frontmatter block; see "Capture the alignment"), then offer four paths, three of which invoke `/bb:implement <slug>` now and differ only in **how far the run goes**: **Build** (every task, then it offers the ship), **Build and ship** (the tasks, then `/bb:ship`), **Build, review and ship** (the tasks, `/bb:review` over the branch, then `/bb:ship`), or **Stop here** (leave the spec; the user picks up later). **The pick is implement's scope answer**, so implement doesn't ask it again. Choosing to adjust instead is always available. That loops back into the question tool; a build pick is the affirmative start, not a silent roll-through.
 
