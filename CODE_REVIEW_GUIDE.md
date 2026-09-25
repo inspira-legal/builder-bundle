@@ -373,7 +373,7 @@ time. `__pycache__/` is ignored by `.gitignore`.
 ### Error handling
 
 The hook layer's rule is silence over failure (BB017). The spec lint takes the opposite stance:
-it names a code (`E001` to `E005`, `W001` to `W004`) and exits non-zero, because it runs in CI
+it names a code (`E001` to `E005`, `W001` to `W005`) and exits non-zero, because it runs in CI
 where a red run is the point.
 
 ## Reference files

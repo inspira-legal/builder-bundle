@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Check the mechanical shape of a spec.
 
-Judgment (is it too long, does it repeat itself, is it recounting the conversation)
-belongs to the two `bb-spec-reviewer` lenses, which report at the spec's gate. This only
-catches what is decidable by reading the bytes: the required sections, dead names,
-frontmatter, and malformed tables.
+Judgment (does it repeat itself, is it recounting the conversation) belongs to the two
+`bb-spec-reviewer` lenses, which report at the spec's gate. This only catches what is
+decidable by reading the bytes: the required sections, dead names, frontmatter, malformed
+tables, and a size (`W005`) past which one review pass cannot cover the spec. That
+ceiling measures the review surface, so its advice is to split, never to trim prose.
 
 Usage: lint_spec.py <path>...
 Output: `path:line CODE message` on stdout. Exit 1 when any E-code fired.
@@ -42,6 +43,9 @@ DEAD_SECTIONS = {
 }
 VALID_STATUS = ("pending", "in-progress", "done", "blocked")
 MAX_CELL = 100
+MAX_LINES = 800
+MAX_BEHAVIOR_ROWS = 100
+SPLIT_ADVICE = "split it along its `###` phases into sibling specs"
 
 HEADING = re.compile(r"^##\s+(.+?)\s*$")
 FENCE = re.compile(r"^\s*(```|~~~)")
@@ -98,14 +102,20 @@ def check_body(lines):
     seen = set()
     in_fence = False
     table = []  # (line_no, cells) of the current run of table rows
+    section = None  # lowercased name of the `##` section the scan is in
+    behavior_line = None
+    behavior_rows = 0
 
     def flush(rows):
+        nonlocal behavior_rows
         if len(rows) < 2:
             return
         header_no, header = rows[0]
         width = len(header)
         is_separator = all(SEPARATOR_CELL.match(c) for c in rows[1][1])
         body = rows[2:] if is_separator else rows[1:]
+        if section == "behavior":
+            behavior_rows += len(body)
         # The delimiter row is width-checked like any other: GFM needs it to match the
         # header, and a short one turns the whole table back into a paragraph of pipes.
         for line_no, cells in rows:
@@ -154,11 +164,29 @@ def check_body(lines):
             raw = match.group(1).strip()
             name = raw.lower()
             seen.add(name)
+            section = name
+            if name == "behavior" and behavior_line is None:
+                behavior_line = i
             if name in DEAD_SECTIONS:
                 yield i, "E003", DEAD_SECTIONS[name].format(raw=raw)
 
     if table:
         yield from flush(table)
+
+    if len(lines) > MAX_LINES:
+        yield (
+            1,
+            "W005",
+            f"spec of {len(lines)} lines (ceiling {MAX_LINES}): too large for one review "
+            f"pass; {SPLIT_ADVICE}",
+        )
+    if behavior_rows > MAX_BEHAVIOR_ROWS:
+        yield (
+            behavior_line,
+            "W005",
+            f"{behavior_rows} rows in the `## Behavior` tables (ceiling {MAX_BEHAVIOR_ROWS}): "
+            f"too large for one review pass; {SPLIT_ADVICE}",
+        )
 
     for name, spelling in REQUIRED_SECTIONS:
         if spelling not in seen:

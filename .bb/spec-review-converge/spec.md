@@ -242,7 +242,7 @@ Happy path (`/bb:spec`, step 6, a spec that needs two passes):
 
 ### Warn on size
 
-- [ ] **4. The size warning**: `W005` in `lint_spec.py` and its docstring, the row and the
+- [x] **4. The size warning**: `W005` in `lint_spec.py` and its docstring, the row and the
       rewritten paragraph in `references/spec-format.md`, the code range in
       `CODE_REVIEW_GUIDE.md` → the two `W005` rows · dep: — · verify: `lint_spec.py`
       over a generated spec of 801 lines prints `W005` and exits 0, and the Validate's

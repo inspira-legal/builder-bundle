@@ -154,12 +154,16 @@ python3 plugins/bb/skills/spec/scripts/lint_spec.py .bb/<slug>/spec.md
 | W001 | warning | no `## Behavior`                                                   |
 | W002 | warning | no `## Tasks`                                                      |
 | W004 | warning | no `## Out of scope`                                               |
+| W005 | warning | above 800 lines, or above 100 rows in the `## Behavior` tables     |
 
-Whether the document is too long, repeats itself, or recounts the conversation is not a
-lint check; it's what the two `bb-spec-reviewer` lenses are asked to find, the coherence
-one reading the spec as text and the grounding one checking its claims about existing
-code against the repo. A line ceiling on a document meant to be read just rebuilds the
-form.
+Whether the document repeats itself or recounts the conversation is not a lint check;
+it's what the two `bb-spec-reviewer` lenses are asked to find, the coherence one reading
+the spec as text and the grounding one checking its claims about existing code against
+the repo. The ceiling `W005` sets is not about how the prose reads: it measures the
+review surface, the text each pass has to cover, and past it the folding stops closing.
+Its advice is to split the spec along its `###` phases into sibling specs, never to trim
+prose to fit. It stays a warning, so the exit code is 0 and whether to split is the
+user's call at the gate.
 
 Every code reads the document's own bytes, and what those two lenses returned is not
 among them: their verdict reaches the user at the gate, and the plugin-level
