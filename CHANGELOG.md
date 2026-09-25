@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.8.0 (2026-09-25)
+
+**The spec's exit gate opens with what gets built and in what order, instead of two
+audit tables.** Step 7 showed a recap of the happy path, the full edge→outcome table and
+the full behavior → task → test table, so a person could check the spec was complete but
+still had to open the file to learn what the build does and in which order. The gate now
+shows, in this order: what the spec does and why, in two or three lines; the tasks in run
+order under their `###` phase headings, one line each with its `dep:`; only the
+load-bearing edges, pointing to `## Behavior` for the rest; coverage as the counter line
+plus the unmapped rows marked `⚠️`; then the verdict line. The whole trace stays in each
+task's `→ behaviors` field, and step 5 still renders it to hunt omissions.
+
 ## 3.7.0 (2026-09-25)
 
 **The spec review converges in three passes instead of running until both lenses go

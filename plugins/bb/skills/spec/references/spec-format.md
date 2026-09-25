@@ -89,8 +89,8 @@ parallel, what has to wait, and what proves each one landed, so the build side r
 graph instead of re-interpreting prose.
 
 Every task cites at least one behavior and every behavior is cited by at least one
-task. That two-way trace is what the gate renders as the coverage table; an unlinked
-row on either side is an omission made visible.
+task. That two-way trace is what the gate counts in its coverage line; an unlinked
+row on either side is an omission the gate shows by name.
 
 ### The `###` headings inside `## Tasks` are the build's phases
 
