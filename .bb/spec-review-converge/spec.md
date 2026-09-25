@@ -95,7 +95,8 @@ verdict's `rejected`. Each other finding goes to one of three places:
   contradiction. Before pass 3 a coherence finding folds into the draft; routing it into
   `## Open` on pass 3 is a new rule in step 6.
 - **The task it names**, for any other grounding finding, as a nested plain bullet under
-  that task opening with `**Left for the build**:`. The task agent reads the whole spec
+  that task, indented two spaces so a formatter keeps it a list item, opening with
+  `**Left for the build**:`. The task agent reads the whole spec
   before it builds, so the note reaches it; a plain bullet is not a checkbox, so
   `scan_specs.py` does not count it as a task.
 - **The gate's leftover list**, for a grounding finding that names no task and for a
@@ -221,9 +222,9 @@ Happy path (`/bb:spec`, step 6, a spec that needs two passes):
       and `read`, `--state`, the count and one text per slug, the 12 hour reset of the
       fixed directory → behaviors 2, 3, 5, 6 and the rejected, nothing changed at the
       gate, the four lens dies, compaction, two specs and no scratchpad rows · dep: —
-      · verify: run `next`, `read`, edit, `next` on a copy of a spec and read the JSON - **Left for the build**: the "nothing changed at the gate" row is step 6's, which
-      skips the `next` call; the script gets no gate path of its own. - **Left for the build**: the coherence lens's rerun is step 6's too, with no
-      `next` call; the script gets no retry path of its own.
+      · verify: run `next`, `read`, edit, `next` on a copy of a spec and read the JSON
+  - **Left for the build**: the "nothing changed at the gate" row is step 6's, which skips the `next` call; the script gets no gate path of its own.
+  - **Left for the build**: the coherence lens's rerun is step 6's too, with no `next` call; the script gets no retry path of its own.
 - [ ] **2. The agent learns the delta pass**: `agents/bb-spec-reviewer.md`, its
       `description` and "What the caller gives you", the delta pass under the grounding
       lens, and the closing line naming the pass kind → behavior 5 and the contradiction
@@ -236,9 +237,8 @@ Happy path (`/bb:spec`, step 6, a spec that needs two passes):
       script failing), step 7 (the verdict line from its pieces, the leftover
       list after what is still open), and the `metadata.version` bump → behaviors 1–6 and
       the pass 1, pass 3, the four routing, the two gate change, the four lens dies,
-      compaction, reopen, no scratchpad and script fails rows · dep: 1, 2 · verify: reading - **Left for the build**: step 6's paragraph on a lens dying (it reads "the
-      survivor's findings still fold into step 3") is rewritten too, for the coherence
-      lens's rerun.
+      compaction, reopen, no scratchpad and script fails rows · dep: 1, 2 · verify: reading
+  - **Left for the build**: step 6's paragraph on a lens dying (it reads "the survivor's findings still fold into step 3") is rewritten too, for the coherence lens's rerun.
 
 ### Warn on size
 
@@ -246,9 +246,8 @@ Happy path (`/bb:spec`, step 6, a spec that needs two passes):
       rewritten paragraph in `references/spec-format.md`, the code range in
       `CODE_REVIEW_GUIDE.md` → the two `W005` rows · dep: — · verify: `lint_spec.py`
       over a generated spec of 801 lines prints `W005` and exits 0, and the Validate's
-      spec lint step stays green - **Left for the build**: the generated spec needs the frontmatter block and the
-      `## Decisions` and `## Open` sections, or `E001` and `E002` exit 1 before
-      `W005` is the one under test.
+      spec lint step stays green
+  - **Left for the build**: the generated spec needs the frontmatter block and the `## Decisions` and `## Open` sections, or `E001` and `E002` exit 1 before `W005` is the one under test.
 - [ ] **5. Docs and version**: `references/draft-first.md`'s line on step 6,
       `plugin.json` `3.7.0`, the `CHANGELOG.md` entry → no behavior of its own
       · dep: 1–4 · verify: CI
