@@ -1,5 +1,64 @@
 # Changelog
 
+## 3.7.0 (2026-09-25)
+
+**The spec review converges in three passes instead of running until both lenses go
+quiet.** Step 6 dispatched the two `bb-spec-reviewer` lenses on every pass with no cap,
+and on a large spec that point never came: every fold added text, the new text carried
+new claims about the code, and the grounding lens, capped at eight findings, filled its
+eight again. `interface-t3code` ran 21 passes in 2 hours and 20 minutes; `t3code-paridade`
+ran 18. Pass 1 still reads the whole spec with both lenses; from pass 2 on, the grounding
+lens reads only the diff since the last text it read, while coherence keeps the full
+spec, since it opens no files and a diff would hide the exact contradiction it exists to
+catch. Passes 1 and 2 fold their findings back into the draft, as before; pass 3 routes
+instead, to `## Open` for anything load-bearing, to the task a grounding finding names as
+a `**Left for the build**:` bullet, or to the gate's leftover list, and the gate opens
+with no fourth pass. A change the user makes at the gate runs one delta pass the same
+way, routed, then the gate again.
+
+**`scripts/review_pass.py` keeps the pass count and the last text the grounding lens
+read on disk**, so a context compaction loses neither. Its `next` subcommand reports
+whether a pass runs, which number it is, and the diff since the grounding lens's last
+read (`null` before any read); `read` saves the text after a verdict. State lives under
+the session's scratchpad, keyed by slug, or under a fixed directory in
+`tempfile.gettempdir()` when there is none, where a slug idle past 12 hours starts over
+at pass 1. When the script fails, step 6 stops calling it and runs both lenses full for
+the rest of the run, naming the failure in the verdict line.
+
+**`bb-spec-reviewer` learns the delta pass.** The grounding lens's prompt now says
+whether this is a full pass or a delta one and, on a delta, hands it the diff instead of
+the spec's full text, scoped to the claims the changed hunks touch or contradict. Its
+closing line names which kind of pass it ran.
+
+**The gate's verdict line reads by lens instead of by finding count.** Step 7 builds one
+part per lens from what happened over the whole run, resolved and rejected counts, a
+clean close, or what did not close and where it went, then the pass count, with `notes no
+lens read` while a routed pass's notes are still unread.
+
+**`lint_spec.py` warns when a spec has outgrown one review.** `W005` fires past 800
+lines or 100 rows across the `## Behavior` tables, pointing at splitting along the `###`
+phases into sibling specs. It is a warning: the exit code stays 0.
+
+### Changed
+
+- **`plugins/bb/skills/spec/SKILL.md`** step 6 rewrites the "Unconditional" paragraph,
+  adds the pass counter, the split of lenses on passes 2 and 3, the routing rules, the
+  delta pass at the gate and the lens-death paths; step 7 assembles the verdict line from
+  the pieces table. `metadata.version` moves to 2.7.0.
+- **`plugins/bb/agents/bb-spec-reviewer.md`** stops promising every lens the spec's full
+  text and documents the grounding lens's delta scope and closing line.
+- **`plugins/bb/skills/spec/references/spec-format.md`** rewrites the paragraph after the
+  lint table: the ceiling measures the review surface, and the advice is to split, never
+  to trim prose to fit.
+- **`CODE_REVIEW_GUIDE.md`** extends its lint code range to `W001` to `W005`.
+- **`plugins/bb/skills/spec/references/draft-first.md`** names the delta pass and the
+  three-pass cap in its step 6 line, pointing at `SKILL.md` for the rest.
+
+### Added
+
+- **`plugins/bb/skills/spec/scripts/review_pass.py`**, stdlib only, `next` and `read`,
+  `--state`.
+
 ## 3.6.1 (2026-09-04)
 
 **Agent names carry the plugin's namespace.** The platform publishes a plugin's agents under its own name: `plugins/bb/agents/bb-reuse-check.md` answers to `bb:bb-reuse-check`, not to `bb-reuse-check` bare. The workflow and skills must send the namespaced name in their dispatches, or the agent does not resolve and stage zero stops the build at task 1. The stage-zero dispatch in `plugins/bb/workflows/build-tasks.js` now sends `bb:bb-reuse-check` as its `agentType`, and the four prose dispatches in `/bb:review` and `/bb:spec` are respelled with the same prefix: `bb:bb-review-finder`, `bb:bb-review-verifier` and `bb:bb-spec-reviewer`.

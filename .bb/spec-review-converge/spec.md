@@ -248,7 +248,7 @@ Happy path (`/bb:spec`, step 6, a spec that needs two passes):
       over a generated spec of 801 lines prints `W005` and exits 0, and the Validate's
       spec lint step stays green
   - **Left for the build**: the generated spec needs the frontmatter block and the `## Decisions` and `## Open` sections, or `E001` and `E002` exit 1 before `W005` is the one under test.
-- [ ] **5. Docs and version**: `references/draft-first.md`'s line on step 6,
+- [x] **5. Docs and version**: `references/draft-first.md`'s line on step 6,
       `plugin.json` `3.7.0`, the `CHANGELOG.md` entry → no behavior of its own
       · dep: 1–4 · verify: CI
 
