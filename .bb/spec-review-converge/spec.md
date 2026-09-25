@@ -229,7 +229,7 @@ Happy path (`/bb:spec`, step 6, a spec that needs two passes):
       `description` and "What the caller gives you", the delta pass under the grounding
       lens, and the closing line naming the pass kind → behavior 5 and the contradiction
       and stale claim rows · dep: — · verify: reading
-- [ ] **3. Step 6 and the gate**: `skills/spec/SKILL.md` step 6 (the "Unconditional"
+- [x] **3. Step 6 and the gate**: `skills/spec/SKILL.md` step 6 (the "Unconditional"
       paragraph rewritten, the script and when to call `read`, the split of lenses on
       passes 2 and 3, the delta prompt it sends the grounding lens, the `run` condition,
       the three passes, the routing of pass 3 findings with coherence's new route to
