@@ -218,7 +218,7 @@ Happy path (`/bb:spec`, step 6, a spec that needs two passes):
 
 ### Teach the pass
 
-- [ ] **1. The pass counter**: `skills/spec/scripts/review_pass.py`, stdlib only, `next`
+- [x] **1. The pass counter**: `skills/spec/scripts/review_pass.py`, stdlib only, `next`
       and `read`, `--state`, the count and one text per slug, the 12 hour reset of the
       fixed directory → behaviors 2, 3, 5, 6 and the rejected, nothing changed at the
       gate, the four lens dies, compaction, two specs and no scratchpad rows · dep: —
