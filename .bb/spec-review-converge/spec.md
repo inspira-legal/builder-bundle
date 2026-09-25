@@ -225,7 +225,7 @@ Happy path (`/bb:spec`, step 6, a spec that needs two passes):
       · verify: run `next`, `read`, edit, `next` on a copy of a spec and read the JSON
   - **Left for the build**: the "nothing changed at the gate" row is step 6's, which skips the `next` call; the script gets no gate path of its own.
   - **Left for the build**: the coherence lens's rerun is step 6's too, with no `next` call; the script gets no retry path of its own.
-- [ ] **2. The agent learns the delta pass**: `agents/bb-spec-reviewer.md`, its
+- [x] **2. The agent learns the delta pass**: `agents/bb-spec-reviewer.md`, its
       `description` and "What the caller gives you", the delta pass under the grounding
       lens, and the closing line naming the pass kind → behavior 5 and the contradiction
       and stale claim rows · dep: — · verify: reading
