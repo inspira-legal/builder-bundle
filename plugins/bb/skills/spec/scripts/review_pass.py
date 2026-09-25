@@ -2,8 +2,8 @@
 """Keep the spec review's pass count and the last text the grounding lens read.
 
 Both live on disk, not in the run's memory, so a context compaction loses neither. The
-state holds one entry per slug (the spec's parent directory name), so two specs reviewed
-in one session keep separate counts.
+state holds one entry per spec, named by its slug plus a hash of its resolved path, so two
+specs reviewed in one session keep separate counts even when two checkouts share a slug.
 
 `next` runs before a pass. It prints one JSON object:
   run   whether a pass runs: true when the grounding lens has read no text yet, or when
@@ -12,10 +12,15 @@ in one session keep separate counts.
         the last pass counted
   diff  the unified diff from the text the grounding lens last read to the spec now,
         `null` when it has read none
+  tally the path of a file beside the state where the run keeps what the gate reads back
+        and no pass writes into the spec: each lens's counts and the leftover list
 
 `read` runs after the grounding lens returns a verdict, and saves the spec's current text
 as the text it read. A lens that died never calls it, so the next `next` diffs against
 the last text it did read and hands it every change it missed.
+
+`reset` runs once the gate's pick moves on, and removes the state and the tally, so a
+later reopening of the spec in the same session starts again at pass 1 with a full read.
 
 `--state` is the session's scratchpad, so the count belongs to the run. Without it the
 state goes to a fixed directory under the system temp, where a slug's state older than 12
@@ -27,12 +32,14 @@ Any failure goes to stderr with exit 1; the caller then runs full passes.
 Usage:
   python3 review_pass.py next .bb/<slug>/spec.md [--state <dir>]
   python3 review_pass.py read .bb/<slug>/spec.md [--state <dir>]
+  python3 review_pass.py reset .bb/<slug>/spec.md [--state <dir>]
 """
 
 from __future__ import annotations
 
 import argparse
 import difflib
+import hashlib
 import json
 import os
 import sys
@@ -49,7 +56,13 @@ def fixed_state_dir() -> Path:
 
 
 def state_file(state_dir: Path, spec: Path) -> Path:
-    return state_dir / f"{spec.resolve().parent.name}.json"
+    resolved = spec.resolve()
+    digest = hashlib.sha256(str(resolved).encode("utf-8")).hexdigest()[:8]
+    return state_dir / f"{resolved.parent.name}-{digest}.json"
+
+
+def tally_file(path: Path) -> Path:
+    return path.with_suffix(".tally.md")
 
 
 def load(path: Path, expires: bool) -> dict:
@@ -93,7 +106,7 @@ def cmd_next(spec: Path, path: Path, expires: bool) -> dict:
         state["pass"] += 1
         save(path, state)
     diff = None if last is None else unified(last, text, spec.name)
-    return {"run": run, "pass": state["pass"], "diff": diff}
+    return {"run": run, "pass": state["pass"], "diff": diff, "tally": str(tally_file(path))}
 
 
 def cmd_read(spec: Path, path: Path, expires: bool) -> dict:
@@ -103,11 +116,17 @@ def cmd_read(spec: Path, path: Path, expires: bool) -> dict:
     return {"pass": state["pass"]}
 
 
+def cmd_reset(spec: Path, path: Path, expires: bool) -> dict:
+    for target in (path, tally_file(path)):
+        target.unlink(missing_ok=True)
+    return {"reset": True}
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Pass count and last grounding-read text for the spec review."
     )
-    parser.add_argument("command", choices=("next", "read"))
+    parser.add_argument("command", choices=("next", "read", "reset"))
     parser.add_argument("spec", help="The spec, .bb/<slug>/spec.md.")
     parser.add_argument(
         "--state",
@@ -124,13 +143,13 @@ def main() -> None:
     expires = args.state is None
     state_dir = fixed_state_dir() if expires else Path(args.state) / FIXED_DIR_NAME
     path = state_file(state_dir, spec)
-    command = cmd_next if args.command == "next" else cmd_read
+    command = {"next": cmd_next, "read": cmd_read, "reset": cmd_reset}[args.command]
     try:
         result = command(spec, path, expires)
     except (OSError, ValueError, KeyError, TypeError) as err:
         print(f"review_pass: {err}", file=sys.stderr)
         raise SystemExit(1) from err
-    print(json.dumps(result, ensure_ascii=False))
+    print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

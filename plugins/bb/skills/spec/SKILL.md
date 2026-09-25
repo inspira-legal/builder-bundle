@@ -71,14 +71,17 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
    python3 scripts/lint_spec.py .bb/<slug>/spec.md
    ```
 
-   **The pass counter.** `scripts/review_pass.py` keeps the pass count and the last text the grounding lens read on disk, one entry per slug, so a context compaction loses neither. Pass the session's scratchpad directory as `--state`, so the count belongs to this session: a later session that reopens the spec starts at pass 1, with a full read. On a host with no scratchpad, leave the flag out and the script uses its own fixed directory, where a slug's state older than 12 hours starts again at pass 1.
+   **The pass counter.** `scripts/review_pass.py` keeps the pass count and the last text the grounding lens read on disk, one entry per spec, so a context compaction loses neither. Pass the session's scratchpad directory as `--state`, so the count belongs to this session: a later session that reopens the spec starts at pass 1, with a full read. On a host with no scratchpad, leave the flag out and the script uses its own fixed directory, where a slug's state older than 12 hours starts again at pass 1.
 
    ```bash
    python3 scripts/review_pass.py next .bb/<slug>/spec.md --state <scratchpad>
    python3 scripts/review_pass.py read .bb/<slug>/spec.md --state <scratchpad>
+   python3 scripts/review_pass.py reset .bb/<slug>/spec.md --state <scratchpad>
    ```
 
-   Call `next` before every pass. It prints `run`, `pass`, and `diff`. With `run: false` the spec is the text the grounding lens last read, so no pass runs and the run goes to the gate. With `run: true`, `pass` is the number of the pass about to run and `diff` is the change since that text, `null` when the grounding lens has read none. Call `read` once the grounding lens returns a verdict, clean or not. A grounding lens that died never gets a `read`, so the next `next` runs even over an unchanged spec and diffs against the last text it did read.
+   Call `next` before every pass. It prints `run`, `pass`, `diff`, and `tally`. With `run: false` the spec is the text the grounding lens last read, so no pass runs and the run goes to the gate. With `run: true`, `pass` is the number of the pass about to run and `diff` is the change since that text, `null` when the grounding lens has read none. Call `read` once the grounding lens returns a verdict, clean or not. A grounding lens that died never gets a `read`, so the next `next` runs even over an unchanged spec and diffs against the last text it did read.
+
+   `tally` is the path of a file beside the state, for what the gate reads back and no pass writes into the spec: each lens's counts over the run (resolved, rejected, routed to each place, a pass it did not run on) and the leftover list. Rewrite it after every pass, and build the verdict line and the leftover list from it at step 7, so a compaction between a pass and the gate loses neither. Call `reset` once the gate's pick moves on, a build or **Stop here**: it removes the state and the tally, so a later reopening of the spec in this session starts at pass 1 with a full read.
 
    **The lenses.** Both are `bb:bb-spec-reviewer` (read only by its own `tools:`), dispatched with `subagent_type: bb:bb-spec-reviewer` **in one message** so they run together. The agent owns the contract, the finding shape, and the delta pass's scope, so the prompt says which lens this one is, which kind of pass it is, and what it reads:
    - **Coherence** gets the spec's full text on every pass. It opens no files, so it is the cheap lens, and a contradiction between a changed section and an unchanged one is exactly what a diff would hide from it.

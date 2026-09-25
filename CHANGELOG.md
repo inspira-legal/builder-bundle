@@ -19,8 +19,11 @@ way, routed, then the gate again.
 **`scripts/review_pass.py` keeps the pass count and the last text the grounding lens
 read on disk**, so a context compaction loses neither. Its `next` subcommand reports
 whether a pass runs, which number it is, and the diff since the grounding lens's last
-read (`null` before any read); `read` saves the text after a verdict. State lives under
-the session's scratchpad, keyed by slug, or under a fixed directory in
+read (`null` before any read), plus the path of a tally file where the run keeps each
+lens's counts and the leftover list for the gate; `read` saves the text after a verdict;
+`reset` clears both once the gate's pick moves on, so reopening the spec in the same
+session starts at pass 1. State lives under the session's scratchpad, keyed by slug plus
+a hash of the spec's resolved path, or under a fixed directory in
 `tempfile.gettempdir()` when there is none, where a slug idle past 12 hours starts over
 at pass 1. When the script fails, step 6 stops calling it and runs both lenses full for
 the rest of the run, naming the failure in the verdict line.
@@ -56,8 +59,11 @@ phases into sibling specs. It is a warning: the exit code stays 0.
 
 ### Added
 
-- **`plugins/bb/skills/spec/scripts/review_pass.py`**, stdlib only, `next` and `read`,
-  `--state`.
+- **`plugins/bb/skills/spec/scripts/review_pass.py`**, stdlib, `next|read|reset <spec>
+[--state <dir>]`. It keeps one JSON state per spec with the pass count and the last text
+  the grounding lens read, prints the pass to run with the diff since that text, and
+  names the tally file the gate reads back. Writes go through a temp file and a rename, so
+  a run killed mid write keeps the old state.
 
 ## 3.6.1 (2026-09-04)
 
