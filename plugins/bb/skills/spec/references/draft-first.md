@@ -45,11 +45,9 @@ Ask the forks through the **`AskUserQuestion` tool**: concrete options the user 
   re-read. It hunts open load-bearing decisions, unmapped behavior, and material
   contradictions, and loops anything it surfaces back into the questions.
 - **Then the check, step 6**: the lint, then the two `bb-spec-reviewer` lenses in
-  fresh context, full on pass 1, the grounding lens on a delta after it, three
-  passes at most before the gate. Every spec, on every pass that reaches the gate,
-  a reopened one included, and both verdicts reach the gate in the line that opens
-  it. `SKILL.md` step 6 carries the pass counter, the delta's scope and the routing
-  past pass 3.
+  fresh context, one pass over the whole spec. Each finding is fixed, rejected on a
+  stated ground, or sent to `## Open` as it arrives, and no lens reads the fixes again.
+  Both verdicts reach the gate in the line that opens it.
 - **The gate blocks on open load-bearing decisions.** Never offer a clean "build"
   while one is unresolved. The user must resolve it or defer it explicitly
   ("decide at build time", recorded in the spec). No silent "build anyway".

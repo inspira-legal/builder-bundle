@@ -4,7 +4,7 @@ description: Align on the idea before building. Develops a draft, iterates the g
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.8.0
+  version: 2.9.0
 ---
 
 # Spec
@@ -61,46 +61,26 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
 
    What you're hunting: (a) **unresolved load-bearing decisions** (a technical fork building can't proceed without, still blank or "TBD"); (b) **unmapped or unanswered behavior** (a happy-path step glossed over, an edge with no decided outcome); (c) **material contradictions**. Load-bearing gaps, behavior holes, and real conflicts only. Don't manufacture nitpicks, or the loop never closes.
 
-6. **Check the spec: the lint, then two independent lenses, three passes at most before the gate.** This is a step of its own because it's the one an author skips: you cannot see your own omissions, and the pass that would catch them is the pass that feels redundant.
+6. **Check the spec: the lint, then two independent lenses, one pass.** This is a step of its own because it's the one an author skips: you cannot see your own omissions, and the pass that would catch them is the pass that feels redundant.
 
-   **Unconditional.** Every change reaches a lens before the build: the first draft, every fold, resolving an item from `## Open`, an answer that arrived after the gate, a revised decision on a landed spec. The size is no exemption, and whichever build option the gate is about to offer, a lens reads the change first. The one exception is the notes a routed pass writes into the spec (pass 3, or a pass at the gate): they land after the last lens read it, and the verdict line names them as read by no lens.
+   **One pass, resolved on the spot.** The lenses read the whole spec once, when step 5 runs dry, and what they return is resolved as it arrives. No lens reads the spec again in this run: every re-read of a fold finds new claims in the fold's own text, so a review that re-reads its corrections never closes. What a correction gets wrong reaches the build, where `bb-reuse-check`, the CI and `/bb:review` catch it for less than another pass costs. A later run of this skill that reopens the spec runs its own pass.
 
-   First the lint (dead section names, malformed tables, a missing required section), so the gate spends its attention on completeness instead:
+   First the lint (dead section names, malformed tables, a missing required section), so the lenses spend their attention on completeness instead:
 
    ```bash
    python3 scripts/lint_spec.py .bb/<slug>/spec.md
    ```
 
-   **The pass counter.** `scripts/review_pass.py` keeps the pass count and the last text the grounding lens read on disk, one entry per spec, so a context compaction loses neither. Pass the session's scratchpad directory as `--state`, so the count belongs to this session: a later session that reopens the spec starts at pass 1, with a full read. On a host with no scratchpad, leave the flag out and the script uses its own fixed directory, where a slug's state older than 12 hours starts again at pass 1.
+   **The lenses.** Both are `bb:bb-spec-reviewer` (read only by its own `tools:`), dispatched with `subagent_type: bb:bb-spec-reviewer` **in one message** so they run together. The agent owns the contract and the finding shape, so the prompt says which lens this one is and what it reads: **coherence** gets the spec's full text and nothing else; **grounding** gets the full text plus the spec's path and the repo root, because it is the one that opens files. Running the grounding lens only when the coherence one came back empty would skip the expensive check exactly on the spec already showing signs of being sloppy.
 
-   ```bash
-   python3 scripts/review_pass.py next .bb/<slug>/spec.md --state <scratchpad>
-   python3 scripts/review_pass.py read .bb/<slug>/spec.md --state <scratchpad>
-   python3 scripts/review_pass.py reset .bb/<slug>/spec.md --state <scratchpad>
-   ```
+   **Each finding gets one outcome**, as soon as its lens returns, without waiting for the other:
+   - **Fixed**: the correction goes into the spec now.
+   - **Rejected**, on a ground you state.
+   - **In `## Open`**, for what only the user can decide: a grounding finding that invalidates a `## Decisions` bullet, that names a file a task does not have, or that points at a thing the repo already does and the spec is about to rebuild, and a coherence finding of a load-bearing decision still missing. The gate already blocks on `## Open`, so the question reaches the user there.
 
-   Call `next` before every pass. It prints `run`, `pass`, `diff`, and `tally`. With `run: false` the spec is the text the grounding lens last read, so no pass runs and the run goes to the gate. With `run: true`, `pass` is the number of the pass about to run and `diff` is the change since that text, `null` when the grounding lens has read none. Call `read` once the grounding lens returns a verdict, clean or not. A grounding lens that died never gets a `read`, so the next `next` runs even over an unchanged spec and diffs against the last text it did read.
+   Keep a running note of each finding and its outcome; it becomes the verdict line at step 7. None of it goes into the spec, and no finding is quietly dropped.
 
-   `tally` is the path of a file beside the state, for what the gate reads back and no pass writes into the spec: each lens's counts over the run (resolved, rejected, routed to each place, a pass it did not run on) and the leftover list. Rewrite it after every pass, and build the verdict line and the leftover list from it at step 7, so a compaction between a pass and the gate loses neither. Call `reset` once the gate's pick moves on, a build or **Stop here**: it removes the state and the tally, so a later reopening of the spec in this session starts at pass 1 with a full read.
-
-   **The lenses.** Both are `bb:bb-spec-reviewer` (read only by its own `tools:`), dispatched with `subagent_type: bb:bb-spec-reviewer` **in one message** so they run together. The agent owns the contract, the finding shape, and the delta pass's scope, so the prompt says which lens this one is, which kind of pass it is, and what it reads:
-   - **Coherence** gets the spec's full text on every pass. It opens no files, so it is the cheap lens, and a contradiction between a changed section and an unchanged one is exactly what a diff would hide from it.
-   - **Grounding** gets the spec's path and the repo root on every pass. When `diff` is `null` it is a **full pass** and also gets the spec's full text: pass 1, or a later pass after it died on every pass so far. Otherwise it is a **delta pass** and gets `diff` in place of the full text, and the prompt asks for nothing past that. The agent's contract sets what a delta pass checks, and a prompt cannot widen it.
-
-   Running the grounding lens only when the coherence one came back empty would skip the expensive check exactly on the spec already showing signs of being sloppy.
-
-   **Passes 1 and 2 fold.** Fold what they return back into step 3, with one exception: a **grounding finding that invalidates a `## Decisions` bullet, that names a file a task does not have, or that points at a thing the repo already does and the spec is about to rebuild, becomes an item in `## Open`**, which the gate already blocks on. Those three are what the grounding lens finds that the draft cannot absorb on its own. A finding rejected on a stated ground counts as dealt with; what none of them can be is quietly dropped. Then call `next` again: a pass whose findings were all rejected left the spec unchanged, so `next` reports `run: false` and the gate opens.
-
-   **Pass 3 routes, it does not fold.** Nothing in the prose is rewritten after pass 3, and the gate opens next, with no fourth pass before it. A finding rejected on a stated ground still counts as dealt with. Each other finding goes to one place:
-   - **`## Open`**, which the gate blocks on, for a load-bearing gap: a grounding finding of the three kinds above, and a coherence finding of a missing decision, a behavior with no decided outcome, an unmapped row (a happy path step with no task, a task with no behavior), or a contradiction.
-   - **The task it names**, for any other grounding finding: a nested plain bullet under that task, indented two spaces so a formatter keeps it a list item, opening with `**Left for the build**:`. The task agent reads the whole spec before it builds, so the note reaches it, and a plain bullet is not a checkbox, so `scan_specs.py` does not count it as a task.
-   - **The gate's leftover list**, for a grounding finding that names no task and a coherence finding of surplus (a repeated fact, prose that recounts the conversation). It does not block.
-
-   **A change at the gate runs one delta pass.** Each change the user makes at the gate, resolving an `## Open` item or anything else, runs one pass like pass 2 and 3: `next`, both lenses, `read`, then its findings routed the way pass 3's are, and the gate again. Call `next` only after such a change: a gate where the user changes nothing runs no pass, and its pick goes on. The first delta pass at the gate also reads the notes pass 3 wrote, since they are part of the diff.
-
-   **A lens dying.** Without an Agent tool in this context, the review did not run: say so at the gate rather than showing a verdict that never ran. When the grounding lens dies, skip `read` and carry on: the next pass hands it every change since the text it did read, or the whole spec if it has read none. On pass 3 there is no next pass, and the gate names it as not run on pass 3. When the coherence lens dies, dispatch it alone once more over the same text, with no `next` call and no pass counted; a second death reaches the gate as a lens that did not run on that pass. In both cases the survivor's findings fold or route as that pass does, and the gate names the lens that is missing, because a verdict shown without that caveat claims a pass the spec never got.
-
-   **When `review_pass.py` fails** (exit 1, with a `review_pass:` line on stderr), stop calling it for this run. The remaining passes run full for both lenses, a pass runs when the spec changed since the last one, the run keeps the count in its own context, and the same three passes and the same routing hold. The verdict line names the failure.
+   **A lens dying.** Without an Agent tool in this context, the review did not run: say so at the gate rather than showing a verdict that never ran. A lens that dies is dispatched alone once more over the same text; a second death reaches the gate as a lens that did not run. The survivor's findings are resolved the same way, and the gate names the lens that is missing, because a verdict shown without that caveat claims a pass the spec never got.
 
 7. **The exit gate: blocks on open load-bearing decisions.** Don't gate blind: first **show what the user is signing off on**, in the order a person reads to understand what gets built, so neither the what nor the order stays locked in the file:
    - **What it does and why**: two or three lines, the spec's opening said again.
@@ -109,21 +89,11 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
    - **Coverage as a counter**: the line `N behaviors, M mapped, K open`, plus each unmapped row marked `⚠️` when there is one. The whole trace lives in the tasks' `→ behaviors` fields, so the gate shows only what is missing from it.
    - **The verdict line** (below).
 
-   Then list what's **still open** (unresolved load-bearing decisions + parked questions), and after it the **leftover list** from step 6, marked as not blocking: the user decides there whether any of it becomes a change, and a change runs one delta pass before the gate shows again. Then ask one `AskUserQuestion` (a handoff gate, with the format in the plugin-level `references/handoff-gate.md`):
+   Then list what's **still open** (unresolved load-bearing decisions + parked questions). What the user settles here, an `## Open` item or any other change, goes into the spec with no new lens pass: it is the user's decision, taken with the finding in front of them. Then ask one `AskUserQuestion` (a handoff gate, with the format in the plugin-level `references/handoff-gate.md`):
    - **If any load-bearing decision is still open:** do NOT offer a clean "build". The only options are **resolve it now** or **defer explicitly** ("decide at build time", recorded as such in the spec). Never a silent "build anyway".
    - **If nothing load-bearing is open:** finalize `.bb/<slug>/spec.md` (with its frontmatter block; see "Capture the alignment"), then offer four paths, three of which invoke `/bb:implement <slug>` now and differ only in **how far the run goes**: **Build** (every task, then it offers the ship), **Build and ship** (the tasks, then `/bb:ship`), **Build, review and ship** (the tasks, `/bb:review` over the branch, then `/bb:ship`), or **Stop here** (leave the spec; the user picks up later). **The pick is implement's scope answer**, so implement doesn't ask it again. Choosing to adjust instead is always available. That loops back into the question tool; a build pick is the affirmative start, not a silent roll-through.
 
-   **The verdict line** has one part per lens, then the pass count, in the words of the user's language. A lens's part counts the whole run, not only its last pass, and is built from these pieces, leaving out a count of zero:
-
-   | the lens over the run                | its part of the line                                  |
-   | ------------------------------------ | ----------------------------------------------------- |
-   | its last pass came back clean        | `clean`, plus `delta` for a grounding delta pass      |
-   | it had findings before its last pass | `3 resolved, 1 rejected` before `clean`               |
-   | its last pass rejected every finding | `1 rejected, clean`: the spec did not change          |
-   | its last pass routed findings        | `did not close: 1 in ## Open, 4 in tasks, 2 leftover` |
-   | it died on a pass                    | `did not run on pass 2`                               |
-
-   After the parts, the line says `closed in 2 passes`; once a pass has run at the gate, `4 passes, 1 at the gate`; and `notes no lens read` while notes a routed pass wrote are still unread. When `review_pass.py` failed, the line opens with `review_pass.py failed: full passes`. A whole line reads `coherence: clean · grounding: 3 resolved, did not close: 1 in ## Open, 4 in tasks · 3 passes, notes no lens read`.
+   **The verdict line** has one part per lens, in the words of the user's language: `clean` for a lens that found nothing, otherwise its counts (`5 fixed, 1 rejected, 1 in ## Open`, leaving out a count of zero), or `did not run`. A whole line reads `coherence: 4 fixed · grounding: 6 fixed, 1 rejected, 1 in ## Open`. Under it, one line per rejected finding with the ground it was rejected on; the fixed ones are already in the spec, and the `## Open` ones are listed above.
 
 Size the ask to the stakes: cheap-to-reverse decisions lead with your pick (the user vetoes if wrong); expensive-to-undo ones lay the options out and let them choose. Full playbook in `references/draft-first.md`.
 

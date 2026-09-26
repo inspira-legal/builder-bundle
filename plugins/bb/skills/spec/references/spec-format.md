@@ -160,7 +160,8 @@ Whether the document repeats itself or recounts the conversation is not a lint c
 it's what the two `bb-spec-reviewer` lenses are asked to find, the coherence one reading
 the spec as text and the grounding one checking its claims about existing code against
 the repo. The ceiling `W005` sets is not about how the prose reads: it measures the
-review surface, the text each pass has to cover, and past it the folding stops closing.
+review surface, the text the one pass has to cover, and past it each lens fills its
+eight findings before it reaches the end.
 Its advice is to split the spec along its `###` phases into sibling specs, never to trim
 prose to fit. It stays a warning, so the exit code is 0 and whether to split is the
 user's call at the gate.

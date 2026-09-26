@@ -1,5 +1,35 @@
 # Changelog
 
+## 3.9.0 (2026-09-26)
+
+**The spec review runs one pass and resolves what it finds on the spot.** 3.7.0 capped
+the loop at three passes, but kept a loop: a pass counter on disk, a delta pass for the
+grounding lens, a tally file, and pass 3 routing its findings to `## Open`, to task notes
+or to a leftover list, plus a delta pass for every change at the gate. Step 6 now runs
+the lint and the two `bb-spec-reviewer` lenses once, over the whole spec, when step 5 runs
+dry. Each finding, as its lens returns, is fixed in the spec, rejected on a stated ground,
+or sent to `## Open` when only the user can decide it; no lens reads the fixes again, and
+what the user settles at the gate goes into the spec with no new pass. The verdict line
+counts each lens's fixed, rejected and `## Open` findings, with one line per rejection.
+
+A re-read of a fold always finds new claims in the fold's own text, which is why the
+passes never closed; what a fix gets wrong is left to `bb-reuse-check`, the CI and
+`/bb:review`, each cheaper than another pass.
+
+### Changed
+
+- **`plugins/bb/skills/spec/SKILL.md`** step 6 drops the pass counter, the delta pass,
+  the routing past pass 3 and the delta pass at the gate; step 7 drops the leftover list
+  and the verdict pieces table. `metadata.version` moves to 2.9.0.
+- **`plugins/bb/agents/bb-spec-reviewer.md`** drops the delta pass: both lenses get the
+  full text, and the contract says this is the only pass.
+- **`plugins/bb/skills/spec/references/draft-first.md`** and **`spec-format.md`** describe
+  the single pass.
+
+### Removed
+
+- **`plugins/bb/skills/spec/scripts/review_pass.py`**, with nothing left to count.
+
 ## 3.8.0 (2026-09-25)
 
 **The spec's exit gate opens with what gets built and in what order, instead of two
