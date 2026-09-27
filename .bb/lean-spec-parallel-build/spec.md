@@ -168,7 +168,7 @@ their boxes, and moves to the next phase.
 
 ### The new format
 
-- [ ] **1. The spec format**: `spec-format.md` describes the new sections, the phases and
+- [x] **1. The spec format**: `spec-format.md` describes the new sections, the phases and
       the task line; `lint_spec.py` knows `## Attention points`. · verify: reading
 
 ### Both sides adopt it

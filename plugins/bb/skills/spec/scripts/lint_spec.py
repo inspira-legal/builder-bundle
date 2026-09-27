@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Check the mechanical shape of a spec.
 
-Judgment (does it repeat itself, is it recounting the conversation) belongs to the two
-`bb-spec-reviewer` lenses, which report at the spec's gate. This only catches what is
+Judgment (does it repeat itself, is it recounting the conversation) belongs to
+`bb-spec-reviewer`, which runs when the user asks for it at the spec's gate. This only catches what is
 decidable by reading the bytes: the required sections, dead names, frontmatter, malformed
 tables, and a size (`W005`) past which one review pass cannot cover the spec. That
 ceiling measures the review surface, so its advice is to split, never to trim prose.
@@ -22,6 +22,13 @@ REQUIRED_SECTIONS = (
 RECOMMENDED_SECTIONS = (
     ("Behavior", "behavior", "W001", "the behavior map is the acceptance contract"),
     ("Tasks", "tasks", "W002", "with no tasks the build has nothing to consume"),
+    (
+        "Attention points",
+        "attention points",
+        "W003",
+        "it names the technical risks the builder has to handle; write `Nothing.` when "
+        "there are none",
+    ),
     ("Out of scope", "out of scope", "W004", "it is the boundary the build stays inside"),
 )
 # `{raw}` takes the heading as the file spells it, so the message quotes the string the
