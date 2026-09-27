@@ -210,8 +210,9 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 - **Level**: HIGH
 - **Description**: `.bb/<slug>/spec.md` opens with a frontmatter block carrying `status` (a valid
   value), `created` as `YYYY-MM-DD` and `slug`, and carries the fixed sections the other skills
-  read. The lint answers `E001` for the block, `E002` for a missing section, `E003` for a dead
-  section name and `W003` naming the current one.
+  read. The lint answers `E001` for the block, `E002` for a missing required section and `E003`
+  for a dead section name, naming where its content goes. A missing recommended section is a
+  warning (`W001` to `W004`), `W003` being the one for `## Attention points`.
 - **Evidence**: `plugins/bb/skills/spec/scripts/lint_spec.py`, the `Lint specs` step of
   `.github/workflows/validate.yml`, and the contract in `plugins/bb/references/spec-state.md`.
 - **Do**:
