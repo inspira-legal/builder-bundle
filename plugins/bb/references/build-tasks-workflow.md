@@ -19,9 +19,12 @@ clean budget carrying only the spec and its own cut. Losing the session's tacit 
 between agents is the price, and the convention note is what pays it, lossy on purpose
 instead of lossy by accident.
 
-That price is also why the spec is reviewed before it ever gets here. A task agent
-receives the spec, its own line and the convention note, so a spec that only its author
-can build from is a broken spec. `/bb:spec`'s step 6 asks that question.
+A task agent receives the spec, its own line and the convention note, and it settles the
+technical details the spec leaves open itself, with the code open. The spec says what gets
+built and how it behaves; a gap there, a business rule or a behavior missing or
+contradicting another, is the one thing the agent cannot decide, and it returns
+`underspecified` for it. The review `/bb:spec` offers at its gate is an option the user
+picks, so a spec can reach the build without one.
 
 ## What the platform forces
 
@@ -37,13 +40,28 @@ can build from is a broken spec. `/bb:spec`'s step 6 asks that question.
 - **`Date.now()`, `new Date()` and `Math.random()` throw**: they would break resume.
   Anything per-task varies by index, and times are stamped after the workflow returns.
 
-## Sequential, with one parallel stage
+## Phases in order, the tasks of a phase together
 
-The tasks run in a `for` loop with `await`, not `pipeline()`. `pipeline` runs each item
-through the stages independently and concurrently, which is the wrong primitive here:
-the tasks share one working tree, and `dep:` exists precisely to say that task 2 builds
-on what task 1 created. `parallel()` appears exactly once, in stage zero, which is
-read-only.
+The phases run in a `for` loop with `await`, in document order, not `pipeline()`.
+`pipeline` runs each item through the stages independently and concurrently, which is the
+wrong primitive here: a phase builds on what the phase before it landed, and phase order is
+the only dependency the spec carries. `phaseGroups()` turns `args.phases` into the groups
+the loop walks, and each group takes one of two paths:
+
+- **`runInLine()`**, one task at a time on the shared tree: the implicit `Build` group of
+  the tasks above the first `###` heading (or of every task, when the spec has no heading),
+  and a `###` group left with a single unticked task. This is how a task ran before
+  phases.
+- **`runTogether()`**, for a `###` group with more than one unticked task: one `parallel()`
+  dispatches every task at once, each with `isolation: "worktree"`, then one landing agent
+  brings the green commits onto the run branch. A red task cancels nothing: its neighbours
+  were written to need nothing from it, so the green ones land and the run stops before
+  the next phase.
+
+The first `parallel()` is stage zero, which is read-only and runs on the shared tree. Every
+later one is a phase's fan-out, and each of its agents writes in a worktree of its own,
+because parallel tasks on one tree would collide on the files, the git index and the
+commit.
 
 ## How the skills invoke it
 
@@ -128,7 +146,7 @@ stringified one):
   reuseNotes: ["<one string per reuse note in ## Decisions>"],
   phases: [{ title: "<the ### heading>", tasks: [1, 2] }],
   tasks: [
-    { n: 1, title: "...", delivers: "...", behaviors: [2, 3], dep: [], verify: "...", model: "haiku" }
+    { n: 1, title: "...", delivers: "...", verify: "...", model: "sonnet" }
   ]
 }
 ```
@@ -155,16 +173,18 @@ from reading as the whole suite when it is not. `checksPrompt()` hands those lea
 files to read rather than as a list to confirm, so the judgment lands with the agent that can
 open the file. The alternative is a confident empty list over a suite that exists.
 
-`tasks` carries only the ones still unticked at invoke time, in an order that already
-satisfies `dep:`. The agents re-read the spec anyway: `args` is the plan, the file on
-disk is the truth.
+`tasks` carries only the ones still unticked at invoke time, in document order. A task
+carries no `dep` and no `behaviors`: phase order replaced the first, and the agent reads the
+`## Behavior` rows its task touches in the spec itself. A spec written before this change may
+still carry `dep:` and `→ behaviors` on its lines; the skill reads the line and leaves both
+out. The agents re-read the spec anyway: `args` is the plan, the file on disk is the truth.
 
 `model` on a task is **optional and the only tier the payload sets**, because how hard a task
-is, is the one thing about it the script cannot read. It takes `haiku`, `sonnet` or `opus`; the
-script drops any other name, says so in one line and runs that task on the session's model,
-since a typo passed through would take down a run that had already proved its ground. Omitted,
-the task inherits the session's model, which is the default and the right answer for most
-tasks: the agent is doing the work the main context would have done. `## Effort and model`
+is, is the one thing about it the script cannot read. It takes `sonnet` or `opus`; the
+script drops any other name, `haiku` included, says so in one line and runs that task on the
+session's model, since a typo passed through would take down a run that had already proved
+its ground. Omitted, the task inherits the session's model, which is the default and the
+right answer for most tasks: the agent is doing the work the main context would have done. `## Effort and model`
 below is the rule the skill applies to decide, and resume is what makes it a rule rather than
 a judgment per run: the cache is keyed on the agent's `(prompt, opts)`, so a task whose model
 moved between two runs of the same spec re-runs from scratch.
@@ -174,9 +194,10 @@ document order, the heading's own text as `title` and its tasks named by `n`. Th
 those headings follow is `skills/spec/references/spec-format.md`'s. Read the section as
 written, ticked tasks included: the script keeps only the members `tasks` still carries
 and drops a group left with none, so a resumed run announces the phases it will actually
-run. A `## Tasks` with no `###` heading sends no `phases` at all, and the script falls
-back to its own fixed titles; the ground keeps `Ground` either way, since stage zero
-belongs to the script and not to any task.
+run and skips a phase with no task left. A task no heading claims sat above the first `###`
+and runs first, alone, under the fixed title `Build`. A `## Tasks` with no `###` heading
+sends no `phases` at all, and every task runs that way, one at a time in document order; the
+ground keeps `Ground` either way, since stage zero belongs to the script and not to any task.
 
 An empty `tasks` is not a run. The skill sees it first and reports nothing to build
 without invoking; the script returns the empty report before stage zero, so a caller that
@@ -256,32 +277,81 @@ refused with no policy saying so. That is still a stop before task 1 and still a
 report, naming the command, so the allowlist can be widened and the next run gets past
 stage zero.
 
-## The task loop
+## The phase loop
 
-Four exits, and each needs its own line. A `null` return (the user skipped the agent,
-or it died on a terminal API error) is a failed task that carries no blocker of its
-own, so the script writes one. Assigning `stopped = r` there would hand the caller a
-`null` `stopped`, which reads as a clean run over a half-built spec. A `skipped` task
-was already ticked before the run: count it and move on, keeping the conventions the
-loop already had. A `green` task whose `verify` is missing, or whose `verify.result` is
-`failed`, stops the loop too: `verify:` is what makes a task done, so green over an
-absent proof is a task the caller would read as proven. Anything else stops the loop and
-keeps what is green.
+`failureOf()` reads every task result the same way, whichever path ran it. Five exits, and
+each needs its own line. A `null` return (the user skipped the agent, or it died on a
+terminal API error) is a failed task that carries no blocker of its own, so the script
+writes one. Assigning `stopped = r` there would hand the caller a `null` `stopped`, which
+reads as a clean run over a half-built spec. A `skipped` task was already ticked before the
+run: count it and move on, keeping the conventions the loop already had. A `green` task
+whose `verify` is missing, or whose `verify.result` is `failed`, is a failure too: `verify:`
+is what makes a task done, so green over an absent proof is a task the caller would read as
+proven. A task built in a worktree that returns green with no `commit` is one more, since
+its sha is the only way its work lands. Anything else is a failure as it came back.
+
+In line, the first failure stops the loop and keeps what is green. Together, every result of
+the phase is read first, and then the landing agent, `land: <title>` on the cheap tier, runs
+over the whole phase. It confirms the main checkout is on a branch with a clean tree, then:
+
+1. cherry-picks the green commits in `n` order, and removes each worktree whose commit
+   landed, since that commit now lives on the run branch;
+2. aborts a pick that stops on a conflict and names it, with the tasks already landed whose
+   commits touched the same files, keeps that worktree, and resolves nothing: two tasks that
+   changed the same lines are the author's to reconcile;
+3. writes one line per task that did not come back green into `## Open`, in its own commit;
+4. runs the project's checks over the landed tree, when something landed, and fixes what the
+   landed tasks broke together, in a commit of its own, under the same flake rule a task
+   agent follows;
+5. ticks the landed tasks in one commit when the checks are green; when one is still red, it
+   ticks nothing and writes into `## Open` which tasks landed and which check their boxes
+   wait for;
+6. joins the notes of the landed tasks onto the note the phase started from.
+
+It returns:
+
+```
+{ landed: [<n>], conflicts: [{ n, with: [<n>], files: ["..."] }], checksGreen: true | false, blocker: "...", conventions: "..." }
+```
+
+`landed` and `conflicts` together have to account for every green commit the agent was
+handed, and the script checks that: a commit neither landed nor named as a conflict is a
+cause of its own. The phase stops the run when any task was red, any commit conflicted or
+went unaccounted for, the checks went red after the landing, or the landing agent returned
+nothing, which leaves the green commits waiting in their worktrees and names them. A lone
+red task is handed back as it came, so an `underspecified` reaches the caller intact;
+anything more is one stop, `{ n, status: "red", blocker }`, with every cause joined by
+`|`. A stop ends the run and not just its phase: the next phase builds on what this one
+landed, and a half-landed phase is not that ground.
 
 ## What the task agent is told to do
 
 `taskPrompt()` in the script, and only there. It carries the spec path, the task's own
-line, the behaviors it cites, the accumulated convention note and the check commands
-stage zero resolved, then tells the agent what to do with them: build inside
-`## Out of scope`, satisfy `verify:`, keep the checks green, commit the files it touched
-together with its `- [x]`, return the result. Read the string when you need the wording: a
+line, the accumulated convention note and the check commands stage zero resolved, then
+tells the agent what to do with them: build inside `## Out of scope`, handle the risks
+`## Attention points` names the way it chooses, settle a technical gap itself and record the
+choice, satisfy `verify:`, keep the checks green, commit the files it touched together with
+its `- [x]`, return the result.
+
+Its last argument, `together`, is the one fork in the contract. A task that shares its
+phase starts by resetting its worktree to the run branch's tip, found from
+`git worktree list --porcelain`, runs none of the checks, makes exactly one commit without
+ticking its box, and returns its `worktree` path beside the `commit` and only the note it
+established. What it would otherwise do on the shared tree moves to the landing agent, which
+sees the whole phase at once. Nothing about the phase's other tasks enters the prompt, so the
+same task sends the same string whichever of its neighbours already landed, and the resume
+cache still finds it. Read the string when you need the wording: a
 paraphrase here would be the second contract the opening says not to keep.
 
 Two of its rules reach the caller, because they show up in the return:
 
 - **A task already `- [x]` on disk returns `status: "skipped"` and builds nothing.** The
   agent re-reads the checklist itself, so a resumed run does not redo what landed: `args`
-  is the plan, the file on disk is the truth.
+  is the plan, the file on disk is the truth. In a worktree it reads the checklist after
+  the reset, so the ticks it sees are the run branch's.
+- **`underspecified` is for a business rule or a behavior** the task needs that the spec
+  does not state, or that contradicts another. A technical gap is not one: the agent
+  decides and records the choice in the convention note.
 - **`verify: CI` cannot run inside the build**, so it returns `result: "pending"` on a
   task that is otherwise green and committed, neither a pass nor a failure. That is what
   `pendingVerify` collects and what `/bb:ship` closes.
@@ -294,6 +364,7 @@ Return shape:
   status: "green" | "red" | "skipped" | "underspecified",
   verify: { kind: "command" | "reading" | "ci", result: "passed" | "failed" | "pending", evidence: "..." },
   commit: "<sha, or null>",
+  worktree: "<the worktree's absolute path, when built in one>",
   conventions: "<the accumulated note this task hands forward>",
   blocker: "<what stopped it, when not green>"
 }
@@ -307,7 +378,13 @@ whole point is that task 3 uses the names task 1 established.
 
 The agent returns the note it received plus what it established. Past `NOTE_CEILING`
 characters (roughly 1500) it condenses the oldest entries itself before returning; no
-dedicated summarizer agent. What belongs in it: names and paths introduced, signatures
+dedicated summarizer agent.
+
+Inside a phase that runs together the note stops being a chain. Every task receives the note
+as the previous phase left it and returns only what it established; the landing agent joins
+the landed tasks' entries onto the phase's starting note and condenses it past the same
+ceiling. A task that did not land adds nothing, and when the landing agent returns no note,
+the script's own join of the landed entries is what travels to the next phase. What belongs in it: names and paths introduced, signatures
 other tasks will call, a pattern chosen among alternatives, and any `moved` reuse target
 from stage zero. What does not: anything already written in the spec.
 
@@ -321,25 +398,31 @@ answer instead of on the lookup.
 The rule is the script's, computed from the payload it already has, so the same spec
 dispatches the same tiers twice and the decision is readable in one place:
 
-- **The reuse agent: `haiku` at `effort: 'low'`, always.** `Grep` on the symbol a note
+- **The reuse agent: `sonnet` at `effort: 'low'`, always.** `Grep` on the symbol a note
   names and a verdict per note is the whole job, and `REUSE_VERDICTS` is what shapes
   the answer. Nothing here is bought by a stronger model.
 - **The checks agent: the payload decides.** Confirming a list `resolve_checks.py`
-  already produced and running it is mechanical, so that one is `haiku` at
+  already produced and running it is mechanical, so that one is `sonnet` at
   `effort: 'low'` too. A `checks` that is `null`, `truncated`, or carrying `unresolved`
   leads hands the agent the judgment the resolver could not make, and that one keeps
   the session's model and effort. The run logs which of the two it got, because silent,
   the expensive branch reads as the cheap one.
+- **The landing agent: `sonnet`, at the session's effort.** Cherry-picks and ticks are
+  mechanical; naming a conflict, fixing what the phase broke together and condensing the
+  note are the judgment, and the cheap tier carries all three.
 - **Task agents inherit the session's model and effort**, unless the task's own `model`
-  says otherwise. They are doing the work the main context would have done, against a
-  spec that was reviewed before it got here.
+  says otherwise. They are doing the work the main context would have done, and settling
+  the technical details the spec leaves open.
+
+`CHEAP_MODEL` in the script is `sonnet`, and it is the one name the reuse agent, the
+mechanical checks agent and the landing agent take. `haiku` left the build with it.
 
 `model` on a task is the skill's to set, and it is set from the task's own line rather
 than from a fresh judgment each run: a doc-only cut, a mechanical rename, a `verify:`
-that is one command all earn the cheap tier; the one task the spec's `## Decisions`
-turned on earns the strong one; everything else says nothing and inherits. Two runs of
-the same spec have to reach the same answer, or resume re-runs the tasks whose tier
-drifted. Set none, and every task runs on the session's model, which is what the build
+that is one command all earn the cheap tier, `sonnet`; the one task the spec's
+`## Decisions` turned on earns the strong one, `opus`; everything else says nothing and
+inherits. Two runs of the same spec have to reach the same answer, or resume re-runs the
+tasks whose tier drifted. Set none, and every task runs on the session's model, which is what the build
 did before this rule existed.
 
 ## What the script returns
@@ -351,7 +434,10 @@ did before this rule existed.
 The caller reads that and follows its own contract: `/bb:implement` goes on to whatever
 its scope has next, the review, the ship, or the gate that offers one. A non-null
 `stopped` is its safety valve, so it flips `status: blocked` and nothing further in the
-chain runs. `pendingVerify` names the tasks whose proof is CI, which is ship's to close.
+chain runs. After a stop inside a phase, `built` still names the tasks of that phase that
+landed and were ticked, and the red ones are already in the spec's `## Open`. A phase whose
+checks stayed red after the landing adds nothing to `built`: its tasks landed unticked, and
+the stop names them. `pendingVerify` names the tasks whose proof is CI, which is ship's to close.
 
 ## What guards the script, and what the skill still checks per run
 
@@ -369,7 +455,9 @@ template and regex bodies are blanked first, so only code is read:
   dialog and for the workflow list;
 - `meta.phases`, when the block declares it, has one entry per `phase()` call, and the
   titles match one for one, since a title is how the platform pairs an entry to a call;
-- there is exactly one `parallel()`, and it comes before the task loop;
+- the first `parallel()` comes before every loop, since stage zero proves the ground before
+  the first task runs, and every later one passes `isolation: "worktree"`, since only stage
+  zero reads without writing;
 - `Date.now()`, `new Date()` and `Math.random()` appear nowhere, in any spelling: optional
   chaining is flattened before the scan, and `Date[...]` or `Math[...]` fails on its own.
 
@@ -399,6 +487,7 @@ invoking:
 - The branch the commits belong on already exists and is checked out; the agents commit
   where the run puts them.
 - The agent count is `tasks.length`, plus one for the reuse agent when `reuseNotes` is not
-  empty, plus one for the checks agent when `checks.runnable` is not false: stage zero is
-  two agents at most, whatever the note count. Over the size guideline the session declares, say so
+  empty, plus one for the checks agent when `checks.runnable` is not false, plus one landing
+  agent per `###` phase with more than one unticked task: stage zero is two agents at most,
+  whatever the note count. Over the size guideline the session declares, say so
   in one line and invoke anyway; the real cap is 1000 agents per run.

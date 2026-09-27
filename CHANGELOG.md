@@ -1,5 +1,55 @@
 # Changelog
 
+## 3.10.0 (2026-09-27)
+
+**The spec becomes a lean plan, and the build runs each phase's tasks in parallel.** The
+spec used to need every technical fork closed before the build could start, and the
+review ran automatically over two lenses, coherence and grounding. With the model on the
+other side settling a technical detail better at build time, with the code open, than a
+reviewer does ahead of it, the required forks section is gone and the review becomes a
+gate option instead of an automatic step. The task line drops `dep:` and `→ behaviors` for
+a `###` heading over each phase: the phases run in document order, and the tasks inside one
+run together. A spec with no heading still builds one task at a time, in document order,
+so a spec written before this change keeps its order.
+
+**The build dispatches a phase's tasks together, each in a worktree of its own**, lands
+the green ones on the run branch before the next phase starts, and records a red task in
+`## Open` without cancelling the phase's other tasks. The cheap tier moves from `haiku` to
+`sonnet`, which is what the reuse agent and the mechanical-checks agent run on now, and the
+tier a mechanical task gets; `opus` and the session's own model are unchanged.
+
+### Changed
+
+- **`plugins/bb/skills/spec/references/spec-format.md`** describes the new sections
+  (`## Attention points` alongside `## Decisions`, `## Behavior`, `## Tasks`,
+  `## Out of scope`, `## Open`), the phase headings and the task line's new shape (title,
+  what it delivers, `verify:`). `lint_spec.py` answers `W003` for a spec with no
+  `## Attention points`.
+- **`plugins/bb/skills/spec/SKILL.md`** (3.0.0) drops the completeness pass, the required
+  forks section and the automatic review from its loop; the exit gate asks two questions
+  in one call, what now (`Build`, `Review the spec`, `Stop here`) and what follows a build
+  (`Review the branch`, `Ship`, both, or neither). `references/draft-first.md` follows, and
+  `references/completeness-generators.md` is deleted.
+- **`plugins/bb/agents/bb-spec-reviewer.md`** drops its two lenses for one pass that reads
+  for the happy path, the edge cases, coherence and attention points; its `tools:` stays
+  read only.
+- **`plugins/bb/workflows/build-tasks.js`** dispatches a phase's tasks together
+  (`runTogether()`, `agent()` with `isolation: 'worktree'`, one `land: <title>` agent to
+  bring the green commits back onto the run branch) and takes `sonnet` as its cheap tier.
+  A flat `## Tasks` still runs one task at a time (`runInLine()`). The validator now allows
+  more than one `parallel()` when every one past the first carries worktree isolation.
+- **`plugins/bb/skills/implement/SKILL.md`** (4.0.0) and
+  **`plugins/bb/references/build-tasks-workflow.md`** describe the parallel phases, a stop
+  inside one, the task payload without `dep`, `sonnet` in place of `haiku`, and step 2
+  asking the gate's second question when the spec gate did not already ask it.
+- **`plugins/bb/references/handoff-gate.md`**'s example follows the new gate: two
+  questions in one call, not a four-way choice, and the journey map's `spec` row points at
+  the scope the second question sets.
+- **`README.md`** and **`.claude/CLAUDE.md`** stop calling `bb-spec-reviewer` "the two
+  lenses" and describe the one pass it runs instead.
+- **`plugins/bb/references/doc-style.md`** drops its dash example naming `dep:`, a field
+  the task line no longer carries.
+
 ## 3.9.0 (2026-09-26)
 
 **The spec review runs one pass and resolves what it finds on the spot.** 3.7.0 capped

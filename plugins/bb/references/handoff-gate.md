@@ -38,7 +38,8 @@ back to answer, which is the same stall as printing the question as text.
 
 ## The format
 
-Ask one question:
+Ask one question, or two in one call when the pick needs a setting to go with it, the way
+the spec's exit gate asks what comes after the build:
 
 - `question`: one sentence naming what just finished and asking how to follow.
 - `options`: 2–4, each a next skill (or action) with a one-line description of
@@ -46,22 +47,30 @@ Ask one question:
   label with `(Recommended)`.
 - Last option: **"Stop here"**. Description says what stays saved and how to
   pick the flow back up later (the exact `/bb:<skill>` command).
+- A second question, when there is one, is `multiSelect` and carries the setting,
+  with no "Stop here" of its own. It counts only with the pick it sets, and the
+  first question's description says so.
 
-Example (spec's exit gate, 4-way; the three build options are one skill at three scopes):
+Example (spec's exit gate, two questions in one call):
 
 ```
-question: "Spec validated and saved at .bb/<slug>/spec.md. How far do we take it?"
+question 1, single choice: "Spec validated and saved at .bb/<slug>/spec.md. What now?"
 options:
-  - "Build (Recommended)". I run /bb:implement <slug>: I build the tasks and stop ready to ship.
-  - "Build and ship". The tasks, then /bb:ship settles the destination and ships it.
-  - "Build, review and ship". The same, with /bb:review over the branch before it ships.
+  - "Build (Recommended)". I invoke /bb:implement <slug> now, at the scope the second question sets.
+  - "Review the spec". One bb-spec-reviewer pass over the spec, then this gate opens again.
   - "Stop here". The spec stays saved; pick it back up with /bb:implement <slug>.
+
+question 2, multiSelect, counted only when the first answer is "Build": "After the build?"
+options:
+  - "Review the branch". /bb:review runs over the branch before anything ships.
+  - "Ship". /bb:ship settles the destination and ships it.
+  Both left unticked is a build only.
 ```
 
 ## Journey map (what gates typically offer)
 
 - `discover` → spec (it's code) / brisar (it's design) / challenge (test the thesis) / stop
-- `spec` → implement, at one of three scopes / stop
+- `spec` → implement, at the scope the gate's second question set / review the spec / stop
 - `implement` → ship / stop, only when the scope didn't already include it
 - `ship` → no gate; it reports what shipped and stops
 - `review` → apply more items / run the fronts that were skipped / audit the running UI / review-setup / ship (when there is no PR) · three at most, by priority, plus stop
