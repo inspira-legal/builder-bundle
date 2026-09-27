@@ -14,6 +14,11 @@ const IMPLICIT_PHASE = "Build";
 // A check that failed and then passed on a re-run with no file changed in between is
 // the whole definition of a flake here. Nothing else earns a retry.
 const RETRY_CAP = 3;
+// Both agents that run checks read the rule from here, so the task agent and the landing agent
+// cannot drift onto different retry policies.
+const FLAKE_RULE = `Re-run a failed check at most ${RETRY_CAP}
+   times, and only while no file changed between runs: a check that fails and then passes
+   with the tree untouched is a flake. Once a file changed, the failure is yours to fix.`;
 
 // Past this many characters the agent condenses its oldest entries itself.
 const NOTE_CEILING = 1500;
@@ -198,9 +203,7 @@ function taskPrompt(t, conventions, checks, specPath, together) {
   const checking = together
     ? `${4 + k}. Run none of the project's checks here: they run once over the whole phase after it
    lands, on the run branch.`
-    : `${4 + k}. Run the project's checks and fix what broke. Re-run a failed check at most ${RETRY_CAP}
-   times, and only while no file changed between runs: a check that fails and then passes
-   with the tree untouched is a flake. Once a file changed, the failure is yours to fix.`;
+    : `${4 + k}. Run the project's checks and fix what broke. ${FLAKE_RULE}`;
 
   const committing = together
     ? `${5 + k}. Commit only the files this task touched, in exactly one commit, and leave \`## Tasks\`
