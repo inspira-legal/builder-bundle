@@ -205,10 +205,10 @@ python3 plugins/bb/skills/spec/scripts/lint_spec.py .bb/<slug>/spec.md
 | W005 | warning | above 800 lines, or above 100 rows in the `## Behavior` tables     |
 
 Whether the document repeats itself, recounts the conversation, or carries a fix inside an
-attention point is not a lint check. That is judgment, and it belongs to
-`bb-spec-reviewer`, which runs only when the user picks `Review the spec` at the gate. The
-ceiling `W005` sets is not about how the prose reads: it measures the review surface, the
-text the reviewer's one pass has to cover.
+attention point is not a lint check. That is the author's judgment, against the rules
+above. The ceiling `W005` sets is not about how the prose reads: it measures the review
+surface, the text the one pass of `bb-spec-reviewer` has to cover when the user picks
+`Review the spec` at the gate.
 Its advice is to split the spec along its `###` phases into sibling specs, never to trim
 prose to fit. It stays a warning, so the exit code is 0 and whether to split is the
 user's call at the gate.

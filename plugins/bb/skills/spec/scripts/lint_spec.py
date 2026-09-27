@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Check the mechanical shape of a spec.
 
-Judgment (does it repeat itself, is it recounting the conversation) belongs to
-`bb-spec-reviewer`, which runs when the user asks for it at the spec's gate. This only catches what is
-decidable by reading the bytes: the required sections, dead names, frontmatter, malformed
+Judgment (does it repeat itself, is it recounting the conversation) is the author's, read
+against `spec-format.md`; `bb-spec-reviewer` reads for content, not for how the prose repeats.
+This only catches what is decidable by reading the bytes: the required sections, dead names, frontmatter, malformed
 tables, and a size (`W005`) past which one review pass cannot cover the spec. That
 ceiling measures the review surface, so its advice is to split, never to trim prose.
 
