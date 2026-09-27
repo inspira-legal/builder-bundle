@@ -1,5 +1,5 @@
 ---
-status: pending
+status: in-progress
 created: 2026-09-27
 slug: lean-spec-parallel-build
 ---
