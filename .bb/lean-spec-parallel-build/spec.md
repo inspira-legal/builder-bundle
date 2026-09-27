@@ -191,7 +191,7 @@ their boxes, and moves to the next phase.
 
 ### Close
 
-- [ ] **6. The rest of the repo catches up**: `handoff-gate.md`, `operating-context.md`, `README.md`,
+- [x] **6. The rest of the repo catches up**: `handoff-gate.md`, `operating-context.md`, `README.md`,
       `.claude/CLAUDE.md`, `doc-style.md`, the plugin version and `CHANGELOG.md`. · verify: CI
 
 ## Out of scope

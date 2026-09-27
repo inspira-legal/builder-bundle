@@ -18,7 +18,7 @@ plugins/bb/
 │   ├── bb-reuse-check.md               # build stage zero: one run, every reuse note, read-only by `tools:`
 │   ├── bb-review-finder.md             # review fan-out: finds candidates, read-only by `tools:`
 │   ├── bb-review-verifier.md           # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
-│   └── bb-spec-reviewer.md             # spec step 6: the two lenses, coherence and grounding
+│   └── bb-spec-reviewer.md             # spec's gate option: one pass, happy path, edge cases, coherence, attention points
 ├── hooks/                             # session infra (auto-active, no skill)
 │   ├── hooks.json                      # SessionStart: BUILDER-BUNDLE.md, and bb's own update
 │   ├── enter_worktree.py               # worktree isolation for local autonomous runs

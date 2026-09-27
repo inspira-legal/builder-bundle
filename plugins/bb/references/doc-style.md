@@ -29,9 +29,8 @@ verifiable fact. What neither settles goes to the closest rule on this page.
 Where a dash would go, write a comma, a colon, a period, or rewrite the sentence. A colon
 fits when the second half explains the first, and a period fits when it stands on its own.
 Two things keep the character: a functional token (inside a command, a regex, a path, a
-string compared in code, or a value a format reserves, like the `dep: —` a task line
-carries when nothing blocks it), and a verbatim quote from an outside source, which keeps the
-punctuation of its source.
+string compared in code, or a value a format reserves for absence), and a verbatim quote
+from an outside source, which keeps the punctuation of its source.
 
 Inside YAML frontmatter the colon is unavailable: a `: ` in an unquoted value reads as a
 nested mapping and fails the parse. A dash in a `description:` becomes a period, parentheses,
