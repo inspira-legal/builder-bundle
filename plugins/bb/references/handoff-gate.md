@@ -38,7 +38,8 @@ back to answer, which is the same stall as printing the question as text.
 
 ## The format
 
-Ask one question:
+Ask one question, or two in one call when the pick needs a setting to go with it, the way
+the spec's exit gate asks what comes after the build:
 
 - `question`: one sentence naming what just finished and asking how to follow.
 - `options`: 2–4, each a next skill (or action) with a one-line description of
@@ -46,6 +47,9 @@ Ask one question:
   label with `(Recommended)`.
 - Last option: **"Stop here"**. Description says what stays saved and how to
   pick the flow back up later (the exact `/bb:<skill>` command).
+- A second question, when there is one, is `multiSelect` and carries the setting,
+  with no "Stop here" of its own. It counts only with the pick it sets, and the
+  first question's description says so.
 
 Example (spec's exit gate, two questions in one call):
 
