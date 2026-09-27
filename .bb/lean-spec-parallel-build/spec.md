@@ -180,7 +180,7 @@ their boxes, and moves to the next phase.
 - [x] **3. The reviewer's contract**: `agents/bb-spec-reviewer.md` loses the two lenses
       and reads for happy path, edge cases, coherence and attention points; its `tools:`
       stays read only. · verify: reading
-- [ ] **4. The build runs phases in parallel**: `workflows/build-tasks.js` dispatches each
+- [x] **4. The build runs phases in parallel**: `workflows/build-tasks.js` dispatches each
       phase's tasks together, lands them before the next phase and takes `sonnet` as its
       cheap tier; `taskPrompt()` settles technical gaps and reads `## Attention points`;
       the validator follows. · verify: CI

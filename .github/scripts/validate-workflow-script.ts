@@ -38,6 +38,7 @@ const SUBSCRIPTED_GLOBAL_REGEX = /\b(Date|Math)\s*\[/;
 const META_REGEX = /export\s+const\s+meta\s*=\s*\{/;
 const PARALLEL_REGEX = /\bparallel\s*\(/g;
 const LOOP_REGEX = /\b(?:for|while|do)\b/;
+const ISOLATION_KEY_REGEX = /\bisolation\s*:\s*/;
 
 /** A `/` here opens a regex literal rather than dividing; anything else is division. */
 const KEYWORDS_BEFORE_REGEX = new Set([
@@ -222,6 +223,62 @@ function blankNonCode(source: string): string {
   }
 
   return out.join("");
+}
+
+/** The text from the `(` at `open` to its matching `)`, or to the end when it never closes. */
+function callSpan(code: string, open: number): { start: number; text: string } {
+  let depth = 0;
+  for (let i = open; i < code.length; i++) {
+    if (code[i] === "(") depth++;
+    else if (code[i] === ")" && --depth === 0)
+      return { start: open, text: code.slice(open, i + 1) };
+  }
+  return { start: open, text: code.slice(open) };
+}
+
+/**
+ * The first `parallel()` is stage zero: read only, so it runs on the shared tree, and it proves the
+ * ground, so no loop comes before it. Every later one fans out tasks that write files, so each
+ * agent in it runs in a worktree of its own. The key is found in the blanked code, so a comment
+ * naming it does not count, and its value is read off the source, where strings survive.
+ */
+function parallelIssues(source: string, code: string): ValidationIssue[] {
+  const parallels = [...code.matchAll(PARALLEL_REGEX)];
+  if (!parallels.length) {
+    return [
+      {
+        level: "error",
+        message:
+          "Found no parallel() call: stage zero proves the ground in one fan-out before the first task runs",
+      },
+    ];
+  }
+
+  const issues: ValidationIssue[] = [];
+  const loop = code.match(LOOP_REGEX);
+  const fanOut = parallels[0].index ?? 0;
+  if (loop && loop.index !== undefined && loop.index < fanOut) {
+    issues.push({
+      level: "error",
+      message: `The first parallel() call, on line ${lineOf(code, fanOut)}, comes after the loop on line ${lineOf(code, loop.index)}: stage zero proves the ground before the first task runs, so its fan-out precedes the task loop`,
+    });
+  }
+
+  for (const later of parallels.slice(1)) {
+    const at = later.index ?? 0;
+    const span = callSpan(code, at + later[0].length - 1);
+    const key = span.text.match(ISOLATION_KEY_REGEX);
+    const valueAt = key?.index !== undefined ? span.start + key.index + key[0].length : -1;
+    const isolated = valueAt !== -1 && /^(['"])worktree\1/.test(source.slice(valueAt));
+    if (!isolated) {
+      issues.push({
+        level: "error",
+        message: `The parallel() call on line ${lineOf(code, at)} dispatches without isolation: "worktree": only stage zero reads without writing, so every later fan-out gives each of its agents a worktree of its own`,
+      });
+    }
+  }
+
+  return issues;
 }
 
 type MetaBlock = { start: number; end: number };
@@ -417,22 +474,7 @@ function validateSource(source: string): ValidationIssue[] {
     issues.push(...phaseIssues(source, code, meta));
   }
 
-  const parallels = [...code.matchAll(PARALLEL_REGEX)];
-  if (parallels.length !== 1) {
-    issues.push({
-      level: "error",
-      message: `Found ${parallels.length} parallel() calls, expected exactly 1: the tasks share one working tree, so only stage zero fans out`,
-    });
-  } else {
-    const loop = code.match(LOOP_REGEX);
-    const fanOut = parallels[0].index ?? 0;
-    if (loop && loop.index !== undefined && loop.index < fanOut) {
-      issues.push({
-        level: "error",
-        message: `The parallel() call on line ${lineOf(code, fanOut)} comes after the loop on line ${lineOf(code, loop.index)}: stage zero proves the ground before the first task runs, so the fan-out precedes the task loop`,
-      });
-    }
-  }
+  issues.push(...parallelIssues(source, code));
 
   for (const { label, regex } of FORBIDDEN_CALLS) {
     const hit = code.match(regex);
