@@ -207,7 +207,7 @@ function taskPrompt(t, conventions, checks, specPath, together) {
 
   const committing = together
     ? `${5 + k}. Commit only the files this task touched, in exactly one commit, and leave \`## Tasks\`
-   as it is: each box is ticked as its task lands on the run branch. Conventional style, and no
+   as it is: each box is ticked on the run branch once the phase lands. Conventional style, and no
    AI attribution anywhere in the message. Return the sha in "commit" and your worktree's
    absolute path in "worktree".`
     : `${5 + k}. Commit only the files this task touched, together with its \`- [ ]\` to \`- [x]\` in the
@@ -272,11 +272,17 @@ green task: it commits, and the pending rides out to ship.`;
 }
 
 // The landing agent is the one place a phase's parallel work meets the run branch, so it owns
-// everything that would collide there if each task did it for itself: the cherry-picks, the ticks
-// in the one `spec.md`, the `## Open` lines for the tasks that stopped, the checks, and the join
-// of the notes. `landed` is ordered by `n` so two runs of the same phase land in the same order.
+// everything that would collide there if each task did it for itself: the cherry-picks, the checks
+// and what they need fixed, the ticks in the one `spec.md`, the `## Open` lines, and the join of
+// the notes. `landed` is ordered by `n` so two runs of the same phase land in the same order. The
+// ticks wait for the checks, so a box never reads done over a tree the phase left red.
 function landPrompt(title, specPath, landed, failed, conventions, checks) {
-  const commits = landed.map((o) => `- task ${o.t.n} (${o.t.title}): ${o.r.commit}`).join("\n");
+  const commits = landed
+    .map(
+      (o) =>
+        `- task ${o.t.n} (${o.t.title}): ${o.r.commit}${o.r.worktree ? `, built in ${o.r.worktree}` : ""}`,
+    )
+    .join("\n");
   const stoppedList = failed
     .map(
       (o) =>
@@ -315,24 +321,29 @@ Your steps:
 
 1. Confirm the checkout is on a branch and its tree is clean. A detached HEAD or a dirty tree is
    a blocker: return it and touch nothing.
-2. Land each commit in the order above with \`git cherry-pick <sha>\`. Right after one lands
-   clean, flip that task's \`- [ ]\` to \`- [x]\` in \`## Tasks\` of the spec and fold it into the
-   same commit with \`git commit --amend --no-edit\`: a landed task and its tick are one
-   checkpoint. When a pick stops on a conflict, take the conflicted files from
-   \`git diff --name-only --diff-filter=U\`, run \`git cherry-pick --abort\`, and record it under
-   "conflicts": the task whose commit did not land, the tasks already landed in this phase whose
-   commits touched those files (\`git show --name-only <sha>\`), and the files. Then go on with
-   the next commit. Resolve no conflict yourself: two tasks that changed the same lines are the
-   author's to reconcile.${openStep}
-${3 + n}. When at least one commit landed and there are checks, run each once over the landed tree.
-   Re-run a failed check at most ${RETRY_CAP} times, and only while no file changed between runs.
-   Fix nothing: a check still red is a blocker naming the command, with "checksGreen" false.
-   With no checks, or nothing landed, "checksGreen" is true.
-${4 + n}. Return "landed" with the numbers of the tasks whose commits landed, "conflicts",
+2. Land each commit in the order above with \`git cherry-pick <sha>\`, and leave \`## Tasks\` as
+   it is: the boxes are ticked once the checks have read the landed tree. Once a pick lands
+   clean, remove the worktree it was built in with \`git worktree remove --force <path>\`: its
+   commit now lives on the run branch. When a pick stops on a conflict, take the conflicted
+   files from \`git diff --name-only --diff-filter=U\`, run \`git cherry-pick --abort\`, and
+   record it under "conflicts": the task whose commit did not land, the tasks already landed in
+   this phase whose commits touched those files (\`git show --name-only <sha>\`), and the files.
+   Keep that task's worktree, and go on with the next commit. Resolve no conflict yourself: two
+   tasks that changed the same lines are the author's to reconcile.${openStep}
+${3 + n}. When at least one commit landed and there are checks, run each over the landed tree and
+   fix what broke. ${FLAKE_RULE} A check the landed tasks broke together is fixed here, in one
+   commit of its own, touching only what their combination broke. A check still red after
+   that is a blocker naming the command, with "checksGreen" false. With no checks, or nothing
+   landed, "checksGreen" is true.
+${4 + n}. With "checksGreen" true, flip each landed task's \`- [ ]\` to \`- [x]\` in \`## Tasks\` of
+   the spec, all in one commit (\`docs(spec): ...\`). With it false, tick nothing: add one line
+   under \`## Open\` naming the landed tasks and the red command, saying their commits are on
+   the branch and their boxes wait for that check, and commit it the same way.
+${5 + n}. Return "landed" with the numbers of the tasks whose commits landed, "conflicts",
    "checksGreen", "blocker" when step 1 or a check stopped you, and "conventions": the note the
-   phase started from plus what each landed task established, each entry as it came. Leave out
-   what a task that did not land established. Past roughly ${NOTE_CEILING} characters, condense
-   the oldest entries.
+   phase started from plus what each landed task established, each entry as it came, plus a
+   line for any fix step ${3 + n} made. Leave out what a task that did not land established.
+   Past roughly ${NOTE_CEILING} characters, condense the oldest entries.
 
 No AI attribution in any commit message.`;
 }
@@ -667,7 +678,7 @@ async function runInLine(g) {
 // back. A red task cancels nothing: its neighbours were written to need nothing from it, so the
 // green ones land and the run stops before the next phase, with the red one in `## Open`. The
 // checks run once, after the landing, because a copy of the suite per worktree is memory this
-// machine does not have.
+// machine does not have; what the phase broke together is fixed there, before any box is ticked.
 async function runTogether(g) {
   log(`${g.title}: ${counted(g.tasks.length, "task")} run together, each in a worktree of its own`);
 
@@ -701,8 +712,8 @@ async function runTogether(g) {
       label: `land: ${g.title}`,
       phase: g.title,
       schema: LAND_RESULT,
-      // Cherry-picks, ticks and one run of the checks are mechanical; naming a conflict and
-      // condensing the note are the judgment, and the cheap tier carries both.
+      // Cherry-picks and ticks are mechanical; naming a conflict, fixing what the phase broke
+      // together and condensing the note are the judgment, and the cheap tier carries all three.
       model: CHEAP_MODEL,
     },
   );
@@ -728,12 +739,15 @@ async function runTogether(g) {
     (n) => !landedNs.includes(n) && !conflicts.some((c) => c.n === n),
   );
 
-  green
-    .filter((o) => landedNs.includes(o.t.n))
-    .forEach((o) => {
-      built.push(o.t.n);
-      if (o.r.verify.result === "pending") pendingVerify.push(o.t.n);
-    });
+  // A task counts as built once its box is ticked, and the landing ticks only over green checks.
+  if (land.checksGreen) {
+    green
+      .filter((o) => landedNs.includes(o.t.n))
+      .forEach((o) => {
+        built.push(o.t.n);
+        if (o.r.verify.result === "pending") pendingVerify.push(o.t.n);
+      });
+  }
 
   // The agent's join is the note, since it condensed it; the script's own join is the floor for
   // an agent that landed work and returned no note, so what the phase established still travels.
@@ -759,7 +773,8 @@ async function runTogether(g) {
     );
   }
   if (!land.checksGreen) {
-    causes.push(land.blocker || `the checks went red after "${g.title}" landed`);
+    const waiting = landedNs.length ? `; task(s) ${landedNs.join(", ")} landed unticked` : "";
+    causes.push(`${land.blocker || `the checks went red after "${g.title}" landed`}${waiting}`);
   } else if (land.blocker) {
     causes.push(land.blocker);
   }

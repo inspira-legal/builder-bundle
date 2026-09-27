@@ -294,14 +294,19 @@ In line, the first failure stops the loop and keeps what is green. Together, eve
 the phase is read first, and then the landing agent, `land: <title>` on the cheap tier, runs
 over the whole phase. It confirms the main checkout is on a branch with a clean tree, then:
 
-1. cherry-picks the green commits in `n` order, and amends each task's tick into its own
-   pick, so a landed task and its box are one checkpoint;
+1. cherry-picks the green commits in `n` order, and removes each worktree whose commit
+   landed, since that commit now lives on the run branch;
 2. aborts a pick that stops on a conflict and names it, with the tasks already landed whose
-   commits touched the same files, and resolves nothing: two tasks that changed the same
-   lines are the author's to reconcile;
+   commits touched the same files, keeps that worktree, and resolves nothing: two tasks that
+   changed the same lines are the author's to reconcile;
 3. writes one line per task that did not come back green into `## Open`, in its own commit;
-4. runs the project's checks once over the landed tree, when something landed;
-5. joins the notes of the landed tasks onto the note the phase started from.
+4. runs the project's checks over the landed tree, when something landed, and fixes what the
+   landed tasks broke together, in a commit of its own, under the same flake rule a task
+   agent follows;
+5. ticks the landed tasks in one commit when the checks are green; when one is still red, it
+   ticks nothing and writes into `## Open` which tasks landed and which check their boxes
+   wait for;
+6. joins the notes of the landed tasks onto the note the phase started from.
 
 It returns:
 
@@ -402,9 +407,9 @@ dispatches the same tiers twice and the decision is readable in one place:
   leads hands the agent the judgment the resolver could not make, and that one keeps
   the session's model and effort. The run logs which of the two it got, because silent,
   the expensive branch reads as the cheap one.
-- **The landing agent: `sonnet`, at the session's effort.** Cherry-picks, ticks and one
-  run of the checks are mechanical; naming a conflict and condensing the note are the
-  judgment, and the cheap tier carries both.
+- **The landing agent: `sonnet`, at the session's effort.** Cherry-picks and ticks are
+  mechanical; naming a conflict, fixing what the phase broke together and condensing the
+  note are the judgment, and the cheap tier carries all three.
 - **Task agents inherit the session's model and effort**, unless the task's own `model`
   says otherwise. They are doing the work the main context would have done, and settling
   the technical details the spec leaves open.
@@ -430,7 +435,9 @@ The caller reads that and follows its own contract: `/bb:implement` goes on to w
 its scope has next, the review, the ship, or the gate that offers one. A non-null
 `stopped` is its safety valve, so it flips `status: blocked` and nothing further in the
 chain runs. After a stop inside a phase, `built` still names the tasks of that phase that
-landed, and the red ones are already in the spec's `## Open`. `pendingVerify` names the tasks whose proof is CI, which is ship's to close.
+landed and were ticked, and the red ones are already in the spec's `## Open`. A phase whose
+checks stayed red after the landing adds nothing to `built`: its tasks landed unticked, and
+the stop names them. `pendingVerify` names the tasks whose proof is CI, which is ship's to close.
 
 ## What guards the script, and what the skill still checks per run
 
