@@ -26,7 +26,7 @@ Inside a git repository with a `.bb/` directory, and a validated spec with a `##
    - **Review the branch**: `/bb:review` over the branch, with the findings applied before anything ships.
    - **Ship**: `/bb:ship` settles the destination and ships it.
 
-   Both empty is a build only: every task built, the checks green, the tree committed, and a gate at the end offering the ship. The ticks map to the scope the way the spec gate's table does: nothing ticked is build only, `Review the branch` is build and review, `Ship` is build and ship, both is build, review and ship, with the review running on the branch before the ship.
+   Both empty is a build only: every task built, the checks green, the tree committed, and a gate at the end offering the ship. The ticks map to the scope by the table in `/bb:spec`'s `## The exit gate`, with the review running on the branch before the ship.
 
    **How it was invoked sets which boxes lead**, and each leading box carries `(Recommended)`. "run everything", "do it all", "delegate this" lead with both; "build and ship the spec" leads with `Ship`; "implement the spec", "build the tasks", "build it" lead with neither, and the question says that both empty is a build only. One keystroke confirms either way. **Invoked from `/bb:spec`'s exit gate the question is already answered**: that gate asked it, and its answer is the scope. Nothing else about the run is asked; the build itself is dispatched with no question of its own.
 
