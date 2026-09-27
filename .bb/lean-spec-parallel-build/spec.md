@@ -173,7 +173,7 @@ their boxes, and moves to the next phase.
 
 ### Both sides adopt it
 
-- [ ] **2. `/bb:spec` gets lean**: the loop without step 5, without the forks section and
+- [x] **2. `/bb:spec` gets lean**: the loop without step 5, without the forks section and
       without the automatic review; the gate with its two questions, the review as an
       option and no coverage counter; `draft-first.md` follows;
       `completeness-generators.md` is deleted. · verify: reading
