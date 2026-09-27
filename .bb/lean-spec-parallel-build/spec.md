@@ -177,7 +177,7 @@ their boxes, and moves to the next phase.
       without the automatic review; the gate with its two questions, the review as an
       option and no coverage counter; `draft-first.md` follows;
       `completeness-generators.md` is deleted. · verify: reading
-- [ ] **3. The reviewer's contract**: `agents/bb-spec-reviewer.md` loses the two lenses
+- [x] **3. The reviewer's contract**: `agents/bb-spec-reviewer.md` loses the two lenses
       and reads for happy path, edge cases, coherence and attention points; its `tools:`
       stays read only. · verify: reading
 - [ ] **4. The build runs phases in parallel**: `workflows/build-tasks.js` dispatches each
