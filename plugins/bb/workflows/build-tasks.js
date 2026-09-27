@@ -685,6 +685,8 @@ async function runTogether(g) {
   const results = await parallel(
     g.tasks.map(
       (t) => () =>
+        // No checks: a task that runs together leaves them to the landing, so its prompt has no
+        // checks line to fill.
         agent(taskPrompt(t, conventions, [], args.specPath, true), {
           label: `task ${t.n}: ${t.title}`,
           phase: g.title,
