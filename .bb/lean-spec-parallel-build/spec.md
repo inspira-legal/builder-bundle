@@ -184,7 +184,7 @@ their boxes, and moves to the next phase.
       phase's tasks together, lands them before the next phase and takes `sonnet` as its
       cheap tier; `taskPrompt()` settles technical gaps and reads `## Attention points`;
       the validator follows. · verify: CI
-- [ ] **5. `/bb:implement` follows**: `implement/SKILL.md` and `build-tasks-workflow.md`
+- [x] **5. `/bb:implement` follows**: `implement/SKILL.md` and `build-tasks-workflow.md`
       describe the parallel phases, the stop inside a phase, the payload without `dep`, the
       tiers with `sonnet` in place of `haiku`, and step 2 as the second question of the
       gate. · verify: reading
