@@ -39,6 +39,7 @@ const META_REGEX = /export\s+const\s+meta\s*=\s*\{/;
 const PARALLEL_REGEX = /\bparallel\s*\(/g;
 const LOOP_REGEX = /\b(?:for|while|do)\b/;
 const ISOLATION_KEY_REGEX = /\bisolation\s*:\s*/;
+const AGENT_CALL_REGEX = /\bagent\s*\(/g;
 
 /** A `/` here opens a regex literal rather than dividing; anything else is division. */
 const KEYWORDS_BEFORE_REGEX = new Set([
@@ -239,8 +240,9 @@ function callSpan(code: string, open: number): { start: number; text: string } {
 /**
  * The first `parallel()` is stage zero: read only, so it runs on the shared tree, and it proves the
  * ground, so no loop comes before it. Every later one fans out tasks that write files, so each
- * agent in it runs in a worktree of its own. The key is found in the blanked code, so a comment
- * naming it does not count, and its value is read off the source, where strings survive.
+ * agent in it runs in a worktree of its own: the key is read per `agent()` call, since one
+ * isolated thunk says nothing about the one beside it. The key is found in the blanked code, so a
+ * comment naming it does not count, and its value is read off the source, where strings survive.
  */
 function parallelIssues(source: string, code: string): ValidationIssue[] {
   const parallels = [...code.matchAll(PARALLEL_REGEX)];
@@ -267,13 +269,22 @@ function parallelIssues(source: string, code: string): ValidationIssue[] {
   for (const later of parallels.slice(1)) {
     const at = later.index ?? 0;
     const span = callSpan(code, at + later[0].length - 1);
-    const key = span.text.match(ISOLATION_KEY_REGEX);
-    const valueAt = key?.index !== undefined ? span.start + key.index + key[0].length : -1;
-    const isolated = valueAt !== -1 && /^(['"])worktree\1/.test(source.slice(valueAt));
-    if (!isolated) {
+    const agents = [...span.text.matchAll(AGENT_CALL_REGEX)];
+    const bare = agents
+      .map((call) => span.start + (call.index ?? 0))
+      .filter((callAt) => {
+        const agentSpan = callSpan(code, code.indexOf("(", callAt));
+        const key = agentSpan.text.match(ISOLATION_KEY_REGEX);
+        const valueAt = key?.index !== undefined ? agentSpan.start + key.index + key[0].length : -1;
+        return !(valueAt !== -1 && /^(['"])worktree\1/.test(source.slice(valueAt)));
+      });
+    if (!agents.length || bare.length) {
+      const where = bare.length
+        ? `its agent() call(s) on line(s) ${bare.map((callAt) => lineOf(code, callAt)).join(", ")} dispatch`
+        : "it dispatches no agent() call and so";
       issues.push({
         level: "error",
-        message: `The parallel() call on line ${lineOf(code, at)} dispatches without isolation: "worktree": only stage zero reads without writing, so every later fan-out gives each of its agents a worktree of its own`,
+        message: `The parallel() call on line ${lineOf(code, at)}: ${where} without isolation: "worktree": only stage zero reads without writing, so every later fan-out gives each of its agents a worktree of its own`,
       });
     }
   }
