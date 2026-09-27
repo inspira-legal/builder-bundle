@@ -112,27 +112,27 @@ Happy path, build side: stage zero proves the ground, then each phase dispatches
 unticked tasks at once, waits for every one, lands the green ones on the run branch, ticks
 their boxes, and moves to the next phase.
 
-| WHEN                                             | THEN                                                                 |
-| ------------------------------------------------ | -------------------------------------------------------------------- |
-| a phase has one task                             | it runs the way a task runs today                                    |
-| a phase has three independent tasks              | all three run at the same time                                       |
-| one of three tasks in a phase comes back red     | the other two land, the run stops, the red one goes to `## Open`     |
-| two parallel tasks changed the same lines        | the run stops before the next phase, naming both tasks and the files |
-| the run resumes after a stop                     | ticked tasks are skipped; a phase with none left is skipped          |
-| a spec has no `###` heading                      | the tasks run one at a time, in document order                       |
-| a spec written before this change carries `dep:` | the build reads it and ignores the field                             |
-| the author sees a technical risk                 | it goes in `## Attention points`, with no solution                   |
-| the reviewer finds a risk the spec does not name | it goes in `## Attention points`, with no solution                   |
-| the reviewer finds an edge with no row           | the row is added, or the outcome goes to `## Open`                   |
-| the reviewer finds nothing                       | the gate says `clean`                                                |
-| the user picks `Build` on a spec never reviewed  | it builds; the review is an option, not a requirement                |
-| the review ran and nothing changed since         | the gate opens without `Review the spec`                             |
-| the user changes the spec at the gate            | the gate opens with `Review the spec` again                          |
-| the user picks `Review the spec` or `Stop here`  | the answer about after the build is ignored                          |
-| `/bb:implement` invoked from the spec gate       | it asks nothing; the gate's answer is the scope                      |
-| `/bb:implement` invoked on its own               | step 2 asks the second question, with the invocation's lead ticked   |
-| a task agent meets a technical gap               | it decides and records the choice in the convention note             |
-| a task agent meets a missing business rule       | it returns `underspecified` and the run stops                        |
+| WHEN                                             | THEN                                                                   |
+| ------------------------------------------------ | ---------------------------------------------------------------------- |
+| a phase has one task                             | it runs the way a task runs today                                      |
+| a phase has three independent tasks              | all three run at the same time                                         |
+| one of three tasks in a phase comes back red     | the other two land, the run stops, the red one goes to `## Open`       |
+| two parallel tasks changed the same lines        | the run stops before the next phase, naming both tasks and the files   |
+| the run resumes after a stop                     | ticked tasks are skipped; a phase with none left is skipped            |
+| a spec has no `###` heading                      | the tasks run one at a time, in document order                         |
+| a spec written before this change carries `dep:` | the build reads it and ignores the field                               |
+| the author sees a technical risk                 | it goes in `## Attention points`, with no solution                     |
+| the reviewer finds a risk the spec does not name | it goes in `## Attention points`, with no solution                     |
+| the reviewer finds an edge with no row           | the row is added, or the outcome goes to `## Open`                     |
+| the reviewer finds nothing                       | the gate says `clean`                                                  |
+| the user picks `Build` on a spec never reviewed  | it builds; the review is an option, not a requirement                  |
+| the review ran and nothing changed since         | the gate opens without `Review the spec`                               |
+| the user changes the spec at the gate            | the gate opens with `Review the spec` again                            |
+| the user picks `Review the spec` or `Stop here`  | the answer about after the build is ignored                            |
+| `/bb:implement` invoked from the spec gate       | it asks nothing; the gate's answer is the scope                        |
+| `/bb:implement` invoked on its own               | step 2 asks the second question, the invocation's lead `(Recommended)` |
+| a task agent meets a technical gap               | it decides and records the choice in the convention note               |
+| a task agent meets a missing business rule       | it returns `underspecified` and the run stops                          |
 
 ## Attention points
 
