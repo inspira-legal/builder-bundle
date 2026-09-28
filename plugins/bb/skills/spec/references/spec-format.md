@@ -16,8 +16,9 @@ opening, 1–3 paragraphs                  ┐
 ## <another>                             ┘  the problem. prose, diagram, short table, code.
 
 ## Decisions                             ┐
-## Behavior                              │  fixed, in this order
-## Metric                                │  each one has a reader
+## Behavior                              │
+## Metric                                │  fixed, in this order
+## Attention points                      │  each one has a reader
 ## Tasks                                 │
 ## Out of scope                          │
 ## Open                                  ┘
@@ -30,35 +31,48 @@ architectural change might want "The boundary between agent and caller". Prose i
 default; diagrams, short tables and code fragments earn their place when they carry the
 idea better than a sentence would.
 
-**The fixed sections are fixed because each one has a reader.** `/bb:implement` consumes
-`## Tasks` and builds against `## Behavior`; the `contract` front of `/bb:review` walks
-`## Behavior` row by row; the exit gate renders `## Metric` beside the coverage table,
-the export reads its trio by path, and review's instrumentation front resolves its
-events table first; the spec gate itself blocks on `## Open`. A section nobody reads is
-a section that drifts, which is why the set is small and every member earns its slot.
+**A spec is a plan, not a design document.** It says what gets built, the business rules,
+the expected behavior and the order the work runs in. The technical details are the
+builder's: the task agent settles them at build time, with the code open. A technical
+choice appears in the spec only when the user made it, like a stack the company settled
+or a contract another team depends on. A technical risk the author sees goes in
+`## Attention points`, named and with no solution attached.
 
-- `## Decisions`: the closed calls, one bullet each, so the build side never has to
-  re-derive them from prose.
-- `## Behavior`: the happy path step by step, then a `WHEN … THEN …` table where every
-  row reads as a test. The acceptance contract.
+**The fixed sections are fixed because each one has a reader.** `/bb:implement` consumes
+`## Tasks` and builds against `## Behavior`; the task agent reads `## Attention points` as
+the risks it has to handle; the `contract` front of `/bb:review` walks `## Behavior` row by
+row; the exit gate shows `## Metric`, the export reads its trio by path, and review's
+instrumentation front resolves its events table first; the spec gate itself blocks on
+`## Open`. A section nobody reads is a section that drifts, which is why the set is small
+and every member earns its slot.
+
+- `## Decisions`: the business rules and the calls closed with the user, one bullet each,
+  in the words of the product: what the thing must do and what it must never do. The
+  build side never has to re-derive them from prose.
+- `## Behavior`: the happy path step by step, then a `WHEN … THEN …` table of the edges
+  that change the outcome for the user, where every row reads as a test. The acceptance
+  contract.
 - `## Metric`: the measure the landing is judged by, or one explicit `skipped: <reason>`
   line. Its own section below.
-- `## Tasks`: vertical tasks (below).
+- `## Attention points`: the technical risks the author saw (below). `Nothing.` when
+  there are none.
+- `## Tasks`: vertical tasks grouped in phases (below).
 - `## Out of scope`: the hard line, including ideas parked for later (mark them
   _revisit_). Plain bullets, never checkboxes.
 - `## Open`: genuinely unresolved load-bearing decisions. `Nothing.` when there are
   none.
 
 `## Behavior` and `## Tasks` are what Large work needs; a Medium spec can carry those
-inline and skip them, which is why the lint only warns on their absence. `## Metric`
-rides every spec at every size; its checks warn instead of erroring so a spec that
-predates it stays valid.
+inline and skip them, which is why the lint only warns on their absence. The same goes for
+`## Attention points`: the lint warns when it is missing, and `Nothing.` silences it.
+`## Metric` rides every spec at every size; its checks warn instead of erroring so a spec
+that predates it stays valid.
 
 ## The Metric section
 
-`## Metric` sits between `## Behavior` and `## Tasks` because the trace runs through it:
-an event row cites the behavior rows above it, and an instrumentation task cites the
-event rows below it. Every spec carries the section, whatever its size, in one of two
+`## Metric` sits right after `## Behavior` because the trace starts there: an event row
+cites the behavior rows above it, and an instrumentation task in `## Tasks` names the
+event rows it wires. Every spec carries the section, whatever its size, in one of two
 forms, and an honest skip always beats an invented number.
 
 **The metric block**: the one metric, its baseline, its target, and a timeframe.
@@ -120,14 +134,12 @@ reads an `approved` row: the status records that someone weighed a free text fie
 the next reader holds the row to this paragraph, the same way an `under-review` row waits
 on the legal-lens round.
 
-Instrumentation enters `## Tasks` as ordinary tasks with their own `verify:`, each
-citing the event rows it wires (`→ events <name>, <name>` in place of the behavior
-citation). An event row's own behavior citations are what the coverage table counts, so
-an instrumentation task covers its behaviors through the event row it cites; the build
-side resolves that citation into behavior numbers when it loads the spec (implement's
-step 4), and the machinery downstream consumes numbers the way it always did. When the
-project has `EVENTS.md`, the same task appends each name it wires to the file's `##
-Catalog` in the change that lands it, an empty `status` cell, so the next spec's
+Instrumentation enters `## Tasks` as ordinary tasks, on the same line as any other task:
+the title, what it delivers, and its `verify:`. What it delivers names the event rows it
+wires, and those rows are the task's contract: the task agent reads them here, payload
+rule included, the way every task reads the `## Behavior` rows it touches. When the
+project has `EVENTS.md`, the same task appends each name it wires to the file's
+`## Catalog` in the change that lands it, an empty `status` cell, so the next spec's
 duplicate check sees it (`<plugin-root>/references/events-convention.md`).
 
 A Medium spec carries its behaviors inline, so an event row there has no numbered row to
@@ -161,52 +173,84 @@ screen. Long content is prose or a bullet.
 Escape any literal `|` inside a cell as `\|`; an unescaped one silently splits the row
 into the wrong number of columns.
 
-## Tasks carry their own dependencies
+## Attention points name the risk, not the fix
 
-Each task is a thin end-to-end cut, and it states what it delivers, what has to land
-first, and how it gets checked:
+Each attention point is one bullet: the technical risk, and where it lives in the code
+(the file, the function, the tool whose limit it runs into).
 
 ```
-- [ ] **3. Independent reviewer**: dedicated step in `SKILL.md`, verdict at the gate
-      → behaviors 4, 6 · dep: 2 · verify: reading
+- Every task ticks its box in the same `spec.md`, so ticking inside the task commit
+  conflicts across a phase.
 ```
 
-`dep:` is `—` when nothing blocks it. Those three fields are the DAG: what can run in
-parallel, what has to wait, and what proves each one landed, so the build side reads a
-graph instead of re-interpreting prose.
+The solution is the builder's. The task agent reads the list as risks to handle, never as
+instructions, and it decides how to handle each one with the code open. A bullet that
+carries a fix has turned back into a technical decision the spec no longer makes: cut the
+fix and keep the risk.
 
-Every task cites at least one behavior and every behavior is cited by at least one
-task. That two-way trace is what the gate renders as the coverage table; an unlinked
-row on either side is an omission made visible. An instrumentation task cites event
-rows instead, and counts as citing the behaviors those rows cite (the Metric section
-above).
+The author writes what they saw, and `bb-spec-reviewer`, when the user asks for it at the
+gate, adds a risk the spec does not name in the same shape: the risk and where it lives,
+with no solution.
+
+## Tasks, and the phases they run in
+
+A task is a thin end-to-end cut. Its line carries three fields: the title, what it
+delivers, and how it gets checked.
+
+```
+- [ ] **3. The reviewer's contract**: `agents/bb-spec-reviewer.md` reads for four
+      things; its `tools:` stays read only. · verify: reading
+```
+
+`verify:` is `reading` (the task agent inspects what it produced), a command it runs, or
+`CI` when only the pipeline can prove it.
 
 ### The `###` headings inside `## Tasks` are the build's phases
 
-Group the tasks under `###` headings whenever the spec has more than one movement in it:
+The author orders the work by what depends on what, and writes that order as phases:
 
 ```
 ## Tasks
 
-### Prove the ground
+### Foundation
 
 - [ ] **1. The normalizer**: …
 
-### Migrate the callers
+### The three surfaces
 
-- [ ] **2. The chain shrinks to two**: …
+- [ ] **2. The CLI reads it**: …
+- [ ] **3. The API reads it**: …
+- [ ] **4. The UI reads it**: …
+
+### Close
+
+- [ ] **5. The docs catch up**: …
 ```
 
-The heading is the phase title, the tasks under it are its members, and document order is
-run order. `/bb:implement` passes them to the build as `args.phases`, and the progress card
-shows them as its group headers, so someone watching a run over this spec reads the work
-this spec describes. Name a heading after what that group of tasks does, the way you would
-name a section: `Prove the ground`, `Migrate the callers`, `Drop the old path`.
+- **The phases run in document order.** A phase starts after every task of the phase
+  before it landed.
+- **The tasks inside one phase run in parallel.** Two tasks share a phase only when
+  neither needs what the other produces. Tasks that change the same parts of the code go
+  in different phases, even when neither needs the other: two tasks in parallel that edit
+  the same lines stop the run.
+- **A foundation is a phase of its own.** What everything else builds on runs alone, with
+  one task, so the tasks after it all start from it.
+- **A closing task that needs all the others is the last phase.**
 
-Grouping is optional and costs nothing to skip. A flat list runs under one fallback title,
-and a task that sits before the first `###` runs first, under that same title. Nothing else
-reads the headings either: `lint_spec.py` matches `^##\s+` and `scan_specs.py` counts tasks
-by their checkbox, so both see the same flat list they always did.
+The heading is the phase title, and `/bb:implement` passes it to the build, where the
+progress card shows it as a group header. Someone watching a run over this spec reads the
+work this spec describes, so name a heading after what that group of tasks does, the way
+you would name a section: `Foundation`, `Migrate the callers`, `Drop the old path`.
+
+Phase order is the only dependency the format carries. A spec written before this change
+may still carry `dep:` and `→ behaviors` on its task lines: the build reads the line and
+ignores both fields.
+
+**A spec with no `###` heading runs one task at a time**, in document order, the way a
+spec written before this change expects. A task that sits above the first `###` runs the
+same way: alone, before the first phase. Nothing else reads the headings:
+`lint_spec.py` matches `^##\s+` and `scan_specs.py` counts tasks by their checkbox, so
+both see a flat list.
 
 ## Dead names
 
@@ -242,17 +286,22 @@ python3 plugins/bb/skills/spec/scripts/lint_spec.py .bb/<slug>/spec.md
 | E005 | error   | a row whose cell count differs from the header                        |
 | W001 | warning | no `## Behavior`                                                      |
 | W002 | warning | no `## Tasks`                                                         |
+| W003 | warning | no `## Attention points`                                              |
 | W004 | warning | no `## Out of scope`                                                  |
-| W005 | warning | no `## Metric`                                                        |
-| W006 | warning | a `Baseline:`/`Target:` bullet missing, or a value without provenance |
-| W007 | warning | an event row citing a numbered behavior row that does not exist       |
+| W005 | warning | above 800 lines, or above 100 rows in the `## Behavior` tables        |
+| W006 | warning | no `## Metric`                                                        |
+| W007 | warning | a `Baseline:`/`Target:` bullet missing, or a value without provenance |
+| W008 | warning | an event row citing a numbered behavior row that does not exist       |
 
-Whether the document is too long, repeats itself, or recounts the conversation is not a
-lint check; it's what the two `bb-spec-reviewer` lenses are asked to find, the coherence
-one reading the spec as text and the grounding one checking its claims about existing
-code against the repo. A line ceiling on a document meant to be read just rebuilds the
-form.
+Whether the document repeats itself, recounts the conversation, or carries a fix inside an
+attention point is not a lint check. That is the author's judgment, against the rules
+above. The ceiling `W005` sets is not about how the prose reads: it measures the review
+surface, the text the one pass of `bb-spec-reviewer` has to cover when the user picks
+`Review the spec` at the gate.
+Its advice is to split the spec along its `###` phases into sibling specs, never to trim
+prose to fit. It stays a warning, so the exit code is 0 and whether to split is the
+user's call at the gate.
 
-Every code reads the document's own bytes, and what those two lenses returned is not
-among them: their verdict reaches the user at the gate, and the plugin-level
+Every code reads the document's own bytes, and what the reviewer returned is not among
+them: its verdict reaches the user at the gate, and the plugin-level
 `references/spec-state.md` says why it stays out of the frontmatter.

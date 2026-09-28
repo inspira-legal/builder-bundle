@@ -36,7 +36,7 @@ jobs:
       # Lint the specs the PR touches, plus the whole corpus whenever the linter
       # itself changed: that corpus run is the only executable coverage the script
       # has, so a PR that edits it proves it against every landed spec. The specs
-      # that predate `## Metric` warn on every corpus run by design (W005, no
+      # that predate `## Metric` warn on every corpus run by design (W006, no
       # rewrite of history); the diff-aware default keeps that noise off the PRs
       # that leave the linter alone. The diff lands in an assignment so a failed
       # resolve fails the step instead of reading as "nothing to lint".

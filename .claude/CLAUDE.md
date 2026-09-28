@@ -18,7 +18,7 @@ plugins/bb/
 │   ├── bb-reuse-check.md               # build stage zero: one run, every reuse note, read-only by `tools:`
 │   ├── bb-review-finder.md             # review fan-out: finds candidates, read-only by `tools:`
 │   ├── bb-review-verifier.md           # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
-│   └── bb-spec-reviewer.md             # spec step 6: the two lenses, coherence and grounding
+│   └── bb-spec-reviewer.md             # spec's gate option: one pass, happy path, edge cases, coherence, attention points
 ├── hooks/                             # session infra (auto-active, no skill)
 │   ├── hooks.json                      # SessionStart: BUILDER-BUNDLE.md, and bb's own update
 │   ├── enter_worktree.py               # worktree isolation for local autonomous runs
@@ -201,8 +201,8 @@ Skills reference that file instead of restating the contract.
 
 The spec's **form** belongs to `plugins/bb/skills/spec/references/spec-format.md`:
 a free top half (opening plus whatever sections the problem asks for) over a fixed
-set (`Decisions`, `Behavior`, `Metric`, `Tasks`, `Out of scope`, `Open`), fixed
-because each member has a reader. `skills/spec/scripts/lint_spec.py` enforces the
+set (`Decisions`, `Behavior`, `Metric`, `Attention points`, `Tasks`, `Out of scope`,
+`Open`), fixed because each member has a reader. `skills/spec/scripts/lint_spec.py` enforces the
 mechanical half of that and runs in CI over the `.bb/*/spec.md` files a PR touches.
 
 ## Commits

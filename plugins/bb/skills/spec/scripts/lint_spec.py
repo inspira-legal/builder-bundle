@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Check the mechanical shape of a spec.
 
-Judgment (is it too long, does it repeat itself, is it recounting the conversation)
-belongs to the two `bb-spec-reviewer` lenses, which report at the spec's gate. This only
-catches what is decidable by reading the bytes: the required sections, dead names,
-frontmatter, malformed tables, and the Metric section's shape (provenance notes and
-event-row citations).
+Judgment (does it repeat itself, is it recounting the conversation) is the author's, read
+against `spec-format.md`; `bb-spec-reviewer` reads for content, not for how the prose repeats.
+This only catches what is decidable by reading the bytes: the required sections, dead names,
+frontmatter, malformed tables, the Metric section's shape (provenance notes and event-row
+citations), and a size (`W005`) past which one review pass cannot cover the spec. That
+ceiling measures the review surface, so its advice is to split, never to trim prose.
 
 Usage: lint_spec.py <path>...
 Output: `path:line CODE message` on stdout. Exit 1 when any E-code fired.
@@ -21,8 +22,15 @@ REQUIRED_SECTIONS = (
 )
 RECOMMENDED_SECTIONS = (
     ("Behavior", "behavior", "W001", "the behavior map is the acceptance contract"),
-    ("Metric", "metric", "W005", "the measure the landing is judged by, or one `skipped: <reason>` line"),
+    ("Metric", "metric", "W006", "the measure the landing is judged by, or one `skipped: <reason>` line"),
     ("Tasks", "tasks", "W002", "with no tasks the build has nothing to consume"),
+    (
+        "Attention points",
+        "attention points",
+        "W003",
+        "it names the technical risks the builder has to handle; write `Nothing.` when "
+        "there are none",
+    ),
     ("Out of scope", "out of scope", "W004", "it is the boundary the build stays inside"),
 )
 # `{raw}` takes the heading as the file spells it, so the message quotes the string the
@@ -44,6 +52,9 @@ DEAD_SECTIONS = {
 }
 VALID_STATUS = ("pending", "in-progress", "done", "blocked")
 MAX_CELL = 100
+MAX_LINES = 800
+MAX_BEHAVIOR_ROWS = 100
+SPLIT_ADVICE = "split it along its `###` phases into sibling specs"
 
 HEADING = re.compile(r"^##\s+(.+?)\s*$")
 FENCE = re.compile(r"^\s*(```|~~~)")
@@ -85,7 +96,7 @@ CITATION_CELL = re.compile(r"^[\d\s,;.–-]+$")
 CITED_RANGE = re.compile(r"(\d+)\s*[–-]\s*(\d+)")
 CITED_NUMBER = re.compile(r"\d+")
 # Numbers joined by a connector word (`1 e 2`, `1 and 3`) are a citation with a typo,
-# not prose: silence there hides a broken trace, so it gets its own W007 message.
+# not prose: silence there hides a broken trace, so it gets its own W008 message.
 CONNECTOR_CELL = re.compile(r"^[\d\s,;.–-]+(?:e|and|et|y|&|\+)[\d\s,;.–-]+$", re.IGNORECASE)
 
 
@@ -198,7 +209,7 @@ def behavior_runs(lines):
 
 
 def check_citations(metric_tables, behavior_rows):
-    """Yield W007 for event rows citing a numbered behavior row that does not exist."""
+    """Yield W008 for event rows citing a numbered behavior row that does not exist."""
     for rows in metric_tables:
         if len(rows) < 2:
             continue
@@ -215,7 +226,7 @@ def check_citations(metric_tables, behavior_rows):
                 if CONNECTOR_CELL.match(cleaned):
                     yield (
                         line_no,
-                        "W007",
+                        "W008",
                         "behaviors cell joins numbers with a word: cite rows as "
                         "numbers and commas, or write the behavior as a phrase",
                     )
@@ -224,7 +235,7 @@ def check_citations(metric_tables, behavior_rows):
                 if n not in behavior_rows:
                     yield (
                         line_no,
-                        "W007",
+                        "W008",
                         f"event row cites behavior {n}, and `## Behavior` has no row {n}",
                     )
 
@@ -237,6 +248,8 @@ def check_body(lines):
     table = []  # (line_no, cells) of the current run of table rows
     behavior_lines = []  # (kind, indent, value) per line under `## Behavior`: item, blank, text or block
     table_rows = set()  # numbered rows collected from a `## Behavior` table
+    behavior_line = None  # the `## Behavior` heading's line, anchors the size warning
+    behavior_rows = 0  # body rows across the `## Behavior` tables, for the size ceiling
     metric_line = None  # the `## Metric` heading's line, anchors section-level warnings
     metric_values = []  # [line_no, key, text] of the Baseline and Target bullets
     metric_tables = []  # the Metric section's table runs, kept for the citation check
@@ -245,12 +258,15 @@ def check_body(lines):
     open_value = None  # index into metric_values of the bullet still accumulating
 
     def flush(rows):
+        nonlocal behavior_rows
         if len(rows) < 2:
             return
         header_no, header = rows[0]
         width = len(header)
         delimiter = delimiter_row(rows)
         body = rows[2:] if delimiter else rows[1:]  # table_body, off the delimiter in hand
+        if section == "behavior":
+            behavior_rows += len(body)
         # The delimiter row is width-checked like any other: GFM needs it to match the
         # header, and a short one turns the whole table back into a paragraph of pipes.
         for line_no, cells in rows:
@@ -332,6 +348,8 @@ def check_body(lines):
             if name == "metric":
                 metric_line = i
                 metric_body = False
+            if name == "behavior" and behavior_line is None:
+                behavior_line = i
             if name in DEAD_SECTIONS:
                 yield i, "E003", DEAD_SECTIONS[name].format(raw=raw)
             continue
@@ -363,6 +381,21 @@ def check_body(lines):
     if table:
         yield from drain_table()
 
+    if len(lines) > MAX_LINES:
+        yield (
+            1,
+            "W005",
+            f"spec of {len(lines)} lines (ceiling {MAX_LINES}): too large for one review "
+            f"pass; {SPLIT_ADVICE}",
+        )
+    if behavior_rows > MAX_BEHAVIOR_ROWS:
+        yield (
+            behavior_line,
+            "W005",
+            f"{behavior_rows} rows in the `## Behavior` tables (ceiling {MAX_BEHAVIOR_ROWS}): "
+            f"too large for one review pass; {SPLIT_ADVICE}",
+        )
+
     for name, spelling in REQUIRED_SECTIONS:
         if spelling not in seen:
             yield 1, "E002", f"no `## {name}`: the format requires it"
@@ -380,7 +413,7 @@ def check_body(lines):
             if key.lower() not in present:
                 yield (
                     metric_line,
-                    "W006",
+                    "W007",
                     f"no `{key}:` bullet: the metric block carries baseline and target, "
                     "or the section is one `skipped: <reason>` line",
                 )
@@ -396,7 +429,7 @@ def check_body(lines):
             if not PROVENANCE.search(text):
                 yield (
                     line_no,
-                    "W006",
+                    "W007",
                     f"`{key}:` without provenance: name the source in a parenthesized "
                     "note on the same bullet (a query, a log, a named person's estimate)",
                 )

@@ -85,8 +85,8 @@ slug: <kebab-slug> # matches the dir name
 - `done`: the implement→ship chain completed its landing.
 - `blocked`: implement's safety valve or ship hit an unrecoverable stop; needs a human.
 
-**Step 6's two lenses report at the gate, not in the block.** Their verdict is about the
-run that produced the spec, so it reaches the user in the line `/bb:spec` renders there
+**The spec review reports at the gate, not in the block.** Its verdict is about the
+session that ran it, so it reaches the user in the line `/bb:spec` renders there
 and stops being state; a value on disk would outlive the run that earned it, and every
 later session would read it as a fact about the document.
 

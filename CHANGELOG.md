@@ -1,119 +1,6 @@
 # Changelog
 
-## 3.8.1 (2026-09-14)
-
-**The event checker and the documents around it, held to what they actually do.** A deep
-review of the branch that shipped 3.8.0 found thirteen blocking items: seven ways the
-checker read a valid file wrong or read a wrong file as valid, and six documents that
-described behavior the code does not have. Nothing about the format changed, so a project's
-`EVENTS.md` needs no edit; what changed is which files are accepted, which lines are
-reported, and what each document promises. The reasoning is in `git log` for
-`claude/convencao-de-eventos`, one commit per item.
-
-The free-text guarantee is the part worth reading twice. The payload rule's one job is that
-no event carries document content, and the paragraph that owns it had lost its absolute
-floor, its `approved` status had no reader after it, and four separate paths let a payload
-check not run at all. All five are closed.
-
-### Fixed
-
-- **A name already in the catalog is not a duplicate in the emitted-names mode.** The
-  instrumentation task appends each name to the catalog in the change that emits it, and
-  the review then read those names back: every correctly registered name came back as an
-  error, and so did a spec re-read after its events landed. The spec's own plan still
-  collides, with a message naming both causes.
-- **The events table is read whole, and only it.** The plan stopped at the first run of
-  rows, so a line of prose splitting the table hid every row after it, whether or not the
-  rows after the break repeat the header. Reading past the break then had to learn where the
-  table ends: a run of pipe lines continues it only in its shape, the header's cell count and
-  not the header line written again, so a second, narrower table under `## Metric` is not
-  read through the events table's columns. A table with no `payload` column now says so
-  instead of passing clean with no payload checked, and the checker's own list of what C009
-  covers names all five cases it prints.
-- **Four shapes of a valid `EVENTS.md` no longer reject the file**: a table written without
-  its outer pipes, a table under a third-level subheading, a byte order mark on the first
-  part heading, and the empty `## Exceptions` table, which now has a documented shape.
-- **Document content is the floor no exception reaches**, back in the paragraph that owns
-  the payload rule: never a contract, a petition, a decision or a clause, in any project and
-  under any status. An exception covers what a person typed into a field, and `approved`
-  records that someone weighed it, with the next reader holding the row to that floor.
-- **The free-text guarantee loses its remaining ways not to run.** The checker holds the
-  file to its own rule that every `text` field carries an exception row, one line per row;
-  the review's payload criterion says which run produces which code; and the draft's
-  instruction for an undocumented field carries the consequence that no type check can run
-  on it.
-- **A prose event cell is one unnamed row**, not a name planned twice. Every row waiting on
-  a prefix registration carries the same sentence, and comparing sentences reported
-  collisions that do not exist. The payload of such a row is still read.
-- **The catalog's name cell is read the way the spec's is**, so a note beside a name no
-  longer produces a false naming error and a key the duplicate check cannot find.
-- **An enum's own values in a payload cell are not fields.** A parenthesised note annotates
-  the field beside it.
-- **The spec's gate routes every `EVENTS.md` line to the external blocker**, whatever its
-  code, and names the remedy for each shape, the `legacy` mark included. It used to name two
-  codes and send the rest to a spec row that does not exist.
-- **The checker's lines about the file are not findings against the diff.** They print on
-  every run, whatever the input, and now fold into one finding against the file.
-- **The external PR mode's checker line is a command that runs**, with `python3` and the
-  plugin-root path.
-- **A name the run carries is the run's own.** When the author does the duty of appending an
-  event name to the catalog in the change that emits it, the name is registered by the time
-  the review reads it back. The duplicate check is right to stay quiet there, but the grammar
-  check went quiet with it, and the only line left came from the pass that reports the file's
-  backlog. A name the emitted list carries is now the plan's, reported at its catalog row as
-  a finding about that name; the file's own rows keep their prefix and their folding.
-- **Ten pointers open from where they are read**: the format and the payload rule are
-  named through the plugin-root variable, and the checker derives its own root instead of
-  printing a literal marker when the variable does not reach the process.
-- **A task whose behavior is named in prose reaches its agent with that prose.**
-  `workflows/build-tasks.js` handed the agent `none cited` when a task cited an event row
-  instead of numbered behavior rows, which is exactly the shape a Medium spec writes. The
-  row's own prose now travels in the task prompt. This one rode along on the same branch
-  without belonging to its spec, and it is described here rather than shipped unnamed.
-
-## 3.8.0 (2026-09-11)
-
-**The event convention becomes a file bb reads.** A project states its event grammar,
-prefixes, payload dictionary, exceptions and catalog in one `EVENTS.md` at its root; bb
-defines the format and ships the checker, and three moments of the cycle read the file.
-The reasoning is `.bb/convencao-de-eventos/` (discovery and spec).
-
-### New
-
-- **`plugins/bb/references/events-convention.md`**, the format of a project's `EVENTS.md`:
-  five parts found by heading (Grammar, Prefix registry, Dictionary, Exceptions,
-  Catalog), the three-slot template `{prefix}_{type}_{element}` split by the longest
-  registered prefix, the closed payload types (`id`, `enum`, `number`, `boolean`, and
-  `text` only under an exception row with status, justification and retention), the
-  catalog's `legacy` mark and its append duty at landing, plus a worked example.
-- **`plugins/bb/scripts/check_events.py`**, shared by spec and review: reads a spec's
-  `## Metric` events table (`--spec`) or a list of emitted names (`--names`, a file or
-  stdin) against the resolved `EVENTS.md`, prints `path:line CODE message` for ten codes
-  (`C001` to `C010`, E or W), exits 1 only on an E-code, and always prints at least one
-  line (`checked N names, clean`). A name read from stdin anchors to the `EVENTS.md` row
-  or section that caught it, so the review's finder has a line to cite.
-- **`/bb:spec` reads the file**: `draft-first.md` proposes the events table from it
-  (names on the grammar, prefixes from the registry, fields from the dictionary), a
-  missing prefix or dictionary field becomes a task on the convention file, step 6 runs
-  the checker beside the lint, and step 7 treats its E-codes as open items (a malformed
-  file or an unreadable input is fixed outside the spec and deferred meanwhile).
-- **`/bb:review`'s instrumentation front gains a middle rung**: the spec's plan, then
-  `EVENTS.md`, then the convention inferred from code. The caller runs the checker once
-  over the emitted names before the fan-out and passes its output and the file's path in
-  the scope block; the finder cites the file's rows, and a malformed file is one finding
-  against the file rather than a rung with nothing to cite. The external-PR mode fetches
-  the file through the same contents API.
-
-### Changed
-
-- The payload rule in `spec-format.md` names four closed types instead of "IDs and
-  enums": `id`, `enum`, `number`, `boolean`, none carrying free text or document content;
-  a project's `EVENTS.md` may widen the list by one, a named `text` exception. The
-  instrumentation task shape appends each name it wires to the file's `## Catalog`.
-- `verify.md`'s instrumentation addendum accepts `EVENTS.md`'s own row and the checker's
-  output line as citable sources, and `review/SKILL.md` names the three-rung ladder.
-
-## 3.7.0 (2026-09-10)
+## 3.11.0 (2026-09-28)
 
 **Design becomes a calibrated, reviewable dimension, and the cycle learns to measure.**
 The profile learns how the person designs, the design journey leans on that answer, and
@@ -124,6 +11,15 @@ the project itself uses. Four specs carry the reasoning: `.bb/design-no-perfil/`
 `.bb/frente-de-design/`, `.bb/metricas-no-ciclo/` (discovery and spec) and
 `.bb/exportar-pro-observador/` (the last one pending: it frames exporting bb's records to
 an observer and builds nothing yet).
+
+**The event convention becomes a file bb reads.** A project states its event grammar,
+prefixes, payload dictionary, exceptions and catalog in one `EVENTS.md` at its root; bb
+defines the format and ships the checker, and three moments of the cycle read the file.
+The reasoning is `.bb/convencao-de-eventos/` (discovery and spec). A deep review of the
+checker's first cut found thirteen blocking items, seven ways it read a valid file wrong
+or a wrong file as valid and six documents that described behavior the code does not
+have, and all of them were fixed before this release; the reasoning is in `git log` for
+`claude/convencao-de-eventos`, one commit per item.
 
 ### New
 
@@ -144,29 +40,52 @@ an observer and builds nothing yet).
   surface (a folder, files, or a running page), like the accessibility front, which
   is the design review loop on its own. brisar's Deliver gate offers it next to the
   deep accessibility audit.
-- **`## Metric` joins the spec's fixed set**, between `## Behavior` and `## Tasks`:
-  the metric block (metric, baseline, target, each value with provenance or an
-  honest per-value `skipped: <reason>`, an optional `okr:` line) or one explicit
-  section-level skip. User-triggered work adds the events table, one row per event
-  citing the behavior rows it instruments, under the payload rule (IDs and enums,
-  never free text or document content). An instrumentation task cites event rows
-  and covers behaviors through them; implement resolves that citation into numbers
-  when it loads the spec (`spec-format.md`, the single home of the shapes).
-- **Lint warnings W005, W006 and W007** (`lint_spec.py`): no `## Metric`, a missing
+- **`## Metric` joins the spec's fixed set**, between `## Behavior` and
+  `## Attention points`: the metric block (metric, baseline, target, each value with
+  provenance or an honest per-value `skipped: <reason>`, an optional `okr:` line) or one
+  explicit section-level skip. User-triggered work adds the events table, one row per
+  event citing the behavior rows it instruments, under the payload rule: four closed
+  types (`id`, `enum`, `number`, `boolean`), none carrying free text or document content,
+  and document content is the floor no exception reaches. An instrumentation task is an
+  ordinary task whose line names the event rows it wires, and those rows are its
+  contract at build time (`spec-format.md`, the single home of the shapes).
+- **Lint warnings W006, W007 and W008** (`lint_spec.py`): no `## Metric`, a missing
   or provenance-less `Baseline:`/`Target:`, and an event row citing a numbered
   behavior row that does not exist. Warnings, never errors: a spec that predates
   the section stays valid, and CI lints the specs a PR touches.
 - **The `instrumentation` front in `/bb:review`**: the diff's added interactions
-  against the plan and the convention a two-rung ladder resolves (the spec's events
-  table, `Events: none` included, or the analytics convention detected in the
-  project's own source). Semantic checks, not presence: coverage, naming, payload,
-  channel, each finding citing its source (`front-instrumentation.md`); available
-  in the external-PR mode on rung 2, its findings ranked like design's and, there,
-  posted on the PR rather than applied.
+  against the plan and the convention a three-rung ladder resolves (the spec's events
+  table, `Events: none` included, then the project's `EVENTS.md`, then the analytics
+  convention detected in the project's own source). Semantic checks, not presence:
+  coverage, naming, payload, channel, each finding citing its source
+  (`front-instrumentation.md`). The caller runs the checker once over the emitted names
+  before the fan-out and passes its output and the file's path in the scope block; the
+  finder cites the file's rows, and a malformed file is one finding against the file
+  rather than a rung with nothing to cite. Available in the external-PR mode on the two
+  rungs after the spec, with `EVENTS.md` fetched through the same contents API; its
+  findings are ranked like design's and, there, posted on the PR rather than applied.
 - **Discover captures baseline and target** on the success signal, with provenance
   in spec-format's shape, and fit hardens the hypothesis to "from <baseline> to
   <target> within <timeframe>"; `skipped: not-instrumented` is a valid baseline
   that flags the instrumentation as first work.
+- **`plugins/bb/references/events-convention.md`**, the format of a project's `EVENTS.md`:
+  five parts found by heading (Grammar, Prefix registry, Dictionary, Exceptions,
+  Catalog), the three-slot template `{prefix}_{type}_{element}` split by the longest
+  registered prefix, the closed payload types (`id`, `enum`, `number`, `boolean`, and
+  `text` only under an exception row with status, justification and retention), the
+  catalog's `legacy` mark and its append duty at landing, plus a worked example.
+- **`plugins/bb/scripts/check_events.py`**, shared by spec and review: reads a spec's
+  `## Metric` events table (`--spec`) or a list of emitted names (`--names`, a file or
+  stdin) against the resolved `EVENTS.md`, prints `path:line CODE message` for ten codes
+  (`C001` to `C010`, E or W), exits 1 only on an E-code, and always prints at least one
+  line (`checked N names, clean`). A name read from stdin anchors to the `EVENTS.md` row
+  or section that caught it, so the review's finder has a line to cite.
+- **`/bb:spec` reads the file** (3.1.0): `draft-first.md` proposes the events table from
+  it (names on the grammar, prefixes from the registry, fields from the dictionary), a
+  missing prefix or dictionary field becomes a task on the convention file, step 6 runs
+  the checker beside the lint, and the exit gate treats its E-codes as open items (a
+  malformed file or an unreadable input is fixed outside the spec and deferred
+  meanwhile).
 
 ### Changed
 
@@ -180,15 +99,176 @@ an observer and builds nothing yet).
   skip as "not yet measured", the four fields together or not at all, and the
   spec's values winning where the two disagree. It asks only for a field genuinely
   absent from both documents.
-- The spec's exit gate renders `## Metric` beside the coverage counter and holds a
-  value without real provenance as an open item; seeding and gate rules live in
-  `draft-first.md`.
+- The spec's exit gate shows `## Metric` with the plan and holds a value without real
+  provenance as an open item; seeding and gate rules live in `draft-first.md`.
 - The `design` and `instrumentation` fronts keep their `High` / `Medium` / `Low`
   priorities inside their own references and map onto the two finding levels at the
   report boundary, the way a11y's WCAG priorities do (`references/finding-levels.md`):
   `High` is a Bloqueante, `Medium` and `Low` are Sugestões. The rank tiers, the fix
   order and the report read the level, so the two fronts arrive in the report the
   same way every other front does.
+- `verify.md`'s instrumentation addendum accepts `EVENTS.md`'s own row and the checker's
+  output line as citable sources, and `review/SKILL.md` names the three-rung ladder.
+- **`plugins/bb/workflows/build-tasks.js`**'s task prompt makes the `## Metric` rows an
+  instrumentation task names its contract, payload included, and `/bb:implement` (4.1.0)
+  loads the events table in its step 4 with the other fixed sections.
+
+## 3.10.0 (2026-09-27)
+
+**The spec becomes a lean plan, and the build runs each phase's tasks in parallel.** The
+spec used to need every technical fork closed before the build could start, and the
+review ran automatically over two lenses, coherence and grounding. With the model on the
+other side settling a technical detail better at build time, with the code open, than a
+reviewer does ahead of it, the required forks section is gone and the review becomes a
+gate option instead of an automatic step. The task line drops `dep:` and `→ behaviors` for
+a `###` heading over each phase: the phases run in document order, and the tasks inside one
+run together. A spec with no heading still builds one task at a time, in document order,
+so a spec written before this change keeps its order.
+
+**The build dispatches a phase's tasks together, each in a worktree of its own**, lands
+the green ones on the run branch before the next phase starts, and records a red task in
+`## Open` without cancelling the phase's other tasks. The cheap tier moves from `haiku` to
+`sonnet`, which is what the reuse agent and the mechanical-checks agent run on now, and the
+tier a mechanical task gets; `opus` and the session's own model are unchanged.
+
+### Changed
+
+- **`plugins/bb/skills/spec/references/spec-format.md`** describes the new sections
+  (`## Attention points` alongside `## Decisions`, `## Behavior`, `## Tasks`,
+  `## Out of scope`, `## Open`), the phase headings and the task line's new shape (title,
+  what it delivers, `verify:`). `lint_spec.py` answers `W003` for a spec with no
+  `## Attention points`.
+- **`plugins/bb/skills/spec/SKILL.md`** (3.0.0) drops the completeness pass, the required
+  forks section and the automatic review from its loop; the exit gate asks two questions
+  in one call, what now (`Build`, `Review the spec`, `Stop here`) and what follows a build
+  (`Review the branch`, `Ship`, both, or neither). `references/draft-first.md` follows, and
+  `references/completeness-generators.md` is deleted.
+- **`plugins/bb/agents/bb-spec-reviewer.md`** drops its two lenses for one pass that reads
+  for the happy path, the edge cases, coherence and attention points; its `tools:` stays
+  read only.
+- **`plugins/bb/workflows/build-tasks.js`** dispatches a phase's tasks together
+  (`runTogether()`, `agent()` with `isolation: 'worktree'`, one `land: <title>` agent to
+  bring the green commits back onto the run branch) and takes `sonnet` as its cheap tier.
+  A flat `## Tasks` still runs one task at a time (`runInLine()`). The validator now allows
+  more than one `parallel()` when every one past the first carries worktree isolation.
+- **`plugins/bb/skills/implement/SKILL.md`** (4.0.0) and
+  **`plugins/bb/references/build-tasks-workflow.md`** describe the parallel phases, a stop
+  inside one, the task payload without `dep`, `sonnet` in place of `haiku`, and step 2
+  asking the gate's second question when the spec gate did not already ask it.
+- **`plugins/bb/references/handoff-gate.md`**'s example follows the new gate: two
+  questions in one call, not a four-way choice, and the journey map's `spec` row points at
+  the scope the second question sets.
+- **`README.md`** and **`.claude/CLAUDE.md`** stop calling `bb-spec-reviewer` "the two
+  lenses" and describe the one pass it runs instead.
+- **`plugins/bb/references/doc-style.md`** drops its dash example naming `dep:`, a field
+  the task line no longer carries.
+
+## 3.9.0 (2026-09-26)
+
+**The spec review runs one pass and resolves what it finds on the spot.** 3.7.0 capped
+the loop at three passes, but kept a loop: a pass counter on disk, a delta pass for the
+grounding lens, a tally file, and pass 3 routing its findings to `## Open`, to task notes
+or to a leftover list, plus a delta pass for every change at the gate. Step 6 now runs
+the lint and the two `bb-spec-reviewer` lenses once, over the whole spec, when step 5 runs
+dry. Each finding, as its lens returns, is fixed in the spec, rejected on a stated ground,
+or sent to `## Open` when only the user can decide it; no lens reads the fixes again, and
+what the user settles at the gate goes into the spec with no new pass. The verdict line
+counts each lens's fixed, rejected and `## Open` findings, with one line per rejection.
+
+A re-read of a fold always finds new claims in the fold's own text, which is why the
+passes never closed; what a fix gets wrong is left to `bb-reuse-check`, the CI and
+`/bb:review`, each cheaper than another pass.
+
+### Changed
+
+- **`plugins/bb/skills/spec/SKILL.md`** step 6 drops the pass counter, the delta pass,
+  the routing past pass 3 and the delta pass at the gate; step 7 drops the leftover list
+  and the verdict pieces table. `metadata.version` moves to 2.9.0.
+- **`plugins/bb/agents/bb-spec-reviewer.md`** drops the delta pass: both lenses get the
+  full text, and the contract says this is the only pass.
+- **`plugins/bb/skills/spec/references/draft-first.md`** and **`spec-format.md`** describe
+  the single pass.
+
+### Removed
+
+- **`plugins/bb/skills/spec/scripts/review_pass.py`**, with nothing left to count.
+
+## 3.8.0 (2026-09-25)
+
+**The spec's exit gate opens with what gets built and in what order, instead of two
+audit tables.** Step 7 showed a recap of the happy path, the full edge→outcome table and
+the full behavior → task → test table, so a person could check the spec was complete but
+still had to open the file to learn what the build does and in which order. The gate now
+shows, in this order: what the spec does and why, in two or three lines; the tasks in run
+order under their `###` phase headings, one line each with its `dep:`; only the
+load-bearing edges, pointing to `## Behavior` for the rest; coverage as the counter line
+plus the unmapped rows marked `⚠️`; then the verdict line. The whole trace stays in each
+task's `→ behaviors` field, and step 5 still renders it to hunt omissions.
+
+## 3.7.0 (2026-09-25)
+
+**The spec review converges in three passes instead of running until both lenses go
+quiet.** Step 6 dispatched the two `bb-spec-reviewer` lenses on every pass with no cap,
+and on a large spec that point never came: every fold added text, the new text carried
+new claims about the code, and the grounding lens, capped at eight findings, filled its
+eight again. `interface-t3code` ran 21 passes in 2 hours and 20 minutes; `t3code-paridade`
+ran 18. Pass 1 still reads the whole spec with both lenses; from pass 2 on, the grounding
+lens reads only the diff since the last text it read, while coherence keeps the full
+spec, since it opens no files and a diff would hide the exact contradiction it exists to
+catch. Passes 1 and 2 fold their findings back into the draft, as before; pass 3 routes
+instead, to `## Open` for anything load-bearing, to the task a grounding finding names as
+a `**Left for the build**:` bullet, or to the gate's leftover list, and the gate opens
+with no fourth pass. A change the user makes at the gate runs one delta pass the same
+way, routed, then the gate again.
+
+**`scripts/review_pass.py` keeps the pass count and the last text the grounding lens
+read on disk**, so a context compaction loses neither. Its `next` subcommand reports
+whether a pass runs, which number it is, and the diff since the grounding lens's last
+read (`null` before any read), plus the path of a tally file where the run keeps each
+lens's counts and the leftover list for the gate; `read` saves the text after a verdict;
+`reset` clears both once the gate's pick moves on, so reopening the spec in the same
+session starts at pass 1. State lives under the session's scratchpad, keyed by slug plus
+a hash of the spec's resolved path, or under a fixed directory in
+`tempfile.gettempdir()` when there is none, where a slug idle past 12 hours starts over
+at pass 1. When the script fails, step 6 stops calling it and runs both lenses full for
+the rest of the run, naming the failure in the verdict line.
+
+**`bb-spec-reviewer` learns the delta pass.** The grounding lens's prompt now says
+whether this is a full pass or a delta one and, on a delta, hands it the diff instead of
+the spec's full text, scoped to the claims the changed hunks touch or contradict. Its
+closing line names which kind of pass it ran.
+
+**The gate's verdict line reads by lens instead of by finding count.** Step 7 builds one
+part per lens from what happened over the whole run, resolved and rejected counts, a
+clean close, or what did not close and where it went, then the pass count, with `notes no
+lens read` while a routed pass's notes are still unread.
+
+**`lint_spec.py` warns when a spec has outgrown one review.** `W005` fires past 800
+lines or 100 rows across the `## Behavior` tables, pointing at splitting along the `###`
+phases into sibling specs. It is a warning: the exit code stays 0.
+
+### Changed
+
+- **`plugins/bb/skills/spec/SKILL.md`** step 6 rewrites the "Unconditional" paragraph,
+  adds the pass counter, the split of lenses on passes 2 and 3, the routing rules, the
+  delta pass at the gate and the lens-death paths; step 7 assembles the verdict line from
+  the pieces table. `metadata.version` moves to 2.7.0.
+- **`plugins/bb/agents/bb-spec-reviewer.md`** stops promising every lens the spec's full
+  text and documents the grounding lens's delta scope and closing line.
+- **`plugins/bb/skills/spec/references/spec-format.md`** rewrites the paragraph after the
+  lint table: the ceiling measures the review surface, and the advice is to split, never
+  to trim prose to fit.
+- **`CODE_REVIEW_GUIDE.md`** extends its lint code range to `W001` to `W005`.
+- **`plugins/bb/skills/spec/references/draft-first.md`** names the delta pass and the
+  three-pass cap in its step 6 line, pointing at `SKILL.md` for the rest.
+
+### Added
+
+- **`plugins/bb/skills/spec/scripts/review_pass.py`**, stdlib, `next|read|reset <spec>
+[--state <dir>]`. It keeps one JSON state per spec with the pass count and the last text
+  the grounding lens read, prints the pass to run with the diff since that text, and
+  names the tally file the gate reads back. Writes go through a temp file and a rename, so
+  a run killed mid write keeps the old state.
 
 ## 3.6.1 (2026-09-04)
 
