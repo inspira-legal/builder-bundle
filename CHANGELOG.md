@@ -1,5 +1,118 @@
 # Changelog
 
+## 3.11.0 (2026-09-28)
+
+**Design becomes a calibrated, reviewable dimension, and the cycle learns to measure.**
+The profile learns how the person designs, the design journey leans on that answer, and
+the review engine gains the front that checks the design system. A spec names its metric
+with provenance and the events its behaviors emit, instrumentation enters the build as
+ordinary tasks, and review gains the front that checks coverage against the convention
+the project itself uses. Four specs carry the reasoning: `.bb/design-no-perfil/`,
+`.bb/frente-de-design/`, `.bb/metricas-no-ciclo/` (discovery and spec) and
+`.bb/exportar-pro-observador/` (the last one pending: it frames exporting bb's records to
+an observer and builds nothing yet).
+
+**The event convention becomes a file bb reads.** A project states its event grammar,
+prefixes, payload dictionary, exceptions and catalog in one `EVENTS.md` at its root; bb
+defines the format and ships the checker, and three moments of the cycle read the file.
+The reasoning is `.bb/convencao-de-eventos/` (discovery and spec). A deep review of the
+checker's first cut found thirteen blocking items, seven ways it read a valid file wrong
+or a wrong file as valid and six documents that described behavior the code does not
+have, and all of them were fixed before this release; the reasoning is in `git log` for
+`claude/convencao-de-eventos`, one commit per item.
+
+### New
+
+- **`profile.design_tools` in `~/.claude/bb.config.json`**: `/bb:profile` asks one
+  more question, which of Figma, Paper and Pencil are part of the person's day. An
+  empty list is an answer ("none of them"); a missing key is a config written before
+  the question and reads as not asked. `hooks/sync_instructions.py` renders the answer
+  as one line in the profile block of `~/.claude/BUILDER-BUNDLE.md`.
+- **`medium_default` on a product entry** (`product-registry.yaml`): a product with a
+  settled design workflow leans the medium question for everyone who works on it,
+  above the person's own habit. Both levels order the question and set the
+  recommendation; neither answers it, the medium stays always asked.
+- **The `design` front in `/bb:review`**: deviations from the design system the
+  project actually has. Raw values where a token exists, rebuilt components, missing
+  documented states, drift from the branch's visual direction, each finding citing
+  the source it deviates from (`front-design.md` + `design-checklist.md`). Available
+  when the diff touches UI and a design source resolves; also runs standalone over a
+  surface (a folder, files, or a running page), like the accessibility front, which
+  is the design review loop on its own. brisar's Deliver gate offers it next to the
+  deep accessibility audit.
+- **`## Metric` joins the spec's fixed set**, between `## Behavior` and
+  `## Attention points`: the metric block (metric, baseline, target, each value with
+  provenance or an honest per-value `skipped: <reason>`, an optional `okr:` line) or one
+  explicit section-level skip. User-triggered work adds the events table, one row per
+  event citing the behavior rows it instruments, under the payload rule: four closed
+  types (`id`, `enum`, `number`, `boolean`), none carrying free text or document content,
+  and document content is the floor no exception reaches. An instrumentation task is an
+  ordinary task whose line names the event rows it wires, and those rows are its
+  contract at build time (`spec-format.md`, the single home of the shapes).
+- **Lint warnings W006, W007 and W008** (`lint_spec.py`): no `## Metric`, a missing
+  or provenance-less `Baseline:`/`Target:`, and an event row citing a numbered
+  behavior row that does not exist. Warnings, never errors: a spec that predates
+  the section stays valid, and CI lints the specs a PR touches.
+- **The `instrumentation` front in `/bb:review`**: the diff's added interactions
+  against the plan and the convention a three-rung ladder resolves (the spec's events
+  table, `Events: none` included, then the project's `EVENTS.md`, then the analytics
+  convention detected in the project's own source). Semantic checks, not presence:
+  coverage, naming, payload, channel, each finding citing its source
+  (`front-instrumentation.md`). The caller runs the checker once over the emitted names
+  before the fan-out and passes its output and the file's path in the scope block; the
+  finder cites the file's rows, and a malformed file is one finding against the file
+  rather than a rung with nothing to cite. Available in the external-PR mode on the two
+  rungs after the spec, with `EVENTS.md` fetched through the same contents API; its
+  findings are ranked like design's and, there, posted on the PR rather than applied.
+- **Discover captures baseline and target** on the success signal, with provenance
+  in spec-format's shape, and fit hardens the hypothesis to "from <baseline> to
+  <target> within <timeframe>"; `skipped: not-instrumented` is a valid baseline
+  that flags the instrumentation as first work.
+- **`plugins/bb/references/events-convention.md`**, the format of a project's `EVENTS.md`:
+  five parts found by heading (Grammar, Prefix registry, Dictionary, Exceptions,
+  Catalog), the three-slot template `{prefix}_{type}_{element}` split by the longest
+  registered prefix, the closed payload types (`id`, `enum`, `number`, `boolean`, and
+  `text` only under an exception row with status, justification and retention), the
+  catalog's `legacy` mark and its append duty at landing, plus a worked example.
+- **`plugins/bb/scripts/check_events.py`**, shared by spec and review: reads a spec's
+  `## Metric` events table (`--spec`) or a list of emitted names (`--names`, a file or
+  stdin) against the resolved `EVENTS.md`, prints `path:line CODE message` for ten codes
+  (`C001` to `C010`, E or W), exits 1 only on an E-code, and always prints at least one
+  line (`checked N names, clean`). A name read from stdin anchors to the `EVENTS.md` row
+  or section that caught it, so the review's finder has a line to cite.
+- **`/bb:spec` reads the file** (3.1.0): `draft-first.md` proposes the events table from
+  it (names on the grammar, prefixes from the registry, fields from the dictionary), a
+  missing prefix or dictionary field becomes a task on the convention file, step 6 runs
+  the checker beside the lint, and the exit gate treats its E-codes as open items (a
+  malformed file or an unreadable input is fixed outside the spec and deferred
+  meanwhile).
+
+### Changed
+
+- `phase-medium.md` orders its options by the product's `medium_default`, then the
+  person's `design_tools`, then the fit signals, and the trim keeps the product
+  default and the person's tools, in that order; a lean tool whose MCP is absent is
+  named once in the intro line, never forced.
+- `preflight-tooling.md` cross-references `design_tools` alongside `uses_terminal`.
+- The export renders the hypothesis-OKR-metric trio from `discovery.md` and the
+  spec instead of asking: values bare (provenance stays in the spec), a per-value
+  skip as "not yet measured", the four fields together or not at all, and the
+  spec's values winning where the two disagree. It asks only for a field genuinely
+  absent from both documents.
+- The spec's exit gate shows `## Metric` with the plan and holds a value without real
+  provenance as an open item; seeding and gate rules live in `draft-first.md`.
+- The `design` and `instrumentation` fronts keep their `High` / `Medium` / `Low`
+  priorities inside their own references and map onto the two finding levels at the
+  report boundary, the way a11y's WCAG priorities do (`references/finding-levels.md`):
+  `High` is a Bloqueante, `Medium` and `Low` are Sugestões. The rank tiers, the fix
+  order and the report read the level, so the two fronts arrive in the report the
+  same way every other front does.
+- `verify.md`'s instrumentation addendum accepts `EVENTS.md`'s own row and the checker's
+  output line as citable sources, and `review/SKILL.md` names the three-rung ladder.
+- **`plugins/bb/workflows/build-tasks.js`**'s task prompt makes the `## Metric` rows an
+  instrumentation task names its contract, payload included, and `/bb:implement` (4.1.0)
+  loads the events table in its step 4 with the other fixed sections.
+
 ## 3.10.0 (2026-09-27)
 
 **The spec becomes a lean plan, and the build runs each phase's tasks in parallel.** The

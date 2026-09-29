@@ -4,7 +4,7 @@ description: Runs a spec (`.bb/<slug>/spec.md`) as far as this run is meant to g
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 4.0.0
+  version: 4.1.0
 ---
 
 # Implement
@@ -32,7 +32,7 @@ Inside a git repository with a `.bb/` directory, and a validated spec with a `##
 
 3. **Open the run, flip `status: in-progress`.** Edit the spec's frontmatter and commit that edit (conventional style; no AI attribution).
 
-4. **Load the spec.** Read it whole: the opening and the free top half describe the thing and how it's put together, and they're written to be read once, start to finish. Then the fixed sections: the `## Decisions` (including the **reuse** notes, when the spec carries any), the `## Behavior` map (happy path + edge→outcome: **build to this; it's the acceptance contract**), the `## Attention points` (risks the build handles, each with where it lives, never instructions), what `## Out of scope` puts off the table (a hard line: do not build it), and the phases and tasks in `## Tasks`.
+4. **Load the spec.** Read it whole: the opening and the free top half describe the thing and how it's put together, and they're written to be read once, start to finish. Then the fixed sections: the `## Decisions` (including the **reuse** notes, when the spec carries any), the `## Behavior` map (happy path + edge→outcome: **build to this; it's the acceptance contract**), the `## Metric` events table (an instrumentation task's contract: the event rows its task names, each with the payload the row lists), the `## Attention points` (risks the build handles, each with where it lives, never instructions), what `## Out of scope` puts off the table (a hard line: do not build it), and the phases and tasks in `## Tasks`.
 
 5. **Reuse first.** Before writing anything, confirm the code/patterns named in the spec's reuse notes still exist (a lean spec may carry none, and then stage zero sends no reuse agent), and prefer extending them over reinventing. If one has moved or changed, flag it and adjust rather than guessing: the path you found outranks the one the spec names. If one is **gone**, that's step 10's valve firing, not something to work around.
 

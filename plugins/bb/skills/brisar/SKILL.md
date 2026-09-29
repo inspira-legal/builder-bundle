@@ -4,7 +4,7 @@ description: End to end design trilha. The whole double diamond, from the raw id
 license: MIT
 metadata:
   author: Inspira
-  version: 2.7.0
+  version: 2.8.0
 ---
 
 # Brisar
@@ -50,14 +50,17 @@ the next silently.
 3. **Adapt depth and vocabulary to the profile.** Each phase reads the flag it
    needs: `reads_code` sets how many questions and in what language,
    `technical_vocabulary` alone decides whether `scaffold`, `embed` and `MCP`
-   appear at all, `uses_terminal` decides whether a path needs a command, and
-   `technical_instructions` decides how a command is written. The contract is the
-   plugin-level `references/bb-config.md`.
+   appear at all, `uses_terminal` decides whether a path needs a command,
+   `technical_instructions` decides how a command is written, and `design_tools`
+   orders the medium question. The contract is the plugin-level
+   `references/bb-config.md`.
 4. **Detect > ask.** Step 0 cross-references cwd with the product registry; a
    match settles brand and hosting without asking. Tooling gaps are detected in
    preflight, not asked. **Exception: the medium is always asked**, assuming it
    scaffolds a repo for someone who wanted a canvas, or opens a canvas for
-   someone shipping today.
+   someone shipping today. The product's `medium_default` and the profile's
+   `design_tools` set the order and the recommendation, never the answer
+   (`references/phase-medium.md`).
 5. **Lightning intake max 3 questions.** If you find yourself preparing a
    fourth, stop, it's turning into a form. (With `reads_code` false it goes up
    to 5-6, but in everyday language.)
@@ -187,7 +190,7 @@ When detected:
 
 - Skip the brand question in Phase 1 (already known by `product.brand`)
 - Skip the hosting question (already known: `mode_default: embed`)
-- Load `repo_url`, `ds_source`, `requires_mcp` for the later flow
+- Load `repo_url`, `ds_source`, `requires_mcp`, and `medium_default` for the later flow
 - Hold it in context; the brief records the product it landed on
 
 If no match: record `product.detected: unknown` and continue. Phase 1 asks
@@ -342,6 +345,7 @@ Phase 2: Maturity gate (senior/junior only)
 
 Medium: where to explore (1 question, offers only what's detected)
   → code | claude design | paper | figma | pencil
+  → ordered by medium_default (product), then design_tools (profile), then fit
   → canvas mediums set scaffold: skipped
 
 Phase 3: Scaffold OR prototype-hosted     [medium == code only]

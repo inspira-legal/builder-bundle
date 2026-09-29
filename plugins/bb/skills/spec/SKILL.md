@@ -4,7 +4,7 @@ description: Align on the idea before building. Develops a draft, iterates the g
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 3.0.0
+  version: 3.1.0
 ---
 
 # Spec
@@ -36,7 +36,10 @@ here (plugin-level `references/spec-state.md`):
 
 **Read them before drafting, and cite them instead of copying them.** A section quoted into
 the spec is a second copy that goes stale the next time its own skill runs; a path is a
-pointer that stays true. So don't re-litigate a cut the user made upstream, and don't ask
+pointer that stays true. The one exception is `## Metric`: the lint reads the baseline and
+the target inline, so those two values are materialized, each carrying the record's own
+source with the record named beside it (`references/draft-first.md` has the seeding
+rule). So don't re-litigate a cut the user made upstream, and don't ask
 gray-area questions discover already answered. Echo the framing in one line, naming which
 records exist, so the user sees it carried through, then develop the design on top of it.
 
@@ -49,7 +52,7 @@ Deliver invokes this skill from its own gate. Spec from the one-liner as usual.
 
 You bring the idea; Claude develops it, then loops with you through the **`AskUserQuestion` tool** until the picture is consistent and you sign off. Never interrogate from a blank page, and never decide silently; drive it through real questions.
 
-1. **Develop the draft (draft-first).** Read the one-liner, look at the codebase, and write a short draft spec with your best guesses filled in: what/why, the business rules, the scope edges, the behavior you expect. For Large work, also describe the pieces in the top half before breaking it into tasks. Bring something concrete to react to.
+1. **Develop the draft (draft-first).** Read the one-liner, look at the codebase, and write a short draft spec with your best guesses filled in: what/why, the business rules, the scope edges, the behavior you expect. `## Metric` arrives filled too, seeded per the rule in `references/draft-first.md` (the discovery record's values with the record named in the provenance, a marked guess, or the honest skip); the shape is in `references/spec-format.md`. For Large work, also describe the pieces in the top half before breaking it into tasks. Bring something concrete to react to.
 
 2. **Highest-stakes question first, ask before you anchor.** On the single call most expensive to get wrong about what gets built, ask the user how _they'd_ call it _before_ you reveal your own pick (an open `AskUserQuestion`). Anchoring is strongest on the choice that matters most. Don't pre-frame that one. One question only; everything else stays draft-first.
 
@@ -65,7 +68,21 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
    python3 scripts/lint_spec.py .bb/<slug>/spec.md
    ```
 
-   Fix its errors before the gate. Its warnings reach the gate as they are: a missing `## Attention points` is silenced by `Nothing.`, and a size warning is the user's call to split.
+   Fix its errors before the gate. Its warnings reach the gate as they are: a missing `## Attention points` is silenced by `Nothing.`, a missing `## Metric` by its one `skipped: <reason>` line, and a size warning is the user's call to split.
+
+   When the project has `EVENTS.md` at its root, run the checker beside the lint, over
+   the same spec:
+
+   ```bash
+   python3 <plugin-root>/scripts/check_events.py --spec .bb/<slug>/spec.md
+   ```
+
+   Fix what it finds the way you fix the lint's errors: a missing prefix or a missing
+   dictionary field is already a task by then, per `references/draft-first.md`, and an
+   `E`-code line still standing at the gate is an open item there. Without an
+   `EVENTS.md`, there is nothing to check; say so in one line, that the project has no
+   event convention yet and where the format lives
+   (`<plugin-root>/references/events-convention.md`), and move on unchanged.
 
 7. **The exit gate.** Described in its own section below.
 
@@ -87,12 +104,15 @@ The gate is where the spec proposes the build. Don't gate blind: first **show wh
 - **What it does and why**: two or three lines, the spec's opening said again.
 - **The phases, in run order**: each `###` heading with its tasks under it, one line per task saying what it changes, and a mark on the phases whose tasks run together. A spec with no `###` heading lists its tasks flat, in document order, and says they run one at a time.
 - **The load-bearing edges**: only the `WHEN … THEN …` rows whose wrong outcome would contradict the `why` (the litmus in "Map the behavior"), then a pointer to `## Behavior` for the rest.
+- **The measure**: the `## Metric` section as written, the metric block or its skip line, so the measure gets signed off with the plan.
 - **The verdict line** (in "Review the spec" below).
-- **What is still open**: the items in `## Open`.
+- **What is still open**: the items in `## Open`, each `Baseline:` or `Target:` value without real provenance, and each `E`-code line the checker printed in step 6. A `W`-code line from the lint or the checker shows beside the list without joining it: seen, never blocking.
+
+The gate holds `## Metric` where the lint cannot: a value without real provenance is an open item, a value's own `skipped:` is not, and on a Medium spec the event trace is judged by hand. A checker `E`-code line is resolved by fixing the row or by writing the exception as its own task. A line whose path is the project's `EVENTS.md` has no row in this spec to fix, whatever its code, so it is resolved in that file and deferred as an external blocker until then. The shapes that arrive that way, and the remedy for each, are `references/draft-first.md`'s gate bullets.
 
 ### When something load-bearing is open
 
-Do NOT offer `Build`. Ask one `AskUserQuestion` whose options are **resolve it now**, **defer it explicitly** ("decide at build time", recorded as such in the spec) and **Stop here**. Never a silent "build anyway". What the user settles goes into the spec, the lint runs again, and the gate reopens.
+Everything on the open list counts here: a load-bearing decision, a metric value without real provenance, and a checker `E`-code line. Do NOT offer `Build`. Ask one `AskUserQuestion` whose options are **resolve it now**, **defer it explicitly** ("decide at build time", recorded as such in the spec) and **Stop here**. Never a silent "build anyway". What the user settles goes into the spec, the lint runs again, and the gate reopens.
 
 ### When nothing load-bearing is open
 
@@ -149,7 +169,7 @@ On finalize, open the spec with the frontmatter block (`status: pending`, `creat
 
 The review's verdict is not part of the block: it belongs to this session, and it reaches the user at the gate, which is where a person can still act on it.
 
-**Large** work carries `## Behavior`, `## Attention points` and `## Tasks` as their own sections: the acceptance contract, the risks the builder handles and the phased tasks the build side consumes. **Medium** work can keep the behavior and the tasks inline in the decisions.
+**Large** work carries `## Behavior`, `## Attention points` and `## Tasks` as their own sections: the acceptance contract, the risks the builder handles and the phased tasks the build side consumes. **Medium** work can keep the behavior and the tasks inline in the decisions. `## Metric` is its own section at every size, between `## Behavior` and `## Attention points`: the measure with provenance and the events table, or one explicit `skipped: <reason>` line (shape in `references/spec-format.md`).
 
 ## Export mode: a shareable product/UX spec
 
@@ -175,7 +195,7 @@ spec always ends at a validated `.bb/<slug>/spec.md`; the spec is the durable as
 
 ### references/spec-format.md
 
-The spec's format: the free top half and the fixed sections, what each fixed section is read by, the describes-vs-recounts rule, tables, attention points, dead section names, and the task line with the `###` phases it runs in. Paired with `scripts/lint_spec.py`, which enforces the mechanical half.
+The spec's format: the free top half and the fixed sections, what each fixed section is read by, the describes-vs-recounts rule, the Metric section with its events table, tables, attention points, dead section names, and the task line with the `###` phases it runs in. Paired with `scripts/lint_spec.py`, which enforces the mechanical half.
 
 ### references/draft-first.md
 

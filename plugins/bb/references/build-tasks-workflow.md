@@ -175,9 +175,10 @@ open the file. The alternative is a confident empty list over a suite that exist
 
 `tasks` carries only the ones still unticked at invoke time, in document order. A task
 carries no `dep` and no `behaviors`: phase order replaced the first, and the agent reads the
-`## Behavior` rows its task touches in the spec itself. A spec written before this change may
-still carry `dep:` and `→ behaviors` on its lines; the skill reads the line and leaves both
-out. The agents re-read the spec anyway: `args` is the plan, the file on disk is the truth.
+`## Behavior` rows its task touches in the spec itself, the way an instrumentation task reads
+the `## Metric` event rows it names. A spec written before this change may still carry
+`dep:` and `→ behaviors` on its lines; the skill reads the line and leaves both out. The
+agents re-read the spec anyway: `args` is the plan, the file on disk is the truth.
 
 `model` on a task is **optional and the only tier the payload sets**, because how hard a task
 is, is the one thing about it the script cannot read. It takes `sonnet` or `opus`; the

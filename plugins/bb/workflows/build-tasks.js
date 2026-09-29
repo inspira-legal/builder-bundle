@@ -236,7 +236,8 @@ The spec: ${specPath}. Read it whole before touching anything: the opening and t
 half describe the thing, and the fixed sections are the contract. Build to \`## Behavior\`,
 stay inside \`## Out of scope\`. \`## Attention points\` names the technical risks the author
 saw, each with where it lives: handle the ones your task meets, and the way through each one
-is yours to choose.
+is yours to choose. When your task wires events, the \`## Metric\` rows it names are its
+contract: send each event with the payload its row lists and no field beyond it.
 
 Your task is ${t.n}: ${t.title}
 It delivers: ${t.delivers}

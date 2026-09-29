@@ -48,21 +48,29 @@ uppercase wherever a guide states them.
 
 ## Where each front lands
 
-| finding                                                                   | front                  | level      |
-| ------------------------------------------------------------------------- | ---------------------- | ---------- |
-| a bug the diff shipped, at either verdict                                 | `front-correctness.md` | Bloqueante |
-| a deviation from a rule that states the stakes (mandatory, never, quebra) | `front-rules.md`       | Bloqueante |
-| every other deviation, and every rule the guide states with no level      | `front-rules.md`       | Sugestão   |
-| a missing happy path                                                      | `front-contract.md`    | Bloqueante |
-| a missing mapped edge, a missing test, scope drift                        | `front-contract.md`    | Sugestão   |
-| a `Critical` or `Major` accessibility failure                             | `front-a11y.md`        | Bloqueante |
-| a `Minor` failure or an `Enhancement`                                     | `front-a11y.md`        | Sugestão   |
-| every cleanup, since the front is behavior-preserving                     | `front-quality.md`     | Sugestão   |
+| finding                                                                   | front                      | level      |
+| ------------------------------------------------------------------------- | -------------------------- | ---------- |
+| a bug the diff shipped, at either verdict                                 | `front-correctness.md`     | Bloqueante |
+| a deviation from a rule that states the stakes (mandatory, never, quebra) | `front-rules.md`           | Bloqueante |
+| every other deviation, and every rule the guide states with no level      | `front-rules.md`           | Sugestão   |
+| a missing happy path                                                      | `front-contract.md`        | Bloqueante |
+| a missing mapped edge, a missing test, scope drift                        | `front-contract.md`        | Sugestão   |
+| a `Critical` or `Major` accessibility failure                             | `front-a11y.md`            | Bloqueante |
+| a `Minor` failure or an `Enhancement`                                     | `front-a11y.md`            | Sugestão   |
+| a `High` design deviation                                                 | `front-design.md`          | Bloqueante |
+| a `Medium` or `Low` design deviation                                      | `front-design.md`          | Sugestão   |
+| a `High` instrumentation finding (payload or channel)                     | `front-instrumentation.md` | Bloqueante |
+| a `Medium` or `Low` instrumentation finding                               | `front-instrumentation.md` | Sugestão   |
+| every cleanup, since the front is behavior-preserving                     | `front-quality.md`         | Sugestão   |
 
 `front-a11y.md` keeps `Critical` / `Major` / `Minor` / `Enhancement` internally, because those
 priorities are WCAG's and not bb's. The mapping in the table above happens at the report
 boundary, when the front's findings enter the unified report, so a finding reads as one of the
 two levels everywhere the user and GitHub see it.
+
+`front-design.md` and `front-instrumentation.md` arrived with three priorities of their own,
+`High` / `Medium` / `Low`, kept inside their references and their checklists, and they map
+at the same boundary: `High` is a Bloqueante, `Medium` and `Low` are Sugestões.
 
 ## The concrete-cost gate
 

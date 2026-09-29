@@ -16,10 +16,10 @@ thing. This is the lowest-cost moment to catch that. The output is
 
 Two phases, each with its own reference, load only the one that's running:
 
-| Phase                      | What it settles                                                                     | Reference             |
-| -------------------------- | ----------------------------------------------------------------------------------- | --------------------- |
-| **1. Frame** (o problema)  | problem, who & impact, hypothesis, success signal, appetite; each confidence-tagged | `references/frame.md` |
-| **2. Fit** (what survives) | worth building? what to cut, in what order, the one testable hypothesis             | `references/fit.md`   |
+| Phase                      | What it settles                                                                                                | Reference             |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------- |
+| **1. Frame** (o problema)  | problem, who & impact, hypothesis, success signal with baseline and target, appetite; each confidence-tagged   | `references/frame.md` |
+| **2. Fit** (what survives) | worth building? what to cut, in what order, the hypothesis hardened from baseline to target within a timeframe | `references/fit.md`   |
 
 ## Entry decision
 
@@ -106,3 +106,4 @@ record the verdict with its evidence and stop (a pivot points back to
 | answer still vague after one clarification | accept at `low` confidence and move on                                             |
 | a field can't be answered                  | record `skipped: <reason>`                                                         |
 | fit asked with no framed problem           | suggest Phase 1 once; if declined, proceed and note `ran without a framed problem` |
+| hypothesis closes with no frame capture    | draft baseline and target in the fit itself, or skip each with a reason (`fit.md`) |

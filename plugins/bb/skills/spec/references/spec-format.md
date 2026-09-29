@@ -17,8 +17,9 @@ opening, 1–3 paragraphs                  ┐
 
 ## Decisions                             ┐
 ## Behavior                              │
-## Attention points                      │  fixed, in this order
-## Tasks                                 │  each one has a reader
+## Metric                                │  fixed, in this order
+## Attention points                      │  each one has a reader
+## Tasks                                 │
 ## Out of scope                          │
 ## Open                                  ┘
 ```
@@ -40,8 +41,10 @@ or a contract another team depends on. A technical risk the author sees goes in
 **The fixed sections are fixed because each one has a reader.** `/bb:implement` consumes
 `## Tasks` and builds against `## Behavior`; the task agent reads `## Attention points` as
 the risks it has to handle; the `contract` front of `/bb:review` walks `## Behavior` row by
-row; the spec gate itself blocks on `## Open`. A section nobody reads is a section that
-drifts, which is why the set is small and every member earns its slot.
+row; the exit gate shows `## Metric`, the export reads its trio by path, and review's
+instrumentation front resolves its events table first; the spec gate itself blocks on
+`## Open`. A section nobody reads is a section that drifts, which is why the set is small
+and every member earns its slot.
 
 - `## Decisions`: the business rules and the calls closed with the user, one bullet each,
   in the words of the product: what the thing must do and what it must never do. The
@@ -49,6 +52,8 @@ drifts, which is why the set is small and every member earns its slot.
 - `## Behavior`: the happy path step by step, then a `WHEN … THEN …` table of the edges
   that change the outcome for the user, where every row reads as a test. The acceptance
   contract.
+- `## Metric`: the measure the landing is judged by, or one explicit `skipped: <reason>`
+  line. Its own section below.
 - `## Attention points`: the technical risks the author saw (below). `Nothing.` when
   there are none.
 - `## Tasks`: vertical tasks grouped in phases (below).
@@ -60,6 +65,87 @@ drifts, which is why the set is small and every member earns its slot.
 `## Behavior` and `## Tasks` are what Large work needs; a Medium spec can carry those
 inline and skip them, which is why the lint only warns on their absence. The same goes for
 `## Attention points`: the lint warns when it is missing, and `Nothing.` silences it.
+`## Metric` rides every spec at every size; its checks warn instead of erroring so a spec
+that predates it stays valid.
+
+## The Metric section
+
+`## Metric` sits right after `## Behavior` because the trace starts there: an event row
+cites the behavior rows above it, and an instrumentation task in `## Tasks` names the
+event rows it wires. Every spec carries the section, whatever its size, in one of two
+forms, and an honest skip always beats an invented number.
+
+**The metric block**: the one metric, its baseline, its target, and a timeframe.
+
+```
+- Metric: <the one measure, and how it is read>
+- Baseline: <the current reading> (<provenance>)
+- Target: <where it should land>, within <timeframe> (<provenance>)
+- okr: <the connected OKR>
+- Events: <the table below, or `none` and why>
+```
+
+The `Baseline:` and `Target:` bullets each carry their value's provenance as a
+parenthesized note on the same bullet: a query, a log, or a named person's estimate
+marked as such. This paragraph owns that shape (discover's frame capture cites it for
+its own `baseline:`/`target:` bullets). The note is the shape the lint checks
+(`draft-first.md`'s gate bullets carry the judgment on top of it). A value nothing measures yet is its own honest skip, `skipped:
+<reason>` in place of the value (`- Baseline: skipped: not-instrumented`, the form
+discover blesses): no provenance note, and the target and the events table stay while
+the skip flags the instrumentation as the first work. Internal work names an
+operational measure (error rate, runtime, adoption) where no product metric applies.
+The `okr:` line names the connected OKR when one exists, and is omitted when none does.
+The `Events:` line is part of the block, never omitted: the table when the work has
+user-triggered behavior, `none` and why when it has none. The review's instrumentation
+front resolves its plan from exactly that line, so a block without it leaves the front
+planless; the lint does not check it, and the gate holds it (`draft-first.md`).
+
+**The skip**: one line, `skipped: <reason>`, when no honest measure exists. It replaces
+the whole section body.
+
+### The events table
+
+When the work has user-triggered behavior, the block also carries the events table, one
+row per event:
+
+| event                | behaviors | payload                   | channel  |
+| -------------------- | --------- | ------------------------- | -------- |
+| `vault_doc_uploaded` | 2, 3      | `doc_id`, `source` (enum) | internal |
+
+The event name follows the project's own convention, `EVENTS.md` at the repository
+root when the project has one (`<plugin-root>/references/events-convention.md`).
+`behaviors` cites the numbered happy-path rows the event instruments. `channel` names
+the sink, and the column exists only when the project has more than one. A payload field
+is a backticked token in the cell; a parenthesised note beside one, like the type in the
+row above, annotates that field and is not another field. Payload fields hold one of four
+closed types: `id`, `enum`, `number`, `boolean`. None of the four carries free text or
+document content, which is what keeps mandatory instrumentation compatible with a
+legaltech's data duties, and this paragraph is its single home; the gate and the review
+front cite it here instead of restating it. A project's own `EVENTS.md` can widen the
+vocabulary by one, a named `text` field recorded there as an exception with a status, a
+justification and a retention window; without a convention file, the four types above are
+the whole list.
+
+Document content is the floor no exception reaches. The text of a contract, a petition, a
+decision or a clause never travels in a payload, in any project and under any status, and
+neither does a slice of one. What an exception can cover is what a person typed into a
+field of the product, a query they searched or a title they wrote. That floor is also who
+reads an `approved` row: the status records that someone weighed a free text field, and
+the next reader holds the row to this paragraph, the same way an `under-review` row waits
+on the legal-lens round.
+
+Instrumentation enters `## Tasks` as ordinary tasks, on the same line as any other task:
+the title, what it delivers, and its `verify:`. What it delivers names the event rows it
+wires, and those rows are the task's contract: the task agent reads them here, payload
+rule included, the way every task reads the `## Behavior` rows it touches. When the
+project has `EVENTS.md`, the same task appends each name it wires to the file's
+`## Catalog` in the change that lands it, an empty `status` cell, so the next spec's
+duplicate check sees it (`<plugin-root>/references/events-convention.md`).
+
+A Medium spec carries its behaviors inline, so an event row there has no numbered row to
+cite; its `behaviors` cell names the inline behavior in a short phrase instead. The
+lint leaves prose cells alone and the gate judges the trace. A re-size to Large numbers
+the behavior rows and rewrites those cells as numbers, part of the re-size itself.
 
 ## The rule that does the most work
 
@@ -191,18 +277,21 @@ belongs here.
 python3 plugins/bb/skills/spec/scripts/lint_spec.py .bb/<slug>/spec.md
 ```
 
-| code | level   | what it catches                                                    |
-| ---- | ------- | ------------------------------------------------------------------ |
-| E001 | error   | frontmatter missing, incomplete, or with an invalid status or date |
-| E002 | error   | no `## Decisions` or no `## Open`                                  |
-| E003 | error   | a dead section name (`## design`, `## still open`)                 |
-| E004 | error   | a table cell above 100 characters                                  |
-| E005 | error   | a row whose cell count differs from the header                     |
-| W001 | warning | no `## Behavior`                                                   |
-| W002 | warning | no `## Tasks`                                                      |
-| W003 | warning | no `## Attention points`                                           |
-| W004 | warning | no `## Out of scope`                                               |
-| W005 | warning | above 800 lines, or above 100 rows in the `## Behavior` tables     |
+| code | level   | what it catches                                                       |
+| ---- | ------- | --------------------------------------------------------------------- |
+| E001 | error   | frontmatter missing, incomplete, or with an invalid status or date    |
+| E002 | error   | no `## Decisions` or no `## Open`                                     |
+| E003 | error   | a dead section name (`## design`, `## still open`)                    |
+| E004 | error   | a table cell above 100 characters                                     |
+| E005 | error   | a row whose cell count differs from the header                        |
+| W001 | warning | no `## Behavior`                                                      |
+| W002 | warning | no `## Tasks`                                                         |
+| W003 | warning | no `## Attention points`                                              |
+| W004 | warning | no `## Out of scope`                                                  |
+| W005 | warning | above 800 lines, or above 100 rows in the `## Behavior` tables        |
+| W006 | warning | no `## Metric`                                                        |
+| W007 | warning | a `Baseline:`/`Target:` bullet missing, or a value without provenance |
+| W008 | warning | an event row citing a numbered behavior row that does not exist       |
 
 Whether the document repeats itself, recounts the conversation, or carries a fix inside an
 attention point is not a lint check. That is the author's judgment, against the rules
