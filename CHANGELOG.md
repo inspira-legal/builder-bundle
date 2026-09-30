@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.12.0 (2026-09-30)
+
+**Multi-agent support via Vercel Skills manager.** The 15 skills conform to
+the Agent Skills standard and install across coding agents (Gemini CLI, OpenCode,
+Cursor, Codex, T3 Code) in one command through Vercel's skills manager (`skills.sh`).
+
+### New
+
+- **Installation via `npx skills`**: builders can install all 15 skills globally
+  or project-wide across any supported agent with
+  `npx skills add inspira-legal/builder-bundle -g --all`.
+- **OpenCode and Gemini CLI guidance**: documentation for configuring
+  `~/.config/opencode/opencode.jsonc` and `~/.gemini/skills/` to discover the bundle.
+- **`skills:list` script in `package.json`**: inspect discovered skills locally
+  via `bun run skills:list`.
+
 ## 3.11.0 (2026-09-28)
 
 **Design becomes a calibrated, reviewable dimension, and the cycle learns to measure.**
