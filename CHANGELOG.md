@@ -1,5 +1,24 @@
 # Changelog
 
+## 3.12.0 (2026-09-30)
+
+**Ship reads each review thread for its intent before it triages it.** The agent that
+handled a PR's comments read them literally: it fixed the one instance the comment named,
+copied a suggested wording as written, and left the other places with the same shape open.
+Each of those came back as another review round. Triage now starts by writing down, in one
+line, what the reviewer is trying to achieve, and that intent decides the verdict, how far
+the fix reaches, and where it stops. The fix-thread reply carries the reading, so a wrong
+reading costs one reply, not one round.
+
+### Changed
+
+- **`/bb:ship`** (4.1.0): `references/ship-pr.md` gains step 2 of its triage, the intent
+  read. A suggested fix or wording is checked against the code and the repo's rules before
+  it is used, the fix reaches every place in the diff the intent covers, and two plausible
+  readings that lead to different code make the thread **unclear**. Triage moves to step 3
+  and sorts by that intent, and the steps after it move down by one.
+- The fix-thread reply becomes `Fixed in <sha>: read as <intent>; <what was done>`.
+
 ## 3.11.0 (2026-09-28)
 
 **Design becomes a calibrated, reviewable dimension, and the cycle learns to measure.**
