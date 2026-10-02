@@ -119,6 +119,11 @@ is the document, and the skill says so in one line.
   document names which one, and each database the guard speaks to is an adapter inside the
   script. BigQuery is the first.
 - The level column is optional and its values are the company's. The lint never validates a value.
+- `/bb:discover` offers a measurement, never runs one unasked. In the frame, when the problem's
+  size or the baseline is a low confidence guess and the company has a `data` document, it offers
+  to measure that one question; a yes runs `/bb:measure` in the explore mode and the number enters
+  the frame with the query as its provenance. Its closing gate offers `/bb:measure` when the
+  baseline stayed `skipped`. The framing stays `/bb:discover`'s.
 
 ## Behavior
 
@@ -138,23 +143,24 @@ Happy path, a new event in a spec:
    row.
 8. The lint and the event checker pass, and the task agent writes the level beside the event.
 
-| WHEN                                                              | THEN                                                                         |
-| ----------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| the query is not a read, holds more than one statement            | the guard refuses before anything leaves the machine, and says why           |
-| the dry run classifies the statement as anything but a read       | the guard refuses, including when the database names no type                 |
-| the query would read past the ceiling                             | the guard refuses; the skill rewrites the query and never raises the ceiling |
-| the output has a person or conversation column                    | the guard refuses and shows no row                                           |
-| an output value looks like an email or a long free text           | the guard refuses and shows no row                                           |
-| a tag the request needs returns no document                       | the skill stops and names the missing tag                                    |
-| the `wave` CLI is missing or logged out                           | the skill stops and says the documentation base was the source that failed   |
-| the database credential expired                                   | the skill stops, reads the `access` document and gives its renewal step      |
-| the `data` document names a database the guard has no adapter for | the guard refuses and names the database, and the skill stops                |
-| the request has no spec                                           | the skill measures anyway, in the modes that need no target                  |
-| the spec's baseline is `skipped`                                  | the skill measures the baseline first and says it is the first reading       |
-| the request asks for what a person wrote                          | the skill refuses and offers the aggregate                                   |
-| the week asked for has not closed                                 | the skill says the number is partial, or uses the last closed week           |
-| the company has no `usage` document                               | the spec's events table carries no level column, as today                    |
-| a spec carries the level column, or does not                      | the lint and `check_events.py` pass either way                               |
+| WHEN                                                              | THEN                                                                           |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| the query is not a read, holds more than one statement            | the guard refuses before anything leaves the machine, and says why             |
+| the dry run classifies the statement as anything but a read       | the guard refuses, including when the database names no type                   |
+| the query would read past the ceiling                             | the guard refuses; the skill rewrites the query and never raises the ceiling   |
+| the output has a person or conversation column                    | the guard refuses and shows no row                                             |
+| an output value looks like an email or a long free text           | the guard refuses and shows no row                                             |
+| a tag the request needs returns no document                       | the skill stops and names the missing tag                                      |
+| the `wave` CLI is missing or logged out                           | the skill stops and says the documentation base was the source that failed     |
+| the database credential expired                                   | the skill stops, reads the `access` document and gives its renewal step        |
+| the `data` document names a database the guard has no adapter for | the guard refuses and names the database, and the skill stops                  |
+| the request has no spec                                           | the skill measures anyway, in the modes that need no target                    |
+| the spec's baseline is `skipped`                                  | the skill measures the baseline first and says it is the first reading         |
+| the request asks for what a person wrote                          | the skill refuses and offers the aggregate                                     |
+| the week asked for has not closed                                 | the skill says the number is partial, or uses the last closed week             |
+| the company has no `usage` document                               | the spec's events table carries no level column, as today                      |
+| a spec carries the level column, or does not                      | the lint and `check_events.py` pass either way                                 |
+| discover frames a problem with a low confidence size or baseline  | it offers a measurement when a `data` document exists, and nothing without one |
 
 ## Metric
 
@@ -202,9 +208,13 @@ Happy path, a new event in a spec:
       a spec's `## Metric`, the delivery by intent and the closing gate, and `measure.md` joins
       the folder contract in `spec-state.md`. · verify: reading
 
+- [ ] **5. Discover offers a measurement**: the frame offers `/bb:measure` for a low confidence
+      size or baseline when the company has a `data` document, and the closing gate offers it for a
+      `skipped` baseline. · verify: reading
+
 ### Close
 
-- [ ] **5. What the person installing sees**: the README, the skill count in the README and the
+- [ ] **6. What the person installing sees**: the README, the skill count in the README and the
       plugin description, the version, the `CHANGELOG.md` entry and the handoff journey map. ·
       verify: `bun run validate`, `bun run fmt:check`, and a search of the diff for a real
       company's tables, client ids and event names comes back empty
