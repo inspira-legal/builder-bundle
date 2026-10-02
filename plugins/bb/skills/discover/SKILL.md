@@ -4,7 +4,7 @@ description: Runs the whole first diamond before any design. Frames the problem 
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.3.0
+  version: 2.4.0
 ---
 
 # Discover
@@ -51,7 +51,8 @@ Read the invocation and any existing `discovery.md` before asking anything:
 - **Vagueness is data.** Clarify once; if still fuzzy, accept at `low`
   confidence and move on. Where you'd be guessing at a fact (market size,
   competitors, prior art), check (codebase, then docs, then web) and tag what
-  you find.
+  you find. A number the company's own usage data can settle gets the measurement
+  offer in `references/frame.md`.
 
 ## Capture (on disk)
 
@@ -93,17 +94,23 @@ options:
   - "Stop here". The record stays saved; pick it back up with /bb:spec or /bb:discover.
 ```
 
+When the baseline stayed `skipped` for a reason other than `not-instrumented`, and the
+company has a `data` document, offer **"Measure the baseline"** (I run `/bb:measure` on the
+success signal, and its reading fills the baseline) in place of **"Design"** for work that
+is not design-led, keeping four options.
+
 When the fit verdict is `shelve` or `pivot`, there is nothing to hand off;
 record the verdict with its evidence and stop (a pivot points back to
 `/bb:discover` with the reframed problem).
 
 ## Edge cases
 
-| WHEN                                       | THEN                                                                               |
-| ------------------------------------------ | ---------------------------------------------------------------------------------- |
-| slug exists for a different idea           | suffix `-2` or ask, never overwrite                                                |
-| `.bb/<slug>/spec.md` already exists        | left untouched: discover writes `discovery.md` and `/bb:spec` reads it             |
-| answer still vague after one clarification | accept at `low` confidence and move on                                             |
-| a field can't be answered                  | record `skipped: <reason>`                                                         |
-| fit asked with no framed problem           | suggest Phase 1 once; if declined, proceed and note `ran without a framed problem` |
-| hypothesis closes with no frame capture    | draft baseline and target in the fit itself, or skip each with a reason (`fit.md`) |
+| WHEN                                             | THEN                                                                               |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| slug exists for a different idea                 | suffix `-2` or ask, never overwrite                                                |
+| `.bb/<slug>/spec.md` already exists              | left untouched: discover writes `discovery.md` and `/bb:spec` reads it             |
+| answer still vague after one clarification       | accept at `low` confidence and move on                                             |
+| a field can't be answered                        | record `skipped: <reason>`                                                         |
+| fit asked with no framed problem                 | suggest Phase 1 once; if declined, proceed and note `ran without a framed problem` |
+| hypothesis closes with no frame capture          | draft baseline and target in the fit itself, or skip each with a reason (`fit.md`) |
+| a size or a baseline is a `low` confidence guess | offer `/bb:measure` on that question when a `data` document exists (`frame.md`)    |

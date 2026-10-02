@@ -208,7 +208,7 @@ Happy path, a new event in a spec:
       a spec's `## Metric`, the delivery by intent and the closing gate, and `measure.md` joins
       the folder contract in `spec-state.md`. · verify: reading
 
-- [ ] **5. Discover offers a measurement**: the frame offers `/bb:measure` for a low confidence
+- [x] **5. Discover offers a measurement**: the frame offers `/bb:measure` for a low confidence
       size or baseline when the company has a `data` document, and the closing gate offers it for a
       `skipped` baseline. · verify: reading
 

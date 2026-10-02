@@ -30,7 +30,18 @@ what still needs validation before it becomes code:
    a trio to react to, not blank prompts.
 2. **Ask only the genuine gaps**, through `AskUserQuestion`, per the interview
    discipline in SKILL.md (max 2/turn, your lean on each, echo after).
-3. Keep looping until a round surfaces no new gaps and the problem statement is
+3. **Offer a measurement when a number rests on a guess.** When the impact's size or
+   the baseline is a `low` confidence guess, and the company has a `data` document
+   (found by tag, per the plugin-level `references/company-definitions.md`), offer
+   to measure that one question, through `AskUserQuestion`: the guess, the question
+   a measurement would answer, and what a measured number would change in the frame.
+   A yes runs `/bb:measure` in the explore mode on that question alone; its number
+   replaces the guess, with the query as its provenance and the confidence it earns.
+   Offer it, never run it unasked, and offer nothing when there is no `data`
+   document or the `wave` CLI is unavailable: the frame goes on as it is. A
+   `skipped: not-instrumented` baseline is not measurable, because the events do not
+   fire yet, so it gets no offer.
+4. Keep looping until a round surfaces no new gaps and the problem statement is
    one you'd defend.
 
 ## Capture
