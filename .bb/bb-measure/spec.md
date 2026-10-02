@@ -191,7 +191,7 @@ Happy path, a new event in a spec:
 - [x] **2. The level column**: the events table in `spec-format.md` gains the optional `level`
       column, and `draft-first.md` proposes it from the `usage` document. · verify:
       `lint_spec.py` and `check_events.py` pass over a spec with the column and one without
-- [ ] **3. The read-only guard**: `skills/measure/scripts/db_read.py` and its tests, the locks
+- [x] **3. The read-only guard**: `skills/measure/scripts/db_read.py` and its tests, the locks
       that need no database written once, BigQuery as the first adapter, the database and the
       project id as arguments, invented data in every case. · verify: the test script passes
       with no network
