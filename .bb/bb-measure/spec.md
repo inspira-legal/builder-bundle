@@ -182,7 +182,7 @@ Happy path, a new event in a spec:
 
 ### Foundation
 
-- [ ] **1. The company definitions**: `plugins/bb/references/company-definitions.md` states the
+- [x] **1. The company definitions**: `plugins/bb/references/company-definitions.md` states the
       five role tags, how a skill lists and reads them with the `wave` CLI, what it says when a
       role is missing, and its two readers. · verify: reading
 
