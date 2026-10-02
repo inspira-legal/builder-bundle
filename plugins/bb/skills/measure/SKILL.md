@@ -99,15 +99,14 @@ problem itself: that is `/bb:discover`'s.
 
 ## Edge cases
 
-| WHEN                                                 | THEN                                                           |
-| ---------------------------------------------------- | -------------------------------------------------------------- |
-| a tag the request needs returns no document          | stop and name the missing tag                                  |
-| the `wave` CLI is missing or logged out              | stop and say the documentation base was the source that failed |
-| the credential fails                                 | stop, read the `access` document and give its renewal step     |
-| the `data` document names a database with no adapter | the script refuses by name; stop and say so                    |
-| the request has no spec                              | measure anyway, in the modes that need no target               |
-| the spec's baseline is `skipped`                     | measure the baseline first and say it is the first reading     |
-| the week asked for has not closed                    | say the number is partial, or use the last closed week         |
-| the request asks for what a person wrote             | refuse and offer the aggregate                                 |
-| the premise of the request contradicts the code      | say so plainly, and treat the premise as one more hypothesis   |
-| the script prints `showing N of M rows`              | the output is not aggregated enough; aggregate further         |
+| WHEN                                                 | THEN                                                                   |
+| ---------------------------------------------------- | ---------------------------------------------------------------------- |
+| a tag, a company document or the `wave` CLI fails    | stop as the plugin-level `references/company-definitions.md` states    |
+| the credential fails                                 | stop, read the `access` document and give its renewal step             |
+| the `data` document names a database with no adapter | the script refuses by name; stop and say so                            |
+| the request has no spec                              | measure anyway, in the modes that need no target                       |
+| the spec's baseline is `skipped`                     | measure the baseline first, as `references/against-the-spec.md` states |
+| the week asked for has not closed                    | say the number is partial, or use the last closed week                 |
+| the request asks for what a person wrote             | refuse and offer the aggregate                                         |
+| the premise of the request contradicts the code      | say so plainly, and treat the premise as one more hypothesis           |
+| the script prints `showing N of M rows`              | the output is not aggregated enough; aggregate further                 |

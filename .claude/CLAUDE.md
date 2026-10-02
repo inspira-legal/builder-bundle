@@ -196,7 +196,7 @@ framing), `/bb:brisar` writes `design.md` (the journey) plus `prototype/` (the c
 artifact), `/bb:spec` writes `spec.md` (the contract, with its
 `status`/`created`/`slug` frontmatter and the status lifecycle owned by `/bb:implement`),
 and `/bb:measure` writes `measure.md` (the readings after the landing) plus `measure-sql/`.
-The spec reads the two records by path and never copies their prose; where a record and
+The spec reads the records by path and never copies their prose; where a record and
 the spec disagree the spec wins, and the record's own writer registers the reversal on
 its next round. Members are independent, and a folder can carry any one of them alone.
 Skills reference that file instead of restating the contract.

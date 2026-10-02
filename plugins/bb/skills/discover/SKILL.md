@@ -95,9 +95,10 @@ options:
 ```
 
 When the baseline stayed `skipped` for a reason other than `not-instrumented`, and the
-company has a `data` document, offer **"Measure the baseline"** (I run `/bb:measure` on the
-success signal, and its reading fills the baseline) in place of **"Design"** for work that
-is not design-led, keeping four options.
+company has a `data` document, the gate offers **"Measure the baseline"**: I run
+`/bb:measure` on the success signal, its reading lands in `.bb/<slug>/measure.md`, and
+`/bb:spec` seeds the baseline from it. It takes the slot of the option the verdict supports
+least, keeping four: **"Challenge it"** for design-led work, **"Design"** for the rest.
 
 When the fit verdict is `shelve` or `pivot`, there is nothing to hand off;
 record the verdict with its evidence and stop (a pivot points back to

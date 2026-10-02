@@ -69,7 +69,7 @@ options:
 
 ## Journey map (what gates typically offer)
 
-- `discover` → spec (it's code) / brisar (it's design) / challenge (test the thesis) / measure (the baseline stayed skipped, in place of brisar for work that is not design-led) / stop
+- `discover` → spec (it's code) / brisar (it's design) / challenge (test the thesis) / measure (the baseline stayed skipped: it takes challenge's slot on design-led work, brisar's on the rest) / stop
 - `spec` → implement, at the scope the gate's second question set / review the spec / stop
 - `implement` → ship / stop, only when the scope didn't already include it
 - `ship` → no gate; it reports what shipped and stops

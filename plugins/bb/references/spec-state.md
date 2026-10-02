@@ -27,7 +27,8 @@ and everything durable about that work lives inside it:
   answers _did it land where the spec said, and what do people do with it?_. They
   coexist, and none of them replaces another. `measure.md` is read by the next
   measurement, which compares with the newest reading in it, and nothing else writes it.
-- **The two records are read by path, never copied.** When the spec needs a fact that
+- **The records are read by path, never copied.** That is `discovery.md`, `design.md` and
+  `measure.md`. When the spec needs a fact that
   lives in a record, it cites the document and the section, and the reader opens it. A
   section quoted into the spec is a second copy that goes stale the next time its own
   skill runs. One exception: the spec's `## Metric` materializes the baseline and the
@@ -65,7 +66,9 @@ is the contract. The correction runs one way only. `/bb:spec` never edits `disco
 or `design.md`, because that would give a document two writers, which is the disease
 this contract cures. The record's **own writer** registers the reversal on its next
 round, as a reversal (_"revokes D4, per the spec"_), so the history stays readable and a
-stale record never silently outranks the contract.
+stale record never silently outranks the contract. `measure.md` holds readings, not
+decisions, so it has nothing to reverse: a reading that misses the spec's target is the
+next spec round's input, and `/bb:spec` never edits it either.
 
 ## Frontmatter
 

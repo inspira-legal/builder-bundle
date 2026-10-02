@@ -3,8 +3,9 @@
 bb is public, so it carries the method and never a company's content. Which tables hold the
 events, which filters every query carries, what counts as usage, how a person asks for access,
 which metrics are official: all of that belongs to the company, changes without a bb release, and
-is fetched when a skill needs it. This file owns the convention for finding it. Two skills read
-it: `/bb:spec` for the `usage` role, and `/bb:measure` for all five.
+is fetched when a skill needs it. This file owns the convention for finding it. Three skills read
+it: `/bb:measure` for all five roles, `/bb:spec` for the `usage` role, and `/bb:discover` for the
+`data` role.
 
 ## Where the definitions live
 
@@ -60,8 +61,10 @@ guess at what the document would have said.
 | a role the request needs returns no document             | stop, and name the missing tag                                   |
 | a document says something the request needs is not there | stop, and name the document and what it lacks                    |
 
-`/bb:spec` is the one reader that does not stop: without a `usage` document it proposes the events
-table without the level column, says so in one line, and goes on.
+Two readers do not stop, because what they read for is optional to their run. `/bb:spec`,
+without a `usage` document or the `wave` CLI, proposes the events table without the level column,
+says so in one line, and goes on. `/bb:discover`, without a `data` document or the `wave` CLI,
+makes no measurement offer and goes on with the frame as it is.
 
 ## What the content is
 

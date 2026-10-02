@@ -30,7 +30,9 @@ source into the seeded note with the record named beside it
 (`(XRAY query 2026-08, via discovery.md)`): the materialized value keeps a source the
 gate can judge, not just a pointer to where it came from, and after the gate hardens
 it the spec's value wins, per the reversal rule in the plugin-level
-`references/spec-state.md`. Guess what
+`references/spec-state.md`. When the discovery record's baseline is `skipped` and
+`.bb/<slug>/measure.md` holds a reading of the same signal, seed the baseline from the newest
+reading instead, its query named in the note (`(query 2026-10-05, via measure.md)`). Guess what
 remains with each value's provenance on its own bullet (an estimate marked as such
 reads as a guess the user corrects), keep a value's own `skipped: <reason>` when only
 that value is unmeasured, or write the one-line `skipped: <reason>` when no honest
@@ -85,8 +87,8 @@ the company's `usage` document, found by its tag the way
   payload. The task agent writes what the row says, so the row is the decision.
 - **A case the rule does not settle is a gray area**, asked through `AskUserQuestion` like any
   other, with your lean and the line of the rule it turns on.
-- **No `usage` document, or the `wave` CLI unavailable**: the table carries no `level` column.
-  Say in one line which of the two it was, and go on.
+- **No `usage` document, or the `wave` CLI unavailable**: the table carries no `level` column,
+  as `<plugin-root>/references/company-definitions.md` states for this reader.
 
 At the gate, a value the rule does not list is an open item, fixed in its row.
 

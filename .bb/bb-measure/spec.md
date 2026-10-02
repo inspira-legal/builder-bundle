@@ -123,7 +123,8 @@ is the document, and the skill says so in one line.
   size or the baseline is a low confidence guess and the company has a `data` document, it offers
   to measure that one question; a yes runs `/bb:measure` in the explore mode and the number enters
   the frame with the query as its provenance. Its closing gate offers `/bb:measure` when the
-  baseline stayed `skipped`. The framing stays `/bb:discover`'s.
+  baseline stayed `skipped`, and `/bb:spec` seeds a skipped baseline from the newest reading in
+  `measure.md`. The framing stays `/bb:discover`'s.
 
 ## Behavior
 
