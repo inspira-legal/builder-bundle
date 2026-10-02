@@ -204,7 +204,7 @@ Happy path, a new event in a spec:
 
 ### The skill
 
-- [ ] **4. /bb:measure**: the `SKILL.md` as a router over one reference per mode, the reading of
+- [x] **4. /bb:measure**: the `SKILL.md` as a router over one reference per mode, the reading of
       a spec's `## Metric`, the delivery by intent and the closing gate, and `measure.md` joins
       the folder contract in `spec-state.md`. · verify: reading
 
