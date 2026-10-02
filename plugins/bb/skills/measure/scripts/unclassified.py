@@ -15,16 +15,22 @@ the output is sorted by people, largest first.
 import sys
 
 
+def fail(message: str) -> None:
+    """Stop with a message on stdout, where the caller reads it, and a non-zero exit."""
+    print(message)
+    sys.exit(1)
+
+
 def inventory(path: str) -> dict:
     with open(path, encoding="utf-8") as f:
         lines = [line.rstrip("\n") for line in f if not line.startswith("--")]
     if not lines:
-        sys.exit(f"{path} is empty")
+        fail(f"{path} is empty")
     header = [c.strip() for c in lines[0].split(" | ")]
     try:
         i_event, i_people = header.index("event_name"), header.index("people")
     except ValueError:
-        sys.exit(f"{path} needs the columns event_name and people; it has: {', '.join(header)}")
+        fail(f"{path} needs the columns event_name and people; it has: {', '.join(header)}")
     out = {}
     for line in lines[1:]:
         cells = [c.strip() for c in line.split(" | ")]
@@ -41,7 +47,7 @@ def classified(path: str) -> set:
 
 def main() -> None:
     if len(sys.argv) != 3:
-        sys.exit(__doc__)
+        fail(__doc__)
     fired, known = inventory(sys.argv[1]), classified(sys.argv[2])
     missing = sorted(((p, e) for e, p in fired.items() if e not in known), reverse=True)
     print(f"{len(fired)} events fired; {len(missing)} outside the classification")

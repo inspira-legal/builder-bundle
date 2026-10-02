@@ -42,19 +42,33 @@ LONG_TEXT = 300  # characters; an aggregate number or an event label never comes
 TIMEOUT_MS = 120000
 MAX_ROWS = 1000
 
-# A column that points at a person or a conversation. The name is only a net: `email AS x`
-# passes it, which is why the content is checked too (EMAIL and LONG_TEXT).
+# A column that points at a person, a customer or a conversation. The name is only a net:
+# `email AS x` passes it, which is why the content is checked too (EMAIL and LONG_TEXT).
+# A column naming a thing (`event_name`, `plan_name`) passes; one naming who did it does not.
+WHO = (
+    r"user|person|people|pessoa|usuario|member|client|cliente|customer|account|tenant|org"
+    r"|company|empresa|office|escritorio|lawyer|advogado|owner|author|session|trace|chat"
+    r"|conversation|thread|distinct"
+)
 PERSONAL = re.compile(
-    r"^(name|nome|full_?name|first_?name|last_?name|user_?name|username|display_?name"
-    r"|client_?name|customer_?name|cpf|oab|ssn|phone|telefone|celular|mobile)$"
+    r"^(name|nome|username|cpf|cnpj|oab|ssn|phone|telefone|celular|mobile|razao_?social"
+    r"|nome_?fantasia)$"
+    r"|^(name|nome)_"
+    r"|(^|_)(full|first|last|given|family|display|" + WHO + r")_?(name|nome)$"
     r"|e_?mail"
-    r"|(^|_)(user|session|trace|chat|conversation|thread|distinct)_?id$"
+    r"|(^|_)(" + WHO + r")_?id$"
 )
 EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 
 
 class Refusal(Exception):
     """The query or its output did not pass a lock. The message says which one and why."""
+
+
+def fail(message: str) -> None:
+    """Stop with a message on stdout, where the caller reads it, and a non-zero exit."""
+    print(message)
+    sys.exit(1)
 
 
 # ---- lock 1: local, no network ---------------------------------------------------------
@@ -172,7 +186,7 @@ class BigQuery:
                 stderr=subprocess.DEVNULL,
             ).strip()
         except (subprocess.CalledProcessError, FileNotFoundError):
-            sys.exit(self.RENEW)
+            fail(self.RENEW)
 
     def post(self, path: str, body: dict) -> dict:
         request = urllib.request.Request(
@@ -185,8 +199,10 @@ class BigQuery:
                 return json.load(response)
         except urllib.error.HTTPError as error:
             if error.code == 401:
-                sys.exit(self.RENEW)
+                fail(self.RENEW)
             return json.loads(error.read())
+        except urllib.error.URLError as error:
+            fail(f"the database could not be reached ({error.reason}); check the network and try again")
 
     def dry_run(self, sql: str) -> dict:
         """A simulated job: nothing runs and nothing is billed.
@@ -202,7 +218,7 @@ class BigQuery:
     def check_dry_run(self, job: dict) -> float:
         """Lock 2. Returns the GB the query would read."""
         if "error" in job:
-            sys.exit("ERROR: " + job["error"]["message"])
+            fail("ERROR: " + job["error"]["message"])
         stats = job.get("statistics", {})
         kind = stats.get("query", {}).get("statementType")
         if kind != self.READ:
@@ -226,9 +242,9 @@ class BigQuery:
     def normalize(response: dict) -> dict:
         """The API's row format (f/v, records and lists) as columns, values and rows."""
         if "error" in response:
-            sys.exit("ERROR: " + response["error"]["message"])
+            fail("ERROR: " + response["error"]["message"])
         if not response.get("jobComplete", True):
-            sys.exit("the query ran past 2 minutes and did not return; simplify it or run it again")
+            fail("the query ran past 2 minutes and did not return; simplify it or run it again")
 
         def names(fields, prefix=""):
             out = []
@@ -280,8 +296,11 @@ def main() -> None:
     parser.add_argument("--project", required=True, help="from the company's data document")
     parser.add_argument("--run", action="store_true", help="run the query when every lock passes")
     args = parser.parse_args()
-    with open(args.query, encoding="utf-8") as f:
-        sql = f.read()
+    try:
+        with open(args.query, encoding="utf-8") as f:
+            sql = f.read()
+    except OSError as error:
+        fail(f"could not read the query file {args.query}: {error.strerror}")
     try:
         db = adapter(args.database, args.project)
         check_text(sql)
@@ -294,7 +313,7 @@ def main() -> None:
         check_output(result)
         show(result)
     except Refusal as refusal:
-        sys.exit(f"refused: {refusal}")
+        fail(f"refused: {refusal}")
 
 
 if __name__ == "__main__":

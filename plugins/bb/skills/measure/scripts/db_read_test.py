@@ -111,6 +111,17 @@ outputs = [
     ("email disguised as another column", ["x"], [["someone@example.com"]], True),
     ("long text disguised", ["x"], [["a" * 301]], True),
     ("plan and origin", ["plan", "origin", "people"], [["pro", "toolbar", "40"]], False),
+    ("column person_id", ["person_id", "n"], [["p1", "3"]], True),
+    ("column client_id", ["client_id", "n"], [["c1", "3"]], True),
+    ("column customer_id", ["customer_id"], [["c1"]], True),
+    ("column account_id", ["account_id"], [["a1"]], True),
+    ("column nome_completo", ["nome_completo"], [["x"]], True),
+    ("column nome_cliente", ["nome_cliente"], [["x"]], True),
+    ("column razao_social", ["razao_social"], [["x"]], True),
+    ("column owner_name", ["owner_name"], [["x"]], True),
+    ("a thing's name: plan_name", ["plan_name", "people"], [["pro", "40"]], False),
+    ("a thing's name: feature_name", ["feature_name", "people"], [["boards", "40"]], False),
+    ("a thing's id: board_id count", ["board_id", "n"], [["b1", "3"]], False),
 ]
 for name, cols, rows, refused in outputs:
     case(f"output: {name}", lambda c=cols, r=rows: db.check_output(output(c, r)), refused)
@@ -156,6 +167,56 @@ case("database: one with no adapter", lambda: db.adapter("snowflake", "orbit"), 
 case("project: domain-scoped id", lambda: db.adapter("bigquery", "orbit.example:orbit-analytics"), False)
 case("project: a path in the id", lambda: db.adapter("bigquery", "orbit/../../x"), True)
 case("project: empty", lambda: db.adapter("bigquery", ""), True)
+
+
+
+# ---- the error paths: a clean message on stdout, never a traceback ----------------------------
+import contextlib
+import io
+import urllib.error
+
+
+def stops_cleanly(fn):
+    out = io.StringIO()
+    try:
+        with contextlib.redirect_stdout(out):
+            fn()
+    except SystemExit as e:
+        if e.code == 1 and out.getvalue().strip():
+            return
+        raise AssertionError(f"exit {e.code!r} with stdout {out.getvalue()!r}")
+    raise AssertionError("did not stop")
+
+
+def unreachable(*_a, **_k):
+    raise urllib.error.URLError("no route to host")
+
+
+def run_main(argv):
+    old = sys.argv
+    sys.argv = argv
+    try:
+        db.main()
+    finally:
+        sys.argv = old
+
+
+case(
+    "a missing query file stops cleanly",
+    lambda: stops_cleanly(
+        lambda: run_main(["db_read.py", "/nonexistent/q.sql", "--database", "bigquery", "--project", "orbit-analytics"])
+    ),
+    False,
+)
+fresh = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(fresh)
+fresh.BigQuery.token = lambda self: "t"
+fresh.urllib.request.urlopen = unreachable
+case(
+    "no network stops cleanly",
+    lambda: stops_cleanly(lambda: fresh.BigQuery("orbit-analytics").post("/jobs", {})),
+    False,
+)
 
 print()
 print(f"{len(failures)} failure(s)" if failures else "every lock behaved as expected")
