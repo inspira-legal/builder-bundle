@@ -72,6 +72,24 @@ Two gaps the file can't close on its own, and the draft never guesses past them:
 Without `EVENTS.md`, the events table is proposed the way it always was, from the
 behavior rows alone; nothing here changes.
 
+## Propose each event's level
+
+When the company classifies its events, the events table carries a `level` per row
+(`spec-format.md`, its events-table paragraph). The values and the rule that picks one live in
+the company's `usage` document, found by its tag the way
+`<plugin-root>/references/company-definitions.md` states.
+
+- **Read the rule first.** List the `usage` role, read every document it returns, and take the
+  level values and the question the rule asks of an event.
+- **Propose one value per row**, by that rule, the same draft-first way as the name and the
+  payload. The task agent writes what the row says, so the row is the decision.
+- **A case the rule does not settle is a gray area**, asked through `AskUserQuestion` like any
+  other, with your lean and the line of the rule it turns on.
+- **No `usage` document, or the `wave` CLI unavailable**: the table carries no `level` column.
+  Say in one line which of the two it was, and go on.
+
+At the gate, a value the rule does not list is an open item, fixed in its row.
+
 ## Surfacing the gray areas (the only thing you ask about)
 
 A call earns a question only when it **genuinely could go more than one way**
