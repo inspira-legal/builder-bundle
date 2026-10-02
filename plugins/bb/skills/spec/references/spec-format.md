@@ -126,6 +126,20 @@ vocabulary by one, a named `text` field recorded there as an exception with a st
 justification and a retention window; without a convention file, the four types above are
 the whole list.
 
+A company that classifies its events adds one optional column, `level`:
+
+| event               | behaviors | payload                     | level     |
+| ------------------- | --------- | --------------------------- | --------- |
+| `board_sub_shared`  | 4         | `board_id`, `target` (enum) | `primary` |
+| `board_view_opened` | 1         | `board_id`                  | `support` |
+
+Its values are the company's, declared in the document its `usage` role names
+(`<plugin-root>/references/company-definitions.md`), and bb defines none of them: the two above
+belong to an invented product. A cell holds one value, backticked, spelled as the document spells
+it. The column is documentary for the two programs that read this table, so `lint_spec.py` and
+`check_events.py` pass with it and without it. Its reader is the task agent, which writes the
+level in code beside the event it wires. A company with no `usage` document gets no column.
+
 Document content is the floor no exception reaches. The text of a contract, a petition, a
 decision or a clause never travels in a payload, in any project and under any status, and
 neither does a slice of one. What an exception can cover is what a person typed into a

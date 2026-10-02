@@ -4,7 +4,7 @@
 
 [![github](https://img.shields.io/badge/github-inspira--legal%2Fbuilder--bundle-111111?style=flat-square&logo=github)](https://github.com/inspira-legal/builder-bundle)
 
-_Builder Bundle (`bb`): the unified skill set for Inspira builders, 15 skills across 6 trilhas, from the problem to the PR._
+_Builder Bundle (`bb`): the unified skill set for Inspira builders, 16 skills across 6 trilhas, from the problem to the PR._
 
 </div>
 
@@ -18,7 +18,7 @@ claude plugin install bb@inspira-legal
 or install across other coding agents (gemini cli, opencode, cursor, codex, t3 code) via vercel's skills manager:
 
 ```bash
-# install all 15 skills globally for every detected agent
+# install all 16 skills globally for every detected agent
 npx skills add inspira-legal/builder-bundle -g --all
 
 # or install for a specific agent
@@ -34,7 +34,7 @@ it writes its operating context into `~/.claude/BUILDER-BUNDLE.md`, imported by 
 
 ## what is inside
 
-one plugin, `bb`; 15 skills, 14 of them in 6 trilhas and `/bb:profile` beside them.
+one plugin, `bb`; 16 skills, 15 of them in 6 trilhas and `/bb:profile` beside them.
 
 ### configurar: who is on the other side
 
@@ -57,13 +57,14 @@ one plugin, `bb`; 15 skills, 14 of them in 6 trilhas and `/bb:profile` beside th
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `/bb:spec` | align on the idea before the code: develops the draft, iterates the gray areas as questions, validates a spec at `.bb/<slug>/spec.md` |
 
-### construir: write and ship code
+### construir: write, ship and measure what you build
 
-| skill                       | description                                                                                                                                                                                                       |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:implement`             | runs a validated spec as far as you say: asks once whether this is build, build and review, build and ship or all three, then selects the spec, builds every task, keeps the checks green and tracks its `status` |
-| `/bb:ship`                  | takes the branch to shipped, your way. it does not review: it greens the project's checks, commits, then pushes, preps main, opens a PR and tends it, or preps the LexFlow deploy                                 |
-| `/bb:gather-branch-context` | summarizes every change on the branch against main                                                                                                                                                                |
+| skill                       | description                                                                                                                                                                                                                                                                                                |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:implement`             | runs a validated spec as far as you say: asks once whether this is build, build and review, build and ship or all three, then selects the spec, builds every task, keeps the checks green and tracks its `status`                                                                                          |
+| `/bb:ship`                  | takes the branch to shipped, your way. it does not review: it greens the project's checks, commits, then pushes, preps main, opens a PR and tends it, or preps the LexFlow deploy                                                                                                                          |
+| `/bb:measure`               | reads a landed spec's metric and measures it against its target, or answers any usage question, through a read-only guard over the company's database. it fetches the company's definitions by role tag and reads the number as product, with the denominator, the window and what changes for the product |
+| `/bb:gather-branch-context` | summarizes every change on the branch against main                                                                                                                                                                                                                                                         |
 
 ### revisar: quality and maintenance
 
@@ -86,7 +87,7 @@ one plugin, `bb`; 15 skills, 14 of them in 6 trilhas and `/bb:profile` beside th
 | `/bb:code-deep-research` | finds, clones and explores repos, then verifies the findings adversarially against source |
 | `/bb:write-readme`       | generates a minimal centered-header README out of the repo's own facts                    |
 
-plugin-level reference docs live in `plugins/bb/references/`, read across skills instead of owned by one: the doc-style rules every sentence follows, the handoff-gate contract, the `.bb/<slug>/` spec-state layout, the manifesto consult for stack decisions, and the event convention format (`events-convention.md`) that `/bb:spec` and `/bb:review` read once a project ships its own `EVENTS.md`.
+plugin-level reference docs live in `plugins/bb/references/`, read across skills instead of owned by one: the doc-style rules every sentence follows, the handoff-gate contract, the `.bb/<slug>/` spec-state layout, the manifesto consult for stack decisions, the event convention format (`events-convention.md`) that `/bb:spec` and `/bb:review` read once a project ships its own `EVENTS.md`, and the company definitions (`company-definitions.md`) that `/bb:measure`, `/bb:spec` and `/bb:discover` find by role tag in the company's documentation base.
 
 ## using with other agents
 
