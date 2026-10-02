@@ -214,7 +214,7 @@ Happy path, a new event in a spec:
 
 ### Close
 
-- [ ] **6. What the person installing sees**: the README, the skill count in the README and the
+- [x] **6. What the person installing sees**: the README, the skill count in the README and the
       plugin description, the version, the `CHANGELOG.md` entry and the handoff journey map. ·
       verify: `bun run validate`, `bun run fmt:check`, and a search of the diff for a real
       company's tables, client ids and event names comes back empty

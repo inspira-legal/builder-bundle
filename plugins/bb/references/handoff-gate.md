@@ -69,11 +69,12 @@ options:
 
 ## Journey map (what gates typically offer)
 
-- `discover` → spec (it's code) / brisar (it's design) / challenge (test the thesis) / stop
+- `discover` → spec (it's code) / brisar (it's design) / challenge (test the thesis) / measure (the baseline stayed skipped, in place of brisar for work that is not design-led) / stop
 - `spec` → implement, at the scope the gate's second question set / review the spec / stop
 - `implement` → ship / stop, only when the scope didn't already include it
 - `ship` → no gate; it reports what shipped and stops
 - `review` → apply more items / run the fronts that were skipped / audit the running UI / review-setup / ship (when there is no PR) · three at most, by priority, plus stop
 - `brisar` (on delivery) → review (accessibility or design audit) / spec / stop
 - `think` (once it converged) → spec / discover / stop
+- `measure` (a saved file or a document; a chat answer has no gate) → hypotheses / discover / spec / stop
 - `challenge` → hands the thesis back to its owner; offers spec when the thesis survived and is buildable

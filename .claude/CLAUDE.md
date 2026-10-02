@@ -33,6 +33,7 @@ plugins/bb/
 │   ├── spec-state.md                   # the .bb/<slug>/ folder contract
 │   ├── bb-config.md                    # ~/.claude/bb.config.json: the schema and who reads it
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
+│   ├── company-definitions.md          # a company's data definitions, found by role tag: measure, spec
 │   ├── events-convention.md            # EVENTS.md's format: five parts, the template, closed payload types
 │   ├── build-tasks-workflow.md         # how the skills call workflows/build-tasks.js, and what it returns
 │   └── finding-levels.md               # Bloqueante / Sugestão, HIGH / LOW in a guide: review, review-setup
@@ -46,10 +47,10 @@ plugins/bb/
 │   ├── check_events.py                 # spec (step 6), review (the instrumentation front): EVENTS.md checker
 │   ├── normalize_workflow.py           # the dispatch (references/build-tasks-workflow.md): the CR-free copy
 │   └── inspect_pr_checks.py            # ship (CI failures), review (the ci front)
-├── skills/                            # all 15 skills flat; trilha grouping is a docs concept
+├── skills/                            # all 16 skills flat; trilha grouping is a docs concept
 │   ├── Pensar:        discover, challenge, think, legal-lens
 │   ├── Desenhar:      spec
-│   ├── Construir:     implement, ship, gather-branch-context
+│   ├── Construir:     implement, ship, measure, gather-branch-context
 │   ├── Revisar:       review, maintain-repo, review-setup
 │   ├── Design:        brisar
 │   ├── Pesquisar/Doc: code-deep-research, write-readme
@@ -189,11 +190,12 @@ TypeScript.
 ## Spec state
 
 The on-disk contract is `plugins/bb/references/spec-state.md`: `.bb/<slug>/` holds
-three documents and a prototype, and **every skill writes its own document, with
+four documents and a prototype, and **every skill writes its own document, with
 `spec.md` having exactly one writer**. `/bb:discover` writes `discovery.md` (the
 framing), `/bb:brisar` writes `design.md` (the journey) plus `prototype/` (the clickable
-artifact), and `/bb:spec` writes `spec.md` (the contract, with its
-`status`/`created`/`slug` frontmatter and the status lifecycle owned by `/bb:implement`).
+artifact), `/bb:spec` writes `spec.md` (the contract, with its
+`status`/`created`/`slug` frontmatter and the status lifecycle owned by `/bb:implement`),
+and `/bb:measure` writes `measure.md` (the readings after the landing) plus `measure-sql/`.
 The spec reads the two records by path and never copies their prose; where a record and
 the spec disagree the spec wins, and the record's own writer registers the reversal on
 its next round. Members are independent, and a folder can carry any one of them alone.
