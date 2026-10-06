@@ -2,7 +2,7 @@
 name: reel
 description: Build a motion-design video (product launch film, feature walkthrough, showreel, UI morph loop, kinetic type) as code, render it to MP4 with sound, and critique its own frames until good. Use when the user asks for a motion or animated video, launch video, reel, "faz um vídeo", "vídeo de lançamento", "vídeo da feature", or invokes /motion:reel, e.g. "/motion:reel lançamento do Drive, 20s, vertical".
 license: MIT
-allowed-tools: Bash(bash ${CLAUDE_SKILL_DIR}/scripts/bootstrap.sh), Bash(npm run render:*), Bash(npm test), Bash(node stills.mjs:*)
+allowed-tools: Bash(bash ${CLAUDE_SKILL_DIR}/scripts/bootstrap.sh), Bash(npm run render:*), Bash(npm run new:*), Bash(npm run ffmpeg:*), Bash(npm test), Bash(node stills.mjs:*), Bash(open ~/Motion/out/:*)
 metadata:
   author: Enzo Figueiredo
   version: 0.1.0
@@ -32,7 +32,7 @@ Inspira house style: before designing a product or feature film, read `~/Motion/
 Without a reference the default is centered text on a gradient with everything fading in: avoid it.
 
 - Frame: look at it; take palette, type, grain, pacing. Not the subject.
-- Video: extract frames with the bundled ffmpeg (`"$(node -p "require('ffmpeg-static')")" -i in.mp4 -vf fps=2 out/ref-%03d.png`, run from `~/Motion`), describe pacing shot by shot, then design.
+- Video: extract frames with the bundled ffmpeg (`npm run ffmpeg -- -i in.mp4 -vf fps=2 out/ref-%03d.png`, run from `~/Motion`), describe pacing shot by shot, then design.
 - Folder of images: write `scenes/<name>/style_guide.md` from it first.
 - None given: name a concrete look (e.g. "swiss editorial", "PC-98 pixel", "paper cutout") and say which. Let the technique follow the look; don't pick a library unless asked.
 
@@ -52,7 +52,8 @@ Before code, write `scenes/<name>/spec.md`:
 
 ## 5. Build
 
-- `scenes/<name>/index.html`, one file, zero deps, copy the contract from `scenes/demo`: `window.DURATION`, `window.BPM`, `window.seek(t)`, `<script src="../../lib/motion.js">`.
+- Start the scene with `npm run new -- <name> <base-scene>` (base: the closer house-style scene, or `demo`); it copies the folder with its fonts. Then change the files with Edit/Write, not with shell or Python scripts: those ask the person for approval.
+- `scenes/<name>/index.html`, one file, zero deps, keeping the contract of `scenes/demo`: `window.DURATION`, `window.BPM`, `window.seek(t)`, `<script src="../../lib/motion.js">`.
 - `seek(t)` pure: no timers, Date.now, Math.random (use a seeded hash of index).
 - All motion via `motion.spring` / `motion.track` (presets: snappy UI, default cards/camera, heavy big type/logos, playful mascots). Tiny overshoot on UI, none on type. Multi-target values use `track()`.
 - Cuts and hits on beats. Sound from `lib/audio.mjs` (synth on the same timeline) or the user's `audio.wav`. Voice: read the key from `~/Motion/.env` by name, never print it, and never ask the person to paste a key into the chat.
@@ -60,9 +61,9 @@ Before code, write `scenes/<name>/spec.md`:
 
 ## 6. Render and critique (mandatory)
 
-1. From `~/Motion`: `npm run render -- scenes/<name> --fps 60 [--w --h]`
+1. From `~/Motion`: `npm run render -- scenes/<name> --fps 60 [--w --h]`. Run it in the foreground with a 600000ms timeout, never in the background: a background render dies when the session ends.
 2. Read the stills in `out/<name>-still-NN.png` (Read tool shows images).
-3. Score 1-10: composition, type, motion feel, originality vs the reference. List the 3 worst problems.
+3. Score 1-10: composition, type, motion feel, originality vs the reference. Check every on-screen word for spelling and accents (ANÁLISE, not ANALISE). List the 3 worst problems.
 4. Fix, re-render. Repeat until every score is 8+. Iteration is the method; say how many rounds it took.
 
 Test cheap first (`--fps 30`, short), final at 60.

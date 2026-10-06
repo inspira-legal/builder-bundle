@@ -4,6 +4,8 @@
   "type": "module",
   "scripts": {
     "render": "node render.mjs",
+    "new": "node new-scene.mjs",
+    "ffmpeg": "node ffmpeg.mjs",
     "test": "node lib/motion.test.mjs"
   },
   "dependencies": {
