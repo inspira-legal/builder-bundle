@@ -15,6 +15,19 @@ claude plugin marketplace add inspira-legal/builder-bundle
 claude plugin install bb@inspira-legal
 ```
 
+or install across other coding agents (gemini cli, opencode, cursor, codex, t3 code) via vercel's skills manager:
+
+```bash
+# install all 15 skills globally for every detected agent
+npx skills add inspira-legal/builder-bundle -g --all
+
+# or install for a specific agent
+npx skills add inspira-legal/builder-bundle -g -a gemini-cli
+
+# or install in the current project only
+npx skills add inspira-legal/builder-bundle
+```
+
 it keeps itself current. once a day, on a session start, a detached worker runs `claude plugin marketplace update` and `claude plugin update` for you, and only when the marketplace clone sits on its default branch with a clean tree. nothing is asked, nothing waits and nothing is printed: the session you are in keeps the version it loaded, the new one starts on the next session, and the only trace is a stamp under `~/.claude/plugins/data`. `custom_instructions: false` does not turn this off, it governs `~/.claude/BUILDER-BUNDLE.md` alone.
 
 it writes its operating context into `~/.claude/BUILDER-BUNDLE.md`, imported by your `CLAUDE.md` and carrying the profile set by `/bb:profile`, and it ships four read-only agents: `bb-review-finder` and `bb-review-verifier`, which review dispatches in parallel, `bb-spec-reviewer`, the pass spec runs over a draft when the gate's user picks it, reading for the happy path, the edge cases, coherence and attention points, and `bb-reuse-check`, which confirms a spec's reuse notes still hold before implement builds task 1. internal pipeline roles, not entry points. skills are invoked as `/bb:<skill>` (e.g. `/bb:discover`, `/bb:spec`, `/bb:ship`). every skill with a natural next step ends at a gate that **suggests** the next trilha, and never auto-invokes.
@@ -74,6 +87,31 @@ one plugin, `bb`; 15 skills, 14 of them in 6 trilhas and `/bb:profile` beside th
 | `/bb:write-readme`       | generates a minimal centered-header README out of the repo's own facts                    |
 
 plugin-level reference docs live in `plugins/bb/references/`, read across skills instead of owned by one: the doc-style rules every sentence follows, the handoff-gate contract, the `.bb/<slug>/` spec-state layout, the manifesto consult for stack decisions, and the event convention format (`events-convention.md`) that `/bb:spec` and `/bb:review` read once a project ships its own `EVENTS.md`.
+
+## using with other agents
+
+skills conform to the agent skills standard and work across coding environments.
+
+### gemini cli and t3 code
+
+install globally with `npx skills add inspira-legal/builder-bundle -g -a gemini-cli`, or link skills directly:
+
+```bash
+gemini skills link ~/.claude/plugins/marketplaces/inspira-legal/plugins/bb/skills --consent
+```
+
+### opencode
+
+install globally with `npx skills add inspira-legal/builder-bundle -g -a opencode`, or point `~/.config/opencode/opencode.jsonc` to the skills directory:
+
+```jsonc
+{
+  "$schema": "https://opencode.ai/config.json",
+  "skills": {
+    "paths": ["~/.config/opencode/skills"],
+  },
+}
+```
 
 ## migrating from ofc?
 

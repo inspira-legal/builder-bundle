@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.12.0 (2026-09-30)
+## 3.13.0 (2026-10-06)
 
 **Ship reads each review thread for its intent before it triages it.** The agent that
 handled a PR's comments read them literally: it fixed the one instance the comment named,
@@ -12,12 +12,28 @@ reading costs one reply, not one round.
 
 ### Changed
 
-- **`/bb:ship`** (4.1.0): `references/ship-pr.md` gains step 2 of its triage, the intent
-  read. A suggested fix or wording is checked against the code and the repo's rules before
+- **`/bb:ship`** (4.1.0): `references/ship-pr.md` gains step 2 of its triage: it reads
+  each thread for its intent. A suggested fix or wording is checked against the code and the repo's rules before
   it is used, the fix reaches every place in the diff the intent covers, and two plausible
   readings that lead to different code make the thread **unclear**. Triage moves to step 3
   and sorts by that intent, and the steps after it move down by one.
 - The fix-thread reply becomes `Fixed in <sha>: read as <intent>; <what was done>`.
+
+## 3.12.0 (2026-09-30)
+
+**Multi-agent support via Vercel Skills manager.** The 15 skills conform to
+the Agent Skills standard and install across coding agents (Gemini CLI, OpenCode,
+Cursor, Codex, T3 Code) in one command through Vercel's skills manager (`skills.sh`).
+
+### New
+
+- **Installation via `npx skills`**: builders can install all 15 skills globally
+  or project-wide across any supported agent with
+  `npx skills add inspira-legal/builder-bundle -g --all`.
+- **OpenCode and Gemini CLI guidance**: documentation for configuring
+  `~/.config/opencode/opencode.jsonc` and `~/.gemini/skills/` to discover the bundle.
+- **`skills:list` script in `package.json`**: inspect discovered skills locally
+  via `bun run skills:list`.
 
 ## 3.11.0 (2026-09-28)
 

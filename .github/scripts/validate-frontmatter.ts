@@ -49,7 +49,37 @@ function validateFrontmatter(
     });
   }
 
+  if (kind === "skill" && typeof frontmatter["description"] === "string") {
+    issues.push(...validateSkillDescription(frontmatter["description"]));
+  }
+
   if (kind === "agent") issues.push(...validateAgentTools(frontmatter["tools"]));
+
+  return issues;
+}
+
+/** claude.ai cuts the description at this length on upload; Claude Code reads it whole. */
+const MAX_SKILL_DESCRIPTION = 1024;
+
+/**
+ * claude.ai rejects a skill whose description breaks its upload rules, while Claude Code
+ * reads the file as is, so the defect only shows on claude.ai unless the build catches it.
+ */
+function validateSkillDescription(description: string): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
+
+  if (description.length > MAX_SKILL_DESCRIPTION) {
+    issues.push({
+      level: "error",
+      message: `"description" has ${description.length} characters; claude.ai allows at most ${MAX_SKILL_DESCRIPTION}`,
+    });
+  }
+  if (/[<>]/.test(description)) {
+    issues.push({
+      level: "error",
+      message: '"description" contains "<" or ">"; claude.ai rejects XML tags there',
+    });
+  }
 
   return issues;
 }
