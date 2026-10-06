@@ -2,7 +2,7 @@
 name: reel
 description: Build a motion-design video (product launch film, feature walkthrough, showreel, UI morph loop, kinetic type) as code, render it to MP4 with sound, and critique its own frames until good. Use when the user asks for a motion or animated video, launch video, reel, "faz um vídeo", "vídeo de lançamento", "vídeo da feature", or invokes /motion:reel, e.g. "/motion:reel lançamento do Drive, 20s, vertical".
 license: MIT
-allowed-tools: Bash(bash ${CLAUDE_SKILL_DIR}/scripts/bootstrap.sh), Bash(npm run render:*), Bash(npm run new:*), Bash(npm run ffmpeg:*), Bash(npm test), Bash(node stills.mjs:*), Bash(open ~/Motion/out/:*)
+allowed-tools: Bash(bash ${CLAUDE_SKILL_DIR}/scripts/bootstrap.sh), Bash(npm run render:*), Bash(npm run new:*), Bash(npm run ffmpeg:*), Bash(npm test), Bash(node stills.mjs:*), Bash(npm run play:*)
 metadata:
   author: Enzo Figueiredo
   version: 0.1.0
@@ -70,4 +70,4 @@ Test cheap first (`--fps 30`, short), final at 60.
 
 ## 7. Deliver
 
-Run `open ~/Motion/out/<name>.mp4` so the video plays, then report the file path, the poster still and the rounds of critique. Other formats: re-render with `--w/--h` (9:16 = 1080x1920, 1:1 = 1080x1080); reframe type and UI per format, never crop.
+From `~/Motion`, run `npm run play -- <name>` so the video plays, then report the file path, the poster still and the rounds of critique. Other formats: re-render with `--w/--h` (9:16 = 1080x1920, 1:1 = 1080x1080); reframe type and UI per format, never crop.

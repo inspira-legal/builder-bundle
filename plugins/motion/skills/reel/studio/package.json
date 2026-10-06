@@ -6,6 +6,7 @@
     "render": "node render.mjs",
     "new": "node new-scene.mjs",
     "ffmpeg": "node ffmpeg.mjs",
+    "play": "node play.mjs",
     "test": "node lib/motion.test.mjs"
   },
   "dependencies": {
