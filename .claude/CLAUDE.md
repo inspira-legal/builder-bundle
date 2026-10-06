@@ -11,7 +11,8 @@ first `/bb:profile` on.
 ## Structure
 
 ```
-.claude-plugin/marketplace.json        # lists the single `bb` plugin
+.claude-plugin/marketplace.json        # lists `bb` and `motion`
+plugins/motion/                        # separate plugin: /motion:reel, videos as code; its studio and bootstrap live in skills/reel/
 plugins/bb/
 ├── .claude-plugin/plugin.json
 ├── agents/                            # pipeline roles (auto-discovered, no plugin.json entry)
