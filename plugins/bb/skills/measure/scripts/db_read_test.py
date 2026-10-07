@@ -142,6 +142,20 @@ outputs = [
     ("a count of people: user_count", ["user_count"], [["40"]], False),
     ("ends in id, names no one: paid, valid", ["paid", "valid", "users"], [["40", "38", "41"]], False),
     ("a thing next to a role: account_valid", ["account_valid", "n"], [["true", "3"]], False),
+    ("column uid", ["uid", "n"], [["u1", "3"]], True),
+    ("column user_uid", ["user_uid"], [["u1"]], True),
+    ("column firebase_uid", ["firebase_uid"], [["u1"]], True),
+    ("camelCase: firebaseUid", ["firebaseUid"], [["u1"]], True),
+    ("column ip", ["ip", "n"], [["10.0.0.1", "3"]], True),
+    ("column ip_address", ["ip_address"], [["10.0.0.1"]], True),
+    ("camelCase: ipAddress", ["ipAddress"], [["10.0.0.1"]], True),
+    ("column user_agent", ["user_agent"], [["Mozilla/5.0"]], True),
+    ("column cookie_id", ["cookie_id"], [["c1"]], True),
+    ("column gclid", ["gclid"], [["g1"]], True),
+    ("column fbclid", ["fbclid"], [["f1"]], True),
+    ("safe: session_count, workspace_count", ["session_count", "workspace_count"], [["40", "3"]], False),
+    ("safe: feature_id, ga_session_number", ["feature_id", "ga_session_number"], [["f1", "2"]], False),
+    ("safe: ends in ip or uid inside a word: tip, fluid", ["tip", "fluid"], [["x", "y"]], False),
 ]
 for name, cols, rows, refused in outputs:
     case(f"output: {name}", lambda c=cols, r=rows: db.check_output(output(c, r)), refused)

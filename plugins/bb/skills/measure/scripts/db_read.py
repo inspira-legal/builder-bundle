@@ -49,17 +49,18 @@ MAX_ROWS = 1000
 WHO = (
     r"user|person|people|pessoa|usuario|member|client|cliente|customer|account|tenant|org"
     r"|organization|organizacao|workspace|company|empresa|office|escritorio|lawyer|advogado"
-    r"|owner|author|actor|visitor|anonymous|pseudo|device|session|trace|chat|conversation"
+    r"|owner|author|actor|visitor|anonymous|pseudo|device|cookie|session|trace|chat|conversation"
     r"|thread|distinct"
 )
 PERSONAL = re.compile(
     r"^(name|nome|username|cpf|cnpj|oab|ssn|phone|telefone|celular|mobile|razao_?social"
-    r"|nome_?fantasia)$"
+    r"|nome_?fantasia|ip|ip_?address|user_?agent|gclid|fbclid)$"  # also network and ad-click ids
     r"|^(name|nome)_"
     r"|(^|_)(full|first|last|given|family|display|" + WHO + r")_?(name|nome)$"
     r"|e_?mail"
     r"|(^|_)(" + WHO + r")_?id$"
     r"|(^|_)(" + WHO + r")(_[a-z0-9]+)+_id$"  # a role word further back: user_pseudo_id
+    r"|(^|_)uid$"  # the identity key: uid, user_uid, firebase_uid
 )
 EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 
