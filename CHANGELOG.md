@@ -1,5 +1,35 @@
 # Changelog
 
+## 3.13.0 (2026-10-02)
+
+**The cycle reads its own measure.** Every spec has carried `## Metric` since 3.11.0, and
+nothing read it after the landing. `/bb:measure` does: it answers "did the feature hit the target
+its spec wrote?" and any other usage question, through a guard that cannot write to the database
+and cannot return a person's data. The reasoning is `.bb/bb-measure/spec.md`.
+
+### New
+
+- **`/bb:measure`**: four modes (explore, measure a live feature, the official metric, hypotheses
+  and actions), the inventory of what fires before any query, every answer with its number, its
+  denominator and its window, and a delivery that follows the intent: chat, a `measure.md` record
+  beside the spec, or a shareable document audited by a fresh agent before it circulates.
+- **The read-only guard**, `skills/measure/scripts/db_read.py`: five locks in one standard library
+  script (a single read, the database's own classification, a cost ceiling, no person or
+  conversation column, no email or long free text in the output). BigQuery is the first adapter;
+  a database with no adapter is refused by name.
+- **Company definitions by role tag**, `references/company-definitions.md`: which database, what
+  counts as usage, how to ask for access and which metrics are official stay in the company's
+  documentation base, found at run time by a tag per role. bb holds none of it.
+- **An optional `level` column** in the events table of `## Metric`, with values the company
+  declares. `/bb:spec` proposes a level per event from the company's rule.
+- **`measure.md`** joins the `.bb/<slug>/` folder contract, with `/bb:measure` as its only writer.
+
+### Changed
+
+- **`/bb:discover` offers a measurement** when the frame's impact or baseline is a low confidence
+  guess and the company has a data document, and its closing gate offers `/bb:measure` for a
+  baseline that stayed skipped. It offers, and never runs one unasked.
+
 ## 3.12.0 (2026-09-30)
 
 **Multi-agent support via Vercel Skills manager.** The 15 skills conform to
