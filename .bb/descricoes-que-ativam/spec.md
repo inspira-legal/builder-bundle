@@ -1,5 +1,5 @@
 ---
-status: pending
+status: in-progress
 created: 2026-10-07
 slug: descricoes-que-ativam
 ---
