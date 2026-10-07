@@ -122,6 +122,26 @@ outputs = [
     ("a thing's name: plan_name", ["plan_name", "people"], [["pro", "40"]], False),
     ("a thing's name: feature_name", ["feature_name", "people"], [["boards", "40"]], False),
     ("a thing's id: board_id count", ["board_id", "n"], [["b1", "3"]], False),
+    ("camelCase: accountBillingId", ["accountBillingId", "n"], [["a1", "3"]], True),
+    ("camelCase: portalUserId", ["portalUserId"], [["u1"]], True),
+    ("camelCase: workspaceId", ["workspaceId"], [["w1"]], True),
+    ("camelCase: userID", ["userID"], [["u1"]], True),
+    ("camelCase in a nested record", ["r.accountBillingId"], [["a1"]], True),
+    ("compound: account_billing_id", ["account_billing_id"], [["a1"]], True),
+    ("compound: user_pseudo_id", ["user_pseudo_id"], [["p1"]], True),
+    ("column workspace_id", ["workspace_id"], [["w1"]], True),
+    ("column organization_id", ["organization_id"], [["o1"]], True),
+    ("column device_id", ["device_id"], [["d1"]], True),
+    ("column anonymous_id", ["anonymous_id"], [["x1"]], True),
+    ("column visitor_id", ["visitor_id"], [["v1"]], True),
+    ("column actor_id", ["actor_id"], [["a1"]], True),
+    ("a thing's id: event_id", ["event_id", "n"], [["e1", "3"]], False),
+    ("a thing's id: plan_id", ["plan_id", "people"], [["pro", "40"]], False),
+    ("a thing's id: document_id", ["document_id", "n"], [["d1", "3"]], False),
+    ("a thing's id in camelCase: boardId", ["boardId", "n"], [["b1", "3"]], False),
+    ("a count of people: user_count", ["user_count"], [["40"]], False),
+    ("ends in id, names no one: paid, valid", ["paid", "valid", "users"], [["40", "38", "41"]], False),
+    ("a thing next to a role: account_valid", ["account_valid", "n"], [["true", "3"]], False),
 ]
 for name, cols, rows, refused in outputs:
     case(f"output: {name}", lambda c=cols, r=rows: db.check_output(output(c, r)), refused)
@@ -217,6 +237,44 @@ case(
     lambda: stops_cleanly(lambda: fresh.BigQuery("orbit-analytics").post("/jobs", {})),
     False,
 )
+
+
+class GatewayError(urllib.error.HTTPError):
+    def __init__(self):
+        super().__init__("https://x", 502, "Bad Gateway", {}, None)
+
+    def read(self, *_a):
+        return b"<html>502 Bad Gateway</html>"
+
+
+def bad_gateway(*_a, **_k):
+    raise GatewayError()
+
+
+fresh.urllib.request.urlopen = bad_gateway
+case(
+    "an HTTP error with no JSON body stops cleanly",
+    lambda: stops_cleanly(lambda: fresh.BigQuery("orbit-analytics").post("/queries", {})),
+    False,
+)
+
+
+def run_error_hides_the_value():
+    leak = "Bad int64 value: someone@example.com"
+    out = io.StringIO()
+    try:
+        with contextlib.redirect_stdout(out):
+            db.BigQuery.normalize(
+                {"error": {"message": leak, "status": "INVALID_ARGUMENT", "errors": [{"reason": "invalidQuery", "message": leak}]}}
+            )
+    except SystemExit:
+        pass
+    printed = out.getvalue()
+    if "someone@example.com" in printed or "invalidQuery" not in printed:
+        raise AssertionError(f"the run error printed {printed!r}")
+
+
+case("a failed run shows the reason, never the row's value", run_error_hides_the_value, False)
 
 print()
 print(f"{len(failures)} failure(s)" if failures else "every lock behaved as expected")

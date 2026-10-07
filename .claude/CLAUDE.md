@@ -169,8 +169,9 @@ TypeScript.
   policy. The borrows that exist today: `/bb:ship`'s LexFlow landing reads review's
   `fronts.md` and `verify.md`, review's `front-correctness.md` points at ship's
   `land-lexflow.md`, review's `front-instrumentation.md` reads the payload rule from
-  spec's `spec-format.md`, and `/bb:discover`'s frame capture reads the provenance
-  shape from the same file. The rest of the review engine (the fronts' methods, the
+  spec's `spec-format.md`, `/bb:discover`'s frame capture reads the provenance
+  shape from the same file, and `/bb:measure`'s `against-the-spec.md` reads its
+  `## The Metric section` as a measurement plan. The rest of the review engine (the fronts' methods, the
   verify pass, the apply guard and the `{review,quality,design}-checklist.md`
   criteria they point at) stays `/bb:review`'s alone under
   `skills/review/references/`; `/bb:ship` stopped reading the review method when it

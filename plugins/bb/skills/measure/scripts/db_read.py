@@ -45,10 +45,12 @@ MAX_ROWS = 1000
 # A column that points at a person, a customer or a conversation. The name is only a net:
 # `email AS x` passes it, which is why the content is checked too (EMAIL and LONG_TEXT).
 # A column naming a thing (`event_name`, `plan_name`) passes; one naming who did it does not.
+# The name is matched in snake_case, so `accountBillingId` is read as `account_billing_id`.
 WHO = (
     r"user|person|people|pessoa|usuario|member|client|cliente|customer|account|tenant|org"
-    r"|company|empresa|office|escritorio|lawyer|advogado|owner|author|session|trace|chat"
-    r"|conversation|thread|distinct"
+    r"|organization|organizacao|workspace|company|empresa|office|escritorio|lawyer|advogado"
+    r"|owner|author|actor|visitor|anonymous|pseudo|device|session|trace|chat|conversation"
+    r"|thread|distinct"
 )
 PERSONAL = re.compile(
     r"^(name|nome|username|cpf|cnpj|oab|ssn|phone|telefone|celular|mobile|razao_?social"
@@ -57,6 +59,7 @@ PERSONAL = re.compile(
     r"|(^|_)(full|first|last|given|family|display|" + WHO + r")_?(name|nome)$"
     r"|e_?mail"
     r"|(^|_)(" + WHO + r")_?id$"
+    r"|(^|_)(" + WHO + r")(_[a-z0-9]+)+_id$"  # a role word further back: user_pseudo_id
 )
 EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 
@@ -133,10 +136,15 @@ def check_cost(gb: float) -> None:
 # ---- locks 4 and 5: what may leave -----------------------------------------------------
 
 
+def snake(column: str) -> str:
+    """The last part of a column name in snake_case: `r.portalUserId` -> `portal_user_id`."""
+    return re.sub(r"(?<=[a-z0-9])(?=[A-Z])", "_", column.split(".")[-1]).lower()
+
+
 def check_output(result: dict) -> None:
     """`result` is the adapter's normalized output: column names and flattened values."""
     for column in result["columns"]:
-        if PERSONAL.search(column.split(".")[-1].lower()):
+        if PERSONAL.search(snake(column)):
             raise Refusal(
                 f"the output has the column '{column}', which identifies a person or a "
                 "conversation; return aggregate numbers only (e.g. COUNT(DISTINCT user_id))"
@@ -200,7 +208,10 @@ class BigQuery:
         except urllib.error.HTTPError as error:
             if error.code == 401:
                 fail(self.RENEW)
-            return json.loads(error.read())
+            try:
+                return json.loads(error.read())
+            except ValueError:
+                fail(f"the database answered HTTP {error.code}, with no readable error; try again")
         except urllib.error.URLError as error:
             fail(f"the database could not be reached ({error.reason}); check the network and try again")
 
@@ -240,9 +251,21 @@ class BigQuery:
 
     @staticmethod
     def normalize(response: dict) -> dict:
-        """The API's row format (f/v, records and lists) as columns, values and rows."""
+        """The API's row format (f/v, records and lists) as columns, values and rows.
+
+        A failed run reports only the error's reason, never its message: the database repeats
+        the offending row's value there (`Bad int64 value: someone@example.com`), and that
+        text would skip locks 4 and 5. The dry run already returned the message of any error
+        in the query's text, so what fails here fails on the data.
+        """
         if "error" in response:
-            fail("ERROR: " + response["error"]["message"])
+            errors = response["error"].get("errors") or [{}]
+            reason = errors[0].get("reason") or response["error"].get("status") or "unknown"
+            fail(
+                f"ERROR: the query failed while running (reason: {reason}); the database's "
+                "message is not shown because it can carry a row's value. Check the casts and "
+                "the functions applied to each column"
+            )
         if not response.get("jobComplete", True):
             fail("the query ran past 2 minutes and did not return; simplify it or run it again")
 

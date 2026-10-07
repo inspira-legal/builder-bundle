@@ -73,7 +73,9 @@ that predates it stays valid.
 `## Metric` sits right after `## Behavior` because the trace starts there: an event row
 cites the behavior rows above it, and an instrumentation task in `## Tasks` names the
 event rows it wires. Every spec carries the section, whatever its size, in one of two
-forms, and an honest skip always beats an invented number.
+forms, and an honest skip always beats an invented number. This section owns the shape;
+`/bb:measure` reads it as a measurement plan (`skills/measure/references/against-the-spec.md`),
+so a change here reaches that reading too.
 
 **The metric block**: the one metric, its baseline, its target, and a timeframe.
 
