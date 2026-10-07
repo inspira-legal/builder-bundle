@@ -5,6 +5,7 @@ import ffmpeg from "ffmpeg-static"; // bundled binary: no Homebrew needed
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync } from "node:fs";
 import { resolve, basename } from "node:path";
+import { pathToFileURL } from "node:url";
 import { synthBeat } from "./lib/audio.mjs";
 
 const [dir, ...rest] = process.argv.slice(2);
@@ -21,7 +22,7 @@ mkdirSync("out", { recursive: true });
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: w, height: h } });
-await page.goto("file://" + resolve(dir, "index.html"));
+await page.goto(pathToFileURL(resolve(dir, "index.html")).href);
 await page.evaluate(() => window.READY); // scene may expose a promise (fonts, images)
 const { duration, bpm, ticks } = await page.evaluate(() => ({
   duration: window.DURATION,

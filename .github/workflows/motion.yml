@@ -1,0 +1,45 @@
+name: Motion
+
+# The motion plugin installs and renders on the user's own machine, so the proof it works on
+# macOS, Linux and Windows is running its bootstrap and a render on each, from the shell the
+# Claude Code tool uses there (bash, or PowerShell on Windows).
+on:
+  pull_request:
+    paths:
+      - "plugins/motion/**"
+      - ".github/workflows/motion.yml"
+
+jobs:
+  smoke:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # The one manual step a Linux user does once, which the skill asks for on DEPS_MISSING.
+      - name: Chromium system libraries (Linux)
+        if: runner.os == 'Linux'
+        run: npx --yes playwright@1 install-deps chromium
+
+      - name: Bootstrap (first run, with smoke test)
+        run: node plugins/motion/skills/reel/scripts/bootstrap.mjs
+        env:
+          MOTION_HOME: ${{ runner.temp }}/Motion
+
+      - name: Bootstrap again is a no-op
+        run: node -e "const o=require('child_process').execFileSync(process.execPath,['plugins/motion/skills/reel/scripts/bootstrap.mjs'],{encoding:'utf8'}); if(!/^READY /.test(o)||/Preparing/.test(o)) { console.log(o); process.exit(1) }"
+        env:
+          MOTION_HOME: ${{ runner.temp }}/Motion
+
+      - name: Stills and the rendered video
+        working-directory: ${{ runner.temp }}/Motion
+        run: |
+          node stills.mjs scenes/demo 1
+          node -e "const fs=require('fs'); for (const f of ['out/demo.mp4','out/demo-at-1.png']) if (!(fs.statSync(f).size>0)) process.exit(1)"
