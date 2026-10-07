@@ -123,7 +123,7 @@ claude plugin install motion@inspira-legal
 
 then, inside Claude Code: `/motion:reel lançamento do Drive, 20s, vertical`, or just ask for a video.
 
-the first run prepares `~/Motion` on its own: it copies the studio, installs its packages, downloads a headless Chromium and a bundled ffmpeg (a few minutes, about 300MB), and renders a small test video. Node 18+ is the only prerequisite; when it is missing, the skill says how to install it from nodejs.org. later runs skip all of that. the person's scenes and videos live in `~/Motion/scenes` and `~/Motion/out`, and an update of the plugin refreshes the engine without touching them. bb's daily self-update covers `bb` alone, so `claude plugin update motion@inspira-legal` brings a new version. macOS only for now.
+the first run prepares `~/Motion` on its own: it copies the studio, installs its packages, downloads a headless Chromium and a bundled ffmpeg (under a minute on a fast connection, about 650MB, most of it Chromium), and renders a small test video. Node 18+ is the only prerequisite; when it is missing, the skill says how to install it from nodejs.org. later runs skip all of that. the person's scenes and videos live in `~/Motion/scenes` and `~/Motion/out`, and an update of the plugin refreshes the engine without touching them. bb's daily self-update covers `bb` alone, so `claude plugin update motion@inspira-legal` brings a new version. macOS only for now.
 
 ## migrating from ofc?
 
