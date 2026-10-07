@@ -38,6 +38,10 @@ jobs:
         env:
           MOTION_HOME: ${{ runner.temp }}/Motion
 
+      - name: Motion unit tests
+        working-directory: ${{ runner.temp }}/Motion
+        run: node lib/motion.test.mjs
+
       - name: Stills and the rendered video
         working-directory: ${{ runner.temp }}/Motion
         run: |
