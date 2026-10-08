@@ -33,7 +33,7 @@
  * it is not started, and the partial result is printed.
  */
 
-import { spawn, spawnSync } from "child_process";
+import { type ChildProcess, spawn, spawnSync } from "child_process";
 import {
   cpSync,
   existsSync,
@@ -61,11 +61,7 @@ interface Request {
 type Outcome =
   | { kind: "skill"; skill: string; cost: number }
   | { kind: "none"; firstTool?: string; cost: number }
-  | { kind: "error"; reason: string; cost: number };
-
-interface RunResult extends Outcome {
-  retried: boolean;
-}
+  | { kind: "error"; reason: string; cost: number; unbilled?: boolean };
 
 class Abort extends Error {}
 
@@ -264,6 +260,7 @@ interface RunContext {
   model?: string;
   timeoutMs: number;
   seenModel?: string;
+  live: Set<ChildProcess>;
 }
 
 function runOnce(ctx: RunContext, request: string, budget: number): Promise<Outcome> {
@@ -293,6 +290,7 @@ function runOnce(ctx: RunContext, request: string, budget: number): Promise<Outc
       env: ctx.env,
       stdio: ["pipe", "pipe", "pipe"],
     });
+    ctx.live.add(child);
     let buffer = "";
     let stderr = "";
     let skill: string | undefined;
@@ -310,10 +308,14 @@ function runOnce(ctx: RunContext, request: string, budget: number): Promise<Outc
     const handle = (event: any) => {
       if (event.type === "system" && event.subtype === "init") {
         ctx.seenModel ??= event.model;
+        let loaded = false;
         for (const plugin of event.plugins ?? []) {
           const path = plugin?.path ? safeRealpath(plugin.path) : "";
-          if (path !== ctx.pluginDir) breach = `${plugin?.name ?? "?"} at ${plugin?.path ?? "?"}`;
+          if (path === ctx.pluginDir) loaded = true;
+          else breach = `also loaded ${plugin?.name ?? "?"} at ${plugin?.path ?? "?"}`;
         }
+        // A copy that failed to load would score every run as none and read as a real score.
+        if (!loaded) breach ??= "the plugin under test did not load";
         if (breach) child.kill("SIGKILL");
       } else if (event.type === "assistant" && !turnEnded) {
         for (const block of event.message?.content ?? []) {
@@ -328,7 +330,9 @@ function runOnce(ctx: RunContext, request: string, budget: number): Promise<Outc
         const cost = Number(event.total_cost_usd) || 0;
         const text = typeof event.result === "string" ? event.result : "";
         const failed =
-          event.terminal_reason === "api_error" || /failed to authenticate/i.test(text);
+          event.terminal_reason === "api_error" ||
+          /failed to authenticate/i.test(text) ||
+          (event.is_error === true && event.subtype !== "error_max_turns");
         result = { cost, error: failed ? text || "api error" : undefined };
         if (event.subtype === "error_max_budget_usd") result.error = "budget";
       }
@@ -353,8 +357,9 @@ function runOnce(ctx: RunContext, request: string, budget: number): Promise<Outc
 
     child.on("close", () => {
       clearTimeout(timer);
+      ctx.live.delete(child);
       const cost = result?.cost ?? 0;
-      if (breach) return done({ kind: "error", reason: `isolation: also loaded ${breach}`, cost });
+      if (breach) return done({ kind: "error", reason: `isolation: ${breach}`, cost });
       if (result?.error && /authenticate/i.test(result.error))
         return done({ kind: "error", reason: `auth: ${result.error}`, cost });
       if (skill) return done({ kind: "skill", skill: skill.replace(/^\//, ""), cost });
@@ -362,7 +367,7 @@ function runOnce(ctx: RunContext, request: string, budget: number): Promise<Outc
         const reason = timedOut
           ? "timeout"
           : stderr.trim().split("\n").pop() || "exited without a result";
-        return done({ kind: "error", reason, cost });
+        return done({ kind: "error", reason, cost, unbilled: true });
       }
       if (result.error) return done({ kind: "error", reason: result.error, cost });
       return done({ kind: "none", firstTool, cost });
@@ -416,10 +421,17 @@ async function main(): Promise<number> {
   const work = mkdtempSync(join(tmpdir(), "bb-battery-"));
   const cleanup = () => rmSync(work, { recursive: true, force: true });
   const children = new Set<Promise<unknown>>();
-  process.on("SIGINT", () => {
-    cleanup();
-    process.exit(130);
-  });
+  const live = new Set<ChildProcess>();
+  for (const [signal, code] of [
+    ["SIGINT", 130],
+    ["SIGTERM", 143],
+    ["SIGHUP", 129],
+  ] as const)
+    process.on(signal, () => {
+      for (const child of live) child.kill("SIGKILL");
+      cleanup();
+      process.exit(code);
+    });
 
   try {
     const staged = stagePlugin(options.pluginDir, work);
@@ -429,9 +441,10 @@ async function main(): Promise<number> {
       env,
       model: options.model,
       timeoutMs: options.timeoutMs,
+      live,
     };
 
-    const results: RunResult[][] = requests.map(() => []);
+    const results: Outcome[][] = requests.map(() => []);
     const queue: number[] = requests.flatMap((_, i) => Array(RUNS_PER_REQUEST).fill(i));
     const started = Date.now();
     let spent = 0;
@@ -441,23 +454,28 @@ async function main(): Promise<number> {
     let stopped = false;
     let fatal: string | undefined;
 
-    const attempt = async (i: number): Promise<RunResult> => {
-      const budget = () =>
-        Math.max(0.01, options.ceiling - spent - Math.max(0, inFlight - 1) * estimate);
-      let outcome = await runOnce(ctx, requests[i].request, budget());
-      spent += outcome.cost;
+    const priced = async (i: number): Promise<Outcome> => {
+      const budget = Math.max(0.01, options.ceiling - spent - Math.max(0, inFlight - 1) * estimate);
+      const outcome = await runOnce(ctx, requests[i].request, budget);
+      // A run killed before its result was billed all the same: price it at the dearest so far.
+      const unbilled = outcome.kind === "error" && outcome.unbilled;
+      spent += unbilled ? Math.max(estimate, 0.01) : outcome.cost;
       estimate = Math.max(estimate, outcome.cost);
+      return outcome;
+    };
+
+    const attempt = async (i: number): Promise<Outcome> => {
+      const outcome = await priced(i);
       if (outcome.kind === "error" && /^(auth|isolation)/.test(outcome.reason)) {
         fatal = outcome.reason;
-        return { ...outcome, retried: false };
+        return outcome;
       }
-      if (outcome.kind !== "error" || outcome.reason === "budget")
-        return { ...outcome, retried: false };
+      if (outcome.kind !== "error" || outcome.reason === "budget") return outcome;
+      // The retry is one more run, so it passes the same ceiling check a new run does.
+      if (spent + inFlight * estimate > options.ceiling)
+        return { kind: "error", reason: "budget", cost: 0 };
       retries++;
-      outcome = await runOnce(ctx, requests[i].request, budget());
-      spent += outcome.cost;
-      estimate = Math.max(estimate, outcome.cost);
-      return { ...outcome, retried: true };
+      return priced(i);
     };
 
     // Until one run has a price, only one runs; after that, a run starts only when the
@@ -502,8 +520,9 @@ async function main(): Promise<number> {
       );
     const scored = measured.map(({ req, runs }) => {
       const hits = runs.filter((r) => runHit(req.expect, r, plugin.name)).length;
-      const falseFire = req.expect === "none" && runs.some((r) => bbSkill(r, plugin.name) !== null);
-      return { req, runs, hits, hit: hits >= HITS_NEEDED, falseFire };
+      const falseFires =
+        req.expect === "none" ? runs.filter((r) => bbSkill(r, plugin.name) !== null).length : 0;
+      return { req, runs, hits, hit: hits >= HITS_NEEDED, falseFires };
     });
     const hitCount = scored.filter((s) => s.hit).length;
     const partial = measured.length < requests.length;
@@ -521,8 +540,8 @@ async function main(): Promise<number> {
       lines.push(
         `Partial: stopped at the cost ceiling, ${measured.length} of ${requests.length} requests measured`,
       );
-    const falseFires = scored.filter((s) => !s.hit && s.falseFire).length;
-    lines.push(`False fires: ${falseFires}`, "", "Misses by skill");
+    const falseFires = scored.reduce((n, s) => n + s.falseFires, 0);
+    lines.push(`False fires: ${falseFires} runs`, "", "Misses by skill");
 
     const misses = scored.filter((s) => !s.hit);
     if (!misses.length) lines.push("  none");
