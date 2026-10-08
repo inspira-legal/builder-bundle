@@ -176,7 +176,7 @@ Happy path:
 
 ### Land
 
-- [ ] **6. The winner lands**: its 15 descriptions in the `SKILL.md` files, the minor
+- [x] **6. The winner lands**: its 15 descriptions in the `SKILL.md` files, the minor
       version, and the `CHANGELOG.md` entry with the score table. · verify: CI
 
 ## Out of scope

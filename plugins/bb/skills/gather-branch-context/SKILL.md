@@ -1,6 +1,6 @@
 ---
 name: gather-branch-context
-description: Collects and summarizes every change on the current branch against main. Use when the user says "compare with main", "branch context", "what changed on this branch", "summarize my branch", "diff against main", or "what did I do on this branch". Don't use it to judge the diff for bugs or quality (use /bb:review), to fix or green a PR (use /bb:ship), or to open a PR (use /bb:ship). This only summarizes, it never edits.
+description: Summarizes everything that changed on your current branch compared with main, without judging or editing it. Use when someone says "o que mudou nessa branch", "resume minha branch", "compara com a main", "o que eu fiz nessa branch", "me dá o contexto da branch", "what changed on this branch", "summarize my branch", "diff against main". Not for finding bugs in the change (use /bb:review) or opening a PR (use /bb:ship).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana

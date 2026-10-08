@@ -1,6 +1,6 @@
 ---
 name: think
-description: Structured reasoning partner. Analyzes problems, decisions, ideas, strategies and study material, and gives a direct verdict (take mode) when the user asks for your judgment. Questions assumptions, names the real tradeoffs and closes with an actionable conclusion. Use when the user says "think with me", "should I do X", "this is not working", "what if we", "how do I consolidate", "what do you think", "your opinion", "which is better", "gut check". Don't use it to stress a thesis already formed (use /bb:challenge) or to formally frame a product problem (use /bb:discover).
+description: Thinks a problem or decision through with you and gives a direct opinion. It questions the assumptions, names the real tradeoffs and ends with a conclusion you can act on. Use when someone says "pensa comigo", "devo fazer isso ou aquilo", "o que você acha", "qual é melhor", "isso não está funcionando", "e se a gente", "think with me", "what do you think", "which is better". Not for attacking a position you already hold (use /bb:challenge).
 license: MIT
 metadata:
   author: Matheus Morais; take mode by Athena Briana - github.com/athenabriana
