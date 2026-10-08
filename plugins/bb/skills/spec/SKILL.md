@@ -1,6 +1,6 @@
 ---
 name: spec
-description: Agrees on what to build before any code. It writes a spec with you, settling the open questions one at a time, the expected behavior and the order of the work. Use when someone says "escreve a spec", "vamos planejar", "o que a gente deve construir", "vamos discutir antes de construir", "quero fazer uma feature nova", "write the spec", "let's plan", "spec this out". Not for framing whether the problem is worth solving (use /bb:discover) or designing the screens (use /bb:brisar).
+description: Agrees on what to build before any code. It writes a spec with you, settling the open questions one at a time, the expected behavior and the order of the work. Use when someone says "escreve a spec", "vamos planejar", "o que a gente deve construir", "vamos discutir antes de construir", "quero fazer uma feature nova", "write the spec", "let's plan", "spec this out". Not for a small mechanical change (just make it), framing whether the problem is worth solving (use /bb:discover) or designing the screens (use /bb:brisar).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana

@@ -26,7 +26,12 @@ session with many skills installed.
   | Portuguese (C)                   | 46/48 | 95.8% | 7,291              |
 
   B landed. It keeps the bundle's English prose, the triggers it quotes are what people
-  type, and none of the 15 runs past 594 characters.
+  type, and none of the 15 runs past 594 characters. The margin over today's is one hit,
+  inside run-to-run variance; the size is the gain the battery cannot see. After the
+  branch review, four descriptions gained a phrase: `review` takes "o CI quebrou" and
+  "limpa esse código", `profile` asks for "o bb explica de menos" instead of a bare
+  "explica mais", `spec` steps aside for a small mechanical change, and `think` points
+  product framing to `/bb:discover`. 7,114 characters in all.
 
 ## 3.12.0 (2026-09-30)
 

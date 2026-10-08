@@ -1,6 +1,6 @@
 ---
 name: think
-description: Thinks a problem or decision through with you and gives a direct opinion. It questions the assumptions, names the real tradeoffs and ends with a conclusion you can act on. Use when someone says "pensa comigo", "devo fazer isso ou aquilo", "o que você acha", "qual é melhor", "isso não está funcionando", "e se a gente", "think with me", "what do you think", "which is better". Not for attacking a position you already hold (use /bb:challenge).
+description: Thinks a problem or decision through with you and gives a direct opinion. It questions the assumptions, names the real tradeoffs and ends with a conclusion you can act on. Use when someone says "pensa comigo", "devo fazer isso ou aquilo", "o que você acha", "qual é melhor", "isso não está funcionando", "e se a gente", "think with me", "what do you think", "which is better". Not for attacking a position you already hold (use /bb:challenge) or framing whether a product is worth building (use /bb:discover).
 license: MIT
 metadata:
   author: Matheus Morais; take mode by Athena Briana - github.com/athenabriana

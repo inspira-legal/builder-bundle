@@ -1,6 +1,6 @@
 ---
 name: profile
-description: Sets how much bb explains to you. It asks whether you edit code, use the terminal and know technical words, and which design tools you use, then every bb session follows that. Use when someone says "configura meu perfil", "recalibra o bb", "o bb está explicando demais", "explica menos", "explica mais", "para de usar as instruções do bb", "mostra meu perfil", "set my profile", "recalibrate", "bb explains too much".
+description: Sets how much bb explains to you. It asks whether you edit code, use the terminal and know technical words, and which design tools you use, then every bb session follows that. Use when someone says "configura meu perfil", "recalibra o bb", "o bb está explicando demais", "o bb explica de menos", "para de usar as instruções do bb", "mostra meu perfil", "set my profile", "recalibrate", "bb explains too much".
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana

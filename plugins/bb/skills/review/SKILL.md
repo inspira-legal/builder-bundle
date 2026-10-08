@@ -1,6 +1,6 @@
 ---
 name: review
-description: Reviews your changes or a pull request for bugs, project rules, accessibility, design system and analytics, confirms each finding with a second agent, then lets you fix it or comment on the PR. Use when someone says "revisa o que eu mudei", "revisa a PR", "tem bug aqui", "responde os comentários da PR", "audita a acessibilidade", "isso segue o design system", "review my changes", "review PR 42", "are there bugs here". Not for opening or finishing a PR (use /bb:ship) or triaging every open PR (use /bb:maintain-repo).
+description: Reviews your changes or a pull request for bugs, project rules, accessibility, design system and analytics, confirms each finding with a second agent, then lets you fix it or comment on the PR. Use when someone says "revisa o que eu mudei", "revisa a PR", "tem bug aqui", "o CI quebrou", "limpa esse código", "responde os comentários da PR", "audita a acessibilidade", "isso segue o design system", "review my changes", "review PR 42", "are there bugs here". Not for opening or finishing a PR (use /bb:ship) or triaging every open PR (use /bb:maintain-repo).
 license: Apache-2.0
 metadata:
   author: Athena Briana - github.com/athenabriana; quality-pass material adapted from Claude Code's /simplify, angle/verify architecture adapted from Claude Code's /code-review (Anthropic, Apache-2.0), a11y front absorbed from rafael's ui-accessibility skill (loja inspira-skills, MIT)
