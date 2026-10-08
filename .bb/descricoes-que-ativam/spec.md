@@ -158,13 +158,13 @@ Happy path:
 
 ### Requests and candidates
 
-- [ ] **2. The requests**: about 40 Portuguese and 8 English requests, each with its
+- [x] **2. The requests**: about 40 Portuguese and 8 English requests, each with its
       expected skill or `none`, covering direct requests, requests between neighbors and
       requests for no bb skill. · verify: reading
-- [ ] **3. Candidate B**: the 15 descriptions in English prose with Portuguese and English
+- [x] **3. Candidate B**: the 15 descriptions in English prose with Portuguese and English
       trigger phrases, in their own plugin copy, following the shape. · verify: the
       frontmatter check over the copy
-- [ ] **4. Candidate C**: the 15 descriptions in Portuguese, trigger phrases in Portuguese
+- [x] **4. Candidate C**: the 15 descriptions in Portuguese, trigger phrases in Portuguese
       and English, in their own plugin copy, following the shape. · verify: the
       frontmatter check over the copy
 
