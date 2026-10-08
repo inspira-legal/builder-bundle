@@ -150,7 +150,7 @@ Happy path:
 
 ### The runner
 
-- [ ] **1. The battery runner**: takes a plugin copy and a requests file, runs each request
+- [x] **1. The battery runner**: takes a plugin copy and a requests file, runs each request
       three times, stops each run at the first skill choice, loads nothing but the copy
       under test and the built-in skills, takes a cost ceiling, and prints the score, the
       misses by skill (English requests marked) and the cost. · verify: a run over two
