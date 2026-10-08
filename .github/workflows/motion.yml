@@ -1,12 +1,12 @@
 name: Motion
 
-# The motion plugin installs and renders on the user's own machine, so the proof it works on
+# The reel skill installs and renders on the user's own machine, so the proof it works on
 # macOS, Linux and Windows is running its bootstrap and a render on each, from the shell the
 # Claude Code tool uses there (bash, or PowerShell on Windows).
 on:
   pull_request:
     paths:
-      - "plugins/motion/**"
+      - "plugins/bb/skills/reel/**"
       - ".github/workflows/motion.yml"
 
 jobs:
@@ -29,12 +29,12 @@ jobs:
         run: npx --yes playwright@1 install-deps chromium
 
       - name: Bootstrap (first run, with smoke test)
-        run: node plugins/motion/skills/reel/scripts/bootstrap.mjs
+        run: node plugins/bb/skills/reel/scripts/bootstrap.mjs
         env:
           MOTION_HOME: ${{ runner.temp }}/Motion
 
       - name: Bootstrap again is a no-op
-        run: node -e "const o=require('child_process').execFileSync(process.execPath,['plugins/motion/skills/reel/scripts/bootstrap.mjs'],{encoding:'utf8'}); if(!/^READY /.test(o)||/Preparing/.test(o)) { console.log(o); process.exit(1) }"
+        run: node -e "const o=require('child_process').execFileSync(process.execPath,['plugins/bb/skills/reel/scripts/bootstrap.mjs'],{encoding:'utf8'}); if(!/^READY /.test(o)||/Preparing/.test(o)) { console.log(o); process.exit(1) }"
         env:
           MOTION_HOME: ${{ runner.temp }}/Motion
 

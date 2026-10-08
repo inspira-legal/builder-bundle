@@ -4,7 +4,7 @@
 import { chromium } from "playwright";
 import ffmpeg from "ffmpeg-static"; // bundled binary: no Homebrew needed
 import { spawn } from "node:child_process";
-import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { resolve, basename } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { synthBeat } from "./lib/audio.mjs";
@@ -49,8 +49,10 @@ if (!existsSync(audio)) {
   if (audio) synthBeat(audio, duration, bpm, ticks);
 }
 
-// A stale mp4 must never pass for the new one: drop it before encoding.
+// A stale mp4 or still must never pass for the new one: drop them before encoding.
 rmSync(mp4, { force: true });
+for (const f of readdirSync("out"))
+  if (f.startsWith(`${name}-still-`) && f.endsWith(".png")) rmSync(`out/${f}`, { force: true });
 const ff = spawn(
   ffmpeg,
   [
@@ -79,14 +81,23 @@ const closed = new Promise((r) => ff.on("close", r));
 let pipeError = null;
 ff.stdin.on("error", (e) => (pipeError = e)); // ffmpeg died mid-render: stop feeding it
 
-for (let i = 0; i < total && !pipeError; i++) {
-  await page.evaluate((t) => window.seek(t), i / fps);
-  const png = await page.screenshot({ type: "png" });
-  if (i % fps === 0)
-    writeFileSync(`out/${name}-still-${String(i / fps).padStart(2, "0")}.png`, png); // stills for the critique loop
-  // Racing `closed` keeps a dead ffmpeg from leaving us waiting for a drain that never comes.
-  if (!ff.stdin.write(png))
-    await Promise.race([new Promise((r) => ff.stdin.once("drain", r)), closed]);
+try {
+  for (let i = 0; i < total && !pipeError; i++) {
+    await page.evaluate((t) => window.seek(t), i / fps);
+    const png = await page.screenshot({ type: "png" });
+    if (i % fps === 0)
+      writeFileSync(`out/${name}-still-${String(i / fps).padStart(2, "0")}.png`, png); // stills for the critique loop
+    // Racing `closed` keeps a dead ffmpeg from leaving us waiting for a drain that never comes.
+    if (!ff.stdin.write(png))
+      await Promise.race([new Promise((r) => ff.stdin.once("drain", r)), closed]);
+  }
+} catch (e) {
+  // A scene error must not leave ffmpeg to finalize a truncated mp4 on its own.
+  ff.kill("SIGKILL");
+  await closed;
+  await browser.close();
+  rmSync(mp4, { force: true });
+  die(`scene error: ${e.message}`);
 }
 ff.stdin.end();
 const code = await closed;

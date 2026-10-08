@@ -6,6 +6,11 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 process.chdir(fileURLToPath(new URL(".", import.meta.url)));
+// The same slug rule as new-scene.mjs keeps `../` from opening a file outside out/.
+if (!/^[a-z0-9][a-z0-9-]*$/.test(process.argv[2] ?? "")) {
+  console.error("usage: node play.mjs <kebab-case-name>");
+  process.exit(1);
+}
 const file = resolve(`out/${process.argv[2]}.mp4`);
 if (!existsSync(file)) {
   console.error(`not found: ${file}`);
