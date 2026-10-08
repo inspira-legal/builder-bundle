@@ -1,6 +1,6 @@
 ---
 name: profile
-description: Calibrate once who is on the other side, and every bb session after this one is calibrated. Asks four questions (are you used to editing code, to the terminal, to technical instructions, to technical vocabulary) plus which design tools are part of your day (Figma, Paper, Pencil, or none), writes ~/.claude/bb.config.json and ~/.claude/BUILDER-BUNDLE.md, and shows or recalibrates a profile that already exists. Use when the user says "/bb:profile", "set my profile", "recalibrate", "bb is explaining too much", "bb is explaining too little", "stop using bb's custom instructions", or "stop offering me design tools I don't use", or when a bb skill runs with no profile set.
+description: Sets how much bb explains to you. It asks whether you edit code, use the terminal and know technical words, and which design tools you use, then every bb session follows that. Use when someone says "configura meu perfil", "recalibra o bb", "o bb está explicando demais", "o bb explica de menos", "para de usar as instruções do bb", "mostra meu perfil", "set my profile", "recalibrate", "bb explains too much".
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana

@@ -5,7 +5,8 @@
     "fmt": "oxfmt --write .",
     "fmt:check": "oxfmt --check .",
     "skills:list": "npx --yes skills add . -l",
-    "validate": "bun .github/scripts/validate-frontmatter.ts && bun .github/scripts/validate-workflow-script.ts && bun .github/scripts/validate-agent-names.ts"
+    "validate": "bun .github/scripts/validate-frontmatter.ts && bun .github/scripts/validate-workflow-script.ts && bun .github/scripts/validate-agent-names.ts",
+    "battery": "bun .github/battery/run.ts"
   },
   "devDependencies": {
     "lefthook": "latest",

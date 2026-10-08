@@ -1,0 +1,290 @@
+[
+  {
+    "request": "revisa as mudanças dessa branch e acha os bugs antes de eu subir",
+    "expect": "review",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "abre a PR dessa branch pra mim",
+    "expect": "ship",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "escreve a spec da feature de exportar relatório em PDF, vamos alinhar antes de construir",
+    "expect": "spec",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "tô convicto de que dá pra lançar sem teste de usabilidade, me questiona",
+    "expect": "challenge",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "pensa comigo: devo migrar o backend de Mongo pra Postgres?",
+    "expect": "think",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "resume o que mudou nessa branch em relação à main",
+    "expect": "gather-branch-context",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "implementa a spec descricoes-que-ativam",
+    "expect": "implement",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "roda as tarefas da spec e constrói tudo",
+    "expect": "implement",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "qual problema a gente está resolvendo com esse painel de métricas? quero enquadrar antes de desenhar",
+    "expect": "discover",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "vale a pena construir um app próprio de assinatura de contratos? o que dá pra cortar do escopo?",
+    "expect": "discover",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "quero desenhar a tela de onboarding do app, começando por pesquisa e direções visuais",
+    "expect": "brisar",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "monta um protótipo de alta fidelidade do dashboard de clientes na nossa marca",
+    "expect": "brisar",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "esse fluxo de coleta de CPF no cadastro está de acordo com a LGPD?",
+    "expect": "legal-lens",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "olha essa feature pelo lado jurídico, o que um advogado ia exigir antes do lançamento?",
+    "expect": "legal-lens",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "quais PRs abertas dá pra mergear com segurança?",
+    "expect": "maintain-repo",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "checa os alertas do Dependabot e me diz se as atualizações são seguras",
+    "expect": "maintain-repo",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "gera o CODE_REVIEW_GUIDE desse repositório",
+    "expect": "review-setup",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "o guia de revisão de código tá desatualizado, atualiza",
+    "expect": "review-setup",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "acha repositórios open source que implementam rate limit com Redis e me diz como fazem",
+    "expect": "code-deep-research",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "clona o repo do Hono e explora como ele faz o roteamento por dentro",
+    "expect": "code-deep-research",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "escreve o README desse projeto",
+    "expect": "write-readme",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "gera um readme com badges e comandos de instalação pro repo",
+    "expect": "write-readme",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "o bb tá explicando demais, recalibra meu perfil",
+    "expect": "profile",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "quero configurar de novo meu perfil do bb, às vezes ele explica de menos",
+    "expect": "profile",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "decidi seguir com microsserviços, me mostra o que pode dar errado nessa decisão",
+    "expect": "challenge",
+    "lang": "pt",
+    "kind": "neighbor: think/challenge"
+  },
+  {
+    "request": "não sei se uso microsserviços ou monolito, me ajuda a pensar nisso",
+    "expect": "think",
+    "lang": "pt",
+    "kind": "neighbor: think/challenge"
+  },
+  {
+    "request": "tenho uma dor difusa: o time perde horas conferindo contratos na mão, por onde eu começo?",
+    "expect": "discover",
+    "lang": "pt",
+    "kind": "neighbor: spec/discover"
+  },
+  {
+    "request": "já sei o que quero: um botão que exporta a lista em CSV, escreve o plano e quebra em tarefas",
+    "expect": "spec",
+    "lang": "pt",
+    "kind": "neighbor: spec/discover"
+  },
+  {
+    "request": "quero a tela de configurações nova, me mostra umas direções visuais antes de qualquer coisa",
+    "expect": "brisar",
+    "lang": "pt",
+    "kind": "neighbor: brisar/spec"
+  },
+  {
+    "request": "especifica o endpoint de webhook de pagamento e quebra em tarefas",
+    "expect": "spec",
+    "lang": "pt",
+    "kind": "neighbor: brisar/spec"
+  },
+  {
+    "request": "acha bugs e problemas de qualidade no diff antes do merge",
+    "expect": "review",
+    "lang": "pt",
+    "kind": "neighbor: review/simplify"
+  },
+  {
+    "request": "simplifica o código que eu mexei hoje, tira a duplicação",
+    "expect": "none",
+    "lang": "pt",
+    "kind": "neighbor: review/simplify"
+  },
+  {
+    "request": "revisa as PRs abertas do repo e me diz quais eu posso mergear",
+    "expect": "maintain-repo",
+    "lang": "pt",
+    "kind": "neighbor: maintain-repo/review"
+  },
+  {
+    "request": "me conta o que tem nessa branch, só resume, sem julgar o código",
+    "expect": "gather-branch-context",
+    "lang": "pt",
+    "kind": "neighbor: gather-branch-context/review"
+  },
+  {
+    "request": "constrói a spec toda e já sobe a PR no final",
+    "expect": "implement",
+    "lang": "pt",
+    "kind": "neighbor: implement/ship"
+  },
+  {
+    "request": "arruma o erro de digitação na linha 12 do src/utils.ts, tá 'recieve'",
+    "expect": "none",
+    "lang": "pt",
+    "kind": "no bb skill"
+  },
+  {
+    "request": "roda os testes do projeto",
+    "expect": "none",
+    "lang": "pt",
+    "kind": "no bb skill"
+  },
+  {
+    "request": "qual a diferença entre useMemo e useCallback no React?",
+    "expect": "none",
+    "lang": "pt",
+    "kind": "no bb skill"
+  },
+  {
+    "request": "renomeia a variável foo pra userCount em src/api.ts",
+    "expect": "none",
+    "lang": "pt",
+    "kind": "no bb skill"
+  },
+  {
+    "request": "explica o que esse regex faz: ^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$",
+    "expect": "none",
+    "lang": "pt",
+    "kind": "no bb skill"
+  },
+  {
+    "request": "review my changes and find the bugs before I merge",
+    "expect": "review",
+    "lang": "en",
+    "kind": "direct"
+  },
+  {
+    "request": "open the PR for this branch",
+    "expect": "ship",
+    "lang": "en",
+    "kind": "direct"
+  },
+  {
+    "request": "let's write the spec for the bulk export feature before we build anything",
+    "expect": "spec",
+    "lang": "en",
+    "kind": "direct"
+  },
+  {
+    "request": "red team my plan to rewrite the billing service",
+    "expect": "challenge",
+    "lang": "en",
+    "kind": "direct"
+  },
+  {
+    "request": "think with me: should we build our own queue or use a managed one?",
+    "expect": "think",
+    "lang": "en",
+    "kind": "direct"
+  },
+  {
+    "request": "summarize what changed on this branch compared to main",
+    "expect": "gather-branch-context",
+    "lang": "en",
+    "kind": "direct"
+  },
+  {
+    "request": "what's the difference between map and forEach in JavaScript?",
+    "expect": "none",
+    "lang": "en",
+    "kind": "no bb skill"
+  },
+  {
+    "request": "how do I validate an array of emails with zod?",
+    "expect": "none",
+    "lang": "en",
+    "kind": "no bb skill"
+  }
+]

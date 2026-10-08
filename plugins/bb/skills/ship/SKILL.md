@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Takes the current branch to shipped, your way. It does not review; it greens the project's checks, commits and ships through the destination you pick (push to a feature branch, push to main, open or finish a pull request, or deploy a LexFlow app). On the PR path it handles the review comments, follows CI to green and watches the PR until you stop. Never merges, never pushes a protected branch and never deploys; it hands you the command. Use when the user says "ship it", "ship this branch", "push to main", "open the PR", "finish the PR", "green the PR", "watch my PR", "deploy to lexflow", "push the lexflow app". Don't use it to triage every open PR and dependency (use /bb:maintain-repo) or to only summarize the branch (use /bb:gather-branch-context).
+description: Takes your current branch out the door. It greens the checks, commits, then pushes, opens or finishes a pull request, or prepares a LexFlow deploy, and it never merges for you. Use when someone says "abre a PR", "manda pra main", "sobe essa branch", "finaliza a PR", "deixa a PR verde", "faz o deploy na lexflow", "ship it", "open the PR", "push to main". Not for reviewing the code (use /bb:review) or only summarizing the branch (use /bb:gather-branch-context).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana

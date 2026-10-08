@@ -1,5 +1,38 @@
 # Changelog
 
+## 3.14.0 (2026-10-08)
+
+**The skill descriptions lead with the request, and a battery proves it.** The 15
+descriptions now open with what the person gets, quote trigger phrases the way people
+type them in Portuguese and in English, and name a bb neighbor only where one competes.
+Together they are a quarter shorter, which leaves the skill listing less crowded in a
+session with many skills installed.
+
+### New
+
+- **The battery**: `bun run battery <plugin-dir> <requests.json> --ceiling <usd>` runs
+  each request three times against a staged copy of the plugin, isolated from the
+  machine's other skills, and prints the score, the misses by skill and the cost. The
+  48 requests live in `.github/battery/requests.json`, run by hand, never in CI.
+
+### Changed
+
+- **The 15 descriptions**, picked by the battery among three candidates:
+
+  | candidate                        | hits  | score | characters, all 15 |
+  | -------------------------------- | ----- | ----- | ------------------ |
+  | today's, English                 | 46/48 | 95.8% | 9,470              |
+  | English, Portuguese triggers (B) | 47/48 | 97.9% | 6,977              |
+  | Portuguese (C)                   | 46/48 | 95.8% | 7,291              |
+
+  B landed. It keeps the bundle's English prose, the triggers it quotes are what people
+  type, and none of the 15 runs past 594 characters. The margin over today's is one hit,
+  inside run-to-run variance; the size is the gain the battery cannot see. After the
+  branch review, four descriptions gained a phrase: `review` takes "o CI quebrou" and
+  "limpa esse código", `profile` asks for "o bb explica de menos" instead of a bare
+  "explica mais", `spec` steps aside for a small mechanical change, and `think` points
+  product framing to `/bb:discover`. 7,114 characters in all.
+
 ## 3.13.0 (2026-10-06)
 
 **Ship reads each review thread for its intent before it triages it.** The agent that

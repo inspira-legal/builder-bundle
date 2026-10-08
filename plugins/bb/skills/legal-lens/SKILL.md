@@ -1,6 +1,6 @@
 ---
 name: legal-lens
-description: Puts a legal lens over any artifact (an idea, a feature, a flow or a document) to surface legal and regulatory implications, compliance gaps, risk, and what a lawyer would demand before launch. Brazilian law by default (LGPD, CDC, Marco Civil), overridable for any jurisdiction. Flags uncertainty instead of inventing law, and triages for human legal review instead of issuing an opinion. Use when the user says "legal review", "is this legal", "legal implications", "check compliance", "LGPD", "regulatory risk", or "what would a lawyer object to". Don't use it as a substitute for a qualified lawyer.
+description: Reads an idea, feature, flow or document through Brazilian law (LGPD, CDC, Marco Civil) or the jurisdiction you name, and lists the legal risks and compliance gaps a lawyer would raise before launch, flagged for human legal review. Use when someone says "isso é permitido por lei", "tem risco jurídico aqui", "isso fere a LGPD", "faz uma revisão jurídica", "o que um advogado questionaria", "checa o compliance", "is this legal", "legal review", "check compliance".
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
