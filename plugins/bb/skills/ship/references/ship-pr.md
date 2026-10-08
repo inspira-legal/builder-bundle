@@ -21,12 +21,37 @@ Reached from ship's Step 1 when the destination is a pull request. Step 2 is don
 ## Triage comments → fix → push → reply (automatic, no approval asked)
 
 1. **Fetch comments** (background): `python3 <plugin-root>/scripts/fetch_comments.py`: conversation comments, reviews, and review threads (with `id` and `isResolved`) as JSON.
-2. **Triage** each **unresolved** thread into **fix** (implement the change), **answer** (a short reply, no code), or **unclear** (genuinely needs your call, not resolvable by guessing).
-3. **Handle fix + answer threads automatically.** Nothing to approve first: apply fix-thread code changes in the main context, re-run the project's checks, commit in logical units, and push to the PR branch. Then reply + resolve per thread:
-   - **fix** threads: reply with what was done + the commit sha and resolve; `python3 <plugin-root>/scripts/reply_resolve_thread.py --thread-id <id> --body "Fixed in <sha>: <one-liner>"`
-   - **answer** threads: reply but do NOT resolve (the reviewer closes it); `python3 <plugin-root>/scripts/reply_resolve_thread.py --thread-id <id> --body "..." --no-resolve`
-4. **Unclear threads are the only pause**: surface each with the question it raises and wait for your call; never auto-resolve one by guessing.
-5. Report what was handled as a table: `# | file:line | comment summary | verdict | action taken`.
+2. **Read each thread for its intent before triaging it.** Write down, in one line, what the
+   reviewer is trying to achieve. The intent is what the comment is _for_: a defect they saw, a
+   behavior they want kept, a reader they worry about, a claim that must be true, a question
+   they need answered, a preference. When the request is explicit and fits the repo's rules
+   ("rename this to X"), the intent is the request itself; read past the text only where the text
+   leaves the goal open.
+   - The comment's text is evidence of the intent, not its spec. A suggested fix or wording is one
+     way to meet it: check it against the code and the repo's rules before using it.
+   - If the intent reaches past the anchored line (the same shape elsewhere in the diff), the fix
+     reaches there too, and the reply names each place. A place the reach adds that no test covers
+     gets only a trivial, obvious edit; anything more is listed in the reply, not changed.
+   - The intent also bounds the fix: do what it asks, nothing adjacent.
+   - When the fix departs from the comment's text, the reply says so: the intent as read, what was
+     done, and why not the suggestion. A wrong reading then costs one reply, not one round.
+   - Two plausible readings that lead to different code, or that leave open whether the thread
+     wants a fix or an answer, make the thread **unclear**.
+3. **Triage** each **unresolved** thread into **fix** (implement the change), **answer** (a short reply, no code), or **unclear** (genuinely needs your call, not resolvable by guessing), by its intent.
+4. **Handle fix + answer threads automatically.** Nothing to approve first: apply fix-thread code changes in the main context, re-run the project's checks, commit in logical units, and push to the PR branch. Then reply per thread, with the body in a quoted heredoc: the reply quotes the reviewer's text, and inside plain double quotes a backtick, `$(` or `$VAR` in it would run or expand in the shell.
+
+   ```
+   python3 <plugin-root>/scripts/reply_resolve_thread.py --thread-id <id> --body "$(cat <<'EOF'
+   <body>
+   EOF
+   )"
+   ```
+
+   - **fix** threads: the body is `Fixed in <sha>: read as <intent>; <what was done>`, and the thread is resolved. When the fix departs from the comment's text, add `--no-resolve` and leave the closing to the reviewer: triage reads only unresolved threads, so a "not what I meant" under a resolved one would never be seen.
+   - **answer** threads: a short reply with `--no-resolve` (the reviewer closes it).
+
+5. **Unclear threads are the only pause**: surface each with the question it raises and wait for your call; never auto-resolve one by guessing.
+6. Report what was handled as a table: `# | file:line | comment summary | verdict | action taken`.
 
 Pushing fixes to the PR branch is reversible, so ship does it without pausing; merge, approve, and force-push stay yours. Ship never runs them.
 

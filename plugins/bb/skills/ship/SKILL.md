@@ -4,7 +4,7 @@ description: Takes the current branch to shipped, your way. It does not review; 
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 4.0.0
+  version: 4.1.0
 ---
 
 # Ship

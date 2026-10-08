@@ -7,6 +7,31 @@ with sound in Inspira's house style and critiques its own frames until they hold
 16th skill, beside `/bb:profile` with no trilha, and it rides bb's daily self-update instead of
 a second plugin. The studio installs into `~/Motion` on the first run, not at plugin install.
 
+## 3.13.0 (2026-10-06)
+
+**Ship reads each review thread for its intent before it triages it.** The agent that
+handled a PR's comments read them literally: it fixed the one instance the comment named,
+copied a suggested wording as written, and left the other places with the same shape open.
+Each of those came back as another review round. Triage now starts by writing down, in one
+line, what the reviewer is trying to achieve, and that intent decides the verdict, how far
+the fix reaches, and where it stops. The fix-thread reply carries the reading, so a wrong
+reading costs one reply, not one round.
+
+### Changed
+
+- **`/bb:ship`** (4.1.0): `references/ship-pr.md` gains step 2 of its triage: it reads
+  each thread for its intent. An explicit request that fits the repo's rules is its own
+  intent. A suggested fix or wording is checked against the code and the repo's rules before
+  it is used, and the fix reaches every place in the diff the intent covers, with only a
+  trivial edit where no test covers the place. Two plausible readings that lead to different
+  code, or that leave open whether the thread wants a fix or an answer, make the thread
+  **unclear**. Triage moves to step 3 and sorts by that intent, and the steps after it move
+  down by one.
+- The fix-thread reply becomes `Fixed in <sha>: read as <intent>; <what was done>`. A fix
+  that departs from the comment's text replies without resolving, so the reviewer closes it.
+- Thread replies pass their body through a quoted heredoc, so the reviewer's text quoted in
+  them never runs or expands in the shell.
+
 ## 3.12.0 (2026-09-30)
 
 **Multi-agent support via Vercel Skills manager.** The 15 skills conform to
