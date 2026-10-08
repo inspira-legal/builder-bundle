@@ -170,7 +170,7 @@ Happy path:
 
 ### Measure
 
-- [ ] **5. The three runs and the winner**: the battery over A, B and C, the winner picked
+- [x] **5. The three runs and the winner**: the battery over A, B and C, the winner picked
       by the rule, and the one adjustment round when the rule calls for it. · verify: the
       score table
 
