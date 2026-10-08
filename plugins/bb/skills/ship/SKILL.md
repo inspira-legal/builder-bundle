@@ -4,7 +4,7 @@ description: Takes your current branch out the door. It greens the checks, commi
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 4.0.0
+  version: 4.1.0
 ---
 
 # Ship
