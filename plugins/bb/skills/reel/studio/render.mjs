@@ -24,8 +24,16 @@ const fps = opt("fps", 60),
   // Motion blur: N seeks spread over half a frame (180° shutter), averaged by ffmpeg. Costs N× the render time.
   sub = opt("subframes", 1);
 // yuv420p needs even dimensions; ffmpeg would fail late and leave the previous mp4 in place.
-if (!(fps > 0) || !(w > 0 && w % 2 === 0) || !(h > 0 && h % 2 === 0) || !Number.isInteger(sub) || sub < 1)
-  die(`--fps must be positive, --w/--h positive even numbers, --subframes a whole number ≥ 1 (got ${fps}, ${w}x${h}, ${sub})`);
+if (
+  !(fps > 0) ||
+  !(w > 0 && w % 2 === 0) ||
+  !(h > 0 && h % 2 === 0) ||
+  !Number.isInteger(sub) ||
+  sub < 1
+)
+  die(
+    `--fps must be positive, --w/--h positive even numbers, --subframes a whole number ≥ 1 (got ${fps}, ${w}x${h}, ${sub})`,
+  );
 const name = basename(resolve(dir));
 const mp4 = `out/${name}.mp4`;
 mkdirSync("out", { recursive: true });
@@ -95,13 +103,17 @@ try {
     const i = Math.floor(j / sub),
       k = j % sub;
     // stills for the critique loop: one sharp frame per whole second
-    const still = i % fps === 0 && k === 0 ? `out/${name}-still-${String(i / fps).padStart(2, "0")}.png` : null;
+    const still =
+      i % fps === 0 && k === 0 ? `out/${name}-still-${String(i / fps).padStart(2, "0")}.png` : null;
     if (still && sub > 1) {
       await page.evaluate((t) => window.seek(t), i / fps);
       writeFileSync(still, await page.screenshot({ type: "png" }));
     }
     // forward-centered 180° shutter: subframe midpoints across the first half of the frame
-    await page.evaluate((t) => window.seek(t), sub > 1 ? (i + ((k + 0.5) / sub) * 0.5) / fps : i / fps);
+    await page.evaluate(
+      (t) => window.seek(t),
+      sub > 1 ? (i + ((k + 0.5) / sub) * 0.5) / fps : i / fps,
+    );
     const png = await page.screenshot({ type: "png" });
     if (still && sub === 1) writeFileSync(still, png);
     // Racing `closed` keeps a dead ffmpeg from leaving us waiting for a drain that never comes.
