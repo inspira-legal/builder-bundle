@@ -11,7 +11,7 @@ first `/bb:profile` on.
 ## Structure
 
 ```
-.claude-plugin/marketplace.json        # lists the single `bb` plugin
+.claude-plugin/marketplace.json        # lists `bb`
 plugins/bb/
 ├── .claude-plugin/plugin.json
 ├── agents/                            # pipeline roles (auto-discovered, no plugin.json entry)
@@ -46,14 +46,14 @@ plugins/bb/
 │   ├── check_events.py                 # spec (step 6), review (the instrumentation front): EVENTS.md checker
 │   ├── normalize_workflow.py           # the dispatch (references/build-tasks-workflow.md): the CR-free copy
 │   └── inspect_pr_checks.py            # ship (CI failures), review (the ci front)
-├── skills/                            # all 15 skills flat; trilha grouping is a docs concept
+├── skills/                            # all 16 skills flat; trilha grouping is a docs concept
 │   ├── Pensar:        discover, challenge, think, legal-lens
 │   ├── Desenhar:      spec
 │   ├── Construir:     implement, ship, gather-branch-context
 │   ├── Revisar:       review, maintain-repo, review-setup
 │   ├── Design:        brisar
 │   ├── Pesquisar/Doc: code-deep-research, write-readme
-│   └── no trilha:     profile
+│   └── no trilha:     profile, reel (videos as code; its studio and bootstrap live in skills/reel/)
 └── workflows/                         # dispatched by a skill, not read by one
     └── build-tasks.js                  # one agent per task, run via Workflow's scriptPath
 ```

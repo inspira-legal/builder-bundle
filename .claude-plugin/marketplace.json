@@ -9,7 +9,7 @@
     {
       "name": "bb",
       "source": "./plugins/bb",
-      "description": "Builder Bundle: 15 skills across 6 trilhas covering the builder's whole journey (pensar, desenhar, construir, revisar, design, pesquisar/doc), invoked as /bb:<skill>"
+      "description": "Builder Bundle: 16 skills covering the builder's whole journey (pensar, desenhar, construir, revisar, design, pesquisar/doc) plus motion videos as code, invoked as /bb:<skill>"
     }
   ]
 }

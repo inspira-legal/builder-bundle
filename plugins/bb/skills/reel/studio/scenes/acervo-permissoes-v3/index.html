@@ -1,0 +1,1174 @@
+<!doctype html>
+<meta charset="utf-8" />
+<style>
+  @font-face {
+    font-family: Poppins;
+    font-weight: 400;
+    src: url(assets/poppins-400.woff2);
+  }
+  @font-face {
+    font-family: Poppins;
+    font-weight: 500;
+    src: url(assets/poppins-500.woff2);
+  }
+  @font-face {
+    font-family: Poppins;
+    font-weight: 600;
+    src: url(assets/poppins-600.woff2);
+  }
+  :root {
+    --navy5: #0e1634;
+    --navy4: #151e42;
+    --navy3: #1c264f;
+    --navy1: #2f3b6a;
+    --sky1: #fafcff;
+    --sky2: #ecf2fd;
+    --sky3: #dbe6fa;
+    --sky6: #a8c3f5;
+    --sky10: #5187ec;
+    --n1: #fff;
+    --n2: #f6f7f9;
+    --n3: #eef0f3;
+    --n4: #e8e9ec;
+    --n5: #dcdee0;
+    --n7: #c1c4c7;
+    --n8: #8e9399;
+    --n9: #656c74;
+    --n10: #363f49;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html,
+  body {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background: var(--n2);
+    font-family: Poppins, sans-serif;
+    color: var(--navy3);
+  }
+  .abs {
+    position: absolute;
+  }
+  .layer {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .blob {
+    position: absolute;
+    width: 1400px;
+    height: 1400px;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(168, 195, 245, 0.55), rgba(168, 195, 245, 0));
+  }
+  .navy {
+    background: linear-gradient(135deg, var(--navy5), var(--navy3));
+  }
+  .blobN {
+    position: absolute;
+    width: 1500px;
+    height: 1500px;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(81, 135, 236, 0.33), rgba(81, 135, 236, 0));
+  }
+  .mask {
+    position: absolute;
+    overflow: hidden;
+    width: 1500px;
+  }
+  .big {
+    font: 600 112px/140px Poppins;
+    color: #fff;
+    letter-spacing: -2px;
+    white-space: nowrap;
+  }
+  .sky {
+    color: var(--sky6);
+  }
+  .sub {
+    font: 400 36px/56px Poppins;
+    color: #cfdffc;
+    white-space: nowrap;
+  }
+  .tile {
+    position: absolute;
+    left: 0;
+    width: 200px;
+    height: 200px;
+    border-radius: 48px;
+    display: grid;
+    place-items: center;
+  }
+  .tile.w {
+    background: #fff;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+  }
+  .tile.i {
+    background: linear-gradient(135deg, #7ca4ee, #4a6be0);
+    box-shadow: 0 18px 60px rgba(81, 135, 236, 0.5);
+  }
+  .dot {
+    position: absolute;
+    left: 96px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--sky6);
+  }
+
+  #app {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1600px;
+    height: 900px;
+    transform-origin: 0 0;
+    background: #fff;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow:
+      0 50px 120px rgba(14, 22, 52, 0.25),
+      0 0 0 1px rgba(14, 22, 52, 0.06);
+  }
+  #side {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 72px;
+    background: var(--navy4);
+  }
+  .sico {
+    position: absolute;
+    left: 24px;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid var(--n4);
+    border-radius: 14px;
+    box-shadow: 0 20px 50px rgba(14, 22, 52, 0.16);
+  }
+  .hov {
+    background: var(--sky2) !important;
+  }
+  .press {
+    transform: scale(0.95);
+  }
+  .btn {
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+  }
+  .lbl {
+    font: 600 13px Poppins;
+    letter-spacing: 1.2px;
+    color: var(--n8);
+  }
+  .top {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1528px;
+    height: 72px;
+    border-bottom: 1px solid var(--n4);
+  }
+  .crumb {
+    position: absolute;
+    left: 40px;
+    top: 23px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font: 400 17px Poppins;
+    color: var(--n9);
+  }
+  .srch {
+    position: absolute;
+    left: 470px;
+    top: 14px;
+    width: 580px;
+    height: 44px;
+    border: 1.5px solid var(--sky3);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px;
+    font: 400 15px Poppins;
+    color: var(--n8);
+  }
+  .addb {
+    position: absolute;
+    top: 14px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--navy3);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font: 500 16px Poppins;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 34px;
+    padding: 0 12px;
+    border: 1px solid var(--sky3);
+    border-radius: 9px;
+    background: var(--sky1);
+    font: 500 15px Poppins;
+    color: var(--navy3);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .av {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    display: grid;
+    place-items: center;
+    font: 500 13px Poppins;
+    color: #fff;
+    flex: none;
+  }
+  .avs {
+    display: flex;
+  }
+  .avs .av + .av {
+    margin-left: -9px;
+  }
+  .mi {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font: 400 17px Poppins;
+    color: var(--n10);
+  }
+  .mi + .mi {
+    border-top: 1px solid var(--n3);
+  }
+  .th,
+  .row {
+    display: grid;
+    grid-template-columns: 44px 56px 1fr 190px 160px 160px;
+    align-items: center;
+    padding: 0 20px;
+  }
+  .th {
+    height: 50px;
+    background: var(--n2);
+    border-radius: 10px;
+    font: 500 15px Poppins;
+    color: var(--n10);
+  }
+  .row {
+    height: 64px;
+    border-bottom: 1px solid var(--n3);
+    font: 400 15px Poppins;
+    color: var(--n9);
+  }
+  .cb {
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--n7);
+    border-radius: 5px;
+  }
+  .fi {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: var(--n3);
+    display: grid;
+    place-items: center;
+  }
+  .rn {
+    font: 500 15px Poppins;
+    color: var(--navy3);
+  }
+  .rs {
+    font: 400 12px Poppins;
+    color: var(--n8);
+  }
+  .sf {
+    position: absolute;
+    top: 0;
+    width: 340px;
+    height: 84px;
+    border: 1px solid var(--n4);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 16px;
+    background: #fff;
+  }
+  /* modal */
+  #modal {
+    left: 385px;
+    top: 110px;
+    width: 830px;
+    height: 534px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+    transform-origin: 50% 30%;
+  }
+  .ml {
+    font: 400 16px Poppins;
+    color: var(--n9);
+  }
+  #seg {
+    left: 32px;
+    top: 120px;
+    width: 766px;
+    height: 50px;
+    border: 1.5px solid var(--n4);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  #thumb {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 383px;
+    height: 100%;
+    background: var(--navy3);
+    border-radius: 8px;
+  }
+  .half {
+    position: absolute;
+    top: 0;
+    width: 383px;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    font: 600 18px Poppins;
+  }
+  .inp {
+    position: absolute;
+    left: 32px;
+    top: 316px;
+    width: 766px;
+    height: 52px;
+    border: 1.5px solid var(--n5);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    font: 400 19px Poppins;
+    color: var(--n10);
+  }
+  .inp.focus {
+    border-color: var(--sky6);
+    box-shadow: 0 0 0 4px var(--sky3);
+  }
+  .prow {
+    position: absolute;
+    left: 32px;
+    width: 766px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font: 400 19px Poppins;
+    color: var(--n10);
+  }
+  .sel {
+    margin-left: auto;
+    width: 230px;
+    height: 50px;
+    border: 1.5px solid var(--n5);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    font: 400 18px Poppins;
+    background: #fff;
+  }
+  .dd {
+    position: absolute;
+    background: #f6f7f9;
+    border: 1px solid var(--n5);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(14, 22, 52, 0.18);
+  }
+  .dd > div {
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    font: 400 18px Poppins;
+    color: var(--n10);
+  }
+  .dd > div + div {
+    border-top: 1px solid var(--n5);
+  }
+  .ft {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 84px;
+    border-top: 1px solid var(--n4);
+  }
+  .fb {
+    position: absolute;
+    top: 18px;
+    height: 48px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font: 500 18px Poppins;
+  }
+  /* grid */
+  .gc {
+    position: absolute;
+    width: 464px;
+    height: 206px;
+    border: 1px solid var(--n4);
+    border-radius: 14px;
+    background: #fff;
+  }
+  .gc .ico {
+    position: absolute;
+    left: 24px;
+    top: 22px;
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: var(--sky2);
+    display: grid;
+    place-items: center;
+  }
+  .gc .dots {
+    position: absolute;
+    right: 20px;
+    top: 24px;
+    width: 40px;
+    height: 32px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+  }
+  .gc .nm {
+    position: absolute;
+    left: 24px;
+    top: 90px;
+    font: 600 20px Poppins;
+  }
+  .gc .mt {
+    position: absolute;
+    left: 24px;
+    top: 124px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font: 400 14px Poppins;
+    color: var(--n8);
+  }
+  .gc .bd {
+    position: absolute;
+    left: 24px;
+    top: 154px;
+  }
+  .gc .avs {
+    position: absolute;
+    right: 22px;
+    top: 154px;
+  }
+  #toast {
+    left: 1140px;
+    top: 86px;
+    width: 430px;
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+  }
+  .fchip {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 92px;
+    padding: 0 36px;
+    border-radius: 46px;
+    background: #fff;
+    border: 1.5px solid var(--n5);
+    font: 500 32px Poppins;
+    color: var(--navy3);
+    box-shadow: 0 14px 40px rgba(14, 22, 52, 0.14);
+    white-space: nowrap;
+  }
+  .rule {
+    position: absolute;
+    height: 2px;
+    background: rgba(168, 195, 245, 0.5);
+    transform-origin: 0 50%;
+  }
+  .col {
+    position: absolute;
+    top: 0;
+    width: 500px;
+  }
+  .mask2 {
+    position: relative;
+    overflow: hidden;
+  }
+  .num {
+    font: 600 120px/1 Poppins;
+    letter-spacing: -3px;
+    color: var(--sky6);
+  }
+  .ct {
+    font: 600 44px/56px Poppins;
+    margin-top: 28px;
+    letter-spacing: -0.5px;
+    color: #fff;
+  }
+  .cbd {
+    font: 400 22px/34px Poppins;
+    color: #cfdffc;
+    margin-top: 16px;
+  }
+  #lt {
+    left: 64px;
+    bottom: 64px;
+    min-width: 620px;
+    padding: 24px 34px 26px;
+    border-radius: 20px;
+    background: rgba(14, 22, 52, 0.92);
+    box-shadow: 0 24px 60px rgba(14, 22, 52, 0.35);
+    overflow: hidden;
+    transform-origin: 0 100%;
+  }
+  .ltk {
+    font: 500 17px Poppins;
+    letter-spacing: 3.5px;
+    color: var(--sky6);
+  }
+  .ltt {
+    font: 600 34px/44px Poppins;
+    color: #fff;
+    margin-top: 6px;
+    white-space: nowrap;
+  }
+</style>
+<div id="stage" class="layer">
+  <div id="b1" class="blob" style="left: -400px; top: -500px"></div>
+  <div id="b2" class="blob" style="left: 900px; top: 200px"></div>
+  <div id="app"></div>
+  <div class="mask" style="left: 0; width: 1920px; top: 40px; height: 110px; text-align: center">
+    <div id="oA" style="font: 600 64px/110px Poppins; color: var(--navy3); letter-spacing: -1px">
+      Você decide quem vê e quem edita.
+    </div>
+  </div>
+  <div
+    id="fchips"
+    class="abs"
+    style="left: 0; right: 0; top: 880px; display: flex; justify-content: center; gap: 28px"
+  ></div>
+  <div id="cur" class="abs" style="left: 0; top: 0; transform-origin: 0 0">
+    <svg width="30" height="40" viewBox="-2 -2 22 32">
+      <path
+        d="M0 0v22l6-5 4.5 10 4-1.7-4.5-9.8 7.5-.5z"
+        fill="#1c264f"
+        stroke="#fff"
+        stroke-width="2"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </div>
+  <div id="rips"></div>
+  <div id="lt" class="abs" style="opacity: 0">
+    <div style="position: relative; height: 28px; overflow: hidden">
+      <div id="ltk" class="ltk"></div>
+    </div>
+    <div style="position: relative; height: 46px; overflow: hidden">
+      <div id="ltt" class="ltt"></div>
+    </div>
+  </div>
+</div>
+<div id="hook" class="layer navy"></div>
+<div id="end" class="layer navy"></div>
+<script src="../../lib/motion.js"></script>
+<script>
+  const { spring, track, clamp, lerp } = motion;
+  const $ = (id) => document.getElementById(id);
+  function tf(id, x = 0, y = 0, s = 1, o = 1) {
+    const e = $(id);
+    e.style.transform = `translate(${x}px,${y}px) scale(${s})`;
+    e.style.opacity = o;
+  }
+  const sp = (t, t0, p = "default") => spring(t - t0, p);
+  const sc = (t, t0, p = "default") => clamp(sp(t, t0, p));
+  const GLIDE = { w: 10, z: 1 };
+
+  // ---------- icons ----------
+  const I = {
+    book: "M4 19.5A2.5 2.5 0 0 1 6.5 17H20 M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z",
+    msg: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
+    bot: "M12 8V4H8 M6 8h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2z M2 14h2 M20 14h2 M15 13v2 M9 13v2",
+    scale: "M12 3v18 M7 21h10 M5 7h14 M5 7l-3 7a3 3 0 0 0 6 0z M19 7l-3 7a3 3 0 0 0 6 0z",
+    folder:
+      "M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z",
+    search: "M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z M21 21l-4.3-4.3",
+    file: "M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z M14 2v6h6",
+    plus: "M12 5v14 M5 12h14",
+    check: "M20 6 9 17l-5-5",
+    chev: "M6 9l6 6 6-6",
+    x: "M18 6 6 18 M6 6l12 12",
+    clock: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 6v6l4 2",
+    pen: "M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z",
+    users:
+      "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M22 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75",
+    eye: "M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z",
+    lock: "M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4",
+    bell: "M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9 M10.3 21a1.94 1.94 0 0 0 3.4 0",
+    trash:
+      "M3 6h18 M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6 M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2 M10 11v6 M14 11v6",
+    dots: "M5 12h.01 M12 12h.01 M19 12h.01",
+    note: "M4 4h12a2 2 0 0 1 2 2v14H6a2 2 0 0 1-2-2z M8 2v4 M12 2v4 M8 11h6 M8 15h4",
+  };
+  const ic = (n, sz = 20, c = "currentColor", sw = 1.8) =>
+    `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${n === "dots" ? 3.2 : sw}" stroke-linecap="round" stroke-linejoin="round"><path d="${I[n]}"/></svg>`;
+  const mark = (sz, c = "#fff") =>
+    `<svg width="${sz}" height="${sz}" viewBox="-50 -50 100 100"><path d="M-26 8C-20 -24 0 -24 2 2C5 24 22 24 27 -8" fill="none" stroke="${c}" stroke-width="8" stroke-linecap="round"/></svg>`;
+
+  // ---------- data (people are fictional) ----------
+  const ME = ["BL", "#2f3b6a"],
+    MAR = ["MC", "#d9467a"],
+    RAF = ["RM", "#1f9e8f"];
+  const av = ([ini, c], id = "", sz = 34) =>
+    `<div ${id ? `id="${id}"` : ""} class="av" style="background:${c};width:${sz}px;height:${sz}px;font-size:${sz * 0.38}px">${ini}</div>`;
+  const PEOPLE = ["Ana Paula Reis", "Marina Couto", "Pedro Alves", "Rafael Mendes", "Sofia Ramos"];
+  const DOCS = [
+    ["Contrato de Compra e Venda de Quotas", "PDF", 42, "2.4 MB", "24/09/2026"],
+    ["Due Diligence Trabalhista", "DOCX", 18, "612 KB", "22/09/2026"],
+    ["Memorando de Entendimentos", "PDF", 7, "188 KB", "19/09/2026"],
+    ["Parecer Tributário Aurora", "PDF", 12, "344 KB", "15/09/2026"],
+    ["Cap Table Aurora 2026", "XLSX", 1, "22 KB", "11/09/2026"],
+    ["Minuta de Acordo de Sócios", "DOCX", 26, "570 KB", "08/09/2026"],
+  ];
+  const CARDS = [
+    ["Contrato Aurora · M&A", 11, "P", [ME, MAR, RAF]],
+    ["Contencioso Trabalhista", 24, "P", [ME]],
+    ["Pareceres CADE", 9, "W", [ME, ["JS", "#e08a1e"], ["LT", "#5187ec"]]],
+    ["Due Diligence Orion", 6, "P", [ME]],
+    ["Societário 2026", 15, "W", [ME, ["CF", "#8b5cf6"]]],
+    ["Modelos de Petição", 32, "W", [ME, ["AR", "#0ea5e9"], ["PV", "#ef4444"]]],
+  ];
+  const SIDE = [
+    ["sb-chat", "msg", 130],
+    ["sb-agent", "bot", 180],
+    ["sb-vault", "book", 230],
+    ["sb-law", "scale", 310],
+    ["sb-folder", "folder", 360],
+    ["sb-search", "search", 440],
+    ["sb-hist", "clock", 490],
+  ];
+
+  // modal geometry (app px); height grows with people rows
+  const MX = 385,
+    MY = 110,
+    MW = 830;
+  const MH = (rows) => 384 + Math.max(rows * 64, 48) + 18 + 84,
+    MH_WS = 486;
+  const SAV1 = [MX + MW - 84, MY + MH(2) - 42],
+    SAV2 = [MX + MW - 84, MY + MH_WS - 42];
+
+  // camera: [t, scale, focusX, focusY] in app px
+  const CAM = [
+    [3.1, 1.6, 1330, 190],
+    [4.5, 1.15, 800, 420],
+    [5.3, 1.3, 800, 440],
+    [9.15, 1.2, 800, 450],
+    [9.7, 1.75, 470, 150],
+    [10.6, 1.45, 1300, 190],
+    [12.3, 1.0, 800, 450],
+    [13.2, 1.35, 800, 330],
+    [14.2, 1.2, 800, 380],
+    [17.25, 1.6, 700, 360],
+    [18.4, 0.72, 800, 470],
+  ];
+  const MOVES = [
+    [2.9, [1150, 650]],
+    [3.35, "more"],
+    [4.1, "fm0"],
+    [4.95, "pin"],
+    [5.75, "pl1"],
+    [6.35, "pin"],
+    [7.0, "pl3"],
+    [7.7, "rs1"],
+    [8.35, "ro1"],
+    [9.1, SAV1],
+    [10.3, [1250, 560]],
+    [12.05, "sb-vault"],
+    [13.05, "c1m"],
+    [13.75, "cm0"],
+    [14.6, "segW"],
+    [15.4, "wsel"],
+    [16.05, "wo1"],
+    [16.75, SAV2],
+    [17.7, [900, 620]],
+  ];
+  const CLICKS = [
+    3.75, 4.45, 5.4, 6.1, 6.7, 7.35, 8.05, 8.7, 9.5, 12.5, 13.5, 14.1, 15.0, 15.75, 16.4, 17.1,
+  ];
+  window.DURATION = 25.5;
+  window.BPM = 120;
+  window.TICKS = CLICKS;
+
+  // ---------- build ----------
+  function tiles(p) {
+    return `<div class="abs" style="left:1510px;top:0;width:200px;height:1080px">
+    <div id="${p}t1" class="tile w" style="top:270px">${ic("folder", 104, "#1c264f", 1.6)}</div>
+    ${[0, 1, 2, 3].map((i) => `<div id="${p}d${i}" class="dot" style="top:0"></div>`).join("")}
+    <div id="${p}t2" class="tile i" style="top:610px">${ic("users", 104, "#fff", 1.6)}</div></div>`;
+  }
+  function hero(p, a, b, c) {
+    return `<div id="${p}b1" class="blobN" style="left:700px;top:-600px"></div><div id="${p}b2" class="blobN" style="left:-600px;top:200px"></div>
+  <div class="mask" style="left:120px;top:388px;height:140px"><div id="${p}A" class="big">${a}</div></div>
+  <div class="mask" style="left:120px;top:528px;height:140px"><div id="${p}B" class="big sky">${b}</div></div>
+  <div class="mask" style="left:124px;top:686px;height:76px"><div id="${p}C" class="sub">${c}</div></div>${tiles(p)}`;
+  }
+  $("hook").innerHTML = hero(
+    "h",
+    "O sigilo faz parte",
+    "do trabalho jurídico.",
+    "Agora, cada pasta do Acervo tem o seu nível de acesso.",
+  );
+  const PRINC = [
+    [
+      "01",
+      "Quem vê e quem edita",
+      "Privativa ou Workspace, com Visualização ou Edição para cada pessoa.",
+    ],
+    [
+      "02",
+      "Subpastas herdam",
+      "O acesso definido na pasta principal vale para tudo o que está dentro dela.",
+    ],
+    ["03", "Quem entra é avisado", "Ao ganhar acesso, a pessoa recebe uma notificação na Inspira."],
+  ];
+  $("end").innerHTML =
+    `<div id="eb1" class="blobN" style="left:700px;top:-600px"></div><div id="eb2" class="blobN" style="left:-600px;top:200px"></div>
+  <div id="prc" class="abs" style="left:140px;top:300px;width:1640px">
+    <div id="r4" class="rule" style="left:0;top:0;width:1640px"></div>
+    ${PRINC.map(
+      ([n, a, b], i) => `<div class="col" style="left:${i * 570}px;top:64px">
+      <div class="mask2" style="height:124px"><div id="n${i}" class="num">${n}</div></div>
+      <div class="mask2" style="height:120px"><div id="t${i}" class="ct">${a}</div></div>
+      <div class="mask2" style="height:110px"><div id="q${i}" class="cbd">${b}</div></div></div>`,
+    ).join("")}
+  </div>
+  <div id="fin" class="abs" style="inset:0;display:none">
+    <div id="logo" class="abs" style="left:140px;top:300px;width:120px;height:120px;border-radius:32px;background:linear-gradient(135deg,#7ca4ee,#4a6be0);display:grid;place-items:center;box-shadow:0 18px 60px rgba(81,135,236,.5)">${mark(76)}</div>
+    <div class="mask" style="left:140px;top:460px;height:140px"><div id="e1" class="big">Permissionamento</div></div>
+    <div class="mask" style="left:140px;top:592px;height:140px"><div id="e2" class="big sky">no Acervo.</div></div>
+    <div class="mask" style="left:144px;top:750px;height:50px"><div id="e3" style="font:400 30px Poppins;color:#cfdffc;white-space:nowrap">Controle de acesso por pasta, do jeito que o seu escritório trabalha.</div></div>
+    <div id="er" class="rule" style="left:144px;top:840px;width:1632px"></div>
+    <div class="mask" style="left:144px;top:866px;height:44px"><div id="e4" style="font:500 26px Poppins;color:#fff">app.inspira.legal</div></div>
+  </div>`;
+  const badgeP = (id) =>
+    `<div id="${id}" class="badge">${ic("folder", 18, "#1c264f")}<span>Privativa</span></div>`;
+  const docRow = ([
+    n,
+    ty,
+    pg,
+    sz,
+    dt,
+  ]) => `<div class="row"><div class="cb"></div><div class="fi">${ic("file", 18, "#8e9399")}</div>
+  <div><div class="rn">${n}</div><div class="rs">${ty}</div></div><div>${pg} página${pg > 1 ? "s" : ""}</div><div>${sz}</div><div>${dt}</div></div>`;
+
+  $("app").innerHTML = `
+<div id="side">
+  <div class="abs" style="left:16px;top:20px;width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#7ca4ee,#4a6be0);display:grid;place-items:center">${mark(26)}</div>
+  <div class="abs" style="left:14px;top:208px;width:44px;height:44px;border-radius:12px;background:rgba(168,195,245,.2)"></div>
+  ${SIDE.map(([id, n, y]) => `<div id="${id}" class="sico" style="top:${y - 12}px">${ic(n, 24, id === "sb-vault" ? "#fff" : "#cfdffc")}</div>`).join("")}
+  <div class="abs" style="left:18px;bottom:22px">${av(ME, "", 36)}</div>
+</div>
+<div id="fview" class="abs" style="left:72px;top:0;width:1528px;height:900px;background:#fff">
+  <div class="top">
+    <div class="crumb">${ic("book", 20, "#656c74")}Acervo<span style="color:var(--n7)">›</span><b style="font-weight:500;color:var(--navy3)">Contrato Aurora · M&amp;A</b></div>
+    <div class="srch">${ic("search", 18, "#8e9399")}Faça uma pergunta sobre os documentos desta pasta…</div>
+    <div class="addb" style="left:1236px;width:176px">${ic("plus", 18, "#fff")}Adicionar${ic("chev", 16, "#fff")}</div>
+    <div id="more" class="abs btn" style="left:1422px;top:16px;width:42px;height:40px;border-radius:10px">${ic("dots", 24, "#363f49")}</div>
+    <div class="abs" style="left:1474px;top:24px">${ic("note", 24, "#363f49")}</div>
+  </div>
+  <div class="abs" style="left:40px;top:98px;display:flex;align-items:center;gap:18px">
+    <div style="width:60px;height:60px;border-radius:14px;background:var(--sky2);display:grid;place-items:center">${ic("folder", 28, "#5187ec")}</div>
+    <div><div style="font:600 22px Poppins">Contrato Aurora · M&amp;A</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-top:6px;font:400 15px Poppins;color:var(--n9)">11 documentos nesta pasta ·
+      ${badgeP("fbadge")}<div class="avs">${av(ME)}${av(MAR, "fav1")}${av(RAF, "fav2")}</div>· Atualizado em 30/09/2026</div></div>
+  </div>
+  <div class="abs lbl" style="left:40px;top:196px">SUBPASTAS <span style="color:var(--n7);margin-left:6px">2</span></div>
+  ${["Due diligence", "Minutas"]
+    .map(
+      (n, i) => `<div class="sf" style="left:${40 + i * 360}px;top:226px">
+    <div class="fi" style="background:var(--sky2)">${ic("folder", 20, "#5187ec")}</div><div style="flex:1"><div class="rn">${n}</div><div class="rs">${[4, 7][i]} documentos</div></div>
+    <div class="avs">${av(ME, "", 28)}${av(MAR, `s${i}a1`, 28)}${av(RAF, `s${i}a2`, 28)}</div></div>`,
+    )
+    .join("")}
+  <div class="abs lbl" style="left:40px;top:342px">LISTA DE DOCUMENTOS <span style="color:var(--n7);margin-left:6px">11</span></div>
+  <div class="abs" style="left:40px;top:376px;width:1448px"><div class="th"><div class="cb"></div><div></div><div>Nome</div><div>Páginas</div><div>Tamanho</div><div>Data de upload</div></div>${DOCS.map(docRow).join("")}</div>
+</div>
+<div id="gview" class="abs" style="left:72px;top:0;width:1528px;height:900px;background:var(--n2);opacity:0">
+  <div class="top" style="background:#fff">
+    <div class="crumb">${ic("book", 20, "#656c74")}<b style="font-weight:500;color:var(--navy3)">Acervo</b></div>
+    <div class="srch">${ic("search", 18, "#8e9399")}Buscar pastas e documentos…</div>
+    <div class="addb" style="left:1300px;width:188px">${ic("plus", 18, "#fff")}Nova pasta</div>
+  </div>
+  <div class="abs" style="left:40px;top:100px;font:600 26px Poppins">Pastas</div>
+  <div class="abs" style="left:40px;top:142px;font:400 15px Poppins;color:var(--n9)">Cada pasta tem o seu nível de acesso.</div>
+  ${CARDS.map(
+    (
+      [n, d, m, ps],
+      i,
+    ) => `<div id="gc${i}" class="gc" style="left:${40 + (i % 3) * 488}px;top:${196 + Math.floor(i / 3) * 230}px">
+    <div class="ico">${ic("folder", 24, "#5187ec")}</div><div id="c${i}m" class="dots">${ic("dots", 22, "#363f49")}</div>
+    <div class="nm">${n}</div><div class="mt">${ic("file", 16, "#8e9399")}${d} documentos · 30/09/2026</div>
+    <div class="bd">${
+      i === 1
+        ? `<div id="mb" class="badge" style="position:relative;padding:0"><div id="mbP" class="abs" style="left:12px;top:7px;display:flex;gap:8px">${ic("folder", 18, "#1c264f")}Privativa</div><div id="mbW" class="abs" style="left:12px;top:7px;display:flex;gap:8px;opacity:0">${ic("users", 18, "#1c264f")}Workspace · Edição</div></div>`
+        : `<div class="badge">${ic(m === "P" ? "folder" : "users", 18, "#1c264f")}${m === "P" ? "Privativa" : "Workspace"}</div>`
+    }</div>
+    <div class="avs">${ps.map((p) => av(p, "", 30)).join("")}</div></div>`,
+  ).join("")}
+</div>
+<div id="fmenu" class="abs card" style="left:1250px;top:62px;width:300px;padding:6px;transform-origin:100% 0;opacity:0">
+  <div id="fm0" class="mi">${ic("users", 22, "#656c74")}Gerenciar acesso</div>
+  <div id="fm1" class="mi">${ic("pen", 22, "#656c74")}Editar pasta</div>
+  <div id="fm2" class="mi">${ic("trash", 22, "#656c74")}Excluir pasta</div>
+</div>
+<div id="cmenu" class="abs card" style="left:782px;top:258px;width:300px;padding:6px;transform-origin:100% 0;opacity:0">
+  <div id="cm0" class="mi">${ic("users", 22, "#656c74")}Gerenciar acesso</div>
+  <div id="cm1" class="mi">${ic("pen", 22, "#656c74")}Editar pasta</div>
+  <div id="cm2" class="mi">${ic("trash", 22, "#656c74")}Excluir pasta</div>
+</div>
+<div id="toast" class="abs card" style="opacity:0">
+  <div style="width:44px;height:44px;border-radius:12px;background:var(--sky2);display:grid;place-items:center;flex:none">${ic("bell", 22, "#5187ec")}</div>
+  <div><div style="display:flex;justify-content:space-between;font:500 12px Poppins;letter-spacing:1px;color:var(--n8)"><span>NOTIFICAÇÃO · RAFAEL MENDES</span><span>agora</span></div>
+  <div style="font:600 17px Poppins;margin-top:4px">Você foi adicionado a uma pasta</div>
+  <div style="font:400 15px/22px Poppins;color:var(--n9);margin-top:4px">Beatriz Lima adicionou você à pasta “Contrato Aurora · M&amp;A” com permissão de <b style="font-weight:600;color:var(--navy3)">Edição</b>.</div>
+  <div style="font:500 15px Poppins;color:var(--sky10);margin-top:10px">Abrir pasta →</div></div>
+</div>
+<div id="bd" class="abs" style="inset:0;background:rgba(14,22,52,.45);opacity:0"></div>
+<div id="modal" class="abs" style="opacity:0">
+  <div class="abs" style="left:32px;top:28px;font:600 30px Poppins;color:var(--n10)">Gerenciar acesso à pasta</div>
+  <div class="abs ml" style="left:32px;top:92px">Nível de acesso</div>
+  <div id="seg" class="abs"><div id="thumb"></div><div id="segP" class="half" style="left:0">Privativa</div><div id="segW" class="half" style="left:383px">Workspace</div></div>
+  <div id="d1" class="abs" style="left:32px;top:184px;font:500 17px Poppins;color:var(--n10)">Só você e quem você convidar veem esta pasta.</div>
+  <div class="abs" style="left:32px;top:214px;width:766px;font:400 16px/25px Poppins;color:var(--n9)">O acesso vale para as pastas do Acervo. Buscas e respostas da IA ainda podem usar o conteúdo destes documentos.</div>
+  <div id="secP" class="abs" style="inset:0">
+    <div class="abs ml" style="left:32px;top:288px">Adicionar pessoas</div>
+    <div id="pin" class="inp"><span id="pinT">Adicionar pessoas</span>${ic("chev", 20, "#363f49")}</div>
+    <div id="empty" class="abs" style="left:32px;top:390px;font:400 17px Poppins;color:var(--n7)">Nenhuma pessoa adicionada ainda.</div>
+    ${[
+      [MAR, "Marina Couto"],
+      [RAF, "Rafael Mendes"],
+    ]
+      .map(
+        (
+          [p, n],
+          i,
+        ) => `<div id="pr${i}" class="prow" style="top:${384 + i * 64}px;opacity:0">${av(p, "", 46)}${n}
+      <div id="rs${i}" class="sel"><span id="rt${i}">Visualização</span>${ic("chev", 18, "#363f49")}</div>${ic("trash", 26, "#363f49", 1.6)}</div>`,
+      )
+      .join("")}
+  </div>
+  <div id="secW" class="abs" style="inset:0;opacity:0">
+    <div class="abs ml" style="left:32px;top:288px">O que o workspace pode fazer</div>
+    <div id="wsel" class="inp"><span id="wselT">Visualização</span>${ic("chev", 20, "#363f49")}</div>
+  </div>
+  <div id="mft" class="ft" style="top:450px">
+    <div class="fb" style="right:146px;width:108px;background:var(--n3);color:var(--n10)">Fechar</div>
+    <div id="sav" class="fb" style="right:32px;width:104px;background:var(--navy3);color:#fff">Salvar</div>
+  </div>
+  <div id="plist" class="dd" style="left:32px;top:376px;width:766px;opacity:0;transform-origin:50% 0">${PEOPLE.map((n, i) => `<div id="pl${i}">${n}</div>`).join("")}</div>
+  <div id="rolem" class="dd" style="left:536px;top:508px;width:230px;opacity:0;transform-origin:50% 0"><div id="ro0">Visualização${ic("check", 20, "#363f49")}</div><div id="ro1">Edição</div></div>
+  <div id="wrole" class="dd" style="left:32px;top:376px;width:766px;opacity:0;transform-origin:50% 0"><div id="wo0">Visualização${ic("check", 20, "#363f49")}</div><div id="wo1">Edição</div></div>
+</div>`;
+
+  $("fchips").innerHTML = [
+    ["lock", "Privativa ou Workspace"],
+    ["eye", "Visualização ou Edição"],
+    ["folder", "Subpastas herdam o acesso"],
+  ]
+    .map(
+      ([n, l], i) =>
+        `<div id="fc${i}" class="fchip" style="opacity:0">${ic(n, 34, "#5187ec")}${l}</div>`,
+    )
+    .join("");
+  $("rips").innerHTML = CLICKS.map(
+    (_, i) =>
+      `<div id="rip${i}" class="abs" style="left:0;top:0;width:100px;height:100px;border-radius:50%;border:4px solid #5187ec;opacity:0"></div>`,
+  ).join("");
+
+  // ---------- measure hit boxes (app px) once fonts are in ----------
+  const P = {};
+  let PATH;
+  window.READY = Promise.all(
+    ["400", "500", "600"].map((w) => document.fonts.load(`${w} 40px Poppins`)),
+  ).then(() => {
+    const a = $("app").getBoundingClientRect();
+    document.querySelectorAll("#app [id]").forEach((el) => {
+      const r = el.getBoundingClientRect();
+      P[el.id] = {
+        x: r.left - a.left,
+        y: r.top - a.top,
+        w: r.width,
+        h: r.height,
+        cx: r.left - a.left + r.width / 2,
+        cy: r.top - a.top + r.height / 2,
+      };
+    });
+    P.savA = { x: SAV1[0] - 52, y: SAV1[1] - 24, w: 104, h: 48 };
+    P.savB = { x: SAV2[0] - 52, y: SAV2[1] - 24, w: 104, h: 48 };
+    PATH = MOVES.map(([tm, g]) => [tm, typeof g === "string" ? [P[g].cx, P[g].cy] : g]);
+  });
+
+  // ---------- seek ----------
+  function hero_t(p, t, t0) {
+    tf(p + "b1", Math.sin(t * 0.6) * 90, Math.cos(t * 0.5) * 70);
+    tf(p + "b2", Math.sin(t * 0.6 + 2) * 90, Math.cos(t * 0.5 + 2) * 70);
+    ["A", "B", "C"].forEach((k, i) =>
+      tf(p + k, 0, (1 - sp(t, t0 + [0, 0.15, 0.55][i], "heavy")) * 150),
+    );
+    const a = Math.max(sp(t, t0 + 0.2, "playful"), 0),
+      b = Math.max(sp(t, t0 + 0.45, "playful"), 0);
+    tf(p + "t1", 0, 0, a, 1);
+    tf(p + "t2", 0, 0, b, 1);
+    for (let i = 0; i < 4; i++) {
+      const y = 488 + ((t * 70 + i * 26) % 104);
+      tf(p + "d" + i, 0, y, 1, sc(t, t0 + 0.7) * Math.sin((Math.PI * (y - 488)) / 104));
+    }
+  }
+  const pop = (id, t0, t) => {
+    const k = t < t0 ? 0 : Math.max(sp(t, t0, "playful"), 0);
+    tf(id, 0, 0, k, clamp(k * 2));
+  };
+
+  window.seek = (t) => {
+    tf("b1", Math.sin(t * 0.5) * 80, Math.cos(t * 0.4) * 60);
+    tf("b2", Math.sin(t * 0.5 + 3) * 80, Math.cos(t * 0.4 + 3) * 60);
+
+    // camera
+    const s = track(
+        t,
+        0.98,
+        CAM.map((c) => [c[0], c[1]]),
+      ),
+      fx = track(
+        t,
+        800,
+        CAM.map((c) => [c[0], c[2]]),
+      ),
+      fy = track(
+        t,
+        450,
+        CAM.map((c) => [c[0], c[3]]),
+      );
+    const AX = 960,
+      AY = 520 + (1 - sp(t, 2.3, "heavy")) * 1150;
+    $("app").style.transform = `translate(${AX - s * fx}px,${AY - s * fy}px) scale(${s})`;
+    const scr = (x, y) => [AX + s * (x - fx), AY + s * (y - fy)];
+
+    // cursor (app px), hover = hit test, press = right after a click
+    const cx = track(
+      t,
+      PATH[0][1][0],
+      PATH.slice(1).map((p) => [p[0], p[1][0]]),
+      GLIDE,
+    );
+    const cy = track(
+      t,
+      PATH[0][1][1],
+      PATH.slice(1).map((p) => [p[0], p[1][1]]),
+      GLIDE,
+    );
+    const pressing = CLICKS.some((c) => t >= c && t < c + 0.14);
+    const inside = (id) => {
+      const r = P[id];
+      return cx >= r.x && cx <= r.x + r.w && cy >= r.y && cy <= r.y + r.h;
+    };
+    const hov = (id, on) => {
+      const k = on && inside(id);
+      $(id).classList.toggle("hov", k);
+      $(id).classList.toggle("press", k && pressing);
+    };
+    const [sx, sy] = scr(cx, cy);
+    $("cur").style.transform = `translate(${sx}px,${sy}px) scale(${pressing ? 1.15 : 1.35})`;
+    $("cur").style.opacity = sc(t, 2.9) * (1 - sc(t, 18.0));
+    CLICKS.forEach((c, i) => {
+      const k = t - c,
+        on = k >= 0 && k < 0.6,
+        r = 14 + 60 * (1 - Math.exp(-7 * Math.max(k, 0)));
+      const e = $("rip" + i);
+      e.style.opacity = on ? 1 - k / 0.6 : 0;
+      e.style.transform = `translate(${sx - 50}px,${sy - 50}px) scale(${r / 50})`;
+    });
+
+    // folder view -> grid view
+    const go = sc(t, 12.55, "heavy");
+    tf("fview", -80 * go, 0, 1, 1 - go);
+    tf("gview", 120 * (1 - sp(t, 12.55, "heavy")), 0, 1, go);
+    hov("more", t < 4);
+    hov("sb-vault", t > 11.5 && t < 12.7);
+    hov("c1m", t > 12.7 && t < 13.7);
+
+    // "..." menus
+    const fo = sp(t, 3.85, "snappy") - sc(t, 4.55, "snappy");
+    tf("fmenu", 0, -10 * (1 - clamp(fo)), 0.92 + 0.08 * fo, clamp(fo));
+    ["fm0", "fm1", "fm2"].forEach((id) => hov(id, fo > 0.5));
+    const co = sp(t, 13.6, "snappy") - sc(t, 14.2, "snappy");
+    tf("cmenu", 0, -10 * (1 - clamp(co)), 0.92 + 0.08 * co, clamp(co));
+    ["cm0", "cm1", "cm2"].forEach((id) => hov(id, co > 0.5));
+
+    // modal: phase 1 invites people (Privativa), phase 2 opens the folder to the workspace
+    const ph2 = t > 12,
+      mo = ph2
+        ? sp(t, 14.2, "snappy") - sc(t, 17.2, "snappy")
+        : sp(t, 4.55, "snappy") - sc(t, 9.6, "snappy");
+    $("bd").style.opacity = clamp(mo);
+    tf("modal", 0, 30 * (1 - mo), 0.94 + 0.06 * mo, clamp(mo));
+    const H = ph2
+      ? track(t, MH(0), [[15.0, MH_WS]], "snappy")
+      : track(
+          t,
+          MH(0),
+          [
+            [6.15, MH(1)],
+            [7.4, MH(2)],
+          ],
+          "snappy",
+        );
+    $("modal").style.height = H + "px";
+    $("mft").style.top = H - 84 + "px";
+    const ws = ph2 ? sc(t, 15.0, "snappy") : 0;
+    $("thumb").style.transform = `translateX(${383 * ws}px)`;
+    $("segP").style.color = ws < 0.5 ? "#fff" : "var(--n8)";
+    $("segW").style.color = ws < 0.5 ? "var(--n8)" : "#fff";
+    $("d1").textContent =
+      ws < 0.5
+        ? "Só você e quem você convidar veem esta pasta."
+        : "Todo mundo do workspace vê esta pasta.";
+    $("secP").style.opacity = 1 - ws;
+    tf("secW", 0, 16 * (1 - ws), 1, ws);
+    const rows = ph2 ? 0 : (t >= 6.15) + (t >= 7.4);
+    $("empty").style.opacity = rows ? 0 : 1;
+    [6.15, 7.4].forEach((r, i) => {
+      const k = sp(t, r, "snappy");
+      tf("pr" + i, 0, -14 * (1 - k), 1, !ph2 && t >= r ? clamp(k * 2) : 0);
+    });
+    $("rt1").textContent = t >= 8.7 ? "Edição" : "Visualização";
+    $("wselT").textContent = t >= 16.4 ? "Edição" : "Visualização";
+    const lo =
+      sp(t, 5.5, "snappy") - sc(t, 6.15, "snappy") + (sp(t, 6.8, "snappy") - sc(t, 7.4, "snappy"));
+    tf("plist", 0, -8 * (1 - clamp(lo)), 1, clamp(lo));
+    $("pin").classList.toggle("focus", lo > 0.3);
+    PEOPLE.forEach((_, i) => hov("pl" + i, lo > 0.5));
+    const ro = sp(t, 8.15, "snappy") - sc(t, 8.75, "snappy");
+    tf("rolem", 0, -8 * (1 - clamp(ro)), 1, clamp(ro));
+    hov("ro0", ro > 0.5);
+    hov("ro1", ro > 0.5);
+    const wo = sp(t, 15.85, "snappy") - sc(t, 16.45, "snappy");
+    tf("wrole", 0, -8 * (1 - clamp(wo)), 1, clamp(wo));
+    hov("wo0", wo > 0.5);
+    hov("wo1", wo > 0.5);
+    $("wsel").classList.toggle("focus", wo > 0.3);
+    const onSav = mo > 0.5 && inside(ph2 ? "savB" : "savA");
+    $("sav").style.background = onSav ? "var(--navy1)" : "var(--navy3)";
+    $("sav").style.transform = onSav && pressing ? "scale(.95)" : "";
+
+    // after save: avatars on the folder and its subfolders (inherited access)
+    pop("fav1", 9.9, t);
+    pop("fav2", 10.02, t);
+    [0, 1].forEach((i) => {
+      pop(`s${i}a1`, 10.15 + i * 0.1, t);
+      pop(`s${i}a2`, 10.27 + i * 0.1, t);
+    });
+    const nk = sp(t, 10.6, "snappy");
+    tf("toast", 60 * (1 - nk), 0, 1, t < 10.6 ? 0 : clamp(nk * 2) * (1 - sc(t, 12.3, "snappy")));
+
+    // badge morph Privativa -> Workspace · Edição (one shape, width springs)
+    const bk = sp(t, 17.35, "snappy");
+    $("mb").style.width = lerp(126, 232, bk) + "px";
+    $("mbP").style.opacity = 1 - clamp(bk * 2);
+    $("mbW").style.opacity = clamp(bk * 2 - 0.6);
+    $("mb").style.background = t > 17.35 ? `rgba(219,230,250,${0.9 * (1 - sc(t, 18.1))})` : "";
+    $("gc1").style.borderColor = t > 17.3 && t < 18.2 ? "var(--sky6)" : "";
+
+    // chapter lower-third (screen space)
+    const CH = [
+      [3.0, 9.55, "01 · PRIVATIVA", "Só você e quem você convidar."],
+      [9.8, 12.35, "NOTIFICAÇÃO", "Quem ganha acesso é avisado na hora."],
+      [13.0, 17.9, "02 · WORKSPACE", "Todo o escritório, com a regra que você define."],
+    ];
+    const ch = CH.find((c) => t >= c[0] - 0.05 && t < c[1] + 0.6);
+    if (ch) {
+      const ki = sp(t, ch[0], "heavy"),
+        ko = sc(t, ch[1], "snappy");
+      tf("lt", -40 * (1 - ki), 0, 1, clamp(ki * 1.5) * (1 - ko));
+      $("ltk").textContent = ch[2];
+      $("ltt").textContent = ch[3];
+      tf("ltk", 0, (1 - sp(t, ch[0] + 0.1, "heavy")) * 30);
+      tf("ltt", 0, (1 - sp(t, ch[0] + 0.2, "heavy")) * 50);
+    } else $("lt").style.opacity = 0;
+    $("oA").style.opacity = 0;
+    $("fchips").style.opacity = 0;
+
+    // hook (lifts away)
+    tf("hook", 0, -sp(t, 2.2, "heavy") * 1300);
+    if (t < 3) hero_t("h", t, 0.25);
+
+    // navy: circle wipe -> principles -> end card
+    const wipe = sp(t, 18.3, "heavy");
+    $("end").style.display = t < 18.3 ? "none" : "block";
+    $("end").style.clipPath = `circle(${Math.max(wipe, 0) * 1300}px at 960px 540px)`;
+    if (t >= 18.3) {
+      tf("eb1", Math.sin(t * 0.3) * 120, Math.cos(t * 0.25) * 80);
+      tf("eb2", Math.sin(t * 0.3 + 2) * 120, Math.cos(t * 0.25 + 2) * 80);
+      const ln = (id, t0, t1, h) =>
+        tf(id, 0, (1 - sp(t, t0, "heavy")) * h - sc(t, t1, "heavy") * h);
+      $("prc").style.display = t < 22.1 ? "block" : "none";
+      $("r4").style.transform = `scaleX(${sc(t, 18.6, "heavy") * (1 - sc(t, 21.5, "heavy"))})`;
+      PRINC.forEach((_, i) => {
+        const a = 18.9 + i * 0.35;
+        ln("n" + i, a, 21.4, 130);
+        ln("t" + i, a + 0.12, 21.45, 130);
+        ln("q" + i, a + 0.24, 21.5, 120);
+      });
+      $("fin").style.display = t >= 21.9 ? "block" : "none";
+      const lk = sp(t, 22.0, "default");
+      tf("logo", 0, 0, Math.max(0, lk), clamp(lk));
+      ln("e1", 22.2, 99, 150);
+      ln("e2", 22.4, 99, 150);
+      ln("e3", 22.9, 99, 60);
+      ln("e4", 23.5, 99, 50);
+      $("er").style.transform = `scaleX(${sc(t, 23.2, "heavy")})`;
+    }
+  };
+
+  // preview in a normal browser: open index.html?play
+  if (location.search.includes("play"))
+    window.READY.then(() => {
+      const t0 = performance.now();
+      const loop = () => {
+        window.seek(((performance.now() - t0) / 1000) % window.DURATION);
+        requestAnimationFrame(loop);
+      };
+      loop();
+    });
+</script>
