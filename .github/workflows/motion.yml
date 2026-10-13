@@ -42,8 +42,13 @@ jobs:
         working-directory: ${{ runner.temp }}/Motion
         run: node lib/motion.test.mjs
 
-      - name: Stills and the rendered video
+      - name: Stills through the studio wrapper, and the rendered video
         working-directory: ${{ runner.temp }}/Motion
         run: |
-          node stills.mjs scenes/demo 1
+          node "${{ github.workspace }}/plugins/bb/skills/reel/scripts/studio.mjs" stills scenes/demo 1
           node -e "const fs=require('fs'); for (const f of ['out/demo.mp4','out/demo-at-1.png']) if (!(fs.statSync(f).size>0)) process.exit(1)"
+        env:
+          MOTION_HOME: ${{ runner.temp }}/Motion
+
+      - name: Wrapper rejects an unknown verb
+        run: node -e "const r=require('child_process').spawnSync(process.execPath,[process.argv[1],'rm'],{stdio:'inherit'}); process.exit(r.status===2?0:1)" "${{ github.workspace }}/plugins/bb/skills/reel/scripts/studio.mjs"
