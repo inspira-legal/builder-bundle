@@ -2,8 +2,8 @@
 
 The single on-disk contract for a slug's durable artifacts. **Every skill writes its
 own document, and `spec.md` has exactly one writer.** `/bb:discover` writes
-`discovery.md`, `/bb:brisar` writes `design.md`, `/bb:spec` writes `spec.md`, and
-`/bb:implement` and `/bb:ship` read the spec. Any skill that reads or
+`discovery.md`, `/bb:brisar` writes `design.md`, `/bb:spec` writes `spec.md`, `/bb:measure`
+writes `measure.md`, and `/bb:implement` and `/bb:ship` read the spec. Any skill that reads or
 writes this state follows this file. The contract lives here and nowhere else.
 
 ## Location
@@ -16,14 +16,19 @@ and everything durable about that work lives inside it:
 ├── discovery.md   # the framing, /bb:discover
 ├── spec.md        # the contract, /bb:spec, single writer
 ├── design.md      # the journey and the prototype record, /bb:brisar
+├── measure.md     # the measurements after the landing, /bb:measure
+├── measure-sql/   # the queries and outputs behind each measurement, /bb:measure
 └── prototype/     # the clickable artifact, /bb:brisar Develop
 ```
 
-- **Three documents, three writers, one each.** `discovery.md` answers _is this worth
+- **Four documents, four writers, one each.** `discovery.md` answers _is this worth
   building, and what did we cut?_; `design.md` answers _how should this be, and why,
-  and what got built?_; `spec.md` answers _what exactly do we build?_. They coexist,
-  and none of them replaces another.
-- **The two records are read by path, never copied.** When the spec needs a fact that
+  and what got built?_; `spec.md` answers _what exactly do we build?_; `measure.md`
+  answers _did it land where the spec said, and what do people do with it?_. They
+  coexist, and none of them replaces another. `measure.md` is read by the next
+  measurement, which compares with the newest reading in it, and nothing else writes it.
+- **The records are read by path, never copied.** That is `discovery.md`, `design.md` and
+  `measure.md`. When the spec needs a fact that
   lives in a record, it cites the document and the section, and the reader opens it. A
   section quoted into the spec is a second copy that goes stale the next time its own
   skill runs. One exception: the spec's `## Metric` materializes the baseline and the
@@ -61,7 +66,9 @@ is the contract. The correction runs one way only. `/bb:spec` never edits `disco
 or `design.md`, because that would give a document two writers, which is the disease
 this contract cures. The record's **own writer** registers the reversal on its next
 round, as a reversal (_"revokes D4, per the spec"_), so the history stays readable and a
-stale record never silently outranks the contract.
+stale record never silently outranks the contract. `measure.md` holds readings, not
+decisions, so it has nothing to reverse: a reading that misses the spec's target is the
+next spec round's input, and `/bb:spec` never edits it either.
 
 ## Frontmatter
 

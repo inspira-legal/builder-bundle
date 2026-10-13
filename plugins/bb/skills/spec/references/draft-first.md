@@ -30,7 +30,9 @@ source into the seeded note with the record named beside it
 (`(XRAY query 2026-08, via discovery.md)`): the materialized value keeps a source the
 gate can judge, not just a pointer to where it came from, and after the gate hardens
 it the spec's value wins, per the reversal rule in the plugin-level
-`references/spec-state.md`. Guess what
+`references/spec-state.md`. When the discovery record's baseline is `skipped` and
+`.bb/<slug>/measure.md` holds a reading of the same signal, seed the baseline from the newest
+reading instead, its query named in the note (`(query 2026-10-05, via measure.md)`). Guess what
 remains with each value's provenance on its own bullet (an estimate marked as such
 reads as a guess the user corrects), keep a value's own `skipped: <reason>` when only
 that value is unmeasured, or write the one-line `skipped: <reason>` when no honest
@@ -71,6 +73,24 @@ Two gaps the file can't close on its own, and the draft never guesses past them:
 
 Without `EVENTS.md`, the events table is proposed the way it always was, from the
 behavior rows alone; nothing here changes.
+
+## Propose each event's level
+
+When the company classifies its events, the events table carries a `level` per row
+(`spec-format.md`, its events-table paragraph). The values and the rule that picks one live in
+the company's `usage` document, found by its tag the way
+`<plugin-root>/references/company-definitions.md` states.
+
+- **Read the rule first.** List the `usage` role, read every document it returns, and take the
+  level values and the question the rule asks of an event.
+- **Propose one value per row**, by that rule, the same draft-first way as the name and the
+  payload. The task agent writes what the row says, so the row is the decision.
+- **A case the rule does not settle is a gray area**, asked through `AskUserQuestion` like any
+  other, with your lean and the line of the rule it turns on.
+- **No `usage` document, or the `wave` CLI unavailable**: the table carries no `level` column,
+  as `<plugin-root>/references/company-definitions.md` states for this reader.
+
+At the gate, a value the rule does not list is an open item, fixed in its row.
 
 ## Surfacing the gray areas (the only thing you ask about)
 

@@ -62,6 +62,11 @@ jobs:
           mapfile -t specs <<< "$changed"
           python3 plugins/bb/skills/spec/scripts/lint_spec.py "${specs[@]}"
 
+      # The guard's tests are the only executable proof of its locks; a regex edit that
+      # reopens one must fail here. No network and no credential.
+      - name: Test the measure guard
+        run: python3 plugins/bb/skills/measure/scripts/db_read_test.py
+
       - name: Check formatting
         id: fmt
         run: bun run fmt:check
