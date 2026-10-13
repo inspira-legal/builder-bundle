@@ -5,11 +5,12 @@ Videos here are programs, not files. You write a scene; `render.mjs` turns it in
 ## Pipeline
 
 - Scene = `scenes/<name>/index.html` exposing `window.DURATION` (seconds), optional `window.BPM`, and `window.seek(t)` (paints the exact frame at time t, seconds). Copy the contract from `scenes/demo`; `<script src="../../lib/motion.js">`.
-- Start a scene: `node new-scene.mjs <name> <base-scene>` (base: the closer house-style scene, or `demo`).
-- Preview frames: `node stills.mjs scenes/<name> t1 t2 … [--w --h]` → `out/<name>-at-<t>.png`.
-- Render: `node render.mjs scenes/<name> [--fps 60 --w 1920 --h 1080 --subframes N]` → `out/<name>.mp4` + one still per second `out/<name>-still-NN.png`. It exits with an error, and leaves no mp4, when the render fails.
+- Run every script through the skill's wrapper, `node "${CLAUDE_SKILL_DIR}/scripts/studio.mjs" <verb> …` (the full command is in SKILL.md), never `node <verb>.mjs` directly: the wrapper is the only form pre-approved, so a direct call asks the person for permission on every run.
+- Start a scene: `new-scene <name> <base-scene>` (base: the closer house-style scene, or `demo`).
+- Preview frames: `stills scenes/<name> t1 t2 … [--w --h]` → `out/<name>-at-<t>.png`.
+- Render: `render scenes/<name> [--fps 60 --w 1920 --h 1080 --subframes N]` → `out/<name>.mp4` + one still per second `out/<name>-still-NN.png`. It exits with an error, and leaves no mp4, when the render fails.
 - Motion blur: `--subframes 8` averages 8 seeks per frame (180° shutter), so fast moves smear instead of stepping. It costs N× the render time; 8 is the floor (4 leaves double outlines). One blur grammar per film: never subframes on a stepped film, never stacked on fake smear copies. The stills stay sharp.
-- Reference video: `node ffmpeg.mjs frames <video> [fps]` → `out/ref-NNN.png`.
+- Reference video: `ffmpeg frames <video> [fps]` → `out/ref-NNN.png`.
 - Every script runs from any folder: paths resolve against the studio.
 - Default stack: one HTML file, canvas/SVG, zero dependencies. Fonts ship with the scene (`scenes/<name>/assets/*.woff2`, Poppins in the house scenes); a monospaced face is installed at `../../node_modules/@fontsource/jetbrains-mono/files/`.
 
