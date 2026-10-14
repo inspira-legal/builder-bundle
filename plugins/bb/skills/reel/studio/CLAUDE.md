@@ -5,7 +5,7 @@ Videos here are programs, not files. You write a scene; `render.mjs` turns it in
 ## Pipeline
 
 - Scene = `scenes/<name>/index.html` exposing `window.DURATION` (seconds), optional `window.BPM`, and `window.seek(t)` (paints the exact frame at time t, seconds). Copy the contract from `scenes/demo`; `<script src="../../lib/motion.js">`.
-- Run every script through the skill's wrapper, `node "${CLAUDE_SKILL_DIR}/scripts/studio.mjs" <verb> …` (the full command is in SKILL.md), never `node <verb>.mjs` directly: the wrapper is the only form pre-approved, so a direct call asks the person for permission on every run.
+- Inside `/bb:reel`, run every script through the skill's wrapper, `node "${CLAUDE_SKILL_DIR}/scripts/studio.mjs" <verb> …` (the full command is in SKILL.md): it is the only form pre-approved, so a direct `node <verb>.mjs` asks the person for permission on every run. Outside `/bb:reel` (a session opened in this folder), `${CLAUDE_SKILL_DIR}` is not set: run `node <verb>.mjs` from here, which works and asks for approval, or invoke `/bb:reel`.
 - Start a scene: `new-scene <name> <base-scene>` (base: the closer house-style scene, or `demo`).
 - Preview frames: `stills scenes/<name> t1 t2 … [--w --h]` → `out/<name>-at-<t>.png`.
 - Render: `render scenes/<name> [--fps 60 --w 1920 --h 1080 --subframes N]` → `out/<name>.mp4` + one still per second `out/<name>-still-NN.png`. It exits with an error, and leaves no mp4, when the render fails.
