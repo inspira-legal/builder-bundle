@@ -1,6 +1,6 @@
 ---
 name: spec
-description: Align on the idea before building. Develops a draft, iterates the gray areas of what gets built with you through the question tool, maps the expected behavior (happy path plus edges), orders the work in phases and closes at a gate that asks what now (build, review the spec, or stop) and what runs after the build (review the branch, ship, both or neither). Reads the framing from /bb:discover and the journey from /bb:brisar when they are there. Use when the user says "write the spec", "spec this out", "let's plan", "shape this", "what should we build", "let's discuss before building", or starts a non trivial feature. Don't use it for small mechanical changes (just do those) or to find bugs (use /bb:review).
+description: Agrees on what to build before any code. It writes a spec with you, settling the open questions one at a time, the expected behavior and the order of the work. Use when someone says "escreve a spec", "vamos planejar", "o que a gente deve construir", "vamos discutir antes de construir", "quero fazer uma feature nova", "write the spec", "let's plan", "spec this out". Not for a small mechanical change (just make it), framing whether the problem is worth solving (use /bb:discover) or designing the screens (use /bb:brisar).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana

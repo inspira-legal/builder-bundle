@@ -1,6 +1,6 @@
 ---
 name: brisar
-description: End to end design trilha. The whole double diamond, from the raw idea to a reviewed delivery, for designers and non designers alike. Research before pixels, consolidated into a design brief that stays a live contract, diverges into directions and asks where to explore (code, Claude design, Figma, Paper or Pencil); then it builds, critiques, closes with accessibility, and invokes /bb:spec to write the contract. Scales the effort and states what it skipped. Use when the builder says "let's start", "new project", "design a screen in our brand", "build a prototype", "research before drawing", "show me directions", "build the surface", "review the prototype", "design handoff", "I have an interface idea". Don't use it to frame a product problem (that is /bb:discover) or to write a formal execution spec (that is /bb:spec).
+description: Designs an interface with you in your brand, from the first idea to a reviewed prototype, researching before drawing and showing directions before building. Use when someone says "quero desenhar uma tela", "monta um protótipo", "cria uma tela na nossa marca", "me mostra direções de design", "revisa o protótipo", "tenho uma ideia de interface", "design a screen", "build a prototype", "show me design directions". Not for framing the product problem (use /bb:discover) or writing the build contract (use /bb:spec).
 license: MIT
 metadata:
   author: Inspira
