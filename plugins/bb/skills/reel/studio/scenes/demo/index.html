@@ -1,0 +1,49 @@
+<!doctype html>
+<meta charset="utf-8" />
+<style>
+  html,
+  body {
+    margin: 0;
+    background: #0b0b0f;
+    overflow: hidden;
+  }
+  canvas {
+    display: block;
+  }
+</style>
+<canvas id="c" width="1920" height="1080"></canvas>
+<script src="../../lib/motion.js"></script>
+<script>
+  // Contract with render.mjs: window.DURATION (s), window.BPM (optional), window.seek(t) paints frame at time t. No timers, no Math.random.
+  const { track, beat, lerp } = motion;
+  const ctx = document.getElementById("c").getContext("2d");
+  window.DURATION = 4;
+  window.BPM = 120;
+
+  // One shape, never cut: a pill morphs through states; last state == first so it loops.
+  const states = [
+    // [time, width, radius, hue]
+    [0, 240, 120, 250],
+    [beat(2), 900, 40, 20],
+    [beat(4), 240, 120, 250],
+  ];
+  const prop = (t, i) =>
+    track(
+      t,
+      states[0][i],
+      states.slice(1).map((s) => [s[0], s[i]]),
+      "snappy",
+    );
+
+  window.seek = (t) => {
+    ctx.fillStyle = "#0b0b0f";
+    ctx.fillRect(0, 0, 1920, 1080);
+    const w = prop(t, 1),
+      r = prop(t, 2),
+      h = prop(t, 3);
+    ctx.fillStyle = `hsl(${h} 80% 60%)`;
+    ctx.beginPath();
+    ctx.roundRect(960 - w / 2, 540 - 120, w, 240, Math.min(r, 120));
+    ctx.fill();
+  };
+</script>

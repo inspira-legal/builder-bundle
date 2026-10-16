@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.15.0 (2026-10-13)
+
+**Motion videos join bb.** `/bb:reel` builds a motion-design video as code, renders it to MP4
+with sound in Inspira's house style and critiques its own frames until they hold up. It is the
+17th skill, beside `/bb:profile` with no trilha, and it rides bb's daily self-update instead of
+a second plugin. The studio installs into `~/Motion` on the first run, not at plugin install.
+
 ## 3.14.0 (2026-10-13)
 
 **The cycle reads its own measure.** Every spec has carried `## Metric` since 3.11.0, and
