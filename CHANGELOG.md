@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.15.0 (2026-10-14)
+## 3.16.0 (2026-10-16)
 
 **The skill descriptions lead with the request, and a battery proves it.** The 15
 descriptions now open with what the person gets, quote trigger phrases the way people
@@ -32,6 +32,13 @@ session with many skills installed.
   "limpa esse código", `profile` asks for "o bb explica de menos" instead of a bare
   "explica mais", `spec` steps aside for a small mechanical change, and `think` points
   product framing to `/bb:discover`. 7,114 characters in all.
+
+## 3.15.0 (2026-10-13)
+
+**Motion videos join bb.** `/bb:reel` builds a motion-design video as code, renders it to MP4
+with sound in Inspira's house style and critiques its own frames until they hold up. It is the
+17th skill, beside `/bb:profile` with no trilha, and it rides bb's daily self-update instead of
+a second plugin. The studio installs into `~/Motion` on the first run, not at plugin install.
 
 ## 3.14.0 (2026-10-13)
 
