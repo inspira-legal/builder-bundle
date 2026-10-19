@@ -29,7 +29,8 @@ run installs it (a few minutes and about 270 MB: say so before running it).
 ## 2. Start the scene
 
 Run `node "${CLAUDE_SKILL_DIR}/scripts/tour.mjs" new SLUG`, with a short kebab-case slug ending in
-`-tour` (`case-tracking-tour`). It writes `STUDIO/scenes/SLUG/index.html` from
+`-tour` (`case-tracking-tour`); the script refuses any other name, because the studio's `CLAUDE.md`
+points its tour exception at `scenes/*-tour/`. It writes `STUDIO/scenes/SLUG/index.html` from
 `assets/scene-template.html`, with the Poppins fonts and `icons.js` beside it. Add
 `--from example-tabular` to start from the Análise em Tabela tour, ported whole, which is also
 the model for translating a `StepArt.tsx` into a scene.

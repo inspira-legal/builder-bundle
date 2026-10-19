@@ -16,6 +16,8 @@ Videos here are programs, not files. You write a scene; `render.mjs` turns it in
 
 ## Rules
 
+The rules below are for `/bb:reel` films. A tour scene, `scenes/*-tour/` made by `/bb:animate-tour`, follows that skill's `references/pattern.md` instead: the app's CSS curves, its stage centered on the gradient and its own scene contract, because the GIF has to match the app's first-steps modal. Keep its curves as they are rather than turning them into springs.
+
 - `seek(t)` is pure: no setTimeout, requestAnimationFrame, Date.now, Math.random (use a seeded hash of an index). Same t → same pixels.
 - Motion = closed-form springs from `lib/motion.js` (`spring`, `track`). No easing curves. Presets: snappy (UI), default (cards/camera), heavy (big type/logos), playful (mascots). Tiny overshoot on UI, none on type.
 - A value with several targets uses `track()` (one spring per change), never restart a spring.

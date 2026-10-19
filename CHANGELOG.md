@@ -23,6 +23,9 @@ trilha.
   `/bb:reel`'s bootstrap, and `record` drives the scene with the studio's Playwright and encodes
   with its ffmpeg (one palette per GIF, ordered dithering). The scene keeps the studio's
   `seek(t)` contract, so `/bb:reel` renders it to MP4 too.
+- **The studio names the exception**: `skills/reel/studio/CLAUDE.md` says a tour scene
+  (`scenes/*-tour/`) follows `/bb:animate-tour`'s pattern, the app's curves and its centered
+  stage, and not the film rules, so an agent working in `~/Motion` keeps a tour's motion as it is.
 
 ## 3.15.0 (2026-10-13)
 

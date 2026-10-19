@@ -28,7 +28,10 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const SKILL = fileURLToPath(new URL("..", import.meta.url));
 const HOME = process.env.MOTION_HOME ?? join(homedir(), "Motion");
-const SLUG = /^[a-z0-9][a-z0-9-]*$/;
+// A tour scene's name ends in -tour: the studio's CLAUDE.md points its exception at scenes/*-tour/,
+// so a tour scene never gets read as a /bb:reel film. The same rule keeps `../` out of every path.
+const SLUG = /^[a-z0-9][a-z0-9-]*-tour$/;
+const ASSET = /^[a-z0-9][a-z0-9-]*$/;
 const WIDTH = 404;
 const HEIGHT = 212;
 
@@ -80,8 +83,8 @@ function writeIcons(sceneDir) {
 function newScene(args) {
   const [slug] = args;
   const from = flag(args, "from", "scene-template");
-  if (!SLUG.test(slug ?? "") || !SLUG.test(from))
-    die("usage: tour.mjs new <kebab-case-slug> [--from <asset>]");
+  if (!SLUG.test(slug ?? "") || !ASSET.test(from))
+    die("usage: tour.mjs new <kebab-case-slug-ending-in-tour> [--from <asset>]");
   const source = join(SKILL, "assets", `${from}.html`);
   if (!existsSync(source)) die(`asset not found: assets/${from}.html`);
   const dir = join(HOME, "scenes", slug);
@@ -128,7 +131,7 @@ async function record(args) {
   const quality = flag(args, "quality", "light");
   const q = QUALITIES[quality];
   if (!SLUG.test(slug ?? "") || !q)
-    die("usage: tour.mjs record <slug> [--quality light|high] [--steps N …]");
+    die("usage: tour.mjs record <slug-ending-in-tour> [--quality light|high] [--steps N …]");
   const dir = join(HOME, "scenes", slug);
   if (!existsSync(join(dir, "index.html"))) die(`scene not found: ${dir}/index.html`);
   if (!existsSync(join(HOME, "node_modules", "playwright")))

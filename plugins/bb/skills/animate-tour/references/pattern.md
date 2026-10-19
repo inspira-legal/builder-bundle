@@ -133,7 +133,8 @@ to combine them.
   the new feature). In the scene, the prefix is `tour-`.
 
 These curves are the app's, and the GIF has to match the app. So a tour scene follows this page,
-not the spring rules of the studio's `CLAUDE.md`: those govern `/bb:reel` films.
+not the spring rules of the studio's `CLAUDE.md`: those govern `/bb:reel` films, and the
+studio's `CLAUDE.md` says so for `scenes/*-tour/`.
 
 ### A new movement
 
