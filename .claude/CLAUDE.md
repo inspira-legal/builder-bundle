@@ -47,14 +47,15 @@ plugins/bb/
 │   ├── check_events.py                 # spec (step 6), review (the instrumentation front): EVENTS.md checker
 │   ├── normalize_workflow.py           # the dispatch (references/build-tasks-workflow.md): the CR-free copy
 │   └── inspect_pr_checks.py            # ship (CI failures), review (the ci front)
-├── skills/                            # all 17 skills flat; trilha grouping is a docs concept
+├── skills/                            # all 18 skills flat; trilha grouping is a docs concept
 │   ├── Pensar:        discover, challenge, think, legal-lens
 │   ├── Desenhar:      spec
 │   ├── Construir:     implement, ship, measure, gather-branch-context
 │   ├── Revisar:       review, maintain-repo, review-setup
 │   ├── Design:        brisar
 │   ├── Pesquisar/Doc: code-deep-research, write-readme
-│   └── no trilha:     profile, reel (videos as code; its studio and bootstrap live in skills/reel/)
+│   └── no trilha:     profile, reel (videos as code; its studio and bootstrap live in skills/reel/),
+│                      animate-tour (first-steps tour animations; GIF mode records on reel's studio)
 └── workflows/                         # dispatched by a skill, not read by one
     └── build-tasks.js                  # one agent per task, run via Workflow's scriptPath
 ```
