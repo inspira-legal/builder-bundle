@@ -36,6 +36,9 @@ The sections go from the story to the pixels, and the rest of the skill cites th
     new value whole, without keeping part of the original: `Parecer_Locacao_Ribeiro.pdf` becomes
     `Contrato_01.pdf`, not `Parecer_Locacao_01.pdf`, because the part you keep may still point at
     the case.
+  - **Say what you replaced by its type**, never by quoting it: "the client's and the opposing
+    party's names, three lawsuit numbers", not the names themselves. The plan and the delivery
+    travel further than the screenshots did.
   - **Keep** the vocabulary of the product and of the law: phase and column names, docket entry
     types such as "Publicação" and "Conclusão", courts such as "TJSP", case classes such as
     "Agravo de Instrumento".

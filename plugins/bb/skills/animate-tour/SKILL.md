@@ -63,7 +63,8 @@ before producing anything**. Put the plan in the question itself, one line per s
 
 The plan follows `pattern.md`, section 1: 3 to 5 steps, one idea each, step 1 "create" and the
 last one "the result", the miniature as the smallest crop of the real screen with its real
-labels, fictional data in place of anything the screenshots show (say what you replaced), and a
+labels, fictional data in place of anything the screenshots show (say what you replaced by its type,
+never quoting it), and a
 single looping point of attention per step.
 
 In GIF mode the title and the body do not go into the image, since the animated area is the art

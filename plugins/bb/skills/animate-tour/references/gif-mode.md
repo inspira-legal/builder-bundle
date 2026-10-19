@@ -137,6 +137,6 @@ from the screenshots, the screenshots win.
 Deliver the quality the person asked for. Give the output folder and one line per file (the
 full GIF, each step's GIF, and the `.png` as a cover or a still alternative), with the step plan:
 each step's title and body are the caption that goes around the GIF. List what was replaced (the
-screenshots' data, colors outside the palette) and what was left out (discarded screenshots).
+screenshots' data by its type, never quoting it, and the colors outside the palette) and what was left out (discarded screenshots).
 Close with the plain text question of SKILL.md, step 6: is the result what the person wanted, or
 what would they change.
