@@ -1,7 +1,8 @@
 {
   "model": "opus",
   "resolved": "claude-opus-5-5",
-  "cost_usd": 0.8403688000000001,
+  "cost_usd": 0.939151,
+  "studio": "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws",
   "checks": {
     "asks_mode": true,
     "asks_quality": true,
@@ -11,291 +12,561 @@
     "reads_stills": true,
     "closes_with_plain_question": true,
     "_leaked": [
+      "Mariana",
+      "Couto Ribeiro",
+      "Henrique",
+      "Vasconcelos",
+      "Vale Sereno",
+      "Alto Ipê",
       "Parecer_Locacao"
     ]
   },
-  "scenes": "<!doctype html>\n<!--\n  A first-steps tour scene for /bb:animate-tour, GIF mode.\n\n  `tour.mjs new <slug>` copies this file to ~/Motion/scenes/<slug>/index.html, beside the\n  Poppins fonts and icons.js. Write one <template data-step> per step inside <body>, in order.\n  Leave the \"DO NOT EDIT\" blocks alone: they mirror the app's tokens and keyframes\n  (references/pattern.md, sections 3 and 4).\n\n  Icons: an empty `i` element with data-icon=\"paper\" and class=\"ic ic-sm\". The name is a file\n  in the skill's assets/icons without the .svg; the step mounts it as the design system's SVG.\n\n  Contract with the studio (render.mjs, stills.mjs and tour.mjs record): window.DURATION,\n  window.READY and window.seek(t). Preview in a browser with index.html?play, or one step with\n  index.html?play&step=2.\n-->\n<html lang=\"pt-BR\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <title>Pesquisa tour</title>\n    <style>\n      @font-face {\n        font-family: Poppins;\n        font-weight: 400;\n        src: url(fonts/poppins-400.woff2);\n      }\n      @font-face {\n        font-family: Poppins;\n        font-weight: 500;\n        src: url(fonts/poppins-500.woff2);\n      }\n      @font-face {\n        font-family: Poppins;\n        font-weight: 600;\n        src: url(fonts/poppins-600.woff2);\n      }\n\n      /* ===== DO NOT EDIT: design system tokens (packages/ui/src/tailwind/theme.css) ===== */\n      :root {\n        --color-navy-base-dark: #070c20;\n        --color-neutral-1: #ffffff;\n        --color-neutral-2: #f6f7f9;\n        --color-neutral-3: #eef0f3;\n        --color-neutral-4: #e8e9ec;\n        --color-neutral-5: #dcdee0;\n        --color-neutral-6: #d0d3d6;\n        --color-neutral-7: #c1c4c7;\n        --color-neutral-8: #8e9399;\n        --color-neutral-9: #656c74;\n        --color-neutral-10: #363f49;\n        --color-navy-1: #2f3b6a;\n        --color-navy-2: #26325e;\n        --color-navy-3: #1c264f;\n        --color-navy-4: #151e42;\n        --color-navy-5: #0e1634;\n        --color-sky-1: #fafcff;\n        --color-sky-2: #ecf2fd;\n        --color-sky-3: #dbe6fa;\n        --color-sky-4: #cfdffc;\n        --color-sky-5: #bdd2fa;\n        --color-sky-6: #a8c3f5;\n        --color-sky-7: #91b3f3;\n        --color-sky-8: #7ca4ee;\n        --color-sky-9: #6a96ea;\n        --color-sky-10: #5187ec;\n        --color-success-2: #b7ede2;\n        --color-success-6: #0f947a;\n        --color-success-8: #057861;\n        --color-success-9: #046b57;\n        --color-warning-2: #ffe9bd;\n        --color-warning-6: #faad16;\n        --color-warning-7: #f0a10a;\n        --color-warning-8: #e39600;\n        --color-critical-2: #ffc7cd;\n        --color-critical-7: #bd081d;\n        --color-critical-8: #ab071a;\n        --gradient-4c-to: #2d3aa1;\n        --radius-xs: 4px;\n        --radius-sm: 8px;\n        --radius-md: 10px;\n        --radius-lg: 12px;\n        --radius-xl: 16px;\n        --ease-pop: cubic-bezier(0.25, 1, 0.5, 1);\n      }\n      * {\n        box-sizing: border-box;\n        margin: 0;\n        padding: 0;\n      }\n      html,\n      body {\n        background: var(--color-neutral-1);\n        overflow: hidden;\n      }\n      body {\n        font-family: Poppins, sans-serif;\n        color: var(--color-neutral-10);\n        -webkit-font-smoothing: antialiased;\n      }\n\n      /* The stage is the modal's art area: the 452px card less 24px of padding on each side,\n         by 212px. No border and no corner: that is the GIF's crop (the app's modal frame adds both). */\n      #stage {\n        position: relative;\n        width: 404px;\n        height: 212px;\n        overflow: hidden;\n        background: linear-gradient(to bottom, var(--color-sky-2), var(--color-neutral-1));\n      }\n      #stage > .step {\n        position: absolute;\n        inset: 0;\n      }\n\n      /* Type (text-*) */\n      .caption-sm {\n        font-size: 11px;\n        line-height: 1.5;\n      }\n      .caption {\n        font-size: 12px;\n        line-height: 1.5;\n      }\n      .body-sm {\n        font-size: 13px;\n        line-height: 1.5;\n      }\n      .body {\n        font-size: 14px;\n        line-height: 1.6;\n      }\n      .regular {\n        font-weight: 400;\n      }\n      .medium {\n        font-weight: 500;\n      }\n      .semibold {\n        font-weight: 600;\n      }\n      .upper {\n        text-transform: uppercase;\n      }\n      .italic {\n        font-style: italic;\n      }\n      .tight {\n        line-height: 1.25;\n      }\n      .truncate {\n        overflow: hidden;\n        text-overflow: ellipsis;\n        white-space: nowrap;\n        min-width: 0;\n      }\n      .nowrap {\n        white-space: nowrap;\n      }\n\n      /* Illustration aliases (the same consts every StepArt.tsx declares at its top) */\n      .t-dark {\n        color: var(--color-neutral-10);\n      }\n      .t-muted {\n        color: var(--color-neutral-9);\n      }\n      .t-faint {\n        color: var(--color-neutral-8);\n      }\n      .t-accent {\n        color: var(--color-sky-10);\n      }\n      .t-indigo {\n        color: var(--gradient-4c-to);\n      }\n      .t-white {\n        color: var(--color-neutral-1);\n      }\n      .b {\n        border: 1px solid var(--color-neutral-5);\n      }\n      .b-soft {\n        border: 1px solid var(--color-neutral-3);\n      }\n      .b-dash {\n        border: 1.5px dashed var(--color-neutral-6);\n      }\n      .bg-white {\n        background: var(--color-neutral-1);\n      }\n      .bg-table {\n        background: var(--color-neutral-2);\n      }\n      .bg-lavender {\n        background: var(--color-sky-2);\n      }\n\n      /* Layout */\n      .fill {\n        width: 100%;\n        height: 100%;\n      }\n      .center {\n        display: flex;\n        align-items: center;\n        justify-content: center;\n      }\n      .col {\n        display: flex;\n        flex-direction: column;\n      }\n      .row {\n        display: flex;\n        align-items: center;\n      }\n      .grow {\n        flex: 1;\n        min-width: 0;\n      }\n      .rel {\n        position: relative;\n      }\n      .abs {\n        position: absolute;\n      }\n      .r-xs {\n        border-radius: var(--radius-xs);\n      }\n      .r-sm {\n        border-radius: var(--radius-sm);\n      }\n      .r-md {\n        border-radius: var(--radius-md);\n      }\n      .r-lg {\n        border-radius: var(--radius-lg);\n      }\n      .r-xl {\n        border-radius: var(--radius-xl);\n      }\n      .r-full {\n        border-radius: 9999px;\n      }\n\n      /* Recurring pieces */\n      .cta {\n        display: inline-flex;\n        align-items: center;\n        gap: 6px;\n        height: 38px;\n        padding: 0 18px;\n        border-radius: var(--radius-md);\n        background: var(--color-navy-3);\n        color: var(--color-neutral-1);\n        font-size: 13px;\n        font-weight: 500;\n        white-space: nowrap;\n      }\n      .pill {\n        display: inline-flex;\n        align-items: center;\n        gap: 4px;\n        padding: 2px 6px;\n        border-radius: 9999px;\n        font-size: 11px;\n        font-weight: 500;\n        white-space: nowrap;\n      }\n      .ic {\n        display: inline-block;\n        flex-shrink: 0;\n        vertical-align: middle;\n      }\n      .ic-xs {\n        width: 12px;\n        height: 12px;\n      }\n      .ic-sm {\n        width: 16px;\n        height: 16px;\n      }\n      .ic-md {\n        width: 20px;\n        height: 20px;\n      }\n      .ic svg {\n        width: 100%;\n        height: 100%;\n        display: block;\n      }\n      .ic-missing {\n        outline: 2px solid #ff00ff;\n      }\n      .cursor {\n        position: absolute;\n        width: 20px;\n        height: 20px;\n        filter: drop-shadow(0 2px 3px rgba(7, 12, 33, 0.3));\n        animation: tour-cursorTap 1.6s ease-in-out infinite;\n      }\n\n      /* ===== DO NOT EDIT: the motion vocabulary (the keyframes in each *TourDialog/index.tsx) ===== */\n      @keyframes tour-stepIn {\n        from {\n          opacity: 0;\n          transform: translateY(6px);\n        }\n        to {\n          opacity: 1;\n          transform: none;\n        }\n      }\n      @keyframes tour-pop {\n        0% {\n          opacity: 0;\n          transform: translateY(6px) scale(0.94);\n        }\n        60% {\n          opacity: 1;\n        }\n        100% {\n          opacity: 1;\n          transform: none;\n        }\n      }\n      @keyframes tour-cursorTap {\n        0%,\n        100% {\n          transform: translate(0, 0);\n        }\n        45% {\n          transform: translate(-2px, -2px);\n        }\n        55% {\n          transform: translate(1px, 1px);\n        }\n      }\n      @keyframes tour-glowPulse {\n        0%,\n        100% {\n          box-shadow: 0 0 0 0 rgba(106, 151, 235, 0.45);\n        }\n        50% {\n          box-shadow: 0 0 0 7px rgba(106, 151, 235, 0);\n        }\n      }\n      @keyframes tour-checkPop {\n        from {\n          opacity: 0;\n          transform: scale(0.4);\n        }\n        to {\n          opacity: 1;\n          transform: none;\n        }\n      }\n      @keyframes tour-sheetRise {\n        from {\n          opacity: 0;\n          transform: translateY(10px);\n        }\n        to {\n          opacity: 1;\n          transform: none;\n        }\n      }\n      .step-in {\n        animation: tour-stepIn 0.3s var(--ease-pop) both;\n      }\n      .pop {\n        opacity: 0;\n        animation: tour-pop 0.4s var(--ease-pop) forwards;\n      }\n      .glow {\n        animation: tour-glowPulse 2s ease-in-out infinite;\n      }\n      .check-pop {\n        opacity: 0;\n        animation: tour-checkPop 0.28s var(--ease-pop) forwards;\n      }\n      .sheet-rise {\n        animation: tour-sheetRise 0.4s var(--ease-pop) both;\n      }\n      /* Each class above declares the whole `animation`, so two of them on one element fight and\n         the last one wins (a .pop.glow would stay invisible). These pairs run both. For any other\n         pair, wrap: the entrance on the parent, the loop on the child. */\n      .pop.glow {\n        animation:\n          tour-pop 0.4s var(--ease-pop) forwards,\n          tour-glowPulse 2s ease-in-out infinite;\n      }\n      .step-in.glow {\n        animation:\n          tour-stepIn 0.3s var(--ease-pop) both,\n          tour-glowPulse 2s ease-in-out infinite;\n      }\n      /* Entrance delay: style=\"animation-delay:.15s\" (steps of .15s). */\n      /* ===== end of the DO NOT EDIT block ===== */\n\n      /* This feature's own keyframes (prefix tour-, see pattern.md \"A new movement\") */\n    </style>\n  </head>\n  <body>\n    <div id=\"stage\" aria-hidden=\"true\"></div>\n\n    <!--\n      One <template> per step, in order. Attributes:\n        data-step      the step's position, from 1\n        data-title     the step's title (documentation only; it does not show in the GIF)\n        data-duration  seconds the step stays on screen (default 4)\n      A template fills the whole stage (404x212). Center it with class=\"fill center\".\n\n      The cursor is always this SVG. Put it inside a <span class=\"rel\" style=\"display:inline-flex\">\n      that wraps the target, anchored at the bottom right corner: style=\"right:-14px;bottom:-14px\"\n      for a 38px button, \"right:-10px;bottom:-10px\" for a button of 32px or less, and\n      \"right:6px;bottom:-8px\" inside a table cell.\n      <svg class=\"cursor\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.5 5 3z\"/></svg>\n    -->\n\n    <template data-step=\"1\" data-title=\"Comece uma nova pesquisa\" data-duration=\"4\">\n      <div class=\"fill center\">\n        <div class=\"col center bg-white b-dash r-xl step-in\" style=\"width:220px;padding:18px;gap:10px\">\n          <div class=\"center r-lg t-muted\" style=\"width:40px;height:40px;background:var(--color-neutral-3)\">\n            <i class=\"ic ic-sm\" data-icon=\"search\"></i>\n          </div>\n          <span class=\"caption-sm t-muted\">Processos e documentos</span>\n          <span class=\"rel\" style=\"display:inline-flex\">\n            <span class=\"cta glow\"><i class=\"ic ic-sm\" data-icon=\"plus\"></i>Nova pesquisa</span>\n            <svg class=\"cursor\" style=\"right:-14px;bottom:-14px\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.5 5 3z\"/></svg>\n          </span>\n        </div>\n      </div>\n    </template>\n\n    <template data-step=\"2\" data-title=\"Digite o que procura\" data-duration=\"4\">\n      <div class=\"fill center\">\n        <div class=\"col\" style=\"width:300px;gap:10px\">\n          <span class=\"rel\" style=\"display:flex\">\n            <span class=\"row bg-white b r-lg pop glow grow\" style=\"height:38px;padding:0 12px;gap:8px\">\n              <i class=\"ic ic-sm t-faint\" data-icon=\"search\"></i>\n              <span class=\"body-sm t-dark truncate\">rescisão contrato de locação</span>\n            </span>\n            <svg class=\"cursor\" style=\"right:-10px;bottom:-10px\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.5 5 3z\"/></svg>\n          </span>\n          <div class=\"row\" style=\"gap:6px\">\n            <span class=\"pill bg-white b t-dark pop\" style=\"padding:4px 10px;animation-delay:.15s\">Processos</span>\n            <span class=\"pill bg-white b t-dark pop\" style=\"padding:4px 10px;animation-delay:.3s\">Documentos</span>\n          </div>\n        </div>\n      </div>\n    </template>\n\n    <template data-step=\"3\" data-title=\"Refine com filtros\" data-duration=\"4\">\n      <div class=\"fill center\">\n        <div class=\"col\" style=\"width:300px;gap:12px\">\n          <div class=\"row\" style=\"flex-wrap:wrap;gap:6px\">\n            <span class=\"pill t-accent pop\" style=\"padding:4px 10px;border:1px solid var(--color-sky-4);background:var(--color-sky-1);box-shadow:0 0 0 3px rgba(106,151,235,.15)\">Processos</span>\n            <span class=\"pill bg-white b t-dark pop\" style=\"padding:4px 10px;animation-delay:.15s\">Documentos</span>\n            <span class=\"pill t-accent pop\" style=\"padding:4px 10px;animation-delay:.3s;border:1px solid var(--color-sky-4);background:var(--color-sky-1);box-shadow:0 0 0 3px rgba(106,151,235,.15)\">Tribunal: TJSP</span>\n            <span class=\"pill bg-white b t-dark pop\" style=\"padding:4px 10px;animation-delay:.45s\">Período: 01/01/2025 a 30/06/2025</span>\n          </div>\n          <span class=\"rel\" style=\"display:inline-flex;align-self:flex-start\">\n            <span class=\"cta pop glow\" style=\"animation-delay:.65s\"><i class=\"ic ic-sm\" data-icon=\"search\"></i>Pesquisar</span>\n            <svg class=\"cursor\" style=\"right:-14px;bottom:-14px\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.5 5 3z\"/></svg>\n          </span>\n        </div>\n      </div>\n    </template>\n\n    <template data-step=\"4\" data-title=\"Encontre o que precisa\" data-duration=\"4\">\n      <div class=\"fill center\">\n        <div class=\"col\" style=\"width:340px;gap:6px\">\n          <span class=\"caption-sm medium t-dark truncate pop\">3 resultados para “rescisão contrato de locação”</span>\n          <span class=\"rel\" style=\"display:flex\">\n            <span class=\"col bg-white b r-lg pop glow grow\" style=\"padding:6px 10px;animation-delay:.15s\">\n              <span class=\"row\" style=\"gap:6px\">\n                <span class=\"body-sm semibold t-dark tight truncate\">Marina Alves x Imobiliária Horizonte Ltda.</span>\n                <span class=\"pill\" style=\"background:var(--color-success-2);color:var(--color-success-9)\">Ativo</span>\n              </span>\n              <span class=\"caption-sm t-muted\">0001234-56.2025.8.26.0100 · TJSP</span>\n            </span>\n            <svg class=\"cursor\" style=\"right:16px;bottom:-8px\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.5 5 3z\"/></svg>\n          </span>\n          <span class=\"col bg-white b r-lg pop\" style=\"padding:6px 10px;animation-delay:.3s\">\n            <span class=\"row\" style=\"gap:6px\">\n              <span class=\"body-sm semibold t-dark tight truncate\">Carlos Mendes x Construtora Delta S.A.</span>\n              <span class=\"pill\" style=\"background:var(--color-success-2);color:var(--color-success-9)\">Ativo</span>\n            </span>\n            <span class=\"caption-sm t-muted\">0007890-12.2025.8.26.0002 · TJSP</span>\n          </span>\n          <span class=\"col bg-white b r-lg pop\" style=\"padding:6px 10px;animation-delay:.45s\">\n            <span class=\"row\" style=\"gap:6px\">\n              <i class=\"ic ic-sm t-muted\" data-icon=\"paper-pdf\"></i>\n              <span class=\"body-sm semibold t-dark tight truncate\">Parecer_Locacao_01.pdf</span>\n            </span>\n            <span class=\"caption-sm t-muted\">Documento · Pasta Contencioso</span>\n          </span>\n        </div>\n      </div>\n    </template>\n\n    <script src=\"icons.js\"></script>\n    <script>\n      // ===== DO NOT EDIT: the scene contract =====\n      // A step mounts from scratch, the way each step is a fresh component in the app, and seek\n      // pauses every CSS animation at the asked time. Same t, same pixels.\n      const templates = [...document.querySelectorAll(\"template[data-step]\")].sort(\n        (a, b) => Number(a.dataset.step) - Number(b.dataset.step),\n      );\n      const stage = document.getElementById(\"stage\");\n      const icons = window.ICONS || {};\n      window.MISSING_ICONS = [];\n      window.STEPS = templates.map((t) => Number(t.dataset.duration || 4));\n      window.DURATION = window.STEPS.reduce((a, b) => a + b, 0);\n\n      let mounted = -1;\n      const mount = (i) => {\n        if (i === mounted) return;\n        const wrap = document.createElement(\"div\");\n        wrap.className = \"step\";\n        wrap.appendChild(templates[i].content.cloneNode(true));\n        for (const el of wrap.querySelectorAll(\"i[data-icon]\")) {\n          const svg = icons[el.dataset.icon];\n          if (svg) el.innerHTML = svg;\n          else {\n            el.classList.add(\"ic-missing\");\n            window.MISSING_ICONS.push(el.dataset.icon);\n          }\n        }\n        stage.replaceChildren(wrap);\n        mounted = i;\n      };\n      const freeze = (t) =>\n        document.getAnimations().forEach((a) => {\n          a.pause();\n          a.currentTime = t * 1000;\n        });\n\n      // Seconds after which every finite animation of step i (pop, stepIn, checkPop...) has settled.\n      window.settledAt = (i) => {\n        mount(i);\n        return (\n          Math.max(\n            0,\n            ...document.getAnimations().map((a) => {\n              const end = a.effect.getComputedTiming().endTime;\n              return Number.isFinite(end) ? end : 0;\n            }),\n          ) / 1000\n        );\n      };\n      window.seekStep = (i, t) => {\n        mount(i);\n        freeze(t);\n      };\n      window.seek = (t) => {\n        let i = 0;\n        let start = 0;\n        while (i < window.STEPS.length - 1 && t >= start + window.STEPS[i])\n          start += window.STEPS[i++];\n        window.seekStep(i, t - start);\n      };\n      window.READY = Promise.all(\n        [\"400\", \"500\", \"600\"].map((w) => document.fonts.load(`${w} 12px Poppins`)),\n      );\n\n      // Preview in a normal browser: index.html?play, or index.html?play&step=2 to hold one step.\n      const query = new URLSearchParams(location.search);\n      if (query.has(\"play\"))\n        window.READY.then(() => {\n          const only = query.has(\"step\") ? Number(query.get(\"step\")) - 1 : -1;\n          const t0 = performance.now();\n          const loop = () => {\n            const t = (performance.now() - t0) / 1000;\n            if (only >= 0) window.seekStep(only, t % window.STEPS[only]);\n            else window.seek(t % window.DURATION);\n            requestAnimationFrame(loop);\n          };\n          loop();\n        });\n    </script>\n  </body>\n</html>\n",
+  "scenes": "<!doctype html>\n<!--\n  A first-steps tour scene for /bb:animate-tour, GIF mode.\n\n  `tour.mjs new <slug>` copies this file to ~/Motion/scenes/<slug>/index.html, beside the\n  Poppins fonts and icons.js. Write one <template data-step> per step inside <body>, in order.\n  Leave the \"DO NOT EDIT\" blocks alone: they mirror the app's tokens and keyframes\n  (references/pattern.md, sections 3 and 4).\n\n  Icons: an empty `i` element with data-icon=\"paper\" and class=\"ic ic-sm\". The name is a file\n  in the skill's assets/icons without the .svg; the step mounts it as the design system's SVG.\n\n  Contract with the studio (render.mjs, stills.mjs and tour.mjs record): window.DURATION,\n  window.READY and window.seek(t). Preview in a browser with index.html?play, or one step with\n  index.html?play&step=2.\n-->\n<html lang=\"pt-BR\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <title>Pesquisa tour</title>\n    <style>\n      @font-face {\n        font-family: Poppins;\n        font-weight: 400;\n        src: url(fonts/poppins-400.woff2);\n      }\n      @font-face {\n        font-family: Poppins;\n        font-weight: 500;\n        src: url(fonts/poppins-500.woff2);\n      }\n      @font-face {\n        font-family: Poppins;\n        font-weight: 600;\n        src: url(fonts/poppins-600.woff2);\n      }\n\n      /* ===== DO NOT EDIT: design system tokens (packages/ui/src/tailwind/theme.css) ===== */\n      :root {\n        --color-navy-base-dark: #070c20;\n        --color-neutral-1: #ffffff;\n        --color-neutral-2: #f6f7f9;\n        --color-neutral-3: #eef0f3;\n        --color-neutral-4: #e8e9ec;\n        --color-neutral-5: #dcdee0;\n        --color-neutral-6: #d0d3d6;\n        --color-neutral-7: #c1c4c7;\n        --color-neutral-8: #8e9399;\n        --color-neutral-9: #656c74;\n        --color-neutral-10: #363f49;\n        --color-navy-1: #2f3b6a;\n        --color-navy-2: #26325e;\n        --color-navy-3: #1c264f;\n        --color-navy-4: #151e42;\n        --color-navy-5: #0e1634;\n        --color-sky-1: #fafcff;\n        --color-sky-2: #ecf2fd;\n        --color-sky-3: #dbe6fa;\n        --color-sky-4: #cfdffc;\n        --color-sky-5: #bdd2fa;\n        --color-sky-6: #a8c3f5;\n        --color-sky-7: #91b3f3;\n        --color-sky-8: #7ca4ee;\n        --color-sky-9: #6a96ea;\n        --color-sky-10: #5187ec;\n        --color-success-2: #b7ede2;\n        --color-success-6: #0f947a;\n        --color-success-8: #057861;\n        --color-success-9: #046b57;\n        --color-warning-2: #ffe9bd;\n        --color-warning-6: #faad16;\n        --color-warning-7: #f0a10a;\n        --color-warning-8: #e39600;\n        --color-critical-2: #ffc7cd;\n        --color-critical-7: #bd081d;\n        --color-critical-8: #ab071a;\n        --gradient-4c-to: #2d3aa1;\n        --radius-xs: 4px;\n        --radius-sm: 8px;\n        --radius-md: 10px;\n        --radius-lg: 12px;\n        --radius-xl: 16px;\n        --ease-pop: cubic-bezier(0.25, 1, 0.5, 1);\n      }\n      * {\n        box-sizing: border-box;\n        margin: 0;\n        padding: 0;\n      }\n      html,\n      body {\n        background: var(--color-neutral-1);\n        overflow: hidden;\n      }\n      body {\n        font-family: Poppins, sans-serif;\n        color: var(--color-neutral-10);\n        -webkit-font-smoothing: antialiased;\n      }\n\n      /* The stage is the modal's art area: the 452px card less 24px of padding on each side,\n         by 212px. No border and no corner: that is the GIF's crop (the app's modal frame adds both). */\n      #stage {\n        position: relative;\n        width: 404px;\n        height: 212px;\n        overflow: hidden;\n        background: linear-gradient(to bottom, var(--color-sky-2), var(--color-neutral-1));\n      }\n      #stage > .step {\n        position: absolute;\n        inset: 0;\n      }\n\n      /* Type (text-*) */\n      .caption-sm {\n        font-size: 11px;\n        line-height: 1.5;\n      }\n      .caption {\n        font-size: 12px;\n        line-height: 1.5;\n      }\n      .body-sm {\n        font-size: 13px;\n        line-height: 1.5;\n      }\n      .body {\n        font-size: 14px;\n        line-height: 1.6;\n      }\n      .regular {\n        font-weight: 400;\n      }\n      .medium {\n        font-weight: 500;\n      }\n      .semibold {\n        font-weight: 600;\n      }\n      .upper {\n        text-transform: uppercase;\n      }\n      .italic {\n        font-style: italic;\n      }\n      .tight {\n        line-height: 1.25;\n      }\n      .truncate {\n        overflow: hidden;\n        text-overflow: ellipsis;\n        white-space: nowrap;\n        min-width: 0;\n      }\n      .nowrap {\n        white-space: nowrap;\n      }\n\n      /* Illustration aliases (the same consts every StepArt.tsx declares at its top) */\n      .t-dark {\n        color: var(--color-neutral-10);\n      }\n      .t-muted {\n        color: var(--color-neutral-9);\n      }\n      .t-faint {\n        color: var(--color-neutral-8);\n      }\n      .t-accent {\n        color: var(--color-sky-10);\n      }\n      .t-indigo {\n        color: var(--gradient-4c-to);\n      }\n      .t-white {\n        color: var(--color-neutral-1);\n      }\n      .b {\n        border: 1px solid var(--color-neutral-5);\n      }\n      .b-soft {\n        border: 1px solid var(--color-neutral-3);\n      }\n      .b-dash {\n        border: 1.5px dashed var(--color-neutral-6);\n      }\n      .bg-white {\n        background: var(--color-neutral-1);\n      }\n      .bg-table {\n        background: var(--color-neutral-2);\n      }\n      .bg-lavender {\n        background: var(--color-sky-2);\n      }\n\n      /* Layout */\n      .fill {\n        width: 100%;\n        height: 100%;\n      }\n      .center {\n        display: flex;\n        align-items: center;\n        justify-content: center;\n      }\n      .col {\n        display: flex;\n        flex-direction: column;\n      }\n      .row {\n        display: flex;\n        align-items: center;\n      }\n      .grow {\n        flex: 1;\n        min-width: 0;\n      }\n      .rel {\n        position: relative;\n      }\n      .abs {\n        position: absolute;\n      }\n      .r-xs {\n        border-radius: var(--radius-xs);\n      }\n      .r-sm {\n        border-radius: var(--radius-sm);\n      }\n      .r-md {\n        border-radius: var(--radius-md);\n      }\n      .r-lg {\n        border-radius: var(--radius-lg);\n      }\n      .r-xl {\n        border-radius: var(--radius-xl);\n      }\n      .r-full {\n        border-radius: 9999px;\n      }\n\n      /* Recurring pieces */\n      .cta {\n        display: inline-flex;\n        align-items: center;\n        gap: 6px;\n        height: 38px;\n        padding: 0 18px;\n        border-radius: var(--radius-md);\n        background: var(--color-navy-3);\n        color: var(--color-neutral-1);\n        font-size: 13px;\n        font-weight: 500;\n        white-space: nowrap;\n      }\n      .pill {\n        display: inline-flex;\n        align-items: center;\n        gap: 4px;\n        padding: 2px 6px;\n        border-radius: 9999px;\n        font-size: 11px;\n        font-weight: 500;\n        white-space: nowrap;\n      }\n      .ic {\n        display: inline-block;\n        flex-shrink: 0;\n        vertical-align: middle;\n      }\n      .ic-xs {\n        width: 12px;\n        height: 12px;\n      }\n      .ic-sm {\n        width: 16px;\n        height: 16px;\n      }\n      .ic-md {\n        width: 20px;\n        height: 20px;\n      }\n      .ic svg {\n        width: 100%;\n        height: 100%;\n        display: block;\n      }\n      .ic-missing {\n        outline: 2px solid #ff00ff;\n      }\n      .cursor {\n        position: absolute;\n        width: 20px;\n        height: 20px;\n        filter: drop-shadow(0 2px 3px rgba(7, 12, 33, 0.3));\n        animation: tour-cursorTap 1.6s ease-in-out infinite;\n      }\n\n      /* ===== DO NOT EDIT: the motion vocabulary (the keyframes in each *TourDialog/index.tsx) ===== */\n      @keyframes tour-stepIn {\n        from {\n          opacity: 0;\n          transform: translateY(6px);\n        }\n        to {\n          opacity: 1;\n          transform: none;\n        }\n      }\n      @keyframes tour-pop {\n        0% {\n          opacity: 0;\n          transform: translateY(6px) scale(0.94);\n        }\n        60% {\n          opacity: 1;\n        }\n        100% {\n          opacity: 1;\n          transform: none;\n        }\n      }\n      @keyframes tour-cursorTap {\n        0%,\n        100% {\n          transform: translate(0, 0);\n        }\n        45% {\n          transform: translate(-2px, -2px);\n        }\n        55% {\n          transform: translate(1px, 1px);\n        }\n      }\n      @keyframes tour-glowPulse {\n        0%,\n        100% {\n          box-shadow: 0 0 0 0 rgba(106, 151, 235, 0.45);\n        }\n        50% {\n          box-shadow: 0 0 0 7px rgba(106, 151, 235, 0);\n        }\n      }\n      @keyframes tour-checkPop {\n        from {\n          opacity: 0;\n          transform: scale(0.4);\n        }\n        to {\n          opacity: 1;\n          transform: none;\n        }\n      }\n      @keyframes tour-sheetRise {\n        from {\n          opacity: 0;\n          transform: translateY(10px);\n        }\n        to {\n          opacity: 1;\n          transform: none;\n        }\n      }\n      .step-in {\n        animation: tour-stepIn 0.3s var(--ease-pop) both;\n      }\n      .pop {\n        opacity: 0;\n        animation: tour-pop 0.4s var(--ease-pop) forwards;\n      }\n      .glow {\n        animation: tour-glowPulse 2s ease-in-out infinite;\n      }\n      .check-pop {\n        opacity: 0;\n        animation: tour-checkPop 0.28s var(--ease-pop) forwards;\n      }\n      .sheet-rise {\n        animation: tour-sheetRise 0.4s var(--ease-pop) both;\n      }\n      /* Each class above declares the whole `animation`, so two of them on one element fight and\n         the last one wins (a .pop.glow would stay invisible). These pairs run both. For any other\n         pair, wrap: the entrance on the parent, the loop on the child. */\n      .pop.glow {\n        animation:\n          tour-pop 0.4s var(--ease-pop) forwards,\n          tour-glowPulse 2s ease-in-out infinite;\n      }\n      .step-in.glow {\n        animation:\n          tour-stepIn 0.3s var(--ease-pop) both,\n          tour-glowPulse 2s ease-in-out infinite;\n      }\n      /* Entrance delay: style=\"animation-delay:.15s\" (steps of .15s). */\n      /* ===== end of the DO NOT EDIT block ===== */\n\n      /* This feature's own keyframes (prefix tour-, see pattern.md \"A new movement\") */\n      /* None: Pesquisa uses the shared vocabulary only. Its own pieces follow. */\n\n      /* Filter chip; the selected one uses the pattern's \"selected item\" tokens */\n      .chip {\n        display: inline-flex;\n        align-items: center;\n        height: 26px;\n        padding: 0 10px;\n        border-radius: 9999px;\n        border: 1px solid var(--color-neutral-5);\n        background: var(--color-neutral-1);\n        color: var(--color-neutral-10);\n        font-size: 11px;\n        font-weight: 500;\n        white-space: nowrap;\n      }\n      .chip-on {\n        border-color: var(--color-sky-4);\n        background: var(--color-sky-1);\n        color: var(--color-sky-10);\n        box-shadow: 0 0 0 3px rgba(106, 151, 235, 0.15);\n      }\n      /* Result row: one process or document */\n      .result {\n        display: flex;\n        flex-direction: column;\n        gap: 1px;\n        padding: 5px 10px;\n        border-radius: var(--radius-lg);\n        border: 1px solid var(--color-neutral-5);\n        background: var(--color-neutral-1);\n      }\n      .ok {\n        background: var(--color-success-2);\n        color: var(--color-success-9);\n      }\n    </style>\n  </head>\n  <body>\n    <div id=\"stage\" aria-hidden=\"true\"></div>\n\n    <!--\n      One <template> per step, in order. Attributes:\n        data-step      the step's position, from 1\n        data-title     the step's title (documentation only; it does not show in the GIF)\n        data-duration  seconds the step stays on screen (default 4)\n      A template fills the whole stage (404x212). Center it with class=\"fill center\".\n\n      The cursor is always this SVG. Put it inside a <span class=\"rel\" style=\"display:inline-flex\">\n      that wraps the target, anchored at the bottom right corner: style=\"right:-14px;bottom:-14px\"\n      for a 38px button, \"right:-10px;bottom:-10px\" for a button of 32px or less, and\n      \"right:6px;bottom:-8px\" inside a table cell.\n      <svg class=\"cursor\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.5 5 3z\"/></svg>\n    -->\n\n    <!-- Pesquisa: data replaced with fictional values (parties, CNJ numbers, file name, period). -->\n    <template data-step=\"1\" data-title=\"Comece pela Nova pesquisa\" data-duration=\"4\">\n      <div class=\"fill center\">\n        <div\n          class=\"col step-in bg-white b-dash r-xl\"\n          style=\"width: 220px; padding: 18px; align-items: center; gap: 10px\"\n        >\n          <div class=\"center r-lg t-muted\" style=\"width: 40px; height: 40px; background: var(--color-neutral-3)\">\n            <i class=\"ic ic-sm\" data-icon=\"search\"></i>\n          </div>\n          <span class=\"caption-sm t-muted\">Busque por palavra-chave</span>\n          <span class=\"rel\" style=\"display: inline-flex\">\n            <span class=\"cta glow\"><i class=\"ic ic-sm\" data-icon=\"plus\"></i>Nova pesquisa</span>\n            <svg class=\"cursor\" style=\"right: -14px; bottom: -14px\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.5 5 3z\" /></svg>\n          </span>\n        </div>\n      </div>\n    </template>\n\n    <template data-step=\"2\" data-title=\"Escreva o que procura\" data-duration=\"4\">\n      <div class=\"fill center\">\n        <div class=\"col\" style=\"width: 300px; gap: 12px; align-items: flex-start\">\n          <div class=\"row pop bg-white b r-lg\" style=\"width: 100%; height: 38px; padding: 0 12px; gap: 8px\">\n            <i class=\"ic ic-sm t-faint\" data-icon=\"search\"></i>\n            <span class=\"body-sm t-dark truncate\">rescisão contrato de locação</span>\n          </div>\n          <span class=\"rel\" style=\"display: inline-flex\">\n            <span class=\"cta pop glow\" style=\"animation-delay: 0.15s\">Pesquisar</span>\n            <svg class=\"cursor\" style=\"right: -14px; bottom: -14px\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.5 5 3z\" /></svg>\n          </span>\n        </div>\n      </div>\n    </template>\n\n    <template data-step=\"3\" data-title=\"Refine com filtros\" data-duration=\"4\">\n      <div class=\"fill center\">\n        <div class=\"col\" style=\"width: 320px; gap: 12px\">\n          <div class=\"row step-in bg-white b r-lg\" style=\"height: 34px; padding: 0 12px; gap: 8px\">\n            <i class=\"ic ic-sm t-faint\" data-icon=\"search\"></i>\n            <span class=\"caption-sm t-dark truncate\">rescisão contrato de locação</span>\n          </div>\n          <div class=\"row\" style=\"flex-wrap: wrap; gap: 8px\">\n            <span class=\"chip chip-on pop\">Processos</span>\n            <span class=\"chip pop\" style=\"animation-delay: 0.15s\">Documentos</span>\n            <span class=\"rel\" style=\"display: inline-flex\">\n              <span class=\"chip chip-on pop glow\" style=\"animation-delay: 0.3s\">Tribunal: TJSP</span>\n              <svg class=\"cursor\" style=\"right: -10px; bottom: -10px\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.5 5 3z\" /></svg>\n            </span>\n            <span class=\"chip pop\" style=\"animation-delay: 0.45s\">Período: 01/02/2025 a 31/07/2025</span>\n          </div>\n        </div>\n      </div>\n    </template>\n\n    <template data-step=\"4\" data-title=\"Encontre o que precisa\" data-duration=\"4\">\n      <div class=\"fill center\">\n        <div class=\"col\" style=\"width: 340px; gap: 5px\">\n          <span class=\"caption-sm medium t-muted pop\">3 resultados</span>\n          <span class=\"rel\" style=\"display: block\">\n            <div class=\"result pop glow\" style=\"animation-delay: 0.15s\">\n              <div class=\"row\" style=\"gap: 6px\">\n                <span class=\"body-sm medium t-dark tight truncate\">Luísa Andrade x Imobiliária Horizonte Ltda.</span>\n                <span class=\"pill ok\">Ativo</span>\n              </div>\n              <span class=\"caption-sm t-muted\">0012345-67.2025.8.26.0100 · TJSP</span>\n            </div>\n            <svg class=\"cursor\" style=\"right: 18px; bottom: -8px\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.5 5 3z\" /></svg>\n          </span>\n          <div class=\"result pop\" style=\"animation-delay: 0.3s\">\n            <div class=\"row\" style=\"gap: 6px\">\n              <span class=\"body-sm medium t-dark tight truncate\">Rafael Nunes x Construtora Serra Azul S.A.</span>\n              <span class=\"pill ok\">Ativo</span>\n            </div>\n            <span class=\"caption-sm t-muted\">0098765-43.2025.8.26.0002 · TJSP</span>\n          </div>\n          <div class=\"result pop\" style=\"animation-delay: 0.45s\">\n            <div class=\"row\" style=\"gap: 6px\">\n              <i class=\"ic ic-sm t-muted\" data-icon=\"paper\"></i>\n              <span class=\"body-sm medium t-dark tight truncate\">Parecer_Locacao_01.pdf</span>\n            </div>\n            <span class=\"caption-sm t-muted\">Documento · Pasta Contencioso Cível</span>\n          </div>\n        </div>\n      </div>\n    </template>\n\n    <script src=\"icons.js\"></script>\n    <script>\n      // ===== DO NOT EDIT: the scene contract =====\n      // A step mounts from scratch, the way each step is a fresh component in the app, and seek\n      // pauses every CSS animation at the asked time. Same t, same pixels.\n      const templates = [...document.querySelectorAll(\"template[data-step]\")].sort(\n        (a, b) => Number(a.dataset.step) - Number(b.dataset.step),\n      );\n      const stage = document.getElementById(\"stage\");\n      const icons = window.ICONS || {};\n      window.MISSING_ICONS = [];\n      window.STEPS = templates.map((t) => Number(t.dataset.duration || 4));\n      window.DURATION = window.STEPS.reduce((a, b) => a + b, 0);\n\n      let mounted = -1;\n      const mount = (i) => {\n        if (i === mounted) return;\n        const wrap = document.createElement(\"div\");\n        wrap.className = \"step\";\n        wrap.appendChild(templates[i].content.cloneNode(true));\n        for (const el of wrap.querySelectorAll(\"i[data-icon]\")) {\n          const svg = icons[el.dataset.icon];\n          if (svg) el.innerHTML = svg;\n          else {\n            el.classList.add(\"ic-missing\");\n            window.MISSING_ICONS.push(el.dataset.icon);\n          }\n        }\n        stage.replaceChildren(wrap);\n        mounted = i;\n      };\n      const freeze = (t) =>\n        document.getAnimations().forEach((a) => {\n          a.pause();\n          a.currentTime = t * 1000;\n        });\n\n      // Seconds after which every finite animation of step i (pop, stepIn, checkPop...) has settled.\n      window.settledAt = (i) => {\n        mount(i);\n        return (\n          Math.max(\n            0,\n            ...document.getAnimations().map((a) => {\n              const end = a.effect.getComputedTiming().endTime;\n              return Number.isFinite(end) ? end : 0;\n            }),\n          ) / 1000\n        );\n      };\n      window.seekStep = (i, t) => {\n        mount(i);\n        freeze(t);\n      };\n      window.seek = (t) => {\n        let i = 0;\n        let start = 0;\n        while (i < window.STEPS.length - 1 && t >= start + window.STEPS[i])\n          start += window.STEPS[i++];\n        window.seekStep(i, t - start);\n      };\n      window.READY = Promise.all(\n        [\"400\", \"500\", \"600\"].map((w) => document.fonts.load(`${w} 12px Poppins`)),\n      );\n\n      // Preview in a normal browser: index.html?play, or index.html?play&step=2 to hold one step.\n      const query = new URLSearchParams(location.search);\n      if (query.has(\"play\"))\n        window.READY.then(() => {\n          const only = query.has(\"step\") ? Number(query.get(\"step\")) - 1 : -1;\n          const t0 = performance.now();\n          const loop = () => {\n            const t = (performance.now() - t0) / 1000;\n            if (only >= 0) window.seekStep(only, t % window.STEPS[only]);\n            else window.seek(t % window.DURATION);\n            requestAnimationFrame(loop);\n          };\n          loop();\n        });\n    </script>\n  </body>\n</html>\n",
+  "files": [
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/high",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/high/search-tour-full.gif",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/high/search-tour-step-1.gif",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/high/search-tour-step-1.png",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/high/search-tour-step-2.gif",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/high/search-tour-step-2.png",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/high/search-tour-step-3.gif",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/high/search-tour-step-3.png",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/high/search-tour-step-4.gif",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/high/search-tour-step-4.png",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light/search-tour-full.gif",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light/search-tour-step-1.gif",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light/search-tour-step-1.png",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light/search-tour-step-2.gif",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light/search-tour-step-2.png",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light/search-tour-step-3.gif",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light/search-tour-step-3.png",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light/search-tour-step-4.gif",
+    "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light/search-tour-step-4.png"
+  ],
   "events": [
     {
       "turn": 1,
       "type": "user",
-      "text": "/bb:animate-tour Preciso da animação de primeiros passos da feature de Pesquisa. Os prints, na ordem de uso, estão em /Users/denisluft/Documents/Projetos/Inspira/builder-bundle/evals/animate-tour/fixtures/search-1.png, /Users/denisluft/Documents/Projetos/Inspira/builder-bundle/evals/animate-tour/fixtures/search-2.png e /Users/denisluft/Documents/Projetos/Inspira/builder-bundle/evals/animate-tour/fixtures/search-3.png. A Pesquisa encontra processos e documentos por palavra-chave, e começa pelo botão \"Nova pesquisa\"."
+      "text": "/bb:animate-tour Preciso da animação de primeiros passos da feature de Pesquisa. Os prints, na ordem de uso, estão em /private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/evals/animate-tour/fixtures/search-1.png, /private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/evals/animate-tour/fixtures/search-2.png e /private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/evals/animate-tour/fixtures/search-3.png. A Pesquisa encontra processos e documentos por palavra-chave, e começa pelo botão \"Nova pesquisa\"."
     },
     {
       "turn": 1,
       "type": "tool",
+      "id": "toolu_01WSFgSgiKBKCF1zAghyFfuf",
       "name": "Read",
       "input": {
-        "file_path": "/Users/denisluft/Documents/Projetos/Inspira/builder-bundle/plugins/bb/skills/animate-tour/references/pattern.md"
+        "file_path": "/private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/plugins/bb/skills/animate-tour/references/pattern.md"
+      },
+      "result": {
+        "ok": true,
+        "text": "1\t# The pattern of Inspira's animated tours\n2\t\n3\tThe pattern comes from three places in the app: the **Análise em Tabela** tour\n4\t(`TabularTourDialog`), the **Gestão de Projetos** tour (`ProjectsTourDialog`) and the launch GIF\n5\tof **Acompanhamento Processual** (`CaseTrackingLaunchModal`). This page is a copy of\n6\t`frontend-projects` at `origin/main` on 2026-10-15 (`7d472a7f9`). In code mode, the repo's\n7\tcurrent files win over this copy where the two differ.\n8\t\n9\tThe sections go from the story to the pixels, and the rest of the skill cites them by number:\n10\t\n11\t1. Narrative\n12\t2. Stage\n13\t3. Palette\n14\t4. Motion: the vocabulary, the rules, a new movement\n15\t5. Recurring pieces\n16\t6. The modal around the art (code mode only)\n17\t\n18\t## 1. Narrative\n19\t\n20\t- **Use 3 to 5 steps, one idea per step.** Both tours have 4. Each step answers one question:\n21\t  \"how do I start?\", \"how does the core work?\", \"what do I get?\".\n22\t- **Step 1 is always \"create\"**, and it is the only step that may exist without a screenshot,\n23\t  because it is a piece of the pattern and not a screen. A dashed card sits in the center with\n24\t  the feature's icon in a gray square, a short caption and the create button pulsing, with the\n25\t  cursor tapping it. The button's label is the starting action the person described (\"Adicionar\n26\t  processo\"), and the icon is the feature's icon in the app menu. Ask when you don't know it.\n27\t- **The middle steps show the mechanism** with a miniature of the real interfac"
       }
     },
     {
       "turn": 1,
       "type": "tool",
+      "id": "toolu_01WtQru51bkCqfCB4xvUbL8D",
       "name": "Read",
       "input": {
-        "file_path": "/Users/denisluft/Documents/Projetos/Inspira/builder-bundle/evals/animate-tour/fixtures/search-1.png"
+        "file_path": "/private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/evals/animate-tour/fixtures/search-1.png"
+      },
+      "result": {
+        "ok": true,
+        "text": "[image]"
       }
     },
     {
       "turn": 1,
       "type": "tool",
+      "id": "toolu_01CUX1F21BysTFL84wBMiad2",
       "name": "Read",
       "input": {
-        "file_path": "/Users/denisluft/Documents/Projetos/Inspira/builder-bundle/evals/animate-tour/fixtures/search-2.png"
+        "file_path": "/private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/evals/animate-tour/fixtures/search-2.png"
+      },
+      "result": {
+        "ok": true,
+        "text": "[image]"
       }
     },
     {
       "turn": 1,
       "type": "tool",
+      "id": "toolu_016N7SVh5JAf62fzQjuBxgYb",
       "name": "Read",
       "input": {
-        "file_path": "/Users/denisluft/Documents/Projetos/Inspira/builder-bundle/evals/animate-tour/fixtures/search-3.png"
+        "file_path": "/private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/evals/animate-tour/fixtures/search-3.png"
+      },
+      "result": {
+        "ok": true,
+        "text": "[image]"
       }
     },
     {
       "turn": 1,
       "type": "tool",
+      "id": "toolu_0176XgDYJRUkUcfK5pEyTRh9",
       "name": "Bash",
       "input": {
-        "command": "cd /Users/denisluft/Documents/Projetos/Inspira/builder-bundle/plugins/bb/skills/animate-tour; ls assets/icons | tr '\\n' ' ' | head -c 4000; echo; ls references references/examples",
-        "description": "List available icons and reference files"
+        "command": "ls /private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/plugins/bb/skills/animate-tour/assets/icons | grep -iE \"search|magn|lupa|file|doc|scale|plus|arrow|filter\" ",
+        "description": "List candidate design system icons"
+      },
+      "result": {
+        "ok": false,
+        "text": "The eval harness denied this command."
       }
     },
     {
       "turn": 1,
       "type": "tool",
+      "id": "toolu_013BjRMHjCMD3DMfvYj3cFoQ",
       "name": "AskUserQuestion",
       "input": {
         "questions": [
           {
-            "question": "Onde a animação vai ser usada? Dentro do app eu escrevo o código do modal \"Bem-vindo à Pesquisa\" no repositório frontend-projects. Fora do app (e-mail, apresentação, central de ajuda) eu gero GIFs, um por passo e um do tour inteiro, sem mexer em código.",
             "header": "Uso",
             "multiSelect": false,
+            "question": "Onde a animação vai ser usada? Isso define o formato da entrega.",
             "options": [
               {
-                "label": "GIF leve e alto (Recommended)",
-                "description": "Fora do app. Gero as duas qualidades: leve (e-mail, slides) e alta (central de ajuda). Boa escolha se ainda não sabe onde vai entrar."
+                "label": "GIF, as duas qualidades (Recomendado)",
+                "description": "Fora do app (e-mail, slides, central de ajuda). Gero um GIF por passo mais o tour inteiro, em 'leve' (e-mail, slides) e 'alta' (central de ajuda). Não precisa de código."
               },
               {
-                "label": "GIF leve",
-                "description": "Fora do app, só a versão leve, para e-mail e apresentação."
+                "label": "Código no app",
+                "description": "Um dev vai colocar o modal 'Bem-vindo à Pesquisa' no app. Precisa do repositório frontend-projects, da página onde o tour abre e da ação do último botão."
               },
               {
-                "label": "GIF alta qualidade",
-                "description": "Fora do app, só a versão de alta qualidade, para a central de ajuda."
+                "label": "GIF leve só",
+                "description": "Só para e-mail ou apresentação. Arquivo menor."
               },
               {
-                "label": "Dentro do app (código)",
-                "description": "Modal de primeiros passos no frontend-projects. Preciso saber a página onde o tour abre e o que o último botão faz (provavelmente abrir \"Nova pesquisa\")."
+                "label": "GIF alta só",
+                "description": "Só para a central de ajuda. Mais nítido, arquivo maior."
               }
             ]
           },
           {
-            "question": "Qual ícone representa a Pesquisa no passo 1? Os prints mostram o menu só com texto, sem ícone. O passo 1 mostra o ícone da feature num quadrado cinza, acima do botão \"Nova pesquisa\".",
-            "header": "Ícone",
-            "multiSelect": false,
-            "options": [
-              {
-                "label": "Lupa (Recommended)",
-                "description": "O ícone de busca do design system, o mesmo que aparece no campo de pesquisa do print 2."
-              },
-              {
-                "label": "Outro ícone",
-                "description": "Escreva o nome do ícone que a Pesquisa usa no menu do app."
-              }
-            ]
-          },
-          {
-            "question": "Este é o plano dos passos. Aprova?\n\n1. \"Comece uma nova pesquisa\" · Encontre processos e documentos por palavra-chave, num só lugar. · Arte: cartão tracejado com a lupa, a legenda \"Processos e documentos\" e o botão \"Nova pesquisa\" · Movimento: o cartão entra (stepIn), o cursor toca o botão, que pulsa.\n\n2. \"Digite o que procura\" · Escreva uma palavra-chave e a Pesquisa olha processos e documentos ao mesmo tempo. · Arte: o campo de busca com \"rescisão contrato de locação\" e, abaixo, as opções Processos e Documentos · Movimento: campo e opções entram um a um (pop, .15s), o campo pulsa com o cursor sobre ele.\n\n3. \"Refine com filtros\" · Escolha o tipo, o tribunal e o período para chegar mais rápido no que importa. · Arte: as opções Processos (marcada), Documentos, Tribunal: TJSP (marcada), Período: 01/01/2025 a 30/06/2025 e o botão \"Pesquisar\" · Movimento: as opções entram uma a uma (pop, .15s), o cursor toca \"Pesquisar\", que pulsa.\n\n4. \"Encontre o que precisa\" · Os resultados chegam juntos, com status e tribunal à vista. · Arte: \"3 resultados\" e três linhas: dois processos com o selo Ativo e o número CNJ, e um documento PDF · Movimento: as linhas sobem uma a uma (pop, .15s), o cursor pousa no primeiro resultado, que pulsa.\n\nDados trocados por fictícios: os nomes das partes (Mariana Couto Ribeiro, Henrique Vasconcelos Prado, Imobiliária Vale Sereno, Construtora Alto Ipê) viram \"Marina Alves x Imobiliária Horizonte Ltda.\" e \"Carlos Mendes x Construtora Delta S.A.\"; os dois números CNJ viram números inventados; Parecer_Locacao_Ribeiro.pdf vira Parecer_Locacao_01.pdf; o período de 2024 vira 01/01/2025 a 30/06/2025. Os valores da causa e as datas de distribuição saem, para caber na arte. Mantenho \"TJSP\", \"Ativo\" e o termo pesquisado, que é vocabulário jurídico, não dado de cliente.\n\nCores: o azul do botão nos prints vira o navy-3 do padrão, o azul claro das opções marcadas vira o \"item selecionado\" (sky), o verde do Ativo vira success.",
             "header": "Plano",
             "multiSelect": false,
+            "question": "Plano de 4 passos (os 3 prints estão legíveis, nenhum descartado). Título · texto · miniatura · movimento:\n\n1. 'Comece pela Nova pesquisa' · 'Clique em Nova pesquisa para encontrar processos e documentos por palavra-chave.' · cartão tracejado com o ícone da Pesquisa, a legenda 'Busque por palavra-chave' e o botão 'Nova pesquisa' · entra inteiro (stepIn), cursor clicando no botão, que pulsa.\n\n2. 'Escreva o que procura' · 'Digite as palavras do caso e clique em Pesquisar.' · recorte da tela Nova pesquisa: campo com 'rescisão contrato de locação' e o botão 'Pesquisar' · campo e botão aparecem em sequência (pop a cada .15s), cursor clicando em Pesquisar.\n\n3. 'Refine com filtros' · 'Escolha entre processos e documentos e filtre por tribunal e período.' · os filtros: 'Processos' (marcado), 'Documentos', 'Tribunal: TJSP' (marcado), 'Período: 01/02/2025 a 31/07/2025' · filtros aparecem um a um, cursor clicando em 'Tribunal: TJSP'.\n\n4. 'Encontre o que precisa' · 'Processos e documentos aparecem juntos, com tribunal e situação à vista.' · '3 resultados' e três linhas: dois processos com número CNJ inventado, TJSP e selo 'Ativo', e um documento · linhas aparecem uma a uma, cursor e pulso no primeiro resultado.\n\nDados trocados por fictícios: as partes (Mariana Couto Ribeiro, Imobiliária Vale Sereno, Henrique Vasconcelos Prado, Construtora Alto Ipê) viram nomes inventados, os números CNJ viram números inventados, o arquivo vira 'Parecer_Locacao_01.pdf', as datas do período viram outras. Valor da causa e data de distribuição saem, para caber. O termo pesquisado e 'TJSP' ficam, por serem vocabulário jurídico. O azul do botão do print vira o navy-3 do padrão, o azul dos filtros marcados vira sky, o verde de 'Ativo' vira success. No modo código, o último botão seria 'Fazer a primeira pesquisa'.",
             "options": [
               {
-                "label": "Aprovar o plano (Recommended)",
-                "description": "Sigo com estes 4 passos e começo a produzir."
+                "label": "Aprovar o plano (Recomendado)",
+                "description": "Sigo com os 4 passos como estão."
               },
               {
                 "label": "Juntar 2 e 3",
-                "description": "Fica com 3 passos: busca e filtros num passo só, no mesmo print. Menos explicação, arte mais cheia."
+                "description": "Faço 3 passos: criar, pesquisar com filtros na mesma cena, resultado. Mais curto, mas a cena 2 fica mais cheia."
               },
               {
                 "label": "Quero ajustar",
-                "description": "Escreva o que muda: título, texto, arte ou movimento de algum passo."
+                "description": "Diga em 'Other' o que mudar (texto, ordem, o que aparece)."
+              }
+            ]
+          },
+          {
+            "header": "Ícone",
+            "multiSelect": false,
+            "question": "Qual é o ícone da Pesquisa no menu do app? Os prints mostram o menu sem ícones, e o passo 1 usa esse ícone no quadrado cinza.",
+            "options": [
+              {
+                "label": "Lupa (search)",
+                "description": "Uso o ícone de lupa do design system. Se o nome exato não existir na pasta de ícones, aviso antes de gravar."
+              },
+              {
+                "label": "Outro ícone",
+                "description": "Diga em 'Other' qual ícone o menu usa."
               }
             ]
           }
         ]
+      },
+      "result": {
+        "ok": true,
+        "text": "Your questions have been answered: \"Onde a animação vai ser usada? Isso define o formato da entrega.\"=\"GIF, as duas qualidades (Recomendado)\", \"Plano de 4 passos (os 3 prints estão legíveis, nenhum descartado). Título · texto · miniatura · movimento:\n\n1. 'Comece pela Nova pesquisa' · 'Clique em Nova pesquisa para encontrar processos e documentos por palavra-chave.' · cartão tracejado com o ícone da Pesquisa, a legenda 'Busque por palavra-chave' e o botão 'Nova pesquisa' · entra inteiro (stepIn), cursor clicando no botão, que pulsa.\n\n2. 'Escreva o que procura' · 'Digite as palavras do caso e clique em Pesquisar.' · recorte da tela Nova pesquisa: campo com 'rescisão contrato de locação' e o botão 'Pesquisar' · campo e botão aparecem em sequência (pop a cada .15s), cursor clicando em Pesquisar.\n\n3. 'Refine com filtros' · 'Escolha entre processos e documentos e filtre por tribunal e período.' · os filtros: 'Processos' (marcado), 'Documentos', 'Tribunal: TJSP' (marcado), 'Período: 01/02/2025 a 31/07/2025' · filtros aparecem um a um, cursor clicando em 'Tribunal: TJSP'.\n\n4. 'Encontre o que precisa' · 'Processos e documentos aparecem juntos, com tribunal e situação à vista.' · '3 resultados' e três linhas: dois processos com número CNJ inventado, TJSP e selo 'Ativo', e um documento · linhas aparecem uma a uma, cursor e pulso no primeiro resultado.\n\nDados trocados por fictícios: as partes (Mariana Couto Ribeiro, Imobiliária Vale Sereno, Henrique Vasconcelos Prado, Construtora Alto Ip"
       }
     },
     {
       "turn": 1,
       "type": "answer",
       "answers": {
-        "Onde a animação vai ser usada? Dentro do app eu escrevo o código do modal \"Bem-vindo à Pesquisa\" no repositório frontend-projects. Fora do app (e-mail, apresentação, central de ajuda) eu gero GIFs, um por passo e um do tour inteiro, sem mexer em código.": "GIF leve e alto (Recommended)",
-        "Qual ícone representa a Pesquisa no passo 1? Os prints mostram o menu só com texto, sem ícone. O passo 1 mostra o ícone da feature num quadrado cinza, acima do botão \"Nova pesquisa\".": "Lupa (Recommended)",
-        "Este é o plano dos passos. Aprova?\n\n1. \"Comece uma nova pesquisa\" · Encontre processos e documentos por palavra-chave, num só lugar. · Arte: cartão tracejado com a lupa, a legenda \"Processos e documentos\" e o botão \"Nova pesquisa\" · Movimento: o cartão entra (stepIn), o cursor toca o botão, que pulsa.\n\n2. \"Digite o que procura\" · Escreva uma palavra-chave e a Pesquisa olha processos e documentos ao mesmo tempo. · Arte: o campo de busca com \"rescisão contrato de locação\" e, abaixo, as opções Processos e Documentos · Movimento: campo e opções entram um a um (pop, .15s), o campo pulsa com o cursor sobre ele.\n\n3. \"Refine com filtros\" · Escolha o tipo, o tribunal e o período para chegar mais rápido no que importa. · Arte: as opções Processos (marcada), Documentos, Tribunal: TJSP (marcada), Período: 01/01/2025 a 30/06/2025 e o botão \"Pesquisar\" · Movimento: as opções entram uma a uma (pop, .15s), o cursor toca \"Pesquisar\", que pulsa.\n\n4. \"Encontre o que precisa\" · Os resultados chegam juntos, com status e tribunal à vista. · Arte: \"3 resultados\" e três linhas: dois processos com o selo Ativo e o número CNJ, e um documento PDF · Movimento: as linhas sobem uma a uma (pop, .15s), o cursor pousa no primeiro resultado, que pulsa.\n\nDados trocados por fictícios: os nomes das partes (Mariana Couto Ribeiro, Henrique Vasconcelos Prado, Imobiliária Vale Sereno, Construtora Alto Ipê) viram \"Marina Alves x Imobiliária Horizonte Ltda.\" e \"Carlos Mendes x Construtora Delta S.A.\"; os dois números CNJ viram números inventados; Parecer_Locacao_Ribeiro.pdf vira Parecer_Locacao_01.pdf; o período de 2024 vira 01/01/2025 a 30/06/2025. Os valores da causa e as datas de distribuição saem, para caber na arte. Mantenho \"TJSP\", \"Ativo\" e o termo pesquisado, que é vocabulário jurídico, não dado de cliente.\n\nCores: o azul do botão nos prints vira o navy-3 do padrão, o azul claro das opções marcadas vira o \"item selecionado\" (sky), o verde do Ativo vira success.": "Aprovar o plano (Recommended)"
-      }
-    },
-    {
-      "turn": 1,
-      "type": "tool",
-      "name": "Read",
-      "input": {
-        "file_path": "/Users/denisluft/Documents/Projetos/Inspira/builder-bundle/plugins/bb/skills/animate-tour/references/gif-mode.md"
-      }
-    },
-    {
-      "turn": 1,
-      "type": "tool",
-      "name": "Bash",
-      "input": {
-        "command": "node \"/Users/denisluft/Documents/Projetos/Inspira/builder-bundle/plugins/bb/skills/animate-tour/scripts/tour.mjs\" prepare",
-        "description": "Prepare the motion studio for recording",
-        "timeout": 600000
-      }
-    },
-    {
-      "turn": 1,
-      "type": "tool",
-      "name": "Bash",
-      "input": {
-        "command": "node \"/Users/denisluft/Documents/Projetos/Inspira/builder-bundle/plugins/bb/skills/animate-tour/scripts/tour.mjs\" new search-tour",
-        "description": "Create the Pesquisa tour scene from the template"
-      }
-    },
-    {
-      "turn": 1,
-      "type": "tool",
-      "name": "Read",
-      "input": {
-        "file_path": "/Users/denisluft/Motion/scenes/search-tour/index.html"
-      }
-    },
-    {
-      "turn": 1,
-      "type": "tool",
-      "name": "Bash",
-      "input": {
-        "command": "grep -oE '\"[a-z0-9-]+\":' /Users/denisluft/Motion/scenes/search-tour/icons.js | tr -d '\":' | tr '\\n' ' '",
-        "description": "List icon names available to the scene"
+        "Onde a animação vai ser usada? Isso define o formato da entrega.": "GIF, as duas qualidades (Recomendado)",
+        "Plano de 4 passos (os 3 prints estão legíveis, nenhum descartado). Título · texto · miniatura · movimento:\n\n1. 'Comece pela Nova pesquisa' · 'Clique em Nova pesquisa para encontrar processos e documentos por palavra-chave.' · cartão tracejado com o ícone da Pesquisa, a legenda 'Busque por palavra-chave' e o botão 'Nova pesquisa' · entra inteiro (stepIn), cursor clicando no botão, que pulsa.\n\n2. 'Escreva o que procura' · 'Digite as palavras do caso e clique em Pesquisar.' · recorte da tela Nova pesquisa: campo com 'rescisão contrato de locação' e o botão 'Pesquisar' · campo e botão aparecem em sequência (pop a cada .15s), cursor clicando em Pesquisar.\n\n3. 'Refine com filtros' · 'Escolha entre processos e documentos e filtre por tribunal e período.' · os filtros: 'Processos' (marcado), 'Documentos', 'Tribunal: TJSP' (marcado), 'Período: 01/02/2025 a 31/07/2025' · filtros aparecem um a um, cursor clicando em 'Tribunal: TJSP'.\n\n4. 'Encontre o que precisa' · 'Processos e documentos aparecem juntos, com tribunal e situação à vista.' · '3 resultados' e três linhas: dois processos com número CNJ inventado, TJSP e selo 'Ativo', e um documento · linhas aparecem uma a uma, cursor e pulso no primeiro resultado.\n\nDados trocados por fictícios: as partes (Mariana Couto Ribeiro, Imobiliária Vale Sereno, Henrique Vasconcelos Prado, Construtora Alto Ipê) viram nomes inventados, os números CNJ viram números inventados, o arquivo vira 'Parecer_Locacao_01.pdf', as datas do período viram outras. Valor da causa e data de distribuição saem, para caber. O termo pesquisado e 'TJSP' ficam, por serem vocabulário jurídico. O azul do botão do print vira o navy-3 do padrão, o azul dos filtros marcados vira sky, o verde de 'Ativo' vira success. No modo código, o último botão seria 'Fazer a primeira pesquisa'.": "Aprovar o plano (Recomendado)",
+        "Qual é o ícone da Pesquisa no menu do app? Os prints mostram o menu sem ícones, e o passo 1 usa esse ícone no quadrado cinza.": "Lupa (search)"
       }
     },
     {
       "turn": 1,
       "type": "text",
-      "text": "Plano aprovado e estúdio pronto. Agora vou desenhar os 4 passos da cena e gravar os GIFs."
+      "text": "Plano aprovado. Agora leio o roteiro do modo GIF e o modelo de cena."
     },
     {
       "turn": 1,
       "type": "tool",
-      "name": "Edit",
+      "id": "toolu_01R64Bmk9TTGvUjNsKchD46t",
+      "name": "Read",
       "input": {
-        "replace_all": false,
-        "file_path": "/Users/denisluft/Motion/scenes/search-tour/index.html",
-        "old_string": "    <template data-step=\"1\" data-title=\"Step 1\" data-duration=\"4\">\n      <div class=\"fill center step-in\">\n        <!-- the step's art -->\n      </div>\n    </template>",
-        "new_string": "    <template data-step=\"1\" data-title=\"Comece uma nova pesquisa\" data-duration=\"4\">\n      <div class=\"fill center\">\n        <div class=\"col center bg-white b-dash r-xl step-in\" style=\"width:220px;padding:18px;gap:10px\">\n          <div class=\"center bg-table r-lg t-muted\" style=\"width:40px;height:40px;background:var(--color-neutral-3)\">\n            <i class=\"ic ic-sm\" data-icon=\"search\"></i>\n          </div>\n          <span class=\"caption-sm t-muted\">Processos e documentos</span>\n          <span class=\"rel\" style=\"display:inline-flex\">\n            <span class=\"cta glow\"><i class=\"ic ic-sm\" data-icon=\"plus\"></i>Nova pesquisa</span>\n            <svg class=\"cursor\" style=\"right:-14px;bottom:-14px\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.5 5 3z\"/></svg>\n          </span>\n        </div>\n      </div>\n    </template>\n\n    <template data-step=\"2\" data-title=\"Digite o que procura\" data-duration=\"4\">\n      <div class=\"fill center\">\n        <div class=\"col\" style=\"width:300px;gap:10px\">\n          <span class=\"rel\" style=\"display:flex\">\n            <span class=\"row bg-white b r-lg pop glow grow\" style=\"height:38px;padding:0 12px;gap:8px\">\n              <i class=\"ic ic-sm t-faint\" data-icon=\"search\"></i>\n              <span class=\"body-sm t-dark truncate\">rescisão contrato de locação</span>\n            </span>\n            <svg class=\"cursor\" style=\"right:-10px;bottom:-10px\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.5 5 3z\"/></svg>\n          </span>\n          <div class=\"row\" style=\"gap:6px\">\n            <span class=\"pill bg-white b t-dark pop\" style=\"padding:4px 10px;animation-delay:.15s\">Processos</span>\n            <span class=\"pill bg-white b t-dark pop\" style=\"padding:4px 10px;animation-delay:.3s\">Documentos</span>\n          </div>\n        </div>\n      </div>\n    </template>\n\n    <template data-step=\"3\" data-title=\"Refine com filtros\" data-duration=\"4\">\n      <div class=\"fill center\">\n        <div class=\"col\" style=\"width:300px;gap:12px\">\n          <div class=\"row\" style=\"flex-wrap:wrap;gap:6px\">\n            <span class=\"pill t-accent pop\" style=\"padding:4px 10px;border:1px solid var(--color-sky-4);background:var(--color-sky-1);box-shadow:0 0 0 3px rgba(106,151,235,.15)\">Processos</span>\n            <span class=\"pill bg-white b t-dark pop\" style=\"padding:4px 10px;animation-delay:.15s\">Documentos</span>\n            <span class=\"pill t-accent pop\" style=\"padding:4px 10px;animation-delay:.3s;border:1px solid var(--color-sky-4);background:var(--color-sky-1);box-shadow:0 0 0 3px rgba(106,151,235,.15)\">Tribunal: TJSP</span>\n            <span class=\"pill bg-white b t-dark pop\" style=\"padding:4px 10px;animation-delay:.45s\">Período: 01/01/2025 a 30/06/2025</span>\n          </div>\n          <span class=\"rel\" style=\"display:inline-flex;align-self:flex-start\">\n            <span class=\"cta pop glow\" style=\"animation-delay:.65s\"><i class=\"ic ic-sm\" data-icon=\"search\"></i>Pesquisar</span>\n            <svg class=\"cursor\" style=\"right:-14px;bottom:-14px\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.5 5 3z\"/></svg>\n          </span>\n        </div>\n      </div>\n    </template>\n\n    <template data-step=\"4\" data-title=\"Encontre o que precisa\" data-duration=\"4\">\n      <div class=\"fill center\">\n        <div class=\"col\" style=\"width:340px;gap:6px\">\n          <span class=\"caption-sm medium t-dark truncate pop\">3 resultados para “rescisão contrato de locação”</span>\n          <span class=\"rel\" style=\"display:flex\">\n            <span class=\"col bg-white b r-lg pop glow grow\" style=\"padding:6px 10px;animation-delay:.15s\">\n              <span class=\"row\" style=\"gap:6px\">\n                <span class=\"body-sm semibold t-dark tight truncate\">Marina Alves x Imobiliária Horizonte Ltda.</span>\n                <span class=\"pill\" style=\"background:var(--color-success-2);color:var(--co…"
+        "file_path": "/private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/plugins/bb/skills/animate-tour/references/gif-mode.md"
+      },
+      "result": {
+        "ok": true,
+        "text": "1\t# GIF mode: the animation outside the app\n2\t\n3\tGIF mode is for a person who needs the animation in an email, a presentation or the help\n4\tcenter, with no access to the code. It produces the **animated area** only (the 404 × 212 stage,\n5\twithout the modal around it): one GIF per step, the full GIF, and a settled `.png` per step.\n6\t\n7\tThe work runs on `/bb:reel`'s studio in `~/Motion`: its Chromium plays the scene frame by frame\n8\tand its ffmpeg encodes. Every command below goes through this skill's wrapper,\n9\t`node \"${CLAUDE_SKILL_DIR}/scripts/tour.mjs\" VERB …`, the only form pre-approved. Run it exactly as\n10\twritten, from any folder, with no `cd`.\n11\t\n12\tThe sections follow the work:\n13\t\n14\t1. Prepare the studio\n15\t2. Start the scene\n16\t3. Write the steps\n17\t4. Record\n18\t5. Check before delivering\n19\t6. Deliver\n20\t\n21\t## 1. Prepare the studio\n22\t\n23\tRun `node \"${CLAUDE_SKILL_DIR}/scripts/tour.mjs\" prepare` in the foreground with a 600000 ms\n24\ttimeout. It runs `/bb:reel`'s bootstrap, so it is instant once the studio is ready, and the first\n25\trun installs it (a few minutes and about 270 MB: say so before running it).\n26\t\n27\t- `READY PATH`: that path is the studio, written `STUDIO` below (usually `~/Motion`).\n28\t- The command timed out: run it again. It resumes.\n29\t- `NODE_MISSING`, or `node` not found: stop and walk the person through installing Node LTS (20\n30\t  or newer) from nodejs.org, then ask them to reopen Claude Code and repeat the request.\n31\t- `WINDOWS_ARM`: walk"
       }
     },
     {
       "turn": 1,
       "type": "tool",
+      "id": "toolu_01K5vMcYkUBvEQV8RjySALht",
+      "name": "Read",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/plugins/bb/skills/animate-tour/assets/scene-template.html"
+      },
+      "result": {
+        "ok": true,
+        "text": "1\t<!doctype html>\n2\t<!--\n3\t  A first-steps tour scene for /bb:animate-tour, GIF mode.\n4\t\n5\t  `tour.mjs new <slug>` copies this file to ~/Motion/scenes/<slug>/index.html, beside the\n6\t  Poppins fonts and icons.js. Write one <template data-step> per step inside <body>, in order.\n7\t  Leave the \"DO NOT EDIT\" blocks alone: they mirror the app's tokens and keyframes\n8\t  (references/pattern.md, sections 3 and 4).\n9\t\n10\t  Icons: an empty `i` element with data-icon=\"paper\" and class=\"ic ic-sm\". The name is a file\n11\t  in the skill's assets/icons without the .svg; the step mounts it as the design system's SVG.\n12\t\n13\t  Contract with the studio (render.mjs, stills.mjs and tour.mjs record): window.DURATION,\n14\t  window.READY and window.seek(t). Preview in a browser with index.html?play, or one step with\n15\t  index.html?play&step=2.\n16\t-->\n17\t<html lang=\"pt-BR\">\n18\t  <head>\n19\t    <meta charset=\"utf-8\" />\n20\t    <title>Tour scene</title>\n21\t    <style>\n22\t      @font-face {\n23\t        font-family: Poppins;\n24\t        font-weight: 400;\n25\t        src: url(fonts/poppins-400.woff2);\n26\t      }\n27\t      @font-face {\n28\t        font-family: Poppins;\n29\t        font-weight: 500;\n30\t        src: url(fonts/poppins-500.woff2);\n31\t      }\n32\t      @font-face {\n33\t        font-family: Poppins;\n34\t        font-weight: 600;\n35\t        src: url(fonts/poppins-600.woff2);\n36\t      }\n37\t\n38\t      /* ===== DO NOT EDIT: design system tokens (packages/ui/src/tailwind/theme.css) ===== */\n39\t      :root {\n40\t "
+      }
+    },
+    {
+      "turn": 1,
+      "type": "text",
+      "text": "O plano está aprovado. Agora preparo o estúdio de gravação. Se for a primeira vez nesta máquina, ele instala o Chromium e o ffmpeg: leva alguns minutos e ocupa uns 270 MB."
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_012om4cRGkRAL3tHv6ktNRaW",
+      "name": "Bash",
+      "input": {
+        "command": "node \"/private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/plugins/bb/skills/animate-tour/scripts/tour.mjs\" prepare",
+        "description": "Prepare the GIF recording studio",
+        "timeout": 600000
+      },
+      "result": {
+        "ok": true,
+        "text": "READY /var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws"
+      }
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_011d4rPD6RUapF551s7QXKN6",
+      "name": "Bash",
+      "input": {
+        "command": "node \"/private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/plugins/bb/skills/animate-tour/scripts/tour.mjs\" new search-tour",
+        "description": "Create the Pesquisa tour scene"
+      },
+      "result": {
+        "ok": true,
+        "text": "SCENE /var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/scenes/search-tour/index.html"
+      }
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_013pYVjn5zRgVwCc2E1A3k74",
+      "name": "Read",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/plugins/bb/skills/animate-tour/assets/icons/search.svg"
+      },
+      "result": {
+        "ok": true,
+        "text": "1\t<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 24 24\">\n2\t  <path stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M7.706 4.17a5 5 0 0 1 6.124 3.536m1.466 5.355 6.35 6.35a.5.5 0 0 1 0 .708l-1.527 1.527a.5.5 0 0 1-.707 0l-6.35-6.35m3.16-6.185A7.11 7.11 0 1 1 2 9.11a7.11 7.11 0 0 1 14.222 0Z\"/>\n3\t</svg>\n4\t"
+      }
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_01WCmCoRKrQ5s1gLGW5hkgMH",
+      "name": "Read",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/plugins/bb/skills/animate-tour/assets/icons/plus.svg"
+      },
+      "result": {
+        "ok": true,
+        "text": "1\t<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 24 24\">\n2\t  <path stroke=\"currentColor\" stroke-linecap=\"round\" d=\"M4 12h8m0 0h8m-8 0V4m0 8v8\"/>\n3\t</svg>\n4\t"
+      }
+    },
+    {
+      "turn": 1,
+      "type": "text",
+      "text": "O estúdio está pronto e os ícones `search`, `plus` e `paper` existem no design system. Agora escrevo os quatro passos na cena."
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_01FQPCbpYneP19FqXpZGE4J7",
       "name": "Edit",
       "input": {
         "replace_all": false,
-        "file_path": "/Users/denisluft/Motion/scenes/search-tour/index.html",
+        "file_path": "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/scenes/search-tour/index.html",
+        "old_string": "    <template data-step=\"1\" data-title=\"Step 1\" data-duration=\"4\">\n      <div class=\"fill center step-in\">\n        <!-- the step's art -->\n      </div>\n    </template>",
+        "new_string": "    <!-- Pesquisa: data replaced with fictional values (parties, CNJ numbers, file name, period). -->\n    <template data-step=\"1\" data-title=\"Comece pela Nova pesquisa\" data-duration=\"4\">\n      <div class=\"fill center\">\n        <div\n          class=\"col step-in bg-white b-dash r-xl\"\n          style=\"width: 220px; padding: 18px; align-items: center; gap: 10px\"\n        >\n          <div class=\"center bg-table r-lg t-muted\" style=\"width: 40px; height: 40px; background: var(--color-neutral-3)\">\n            <i class=\"ic ic-sm\" data-icon=\"search\"></i>\n          </div>\n          <span class=\"caption-sm t-muted\">Busque por palavra-chave</span>\n          <span class=\"rel\" style=\"display: inline-flex\">\n            <span class=\"cta glow\"><i class=\"ic ic-sm\" data-icon=\"plus\"></i>Nova pesquisa</span>\n            <svg class=\"cursor\" style=\"right: -14px; bottom: -14px\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.5 5 3z\" /></svg>\n          </span>\n        </div>\n      </div>\n    </template>\n\n    <template data-step=\"2\" data-title=\"Escreva o que procura\" data-duration=\"4\">\n      <div class=\"fill center\">\n        <div class=\"col\" style=\"width: 300px; gap: 12px; align-items: flex-start\">\n          <div class=\"row pop bg-white b r-lg\" style=\"width: 100%; height: 38px; padding: 0 12px; gap: 8px\">\n            <i class=\"ic ic-sm t-faint\" data-icon=\"search\"></i>\n            <span class=\"body-sm t-dark truncate\">rescisão contrato de locação</span>\n          </div>\n          <span class=\"rel\" style=\"display: inline-flex\">\n            <span class=\"cta pop glow\" style=\"animation-delay: 0.15s\">Pesquisar</span>\n            <svg class=\"cursor\" style=\"right: -14px; bottom: -14px\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.5 5 3z\" /></svg>\n          </span>\n        </div>\n      </div>\n    </template>\n\n    <template data-step=\"3\" data-title=\"Refine com filtros\" data-duration=\"4\">\n      <div class=\"fill center\">\n        <div class=\"col\" style=\"width: 320px; gap: 12px\">\n          <div class=\"row step-in bg-white b r-lg\" style=\"height: 34px; padding: 0 12px; gap: 8px\">\n            <i class=\"ic ic-sm t-faint\" data-icon=\"search\"></i>\n            <span class=\"caption-sm t-dark truncate\">rescisão contrato de locação</span>\n          </div>\n          <div class=\"row\" style=\"flex-wrap: wrap; gap: 8px\">\n            <span class=\"chip chip-on pop\">Processos</span>\n            <span class=\"chip pop\" style=\"animation-delay: 0.15s\">Documentos</span>\n            <span class=\"rel\" style=\"display: inline-flex\">\n              <span class=\"chip chip-on pop glow\" style=\"animation-delay: 0.3s\">Tribunal: TJSP</span>\n              <svg class=\"cursor\" style=\"right: -10px; bottom: -10px\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.5 5 3z\" /></svg>\n            </span>\n            <span class=\"chip pop\" style=\"animation-delay: 0.45s\">Período: 01/02/2025 a 31/07/2025</span>\n          </div>\n        </div>\n      </div>\n    </template>\n\n    <template data-step=\"4\" data-title=\"Encontre o que precisa\" data-duration=\"4\">\n      <div class=\"fill center\">\n        <div class=\"col\" style=\"width: 340px; gap: 6px\">\n          <span class=\"caption-sm medium t-muted pop\">3 resultados</span>\n          <span class=\"rel\" style=\"display: block\">\n            <div class=\"result pop glow\" style=\"animation-delay: 0.15s\">\n              <div class=\"row\" style=\"gap: 6px\">\n                <span class=\"body-sm medium t-dark tight truncate\">Luísa Andrade x Imobiliária Horizonte Ltda.</span>\n                <span class=\"pill ok\">Ativo</span>\n              </div>\n              <span class=\"caption-sm t-muted\">0012345-67.2025.8.26.0100 · TJSP</span>\n            </div>\n            <svg class=\"cursor\" style=\"right: 18px; bottom: -8px\" viewBox=\"0 0 24 24\" fill=\"#070c20\" stroke=\"#ffffff\" stroke-width=\"1.2\"><path d=\"M5 3l6.5 16 2.2-6.6L20 10.…"
+      },
+      "result": {
+        "ok": true,
+        "text": "The file /var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/scenes/search-tour/index.html has been updated successfully."
+      }
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_019TpVtU5ToABxpSGHPunwuX",
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/scenes/search-tour/index.html",
+        "old_string": "      /* This feature's own keyframes (prefix tour-, see pattern.md \"A new movement\") */",
+        "new_string": "      /* This feature's own keyframes (prefix tour-, see pattern.md \"A new movement\") */\n      /* None: Pesquisa uses the shared vocabulary only. Its own pieces follow. */\n\n      /* Filter chip; the selected one uses the pattern's \"selected item\" tokens */\n      .chip {\n        display: inline-flex;\n        align-items: center;\n        height: 26px;\n        padding: 0 10px;\n        border-radius: 9999px;\n        border: 1px solid var(--color-neutral-5);\n        background: var(--color-neutral-1);\n        color: var(--color-neutral-10);\n        font-size: 11px;\n        font-weight: 500;\n        white-space: nowrap;\n      }\n      .chip-on {\n        border-color: var(--color-sky-4);\n        background: var(--color-sky-1);\n        color: var(--color-sky-10);\n        box-shadow: 0 0 0 3px rgba(106, 151, 235, 0.15);\n      }\n      /* Result row: one process or document */\n      .result {\n        display: flex;\n        flex-direction: column;\n        gap: 2px;\n        padding: 6px 10px;\n        border-radius: var(--radius-lg);\n        border: 1px solid var(--color-neutral-5);\n        background: var(--color-neutral-1);\n      }\n      .ok {\n        background: var(--color-success-2);\n        color: var(--color-success-9);\n      }"
+      },
+      "result": {
+        "ok": true,
+        "text": "The file /var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/scenes/search-tour/index.html has been updated successfully."
+      }
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_01G1akxpphZjCTqkqiNts2tE",
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/scenes/search-tour/index.html",
         "old_string": "    <title>Tour scene</title>",
         "new_string": "    <title>Pesquisa tour</title>"
+      },
+      "result": {
+        "ok": true,
+        "text": "The file /var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/scenes/search-tour/index.html has been updated successfully."
       }
     },
     {
       "turn": 1,
       "type": "tool",
-      "name": "Bash",
-      "input": {
-        "command": "node \"/Users/denisluft/Documents/Projetos/Inspira/builder-bundle/plugins/bb/skills/animate-tour/scripts/tour.mjs\" record search-tour --quality light",
-        "description": "Record the light-quality GIFs of the tour",
-        "timeout": 600000
-      }
-    },
-    {
-      "turn": 1,
-      "type": "tool",
-      "name": "Read",
-      "input": {
-        "file_path": "/Users/denisluft/Motion/out/search-tour/light/search-tour-step-1.png"
-      }
-    },
-    {
-      "turn": 1,
-      "type": "tool",
-      "name": "Read",
-      "input": {
-        "file_path": "/Users/denisluft/Motion/out/search-tour/light/search-tour-step-2.png"
-      }
-    },
-    {
-      "turn": 1,
-      "type": "tool",
-      "name": "Read",
-      "input": {
-        "file_path": "/Users/denisluft/Motion/out/search-tour/light/search-tour-step-3.png"
-      }
-    },
-    {
-      "turn": 1,
-      "type": "tool",
-      "name": "Read",
-      "input": {
-        "file_path": "/Users/denisluft/Motion/out/search-tour/light/search-tour-step-4.png"
-      }
-    },
-    {
-      "turn": 1,
-      "type": "text",
-      "text": "The four stills look right. One small cleanup in the code, then the high-quality recording."
-    },
-    {
-      "turn": 1,
-      "type": "tool",
+      "id": "toolu_014cY6DkYf1XfSozTjkR9Uzu",
       "name": "Edit",
       "input": {
         "replace_all": false,
-        "file_path": "/Users/denisluft/Motion/scenes/search-tour/index.html",
+        "file_path": "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/scenes/search-tour/index.html",
         "old_string": "class=\"center bg-table r-lg t-muted\"",
         "new_string": "class=\"center r-lg t-muted\""
+      },
+      "result": {
+        "ok": true,
+        "text": "The file /var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/scenes/search-tour/index.html has been updated successfully."
       }
     },
     {
       "turn": 1,
       "type": "tool",
+      "id": "toolu_01ULyongnnnzXqJx3f7mNZdD",
       "name": "Bash",
       "input": {
-        "command": "S=/Users/denisluft/Documents/Projetos/Inspira/builder-bundle/plugins/bb/skills/animate-tour/scripts/tour.mjs; node \"$S\" record search-tour --quality light && node \"$S\" record search-tour --quality high",
-        "description": "Record the light and high-quality GIFs",
+        "command": "node \"/private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/plugins/bb/skills/animate-tour/scripts/tour.mjs\" record search-tour --quality light",
+        "description": "Record the light-quality GIFs",
         "timeout": 600000
+      },
+      "result": {
+        "ok": true,
+        "text": "OUT /var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light (404x212, 20 fps)\n  search-tour-step-1.png  0.01 MB\n  search-tour-step-1.gif  0.10 MB\n  search-tour-step-2.png  0.01 MB\n  search-tour-step-2.gif  0.10 MB\n  search-tour-step-3.png  0.02 MB\n  search-tour-step-3.gif  0.12 MB\n  search-tour-step-4.png  0.03 MB\n  search-tour-step-4.gif  0.20 MB\n  search-tour-full.gif  0.44 MB"
       }
     },
     {
       "turn": 1,
       "type": "tool",
+      "id": "toolu_01FhhZW2dpf3eAkfcQAESmoe",
       "name": "Read",
       "input": {
-        "file_path": "/Users/denisluft/Motion/out/search-tour/high/search-tour-step-4.png"
+        "file_path": "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light/search-tour-step-1.png"
+      },
+      "result": {
+        "ok": true,
+        "text": "[image]"
       }
     },
     {
       "turn": 1,
       "type": "tool",
+      "id": "toolu_01GWGtwA9wCFZKyGFVhpqGWM",
       "name": "Read",
       "input": {
-        "file_path": "/Users/denisluft/Motion/out/search-tour/high/search-tour-step-1.png"
+        "file_path": "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light/search-tour-step-2.png"
+      },
+      "result": {
+        "ok": true,
+        "text": "[image]"
+      }
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_01AW7WZ1RXcP5He1YNNgzx5Y",
+      "name": "Read",
+      "input": {
+        "file_path": "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light/search-tour-step-3.png"
+      },
+      "result": {
+        "ok": true,
+        "text": "[image]"
+      }
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_019QGfQd4vEp4DsMGtXYBxs9",
+      "name": "Read",
+      "input": {
+        "file_path": "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light/search-tour-step-4.png"
+      },
+      "result": {
+        "ok": true,
+        "text": "[image]"
       }
     },
     {
       "turn": 1,
       "type": "text",
-      "text": "A animação de primeiros passos da Pesquisa está pronta, em GIF, nas duas qualidades. Olhei a imagem parada de cada passo e não falta nada na tela. A fonte certa (Poppins) carregou e os GIFs leves ficaram bem abaixo do limite de 2 MB.\n\n**Arquivos**\n- Leve, para e-mail, slides e Slack (404 × 212): `/Users/denisluft/Motion/out/search-tour/light/`\n- Alta, para a central de ajuda (808 × 424, nítida em telas retina): `/Users/denisluft/Motion/out/search-tour/high/`\n\nCada pasta tem:\n- `search-tour-full.gif`: o tour inteiro, 16 segundos (0,47 MB no leve, 1,73 MB no alto).\n- `search-tour-step-1.gif` a `search-tour-step-4.gif`: um GIF por passo, 4 segundos cada, repetindo.\n- `search-tour-step-1.png` a `search-tour-step-4.png`: a imagem parada de cada passo, para usar de capa ou onde GIF não anima.\n\nTodo GIF abre já com a tela montada. Assim, quem usa o Outlook no computador, que não anima GIF, vê o passo inteiro.\n\n**Textos para acompanhar cada GIF** (não aparecem na imagem):\n1. **Comece uma nova pesquisa.** Encontre processos e documentos por palavra-chave, num só lugar.\n2. **Digite o que procura.** Escreva uma palavra-chave e a Pesquisa olha processos e documentos ao mesmo tempo.\n3. **Refine com filtros.** Escolha o tipo, o tribunal e o período para chegar mais rápido no que importa.\n4. **Encontre o que precisa.** Os resultados chegam juntos, com status e tribunal à vista.\n\n**O que troquei dos prints**\n- **Partes:** \"Mariana Couto Ribeiro x Imobiliária Vale Sereno Ltda.\" e \"Henrique Vasconcelos Prado x Construtora Alto Ipê S.A.\" viraram \"Marina Alves x Imobiliária Horizonte Ltda.\" e \"Carlos Mendes x Construtora Delta S.A.\".\n- **Números de processo:** os dois viraram números inventados.\n- **Documento:** \"Parecer_Locacao_Ribeiro.pdf\" virou \"Parecer_Locacao_01.pdf\", e \"Pasta Contencioso Cível\" virou \"Pasta Contencioso\".\n- **Período:** o de 2024 virou 01/01/2025 a 30/06/2025.\n- **Removidos para caber:** o valor da causa, a data de distribuição e a data de edição.\n- **Cores:** o azul do botão virou o azul-marinho padrão dos tours, o azul claro dos filtros marcados virou o azul de \"item selecionado\" e o verde do selo \"Ativo\" virou o verde de status do design system.\n\nMantive como estavam \"TJSP\", \"Ativo\" e o termo pesquisado. Usei os três prints, nenhum foi descartado.\n\nO resultado é o que você queria? O que você mudaria?"
+      "text": "Os quatro quadros estão completos, sem nada faltando. O passo 4 deixa só uns 7px livres embaixo, então aperto um pouco os espaçamentos antes da gravação final nas duas qualidades."
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_01L39Qd3vu9ubLVFUMRHjymo",
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/scenes/search-tour/index.html",
+        "old_string": "        gap: 2px;\n        padding: 6px 10px;",
+        "new_string": "        gap: 1px;\n        padding: 5px 10px;"
+      },
+      "result": {
+        "ok": true,
+        "text": "The file /var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/scenes/search-tour/index.html has been updated successfully."
+      }
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_01GcGonYbv1iqdadWNz4sL9q",
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/scenes/search-tour/index.html",
+        "old_string": "style=\"width: 340px; gap: 6px\"",
+        "new_string": "style=\"width: 340px; gap: 5px\""
+      },
+      "result": {
+        "ok": true,
+        "text": "The file /var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/scenes/search-tour/index.html has been updated successfully."
+      }
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_01YScxBCWTioYJmatdk7hgTX",
+      "name": "Bash",
+      "input": {
+        "command": "T=\"/private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/plugins/bb/skills/animate-tour/scripts/tour.mjs\"; node \"$T\" record search-tour --quality light && node \"$T\" record search-tour --quality high",
+        "description": "Record light and high quality GIFs",
+        "timeout": 600000
+      },
+      "result": {
+        "ok": false,
+        "text": "The eval harness denied this command."
+      }
+    },
+    {
+      "turn": 1,
+      "type": "text",
+      "text": "The command was probably refused because of its form (a variable and `&&`), so I run the two recordings separately, exactly as the guide writes them."
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_01VZ8U2yq78veB1qezBZo3sG",
+      "name": "Bash",
+      "input": {
+        "command": "node \"/private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/plugins/bb/skills/animate-tour/scripts/tour.mjs\" record search-tour --quality light",
+        "description": "Record the light-quality GIFs",
+        "timeout": 600000
+      },
+      "result": {
+        "ok": true,
+        "text": "OUT /var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light (404x212, 20 fps)\n  search-tour-step-1.png  0.01 MB\n  search-tour-step-1.gif  0.10 MB\n  search-tour-step-2.png  0.01 MB\n  search-tour-step-2.gif  0.10 MB\n  search-tour-step-3.png  0.02 MB\n  search-tour-step-3.gif  0.12 MB\n  search-tour-step-4.png  0.03 MB\n  search-tour-step-4.gif  0.19 MB\n  search-tour-full.gif  0.44 MB"
+      }
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_01MfC56T3B3ZD9hBQM1s7L6U",
+      "name": "Bash",
+      "input": {
+        "command": "node \"/private/tmp/claude-501/-Users-denisluft-Documents-Projetos-Inspira/f7d74568-f1e0-44bc-8dd5-7af8ffb9b671/scratchpad/wt-evals/plugins/bb/skills/animate-tour/scripts/tour.mjs\" record search-tour --quality high",
+        "description": "Record the high-quality GIFs",
+        "timeout": 600000
+      },
+      "result": {
+        "ok": true,
+        "text": "OUT /var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/high (808x424, 25 fps)\n  search-tour-step-1.png  0.03 MB\n  search-tour-step-1.gif  0.34 MB\n  search-tour-step-2.png  0.03 MB\n  search-tour-step-2.gif  0.35 MB\n  search-tour-step-3.png  0.04 MB\n  search-tour-step-3.gif  0.42 MB\n  search-tour-step-4.png  0.06 MB\n  search-tour-step-4.gif  0.70 MB\n  search-tour-full.gif  1.61 MB"
+      }
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_011kVJcp31J4PZEDiRU7sZ2m",
+      "name": "Read",
+      "input": {
+        "file_path": "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/high/search-tour-step-4.png"
+      },
+      "result": {
+        "ok": true,
+        "text": "[image]"
+      }
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_017bqotK6VRbYEqsrcEgcyyk",
+      "name": "Read",
+      "input": {
+        "file_path": "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/high/search-tour-step-1.png"
+      },
+      "result": {
+        "ok": true,
+        "text": "[image]"
+      }
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_01PnMhWMzWSZwvFxbnL8DdtG",
+      "name": "Read",
+      "input": {
+        "file_path": "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/high/search-tour-step-2.png"
+      },
+      "result": {
+        "ok": true,
+        "text": "[image]"
+      }
+    },
+    {
+      "turn": 1,
+      "type": "tool",
+      "id": "toolu_0175EMrQeFb7Y7MePuvDVYHC",
+      "name": "Read",
+      "input": {
+        "file_path": "/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/high/search-tour-step-3.png"
+      },
+      "result": {
+        "ok": true,
+        "text": "[image]"
+      }
+    },
+    {
+      "turn": 1,
+      "type": "text",
+      "text": "O tour da Pesquisa está pronto em GIF, nas duas qualidades. Olhei os 4 quadros finais de cada uma. Todos os elementos aparecem, nada fica cortado nas bordas e nenhum texto está abaixo de 11px. A gravação não deu nenhum aviso sobre a fonte Poppins. Nenhum dos três prints foi descartado.\n\n**Arquivos**\n- Qualidade leve (e-mail, slides), em `/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/light/`. Tem 404 × 212, e o tour inteiro pesa 0,44 MB, bem abaixo do limite de 2 MB.\n- Qualidade alta (central de ajuda), em `/var/folders/fh/y8tc0g896tjfpxp9pjg9r3b00000gn/T/bb-eval-motion-eAnCws/out/search-tour/high/`. Tem 808 × 424, e o tour inteiro pesa 1,61 MB.\n\nCada pasta tem estes arquivos:\n- `search-tour-full.gif`: o tour inteiro, com 4 passos de 4 segundos.\n- `search-tour-step-1.gif` a `search-tour-step-4.gif`: um GIF por passo, que se repete sozinho.\n- `search-tour-step-1.png` a `search-tour-step-4.png`: o quadro final de cada passo, para usar como capa ou como imagem parada.\n\nTodo GIF começa no quadro final, então um leitor de e-mail que não anima, como o Outlook no computador, mostra a cena completa.\n\n**Legendas (vão em volta do GIF, não dentro dele)**\n1. **Comece pela Nova pesquisa.** Clique em Nova pesquisa para encontrar processos e documentos por palavra-chave.\n2. **Escreva o que procura.** Digite as palavras do caso e clique em Pesquisar.\n3. **Refine com filtros.** Escolha entre processos e documentos e filtre por tribunal e período.\n4. **Encontre o que precisa.** Processos e documentos aparecem juntos, com tribunal e situação à vista.\n\n**O que troquei**\n- **Dados dos prints:**\n  - As partes viraram nomes inventados: \"Luísa Andrade x Imobiliária Horizonte Ltda.\" e \"Rafael Nunes x Construtora Serra Azul S.A.\".\n  - Os dois números CNJ foram inventados.\n  - O arquivo virou `Parecer_Locacao_01.pdf`.\n  - O período virou 01/02/2025 a 31/07/2025.\n  - Valor da causa e data de distribuição saíram, para caber.\n- **Ficaram como no print:** o termo pesquisado e \"TJSP\", por serem vocabulário jurídico.\n- **Cores:**\n  - O azul dos botões dos prints virou o azul-marinho padrão dos tours (navy-3).\n  - O azul dos filtros marcados virou o azul claro de \"item selecionado\" (sky).\n  - O verde de \"Ativo\" virou o verde de status ok (success).\n- **Ícone do passo 1:** é a lupa (`search`) do design system.\n\nO resultado é o que você queria, ou o que você mudaria?"
     }
   ]
 }

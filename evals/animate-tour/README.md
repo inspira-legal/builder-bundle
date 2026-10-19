@@ -25,7 +25,7 @@ One folder per skill (`evals/<skill>/`) with the same four parts:
 2. **`gif-from-screenshots`**: three screenshots of a mock "Pesquisa" feature that carry
    names, CNJ numbers, amounts and dates. The skill has to ask the mode and the quality, show
    the step plan in an `AskUserQuestion` before producing, keep every piece of that data out of
-   the scene, record with `scripts/tour.mjs`, read the stills, and close with a
+   the plan and the scene, record with `scripts/tour.mjs`, read the stills, and close with a
    plain text question.
 3. **`no-browser`**: a request to walk the feature in the browser, in a session with no
    browser. The skill has to stop, offer the choice (connect Claude in Chrome or send
@@ -33,8 +33,11 @@ One folder per skill (`evals/<skill>/`) with the same four parts:
    wait for the screenshots once they are picked.
 
 The runner plays the person: it answers each `AskUserQuestion` with the scenario's `answers`
-(the `RESPONDERS` in `run.mjs` match them to the options), and replies in text when a turn ends on a question. It allows writes only under
-`~/Motion/scenes` and Bash only for `tour.mjs` and a few read commands, and denies the rest.
+(the `RESPONDERS` in `run.mjs` match them to the options), and replies in text when a turn ends on a question. It allows writes only inside the
+run's `scenes/` folder (the path resolved, so `scenes/../` stays out), and Bash only for the
+exact `tour.mjs` verbs and `ls`, `file`, `du` and `stat`, with no shell operators. It denies the
+rest. A check passes on a call's result, not on the call: the record has to succeed and leave
+its full GIF on disk, and a still has to be read back without error.
 
 ## Run them
 
@@ -43,17 +46,18 @@ cd evals/animate-tour
 npm install
 node run.mjs trigger
 node run.mjs scenario no-browser
-node run.mjs scenario gif-from-screenshots --models haiku
+node run.mjs scenario gif-from-screenshots
 ```
 
 After a grader changes, `node run.mjs regrade results/DATE/FILE.json` grades a saved run
 again without running the model.
 
 `--models haiku` narrows the run to one model, and `--runs 3` changes the trigger repetitions.
-The GIF scenario needs the studio (`/bb:reel`'s bootstrap) and writes to `~/Motion/scenes` and
-`~/Motion/out`. Run it one model at a time (`--models sonnet`) and move the scene it made
-aside before the next model: the models reach for the same slug (`search-tour`), and a second
-run would find the first one's scene there.
+The GIF scenario needs the studio installed once (`/bb:reel`'s bootstrap). Each scenario run
+gets a studio of its own: a temporary folder passed as `MOTION_HOME`, linked to the install in
+`~/Motion`, with empty `scenes/` and `out/`. Runs never share a scene, even when every model
+picks the same slug, and `~/Motion` is left as it was. The result file names that folder
+(`studio`), where the scene and the GIFs stay.
 
 A trigger check through `claude -p --tools ""` does not measure triggering: with no `Skill`
 tool, the skill list is not in context, and the model guesses from the request alone. The
@@ -61,7 +65,8 @@ runner keeps the `Skill` tool and reads which skill it calls.
 
 ## Results
 
-Run on 2026-10-19 on `feat/animate-tour` at `ce99ef3`, with `claude-haiku-5-5`,
+Run on 2026-10-19 on `main` at `e315d72` (the trigger before the rebase, on `ce99ef3`, which
+has the same skill), with `claude-haiku-5-5`,
 `claude-sonnet-5-5` and `claude-opus-5-5`. The transcripts are in `results/2026-10-19/`.
 
 ### Trigger, 5 runs per model
@@ -77,11 +82,11 @@ Run on 2026-10-19 on `feat/animate-tour` at `ce99ef3`, with `claude-haiku-5-5`,
 
 | Check                      | Haiku | Sonnet | Opus |
 | -------------------------- | ----- | ------ | ---- |
-| `gif-from-screenshots`     | 7/7   | 5/7    | 6/7  |
+| `gif-from-screenshots`     | 6/7   | 5/7    | 6/7  |
 | asks_mode                  | yes   | yes    | yes  |
 | asks_quality               | yes   | no     | yes  |
 | plan_in_question           | yes   | yes    | yes  |
-| real_data_replaced         | yes   | no     | no   |
+| real_data_replaced         | no    | no     | no   |
 | records_with_tour_mjs      | yes   | yes    | yes  |
 | reads_stills               | yes   | yes    | yes  |
 | closes_with_plain_question | yes   | yes    | yes  |
@@ -89,21 +94,23 @@ Run on 2026-10-19 on `feat/animate-tour` at `ce99ef3`, with `claude-haiku-5-5`,
 
 What the misses were:
 
-- **real_data_replaced, Sonnet and Opus.** Both turned `Parecer_Locacao_Ribeiro.pdf` into
-  `Parecer_Locacao_01.pdf`: the client's name went, the rest of the screenshot's file name
-  stayed. `pattern.md` asks to replace file names whole, and gives `Contrato_01.pdf` as the
-  model, which reads as "keep the kind of document, add a number". Haiku wrote
-  `Parecer_01.pdf`. Every name, CNJ number, amount and date was replaced in all three. A line in
-  `pattern.md`, section 1, saying the new file name is invented and never derived from the
-  screenshot's, would close it.
-- **asks_quality, Sonnet.** It asked the mode, and its GIF option described both qualities, but
-  it never asked which one. It then recorded `light` and `high`, which the skill allows only
-  when the person does not know.
+- **real_data_replaced, all three.** Each model turned `Parecer_Locacao_Ribeiro.pdf` into
+  `Parecer_Locacao_01.pdf` or `Parecer_Locacao.pdf` in the scene: the client's name went, the
+  rest of the screenshot's file name stayed. `pattern.md` asks to replace file names whole, and
+  gives `Contrato_01.pdf` as the model, which reads as "keep the kind of document, add a
+  number". Opus also listed the parties' real names in the plan, to say what it replaced. Every
+  name, CNJ number, amount and date was replaced in the scenes. Two lines in `pattern.md`,
+  section 1, would close it: the new file name is invented, never derived from the
+  screenshot's, and the plan says what was replaced by kind ("os nomes das partes") without
+  quoting it.
+- **asks_quality, Sonnet.** It asked the mode and the plan in one question ("Aprovado, GIF"),
+  never asked the quality, and recorded `light` and `high`, which the skill allows only when the
+  person does not know.
 
-How the models asked: Haiku put the mode, the quality and the plan in one `AskUserQuestion`.
-Opus folded the mode and the quality into one question ("GIF leve e alto", "Dentro do app")
-and asked the feature's icon before the plan. Sonnet asked the mode and the plan together. All
-three showed the plan before writing the scene.
+How the models asked: Haiku asked the mode with the quality in its labels ("Fora do app, GIF
+light") and the plan in the same `AskUserQuestion`. Opus did the same and asked the feature's
+icon too. Sonnet folded the mode into the plan's approval. All three showed the plan before
+writing the scene.
 
 These are single runs. A scenario that fails once is worth running again before it changes the
 skill.
