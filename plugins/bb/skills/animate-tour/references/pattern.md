@@ -159,7 +159,16 @@ family of curves, and write a comment that says what it tells and which measure 
 - **Step 1's dashed card:** 220px, `rounded-xl`, a 1.5px `neutral-6` dashed border, 18px of
   padding, and the icon in a 40 × 40 `bg-neutral-3 rounded-lg` square.
 - **Icons:** only the design system's (`@inspira-legal/ui/Icon` in code, `assets/icons` in the
-  scene), at sizes `xs` 12 and `sm` 16.
+  scene), at sizes `xs` 12 and `sm` 16. A text color class colors an icon through
+  `currentColor`, and a few icons do not use it:
+  - `eye` and `eye-off` carry a fixed `stroke="#363F49"` (`neutral-10`) in the design system
+    itself, so they render that gray in the app too, whatever the class. Use them only where
+    `neutral-10` is the right color, or choose another icon. The fix belongs in `packages/ui`,
+    not in the copy.
+  - The logos (`google`, `microsoft`), the `flag-*` icons and the gradient icons
+    (`*-gradient`, `*-degrade`) keep their own colors by design.
+  - The white parts of `folder-check` and of the icons with a clip mask (`bell`, `gear`, `lock`,
+    `shield` and others) are cut-outs or masks, not colors to change.
 
 ## 6. The modal around the art (code mode only)
 

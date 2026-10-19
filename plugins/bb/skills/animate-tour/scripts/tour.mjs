@@ -72,9 +72,15 @@ function writeIcons(sceneDir) {
   for (const file of readdirSync(dir).filter((f) => f.endsWith(".svg"))) {
     // Only the root <svg> loses its 24px size, so the .ic-* class sets it: a <rect> inside
     // keeps its own width and height, or it draws nothing.
-    icons[file.slice(0, -4)] = readFileSync(join(dir, file), "utf8")
+    // Ids take the icon's name as a prefix: several icons ship `id="a"` on their clip mask, and two
+    // of them inline in one step would otherwise both point at the first mask in the page.
+    const name = file.slice(0, -4);
+    icons[name] = readFileSync(join(dir, file), "utf8")
       .replace(/<\?xml[^>]*>\s*/, "")
       .replace(/<svg\b[^>]*>/, (tag) => tag.replace(/\s(width|height)="[^"]*"/g, ""))
+      .replace(/\bid="([^"]+)"/g, `id="${name}-$1"`)
+      .replace(/url\(#([^)]+)\)/g, `url(#${name}-$1)`)
+      .replace(/href="#([^"]+)"/g, `href="#${name}-$1"`)
       .trim();
   }
   writeFileSync(join(sceneDir, "icons.js"), `window.ICONS = ${JSON.stringify(icons)};\n`);

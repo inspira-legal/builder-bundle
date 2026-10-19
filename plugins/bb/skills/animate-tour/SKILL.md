@@ -123,3 +123,17 @@ and asking how to follow.
 `references/pattern.md` and `references/examples/` are a dated copy of the app. When a new tour
 lands in the app, or an existing one changes a keyframe, a color or a measure, update both, plus
 the "DO NOT EDIT" blocks of `assets/scene-template.html`.
+
+`assets/icons` is a copy of `packages/ui/src/assets/icons` in `frontend-projects`, taken at
+`7d472a7f9` (`origin/main` on 2026-10-15) and still identical at `caaac6800`. The package version
+(`@inspira-legal/ui` 1.0.0) does not move when an icon changes, so the commit is the pin. Every
+`.svg` there is the list of icons a scene may use, so a missing icon fails the record. To see
+whether the design system moved since the copy, and to copy it again, run from the
+`frontend-projects` checkout:
+
+```bash
+git diff --stat 7d472a7f9 origin/main -- packages/ui/src/assets/icons
+cp packages/ui/src/assets/icons/*.svg PATH_TO_BB/plugins/bb/skills/animate-tour/assets/icons/
+```
+
+Then write the new commit in place of `7d472a7f9` above.
