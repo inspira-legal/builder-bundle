@@ -91,6 +91,7 @@ Before delivering, go through this list:
       .9s, and every one ends visible.
 - [ ] The standard cursor SVG sits on the target, the target has `glowPulse`, one loop per step.
 - [ ] No text under 11px. No real data.
+- [ ] Code: the last button's label fits the footer (`pattern.md`, section 6).
 - [ ] Code: lint, ts:check, spell:check and the spec pass, and you saw the tour running in the
       app.
 - [ ] GIF: Poppins loaded, `light` stays under its ceiling, and you read **every** settled `.png`

@@ -175,3 +175,9 @@ it is:
 - The footer: "Voltar" (only after step 1), "Passo X de N" (`caption-sm neutral-6`) and the main
   `navy-3` button with `ArrowRight`. On the last step the button becomes the create call to
   action ("Criar meu primeiro projeto") and calls the page's real action.
+- **The last button's label has to fit the footer.** The three pieces sit on one line, none of
+  them wraps or shrinks (`whitespace-nowrap`, `shrink-0`), and the label gets about 200px of the
+  card's 404px: around 26 characters at `text-button`. "Criar meu primeiro projeto" fits;
+  "Fazer minha primeira pesquisa" pushes the button out of the card. Write the label to that
+  budget in the step plan ("Fazer a primeira pesquisa", "Pesquisar agora"), and check it on
+  screen, since a wide letter costs more than a narrow one.

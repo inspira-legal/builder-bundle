@@ -72,7 +72,12 @@ The step plan goes to the person for approval (SKILL.md, step 3) before any code
   new key, and go through the steps. Compare with the screenshots and with an existing tour open
   beside it: the same frame, the same rhythm.
 - Turn on "reduce motion" in the system and check that each step shows already settled.
-- At phone width (375px) the card shrinks through its `max-w`, and the art stays inside it.
+- On the last step, look at the footer: "Voltar", "Passo N de N" and the final call to action fit
+  inside the card, with the button's right edge before the card's padding. A label that pushes
+  the button out goes back to the budget of `pattern.md`, section 6, and gets shorter.
+- At phone width (375px) the card shrinks through its `max-w`, and the art stays inside it. Look
+  at the last step's footer there too, and when even the existing tours overflow at that width,
+  say so instead of changing the shared frame.
 
 The same tour often needs a GIF later, for communication or the help center. Once the code is
 approved, port each step component to a scene (`gif-mode.md`): the classes and the aliases map
