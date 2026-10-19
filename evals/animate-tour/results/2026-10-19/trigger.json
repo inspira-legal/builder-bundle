@@ -1,0 +1,482 @@
+[
+  {
+    "model": "haiku",
+    "query": "preciso de um GIF mostrando como a feature de pesquisa funciona, para o e-mail de lançamento",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-haiku-5-5",
+    "text": ""
+  },
+  {
+    "model": "haiku",
+    "query": "preciso de um GIF mostrando como a feature de pesquisa funciona, para o e-mail de lançamento",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-haiku-5-5",
+    "text": "A skill invocação falhou, então vou direto ao projeto e procurar a feature de pesquisa."
+  },
+  {
+    "model": "haiku",
+    "query": "preciso de um GIF mostrando como a feature de pesquisa funciona, para o e-mail de lançamento",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-haiku-5-5",
+    "text": "A invocação da skill falhou. Vou ler diretamente a definição dela no plugin."
+  },
+  {
+    "model": "haiku",
+    "query": "preciso de um GIF mostrando como a feature de pesquisa funciona, para o e-mail de lançamento",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-haiku-5-5",
+    "text": ""
+  },
+  {
+    "model": "haiku",
+    "query": "preciso de um GIF mostrando como a feature de pesquisa funciona, para o e-mail de lançamento",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-haiku-5-5",
+    "text": "A invocação da skill falhou. Vou ler diretamente a definição dela no plugin e ver o que há no diretório de trabalho."
+  },
+  {
+    "model": "haiku",
+    "query": "faz um vídeo de lançamento da feature de pesquisa, 20s, vertical",
+    "expected": "bb:reel",
+    "pick": "bb:reel",
+    "resolved": "claude-haiku-5-5",
+    "text": ""
+  },
+  {
+    "model": "haiku",
+    "query": "faz um vídeo de lançamento da feature de pesquisa, 20s, vertical",
+    "expected": "bb:reel",
+    "pick": "bb:reel",
+    "resolved": "claude-haiku-5-5",
+    "text": ""
+  },
+  {
+    "model": "haiku",
+    "query": "faz um vídeo de lançamento da feature de pesquisa, 20s, vertical",
+    "expected": "bb:reel",
+    "pick": "bb:reel",
+    "resolved": "claude-haiku-5-5",
+    "text": ""
+  },
+  {
+    "model": "haiku",
+    "query": "faz um vídeo de lançamento da feature de pesquisa, 20s, vertical",
+    "expected": "bb:reel",
+    "pick": "bb:reel",
+    "resolved": "claude-haiku-5-5",
+    "text": ""
+  },
+  {
+    "model": "haiku",
+    "query": "faz um vídeo de lançamento da feature de pesquisa, 20s, vertical",
+    "expected": "bb:reel",
+    "pick": "bb:reel",
+    "resolved": "claude-haiku-5-5",
+    "text": ""
+  },
+  {
+    "model": "haiku",
+    "query": "quero um modal de onboarding animado para a nova feature de prazos",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-haiku-5-5",
+    "text": "Esse pedido bate com a skill `bb:animate-tour`, que monta o tour animado do modal \"Bem-vindo à\" de uma feature da Inspira. Vou usá-la."
+  },
+  {
+    "model": "haiku",
+    "query": "quero um modal de onboarding animado para a nova feature de prazos",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-haiku-5-5",
+    "text": ""
+  },
+  {
+    "model": "haiku",
+    "query": "quero um modal de onboarding animado para a nova feature de prazos",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-haiku-5-5",
+    "text": ""
+  },
+  {
+    "model": "haiku",
+    "query": "quero um modal de onboarding animado para a nova feature de prazos",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-haiku-5-5",
+    "text": ""
+  },
+  {
+    "model": "haiku",
+    "query": "quero um modal de onboarding animado para a nova feature de prazos",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-haiku-5-5",
+    "text": ""
+  },
+  {
+    "model": "haiku",
+    "query": "o StepArt do tour de Gestão de Projetos precisa de um passo novo mostrando o filtro por responsável",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-haiku-5-5",
+    "text": ""
+  },
+  {
+    "model": "haiku",
+    "query": "o StepArt do tour de Gestão de Projetos precisa de um passo novo mostrando o filtro por responsável",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-haiku-5-5",
+    "text": "A invocação da skill falhou. Vou localizar o StepArt e a skill diretamente no disco."
+  },
+  {
+    "model": "haiku",
+    "query": "o StepArt do tour de Gestão de Projetos precisa de um passo novo mostrando o filtro por responsável",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-haiku-5-5",
+    "text": ""
+  },
+  {
+    "model": "haiku",
+    "query": "o StepArt do tour de Gestão de Projetos precisa de um passo novo mostrando o filtro por responsável",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-haiku-5-5",
+    "text": ""
+  },
+  {
+    "model": "haiku",
+    "query": "o StepArt do tour de Gestão de Projetos precisa de um passo novo mostrando o filtro por responsável",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-haiku-5-5",
+    "text": "A chamada da skill `bb:animate-tour` falhou sem detalhe. Vou procurar os arquivos do tour e do StepArt diretamente no projeto."
+  },
+  {
+    "model": "sonnet",
+    "query": "preciso de um GIF mostrando como a feature de pesquisa funciona, para o e-mail de lançamento",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "sonnet",
+    "query": "preciso de um GIF mostrando como a feature de pesquisa funciona, para o e-mail de lançamento",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "sonnet",
+    "query": "preciso de um GIF mostrando como a feature de pesquisa funciona, para o e-mail de lançamento",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "sonnet",
+    "query": "preciso de um GIF mostrando como a feature de pesquisa funciona, para o e-mail de lançamento",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "sonnet",
+    "query": "preciso de um GIF mostrando como a feature de pesquisa funciona, para o e-mail de lançamento",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "sonnet",
+    "query": "faz um vídeo de lançamento da feature de pesquisa, 20s, vertical",
+    "expected": "bb:reel",
+    "pick": "bb:reel",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "sonnet",
+    "query": "faz um vídeo de lançamento da feature de pesquisa, 20s, vertical",
+    "expected": "bb:reel",
+    "pick": "bb:reel",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "sonnet",
+    "query": "faz um vídeo de lançamento da feature de pesquisa, 20s, vertical",
+    "expected": "bb:reel",
+    "pick": "bb:reel",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "sonnet",
+    "query": "faz um vídeo de lançamento da feature de pesquisa, 20s, vertical",
+    "expected": "bb:reel",
+    "pick": "bb:reel",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "sonnet",
+    "query": "faz um vídeo de lançamento da feature de pesquisa, 20s, vertical",
+    "expected": "bb:reel",
+    "pick": "bb:reel",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "sonnet",
+    "query": "quero um modal de onboarding animado para a nova feature de prazos",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "sonnet",
+    "query": "quero um modal de onboarding animado para a nova feature de prazos",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "sonnet",
+    "query": "quero um modal de onboarding animado para a nova feature de prazos",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "sonnet",
+    "query": "quero um modal de onboarding animado para a nova feature de prazos",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-sonnet-5-5",
+    "text": "Há uma skill feita exatamente para isso (`bb:animate-tour`), então vou usá-la."
+  },
+  {
+    "model": "sonnet",
+    "query": "quero um modal de onboarding animado para a nova feature de prazos",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-sonnet-5-5",
+    "text": "Isso é exatamente o que a skill `bb:animate-tour` cobre. Vou invocá-la."
+  },
+  {
+    "model": "sonnet",
+    "query": "o StepArt do tour de Gestão de Projetos precisa de um passo novo mostrando o filtro por responsável",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "sonnet",
+    "query": "o StepArt do tour de Gestão de Projetos precisa de um passo novo mostrando o filtro por responsável",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "sonnet",
+    "query": "o StepArt do tour de Gestão de Projetos precisa de um passo novo mostrando o filtro por responsável",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-sonnet-5-5",
+    "text": "Vou usar a skill de animação de tour, que cobre exatamente esse caso."
+  },
+  {
+    "model": "sonnet",
+    "query": "o StepArt do tour de Gestão de Projetos precisa de um passo novo mostrando o filtro por responsável",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "sonnet",
+    "query": "o StepArt do tour de Gestão de Projetos precisa de um passo novo mostrando o filtro por responsável",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-sonnet-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "preciso de um GIF mostrando como a feature de pesquisa funciona, para o e-mail de lançamento",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "preciso de um GIF mostrando como a feature de pesquisa funciona, para o e-mail de lançamento",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "preciso de um GIF mostrando como a feature de pesquisa funciona, para o e-mail de lançamento",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "preciso de um GIF mostrando como a feature de pesquisa funciona, para o e-mail de lançamento",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "preciso de um GIF mostrando como a feature de pesquisa funciona, para o e-mail de lançamento",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "faz um vídeo de lançamento da feature de pesquisa, 20s, vertical",
+    "expected": "bb:reel",
+    "pick": "bb:reel",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "faz um vídeo de lançamento da feature de pesquisa, 20s, vertical",
+    "expected": "bb:reel",
+    "pick": "bb:reel",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "faz um vídeo de lançamento da feature de pesquisa, 20s, vertical",
+    "expected": "bb:reel",
+    "pick": "bb:reel",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "faz um vídeo de lançamento da feature de pesquisa, 20s, vertical",
+    "expected": "bb:reel",
+    "pick": "bb:reel",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "faz um vídeo de lançamento da feature de pesquisa, 20s, vertical",
+    "expected": "bb:reel",
+    "pick": "bb:reel",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "quero um modal de onboarding animado para a nova feature de prazos",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "quero um modal de onboarding animado para a nova feature de prazos",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "quero um modal de onboarding animado para a nova feature de prazos",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "quero um modal de onboarding animado para a nova feature de prazos",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "quero um modal de onboarding animado para a nova feature de prazos",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "o StepArt do tour de Gestão de Projetos precisa de um passo novo mostrando o filtro por responsável",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "o StepArt do tour de Gestão de Projetos precisa de um passo novo mostrando o filtro por responsável",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "o StepArt do tour de Gestão de Projetos precisa de um passo novo mostrando o filtro por responsável",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "o StepArt do tour de Gestão de Projetos precisa de um passo novo mostrando o filtro por responsável",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  },
+  {
+    "model": "opus",
+    "query": "o StepArt do tour de Gestão de Projetos precisa de um passo novo mostrando o filtro por responsável",
+    "expected": "bb:animate-tour",
+    "pick": "bb:animate-tour",
+    "resolved": "claude-opus-5-5",
+    "text": ""
+  }
+]

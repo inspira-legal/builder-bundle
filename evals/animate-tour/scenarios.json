@@ -1,0 +1,66 @@
+[
+  {
+    "id": "trigger",
+    "skills": ["bb:animate-tour", "bb:reel"],
+    "kind": "trigger",
+    "runs_per_model": 5,
+    "queries": [
+      {
+        "query": "preciso de um GIF mostrando como a feature de pesquisa funciona, para o e-mail de lançamento",
+        "expected_skill": "bb:animate-tour"
+      },
+      {
+        "query": "faz um vídeo de lançamento da feature de pesquisa, 20s, vertical",
+        "expected_skill": "bb:reel"
+      },
+      {
+        "query": "quero um modal de onboarding animado para a nova feature de prazos",
+        "expected_skill": "bb:animate-tour"
+      },
+      {
+        "query": "o StepArt do tour de Gestão de Projetos precisa de um passo novo mostrando o filtro por responsável",
+        "expected_skill": "bb:animate-tour"
+      }
+    ],
+    "expected_behavior": [
+      "The first Skill call names the expected skill. A run with no Skill call counts as a miss."
+    ]
+  },
+  {
+    "id": "gif-from-screenshots",
+    "skills": ["bb:animate-tour"],
+    "kind": "scenario",
+    "query": "/bb:animate-tour Preciso da animação de primeiros passos da feature de Pesquisa. Os prints, na ordem de uso, estão em FIXTURES/search-1.png, FIXTURES/search-2.png e FIXTURES/search-3.png. A Pesquisa encontra processos e documentos por palavra-chave, e começa pelo botão \"Nova pesquisa\".",
+    "files": ["fixtures/search-1.png", "fixtures/search-2.png", "fixtures/search-3.png"],
+    "answers": {
+      "mode": "GIF, fora do app, para o e-mail de lançamento",
+      "quality": "light",
+      "plan": "approve"
+    },
+    "expected_behavior": [
+      "asks_mode: asks where the animation will be used (inside the app or outside it) before producing anything",
+      "asks_quality: asks for the GIF quality (light or high) before recording",
+      "plan_in_question: shows the step plan inside an AskUserQuestion call before the first scene write or tour.mjs new",
+      "real_data_replaced: no name, CNJ number, amount, date or file name from the screenshots reaches the plan or the scene, and the delivery says what was replaced",
+      "records_with_tour_mjs: records with node .../scripts/tour.mjs record SLUG --quality light",
+      "reads_stills: reads the settled .png of the steps before delivering",
+      "closes_with_plain_question: after the last record, ends with a plain text question about the result, with no AskUserQuestion"
+    ]
+  },
+  {
+    "id": "no-browser",
+    "skills": ["bb:animate-tour"],
+    "kind": "scenario",
+    "query": "/bb:animate-tour Faz o GIF do tour da feature de Prazos para a central de ajuda. Não tenho prints: anda pela feature você mesmo no navegador, em app.dev.inspira.legal. A feature organiza os prazos processuais do escritório e começa pelo botão \"Novo prazo\".",
+    "files": [],
+    "answers": {
+      "source": "screenshots"
+    },
+    "expected_behavior": [
+      "says_no_browser: says this session has no browser to walk the app",
+      "offers_choice: asks through AskUserQuestion how to go on, with connecting Claude in Chrome and sending screenshots among the options",
+      "no_switch_before_pick: before the pick, opens no other source on its own (no code search, no fetch of the app, no scene, no record)",
+      "waits_after_pick: once screenshots are picked, asks for them and produces nothing"
+    ]
+  }
+]
