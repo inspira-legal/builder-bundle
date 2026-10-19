@@ -32,7 +32,10 @@ The sections go from the story to the pixels, and the rest of the skill cites th
   it appears in the screenshots you received.
   - **Always replace** names of people and companies, lawsuit numbers, CPF and CNPJ, amounts,
     specific dates and file names that come from the screenshots. Replace them even when they
-    look fictional: that costs less than finding out later they belonged to a client.
+    look fictional: that costs less than finding out later they belonged to a client. Invent the
+    new value whole, without keeping part of the original: `Parecer_Locacao_Ribeiro.pdf` becomes
+    `Contrato_01.pdf`, not `Parecer_Locacao_01.pdf`, because the part you keep may still point at
+    the case.
   - **Keep** the vocabulary of the product and of the law: phase and column names, docket entry
     types such as "Publicação" and "Conclusão", courts such as "TJSP", case classes such as
     "Agravo de Instrumento".

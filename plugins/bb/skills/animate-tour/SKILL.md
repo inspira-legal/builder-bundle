@@ -24,8 +24,9 @@ Ask where the animation will be used, when the request does not say:
 - **Inside the app** (a dev building the feature): **code mode**. It needs the
   `frontend-projects` repository. Follow `references/code-mode.md`.
 - **Outside the app** (email, presentation, help center, social): **GIF mode**. It needs no code.
-  Follow `references/gif-mode.md`. Ask for the quality too: `light` (email, slides) or `high`
-  (help center). When the person does not know, make both.
+  Follow `references/gif-mode.md`. Ask which quality they want, `light` (email, slides) or `high`
+  (help center), unless the request already names it or its use. Make both only when the person
+  answers that they do not know, never as a way to skip the question.
 
 A dev may want both: the code first, then the GIF of the same art.
 
