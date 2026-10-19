@@ -1,5 +1,32 @@
 # Changelog
 
+## 3.16.0 (2026-10-19)
+
+**First-steps animations join bb.** `/bb:animate-tour` makes the animation of a feature's
+first-steps modal in the pattern of the app's tours (Análise em Tabela, Gestão de Projetos,
+Acompanhamento Processual). It is the 18th skill, beside `/bb:profile` and `/bb:reel` with no
+trilha.
+
+### New
+
+- **`/bb:animate-tour`**: it plans 3 to 5 steps from the feature's screenshots, gets the plan
+  approved, and delivers in one of two modes. It sees the feature through the person's
+  screenshots, the code, or a walk it takes itself in the browser (`references/walkthrough.md`,
+  on `app.dev.inspira.legal` by default, with the person signing in). Code mode writes the `<Feature>TourDialog` in
+  `frontend-projects`, wired into i18n, analytics and its spec, and closes on a gate to review or
+  ship. GIF mode writes the animated area as one GIF per step plus the full tour, `light` (404 ×
+  212, 20 fps) or `high` (2x, 25 fps), with a settled `.png` per step.
+- **The pattern as a contract**, `skills/animate-tour/references/pattern.md`: the narrative, the
+  stage, the palette aliases every `StepArt.tsx` declares, and the closed motion vocabulary, as a
+  dated copy of the app.
+- **GIF mode on the reel studio**, `skills/animate-tour/scripts/tour.mjs`: `prepare` runs
+  `/bb:reel`'s bootstrap, and `record` drives the scene with the studio's Playwright and encodes
+  with its ffmpeg (one palette per GIF, ordered dithering). The scene keeps the studio's
+  `seek(t)` contract, so `/bb:reel` renders it to MP4 too.
+- **The studio names the exception**: `skills/reel/studio/CLAUDE.md` says a tour scene
+  (`scenes/*-tour/`) follows `/bb:animate-tour`'s pattern, the app's curves and its centered
+  stage, and not the film rules, so an agent working in `~/Motion` keeps a tour's motion as it is.
+
 ## 3.15.0 (2026-10-13)
 
 **Motion videos join bb.** `/bb:reel` builds a motion-design video as code, renders it to MP4

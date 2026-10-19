@@ -78,3 +78,4 @@ options:
 - `think` (once it converged) → spec / discover / stop
 - `measure` (a saved file or a document; a chat answer has no gate) → hypotheses / discover / spec / stop
 - `challenge` → hands the thesis back to its owner; offers spec when the thesis survived and is buildable
+- `animate-tour` (code mode; GIF mode delivers and stops) → review / ship / stop

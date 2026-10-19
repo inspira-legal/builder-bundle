@@ -4,7 +4,7 @@
 
 [![github](https://img.shields.io/badge/github-inspira--legal%2Fbuilder--bundle-111111?style=flat-square&logo=github)](https://github.com/inspira-legal/builder-bundle)
 
-_Builder Bundle (`bb`): the unified skill set for Inspira builders, 17 skills, from the problem to the PR._
+_Builder Bundle (`bb`): the unified skill set for Inspira builders, 18 skills, from the problem to the PR._
 
 </div>
 
@@ -18,7 +18,7 @@ claude plugin install bb@inspira-legal
 or install across other coding agents (gemini cli, opencode, cursor, codex, t3 code) via vercel's skills manager:
 
 ```bash
-# install all 17 skills globally for every detected agent
+# install all 18 skills globally for every detected agent
 npx skills add inspira-legal/builder-bundle -g --all
 
 # or install for a specific agent
@@ -34,7 +34,7 @@ it writes its operating context into `~/.claude/BUILDER-BUNDLE.md`, imported by 
 
 ## what is inside
 
-one plugin, `bb`; 17 skills, 15 of them in 6 trilhas, with `/bb:profile` and `/bb:reel` beside them.
+one plugin, `bb`; 18 skills, 15 of them in 6 trilhas, with `/bb:profile`, `/bb:reel` and `/bb:animate-tour` beside them.
 
 ### configurar: who is on the other side
 
@@ -121,6 +121,12 @@ install globally with `npx skills add inspira-legal/builder-bundle -g -a opencod
 inside Claude Code: `/bb:reel lançamento do Drive, 20s, vertical`, or just ask for a video.
 
 the first run prepares `~/Motion` on its own: it copies the studio, installs its packages, downloads a headless Chromium and a bundled ffmpeg (under a minute on a fast connection, about 270MB), and renders a small test video. Node 20+ is the only prerequisite; when it is missing, the skill says how to install it from nodejs.org (on Windows on ARM, the x64 build: ffmpeg ships no ARM binary for Windows). on Linux, Chromium also needs its system libraries once (Debian/Ubuntu; other distributions install them with their package manager), and the skill hands over the exact command when they are missing. later runs skip all of that. the person's scenes and videos live in `~/Motion/scenes` and `~/Motion/out`, and an update of bb refreshes the engine (`lib/`, the scripts, `package.json`, the studio's `CLAUDE.md`) and never touches them; the bundled example scenes are added only when missing, so an edited example survives an update. any change to the bundled studio reaches people on their next call, with no extra install step. the `reel` skill is made for Claude Code: installed through `npx skills` in another agent, its permission rules and `${CLAUDE_SKILL_DIR}` don't apply. bb's daily self-update brings new versions of it. it runs on macOS, Linux and Windows (from bash or PowerShell), and `.github/workflows/motion.yml` proves the install and a render on all three on every PR that touches the plugin.
+
+## animate-tour: first-steps animations
+
+`/bb:animate-tour` makes the animation of a feature's first-steps modal in the pattern of the app's tours (análise em tabela, gestão de projetos, acompanhamento processual): 3 to 5 steps, one idea each, with the design system's palette, icons and motion vocabulary. it plans the steps from the feature's screenshots, gets the plan approved, and then delivers one of two things. for a dev in `frontend-projects`, the `<Feature>TourDialog` itself, wired into i18n, analytics and its spec. for anyone else, GIFs of the animated area: one per step and the full tour, `light` for email and slides or `high` (2x) for the help center, each opening on its settled frame so a client that does not animate still shows the scene, plus a still `.png` per step.
+
+inside Claude Code: `/bb:animate-tour GIF do acompanhamento processual para o e-mail`, or just ask for a first-steps animation. GIF mode records on the `/bb:reel` studio in `~/Motion` (the same Chromium and ffmpeg, no second install), and its scenes keep the studio's `seek(t)` contract, so `/bb:reel` can render one to MP4 as well.
 
 ## migrating from ofc?
 
