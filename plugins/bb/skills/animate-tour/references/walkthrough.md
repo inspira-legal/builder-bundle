@@ -13,7 +13,12 @@ sections below go in the order of the walk.
   in so many words, and say first that its screens carry real client data.
 - **Browser:** use the browser this session has. That is the app's own browser pane in the Claude
   desktop app, or the Claude in Chrome extension. The studio's headless Chromium has no logged in
-  session, so it does not walk the app. With no browser at all, go back to asking for screenshots.
+  session, so it does not walk the app.
+- **No browser in the session:** stop and say so, then let the person choose how to go on, through
+  `AskUserQuestion`. The options: connect a browser (in a terminal session, install the Claude in
+  Chrome extension, open Chrome and run `/chrome`; in the Claude desktop app the browser pane is
+  already there), send screenshots instead, or, in code mode, let you read the feature's code.
+  Wait for the pick: switching to another source on your own skips what the person asked for.
 - **The start:** ask for the feature's entry point (a menu item, a URL) and the one line about
   what it solves, when they did not come with the request.
 
