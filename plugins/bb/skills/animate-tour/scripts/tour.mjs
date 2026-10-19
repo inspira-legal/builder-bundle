@@ -17,6 +17,7 @@ import {
   mkdtempSync,
   readdirSync,
   readFileSync,
+  renameSync,
   rmSync,
   statSync,
   writeFileSync,
@@ -89,7 +90,7 @@ function writeIcons(sceneDir) {
 function newScene(args) {
   const [slug] = args;
   const from = flag(args, "from", "scene-template");
-  if (!SLUG.test(slug ?? "") || !ASSET.test(from))
+  if (!SLUG.test(slug ?? "") || !ASSET.test(from ?? ""))
     die("usage: tour.mjs new <kebab-case-slug-ending-in-tour> [--from <asset>]");
   const source = join(SKILL, "assets", `${from}.html`);
   if (!existsSync(source)) die(`asset not found: assets/${from}.html`);
@@ -149,10 +150,14 @@ async function record(args) {
   const ffmpeg = require("ffmpeg-static");
   writeIcons(dir); // keeps the scene's icons in step with the skill after an update
 
+  // Everything is written to a staging folder beside the output, and lands only when the whole
+  // record succeeded: a failure leaves the previous delivery whole, and a stale GIF still never
+  // passes for the new one. The staging folder sits under out/ so the final move is a rename.
   const out = join(HOME, "out", slug, quality);
-  rmSync(out, { recursive: true, force: true }); // a stale GIF must never pass for the new one
-  mkdirSync(out, { recursive: true });
+  mkdirSync(join(HOME, "out", slug), { recursive: true });
+  const stage = mkdtempSync(join(HOME, "out", slug, `.${quality}-`));
   const work = mkdtempSync(join(tmpdir(), "animate-tour-frames-"));
+  const partial = args.includes("--steps");
 
   const browser = await chromium.launch();
   const report = [];
@@ -170,12 +175,16 @@ async function record(args) {
       console.warn("WARN: Poppins did not load; the GIF falls back to another font.");
 
     const durations = await page.evaluate(() => window.STEPS);
-    const picked = args.includes("--steps")
-      ? args
-          .slice(args.indexOf("--steps") + 1)
-          .filter((a) => /^\d+$/.test(a))
-          .map((n) => Number(n) - 1)
-          .filter((i) => i >= 0 && i < durations.length)
+    const picked = partial
+      ? [
+          ...new Set(
+            args
+              .slice(args.indexOf("--steps") + 1)
+              .filter((a) => /^\d+$/.test(a))
+              .map((n) => Number(n) - 1)
+              .filter((i) => i >= 0 && i < durations.length),
+          ),
+        ]
       : durations.map((_, i) => i);
     if (!picked.length) fail(`--steps must name steps between 1 and ${durations.length}`);
 
@@ -198,32 +207,48 @@ async function record(args) {
       // because an email client that does not animate (Outlook desktop) shows the first frame only.
       const settled = Math.min(await page.evaluate((s) => window.settledAt(s), i), durations[i]);
       await page.evaluate(([s, t]) => window.seekStep(s, t), [i, settled]);
-      const still = join(out, `${slug}-step-${i + 1}.png`);
+      const still = join(stage, `${slug}-step-${i + 1}.png`);
       writeFileSync(still, await page.screenshot({ clip }));
       const start = Math.min(n - 1, Math.ceil(settled * q.fps));
       if (all.length === 0) firstStart = start;
 
-      const gif = join(out, `${slug}-step-${i + 1}.gif`);
+      const gif = join(stage, `${slug}-step-${i + 1}.gif`);
       encode(ffmpeg, [...frames.slice(start), ...frames.slice(0, start)], q.fps, q.dither, gif);
       report.push(still, gif);
       all.push(...frames);
     }
-    if (picked.length > 1) {
-      const gif = join(out, `${slug}-full.gif`);
+    // The full GIF is the whole tour, so only a record of every step writes it.
+    if (!partial && picked.length > 1) {
+      const gif = join(stage, `${slug}-full.gif`);
       encode(ffmpeg, [...all.slice(firstStart), ...all.slice(0, firstStart)], q.fps, q.dither, gif);
       report.push(gif);
+    }
+
+    if (partial) {
+      // Iterating on one step replaces that step's files and keeps the rest of the delivery.
+      mkdirSync(out, { recursive: true });
+      for (const file of readdirSync(stage)) renameSync(join(stage, file), join(out, file));
+    } else {
+      rmSync(out, { recursive: true, force: true });
+      renameSync(stage, out);
     }
   } finally {
     await browser.close();
     rmSync(work, { recursive: true, force: true });
+    rmSync(stage, { recursive: true, force: true });
   }
 
   console.log(`OUT ${out} (${WIDTH * q.scale}x${HEIGHT * q.scale}, ${q.fps} fps)`);
-  for (const file of report) {
+  for (const staged of report) {
+    const file = join(out, basename(staged));
     const mb = statSync(file).size / 1e6;
     const over = q.capMb && file.endsWith(".gif") && mb > q.capMb ? `  OVER ${q.capMb} MB` : "";
     console.log(`  ${basename(file)}  ${mb.toFixed(2)} MB${over}`);
   }
+  if (partial && existsSync(join(out, `${slug}-full.gif`)))
+    console.log(
+      `NOTE ${slug}-full.gif predates this record: record without --steps to rebuild it.`,
+    );
 }
 
 const [verb, ...args] = process.argv.slice(2);

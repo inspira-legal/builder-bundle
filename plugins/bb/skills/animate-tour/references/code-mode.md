@@ -16,9 +16,11 @@ the copy differ, the repo wins:
 - `apps/inspira/src/pages/DocumentVault/components/TabularTourDialog/StepArt.tsx`, the other
   reference art.
 - `apps/inspira/src/hooks/useHeadlessModal/index.ts`.
-- `apps/inspira/CODE_REVIEW_GUIDE.md`, searched for `StepArt` and `TourDialog`. Onboarding
-  illustrations may carry their own SVG, and the selected item's `shadow-[...]` is a registered
-  exception.
+- `CODE_REVIEW_GUIDE.md` at the monorepo's root (scoped per project), searched for `StepArt` and
+  `TourDialog`. Onboarding illustrations may carry their own SVG. The guide lists the two
+  `shadow-[...]` of `TabularTourDialog/StepArt.tsx` as occurrences that remain, so a new
+  `shadow-[...]` (the selected item's ring) goes with the guide's escape: a `ds-allow: REASON`
+  comment on its line, or on the line above it in JSX.
 
 When Projects is no longer the newest tour, take the newest as the mold:
 
@@ -67,7 +69,9 @@ The step plan goes to the person for approval (SKILL.md, step 3) before any code
 ## 5. Verify
 
 - Run `pnpm --filter inspira lint`, `ts:check`, `spell:check` and `test:ci` (the new spec at
-  least).
+  least). The app's `lint` is `oxfmt . && oxlint --fix .`: it formats and fixes the whole app,
+  not only the tour. Run `git status` after it, and leave out of the branch any change outside
+  the tour's files and its wiring.
 - Run the app (`pnpm --filter inspira dev`), open the page with `localStorage` cleared for the
   new key, and go through the steps. Compare with the screenshots and with an existing tour open
   beside it: the same frame, the same rhythm.

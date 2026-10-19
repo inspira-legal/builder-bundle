@@ -6,8 +6,14 @@ of **Acompanhamento Processual** (`CaseTrackingLaunchModal`). This page is a cop
 `frontend-projects` at `origin/main` on 2026-10-15 (`7d472a7f9`). In code mode, the repo's
 current files win over this copy where the two differ.
 
-The sections below go from the story to the pixels: the narrative, the stage, the palette, the
-motion, the recurring pieces and the modal around the art.
+The sections go from the story to the pixels, and the rest of the skill cites them by number:
+
+1. Narrative
+2. Stage
+3. Palette
+4. Motion: the vocabulary, the rules, a new movement
+5. Recurring pieces
+6. The modal around the art (code mode only)
 
 ## 1. Narrative
 
@@ -87,8 +93,8 @@ The other colors the tours use:
 Every color comes from the design system. When a screenshot shows a color these tables do not
 list, use the closest token in the same role (a green "ok" becomes `success`, a highlight blue
 becomes `sky`), and say at delivery which screenshot color became which token. Shadows appear
-in two places only: the selected item's ring and the cursor's shadow. The app's review accepts
-those `shadow-[...]` as an illustration exception.
+in two places only: the selected item's ring and the cursor's shadow. In code, a `shadow-[...]`
+goes with a `ds-allow` comment (`code-mode.md`, section 1).
 
 Radii: `xs` 4, `sm` 8, `md` 10, `lg` 12, `xl` 16. Cards and tables use `lg`, the call to action
 `md`, pills `full`.

@@ -1,6 +1,6 @@
 ---
 name: animate-tour
-description: Build Inspira's first-steps animations in the pattern of the Análise em Tabela, Gestão de Projetos and Acompanhamento Processual tours. From a feature's screenshots, its code or a walk through it in the browser, it plans the steps and delivers either code (the app's FeatureTourDialog, for a dev in the frontend-projects repo) or GIFs (the animated area, one per step plus the full one, light for email and slides or high for the help center, for communication, product and design, with no code needed). Use when the user asks for "animação de primeiros passos", "tour da feature", "modal de onboarding animado", "GIF mostrando como a feature funciona", "animação para o e-mail de lançamento", "GIF para a central de ajuda", mentions StepArt or TourDialog, or invokes /bb:animate-tour.
+description: Build the first-steps animation of an Inspira feature, the stepped tour of its "Bem-vindo à" modal, in the pattern of the Análise em Tabela, Gestão de Projetos and Acompanhamento Processual tours, delivered as the app's FeatureTourDialog code or as GIFs of the animated area (one per step plus the full tour). It plans the steps from the feature's screenshots, its code or a walk through it in the browser. Use when the user asks for "animação de primeiros passos", "tour da feature", "modal de onboarding animado", "GIF mostrando como a feature funciona", "GIF para o e-mail de lançamento", "GIF para a central de ajuda", mentions StepArt or TourDialog, or invokes /bb:animate-tour. Don't use it for a free-form motion video or a launch film in MP4 (use /bb:reel).
 license: MIT
 allowed-tools: Bash(node "${CLAUDE_SKILL_DIR}/scripts/tour.mjs" prepare), PowerShell(node "${CLAUDE_SKILL_DIR}/scripts/tour.mjs" prepare), Bash(node "${CLAUDE_SKILL_DIR}/scripts/tour.mjs" prepare --force), PowerShell(node "${CLAUDE_SKILL_DIR}/scripts/tour.mjs" prepare --force), Bash(node "${CLAUDE_SKILL_DIR}/scripts/tour.mjs" new *), PowerShell(node "${CLAUDE_SKILL_DIR}/scripts/tour.mjs" new *), Bash(node "${CLAUDE_SKILL_DIR}/scripts/tour.mjs" record *), PowerShell(node "${CLAUDE_SKILL_DIR}/scripts/tour.mjs" record *), Read(~/Motion/**), Edit(~/Motion/scenes/**/*.html), Write(~/Motion/scenes/**/*.html)
 metadata:
@@ -84,7 +84,7 @@ sentence, the verb in the imperative, the benefit before the mechanism.
 Before delivering, go through this list:
 
 - [ ] The stage is 404 × 212 with the `sky-2 → neutral-1` gradient, and the content is centered
-      in 220 to 320px.
+      in 220 to 320px (up to 360px on a dense screen, `pattern.md`, section 2).
 - [ ] Only the colors of the aliases and tokens in `pattern.md`, section 3. Only design system
       icons.
 - [ ] Entrances use `pop` or `stepIn`, staggered by .15s, the largest `animation-delay` at about

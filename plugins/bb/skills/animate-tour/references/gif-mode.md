@@ -9,6 +9,15 @@ and its ffmpeg encodes. Every command below goes through this skill's wrapper,
 `node "${CLAUDE_SKILL_DIR}/scripts/tour.mjs" VERB …`, the only form pre-approved. Run it exactly as
 written, from any folder, with no `cd`.
 
+The sections follow the work:
+
+1. Prepare the studio
+2. Start the scene
+3. Write the steps
+4. Record
+5. Check before delivering
+6. Deliver
+
 ## 1. Prepare the studio
 
 Run `node "${CLAUDE_SKILL_DIR}/scripts/tour.mjs" prepare` in the foreground with a 600000 ms
@@ -35,8 +44,12 @@ points its tour exception at `scenes/*-tour/`. It writes `STUDIO/scenes/SLUG/ind
 `--from example-tabular` to start from the Análise em Tabela tour, ported whole, which is also
 the model for translating a `StepArt.tsx` into a scene.
 
-Change the scene with Read, Edit and Write only, never with shell, sed or Python: those ask the
-person for approval, and the file tools under `STUDIO/scenes` don't. The studio's `CLAUDE.md`
+Change the scene with Read, Edit and Write only, never with shell, sed or Python. The skill
+pre-approves those file tools under `STUDIO/scenes` and the `tour.mjs` verbs, and a shell edit is
+not. The pre-approval holds for the turn in which the skill opens: after the person's next message
+(a change asked at SKILL.md, step 6), Claude Code may ask again for each record and each edit.
+When that happens, tell the person once that the option that stops asking for that command
+keeps the rest of the loop quiet. The studio's `CLAUDE.md`
 holds the rules of `/bb:reel` films, and a tour scene follows `pattern.md` instead.
 
 ## 3. Write the steps
@@ -86,14 +99,20 @@ node "${CLAUDE_SKILL_DIR}/scripts/tour.mjs" record SLUG --quality high
 | `high`  | Help center, product page, retina | 808 × 424 (2x) | 25  | none                     |
 
 The fps always divides 100, because a GIF stores the delay between frames in hundredths of a
-second: 30 fps would play 10% faster than it was recorded. Add `--steps 2` to record step 2 only
-while iterating. The output lands in `STUDIO/out/SLUG/QUALITY/`, cleared on every record:
+second: 30 fps would play 10% faster than it was recorded. The output lands in `STUDIO/out/SLUG/QUALITY/`.
+A full record replaces that folder only once every file is ready, so a failed record leaves the
+previous delivery whole:
 
 ```
 SLUG-step-1.gif … SLUG-step-N.gif
 SLUG-full.gif
 SLUG-step-1.png … SLUG-step-N.png      the settled frame of each step
 ```
+
+To iterate on one step, add `--steps 2` (or `--steps 2 3`). It replaces only those steps' GIF and
+`.png`, keeps the others, and leaves `SLUG-full.gif` as it was: the record prints a `NOTE` when the
+full GIF predates the change. Before delivering, record once without `--steps` so the full GIF
+carries every change.
 
 Every GIF opens on its settled frame, not on the empty stage, because an email client that does
 not animate (Outlook desktop) shows the first frame only.

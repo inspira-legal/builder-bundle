@@ -11,8 +11,10 @@ sections below go in the order of the walk.
 - **Environment:** `https://app.dev.inspira.legal/` by default. Use another address only when the
   person names it (a local `pnpm dev`, a preview). Use production only when the person asks for it
   in so many words, and say first that its screens carry real client data.
-- **Browser:** use the browser this session has. That is the app's own browser pane in the Claude
-  desktop app, or the Claude in Chrome extension. The studio's headless Chromium has no logged in
+- **Browser:** use the browser this session has, by its tools: `mcp__claude-in-chrome__*` (the
+  Claude in Chrome extension) or `mcp__Claude_Browser__*` (the browser pane of the Claude desktop
+  app). A machine may also carry other servers that open a page, such as `chrome-devtools`, and
+  those run a browser of their own, without the person's signed in session. The studio's headless Chromium has no logged in
   session, so it does not walk the app.
 - **No browser in the session:** stop and say so, then let the person choose how to go on, through
   `AskUserQuestion`. The options: connect a browser (in a terminal session, install the Claude in
