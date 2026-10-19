@@ -1,0 +1,794 @@
+<!doctype html>
+<!--
+  A first-steps tour scene for /bb:animate-tour, GIF mode.
+
+  `tour.mjs new <slug>` copies this file to ~/Motion/scenes/<slug>/index.html, beside the
+  Poppins fonts and icons.js. Write one <template data-step> per step inside <body>, in order.
+  Leave the "DO NOT EDIT" blocks alone: they mirror the app's tokens and keyframes
+  (references/pattern.md, sections 3 and 4).
+
+  Icons: an empty `i` element with data-icon="paper" and class="ic ic-sm". The name is a file
+  in the skill's assets/icons without the .svg; the step mounts it as the design system's SVG.
+
+  Contract with the studio (render.mjs, stills.mjs and tour.mjs record): window.DURATION,
+  window.READY and window.seek(t). Preview in a browser with index.html?play, or one step with
+  index.html?play&step=2.
+-->
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tour scene: Análise em Tabela</title>
+    <style>
+      @font-face {
+        font-family: Poppins;
+        font-weight: 400;
+        src: url(fonts/poppins-400.woff2);
+      }
+      @font-face {
+        font-family: Poppins;
+        font-weight: 500;
+        src: url(fonts/poppins-500.woff2);
+      }
+      @font-face {
+        font-family: Poppins;
+        font-weight: 600;
+        src: url(fonts/poppins-600.woff2);
+      }
+
+      /* ===== DO NOT EDIT: design system tokens (packages/ui/src/tailwind/theme.css) ===== */
+      :root {
+        --color-navy-base-dark: #070c20;
+        --color-neutral-1: #ffffff;
+        --color-neutral-2: #f6f7f9;
+        --color-neutral-3: #eef0f3;
+        --color-neutral-4: #e8e9ec;
+        --color-neutral-5: #dcdee0;
+        --color-neutral-6: #d0d3d6;
+        --color-neutral-7: #c1c4c7;
+        --color-neutral-8: #8e9399;
+        --color-neutral-9: #656c74;
+        --color-neutral-10: #363f49;
+        --color-navy-1: #2f3b6a;
+        --color-navy-2: #26325e;
+        --color-navy-3: #1c264f;
+        --color-navy-4: #151e42;
+        --color-navy-5: #0e1634;
+        --color-sky-1: #fafcff;
+        --color-sky-2: #ecf2fd;
+        --color-sky-3: #dbe6fa;
+        --color-sky-4: #cfdffc;
+        --color-sky-5: #bdd2fa;
+        --color-sky-6: #a8c3f5;
+        --color-sky-7: #91b3f3;
+        --color-sky-8: #7ca4ee;
+        --color-sky-9: #6a96ea;
+        --color-sky-10: #5187ec;
+        --color-success-2: #b7ede2;
+        --color-success-6: #0f947a;
+        --color-success-8: #057861;
+        --color-success-9: #046b57;
+        --color-warning-2: #ffe9bd;
+        --color-warning-6: #faad16;
+        --color-warning-7: #f0a10a;
+        --color-warning-8: #e39600;
+        --color-critical-2: #ffc7cd;
+        --color-critical-7: #bd081d;
+        --color-critical-8: #ab071a;
+        --gradient-4c-to: #2d3aa1;
+        --radius-xs: 4px;
+        --radius-sm: 8px;
+        --radius-md: 10px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --ease-pop: cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        background: var(--color-neutral-1);
+        overflow: hidden;
+      }
+      body {
+        font-family: Poppins, sans-serif;
+        color: var(--color-neutral-10);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* The stage is the modal's art area: the 452px card less 24px of padding on each side,
+         by 212px. No border and no corner: that is the GIF's crop (the app's modal frame adds both). */
+      #stage {
+        position: relative;
+        width: 404px;
+        height: 212px;
+        overflow: hidden;
+        background: linear-gradient(to bottom, var(--color-sky-2), var(--color-neutral-1));
+      }
+      #stage > .step {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* Type (text-*) */
+      .caption-sm {
+        font-size: 11px;
+        line-height: 1.5;
+      }
+      .caption {
+        font-size: 12px;
+        line-height: 1.5;
+      }
+      .body-sm {
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .body {
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .regular {
+        font-weight: 400;
+      }
+      .medium {
+        font-weight: 500;
+      }
+      .semibold {
+        font-weight: 600;
+      }
+      .upper {
+        text-transform: uppercase;
+      }
+      .italic {
+        font-style: italic;
+      }
+      .tight {
+        line-height: 1.25;
+      }
+      .truncate {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-width: 0;
+      }
+      .nowrap {
+        white-space: nowrap;
+      }
+
+      /* Illustration aliases (the same consts every StepArt.tsx declares at its top) */
+      .t-dark {
+        color: var(--color-neutral-10);
+      }
+      .t-muted {
+        color: var(--color-neutral-9);
+      }
+      .t-faint {
+        color: var(--color-neutral-8);
+      }
+      .t-accent {
+        color: var(--color-sky-10);
+      }
+      .t-indigo {
+        color: var(--gradient-4c-to);
+      }
+      .t-white {
+        color: var(--color-neutral-1);
+      }
+      .b {
+        border: 1px solid var(--color-neutral-5);
+      }
+      .b-soft {
+        border: 1px solid var(--color-neutral-3);
+      }
+      .b-dash {
+        border: 1.5px dashed var(--color-neutral-6);
+      }
+      .bg-white {
+        background: var(--color-neutral-1);
+      }
+      .bg-table {
+        background: var(--color-neutral-2);
+      }
+      .bg-lavender {
+        background: var(--color-sky-2);
+      }
+
+      /* Layout */
+      .fill {
+        width: 100%;
+        height: 100%;
+      }
+      .center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .col {
+        display: flex;
+        flex-direction: column;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+      }
+      .grow {
+        flex: 1;
+        min-width: 0;
+      }
+      .rel {
+        position: relative;
+      }
+      .abs {
+        position: absolute;
+      }
+      .r-xs {
+        border-radius: var(--radius-xs);
+      }
+      .r-sm {
+        border-radius: var(--radius-sm);
+      }
+      .r-md {
+        border-radius: var(--radius-md);
+      }
+      .r-lg {
+        border-radius: var(--radius-lg);
+      }
+      .r-xl {
+        border-radius: var(--radius-xl);
+      }
+      .r-full {
+        border-radius: 9999px;
+      }
+
+      /* Recurring pieces */
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 38px;
+        padding: 0 18px;
+        border-radius: var(--radius-md);
+        background: var(--color-navy-3);
+        color: var(--color-neutral-1);
+        font-size: 13px;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 6px;
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      .ic {
+        display: inline-block;
+        flex-shrink: 0;
+        vertical-align: middle;
+      }
+      .ic-xs {
+        width: 12px;
+        height: 12px;
+      }
+      .ic-sm {
+        width: 16px;
+        height: 16px;
+      }
+      .ic-md {
+        width: 20px;
+        height: 20px;
+      }
+      .ic svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .ic-missing {
+        outline: 2px solid #ff00ff;
+      }
+      .cursor {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        filter: drop-shadow(0 2px 3px rgba(7, 12, 33, 0.3));
+        animation: tour-cursorTap 1.6s ease-in-out infinite;
+      }
+
+      /* ===== DO NOT EDIT: the motion vocabulary (the keyframes in each *TourDialog/index.tsx) ===== */
+      @keyframes tour-stepIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes tour-pop {
+        0% {
+          opacity: 0;
+          transform: translateY(6px) scale(0.94);
+        }
+        60% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes tour-cursorTap {
+        0%,
+        100% {
+          transform: translate(0, 0);
+        }
+        45% {
+          transform: translate(-2px, -2px);
+        }
+        55% {
+          transform: translate(1px, 1px);
+        }
+      }
+      @keyframes tour-glowPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(106, 151, 235, 0.45);
+        }
+        50% {
+          box-shadow: 0 0 0 7px rgba(106, 151, 235, 0);
+        }
+      }
+      @keyframes tour-checkPop {
+        from {
+          opacity: 0;
+          transform: scale(0.4);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes tour-sheetRise {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .step-in {
+        animation: tour-stepIn 0.3s var(--ease-pop) both;
+      }
+      .pop {
+        opacity: 0;
+        animation: tour-pop 0.4s var(--ease-pop) forwards;
+      }
+      .glow {
+        animation: tour-glowPulse 2s ease-in-out infinite;
+      }
+      .check-pop {
+        opacity: 0;
+        animation: tour-checkPop 0.28s var(--ease-pop) forwards;
+      }
+      .sheet-rise {
+        animation: tour-sheetRise 0.4s var(--ease-pop) both;
+      }
+      /* Each class above declares the whole `animation`, so two of them on one element fight and
+         the last one wins (a .pop.glow would stay invisible). These pairs run both. For any other
+         pair, wrap: the entrance on the parent, the loop on the child. */
+      .pop.glow {
+        animation:
+          tour-pop 0.4s var(--ease-pop) forwards,
+          tour-glowPulse 2s ease-in-out infinite;
+      }
+      .step-in.glow {
+        animation:
+          tour-stepIn 0.3s var(--ease-pop) both,
+          tour-glowPulse 2s ease-in-out infinite;
+      }
+      /* Entrance delay: style="animation-delay:.15s" (steps of .15s). */
+      /* ===== end of the DO NOT EDIT block ===== */
+
+      /* This feature's own keyframes (prefix tour-, see pattern.md "A new movement") */
+    </style>
+  </head>
+  <body>
+    <div id="stage" aria-hidden="true"></div>
+
+    <!--
+      One <template> per step, in order. Attributes:
+        data-step      the step's position, from 1
+        data-title     the step's title (documentation only; it does not show in the GIF)
+        data-duration  seconds the step stays on screen (default 4)
+      A template fills the whole stage (404x212). Center it with class="fill center".
+
+      The cursor is always this SVG. Put it inside a <span class="rel" style="display:inline-flex">
+      that wraps the target, anchored at the bottom right corner: style="right:-14px;bottom:-14px"
+      for a 38px button, "right:-10px;bottom:-10px" for a button of 32px or less, and
+      "right:6px;bottom:-8px" inside a table cell.
+      <svg class="cursor" viewBox="0 0 24 24" fill="#070c20" stroke="#ffffff" stroke-width="1.2"><path d="M5 3l6.5 16 2.2-6.6L20 10.5 5 3z"/></svg>
+    -->
+
+    <!-- A faithful port of TabularTourDialog/StepArt.tsx (references/examples/tabular-StepArt.tsx). -->
+    <template data-step="1" data-title="Comece sua primeira análise" data-duration="4">
+      <div class="fill center step-in">
+        <div
+          class="col b-dash bg-white r-xl"
+          style="width: 220px; align-items: center; gap: 10px; padding: 18px"
+        >
+          <div
+            class="center r-lg"
+            style="width: 40px; height: 40px; background: var(--color-neutral-3)"
+          >
+            <i data-icon="paper" class="ic ic-sm t-faint"></i>
+          </div>
+          <p class="caption-sm t-faint">Comece sua primeira análise</p>
+          <span class="rel" style="display: inline-flex">
+            <span class="cta glow"><i data-icon="plus" class="ic ic-sm"></i>Criar análise</span>
+            <svg
+              class="cursor"
+              style="right: -14px; bottom: -14px"
+              viewBox="0 0 24 24"
+              fill="#070c20"
+              stroke="#ffffff"
+              stroke-width="1.2"
+            >
+              <path d="M5 3l6.5 16 2.2-6.6L20 10.5 5 3z" />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </template>
+
+    <template data-step="2" data-title="Defina as colunas — as suas perguntas" data-duration="4">
+      <div class="fill center" style="padding: 6px">
+        <div style="width: 320px">
+          <div
+            class="b bg-white r-lg"
+            style="display: grid; grid-template-columns: 1.2fr 1.1fr 1fr 0.9fr; overflow: hidden"
+          >
+            <div class="caption-sm semibold t-muted bg-table pop" style="padding: 8px">
+              Documento
+            </div>
+            <div
+              class="bg-table pop"
+              style="
+                padding: 8px;
+                border-left: 1px solid var(--color-neutral-3);
+                animation-delay: 0.15s;
+              "
+            >
+              <p class="caption-sm semibold t-dark truncate">Vigência</p>
+            </div>
+            <div
+              class="bg-table pop"
+              style="
+                padding: 8px;
+                border-left: 1px solid var(--color-neutral-3);
+                animation-delay: 0.3s;
+              "
+            >
+              <p class="caption-sm semibold t-dark truncate">Valor</p>
+            </div>
+            <div
+              class="bg-table pop"
+              style="
+                padding: 8px;
+                border-left: 1px solid var(--color-neutral-3);
+                animation-delay: 0.45s;
+              "
+            >
+              <p class="caption-sm semibold t-dark truncate">Risco</p>
+            </div>
+            <div
+              class="row caption-sm t-dark pop"
+              style="
+                height: 36px;
+                gap: 6px;
+                padding: 0 8px;
+                border-top: 1px solid var(--color-neutral-3);
+              "
+            >
+              <i data-icon="paper" class="ic ic-xs t-faint"></i
+              ><span class="truncate">Contrato_01.pdf</span>
+            </div>
+            <div
+              class="row caption-sm t-dark pop"
+              style="
+                height: 36px;
+                padding: 0 8px;
+                border-top: 1px solid var(--color-neutral-3);
+                border-left: 1px solid var(--color-neutral-3);
+                animation-delay: 0.15s;
+              "
+            >
+              14/03/2026
+            </div>
+            <div
+              class="row caption-sm t-dark pop"
+              style="
+                height: 36px;
+                padding: 0 8px;
+                border-top: 1px solid var(--color-neutral-3);
+                border-left: 1px solid var(--color-neutral-3);
+                animation-delay: 0.3s;
+              "
+            >
+              R$ 1,2M
+            </div>
+            <div
+              class="row caption-sm t-dark pop"
+              style="
+                height: 36px;
+                padding: 0 8px;
+                border-top: 1px solid var(--color-neutral-3);
+                border-left: 1px solid var(--color-neutral-3);
+                animation-delay: 0.45s;
+              "
+            >
+              <span
+                class="pill"
+                style="background: var(--color-success-2); color: var(--color-success-9)"
+                >Baixo</span
+              >
+            </div>
+          </div>
+          <div
+            class="row bg-lavender r-lg pop"
+            style="
+              margin-top: 10px;
+              align-items: flex-start;
+              gap: 8px;
+              padding: 10px 12px;
+              animation-delay: 0.9s;
+            "
+          >
+            <i data-icon="comment" class="ic ic-xs t-accent" style="margin-top: 2px"></i>
+            <div style="min-width: 0">
+              <p class="caption-sm semibold upper t-faint" style="margin-bottom: 2px">
+                A coluna é uma pergunta
+              </p>
+              <p class="caption-sm italic t-dark">“Qual é o foro eleito pelas partes?”</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template data-step="3" data-title="Comece a partir de um modelo" data-duration="4">
+      <div class="fill center">
+        <div class="col" style="width: 296px; gap: 8px">
+          <p class="caption-sm semibold upper t-faint pop">Comece a partir de um modelo</p>
+          <div
+            class="row r-lg pop"
+            style="
+              gap: 10px;
+              padding: 10px 12px;
+              border: 1px solid var(--color-sky-4);
+              background: var(--color-sky-1);
+              box-shadow: 0 0 0 3px rgba(106, 151, 235, 0.15);
+              animation-delay: 0.15s;
+            "
+          >
+            <span
+              class="center r-lg"
+              style="width: 30px; height: 30px; background: var(--color-sky-2)"
+              ><i data-icon="grid" class="ic ic-sm t-accent"></i
+            ></span>
+            <div class="grow">
+              <div class="row" style="gap: 6px">
+                <span class="body-sm medium t-dark truncate">Due diligence</span
+                ><span class="pill t-indigo" style="background: var(--color-sky-2)">Inspira</span>
+              </div>
+              <p class="caption-sm t-faint">12 colunas</p>
+            </div>
+          </div>
+          <div
+            class="row b bg-white r-lg pop"
+            style="gap: 10px; padding: 10px 12px; animation-delay: 0.4s"
+          >
+            <span class="center r-lg bg-table" style="width: 30px; height: 30px"
+              ><i data-icon="grid" class="ic ic-sm t-accent"></i
+            ></span>
+            <div class="grow">
+              <div class="row" style="gap: 6px">
+                <span class="body-sm medium t-dark truncate">Cláusulas de risco</span
+                ><span class="pill bg-table t-muted">Meus</span>
+              </div>
+              <p class="caption-sm t-faint">8 colunas</p>
+            </div>
+          </div>
+          <div
+            class="center caption medium t-accent b-dash r-md pop"
+            style="height: 32px; gap: 6px; animation-delay: 0.65s"
+          >
+            <i data-icon="download" class="ic ic-sm"></i>Salvar minhas colunas como modelo
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template data-step="4" data-title="Toda resposta tem uma fonte" data-duration="4">
+      <div class="fill center" style="padding: 6px">
+        <div class="rel" style="width: 250px">
+          <div class="b bg-white r-lg" style="overflow: hidden">
+            <div
+              class="bg-table"
+              style="
+                display: grid;
+                grid-template-columns: 1.5fr 1fr;
+                border-bottom: 1px solid var(--color-neutral-5);
+              "
+            >
+              <div class="row caption-sm semibold t-muted" style="height: 30px; padding: 0 10px">
+                Documento
+              </div>
+              <div class="row caption-sm semibold t-muted" style="height: 30px; padding: 0 10px">
+                Valor
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1.5fr 1fr;
+                border-bottom: 1px solid var(--color-neutral-3);
+              "
+            >
+              <div class="row caption-sm t-dark" style="height: 34px; gap: 6px; padding: 0 10px">
+                <i data-icon="paper" class="ic ic-xs"></i
+                ><span class="truncate">Contrato_01.pdf</span>
+              </div>
+              <div
+                class="rel row caption-sm medium t-dark r-xs"
+                style="
+                  height: 34px;
+                  padding: 0 10px;
+                  background: var(--color-sky-2);
+                  box-shadow: inset 0 0 0 1.5px var(--color-sky-9);
+                "
+              >
+                R$ 1,2M
+                <svg
+                  class="cursor"
+                  style="right: 6px; bottom: -8px"
+                  viewBox="0 0 24 24"
+                  fill="#070c20"
+                  stroke="#ffffff"
+                  stroke-width="1.2"
+                >
+                  <path d="M5 3l6.5 16 2.2-6.6L20 10.5 5 3z" />
+                </svg>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1.5fr 1fr;
+                border-bottom: 1px solid var(--color-neutral-3);
+              "
+            >
+              <div class="row caption-sm t-dark" style="height: 34px; gap: 6px; padding: 0 10px">
+                <i data-icon="paper" class="ic ic-xs"></i
+                ><span class="truncate">Contrato_02.pdf</span>
+              </div>
+              <div class="row caption-sm medium t-dark" style="height: 34px; padding: 0 10px">
+                R$ 640k
+              </div>
+            </div>
+          </div>
+          <div
+            class="abs bg-white r-lg"
+            style="
+              top: 54px;
+              left: 92px;
+              z-index: 2;
+              width: 188px;
+              padding: 10px 12px;
+              border: 1px solid var(--color-sky-3);
+              transform-origin: top left;
+              opacity: 0;
+              animation: tour-pop 0.45s var(--ease-pop) 0.35s forwards;
+            "
+          >
+            <div class="row" style="gap: 6px; margin-bottom: 6px">
+              <i data-icon="comment" class="ic ic-xs t-accent"></i
+              ><span class="caption-sm semibold t-indigo">Citação · fl. 4</span>
+            </div>
+            <p class="caption-sm italic t-dark">
+              “…fica ajustado o valor global de R$ 1.200.000,00…”
+            </p>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <script src="icons.js"></script>
+    <script>
+      // ===== DO NOT EDIT: the scene contract =====
+      // A step mounts from scratch, the way each step is a fresh component in the app, and seek
+      // pauses every CSS animation at the asked time. Same t, same pixels.
+      const templates = [...document.querySelectorAll("template[data-step]")].sort(
+        (a, b) => Number(a.dataset.step) - Number(b.dataset.step),
+      );
+      const stage = document.getElementById("stage");
+      const icons = window.ICONS || {};
+      window.MISSING_ICONS = [];
+      window.STEPS = templates.map((t) => Number(t.dataset.duration || 4));
+      window.DURATION = window.STEPS.reduce((a, b) => a + b, 0);
+
+      let mounted = -1;
+      const mount = (i) => {
+        if (i === mounted) return;
+        const wrap = document.createElement("div");
+        wrap.className = "step";
+        wrap.appendChild(templates[i].content.cloneNode(true));
+        for (const el of wrap.querySelectorAll("i[data-icon]")) {
+          const svg = icons[el.dataset.icon];
+          if (svg) el.innerHTML = svg;
+          else {
+            el.classList.add("ic-missing");
+            window.MISSING_ICONS.push(el.dataset.icon);
+          }
+        }
+        stage.replaceChildren(wrap);
+        mounted = i;
+      };
+      const freeze = (t) =>
+        document.getAnimations().forEach((a) => {
+          a.pause();
+          a.currentTime = t * 1000;
+        });
+
+      // Seconds after which every finite animation of step i (pop, stepIn, checkPop...) has settled.
+      window.settledAt = (i) => {
+        mount(i);
+        return (
+          Math.max(
+            0,
+            ...document.getAnimations().map((a) => {
+              const end = a.effect.getComputedTiming().endTime;
+              return Number.isFinite(end) ? end : 0;
+            }),
+          ) / 1000
+        );
+      };
+      window.seekStep = (i, t) => {
+        mount(i);
+        freeze(t);
+      };
+      window.seek = (t) => {
+        let i = 0;
+        let start = 0;
+        while (i < window.STEPS.length - 1 && t >= start + window.STEPS[i])
+          start += window.STEPS[i++];
+        window.seekStep(i, t - start);
+      };
+      window.READY = Promise.all(
+        ["400", "500", "600"].map((w) => document.fonts.load(`${w} 12px Poppins`)),
+      );
+
+      // Preview in a normal browser: index.html?play, or index.html?play&step=2 to hold one step.
+      const query = new URLSearchParams(location.search);
+      if (query.has("play"))
+        window.READY.then(() => {
+          const only = query.has("step") ? Number(query.get("step")) - 1 : -1;
+          const t0 = performance.now();
+          const loop = () => {
+            const t = (performance.now() - t0) / 1000;
+            if (only >= 0) window.seekStep(only, t % window.STEPS[only]);
+            else window.seek(t % window.DURATION);
+            requestAnimationFrame(loop);
+          };
+          loop();
+        });
+    </script>
+  </body>
+</html>
