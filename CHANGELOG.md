@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.17.0 (2026-10-19)
+## 3.17.0 (2026-10-20)
 
 **The skill descriptions lead with the request, and a battery proves it.** The 15
 descriptions now open with what the person gets, quote trigger phrases the way people
@@ -35,6 +35,23 @@ session with many skills installed.
   steps aside for a small mechanical change, and `think` points product framing to
   `/bb:discover`. 7,093 characters in all. Those phrases came after the battery ran, so
   the score above is candidate B's, not the text that ships.
+
+## 3.16.1 (2026-10-20)
+
+**`/bb:animate-tour` closes three gaps its evals found.** The first evals of the skill
+(`evals/animate-tour/`) caught Sonnet and Opus keeping part of a client's file name, Sonnet
+recording both GIF qualities without asking, and Opus quoting the real names it replaced in the
+step plan.
+
+### Changed
+
+- **Invented values are whole**: `references/pattern.md` says a replaced value is invented from
+  scratch, never derived from the original (`Parecer_Locacao_Ribeiro.pdf` becomes
+  `Contrato_01.pdf`, not `Parecer_Locacao_01.pdf`).
+- **Replacements are named by type**: the plan and the delivery say what was replaced by its type
+  ("the parties' names, three lawsuit numbers"), never by quoting it.
+- **The GIF quality is always asked**, unless the request names it or its use; both qualities are
+  made only when the person answers that they do not know.
 
 ## 3.16.0 (2026-10-19)
 

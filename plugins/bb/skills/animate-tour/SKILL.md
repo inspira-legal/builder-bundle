@@ -24,8 +24,9 @@ Ask where the animation will be used, when the request does not say:
 - **Inside the app** (a dev building the feature): **code mode**. It needs the
   `frontend-projects` repository. Follow `references/code-mode.md`.
 - **Outside the app** (email, presentation, help center, social): **GIF mode**. It needs no code.
-  Follow `references/gif-mode.md`. Ask for the quality too: `light` (email, slides) or `high`
-  (help center). When the person does not know, make both.
+  Follow `references/gif-mode.md`. Ask which quality they want, `light` (email, slides) or `high`
+  (help center), unless the request already names it or its use. Make both only when the person
+  answers that they do not know, never as a way to skip the question.
 
 A dev may want both: the code first, then the GIF of the same art.
 
@@ -62,7 +63,8 @@ before producing anything**. Put the plan in the question itself, one line per s
 
 The plan follows `pattern.md`, section 1: 3 to 5 steps, one idea each, step 1 "create" and the
 last one "the result", the miniature as the smallest crop of the real screen with its real
-labels, fictional data in place of anything the screenshots show (say what you replaced), and a
+labels, fictional data in place of anything the screenshots show (say what you replaced by its type,
+never quoting it), and a
 single looping point of attention per step.
 
 In GIF mode the title and the body do not go into the image, since the animated area is the art
