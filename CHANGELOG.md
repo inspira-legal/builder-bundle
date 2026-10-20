@@ -2,7 +2,7 @@
 
 ## 3.17.0 (2026-10-20)
 
-**The skill descriptions lead with the request, and a battery proves it.** The 15
+**The skill descriptions lead with the request, and a battery measures it.** The 15
 descriptions now open with what the person gets, quote trigger phrases the way people
 type them in Portuguese and in English, and name a bb neighbor only where one competes.
 Together they are a quarter shorter, which leaves the skill listing less crowded in a
@@ -14,8 +14,9 @@ session with many skills installed.
   each request three times against a staged copy of the plugin, isolated from the
   machine's other skills, and prints the score, the misses by skill and the cost. The
   requests live in `.github/battery/requests.json`, run by hand, never in CI: 48 when the
-  score below was taken, 49 since a `none` case for "limpa esse código que eu mexi" joined
-  them, a phrase that belongs to `/simplify`.
+  score below was taken, 51 since three cases joined them, a `none` case for "limpa esse
+  código que eu mexi" (a phrase that belongs to `/simplify`) and two between `review` and
+  `ship`.
 
 ### Changed
 

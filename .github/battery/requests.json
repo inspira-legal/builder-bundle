@@ -183,7 +183,19 @@
     "request": "acha bugs e problemas de qualidade no diff antes do merge",
     "expect": "review",
     "lang": "pt",
-    "kind": "neighbor: review/simplify"
+    "kind": "neighbor: review/code-review"
+  },
+  {
+    "request": "olha se tem bug no que eu mudei antes de eu abrir a PR",
+    "expect": "review",
+    "lang": "pt",
+    "kind": "neighbor: review/ship"
+  },
+  {
+    "request": "abre a PR e cuida dos comentários do revisor até ficar verde",
+    "expect": "ship",
+    "lang": "pt",
+    "kind": "neighbor: review/ship"
   },
   {
     "request": "simplifica o código que eu mexei hoje, tira a duplicação",
