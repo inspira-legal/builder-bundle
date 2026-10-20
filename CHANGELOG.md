@@ -2,7 +2,7 @@
 
 ## 3.16.1 (2026-10-20)
 
-**`/bb:animate-tour` closes three gaps its evals found.** The first evals of the skill
+**`/bb:animate-tour` closes three gaps its evals found, and lets the person pick the browser.** The first evals of the skill
 (`evals/animate-tour/`) caught Sonnet and Opus keeping part of a client's file name, Sonnet
 recording both GIF qualities without asking, and Opus quoting the real names it replaced in the
 step plan.
@@ -16,6 +16,9 @@ step plan.
   ("the parties' names, three lawsuit numbers"), never by quoting it.
 - **The GIF quality is always asked**, unless the request names it or its use; both qualities are
   made only when the person answers that they do not know.
+- **The person picks the browser for the walk**: when the session has both the Claude in Chrome
+  extension and the desktop app's browser pane, `references/walkthrough.md` asks which one to use
+  before opening the app, instead of taking the pane by default.
 
 ## 3.16.0 (2026-10-19)
 

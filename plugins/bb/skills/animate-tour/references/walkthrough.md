@@ -11,11 +11,19 @@ sections below go in the order of the walk.
 - **Environment:** `https://app.dev.inspira.legal/` by default. Use another address only when the
   person names it (a local `pnpm dev`, a preview). Use production only when the person asks for it
   in so many words, and say first that its screens carry real client data.
-- **Browser:** use the browser this session has, by its tools: `mcp__claude-in-chrome__*` (the
-  Claude in Chrome extension) or `mcp__Claude_Browser__*` (the browser pane of the Claude desktop
-  app). A machine may also carry other servers that open a page, such as `chrome-devtools`, and
-  those run a browser of their own, without the person's signed in session. The studio's headless Chromium has no logged in
-  session, so it does not walk the app.
+- **Browser:** two browsers walk the app, each by its tools: the person's own Chrome through the
+  Claude in Chrome extension (`mcp__claude-in-chrome__*`), and the browser pane of the Claude
+  desktop app (`mcp__Claude_Browser__*`). Other servers that open a page, such as
+  `chrome-devtools`, and the studio's headless Chromium run a browser of their own, without the
+  person's signed in session, so they do not walk the app.
+  A browser counts as in the session when its tools are loaded or listed as deferred: the
+  desktop app often loads the pane's tools and only lists the extension's, so look at both lists
+  before deciding, and load the extension's tools when the person picks it.
+- **Both browsers in the session:** ask which one to use, through `AskUserQuestion`, before opening
+  anything. The person's own Chrome may already be signed in to the app and keeps the tabs where
+  they work; the desktop app's pane is separate from their Chrome, so they sign in inside it, and
+  it sits beside the conversation. Ask once per run, and use the pick for the whole walk.
+- **One browser in the session:** use it, and say which one it is.
 - **No browser in the session:** stop and say so, then let the person choose how to go on, through
   `AskUserQuestion`. The options: connect a browser (in a terminal session, install the Claude in
   Chrome extension, open Chrome and run `/chrome`; in the Claude desktop app the browser pane is
