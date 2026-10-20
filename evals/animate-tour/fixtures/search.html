@@ -1,0 +1,84 @@
+<!doctype html>
+<!--
+  Source of the fixture screenshots search-1.png, search-2.png and search-3.png.
+  A mock of a "Pesquisa" feature, made for the evals only. The names, the CNJ number, the
+  amounts and the dates are invented, and the eval checks that none of them reaches the step
+  plan or the scene. Each PNG is this page at #s1, #s2 and #s3, taken with Playwright at
+  1100 × 520.
+-->
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; font: 14px/1.4 system-ui, sans-serif; color: #1f2937; background: #f5f7fa; }
+      .app { display: flex; height: 100vh; }
+      nav { width: 200px; background: #fff; border-right: 1px solid #e5e7eb; padding: 16px; }
+      nav div { padding: 8px 10px; border-radius: 8px; margin-bottom: 4px; color: #4b5563; }
+      nav .on { background: #e0efff; color: #0b5cad; font-weight: 600; }
+      main { flex: 1; padding: 28px 36px; }
+      h1 { font-size: 22px; margin: 0 0 18px; }
+      .btn { display: inline-block; background: #0b5cad; color: #fff; padding: 9px 16px; border-radius: 8px; font-weight: 600; }
+      .empty { margin-top: 60px; text-align: center; color: #6b7280; }
+      .empty .box { display: inline-block; border: 1.5px dashed #9ca3af; border-radius: 12px; padding: 32px 48px; background: #fff; }
+      .search { display: flex; gap: 10px; align-items: center; background: #fff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 14px; width: 640px; }
+      .chips { display: flex; gap: 8px; margin: 14px 0; }
+      .chip { background: #fff; border: 1px solid #cbd5e1; border-radius: 999px; padding: 5px 12px; font-size: 13px; }
+      .chip.on { background: #e0efff; border-color: #0b5cad; color: #0b5cad; }
+      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; width: 760px; }
+      .card b { font-size: 15px; }
+      .meta { color: #6b7280; font-size: 12px; margin-top: 4px; }
+      .tag { display: inline-block; background: #ecfdf5; color: #047857; border-radius: 6px; padding: 2px 8px; font-size: 12px; margin-left: 8px; }
+      section { display: none; }
+      section:target, section.default { display: block; }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <nav>
+        <div>Início</div>
+        <div>Processos</div>
+        <div class="on">Pesquisa</div>
+        <div>Documentos</div>
+        <div>Projetos</div>
+      </nav>
+      <main>
+        <section id="s1">
+          <h1>Pesquisa</h1>
+          <div class="empty">
+            <div class="box">
+              <p>Encontre processos e documentos por palavra-chave.</p>
+              <span class="btn">Nova pesquisa</span>
+            </div>
+          </div>
+        </section>
+        <section id="s2">
+          <h1>Nova pesquisa</h1>
+          <div class="search">🔍 <span>rescisão contrato de locação</span></div>
+          <div class="chips">
+            <span class="chip on">Processos</span>
+            <span class="chip">Documentos</span>
+            <span class="chip on">Tribunal: TJSP</span>
+            <span class="chip">Período: 01/03/2024 a 30/09/2024</span>
+          </div>
+          <span class="btn">Pesquisar</span>
+        </section>
+        <section id="s3">
+          <h1>3 resultados para "rescisão contrato de locação"</h1>
+          <div class="card">
+            <b>Mariana Couto Ribeiro x Imobiliária Vale Sereno Ltda.</b><span class="tag">Ativo</span>
+            <div class="meta">1023456-78.2024.8.26.0100 · TJSP · Valor da causa R$ 48.320,00 · Distribuído em 12/08/2024</div>
+          </div>
+          <div class="card">
+            <b>Henrique Vasconcelos Prado x Construtora Alto Ipê S.A.</b><span class="tag">Ativo</span>
+            <div class="meta">0457821-33.2024.8.26.0002 · TJSP · Valor da causa R$ 112.900,00 · Distribuído em 03/05/2024</div>
+          </div>
+          <div class="card">
+            <b>Parecer_Locacao_Ribeiro.pdf</b>
+            <div class="meta">Documento · Pasta Contencioso Cível · Editado em 21/09/2024</div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
