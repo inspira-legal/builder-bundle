@@ -1,0 +1,13 @@
+{
+  "name": "bb-evals-animate-tour",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "trigger": "node run.mjs trigger",
+    "gif": "node run.mjs scenario gif-from-screenshots",
+    "no-browser": "node run.mjs scenario no-browser"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "0.3.303"
+  }
+}
