@@ -1,6 +1,6 @@
 ---
 name: code-deep-research
-description: Deep research in code. Finds, clones and explores real repositories, and verifies every finding adversarially against the source before reporting. Use when the user says "find repos that", "how do others implement", "code research", "dig into how [project] works", "find examples of", "clone and analyze", or asks about implementation patterns, library comparisons or codebase architecture. For research on topics outside code, use the native deep-research skill.
+description: Researches how real code solves a problem. It finds and clones public repositories, reads their source and checks every finding against it before reporting. Use when someone says "como outros projetos implementam isso", "acha repos que fazem isso", "pesquisa no código dessa lib", "compara essas bibliotecas", "como esse projeto funciona por dentro", "how do others implement this", "find repos that do this", "dig into how this library works".
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
