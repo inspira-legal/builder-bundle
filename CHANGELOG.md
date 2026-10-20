@@ -13,7 +13,9 @@ session with many skills installed.
 - **The battery**: `bun run battery <plugin-dir> <requests.json> --ceiling <usd>` runs
   each request three times against a staged copy of the plugin, isolated from the
   machine's other skills, and prints the score, the misses by skill and the cost. The
-  48 requests live in `.github/battery/requests.json`, run by hand, never in CI.
+  requests live in `.github/battery/requests.json`, run by hand, never in CI: 48 when the
+  score below was taken, 49 since a `none` case for "limpa esse código que eu mexi" joined
+  them, a phrase that belongs to `/simplify`.
 
 ### Changed
 
@@ -28,10 +30,11 @@ session with many skills installed.
   B landed. It keeps the bundle's English prose, the triggers it quotes are what people
   type, and none of the 15 runs past 594 characters. The margin over today's is one hit,
   inside run-to-run variance; the size is the gain the battery cannot see. After the
-  branch review, four descriptions gained a phrase: `review` takes "o CI quebrou" and
-  "limpa esse código", `profile` asks for "o bb explica de menos" instead of a bare
-  "explica mais", `spec` steps aside for a small mechanical change, and `think` points
-  product framing to `/bb:discover`. 7,114 characters in all.
+  branch review, four descriptions gained a phrase: `review` takes "o CI quebrou",
+  `profile` asks for "o bb explica de menos" instead of a bare "explica mais", `spec`
+  steps aside for a small mechanical change, and `think` points product framing to
+  `/bb:discover`. 7,093 characters in all. Those phrases came after the battery ran, so
+  the score above is candidate B's, not the text that ships.
 
 ## 3.16.0 (2026-10-19)
 

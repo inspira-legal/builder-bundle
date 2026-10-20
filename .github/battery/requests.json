@@ -192,6 +192,12 @@
     "kind": "neighbor: review/simplify"
   },
   {
+    "request": "limpa esse código que eu mexi",
+    "expect": "none",
+    "lang": "pt",
+    "kind": "neighbor: review/simplify"
+  },
+  {
     "request": "revisa as PRs abertas do repo e me diz quais eu posso mergear",
     "expect": "maintain-repo",
     "lang": "pt",
