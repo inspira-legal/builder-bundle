@@ -17,6 +17,9 @@ approved for Fenalaw 2026.
 - **The `inspira-acervo-1x1` scene**: the base scene that applies every rule, built from the
   approved Acervo ad, 1080 × 1080. The bootstrap seeds it into `~/Motion/scenes` on the next
   run, beside the scenes already there.
+- **Reframing and the no-app case in the rules**: sizes "at 1080 wide" scale by
+  `k = min(w, h) / 1080`; with no access to the app, the film is built from the base scene's
+  components and the delivery says the screens were not checked.
 
 ### Changed
 

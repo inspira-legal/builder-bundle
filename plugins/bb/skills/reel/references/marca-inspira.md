@@ -17,7 +17,8 @@ The base scene is `<studio>/scenes/inspira-acervo-1x1`: it applies every rule be
 
 - Loose white cards floating on the field. Never the whole app window: no sidebar, no browser chrome, no app frame around the card.
 - Each card copies the real component from app.inspira.legal, measured in the app on the day: type, colors, borders, radii, icons and copy. Never invented UI. The app needs a login, so the person opens it in their own browser. Claude never signs in for them.
-- Measured on 21/10/2026, at 1x (scale everything by the same factor for the film):
+- When nobody can open the app: build the card from the components of the base scene, which were measured in the app on 20/10/2026, and put on screen no component, answer or number that the scene does not already carry. Say in the delivery that the screens were not checked against the app, and answer question 3 of the brand check with "not checked", not "yes".
+- Measured on 21/10/2026, at 1x (scale everything by `k`, defined under Formats):
 
 | Element              | Value in the app                                                                       |
 | -------------------- | -------------------------------------------------------------------------------------- |
@@ -80,7 +81,9 @@ Same light field: the dark logo; one idea in two big lines (the second in Cornfl
 | Reel and story              | 1080 × 1920                | keep text out of the top 250 px and the bottom 350 px |
 | TV and presentation         | 1920 × 1080                | see the TV type sizes above                           |
 
-Text, logo and lines stay inside a 120 px margin on every side at 1080 wide. Reframe per format, never crop.
+Every size in this file given "at 1080 wide" is a size at `k = 1`, where `k = min(w, h) / 1080`. A 1080 × 1920 film and a 1920 × 1080 one both have `k = 1`, which is why the TV sizes above are absolute; a 1280 × 720 film has `k = 0.67`, and every size, margin and distance is multiplied by it. Text, logo and lines stay inside a margin of `120 × k` on every side. Reframe per format, never crop.
+
+The base scene is drawn on a fixed 1080 × 1080 canvas. For another format, rewrite its positions as a function of `(w, h)` and `k` (the layout rule of `<studio>/CLAUDE.md`): center the content block on the longer side, and in 9:16 stack it vertically inside the safe area above instead of shrinking it.
 
 ## Internal repertoire
 
@@ -92,7 +95,7 @@ Before scoring a round, answer each one with yes or no:
 
 1. Is the field light from the first frame to the last, with no dark wipe or scrim?
 2. Is every screen a loose card, with no sidebar or app window?
-3. Does every card match the real app, and is every answer a real one?
+3. Does every card match the real app, and is every answer a real one? ("Not checked" when nobody could open the app; it is not a "yes".)
 4. Are the captions titles at the top, with no box and no step label?
 5. Do the highlights have no final full stop, and does the copy have no em dash?
 6. Is the logo the right file for its background, at 120 px or more?
