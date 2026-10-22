@@ -17,7 +17,7 @@ The base scene is `<studio>/scenes/inspira-acervo-1x1`: it applies every rule be
 
 - Loose white cards floating on the field. Never the whole app window: no sidebar, no browser chrome, no app frame around the card.
 - Each card copies the real component from app.inspira.legal, measured in the app on the day: type, colors, borders, radii, icons and copy. Never invented UI. The app needs a login, so the person opens it in their own browser. Claude never signs in for them.
-- When nobody can open the app: build the card from the components of the base scene, which were measured in the app on 20/10/2026, and put on screen no component, answer or number that the scene does not already carry. Say in the delivery that the screens were not checked against the app, and answer question 3 of the brand check with "not checked", not "yes".
+- When nobody can open the app: build the card from the components of the base scene, which were measured in the app on 21/10/2026, and put on screen no component, answer or number that the scene does not already carry. The scene draws its floating cards with a larger radius (22 px) and a softer shadow (`0 30px 80px`) than the table below (10 px, `0 4px 12px 4px`), to read on a 1080 canvas; the table is the reference for type, colors, borders and copy. Say in the delivery that the screens were not checked against the app, and answer question 3 of the brand check with "not checked", not "yes".
 - Measured on 21/10/2026, at 1x (scale everything by `k`, defined under Formats):
 
 | Element              | Value in the app                                                                       |
@@ -48,7 +48,7 @@ The base scene is `<studio>/scenes/inspira-acervo-1x1`: it applies every rule be
 - A caption is a title, not a step. Two short lines, loose on the field and centered at the top: Poppins 600 (56 px at 1080 wide), the second line in Cornflower `#6A97EB`. No box, no lower third, no "PASSO 1", no uppercase label followed by a description.
 - The caption says what the person gets, in their words ("A resposta já vem" / "com a fonte indicada"), never the instruction ("Clique em…", "PERGUNTE"). One pair per chapter. It rises behind a mask and leaves the same way.
 - A highlight phrase has no final full stop. The official signature keeps both: "IA é fundamento. Construa o que vem depois."
-- Cornflower carries 1 to 3 words per block and only in large type (40 px and up at 1080 wide). Small text goes in Ink or `#656C74`.
+- Cornflower carries 1 to 3 content words per block (articles and prepositions do not count) and only in large type (40 px and up at 1080 wide). Small text goes in Ink or `#656C74`.
 - Copy follows the brand voice: no em dash anywhere, no "Descubra", no "Em um mundo onde", no alarmism. Check every accent.
 - Minimum sizes on a TV seen from 4 m: title 72 px, quote 60 px, text inside a card 26 px (smaller only reads as texture).
 
@@ -70,7 +70,7 @@ Same light field: the dark logo; one idea in two big lines (the second in Cornfl
 
 ## Sound
 
-- No synthesized beat in an Inspira film. Leave `window.BPM` unset, so the render outputs a silent video, and keep the beat grid in a local constant (`const B = (n) => motion.beat(n, 112)`). No UI click blips either.
+- No synthesized beat in an Inspira film. Leave `window.BPM` unset, so the render outputs a silent video, and keep the beat grid in a local constant (`const B = (n) => motion.beat(n, 112)`; 112 is the base scene's own grid, and with a track the constant takes the track's BPM). No UI click blips either.
 - The person chooses the track. With a track, it goes in the scene as `audio.wav` and the cuts land on its beat. The DNA asks for contained instrumental music, 70 to 95 BPM, with no marked electronic percussion, and for silence or ambient sound on sensitive topics.
 
 ## Formats

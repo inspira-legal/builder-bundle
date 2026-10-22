@@ -581,7 +581,7 @@
 
     // folder card rises in, then steps back when the question box takes over
     const fin = sp(t, T.hookOut + 0.1, "heavy"),
-      open = sp(t, T.click1, "snappy"),
+      open = sc(t, T.click1),
       grow = sp(t, T.enter + 0.1, "default");
     const back = clamp(open);
     tf(
@@ -600,7 +600,6 @@
       py = lerp(S.y + fy, F.y, open),
       pw = lerp(S.w, F.w, open),
       ph = lerp(S.h, 110, open) + 380 * grow;
-    const pulse = t > T.enter ? Math.exp(-9 * (t - T.enter)) * Math.sin(18 * (t - T.enter)) : 0;
     const pvo = sp(t, T.click2 + 0.04, "default");
     const pal = $("pal");
     pal.style.left = px + "px";
@@ -609,7 +608,7 @@
     pal.style.height = ph + "px";
     pal.style.borderRadius = lerp(12, 18, clamp(open)) + "px";
     pal.style.opacity = t < T.click1 ? 0 : clamp(open * 3) * (1 - clamp(pvo * 1.6));
-    pal.style.transform = `scale(${1 - 0.012 * pulse - 0.03 * clamp(pvo)})`;
+    pal.style.transform = `scale(${1 - 0.03 * clamp(pvo)})`;
 
     // typing (pure function of t)
     const n = Math.floor(clamp((t - T.type0) / (T.type1 - T.type0)) * Q.length);
