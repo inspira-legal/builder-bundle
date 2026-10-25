@@ -1,5 +1,29 @@
 # Changelog
 
+## 3.17.0 (2026-10-24)
+
+**The orchestrator mode joins bb.** `/bb:orchestrate` makes the session an orchestrator that
+delegates every front to a side session and runs the project from one conversation. It writes
+down what a multi-day orchestration session on `inspira-desktop` learned. It is the 19th skill,
+in the Construir trilha. The reasoning is `.bb/orchestrate/spec.md`.
+
+### New
+
+- **`/bb:orchestrate`**: one side session per front, opened at once with a brief that stands on
+  its own (`references/briefs.md`). Questions, screenshots, boards and reports come back to the
+  person through the orchestrator (`references/relay.md`). It follows CI, merges in sequence, and
+  tells the fronts in the same area to merge `main` (`references/landing.md`). It archives landed
+  side sessions and stops what they left running (`references/cleanup.md`).
+- **Green CI alone is not done**: a front that changes the interface walks it in an isolated
+  instance of the app and sends a board of screenshots. No front opens a native dialog on the
+  person's screen.
+
+### Changed
+
+- **bb never merges on its own.** `/bb:orchestrate` merges a PR only when the person allowed it
+  and the repository's rules do, never bypassing one. `plugin.json` and the operating frame say
+  so; `ship`, `review`, `implement` and `maintain-repo` still never merge.
+
 ## 3.16.1 (2026-10-20)
 
 **`/bb:animate-tour` closes three gaps its evals found.** The first evals of the skill

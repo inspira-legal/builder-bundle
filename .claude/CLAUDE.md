@@ -47,10 +47,10 @@ plugins/bb/
 │   ├── check_events.py                 # spec (step 6), review (the instrumentation front): EVENTS.md checker
 │   ├── normalize_workflow.py           # the dispatch (references/build-tasks-workflow.md): the CR-free copy
 │   └── inspect_pr_checks.py            # ship (CI failures), review (the ci front)
-├── skills/                            # all 18 skills flat; trilha grouping is a docs concept
+├── skills/                            # all 19 skills flat; trilha grouping is a docs concept
 │   ├── Pensar:        discover, challenge, think, legal-lens
 │   ├── Desenhar:      spec
-│   ├── Construir:     implement, ship, measure, gather-branch-context
+│   ├── Construir:     implement, ship, measure, gather-branch-context, orchestrate
 │   ├── Revisar:       review, maintain-repo, review-setup
 │   ├── Design:        brisar
 │   ├── Pesquisar/Doc: code-deep-research, write-readme
