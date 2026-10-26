@@ -117,7 +117,7 @@ install globally with `npx skills add inspira-legal/builder-bundle -g -a opencod
 
 ## reel: videos as code
 
-`/bb:reel` builds motion-design videos (launch films, feature walkthroughs, reels) in Inspira's house style, renders them to MP4 with sound and critiques its own frames until they hold up. it is meant for anyone with Claude Code, technical or not.
+`/bb:reel` builds motion-design videos (launch films, feature walkthroughs, reels), renders them to MP4 and critiques its own frames until they hold up. a film about Inspira follows the brand rules and comes out silent until you pick the track. it is meant for anyone with Claude Code, technical or not.
 
 inside Claude Code: `/bb:reel lançamento do Drive, 20s, vertical`, or just ask for a video.
 

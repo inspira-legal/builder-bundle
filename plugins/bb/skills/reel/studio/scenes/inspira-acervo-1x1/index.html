@@ -1,0 +1,678 @@
+<!doctype html>
+<meta charset="utf-8" />
+<style>
+  @font-face {
+    font-family: Poppins;
+    font-weight: 400;
+    src: url(assets/poppins-400.woff2);
+  }
+  @font-face {
+    font-family: Poppins;
+    font-weight: 500;
+    src: url(assets/poppins-500.woff2);
+  }
+  @font-face {
+    font-family: Poppins;
+    font-weight: 600;
+    src: url(assets/poppins-600.woff2);
+  }
+  @font-face {
+    font-family: "Instrument Serif";
+    font-style: italic;
+    src: url(assets/instrument-serif-italic.ttf);
+  }
+  :root {
+    --ink: #070c21;
+    --lw: #f0f5fe;
+    --corn: #6a97eb;
+    --navy3: #1c264f;
+    --sky1: #fafcff;
+    --sky2: #ecf2fd;
+    --sky3: #dbe6fa;
+    --sky10: #5187ec;
+    --n2: #f6f7f9;
+    --n3: #eef0f3;
+    --n4: #e8e9ec;
+    --n5: #dcdee0;
+    --n7: #c1c4c7;
+    --n8: #8e9399;
+    --n9: #656c74;
+    --n10: #363f49;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html,
+  body {
+    width: 1080px;
+    height: 1080px;
+    overflow: hidden;
+    /* same field as the hero of inspire-se.co */
+    background: linear-gradient(180deg, rgba(195, 214, 247, 0.73) -9%, var(--lw) 29%) var(--lw);
+    font-family: Poppins, sans-serif;
+    color: var(--ink);
+  }
+  .abs {
+    position: absolute;
+  }
+  .glow {
+    position: absolute;
+    width: 1200px;
+    height: 900px;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(195, 214, 247, 0.55), rgba(195, 214, 247, 0));
+  }
+  /* one line of type behind a mask, centered on the canvas */
+  .mk {
+    position: absolute;
+    left: 0;
+    width: 1080px;
+    overflow: hidden;
+    text-align: center;
+  }
+  .mk > div {
+    position: absolute;
+    left: 0;
+    width: 1080px;
+    white-space: nowrap;
+  }
+  .hk {
+    font: 600 92px/108px Poppins;
+    letter-spacing: -2.5px;
+  }
+  .hk2 {
+    font: 600 64px/86px Poppins;
+    letter-spacing: -2px;
+  }
+  .cp {
+    font: 600 56px/70px Poppins;
+    letter-spacing: -1.6px;
+  }
+  .corn {
+    color: var(--corn);
+  }
+  .card {
+    position: absolute;
+    background: #fff;
+    border-radius: 22px;
+    box-shadow:
+      0 30px 80px rgba(28, 38, 79, 0.12),
+      0 0 0 1px rgba(28, 38, 79, 0.05);
+    overflow: hidden;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 32px;
+    padding: 0 11px;
+    border-radius: 8px;
+    background: var(--sky2);
+    font: 500 15px Poppins;
+    color: var(--navy3);
+  }
+  #srch {
+    position: absolute;
+    left: 32px;
+    top: 112px;
+    width: 796px;
+    height: 58px;
+    border: 1.5px solid var(--corn);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 14px 0 18px;
+    font: 400 18px Poppins;
+    color: var(--n8);
+    background: #fff;
+  }
+  .kbd {
+    margin-left: auto;
+    height: 26px;
+    padding: 0 8px;
+    border: 1px solid var(--n5);
+    border-radius: 7px;
+    font: 500 13px/24px Poppins;
+    color: var(--n8);
+  }
+  .row {
+    position: absolute;
+    left: 32px;
+    width: 796px;
+    height: 78px;
+    border-top: 1px solid var(--n3);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .fi {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    background: var(--n3);
+    display: grid;
+    place-items: center;
+    flex: none;
+  }
+  .rn {
+    font: 500 19px Poppins;
+    color: var(--navy3);
+    white-space: nowrap;
+  }
+  .rs {
+    font: 400 13px Poppins;
+    color: var(--n8);
+  }
+  .rm {
+    margin-left: auto;
+    font: 400 16px Poppins;
+    color: var(--n9);
+    white-space: nowrap;
+  }
+
+  /* question box: grows out of the folder's question field */
+  #pin {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 940px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 26px;
+    font: 400 22px Poppins;
+    color: var(--n10);
+    white-space: nowrap;
+  }
+  #ph {
+    color: var(--n8);
+  }
+  #caret {
+    display: inline-block;
+    width: 2px;
+    height: 27px;
+    background: var(--sky10);
+    margin-left: 1px;
+    vertical-align: -6px;
+  }
+  #prog {
+    position: absolute;
+    left: 0;
+    top: 67px;
+    height: 2px;
+    width: 300px;
+    background: linear-gradient(90deg, rgba(81, 135, 236, 0), #5187ec, rgba(81, 135, 236, 0));
+  }
+  #ans {
+    position: absolute;
+    left: 0;
+    top: 68px;
+    width: 940px;
+    border-top: 1px solid var(--n4);
+  }
+  .ml {
+    position: absolute;
+    left: 36px;
+    overflow: hidden;
+  }
+  .pft {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 940px;
+    height: 42px;
+    background: var(--n2);
+    border-top: 1px solid var(--n4);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 18px;
+    font: 400 14px Poppins;
+    color: var(--n9);
+  }
+  .pft i {
+    font-style: normal;
+    height: 24px;
+    min-width: 26px;
+    padding: 0 6px;
+    border: 1px solid var(--n5);
+    border-radius: 6px;
+    background: #fff;
+    font: 500 12px/22px Poppins;
+    text-align: center;
+  }
+  .lbl {
+    font: 600 14px Poppins;
+    letter-spacing: 1.3px;
+    color: var(--n7);
+  }
+  #pill {
+    position: absolute;
+    left: 36px;
+    top: 290px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 0 18px 0 14px;
+    border: 1.5px solid var(--sky3);
+    border-radius: 13px;
+    background: var(--sky1);
+    font: 500 19px Poppins;
+    color: var(--navy3);
+    white-space: nowrap;
+  }
+  #pill.hov {
+    background: var(--sky2);
+    border-color: var(--corn);
+  }
+
+  /* parecer page */
+  .pvh {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 900px;
+    height: 64px;
+    border-bottom: 1px solid var(--n4);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 26px;
+    font: 500 17px Poppins;
+    color: var(--navy3);
+    white-space: nowrap;
+  }
+  .sheet {
+    position: absolute;
+    left: 0;
+    top: 64px;
+    width: 900px;
+    padding: 26px 56px;
+    color: var(--n10);
+  }
+  .rh {
+    display: flex;
+    justify-content: space-between;
+    font: 500 12px Poppins;
+    letter-spacing: 1.2px;
+    color: var(--n8);
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--n4);
+  }
+  .h3 {
+    font: 600 23px Poppins;
+    color: var(--navy3);
+    margin-top: 22px;
+  }
+  .h4 {
+    font: 600 20px/34px Poppins;
+    color: var(--navy3);
+    margin-top: 16px;
+  }
+  .pl {
+    font: 400 20px/34px Poppins;
+    white-space: nowrap;
+  }
+  .hl {
+    background-image: linear-gradient(rgba(106, 151, 235, 0.36), rgba(106, 151, 235, 0.36));
+    background-repeat: no-repeat;
+    background-size: 0% 100%;
+    border-radius: 4px;
+    color: var(--ink);
+  }
+</style>
+<div id="g1" class="glow" style="left: -300px; top: -380px"></div>
+<div id="g2" class="glow" style="left: 300px; top: 620px"></div>
+<div id="hook" class="abs" style="inset: 0"></div>
+<div id="caps" class="abs" style="inset: 0"></div>
+<div id="ui" class="abs" style="inset: 0"></div>
+<div id="end" class="abs" style="inset: 0"></div>
+<div id="cur" class="abs" style="left: 0; top: 0; transform-origin: 0 0">
+  <svg width="30" height="40" viewBox="-2 -2 22 32">
+    <path
+      d="M0 0v22l6-5 4.5 10 4-1.7-4.5-9.8 7.5-.5z"
+      fill="#1c264f"
+      stroke="#fff"
+      stroke-width="2"
+      stroke-linejoin="round"
+    />
+  </svg>
+</div>
+<div id="rips"></div>
+<script src="../../lib/motion.js"></script>
+<script>
+  const { spring, track, clamp, lerp } = motion;
+  const $ = (id) => document.getElementById(id);
+  function tf(id, x = 0, y = 0, s = 1, o = 1) {
+    const e = $(id);
+    e.style.transform = `translate(${x}px,${y}px) scale(${s})`;
+    e.style.opacity = o;
+  }
+  const sp = (t, t0, p = "default") => spring(t - t0, p);
+  const sc = (t, t0, p = "default") => clamp(sp(t, t0, p));
+  const GLIDE = { w: 10, z: 1 };
+
+  // cuts land on a 112 BPM grid. No window.BPM on purpose: the render adds no synthesized beat,
+  // so the film is silent until the person brings a track as audio.wav (Inspira brand rule).
+  const B = (n) => motion.beat(n, 112);
+  window.DURATION = 20;
+
+  const T = {
+    hookOut: B(5),
+    cap1: B(6),
+    click1: B(8),
+    type0: B(8.5),
+    type1: B(13.5),
+    enter: B(14),
+    cap2: B(15),
+    pillIn: B(17.5),
+    click2: B(24),
+    cap3: B(26),
+    hl0: B(27),
+    hl1: B(28),
+    end: B(32),
+  };
+  const CLICKS = [T.click1, T.click2];
+
+  // ---------- icons ----------
+  const I = {
+    folder:
+      "M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z",
+    search: "M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z M21 21l-4.3-4.3",
+    file: "M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z M14 2v6h6",
+    x: "M18 6 6 18 M6 6l12 12",
+    users:
+      "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M22 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75",
+    spark:
+      "M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z",
+    ext: "M15 3h6v6 M10 14 21 3 M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6",
+  };
+  const ic = (n, sz = 20, c = "currentColor", sw = 1.8) =>
+    `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="${I[n]}"/></svg>`;
+  const line = (id, cls, y, h, txt) =>
+    `<div class="mk" style="top:${y}px;height:${h}px"><div id="${id}" class="${cls}">${txt}</div></div>`;
+
+  // ---------- hook ----------
+  $("hook").innerHTML = `
+  <div id="hlogo" class="abs" style="left:0;width:1080px;top:270px;display:flex;justify-content:center"><img src="assets/logo_inspira_dark.svg" style="height:58px;display:block"></div>
+  ${line("hA", "hk2", 396, 90, "Os pareceres do escritório,")}
+  ${line("hC", "hk2 corn", 480, 90, "num lugar só")}
+  ${line("hD", "", 630, 50, '<span style="font:400 30px Poppins;color:var(--n9)">Pergunte e o Acervo da Inspira responde.</span>')}`;
+
+  // ---------- captions: plain type on the field, one pair per chapter ----------
+  const CAPS = [
+    [T.cap1, T.enter - 0.1, "Pergunte ao Acervo", "em linguagem natural"],
+    [T.cap2, T.click2, "A resposta já vem", "com a fonte indicada"],
+    [T.cap3, T.end, "Confira direto na", "página de origem"],
+  ];
+  $("caps").innerHTML = `
+  <div class="mk" style="top:132px;height:74px">${CAPS.map((c, i) => `<div id="c${i}a" class="cp">${c[2]}</div>`).join("")}</div>
+  <div class="mk" style="top:202px;height:74px">${CAPS.map((c, i) => `<div id="c${i}b" class="cp corn">${c[3]}</div>`).join("")}</div>`;
+
+  // ---------- UI (fictitious demo folder) ----------
+  const Q = "Em quanto tempo o cliente precisa comunicar um incidente à ANPD?";
+  const DOCS = [
+    ["Parecer 07/2026 · Incidente LGPD", "3 páginas · 184.2 KB"],
+    ["Modelo · Comunicação ao titular", "2 páginas · 96.7 KB"],
+    ["Modelo · Procuração ad judicia", "1 página · 88.3 KB"],
+  ];
+  const L = (s) => `<div class="pl">${s}</div>`;
+  const PAGE = `<div class="rh"><span>PARECER Nº 07/2026</span><span>DOCUMENTO FICTÍCIO, CRIADO PARA DEMONSTRAÇÃO</span></div>
+    <div class="h3">3. Análise</div>
+    <div class="h4">3.1 Prazo para comunicar a ANPD.</div>
+    ${L("Nos termos do art. 6º da Resolução CD/ANPD nº 15, de 24 de")}
+    ${L("abril de 2024, a comunicação à ANPD deve ser feita pelo")}
+    ${L('controlador em <span id="hl0" class="hl">três dias úteis, contados do conhecimento de</span>')}
+    ${L('<span id="hl1" class="hl">que o incidente afetou dados pessoais</span>, ressalvado prazo')}
+    ${L("previsto em legislação específica.")}
+    <div class="h4">3.2 Prazo para comunicar os titulares.</div>
+    ${L("O art. 9º da mesma Resolução fixa o mesmo prazo de três")}
+    ${L("dias úteis para a comunicação aos titulares, também contado")}
+    ${L("do conhecimento de que o incidente afetou dados pessoais.")}
+    <div class="h4">3.3 Termo inicial.</div>
+    ${L("No caso concreto, o prazo corre a partir da confirmação de")}`;
+
+  $("ui").innerHTML = `
+<div id="fold" class="card" style="left:110px;top:380px;width:860px;height:460px">
+  <div class="abs" style="left:32px;top:28px;display:flex;align-items:center;gap:16px">
+    <div style="width:58px;height:58px;border-radius:14px;background:var(--sky2);display:grid;place-items:center">${ic("folder", 27, "#6a97eb")}</div>
+    <div><div style="font:600 23px Poppins;color:var(--navy3)">Pareceres e modelos</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:5px;font:400 15px Poppins;color:var(--n9)">3 documentos nesta pasta ·
+      <div class="badge">${ic("users", 17, "#1c264f")}Workspace</div></div></div>
+  </div>
+  <div id="srch">${ic("search", 20, "#8e9399")}Faça uma pergunta sobre os documentos desta pasta…<div class="kbd">⌘K</div></div>
+  ${DOCS.map(
+    ([n, m], i) => `<div class="row" style="top:${200 + i * 78}px">
+    <div class="fi">${ic("file", 21, "#8e9399")}</div><div><div class="rn">${n}</div><div class="rs">PDF</div></div><div class="rm">${m}</div></div>`,
+  ).join("")}
+</div>
+<div id="pal" class="card" style="left:70px;top:360px;width:940px;height:490px;border-radius:18px;opacity:0">
+  <div id="pin">${ic("search", 23, "#8e9399")}<span><span id="qt"></span><span id="caret"></span><span id="ph">Faça uma pergunta sobre os documentos desta pasta…</span></span></div>
+  <div id="prog"></div>
+  <div id="ans">
+    <div id="a0" class="abs" style="left:36px;top:26px;display:flex;align-items:center;gap:9px;font:500 17px Poppins;color:var(--sky10)">${ic("spark", 20, "#5187ec")}Resposta com base nos documentos desta pasta</div>
+    <div class="ml" style="top:60px;height:66px"><div id="a1" style="font:600 48px/66px Poppins;color:var(--navy3);letter-spacing:-.8px">Três dias úteis,</div></div>
+    <div class="ml" style="top:128px;height:38px"><div id="a2" style="font:400 24px/38px Poppins;color:var(--n10);white-space:nowrap">contados do conhecimento de que o incidente afetou</div></div>
+    <div class="ml" style="top:166px;height:38px"><div id="a3" style="font:400 24px/38px Poppins;color:var(--n10);white-space:nowrap">dados pessoais, para a ANPD e os titulares.</div></div>
+    <div id="a4" class="abs" style="left:36px;top:216px;font:400 17px Poppins;color:var(--n8)">Resolução CD/ANPD nº 15/2024, arts. 6º e 9º</div>
+    <div id="a5" class="abs lbl" style="left:36px;top:262px">FONTE</div>
+    <div id="pill">${ic("file", 22, "#5187ec")}Parecer 07/2026 · página 2${ic("ext", 18, "#656c74")}</div>
+  </div>
+  <div class="pft"><i>↑↓</i>navegar<span style="flex:1"></span><i>↵</i>enviar<span style="flex:1"></span><i>Esc</i>fechar</div>
+</div>
+<div id="pv" class="card" style="left:90px;top:330px;width:900px;height:860px;opacity:0">
+  <div class="pvh">${ic("file", 22, "#5187ec")}Parecer 07/2026 · Incidente LGPD<span style="flex:1"></span><span style="font:400 15px Poppins;color:var(--n8)">Página 2 de 3</span>${ic("x", 22, "#656c74")}</div>
+  <div class="sheet">${PAGE}</div>
+</div>`;
+
+  // ---------- end card: logo, one idea in two lines (second in Cornflower), site, official signature ----------
+  // The two big lines and the site line change per film; the signature keeps its full stops.
+  $("end").innerHTML = `
+  <div id="elogos" class="abs" style="left:0;width:1080px;top:160px;display:flex;justify-content:center;align-items:center">
+    <img src="assets/logo_inspira_dark.svg" style="height:58px;display:block"></div>
+  ${line("e1", "hk", 340, 112, "Teste no")}
+  ${line("e2", "hk corn", 444, 112, "seu escritório")}
+  <div id="er" class="abs" style="left:240px;top:604px;width:600px;height:2px;background:rgba(28,38,79,.14)"></div>
+  ${line("e3", "", 632, 46, '<span style="font:400 28px Poppins;color:var(--n9)">inspire-se.co</span>')}
+  ${line("e4", "", 790, 52, '<span style="font:500 34px Poppins;color:var(--ink)">IA é fundamento.</span>')}
+  ${line("e5", "", 840, 80, `<span style="font:italic 400 64px/80px 'Instrument Serif';color:var(--ink)">Construa o que vem depois.</span>`)}`;
+
+  $("rips").innerHTML = CLICKS.map(
+    (_, i) =>
+      `<div id="rip${i}" class="abs" style="left:0;top:0;width:100px;height:100px;border-radius:50%;border:4px solid #5187ec;opacity:0"></div>`,
+  ).join("");
+
+  // ---------- measure (screen px) ----------
+  const P = {};
+  let PATH;
+  const MOVES = [
+    [B(6), [860, 1000]],
+    [B(6.5), "srch"],
+    [B(9.5), [980, 1040]],
+    [B(22), "pill"],
+  ];
+  window.READY = Promise.all([
+    ...["400", "500", "600"].map((w) => document.fonts.load(`${w} 40px Poppins`)),
+    document.fonts.load(`italic 40px "Instrument Serif"`),
+    ...[...document.images].map((im) =>
+      im.complete ? 0 : new Promise((r) => (im.onload = im.onerror = r)),
+    ),
+  ]).then(() => {
+    ["srch", "pill", "pal"].forEach((id) => {
+      const r = $(id).getBoundingClientRect();
+      P[id] = {
+        x: r.left,
+        y: r.top,
+        w: r.width,
+        h: r.height,
+        cx: r.left + r.width / 2,
+        cy: r.top + r.height / 2,
+      };
+    });
+    PATH = MOVES.map(([tm, g]) => [tm, typeof g === "string" ? [P[g].cx, P[g].cy] : g]);
+  });
+
+  // ---------- seek ----------
+  const rise = (id, t, t0, h, p = "heavy") => tf(id, 0, (1 - sp(t, t0, p)) * h);
+  // in from below, out through the top of the same mask
+  const swap = (id, t, t0, t1, h) => {
+    const a = sp(t, t0, "heavy"),
+      b = sc(t, t1, "heavy");
+    $(id).style.transform = `translateY(${(1 - a) * h - b * h}px)`;
+    $(id).style.opacity = t < t0 ? 0 : 1;
+  };
+
+  window.seek = (t) => {
+    tf("g1", Math.sin(t * 0.45) * 60, Math.cos(t * 0.35) * 40);
+    tf("g2", Math.sin(t * 0.45 + 3) * 60, Math.cos(t * 0.35 + 3) * 40);
+
+    // hook
+    $("hook").style.display = t < T.hookOut + 1 ? "block" : "none";
+    tf(
+      "hlogo",
+      0,
+      -sc(t, T.hookOut, "heavy") * 40,
+      1,
+      sc(t, 0.05) * (1 - sc(t, T.hookOut, "snappy")),
+    );
+    [
+      ["hA", 0.15],
+      ["hC", 0.35],
+    ].forEach(([id, d], i) => swap(id, t, d, T.hookOut + i * 0.06, 90));
+    swap("hD", t, 0.85, T.hookOut, 50);
+
+    // captions
+    CAPS.forEach(([t0, t1], i) => {
+      swap(`c${i}a`, t, t0, t1, 74);
+      swap(`c${i}b`, t, t0 + 0.12, t1 + 0.06, 74);
+    });
+
+    // cursor (screen px)
+    const cx = track(
+      t,
+      PATH[0][1][0],
+      PATH.slice(1).map((p) => [p[0], p[1][0]]),
+      GLIDE,
+    );
+    const cy = track(
+      t,
+      PATH[0][1][1],
+      PATH.slice(1).map((p) => [p[0], p[1][1]]),
+      GLIDE,
+    );
+    const pressing = CLICKS.some((c) => t >= c && t < c + 0.14);
+    $("cur").style.transform = `translate(${cx}px,${cy}px) scale(${pressing ? 1.2 : 1.45})`;
+    $("cur").style.opacity =
+      sc(t, B(6)) * (1 - sc(t, B(9.2))) + (t < T.click2 + 0.05 ? sc(t, B(21.5)) : 0);
+    CLICKS.forEach((c, i) => {
+      const k = t - c,
+        on = k >= 0 && k < 0.6 && !(i === 1 && t >= T.click2 + 0.05),
+        r = 14 + 60 * (1 - Math.exp(-7 * Math.max(k, 0)));
+      const e = $("rip" + i);
+      e.style.opacity = on ? 1 - k / 0.6 : 0;
+      e.style.transform = `translate(${cx - 50}px,${cy - 50}px) scale(${r / 50})`;
+    });
+    $("srch").style.boxShadow = t > B(7.3) && t < T.click1 + 0.05 ? "0 0 0 5px var(--sky3)" : "";
+
+    // folder card rises in, then steps back when the question box takes over
+    const fin = sp(t, T.hookOut + 0.1, "heavy"),
+      open = sc(t, T.click1),
+      grow = sp(t, T.enter + 0.1, "default");
+    const back = clamp(open);
+    tf(
+      "fold",
+      0,
+      (1 - fin) * 700 + 30 * back,
+      1 - 0.05 * back,
+      clamp(fin * 2) * (1 - 0.55 * back - 0.45 * clamp(grow)),
+    );
+
+    // question box: one shape from the field to the answer
+    const S = P.srch,
+      F = P.pal;
+    const fy = (1 - fin) * 700; // field rides with the card until it is clicked
+    const px = lerp(S.x, F.x, open),
+      py = lerp(S.y + fy, F.y, open),
+      pw = lerp(S.w, F.w, open),
+      ph = lerp(S.h, 110, open) + 380 * grow;
+    const pvo = sp(t, T.click2 + 0.04, "default");
+    const pal = $("pal");
+    pal.style.left = px + "px";
+    pal.style.top = py + "px";
+    pal.style.width = pw + "px";
+    pal.style.height = ph + "px";
+    pal.style.borderRadius = lerp(12, 18, clamp(open)) + "px";
+    pal.style.opacity = t < T.click1 ? 0 : clamp(open * 3) * (1 - clamp(pvo * 1.6));
+    pal.style.transform = `scale(${1 - 0.03 * clamp(pvo)})`;
+
+    // typing (pure function of t)
+    const n = Math.floor(clamp((t - T.type0) / (T.type1 - T.type0)) * Q.length);
+    $("qt").textContent = Q.slice(0, n);
+    $("ph").style.display = n > 0 ? "none" : "inline";
+    const typing = t > T.type0 && t < T.type1;
+    $("caret").style.opacity = t > T.enter ? 0 : typing || Math.floor(t * 2.4) % 2 === 0 ? 1 : 0;
+
+    // thinking line, then the answer rises in
+    const pr = clamp((t - T.enter) / 0.65);
+    $("prog").style.transform = `translateX(${lerp(-300, 940, pr)}px)`;
+    $("prog").style.opacity = t > T.enter && t < T.enter + 0.7 ? 1 : 0;
+    $("ans").style.opacity = t < T.enter + 0.1 ? 0 : 1;
+    tf("a0", 0, 0, 1, sc(t, B(15.3)));
+    rise("a1", t, B(15.5), 70);
+    rise("a2", t, B(16), 40);
+    rise("a3", t, B(16.25), 40);
+    tf("a4", 0, 0, 1, sc(t, B(17)));
+    tf("a5", 0, 0, 1, sc(t, B(17.5)));
+    const pk = sp(t, T.pillIn, "snappy");
+    const pill = $("pill");
+    pill.style.opacity = clamp(pk * 2);
+    const onPill =
+      Math.abs(cx - P.pill.cx) < P.pill.w / 2 &&
+      Math.abs(cy - P.pill.cy) < P.pill.h / 2 &&
+      t > B(22) &&
+      t < T.click2 + 0.1;
+    pill.classList.toggle("hov", onPill);
+    pill.style.transform = `translateY(${(1 - pk) * 14}px) scale(${onPill && pressing ? 0.96 : 1})`;
+
+    // the parecer page opens from the pill
+    const pv = $("pv");
+    pv.style.transformOrigin = `${P.pill.cx - 90}px ${P.pill.cy - 330}px`;
+    const out = sc(t, T.end, "heavy");
+    pv.style.opacity = t < T.click2 + 0.04 ? 0 : clamp(pvo * 2) * (1 - out);
+    pv.style.transform = `translateY(${out * 260}px) scale(${lerp(0.22, 1, pvo)})`;
+    [
+      [0, T.hl0],
+      [1, T.hl1],
+    ].forEach(([i, t0]) => {
+      $("hl" + i).style.backgroundSize = `${clamp((t - t0) / 0.45) * 100}% 100%`;
+    });
+
+    // end card on the same field
+    $("end").style.display = t < T.end ? "none" : "block";
+    if (t >= T.end) {
+      tf("elogos", 0, (1 - sp(t, B(33), "heavy")) * 30, 1, sc(t, B(33)));
+      rise("e1", t, B(33.5), 112);
+      rise("e2", t, B(33.8), 112);
+      $("er").style.transform = `scaleX(${sc(t, B(34.5), "heavy")})`;
+      rise("e3", t, B(34.7), 46);
+      rise("e4", t, B(35.5), 52);
+      rise("e5", t, B(35.8), 80);
+    }
+  };
+
+  // preview in a normal browser: open index.html?play
+  if (location.search.includes("play"))
+    window.READY.then(() => {
+      const t0 = performance.now();
+      const loop = () => {
+        window.seek(((performance.now() - t0) / 1000) % window.DURATION);
+        requestAnimationFrame(loop);
+      };
+      loop();
+    });
+</script>
