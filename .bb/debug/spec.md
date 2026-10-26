@@ -289,7 +289,7 @@ Happy path:
 
 ### Close
 
-- [ ] **6. What the person installing sees**: the README's Revisar table, the skill count in the
+- [x] **6. What the person installing sees**: the README's Revisar table, the skill count in the
       README, the plugin description and `.claude/CLAUDE.md`, the structure tree with the new
       agent and skill, the version, the `CHANGELOG.md` entry and the handoff journey map. ·
       verify: `bun run validate`, `bun run fmt:check`, and a search of the diff for a real
