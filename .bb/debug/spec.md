@@ -280,7 +280,7 @@ Happy path:
       the investigator brief and its review, the report, the closing gate (fix now, `/bb:spec`,
       update a stale `service` document, stop), and the postmortem inside the "fix now" path. ·
       verify: reading
-- [ ] **5. The company drafts**: under `~/.cache/bb-debug-research/wave-drafts/` (outside git),
+- [x] **5. The company drafts**: under `~/.cache/bb-debug-research/wave-drafts/` (outside git),
       the `environments`, `access` and `service` drafts in Portuguese, from the research in
       `~/.cache/bb-debug-research/` (`SYNTHESIS.md`, `DECISIONS.md`, `findings/`),
       each under 6000 characters, every name checked against the systems' default branches, and a
@@ -308,4 +308,4 @@ Happy path:
 
 ## Open
 
-- Task 5 (The company drafts): red, it returned green with no commit to land; the drafts under `~/.cache/bb-debug-research/wave-drafts/` are outside git, so the task is unverified.
+Nothing.
