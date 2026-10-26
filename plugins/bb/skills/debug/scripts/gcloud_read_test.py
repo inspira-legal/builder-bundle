@@ -443,6 +443,22 @@ def query_file(text):
     return str(path)
 
 
+def draft_check():
+    flagged = query_file(
+        "# Pebble sync stalled\n\nNote n-81 failed for ana@pebble.invalid.\n"
+        "Trace 4bf92f3577b34da6a3ce929d0e0e4736, revision notes-api-00042.\n"
+    )
+    text = run(["check", flagged, "--id", "n-81"])
+    expect("line 3: email, a business id from the run" in text, text)
+    expect("ana@pebble.invalid" not in text and "n-81" not in text, f"printed a value: {text!r}")
+    expect("2 value(s) found" in text, text)
+    clean = query_file("Trace 4bf92f3577b34da6a3ce929d0e0e4736, revision notes-api-00042.\n")
+    expect("0 value(s) found" in run(["check", clean, "--id", "n-81"]), "a clean draft was flagged")
+
+
+case("personal data: a draft names the line of each hit, never the value", draft_check, False)
+
+
 def sql_case(text, project=DEV, limit="2", psql=(0, "note_id,status\nn-81,failed\n", "")):
     def go():
         g.call = answering({**wave_with(ENV_DOC), ("psql",): psql})

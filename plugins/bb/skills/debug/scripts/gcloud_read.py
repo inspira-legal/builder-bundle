@@ -12,6 +12,7 @@ Usage:
     python3 gcloud_read.py sql QUERY.sql --project P --limit N
     python3 gcloud_read.py docdb --project P --database D --collection C --op find|count|aggregate
                                  [--filter JSON] [--pipeline JSON] [--field F ...] [--limit N]
+    python3 gcloud_read.py check DRAFT.md [--id VALUE ...]
 
 The skill and its investigators call the cloud CLI, the warehouse and a database only through
 this script, so the rules below hold whatever a prompt says:
@@ -43,6 +44,9 @@ this script, so the rules below hold whatever a prompt says:
 - The warehouse past retention. `warehouse` reuses /bb:measure's locks (db_read.py: one read
   statement, the dry run's classification, the byte ceiling on both runs), then admits only an
   aggregate or rows filtered by one business id, passed as --id and written `= @id`.
+- A draft the skill wrote. `check` runs a report or a postmortem draft through the same check,
+  plus every business id the run touched (--id), and names the line of each hit, never the
+  value. It exits 1 when it finds one, so the text is fixed before the person sees it.
 - Temporary files. `start` makes the run's own directory and deletes the ones an interrupted run
   left behind once they are a day old. `pull` records each image it pulls there, and `close`
   deletes the directory with those images.
@@ -689,6 +693,27 @@ def docdb(a, out: Out) -> None:
         print(f"-- truncated: {len(docs)} documents, as many as the limit; narrow the filter")
 
 
+# ---- a draft the skill wrote: the same check, before the person sees it ------------------
+
+
+def check(a, _out: Out) -> None:
+    try:
+        text = pathlib.Path(a.draft).read_text(encoding="utf-8")
+    except OSError as error:
+        fail(f"could not read the draft {a.draft}: {error.strerror}")
+    hits = 0
+    for n, line in enumerate(text.splitlines(), 1):
+        kinds = ["email"] * len(db.EMAIL.findall(line))
+        kinds += ["document number"] * len(DOCUMENT.findall(line))
+        kinds += ["a business id from the run"] * sum(line.count(i) for i in a.id if i)
+        if kinds:
+            hits += len(kinds)
+            print(f"line {n}: {', '.join(kinds)}")  # where, never the value
+    print(f"-- personal data check: {hits} value(s) found in the draft")
+    if hits:
+        sys.exit(1)
+
+
 # ---- the run's temporary directory -------------------------------------------------------
 
 
@@ -775,12 +800,15 @@ def parser():
     s.add_argument("--op", choices=("find", "count", "aggregate"), required=True)
     s.add_argument("--field", action="append", default=[])
     s.add_argument("--limit", type=int)
+    s = sub.add_parser("check")
+    s.add_argument("draft")
+    s.add_argument("--id", action="append", default=[])
     return p
 
 
 COMMANDS = {
     "start": start, "close": close, "pull": pull, "login": login, "logs": logs,
-    "warehouse": warehouse, "sql": sql, "docdb": docdb,
+    "warehouse": warehouse, "sql": sql, "docdb": docdb, "check": check,
 }
 
 
