@@ -32,6 +32,8 @@ Revisar trilha.
 ### Changed
 
 - **The handoff journey map** gains the `debug` gate.
+- **`db_read.py` moves to `plugins/bb/scripts/`** with its test: `/bb:measure` and `/bb:debug` both
+  run its warehouse locks now, and a script two skills use lives at the plugin root.
 
 ## 3.17.0 (2026-10-22)
 
