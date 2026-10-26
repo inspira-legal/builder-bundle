@@ -266,11 +266,11 @@ Happy path:
 
 ### The guard and the agent
 
-- [ ] **2. The read-only guard**: `skills/debug/scripts/gcloud_read.py` and its tests, covering
+- [x] **2. The read-only guard**: `skills/debug/scripts/gcloud_read.py` and its tests, covering
       every rule in "The guard" and the personal data check, with the development list read by
       the script from the documentation base, invented data in every case, and the tests run by
       `validate.yml`. · verify: the test script passes with no network, and CI runs it
-- [ ] **3. The investigator agent**: `plugins/bb/agents/bb-debug-investigator.md` on Haiku, read
+- [x] **3. The investigator agent**: `plugins/bb/agents/bb-debug-investigator.md` on Haiku, read
       only by its `tools:`, one hypothesis per brief, every read through the guard, a verdict with
       the evidence that supports it. · verify: `bun run validate`
 
