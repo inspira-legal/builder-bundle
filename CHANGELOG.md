@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.17.0 (2026-10-20)
+## 3.18.0 (2026-10-26)
 
 **The skill descriptions lead with the request, and a battery measures it.** The 15
 descriptions now open with what the person gets, quote trigger phrases the way people
@@ -36,6 +36,35 @@ session with many skills installed.
   steps aside for a small mechanical change, and `think` points product framing to
   `/bb:discover`. 7,093 characters in all. Those phrases came after the battery ran, so
   the score above is candidate B's, not the text that ships.
+
+## 3.17.0 (2026-10-22)
+
+**`/bb:reel` films about Inspira follow the brand.** The brand team asked for it on 21/10: the
+films came out with a dark opening, the logo in a gradient tile, the whole app window, step
+captions and a synthesized beat. The rules now come from the DNA Criativo and the Acervo ad
+approved for Fenalaw 2026.
+
+### Added
+
+- **`skills/reel/references/marca-inspira.md`**: the brand rules for video (light field, loose
+  product cards measured in the app, the logo file as it is, captions as two line titles,
+  opening, closing, calm motion, no sound until the person picks a track) and the brand check
+  that closes each critique round. It prevails over the house defaults of `studio/CLAUDE.md` in
+  an Inspira film.
+- **The `inspira-acervo-1x1` scene**: the base scene that applies every rule, built from the
+  approved Acervo ad, 1080 × 1080. The bootstrap seeds it into `~/Motion/scenes` on the next
+  run, beside the scenes already there.
+- **Reframing and the no-app case in the rules**: sizes "at 1080 wide" scale by
+  `k = min(w, h) / 1080`; with no access to the app, the film is built from the base scene's
+  components and the delivery says the screens were not checked.
+
+### Changed
+
+- **`skills/reel/SKILL.md`**: an Inspira film reads the brand rules and starts from
+  `inspira-acervo-1x1`; `drive-launch-v2` and `acervo-permissoes-v3` stay as references for the
+  UI rig and the cursor only. It never uses the synthesized beat, the person opens
+  app.inspira.legal in their own browser, the brand check runs every critique round, and the
+  video plays only after the person says yes.
 
 ## 3.16.1 (2026-10-20)
 
