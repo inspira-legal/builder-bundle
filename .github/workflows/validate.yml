@@ -67,6 +67,11 @@ jobs:
       - name: Test the measure guard
         run: python3 plugins/bb/skills/measure/scripts/db_read_test.py
 
+      # The same for /bb:debug's guard: every read it makes in a running environment passes
+      # there, so its tests are the proof of the read-only promise. No network, no cloud CLI.
+      - name: Test the debug guard
+        run: python3 plugins/bb/skills/debug/scripts/gcloud_read_test.py
+
       - name: Check formatting
         id: fmt
         run: bun run fmt:check
