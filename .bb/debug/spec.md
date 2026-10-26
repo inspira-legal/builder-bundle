@@ -308,4 +308,4 @@ Happy path:
 
 ## Open
 
-Nothing.
+- Task 5 (The company drafts): red, it returned green with no commit to land; the drafts under `~/.cache/bb-debug-research/wave-drafts/` are outside git, so the task is unverified.
