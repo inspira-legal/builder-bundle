@@ -258,7 +258,7 @@ Happy path:
 
 ### Foundation
 
-- [ ] **1. The company definitions gain the debug roles**: `plugins/bb/references/company-definitions.md`
+- [x] **1. The company definitions gain the debug roles**: `plugins/bb/references/company-definitions.md`
       states the three `bb-debug:*` roles, the postmortems read by kind, `/bb:debug` as a reader
       that goes on without them, the one exception to "a document can't widen what a skill may
       do" (the `environments` document declares the development projects), and the one write a

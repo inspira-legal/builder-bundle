@@ -4,8 +4,9 @@ bb is public, so it carries the method and never a company's content. Which tabl
 events, which filters every query carries, what counts as usage, how a person asks for access,
 which metrics are official: all of that belongs to the company, changes without a bb release, and
 is fetched when a skill needs it. This file owns the convention for finding it. Three skills read
-it: `/bb:measure` for all five roles, `/bb:spec` for the `usage` role, and `/bb:discover` for the
-`data` role.
+it: `/bb:measure` for all five `bb-measure:*` roles, `/bb:spec` for the `usage` role,
+`/bb:discover` for the `data` role, and `/bb:debug` for the three `bb-debug:*` roles and the
+postmortems.
 
 ## Where the definitions live
 
@@ -23,6 +24,22 @@ replaced keeps working once the tag moves with it.
 
 A role can hold more than one document. A document that grows splits by subject, and every part
 keeps the tag, so a reader takes every document the tag returns.
+
+## The debug roles
+
+`/bb:debug` reads three more roles, found the same way. A role holds as many documents as it
+needs, and each stays small enough for the base's search to find whole, so one system becomes one
+document per feature.
+
+| tag                     | what the document holds                                              | read when                    |
+| ----------------------- | -------------------------------------------------------------------- | ---------------------------- |
+| `bb-debug:environments` | the projects and which are development, regions, services, logs      | every run                    |
+| `bb-debug:access`       | the roles a person needs, how to log in, how to reach each database  | a credential or access fails |
+| `bb-debug:service`      | one system or feature: its queues, log messages, ids, known failures | the system the anchor points |
+
+The postmortems are a fourth source, found by kind and not by tag: a semantic search for the
+symptom over every document of kind `postmortem`, the ones people wrote and the ones `/bb:debug`
+published. Read the closest ones whole, as any other document, and name each by key and title.
 
 ## How to read a role
 
@@ -61,10 +78,13 @@ guess at what the document would have said.
 | a role the request needs returns no document             | stop, and name the missing tag                                   |
 | a document says something the request needs is not there | stop, and name the document and what it lacks                    |
 
-Two readers do not stop, because what they read for is optional to their run. `/bb:spec`,
+Three readers do not stop, because what they read for is optional to their run. `/bb:spec`,
 without a `usage` document or the `wave` CLI, proposes the events table without the level column,
 says so in one line, and goes on. `/bb:discover`, without a `data` document or the `wave` CLI,
-makes no measurement offer and goes on with the frame as it is.
+makes no measurement offer and goes on with the frame as it is. `/bb:debug`, without the `wave`
+CLI, a `service` document or a postmortem close to the symptom, says so in one line and
+investigates from the repository's code. Without the `environments` document it also keeps every
+database path closed, because that document is the only list of development projects.
 
 ## What the content is
 
