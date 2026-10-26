@@ -31,8 +31,10 @@ document is the only list of development projects.
 ## Settle the environment
 
 The request names the environment, or the skill asks before any read. Ask with
-`AskUserQuestion`, one option per environment the document lists, each with its projects in the
-description. Without the document, ask for the project id itself.
+`AskUserQuestion`, one option per environment the document lists, at most four, each with its
+projects in the description; with more than four, offer the four the symptom points at and let
+the tool's free text take the rest. Without the document, or with only one environment, ask for
+the project id or confirm the one environment in a single question.
 
 The environment decides the projects every read targets. A read never moves to another
 environment's project to find more data.

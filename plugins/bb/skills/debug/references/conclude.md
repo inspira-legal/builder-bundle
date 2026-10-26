@@ -78,7 +78,8 @@ options:
     run /bb:spec with this report as its input.
   - "Correct the service document". I show the corrected text of <document key> whole, and it
     is written to the base only once you approve it.
-  - "Stop here". The report stays in this conversation; nothing is published.
+  - "Stop here". The report stays in this conversation and nothing is published; run
+    /bb:debug again with the same symptom to pick the investigation back up.
 ```
 
 Pick the lead by what the report found:
@@ -91,7 +92,10 @@ Pick the lead by what the report found:
 | no confirmed cause and nothing to correct         | "Stop here"                    |
 
 "Correct the service document" appears only when the report has a correction. "Fix now" and
-"Spec the fix" appear only with a confirmed or plausible cause.
+"Spec the fix" appear only with a confirmed or plausible cause, and a plausible one carries its
+"How sure" into the postmortem as plausible. With no cause and nothing to correct, only "Stop
+here" would remain, so there is no gate: the report says how to pick the run back up, and the
+run ends.
 
 ## After the pick
 

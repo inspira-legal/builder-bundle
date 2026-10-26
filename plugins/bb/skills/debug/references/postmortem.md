@@ -46,7 +46,9 @@ python3 scripts/gcloud_read.py start
 
 ## Cause
 
-<the root cause, and the evidence that proves it>
+<the root cause, and the evidence behind it>
+
+**How sure:** <confirmed or plausible, as the report said, and what would settle a plausible one>
 
 ## Evidence
 
@@ -94,9 +96,11 @@ options:
   - "Don't publish". Nothing goes to the base; the draft stays here for you to edit.
 ```
 
-When the person rejects it, nothing is published, and the draft stays in the conversation for
-the person to edit. An edited text goes through the check again and is shown whole before it is
-published. Then close the run directory either way:
+On "Publish", write it to the base from `RUN_DIR/postmortem.md`, as "Write to the base" states,
+and close the run directory after the write. When the person rejects it, nothing is published,
+the draft stays in the conversation for the person to edit, and the run directory closes then.
+An edited text goes through the check again and is shown whole before it is published. Close it
+only once the text is written or set aside:
 
 ```bash
 python3 scripts/gcloud_read.py close RUN_DIR

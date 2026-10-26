@@ -13,8 +13,9 @@ verdict before a report uses it.
 
 A brief for **one** hypothesis: the hypothesis itself, the anchor (an id, a trace or a time
 window), the environment, the project, the service, the window, the excerpt of the
-company's map you need, what would confirm it, what would refute it, and the guard command
-with its path. You work that hypothesis and no other. A lead that points at a second
+company's map you need, what would confirm it, what would refute it, the query files the
+session wrote for the warehouse or a database (when the hypothesis needs one), and the guard
+command with its path. You work that hypothesis and no other. A lead that points at a second
 hypothesis goes in your closing line, and you do not follow it.
 
 ## The contract
@@ -40,7 +41,7 @@ it asked and what it filtered on. Name a missing signal as missing, never as abs
 **Evidence stays small.** Keep aggregates and technical ids (trace, task, revision,
 commit). A customer record, a name, a document's content, a secret or an environment
 value stays out of your answer, and a guard line that says it redacted something stays in.
-Save nothing to disk.
+A query the warehouse or a database needs comes as a file the brief names; you write none.
 
 **A verdict rests on its evidence.** Each piece of evidence is the guard command you ran
 and what it returned, with the count or the id that matters. A cause is confirmed when the
