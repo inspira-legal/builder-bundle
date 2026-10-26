@@ -159,6 +159,10 @@ flags = [
     ("no project", ["run", "services", "list", "--region", "r1"], True),
     ("the caller's own --format", ["run", "services", "list", "--project", PROD, "--format=yaml"], True),
     ("--log-http, which prints the token", ["run", "services", "list", "--project", PROD, "--log-http"], True),
+    ("--flags-file, which can carry any flag", ["run", "services", "list", "--project", PROD, "--flags-file=f.yaml"], True),
+    ("--account, another identity", ["run", "services", "list", "--project", PROD, "--account=x@pebble.invalid"], True),
+    ("--access-token-file", ["run", "services", "list", "--project", PROD, "--access-token-file", "/tmp/t"], True),
+    ("--project twice", ["run", "services", "list", "--project", DEV, "--project", PROD], True),
 ]
 for name, args, refused in flags:
     case(f"gcloud flags: {name}", lambda a=args: g.gcloud(a, g.Out()), refused)
@@ -242,6 +246,26 @@ case(
         {"spec": {"containers": [{"env": [{"name": "A", "value": "invented-env"}]}]}, "oidcToken": {"x": "y"}, "metadata": {"name": "rev"}},
         ['"A"', "rev"],
         ["invented-env", "oidcToken"],
+    ),
+    False,
+)
+case(
+    "masked: a function's environment variables print their names only",
+    masks(
+        ["functions", "describe", "sync-notes", "--project", PROD],
+        {"name": "sync-notes", "environmentVariables": {"DB_URL": "invented-db-url"}, "serviceConfig": {"environmentVariables": {"KEY": "invented-key-2"}}},
+        ['"DB_URL"', '"KEY"', "sync-notes"],
+        ["invented-db-url", "invented-key-2"],
+    ),
+    False,
+)
+case(
+    "masked: a build step's NAME=value env and an instance's metadata print names only",
+    masks(
+        ["builds", "describe", "b-1", "--project", PROD],
+        {"steps": [{"env": ["STAGE=invented-stage"]}], "substitutions": {"_TOKEN": "invented-sub"}, "metadata": {"items": [{"key": "startup-script", "value": "invented-script"}]}},
+        ['"STAGE"', '"_TOKEN"', "startup-script"],
+        ["invented-stage", "invented-sub", "invented-script"],
     ),
     False,
 )
@@ -376,6 +400,7 @@ checks = [
     ("a bare CPF", {"m": "doc=12345678909"}, ["12345678909"], 1),
     ("a long free text", {"m": "lorem " * 120}, ["lorem lorem"], 1),
     ("inside a list", {"m": ["ana@pebble.invalid", "bo@pebble.invalid"]}, ["pebble.invalid"], 2),
+    ("a CPF stored as a number", {"cpf": 12345678909}, ["12345678909"], 1),
     ("a trace, a time and a task id stay", {"t": "4bf92f3577b34da6a3ce929d0e0e4736", "at": "2026-03-02T10:15:00Z", "task": "1234567890123456789"}, [], 0),
 ]
 for name, value, needles, count in checks:
@@ -480,6 +505,13 @@ sqls = [
     ("SELECT *", "SELECT * FROM notes", DEV, True),
     ("SELECT t.*", "SELECT n.* FROM notes n", DEV, True),
     ("a psql command", "SELECT 1 \\! rm -rf /", DEV, True),
+    ("a `;` hidden after `#`, an operator in PostgreSQL", "SELECT 1 # 1) AS q; DELETE FROM notes; SELECT * FROM (SELECT 1", DEV, True),
+    ("a `;` hidden in a dollar-quoted string", "SELECT $$'$$) AS q; DELETE FROM notes; SELECT * FROM (SELECT $$'$$", DEV, True),
+    ("SELECT * after a jsonb path operator", "SELECT payload #>> '{a}', * FROM notes", DEV, True),
+    ("an escape string", "SELECT note_id FROM notes WHERE note_id = E'n\\'; DELETE FROM notes; --'", DEV, True),
+    ("SELECT INTO", "SELECT note_id INTO copy FROM notes", DEV, True),
+    ("a doubled quote inside a string", "SELECT note_id FROM notes WHERE title = 'it''s; fine'", DEV, False),
+    ("a jsonb operator on a named field", "SELECT payload #>> '{status}' AS status FROM notes", DEV, False),
 ]
 for name, text, project, refused in sqls:
     case(f"sql: {name}", sql_case(text, project), refused)
@@ -595,6 +627,12 @@ warehouse = [
     ("an id that carries a quote", "SELECT time FROM logs.app WHERE note_id = @id", "n'81", True),
     ("SELECT *", "SELECT * FROM logs.app WHERE note_id = @id", "n-81", True),
     ("a DELETE", "DELETE FROM logs.app WHERE TRUE", None, True),
+    ("a window function keeps every row", "SELECT message, COUNT(*) OVER () AS n FROM logs.app", None, True),
+    ("an aggregate only in a subquery", "SELECT message, (SELECT COUNT(1) FROM logs.app) AS n FROM logs.app", None, True),
+    ("every field an aggregate", "SELECT COUNT(*) AS n, MAX(time) AS last FROM logs.app", None, False),
+    ("an id compared with >=", "SELECT time FROM logs.app WHERE note_id >= @id", "n-81", True),
+    ("an id negated", "SELECT time FROM logs.app WHERE NOT (note_id = @id)", "n-81", True),
+    ("an id plus a UNION", "SELECT time FROM logs.app WHERE note_id = @id UNION ALL SELECT time FROM logs.app", "n-81", True),
 ]
 for name, text, id_value, refused in warehouse:
     case(f"warehouse: {name}", wh(text, id_value), refused)
@@ -603,14 +641,18 @@ case("warehouse: the dry run classifies it as a write", wh("SELECT COUNT(*) AS n
 case("warehouse: above the byte ceiling on the real run", wh("SELECT COUNT(*) AS n FROM logs.app", gb=25.0, execute=True), True)
 
 
-def wh_substitutes_and_redacts():
+def wh_substitutes():
     query = "SELECT stage, COUNT(*) AS n FROM logs.app WHERE note_id = @id GROUP BY stage"
-    out = wh(query, "n-81", execute=True, rows=[["upload", "ana@pebble.invalid"]])()
+    out = wh(query, "n-81", execute=True, rows=[["upload", "3"]])()
     expect("dry run: would read 1.00 GB" in out and '"stage": "upload"' in out, out)
-    expect("ana@pebble.invalid" not in out and "1 value(s) redacted" in out, out)
 
 
-case("warehouse: dry run first, then the rows pass the personal data check", wh_substitutes_and_redacts, False)
+case("warehouse: dry run first, then the rows print", wh_substitutes, False)
+case(
+    "warehouse: an email in the rows refuses them all, /bb:measure's content lock",
+    wh("SELECT stage, COUNT(*) AS n FROM logs.app WHERE note_id = @id GROUP BY stage", "n-81", execute=True, rows=[["upload", "ana@pebble.invalid"]]),
+    True,
+)
 case("warehouse: the id lands as a literal", lambda: expect(g.check_scope("SELECT a FROM t WHERE b = @id", "n-81").endswith("b = 'n-81'"), "no literal"), False)
 
 

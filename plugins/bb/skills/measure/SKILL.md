@@ -20,7 +20,7 @@ the plugin-level `references/company-definitions.md` states. Nothing of it is wr
 
 ## The guard, before any query
 
-The locks live in `scripts/db_read.py`, not in this text. The skill only never works around them.
+The locks live in `<plugin-root>/scripts/db_read.py`, not in this text. The skill only never works around them.
 
 - **Every query goes through the script**, with `--database` and `--project` taken from the
   company's `data` document. Never another client, never the database's own CLI or API, never a

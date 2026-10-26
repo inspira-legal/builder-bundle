@@ -26,7 +26,7 @@ earlier reading.
 4. Run it through the guard:
 
    ```bash
-   python3 scripts/db_read.py QUERY.sql --database DATABASE --project PROJECT --run
+   python3 <plugin-root>/scripts/db_read.py QUERY.sql --database DATABASE --project PROJECT --run
    ```
 
 **To check the computation**, run the week the document gives as its reference and compare with

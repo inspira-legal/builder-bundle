@@ -30,20 +30,25 @@ this script, so the rules below hold whatever a prompt says:
   ends by saying how many were.
 - Masked. A service prints its environment variable names and whether each is a secret
   reference, never a value. A scheduler job and a queued task print through a field list that
-  leaves headers and bodies out. Any other read drops keys named like a header, a token, a
-  password, a secret or a body.
+  leaves headers and bodies out. Any other read prints only the names of a map of variables
+  (environmentVariables, substitutions, an instance's metadata items) and drops keys named like a
+  header, a token, a password, a secret or a body. Flags that change the identity a read runs
+  under (--account, --flags-file and the like) are refused, and so is a second --project.
 - Databases in development only. `sql` and `docdb` open only for a project the company's
   `bb-debug:environments` document lists as development, and the script reads that list itself
   with the `wave` CLI: there is no argument that widens it. The list is the lines of a fenced
   block whose info string is `bb-debug-development`, one project id per line. A document without
   the block, a project missing from it, or a documentation base that can't be reached closes
   every database path. `sql` (PostgreSQL, through `psql` and the PG* environment variables)
-  opens the session read only and runs one SELECT. `docdb` (MongoDB, through `mongosh` and the
+  opens the session read only and runs one SELECT, lexed as PostgreSQL (`#` is an operator
+  there, and a `$` or an E'...' string is refused). `docdb` (MongoDB, through `mongosh` and the
   BB_DEBUG_MONGO_URI environment variable) runs only the find, count or aggregation it builds,
   and refuses a stage that writes or runs code on the server.
-- The warehouse past retention. `warehouse` reuses /bb:measure's locks (db_read.py: one read
-  statement, the dry run's classification, the byte ceiling on both runs), then admits only an
-  aggregate or rows filtered by one business id, passed as --id and written `= @id`.
+- The warehouse past retention. `warehouse` reuses /bb:measure's locks (the plugin's
+  scripts/db_read.py: one read statement, the dry run's classification, the byte ceiling on both
+  runs, no column that names a person and no email or free text in the rows), then admits only an
+  aggregate (every selected field an aggregate, or a GROUP BY, never a window) or rows filtered by
+  one business id, passed as --id and written `= @id`, with no OR, NOT or set operation.
 - A draft the skill wrote. `check` runs a report or a postmortem draft through the same check,
   plus every business id the run touched (--id), and names the line of each hit, never the
   value. It exits 1 when it finds one, so the text is fixed before the person sees it.
@@ -74,7 +79,7 @@ import tempfile
 import time
 
 _db_spec = importlib.util.spec_from_file_location(
-    "db_read", pathlib.Path(__file__).resolve().parents[2] / "measure" / "scripts" / "db_read.py"
+    "db_read", pathlib.Path(__file__).resolve().parents[3] / "scripts" / "db_read.py"
 )
 db = importlib.util.module_from_spec(_db_spec)
 _db_spec.loader.exec_module(db)  # one set of warehouse locks for /bb:measure and /bb:debug
@@ -131,7 +136,12 @@ class Out:
             return {self.text(str(k)): self.value(x) for k, x in v.items()}
         if isinstance(v, list):
             return [self.value(x) for x in v]
-        return self.text(v) if isinstance(v, str) else v
+        if isinstance(v, str):
+            return self.text(v)
+        if isinstance(v, (int, float)) and not isinstance(v, bool):
+            checked = self.text(str(v))  # a CPF stored as a number is still a CPF
+            return checked if checked != str(v) else v
+        return v
 
     def emit(self, v) -> None:
         print(json.dumps(self.value(v), ensure_ascii=False))
@@ -328,8 +338,18 @@ WRITES = {
     "import": ("loads data into it", "none without a backup taken before"),
     "export": ("writes its data out to storage", "delete the exported files"),
 }
-BANNED_FLAGS = ("--format", "--log-http", "--verbosity", "--impersonate-service-account")
+# Flags that change whose access a read runs under, what it logs, or what file feeds more flags.
+BANNED_FLAGS = (
+    "--format", "--log-http", "--verbosity", "--impersonate-service-account", "--account",
+    "--access-token-file", "--credential-file-override", "--configuration", "--flags-file",
+    "--trace-token",
+)
 HIDDEN = re.compile(r"header|token|password|secret|^body$|^payload$", re.I)
+# Maps whose keys are variable names and whose values are the variables' values.
+VALUE_MAPS = re.compile(
+    r"^(environmentVariables|buildEnvironmentVariables|secretEnvironmentVariables|substitutions"
+    r"|variables|envVars|env_vars)$"
+)
 JOB_FIELDS = [
     "name", "schedule", "timeZone", "state", "scheduleTime", "lastAttemptTime", "userUpdateTime",
     "attemptDeadline", "status", "retryConfig", "httpTarget.uri", "httpTarget.httpMethod",
@@ -380,7 +400,13 @@ def flag_value(args, flag):
 
 
 def env_names(env) -> list:
-    return [{"name": e.get("name"), "secret": bool(pick(e, "valueFrom.secretKeyRef"))} for e in env]
+    names = []
+    for e in env:
+        if isinstance(e, dict):
+            names.append({"name": e.get("name"), "secret": bool(pick(e, "valueFrom.secretKeyRef"))})
+        else:  # a build step's "NAME=value" string
+            names.append({"name": str(e).split("=", 1)[0], "secret": False})
+    return names
 
 
 def masked(v):
@@ -389,6 +415,10 @@ def masked(v):
         for k, x in v.items():
             if k == "env" and isinstance(x, list):
                 out[k] = env_names(x)
+            elif VALUE_MAPS.match(k) and isinstance(x, dict):
+                out[k] = sorted(x)  # the names, never the values
+            elif k == "metadata" and isinstance(x, dict) and isinstance(x.get("items"), list):
+                out[k] = {"items": [i.get("key") for i in x["items"] if isinstance(i, dict)]}
             elif not HIDDEN.search(k):
                 out[k] = masked(x)
         return out
@@ -440,7 +470,11 @@ def gcloud(args, out: Out) -> None:
     path, verb = classify(args)
     for flag in BANNED_FLAGS:
         if any(w == flag or w.startswith(flag + "=") for w in args):
+            if flag == "--flags-file":
+                raise Refusal("--flags-file can carry any flag past this check; pass flags inline")
             raise Refusal(f"{flag} is the guard's to set; drop it")
+    if sum(1 for w in args if w == "--project" or w.startswith("--project=")) > 1:
+        raise Refusal("--project appears more than once; gcloud would read the last one")
     project = check_project(flag_value(args, "--project"))
     code, stdout, err = call(["gcloud", *args, "--format=json"])
     if code:
@@ -545,20 +579,47 @@ def check_projection(sql: str) -> None:
 def check_scope(sql: str, id_value) -> str:
     """Only an aggregate, or rows filtered by one business id. Returns the query to run."""
     code = db.code_only(sql)
+    if re.search(r"\b(UNION|INTERSECT|EXCEPT)\b", code, re.I):
+        raise Refusal("a set operation can add rows past the scope; send one SELECT")
     if id_value is None:
-        if not AGGREGATE.search(code):
+        if re.search(r"\bOVER\s*\(", code, re.I):
+            raise Refusal("a window function keeps every row; aggregate with GROUP BY instead")
+        if not re.search(r"\bGROUP\s+BY\b", code, re.I) and not all(
+            AGGREGATE.match(item) for item in select_items(code)
+        ):
             raise Refusal(
-                "rows not filtered by one business id; rewrite it as an aggregate (COUNT, SUM...) "
-                "or pass --id and filter with `WHERE <id field> = @id`"
+                "rows not filtered by one business id; rewrite it as an aggregate (every selected "
+                "field an aggregate, or a GROUP BY) or pass --id and filter with `WHERE <id field> = @id`"
             )
         return sql
     if not ID_VALUE.match(id_value):
         raise Refusal("--id holds characters an id doesn't have")
-    if not re.search(r"\bWHERE\b[\s\S]*=\s*@id\b", code, re.I):
+    if not re.search(r"\bWHERE\b[\s\S]*?[\w.`\]\)\s](?<![<>!])=\s*@id\b", code, re.I):
         raise Refusal("rows filtered by one id need `WHERE <id field> = @id`")
-    if re.search(r"\bOR\b", code, re.I):
-        raise Refusal("an OR can widen the filter past one id; keep it to the one id")
+    if re.search(r"\b(OR|NOT)\b", code, re.I):
+        raise Refusal("an OR or a NOT can widen the filter past one id; keep it to the one id")
     return re.sub(r"@id\b", f"'{id_value}'", sql)
+
+
+def select_items(code: str) -> list:
+    """The outer SELECT's items, split on the commas outside parentheses."""
+    m = re.search(r"\bSELECT\b(?:\s+DISTINCT\b)?", code, re.I)
+    if not m:
+        return []
+    items, depth, cur = [], 0, []
+    for i in range(m.end(), len(code)):
+        c = code[i]
+        if depth == 0 and re.match(r"\bFROM\b", code[i:], re.I) and (i == 0 or not code[i - 1].isalnum()):
+            break
+        depth += c == "("
+        depth -= c == ")"
+        if c == "," and depth == 0:
+            items.append("".join(cur).strip())
+            cur = []
+        else:
+            cur.append(c)
+    items.append("".join(cur).strip())
+    return [i for i in items if i]
 
 
 def show_rows(header, rows, out: Out, limit: int) -> None:
@@ -580,17 +641,65 @@ def warehouse(a, out: Out) -> None:
         return
     db.check_cost(gb)
     result = bq.normalize(bq.run(sql))
+    db.check_output(result)  # /bb:measure's locks 4 and 5: no person column, no email, no free text
     show_rows(result["header"], result["rows"], out, db.MAX_ROWS)
     if result["total"] > len(result["rows"]) and len(result["rows"]) < db.MAX_ROWS:
         print(f"-- truncated: {len(result['rows'])} of {result['total']} rows; aggregate further")
 
 
+def pg_code_only(text: str) -> str:
+    """PostgreSQL's code with its comments, strings and quoted names blanked.
+
+    db.code_only reads BigQuery, where `#` opens a comment; in PostgreSQL `#` is an operator and
+    `$tag$...$tag$` is a string, so reading this text that way hides a `;`. A `$` or an escape
+    string (E'...') left in the code is refused instead of lexed: neither is needed to read rows.
+    """
+    out, i, n = [], 0, len(text)
+    while i < n:
+        c, two = text[i], text[i : i + 2]
+        if two == "--":
+            end = text.find("\n", i)
+            i = n if end == -1 else end
+            out.append(" ")
+        elif two == "/*":
+            end = text.find("*/", i + 2)  # PostgreSQL nests comments; ending early only shows more code
+            i = n if end == -1 else end + 2
+            out.append(" ")
+        elif c in ("'", '"'):
+            if c == "'" and i and text[i - 1] in "eE" and (i < 2 or not text[i - 2].isalnum()):
+                raise Refusal("an escape string (E'...') is not needed to read rows; use a plain '...'")
+            j = i + 1
+            while j < n:
+                if text[j] == c and text[j + 1 : j + 2] == c:  # a doubled quote stays inside
+                    j += 2
+                elif text[j] == c:
+                    break
+                else:
+                    j += 1
+            i = j + 1
+            out.append(" '' ")
+        else:
+            if c == "$":
+                raise Refusal("a `$` (a parameter or a dollar-quoted string) is not needed to read rows")
+            out.append(c)
+            i += 1
+    return "".join(out)
+
+
 def sql(a, out: Out) -> None:
     require_dev(a.project)
     text = read_query(a.query)
-    db.check_text(text)
-    check_projection(text)
-    if "\\" in db.code_only(text):
+    code = pg_code_only(text).strip().rstrip(";").strip()
+    if ";" in code:
+        raise Refusal("more than one statement (a script); send a single query")
+    first = re.match(r"[\s(]*([A-Za-z]+)", code)
+    if not first or first.group(1).upper() not in ("SELECT", "WITH"):
+        raise Refusal("not a read: only a SELECT or a WITH")
+    if re.search(r"\bINTO\b", code, re.I):
+        raise Refusal("SELECT ... INTO creates a table; read rows only")
+    if SELECT_STAR.search(code):
+        raise Refusal("SELECT * prints whole rows; name the fields the investigation needs")
+    if "\\" in code:
         raise Refusal("a backslash outside a string reads as a psql command; send SQL only")
     limit = check_limit(a.limit)
     body = text.rstrip().rstrip(";")
