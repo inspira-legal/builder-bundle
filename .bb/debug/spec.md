@@ -276,7 +276,7 @@ Happy path:
 
 ### The skill and the drafts
 
-- [ ] **4. /bb:debug**: the `SKILL.md` as a router over one reference per step of "The method",
+- [x] **4. /bb:debug**: the `SKILL.md` as a router over one reference per step of "The method",
       the investigator brief and its review, the report, the closing gate (fix now, `/bb:spec`,
       update a stale `service` document, stop), and the postmortem inside the "fix now" path. ·
       verify: reading
