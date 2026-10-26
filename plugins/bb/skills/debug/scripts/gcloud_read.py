@@ -7,6 +7,8 @@ Usage:
     python3 gcloud_read.py login
     python3 gcloud_read.py logs --project P --resource TYPE [--service S] --since T --until T
                                 --limit N [--filter F] [--field PATH ...]
+    python3 gcloud_read.py metrics --project P --metric TYPE [--service S] --since T --until T
+                                   --aligner A [--align SECONDS] --limit N [--filter F]
     python3 gcloud_read.py gcloud GROUP... VERB [POSITIONALS] --project P [FLAGS]
     python3 gcloud_read.py warehouse QUERY.sql --project P [--id VALUE] [--run]
     python3 gcloud_read.py sql QUERY.sql --project P --limit N
@@ -21,7 +23,9 @@ this script, so the rules below hold whatever a prompt says:
   verb. A write verb is refused, and the command is printed for the person with what it
   changes and whether it can be undone. Anything else is refused as unknown.
 - Bounded. `logs` needs a project, a resource type, a window (--since, --until) and a limit. A
-  result as long as its limit is reported as truncated.
+  result as long as its limit is reported as truncated. `metrics` reads one metric type the
+  same way (a window, an aligner, a limit on points) from the monitoring API, which the cloud CLI
+  has no read verb for.
 - Rows projected. A log entry, a warehouse row and a database row print named fields, never a
   whole entry or document. A field beyond the defaults is asked for by name, and a field that
   holds an object prints a placeholder instead of the object.
@@ -77,6 +81,9 @@ import subprocess
 import sys
 import tempfile
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 
 _db_spec = importlib.util.spec_from_file_location(
     "db_read", pathlib.Path(__file__).resolve().parents[3] / "scripts" / "db_read.py"
@@ -300,6 +307,99 @@ def logs(a, out: Out) -> None:
         out.emit(project_entry(entry, a.field))
     if len(entries) >= a.limit:
         print(f"-- truncated: {len(entries)} entries, as many as the limit; narrow the window")
+
+
+# ---- metrics: a time series, aligned, bounded --------------------------------------------
+
+MONITORING = "https://monitoring.googleapis.com/v3/projects/{}/timeSeries?{}"
+METRIC = re.compile(r"^[a-z0-9-]+(\.[a-z0-9-]+)*\.googleapis\.com/[a-z0-9_/.]+$")
+ALIGNERS = (
+    "ALIGN_MEAN", "ALIGN_MAX", "ALIGN_MIN", "ALIGN_SUM", "ALIGN_RATE", "ALIGN_DELTA",
+    "ALIGN_PERCENTILE_99", "ALIGN_PERCENTILE_95", "ALIGN_PERCENTILE_50",
+)
+
+
+def fetch(url: str, token: str):
+    """The one place the guard opens a URL, so the tests replace it. Returns (code, body)."""
+    request = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}"})
+    try:
+        with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
+            return 0, response.read().decode("utf-8")
+    except urllib.error.HTTPError as error:
+        return error.code, error.read().decode("utf-8", "replace")
+    except urllib.error.URLError as error:
+        return 1, str(error.reason)
+
+
+def point_value(value: dict):
+    for kind in ("doubleValue", "int64Value", "boolValue"):
+        if kind in value:
+            return value[kind]
+    if "distributionValue" in value:  # the aligner's choice; a percentile aligner never lands here
+        return value["distributionValue"].get("mean")
+    return None
+
+
+def metrics(a, out: Out) -> None:
+    check_project(a.project)
+    if not a.metric or not METRIC.match(a.metric):
+        raise Refusal("a metric read needs --metric, the type (e.g. run.googleapis.com/container/memory/utilizations)")
+    if not a.since or not a.until:
+        raise Refusal("a metric read needs a window: pass --since and --until")
+    since, until = parse_time(a.since, "--since"), parse_time(a.until, "--until")
+    if until <= since:
+        raise Refusal("--until must come after --since")
+    if not a.aligner:
+        raise Refusal(
+            f"a metric read needs --aligner, one of {', '.join(ALIGNERS)}; a distribution "
+            "(memory, latency) takes a percentile"
+        )
+    if not 60 <= a.align <= DAY:
+        raise Refusal(f"--align is the step in seconds, between 60 and {DAY}")
+    check_limit(a.limit)
+    if a.service and not re.match(r"^[a-z0-9-]+$", a.service):
+        raise Refusal(f"'{a.service}' is not a service name")
+    parts = [f'metric.type="{a.metric}"']
+    if a.service:
+        parts.append(f'resource.labels.service_name="{a.service}"')
+    if a.filter:
+        parts.append(f"({a.filter})")
+    z = "%Y-%m-%dT%H:%M:%SZ"
+    query = urllib.parse.urlencode({
+        "filter": " AND ".join(parts),
+        "interval.startTime": since.strftime(z),
+        "interval.endTime": until.strftime(z),
+        "aggregation.alignmentPeriod": f"{a.align}s",
+        "aggregation.perSeriesAligner": a.aligner,
+        "pageSize": a.limit,  # with an aligner the page counts points, across every series
+    })
+    code, token, err = call(["gcloud", "auth", "print-access-token"])  # the token is never printed
+    if code:
+        fail(LOGIN)
+    code, body = fetch(MONITORING.format(a.project, query), token.strip())
+    if code == 401:
+        fail(LOGIN)
+    if code:
+        try:
+            body = json.loads(body)["error"]["message"]
+        except (ValueError, KeyError, TypeError):
+            pass
+        cloud_error(f"{code} {body}" if code == 403 else body, a.project)
+    data = json.loads(body or "{}")
+    series = data.get("timeSeries") or []
+    if not series:
+        empty(a.project, f"{a.metric} in this window")
+    for s in series:
+        out.emit({
+            "metric": a.metric,
+            "labels": {**(pick(s, "resource.labels") or {}), **(pick(s, "metric.labels") or {})},
+            "points": [
+                [pick(p, "interval.endTime"), point_value(p.get("value") or {})]
+                for p in sorted(s.get("points") or [], key=lambda p: pick(p, "interval.endTime") or "")
+            ],
+        })
+    if data.get("nextPageToken"):
+        print(f"-- truncated: {a.limit} points, as many as the limit; narrow the window or widen --align")
 
 
 # ---- gcloud: read verbs only, masked -----------------------------------------------------
@@ -707,6 +807,12 @@ def sql(a, out: Out) -> None:
     env = dict(os.environ, PGOPTIONS="-c default_transaction_read_only=on")
     code, stdout, err = call(["psql", "-X", "-v", "ON_ERROR_STOP=1", "--csv", "-c", wrapped], env=env)
     if code:
+        if not any(os.environ.get(v) for v in ("PGHOST", "PGSERVICE")):
+            fail(
+                f"no database to connect to: set the PG* variables (PGHOST, PGPORT, PGUSER, "
+                f"PGDATABASE) to the cloud-sql-proxy of {a.project}, as the access document says, "
+                "then run the read again"
+            )
         fail(f"the query failed in the development database of {a.project}: {first_line(err)}")
     rows = list(csv.reader(io.StringIO(stdout)))
     if len(rows) <= 1:
@@ -880,7 +986,10 @@ def pull(a, _out: Out) -> None:
 def parser():
     import argparse
 
-    p = argparse.ArgumentParser(description="Every read /bb:debug makes, through one guard.")
+    p = argparse.ArgumentParser(
+        description="Every read /bb:debug makes, through one guard.",
+        epilog="A read of the cloud CLI's own: gcloud_read.py gcloud GROUP... VERB --project P [FLAGS]",
+    )
     sub = p.add_subparsers(dest="command", required=True)
     sub.add_parser("start")
     sub.add_parser("login")
@@ -894,6 +1003,12 @@ def parser():
         s.add_argument(flag)
     s.add_argument("--limit", type=int)
     s.add_argument("--field", action="append", default=[])
+    s = sub.add_parser("metrics")
+    for flag in ("--project", "--metric", "--service", "--since", "--until", "--filter"):
+        s.add_argument(flag)
+    s.add_argument("--aligner", choices=ALIGNERS)
+    s.add_argument("--align", type=int, default=60)
+    s.add_argument("--limit", type=int)
     s = sub.add_parser("warehouse")
     s.add_argument("query")
     s.add_argument("--project")
@@ -916,7 +1031,7 @@ def parser():
 
 
 COMMANDS = {
-    "start": start, "close": close, "pull": pull, "login": login, "logs": logs,
+    "start": start, "close": close, "pull": pull, "login": login, "logs": logs, "metrics": metrics,
     "warehouse": warehouse, "sql": sql, "docdb": docdb, "check": check,
 }
 
@@ -932,7 +1047,7 @@ def main(argv=None) -> None:
             COMMANDS[a.command](a, out)
     except Refusal as refusal:
         fail(f"refused: {refusal}")
-    if argv[:1] in (["gcloud"], ["logs"], ["warehouse"], ["sql"], ["docdb"]):
+    if argv[:1] in (["gcloud"], ["logs"], ["metrics"], ["warehouse"], ["sql"], ["docdb"]):
         out.close()
 
 

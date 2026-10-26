@@ -35,11 +35,20 @@ GUARD gcloud run services describe notes-api --project pebble-prod-1 --region RE
 GUARD gcloud run revisions list --service notes-api --project pebble-prod-1 --region REGION
 GUARD logs --project pebble-prod-1 --resource cloud_run_revision --service notes-api \
   --since ... --until ... --limit 50 --filter 'textPayload:"Memory limit"'
+GUARD metrics --project pebble-prod-1 --service notes-api \
+  --metric run.googleapis.com/container/memory/utilizations --aligner ALIGN_PERCENTILE_99 \
+  --since 2026-03-02T10:00:00Z --until 2026-03-02T11:00:00Z --limit 200
 ```
 
 The service description prints the image, the limits, the scaling, the concurrency and the
 timeout, and the environment variable names only, with whether each is a secret reference. A
 revision that changed right before the symptom points at the deploy.
+
+A crash for memory is proved by the series, not by the log line alone: `metrics` prints one row
+per revision with its points in time order, so it shows how close to the limit the instance ran
+before the symptom and whether a fix brought it down. Memory and latency are distributions and
+take a percentile aligner; a count or a rate takes `ALIGN_SUM` or `ALIGN_RATE`. `--align` is the
+step in seconds (60 by default), and the limit counts points across every series.
 
 ## 3. The deployed image against the repository
 

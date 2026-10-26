@@ -31,5 +31,13 @@ A hypothesis the anchor already rules out is not listed; say in the report what 
   `references/investigators.md` states. The session reviews each verdict before the report uses
   it.
 
+The count is of the hypotheses still open once the anchor's reads are in. A hypothesis those reads
+already decide is not listed, as above: the report rules it out with the read that decided it,
+under "ruled out", and it is never "worked in the session". When two or more stay open, they go
+to investigators, even when the session could read them itself. The one exception: every open
+hypothesis waits on a source this run can't read (a database the guard keeps closed, a refused
+permission). Then no investigator goes out, since each would meet the same refusal, and the
+report leaves them open with the read that would decide each.
+
 Either way, a cause is confirmed only when the evidence rules out the other hypotheses on the
 list, not when it fits. When the cause fits but the proof is not there, step 5 reproduces it.

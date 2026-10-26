@@ -32,8 +32,9 @@ The locks live in the script, not in this text; the skill only never works aroun
   answered with the logs, the warehouse sink or the API, never by retrying elsewhere.
 - **One run directory.** `start` opens it at the first read and prints its path, `RUN_DIR`
   (and deletes any directory an interrupted run left behind once it is a day old);
-  every query file and draft the run saves goes there, and `close RUN_DIR` deletes it with any
-  image the reproduce phase pulled, before the gate.
+  every query file, draft and saved output of the run goes there, the investigators' included,
+  and `close RUN_DIR` deletes it with any image the reproduce phase pulled, before the gate.
+  Nothing of the run is written to `/tmp` or anywhere else.
 - **The brief's path.** An investigator gets the guard as a full path,
   `<plugin-root>/skills/debug/scripts/gcloud_read.py` with the root filled in, written `GUARD`
   in the references.

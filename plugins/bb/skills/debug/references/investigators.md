@@ -24,12 +24,16 @@ confirms:    <the result that would prove it>
 refutes:     <the result that would rule it out>
 alternatives: <the other hypotheses on the list, one line each, so a confirmed verdict rules them out>
 queries:     <the warehouse or database query files this hypothesis needs, by full path, or none>
+run_dir:     <RUN_DIR, the full path `start` printed>
 guard:       python3 <plugin-root>/skills/debug/scripts/gcloud_read.py
 ```
 
-The investigator writes no file. When a hypothesis needs the warehouse sink or a development
-database, the session writes each query to `RUN_DIR` first, as `references/sources.md` states,
-and the `queries` line names those files; the investigator passes them to the guard as they are.
+The investigator writes no query and no draft. When a hypothesis needs the warehouse sink or a
+development database, the session writes each query to `RUN_DIR` first, as
+`references/sources.md` states, and the `queries` line names those files; the investigator passes
+them to the guard as they are. A guard output it keeps to read again goes to a file inside
+`run_dir`, so `close` deletes it with the run. The run directory is the session's: the
+investigator never runs `start` or `close`.
 
 The `guard` line carries the full path with the root filled in; the agent doesn't hardcode it.
 The `map` field is an excerpt, never a whole document: a long brief pulls the investigator off

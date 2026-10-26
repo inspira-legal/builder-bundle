@@ -17,7 +17,8 @@ Revisar trilha.
   postmortem), spec the fix, correct a stale service document, or stop. `SKILL.md` is a router
   over one reference per step of the method.
 - **`skills/debug/scripts/gcloud_read.py`**: the one guard every cloud, warehouse and database
-  read goes through. Reads only, a project, window and row limit on every log read, named
+  read goes through. Reads only, a project, window and row limit on every log read, a metric's
+  time series read the same way from the monitoring API (the cloud CLI has no verb for it), named
   fields instead of whole entries, a personal data check on everything it prints, service
   descriptions with names and no values, databases opened only in projects the `environments`
   document lists as development, and a run directory deleted when the run closes. Its tests run

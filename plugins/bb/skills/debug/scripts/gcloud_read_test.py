@@ -537,6 +537,108 @@ def sql_redacts_and_truncates():
 case("sql: output passes the personal data check and a full page is truncated", sql_redacts_and_truncates, False)
 
 
+def sql_names_the_proxy():
+    env = {k: v for k, v in os.environ.items() if k not in ("PGHOST", "PGSERVICE")}
+    old, os.environ = os.environ, env
+    try:
+        out = sql_case("SELECT note_id FROM notes", psql=(2, "", 'psql: error: connection to server on socket "/tmp/.s.PGSQL.5432" failed'))()
+    finally:
+        os.environ = old
+    expect("cloud-sql-proxy" in out and "socket" not in out, out)
+
+
+case("sql: no PG* variables names the proxy, not psql's socket", sql_names_the_proxy, False)
+
+
+# ---- metrics: one type, a window, an aligner and a limit on points ---------------------------
+SERIES = {
+    "timeSeries": [{
+        "resource": {"labels": {"service_name": "notes-api", "revision_name": "notes-api-00042"}},
+        "points": [
+            {"interval": {"endTime": "2026-01-31T14:01:00Z"}, "value": {"doubleValue": 0.97}},
+            {"interval": {"endTime": "2026-01-31T14:00:00Z"}, "value": {"doubleValue": 0.81}},
+        ],
+    }]
+}
+
+
+def metrics_args(**over):
+    args = {
+        "--project": DEV, "--metric": "run.googleapis.com/container/memory/utilizations",
+        "--service": "notes-api", "--since": "2026-01-31T14:00:00Z", "--until": "2026-01-31T15:00:00Z",
+        "--aligner": "ALIGN_PERCENTILE_99", "--limit": "100",
+    }
+    args.update(over)
+    return ["metrics"] + [x for k, v in args.items() if v is not None for x in (k, v)]
+
+
+def metrics_case(answer=(0, json.dumps(SERIES)), **over):
+    def go():
+        urls = []
+        g.call = answering({("gcloud", "auth", "print-access-token"): (0, "tok-123\n", "")})
+        g.fetch = lambda url, token: (urls.append((url, token)), answer)[1]
+        out = run(metrics_args(**over))
+        if "refused:" in out:
+            raise g.Refusal(out)
+        return out, urls
+
+    return go
+
+
+bad_metrics = [
+    ("no project", {"--project": None}),
+    ("no metric", {"--metric": None}),
+    ("a metric that isn't a type", {"--metric": "memory"}),
+    ("no window", {"--since": None}),
+    ("a window backwards", {"--until": "2026-01-31T13:00:00Z"}),
+    ("no aligner", {"--aligner": None}),
+    ("no limit", {"--limit": None}),
+    ("a limit past the ceiling", {"--limit": "5000"}),
+    ("a step under a minute", {"--align": "10"}),
+]
+for name, over in bad_metrics:
+    case(f"metrics: {name}", metrics_case(**over), True)
+
+
+def metrics_shape():
+    out, urls = metrics_case()()
+    url, token = urls[0]
+    expect(token == "tok-123" and "tok-123" not in out, "the token went somewhere it shouldn't")
+    expect("/projects/pebble-dev-1/timeSeries?" in url and "pageSize=100" in url, url)
+    expect("ALIGN_PERCENTILE_99" in url and "service_name%3D%22notes-api%22" in url, url)
+    row = json.loads(out.splitlines()[0])
+    expect(row["points"] == [["2026-01-31T14:00:00Z", 0.81], ["2026-01-31T14:01:00Z", 0.97]], row)
+    expect(row["labels"]["revision_name"] == "notes-api-00042" and "truncated" not in out, out)
+
+
+case("metrics: the points print in time order, the token never does", metrics_shape, False)
+
+
+def metrics_truncated():
+    out, _ = metrics_case((0, json.dumps({**SERIES, "nextPageToken": "p2"})))()
+    expect("truncated" in out, out)
+
+
+case("metrics: a next page reads as truncated", metrics_truncated, False)
+
+
+def metrics_api_error():
+    err = json.dumps({"error": {"message": "The aligner cannot be applied to metrics with kind DELTA"}})
+    out, _ = metrics_case((400, err))()
+    expect("The aligner cannot be applied" in out and "{" not in out, out)
+
+
+case("metrics: an API error prints its message, not its JSON", metrics_api_error, False)
+
+
+def metrics_empty():
+    out, _ = metrics_case((0, "{}"))()
+    expect("answered with nothing" in out and DEV in out, out)
+
+
+case("metrics: empty names the project", metrics_empty, False)
+
+
 # ---- the document database: only find, count and an aggregation that doesn't write ---------
 def doc_args(**over):
     base = {"project": DEV, "database": "pebble", "collection": "notes", "op": "find", "filter": '{"status": "failed"}', "pipeline": None, "field": ["status", "note_id"], "limit": 5}
