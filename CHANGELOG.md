@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.18.0 (2026-10-26)
+## 3.19.0 (2026-10-27)
 
 **The skill descriptions lead with the request, and a battery measures it.** The 15
 descriptions now open with what the person gets, quote trigger phrases the way people
@@ -36,6 +36,42 @@ session with many skills installed.
   steps aside for a small mechanical change, and `think` points product framing to
   `/bb:discover`. 7,093 characters in all. Those phrases came after the battery ran, so
   the score above is candidate B's, not the text that ships.
+
+## 3.18.0 (2026-10-26)
+
+**`/bb:debug` investigates an error in a running environment, read only.** Debugging a running
+service was the same work every session, rebuilt from memory: the wrong project, a log read with
+no window, a hypothesis taken for a cause. The skill carries the method, so any builder runs it
+the same way in development or production, with no write to either. It is the 19th skill, in the
+Revisar trilha.
+
+### Added
+
+- **`/bb:debug`**: starts from an anchor (an id, a trace, a time window or the symptom) and a
+  named environment, reads the company's map and the closest postmortems from the documentation
+  base, lists the hypotheses and proves the cause before calling it one. It reports the root
+  cause with its evidence and what was ruled out, and closes on a gate: fix now (which ends in a
+  postmortem), spec the fix, correct a stale service document, or stop. `SKILL.md` is a router
+  over one reference per step of the method.
+- **`skills/debug/scripts/gcloud_read.py`**: the one guard every cloud, warehouse and database
+  read goes through. Reads only, a project, window and row limit on every log read, a metric's
+  time series read the same way from the monitoring API (the cloud CLI has no verb for it), named
+  fields instead of whole entries, a personal data check on everything it prints, service
+  descriptions with names and no values, databases opened only in projects the `environments`
+  document lists as development, and a run directory deleted when the run closes. Its tests run
+  in `validate.yml`.
+- **`bb-debug-investigator`**: a read-only agent on Haiku, one hypothesis per brief, every read
+  through the guard, a verdict with the evidence behind it. The main session reviews each
+  verdict against that evidence before the report uses it.
+- **Three `bb-debug:*` roles in the company definitions** (`environments`, `access`, `service`)
+  and the postmortems read by kind, in `references/company-definitions.md`. The one thing a
+  document may declare beyond what it describes is which projects are development projects.
+
+### Changed
+
+- **The handoff journey map** gains the `debug` gate.
+- **`db_read.py` moves to `plugins/bb/scripts/`** with its test: `/bb:measure` and `/bb:debug` both
+  run its warehouse locks now, and a script two skills use lives at the plugin root.
 
 ## 3.17.0 (2026-10-22)
 
