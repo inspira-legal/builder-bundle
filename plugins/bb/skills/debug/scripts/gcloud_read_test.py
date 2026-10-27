@@ -116,6 +116,8 @@ reads = [
     ("describe a scheduler job", ["scheduler", "jobs", "describe", "nightly", "--project=" + PROD]),
     ("list image tags", ["container", "images", "list-tags", "gcr.io/x/notes", "--project", PROD]),
     ("beta list", ["beta", "run", "services", "list", "--project", PROD]),
+    ("describe a resource named import", ["run", "services", "describe", "import", "--project", PROD]),
+    ("describe a resource named export", ["run", "services", "describe", "export", "--project", PROD]),
 ]
 for name, args in reads:
     case(f"read: {name}", lambda a=args: g.classify(a), False)
@@ -666,10 +668,10 @@ for name, over, refused in docs:
 
 def doc_script_shape():
     script = g.doc_script(doc_args())
-    for p in ["process.env.BB_DEBUG_MONGO_URI", '{"status": 1, "note_id": 1}', ".limit(5)", "EJSON.parse("]:
+    for p in ["process.env.BB_DEBUG_MONGO_URI", '{"status": 1, "note_id": 1, "_id": 0}', ".limit(5)", "EJSON.parse("]:
         expect(p in script, f"{p!r} missing from {script!r}")
     agg = g.doc_script(doc_args(op="aggregate", pipeline='[{"$group": {"_id": "$status", "n": {"$sum": 1}}}]', field=["n"]))
-    expect('{\\"$project\\": {\\"n\\": 1}}, {\\"$limit\\": 5}' in agg, f"aggregation not projected and limited: {agg!r}")
+    expect('{\\"$project\\": {\\"n\\": 1, \\"_id\\": 0}}, {\\"$limit\\": 5}' in agg, f"aggregation not projected and limited: {agg!r}")
 
 
 case("docdb: the script projects, limits, and reads the connection from the environment", doc_script_shape, False)
@@ -802,6 +804,92 @@ def close_refuses_outside(base):
 case("temporary files: start makes the run's directory, close deletes it with its images", with_base(start_and_close), False)
 case("temporary files: a directory left behind is deleted once a day old", with_base(sweeps_a_day_later), False)
 case("temporary files: close refuses a directory start didn't make", with_base(close_refuses_outside), True)
+
+# ---- review fixes: each case proves one rule the review found broken --------------------------
+def logs_service_newline():
+    g.call = answering({("gcloud", "logging", "read"): (0, "[]", "")})
+    printed(lambda: g.logs(logs_args(service="notes-api\n"), g.Out()))
+
+
+case("project: a trailing newline is not a project id", lambda: g.check_project(PROD + "\n"), True)
+case("logs: a service name with a trailing newline is refused", logs_service_newline, True)
+case("warehouse: a CTE can't hide the outer read's rows", wh("WITH a AS (SELECT COUNT(*) AS c FROM logs.app) SELECT stage, message FROM logs.app"), True)
+case("warehouse: a CTE with an id still reads the outer rows", wh("WITH a AS (SELECT note_id FROM logs.app WHERE note_id = @id) SELECT stage FROM logs.app", "n-81"), True)
+case("warehouse: an id with a trailing newline is refused", wh("SELECT time FROM logs.app WHERE note_id = @id", "n-81\n"), True)
+
+for name, value, needles, count in [
+    ("a CPF in a URL path", {"m": "GET /customers/12345678901/orders"}, ["12345678901"], 1),
+    ("a CPF after a hyphen", {"m": "user-12345678901"}, ["12345678901"], 1),
+    ("a CPF glued to letters", {"m": "id12345678901"}, ["12345678901"], 1),
+]:
+    case(f"personal data: {name}", redacts(value, needles, count), False)
+
+
+def dev_example_in_a_longer_fence():
+    g.call = answering(wave_with("````markdown\n```bb-debug-development\npebble-prod-1\n```\n````\n"))
+    g.require_dev(PROD)
+
+
+def dev_crlf():
+    g.call = answering(wave_with("# Pebble\r\n\r\n```bb-debug-development\r\npebble-dev-1\r\n```\r\n"))
+    g.require_dev(DEV)
+
+
+case("development: a format example inside a longer fence lists nothing", dev_example_in_a_longer_fence, True)
+case("development: a body with CRLF line endings still lists its project", dev_crlf, False)
+
+
+def pull_records_only_new_images(base):
+    d = pathlib.Path(run(["start"]).splitlines()[0])
+    g.call = answering({
+        ("docker", "image", "inspect", "postgres:16"): (0, "[]", ""),
+        ("docker", "image", "inspect", "gcr.io/x/notes:2"): (1, "", "no such image"),
+        ("docker", "pull"): (0, "", ""),
+        ("docker", "image", "rm"): (0, "", ""),
+    })
+    run(["pull", str(d), "postgres:16"])
+    expect(not (d / "images").exists(), "an image that was already local got recorded")
+    run(["pull", str(d), "gcr.io/x/notes:2"])
+    expect((d / "images").read_text() == "gcr.io/x/notes:2\n", "the new image wasn't recorded")
+    calls.clear()
+    run(["close", str(d)])
+    removed = [c[0] for c in calls if c[0][:3] == ["docker", "image", "rm"]]
+    expect(removed == [["docker", "image", "rm", "-f", "gcr.io/x/notes:2"]], f"close removed {removed}")
+    expect(not d.exists(), "the run directory survived close")
+
+
+case("temporary files: pull records only the images it pulled", with_base(pull_records_only_new_images), False)
+
+
+def sql_trailing_comment():
+    out = sql_case("SELECT note_id FROM notes; -- why")()
+    sent = calls[-1][0][-1]
+    expect("-- why" not in sent and "FROM notes\n) AS bb_read" in sent, sent)
+    expect('"note_id": "n-81"' in out, out)
+
+
+def sql_never_prompts():
+    sql_case("SELECT note_id FROM notes")()
+    expect("-w" in calls[-1][0], f"psql can prompt for a password: {calls[-1][0]}")
+
+
+case("sql: a comment after the final ';' is not sent", sql_trailing_comment, False)
+case("sql: psql never waits for a password on the terminal", sql_never_prompts, False)
+
+
+def doc_object_hidden():
+    os.environ[g.MONGO_URI_ENV] = "mongodb://localhost:27017"
+    try:
+        g.call = answering({**wave_with(ENV_DOC), ("mongosh",): (0, '[{"customer": {"name": "invented-name", "address": "invented-street"}}]', "")})
+        out = printed(lambda: g.docdb(doc_args(field=["customer"]), g.Out()))
+        expect('"_id": 0' in calls[-1][0][-1], "the projection returns _id")
+        expect("invented-name" not in out and "invented-street" not in out, out)
+        expect("ask for a field inside it by name" in out, out)
+    finally:
+        del os.environ[g.MONGO_URI_ENV]
+
+
+case("docdb: a requested object prints a placeholder, and _id stays out", doc_object_hidden, False)
 
 shutil.rmtree(tmp, ignore_errors=True)
 print()

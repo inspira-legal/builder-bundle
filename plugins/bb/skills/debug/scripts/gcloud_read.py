@@ -40,8 +40,8 @@ this script, so the rules below hold whatever a prompt says:
   under (--account, --flags-file and the like) are refused, and so is a second --project.
 - Databases in development only. `sql` and `docdb` open only for a project the company's
   `bb-debug:environments` document lists as development, and the script reads that list itself
-  with the `wave` CLI: there is no argument that widens it. The list is the lines of a fenced
-  block whose info string is `bb-debug-development`, one project id per line. A document without
+  with the `wave` CLI: there is no argument that widens it. The list is the lines of a top-level
+  fenced block whose info string is `bb-debug-development`, one project id per line. A document without
   the block, a project missing from it, or a documentation base that can't be reached closes
   every database path. `sql` (PostgreSQL, through `psql` and the PG* environment variables)
   opens the session read only and runs one SELECT, lexed as PostgreSQL (`#` is an operator
@@ -102,18 +102,20 @@ RUN_PREFIX = "bb-debug-"
 ENV_TAG = "bb-debug:environments"
 DEV_BLOCK = "bb-debug-development"
 MONGO_URI_ENV = "BB_DEBUG_MONGO_URI"
-PROJECT = re.compile(r"^[a-z][a-z0-9-]{4,28}[a-z0-9]$")
-NAME = re.compile(r"^[A-Za-z0-9_.-]{1,100}$")
-FIELD = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)*$")
+PROJECT = re.compile(r"^[a-z][a-z0-9-]{4,28}[a-z0-9]\Z")
+NAME = re.compile(r"^[A-Za-z0-9_.-]{1,100}\Z")
+FIELD = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)*\Z")
 LOGIN = (
     "the cloud login expired or is missing; run `gcloud auth login` yourself (the guard can't "
     "log in for you), then run the read again"
 )
+OBJECT = "[an object: ask for a field inside it by name]"
 
 # ---- the personal data check -------------------------------------------------------------
 
 DOCUMENT = re.compile(
-    r"(?<![\w./-])(?:\d{3}\.\d{3}\.\d{3}-\d{2}|\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}|\d{11}|\d{14})(?![\w/-])"
+    r"(?<![\w./-])(?:\d{3}\.\d{3}\.\d{3}-\d{2}|\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2})(?![\w/-])"
+    r"|(?<!\d)(?:\d{11}|\d{14})(?!\d)"  # bare digits count inside a URL or a key too
 )
 
 
@@ -247,7 +249,7 @@ def project_entry(entry: dict, extra) -> dict:
     for path in extra:
         value = pick(entry, path)
         if isinstance(value, (dict, list)):
-            value = "[an object: ask for a field inside it by name]"
+            value = OBJECT
         if value is not None:
             row[path] = value
     return row
@@ -273,7 +275,7 @@ def check_limit(limit) -> int:
 
 def logs(a, out: Out) -> None:
     check_project(a.project)
-    if not a.resource or not re.match(r"^[a-z_]+$", a.resource):
+    if not a.resource or not re.match(r"^[a-z_]+\Z", a.resource):
         raise Refusal("a log read needs --resource, the resource type (e.g. cloud_run_revision)")
     if not a.since or not a.until:
         raise Refusal("a log read needs a window: pass --since and --until")
@@ -281,7 +283,7 @@ def logs(a, out: Out) -> None:
     if until <= since:
         raise Refusal("--until must come after --since")
     check_limit(a.limit)
-    if a.service and not re.match(r"^[a-z0-9-]+$", a.service):
+    if a.service and not re.match(r"^[a-z0-9-]+\Z", a.service):
         raise Refusal(f"'{a.service}' is not a service name")
     for path in a.field:
         if not FIELD.match(path):
@@ -312,7 +314,7 @@ def logs(a, out: Out) -> None:
 # ---- metrics: a time series, aligned, bounded --------------------------------------------
 
 MONITORING = "https://monitoring.googleapis.com/v3/projects/{}/timeSeries?{}"
-METRIC = re.compile(r"^[a-z0-9-]+(\.[a-z0-9-]+)*\.googleapis\.com/[a-z0-9_/.]+$")
+METRIC = re.compile(r"^[a-z0-9-]+(\.[a-z0-9-]+)*\.googleapis\.com/[a-z0-9_/.]+\Z")
 ALIGNERS = (
     "ALIGN_MEAN", "ALIGN_MAX", "ALIGN_MIN", "ALIGN_SUM", "ALIGN_RATE", "ALIGN_DELTA",
     "ALIGN_PERCENTILE_99", "ALIGN_PERCENTILE_95", "ALIGN_PERCENTILE_50",
@@ -357,7 +359,7 @@ def metrics(a, out: Out) -> None:
     if not 60 <= a.align <= DAY:
         raise Refusal(f"--align is the step in seconds, between 60 and {DAY}")
     check_limit(a.limit)
-    if a.service and not re.match(r"^[a-z0-9-]+$", a.service):
+    if a.service and not re.match(r"^[a-z0-9-]+\Z", a.service):
         raise Refusal(f"'{a.service}' is not a service name")
     parts = [f'metric.type="{a.metric}"']
     if a.service:
@@ -448,7 +450,7 @@ HIDDEN = re.compile(r"header|token|password|secret|^body$|^payload$", re.I)
 # Maps whose keys are variable names and whose values are the variables' values.
 VALUE_MAPS = re.compile(
     r"^(environmentVariables|buildEnvironmentVariables|secretEnvironmentVariables|substitutions"
-    r"|variables|envVars|env_vars)$"
+    r"|variables|envVars|env_vars)\Z"
 )
 JOB_FIELDS = [
     "name", "schedule", "timeZone", "state", "scheduleTime", "lastAttemptTime", "userUpdateTime",
@@ -463,23 +465,25 @@ TASK_FIELDS = [
 
 
 def classify(args):
-    """The command path and its verb, for a read. Anything else raises Refusal."""
-    words = [w for w in args if not w.startswith("-")]
-    lead = next((i for i, w in enumerate(words) if w not in ("alpha", "beta")), len(words))
-    if words[lead : lead + 1] == ["run"]:  # the Cloud Run group, not the verb `tasks run` uses
-        words = words[:lead] + words[lead + 1 :]
-    write = next((w for w in words if w in WRITES), None)
-    if write:
-        what, undo = WRITES[write]
-        raise Refusal(
-            f"`{write}` writes, and the guard only reads. If it is what the investigation needs, "
-            f"the person runs it:\n  gcloud {shlex.join(args)}\n"
-            f"what it changes: {what}\nundo: {undo}"
-        )
+    """The command path and its verb, for a read. Anything else raises Refusal.
+
+    A write verb counts only inside the command path: one after the read verb is a name
+    (`describe import`), not a command.
+    """
     path = []
     for word in args:
         if word.startswith("-"):
             break
+        if word == "run" and all(p in ("alpha", "beta") for p in path):  # the Cloud Run group
+            path.append(word)
+            continue
+        if word in WRITES:
+            what, undo = WRITES[word]
+            raise Refusal(
+                f"`{word}` writes, and the guard only reads. If it is what the investigation needs, "
+                f"the person runs it:\n  gcloud {shlex.join(args)}\n"
+                f"what it changes: {what}\nundo: {undo}"
+            )
         if word in READS:
             return path, word
         if word in ("logging", "logs"):
@@ -602,7 +606,25 @@ def login(_a, _out: Out) -> None:
 
 # ---- the development list, read from the documentation base ------------------------------
 
-BLOCK = re.compile(r"^```" + DEV_BLOCK + r"[ \t]*\n(.*?)^```", re.M | re.S)
+FENCE = re.compile(r"(`{3,})(.*)")
+
+
+def dev_lines(body: str) -> list:
+    """The lines of each top-level development fence. A fence inside a longer one is an example."""
+    lines, found, i = body.splitlines(), [], 0
+    while i < len(lines):
+        opened = FENCE.match(lines[i])
+        if not opened:
+            i += 1
+            continue
+        run, info = opened.group(1), opened.group(2).strip()
+        close = next((j for j in range(i + 1, len(lines)) if re.fullmatch(run + r"`*[ \t]*", lines[j])), None)
+        if close is None:
+            break  # an unclosed fence runs to the end of the document and lists nothing
+        if info == DEV_BLOCK:
+            found += lines[i + 1 : close]
+        i = close + 1
+    return found
 
 
 def wave_json(argv):
@@ -631,11 +653,10 @@ def dev_projects():
         if body is None and item.get("id"):
             shown = wave_json(["wave", "doc", "show", str(item["id"]), "--json"])
             body = ((shown or {}).get("data") or {}).get("body") if isinstance(shown, dict) else None
-        for block in BLOCK.findall(body or ""):
-            for line in block.splitlines():
-                name = line.split("#", 1)[0].strip()
-                if PROJECT.match(name):
-                    projects.add(name)
+        for line in dev_lines(body or ""):
+            name = line.split("#", 1)[0].strip()
+            if PROJECT.match(name):
+                projects.add(name)
     return projects
 
 
@@ -660,7 +681,7 @@ def require_dev(project) -> str:
 
 SELECT_STAR = re.compile(r"(?:\bSELECT\s+(?:DISTINCT\s+|ALL\s+|AS\s+STRUCT\s+)?|,\s*)(?:[\w$]+\s*\.\s*)*\*", re.I)
 AGGREGATE = re.compile(r"\b(COUNT|COUNTIF|SUM|AVG|MIN|MAX|APPROX_COUNT_DISTINCT)\s*\(", re.I)
-ID_VALUE = re.compile(r"^[A-Za-z0-9_.:-]{1,128}$")
+ID_VALUE = re.compile(r"^[A-Za-z0-9_.:-]{1,128}\Z")
 
 
 def read_query(path: str) -> str:
@@ -681,6 +702,8 @@ def check_scope(sql: str, id_value) -> str:
     code = db.code_only(sql)
     if re.search(r"\b(UNION|INTERSECT|EXCEPT)\b", code, re.I):
         raise Refusal("a set operation can add rows past the scope; send one SELECT")
+    if len(re.findall(r"\bSELECT\b", code, re.I)) != 1:
+        raise Refusal("one SELECT only: a WITH or a subquery can hide the filter of the outer read")
     if id_value is None:
         if re.search(r"\bOVER\s*\(", code, re.I):
             raise Refusal("a window function keeps every row; aggregate with GROUP BY instead")
@@ -747,7 +770,7 @@ def warehouse(a, out: Out) -> None:
         print(f"-- truncated: {len(result['rows'])} of {result['total']} rows; aggregate further")
 
 
-def pg_code_only(text: str) -> str:
+def pg_code_only(text: str, keep_strings: bool = False) -> str:
     """PostgreSQL's code with its comments, strings and quoted names blanked.
 
     db.code_only reads BigQuery, where `#` opens a comment; in PostgreSQL `#` is an operator and
@@ -776,8 +799,8 @@ def pg_code_only(text: str) -> str:
                     break
                 else:
                     j += 1
+            out.append(text[i : j + 1] if keep_strings else " '' ")
             i = j + 1
-            out.append(" '' ")
         else:
             if c == "$":
                 raise Refusal("a `$` (a parameter or a dollar-quoted string) is not needed to read rows")
@@ -789,7 +812,8 @@ def pg_code_only(text: str) -> str:
 def sql(a, out: Out) -> None:
     require_dev(a.project)
     text = read_query(a.query)
-    code = pg_code_only(text).strip().rstrip(";").strip()
+    body = pg_code_only(text, keep_strings=True).strip().rstrip(";").strip()  # the text checked is the text run
+    code = pg_code_only(body)
     if ";" in code:
         raise Refusal("more than one statement (a script); send a single query")
     first = re.match(r"[\s(]*([A-Za-z]+)", code)
@@ -802,10 +826,9 @@ def sql(a, out: Out) -> None:
     if "\\" in code:
         raise Refusal("a backslash outside a string reads as a psql command; send SQL only")
     limit = check_limit(a.limit)
-    body = text.rstrip().rstrip(";")
     wrapped = f"SELECT * FROM (\n{body}\n) AS bb_read LIMIT {limit}"
     env = dict(os.environ, PGOPTIONS="-c default_transaction_read_only=on")
-    code, stdout, err = call(["psql", "-X", "-v", "ON_ERROR_STOP=1", "--csv", "-c", wrapped], env=env)
+    code, stdout, err = call(["psql", "-X", "-w", "-v", "ON_ERROR_STOP=1", "--csv", "-c", wrapped], env=env)  # -w: no password prompt
     if code:
         if not any(os.environ.get(v) for v in ("PGHOST", "PGSERVICE")):
             fail(
@@ -871,6 +894,7 @@ def doc_script(a) -> str:
             raise Refusal(f"'{name}' is not a field path")
     limit = check_limit(a.limit)
     proj = {name: 1 for name in a.field}
+    proj.setdefault("_id", 0)  # not returned unless a field names it
     if a.op == "find":
         read = f"c.find(EJSON.parse({js(js(filt))}), {js(proj)}).limit({limit}).toArray()"
     else:
@@ -881,6 +905,20 @@ def doc_script(a) -> str:
         pipeline += [{"$project": proj}, {"$limit": limit}]
         read = f"c.aggregate(EJSON.parse({js(js(pipeline))})).toArray()"
     return head + f"print(EJSON.stringify({read}, null, 0, {{relaxed: true}}));"
+
+
+def hide_objects(doc: dict, paths, prefix: str = "") -> dict:
+    """A requested object prints a placeholder; the fields inside it are asked for by name."""
+    shown = {}
+    for key, value in doc.items():
+        path = prefix + key
+        if path in paths and isinstance(value, (dict, list)):
+            shown[key] = OBJECT
+        elif isinstance(value, dict):
+            shown[key] = hide_objects(value, paths, path + ".")
+        else:
+            shown[key] = value
+    return shown
 
 
 def docdb(a, out: Out) -> None:
@@ -903,7 +941,7 @@ def docdb(a, out: Out) -> None:
         empty(a.project, "this query")
         return
     for doc in docs:
-        out.emit(doc)
+        out.emit(hide_objects(doc, set(a.field)))
     if len(docs) >= a.limit:
         print(f"-- truncated: {len(docs)} documents, as many as the limit; narrow the filter")
 
@@ -972,9 +1010,13 @@ def close(a, _out: Out) -> None:
 
 def pull(a, _out: Out) -> None:
     d = run_dir(a.run)
+    inspected, _, _ = call(["docker", "image", "inspect", a.image])  # 0 when it was already local
     code, _, err = call(["docker", "pull", a.image])
     if code:
         fail(f"could not pull {a.image}: {first_line(err)}")
+    if inspected == 0:  # `close` deletes only the images the run added
+        print(f"-- {a.image} was already local; `close` keeps it")
+        return
     with open(d / "images", "a", encoding="utf-8") as f:
         f.write(a.image + "\n")
     print(f"-- pulled {a.image}; `close` deletes it with the run")

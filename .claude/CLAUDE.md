@@ -15,9 +15,9 @@ first `/bb:profile` on.
 plugins/bb/
 ├── .claude-plugin/plugin.json
 ├── agents/                            # pipeline roles (auto-discovered, no plugin.json entry)
-│   ├── bb-debug-investigator.md        # debug: one hypothesis per brief, every read through the guard, read-only by `tools:`
+│   ├── bb-debug-investigator.md        # debug: one hypothesis per brief, every read through the guard, narrowed by `tools:`, held by the guard and the prompt
 │   ├── bb-reuse-check.md               # build stage zero: one run, every reuse note, read-only by `tools:`
-│   ├── bb-review-finder.md             # review fan-out: finds candidates, read-only by `tools:`
+│   ├── bb-review-finder.md             # review fan-out: finds candidates, narrowed by `tools:`, held by the prompt
 │   ├── bb-review-verifier.md           # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
 │   └── bb-spec-reviewer.md             # spec's gate option: one pass, happy path, edge cases, coherence, attention points
 ├── hooks/                             # session infra (auto-active, no skill)

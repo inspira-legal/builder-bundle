@@ -71,7 +71,7 @@ spec's `## Metric`: the metric, the baseline, the target, the `okr:` line and th
 The events table is the inventory's first list. The answer leads with the reading against the
 target and the window it came from.
 
-**The guard.** Every query goes through one script, `skills/measure/scripts/db_read.py`, standard
+**The guard.** Every query goes through one script, `scripts/db_read.py`, standard
 library only. Five locks, in order: a local check with no network (one statement, and it starts as
 a read); the database's own classification of the statement in a dry run; a cost ceiling, sent
 again with the real run so the database refuses on its side too; a refusal of any output column
@@ -198,7 +198,7 @@ Happy path, a new event in a spec:
 - [x] **2. The level column**: the events table in `spec-format.md` gains the optional `level`
       column, and `draft-first.md` proposes it from the `usage` document. · verify:
       `lint_spec.py` and `check_events.py` pass over a spec with the column and one without
-- [x] **3. The read-only guard**: `skills/measure/scripts/db_read.py` and its tests, the locks
+- [x] **3. The read-only guard**: `scripts/db_read.py` and its tests, the locks
       that need no database written once, BigQuery as the first adapter, the database and the
       project id as arguments, invented data in every case. · verify: the test script passes
       with no network
