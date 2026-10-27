@@ -4,7 +4,7 @@
 
 [![github](https://img.shields.io/badge/github-inspira--legal%2Fbuilder--bundle-111111?style=flat-square&logo=github)](https://github.com/inspira-legal/builder-bundle)
 
-_Builder Bundle (`bb`): the unified skill set for Inspira builders, 19 skills, from the problem to the PR._
+_Builder Bundle (`bb`): the unified skill set for Inspira builders, 20 skills, from the problem to the PR._
 
 </div>
 
@@ -18,7 +18,7 @@ claude plugin install bb@inspira-legal
 or install across other coding agents (gemini cli, opencode, cursor, codex, t3 code) via vercel's skills manager:
 
 ```bash
-# install all 19 skills globally for every detected agent
+# install all 20 skills globally for every detected agent
 npx skills add inspira-legal/builder-bundle -g --all
 
 # or install for a specific agent
@@ -30,11 +30,11 @@ npx skills add inspira-legal/builder-bundle
 
 it keeps itself current. once a day, on a session start, a detached worker runs `claude plugin marketplace update` and `claude plugin update` for you, and only when the marketplace clone sits on its default branch with a clean tree. nothing is asked, nothing waits and nothing is printed: the session you are in keeps the version it loaded, the new one starts on the next session, and the only trace is a stamp under `~/.claude/plugins/data`. `custom_instructions: false` does not turn this off, it governs `~/.claude/BUILDER-BUNDLE.md` alone.
 
-it writes its operating context into `~/.claude/BUILDER-BUNDLE.md`, imported by your `CLAUDE.md` and carrying the profile set by `/bb:profile`, and it ships four read-only agents: `bb-review-finder` and `bb-review-verifier`, which review dispatches in parallel, `bb-spec-reviewer`, the pass spec runs over a draft when the gate's user picks it, reading for the happy path, the edge cases, coherence and attention points, and `bb-reuse-check`, which confirms a spec's reuse notes still hold before implement builds task 1. internal pipeline roles, not entry points. skills are invoked as `/bb:<skill>` (e.g. `/bb:discover`, `/bb:spec`, `/bb:ship`). every skill with a natural next step ends at a gate that **suggests** the next trilha, and never auto-invokes.
+it writes its operating context into `~/.claude/BUILDER-BUNDLE.md`, imported by your `CLAUDE.md` and carrying the profile set by `/bb:profile`, and it ships five read-only agents: `bb-debug-investigator`, which debug dispatches one per hypothesis, `bb-review-finder` and `bb-review-verifier`, which review dispatches in parallel, `bb-spec-reviewer`, the pass spec runs over a draft when the gate's user picks it, reading for the happy path, the edge cases, coherence and attention points, and `bb-reuse-check`, which confirms a spec's reuse notes still hold before implement builds task 1. internal pipeline roles, not entry points. skills are invoked as `/bb:<skill>` (e.g. `/bb:discover`, `/bb:spec`, `/bb:ship`). every skill with a natural next step ends at a gate that **suggests** the next trilha, and never auto-invokes.
 
 ## what is inside
 
-one plugin, `bb`; 19 skills, 16 of them in 6 trilhas, with `/bb:profile`, `/bb:reel` and `/bb:animate-tour` beside them.
+one plugin, `bb`; 20 skills, 17 of them in 6 trilhas, with `/bb:profile`, `/bb:reel` and `/bb:animate-tour` beside them.
 
 ### configurar: who is on the other side
 
@@ -72,6 +72,7 @@ one plugin, `bb`; 19 skills, 16 of them in 6 trilhas, with `/bb:profile`, `/bb:r
 | skill               | description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/bb:review`        | you pick the fronts (correctness, quality, project rules, the spec contract, UI accessibility, the design system, instrumentation, PR threads, CI), it runs them in parallel and verifies every finding; it fixes, replies and resolves whatever you approve. runs at cheap standard depth (agents on Sonnet); `/bb:review deep` turns on the whole angle set, the closing sweep and agents on Opus. the accessibility and design fronts also run alone, as audits of a folder or a live page, and the design front cites the token, component or direction every finding deviates from |
+| `/bb:debug`         | investigates an error in a running environment, development or production, read only: starts from an anchor and a named environment, reads the company's map and the closest postmortems from the documentation base, sends one investigator per hypothesis, and reports a proven root cause with its evidence and what was ruled out. every cloud, warehouse and database read goes through a guard, and a write is printed for you to run. closes on fix now (ending in a postmortem), spec the fix, or correct a stale service document                                              |
 | `/bb:maintain-repo` | triages PRs plus Dependabot and outdated deps, and reports what is safe to merge (it never merges)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `/bb:review-setup`  | sets up Inspira's code-review workflow in the repo and writes the `CODE_REVIEW_GUIDE.md`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 
@@ -88,7 +89,7 @@ one plugin, `bb`; 19 skills, 16 of them in 6 trilhas, with `/bb:profile`, `/bb:r
 | `/bb:code-deep-research` | finds, clones and explores repos, then verifies the findings adversarially against source |
 | `/bb:write-readme`       | generates a minimal centered-header README out of the repo's own facts                    |
 
-plugin-level reference docs live in `plugins/bb/references/`, read across skills instead of owned by one: the doc-style rules every sentence follows, the handoff-gate contract, the `.bb/<slug>/` spec-state layout, the manifesto consult for stack decisions, the event convention format (`events-convention.md`) that `/bb:spec` and `/bb:review` read once a project ships its own `EVENTS.md`, and the company definitions (`company-definitions.md`) that `/bb:measure`, `/bb:spec` and `/bb:discover` find by role tag in the company's documentation base.
+plugin-level reference docs live in `plugins/bb/references/`, read across skills instead of owned by one: the doc-style rules every sentence follows, the handoff-gate contract, the `.bb/<slug>/` spec-state layout, the manifesto consult for stack decisions, the event convention format (`events-convention.md`) that `/bb:spec` and `/bb:review` read once a project ships its own `EVENTS.md`, and the company definitions (`company-definitions.md`) that `/bb:measure`, `/bb:spec`, `/bb:discover` and `/bb:debug` find by role tag in the company's documentation base.
 
 ## using with other agents
 
