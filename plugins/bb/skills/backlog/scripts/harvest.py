@@ -160,7 +160,9 @@ def harvest_slug(slug_dir: Path, today: dt.date, stale_days: int) -> dict:
     spec, spec_items = read_spec(slug, slug_dir / "spec.md", (discovery or {}).get("verdict"))
     items = cut_items + spec_items
     backlog = slug_dir / "backlog.md"
-    known = set(BACKLOG_ID.findall(backlog.read_text(encoding="utf-8"))) if backlog.is_file() else set()
+    # Ids are hex ASCII, so a stray byte pasted into the file costs nothing here.
+    text = backlog.read_text(encoding="utf-8", errors="replace") if backlog.is_file() else ""
+    known = set(BACKLOG_ID.findall(text))
     for entry in items:
         entry["in_backlog"] = entry["id"] in known
     alerts = duplicates([i for i in items if not i["in_backlog"]])

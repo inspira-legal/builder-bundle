@@ -38,7 +38,13 @@ An item that carries an `ice` value keeps it, with the date of the record it cam
 - **A deferred decision.** An `## Open` line that a task already owns is the plan, not the
   backlog. An `## Open` line only gets in when it names work nobody owns, like a mode no route
   reaches.
-- **The second copy of a `near_duplicate`.** Keep one entry and cite both sources on it.
+- **The second copy of a `near_duplicate`.** Keep one entry, cite both sources on it, and write
+  both ids in its comment (`<!-- id:<id> id:<id> -->`), so the next harvest skips both.
+
+An item that stays out still leaves its id behind, in one `<!-- skipped id:<id> id:<id> -->`
+line at the end of the file. That covers the cases above and an item the person turned down at
+**Adjust items**. `harvest.py` reads those ids like any other, so the next harvest does not
+weigh the same item again.
 
 ## The format
 
@@ -61,13 +67,17 @@ updated: <YYYY-MM-DD>
 ## Discarded
 
 - **<title>**: <reason>. From `<source>`. <!-- id:<id> -->
+
+<!-- skipped id:<id> id:<id> -->
 ```
 
 - **`<source>`** is the item's `source` field from `harvest.py`, such as
   `spec.md#out-of-scope:220`. The line cites the record, it never copies the record's reasoning.
 - **`<door>`** says why the item is here: `cut` for a harvested item, `interest` or
   `value: <source>` for a captured one (`references/capture.md`).
-- **`<!-- id:<id> -->`** is the item's `id` from `harvest.py`. It is what makes the next
-  harvest skip the item, so never drop it. A captured item has no id; it carries
-  `<!-- captured <YYYY-MM-DD> -->` instead.
+- **`<!-- id:<id> -->`** is the item's `id` from `harvest.py`, one per source the entry cites.
+  It is what makes the next harvest skip the item, so never drop it. A captured item has no
+  id; it carries `<!-- captured <YYYY-MM-DD> -->` instead.
+- **`<!-- skipped ... -->`** is the one line, at the end, that holds the ids of the items that
+  stay out. Add to it on every harvest.
 - Leave out a section that has no items.

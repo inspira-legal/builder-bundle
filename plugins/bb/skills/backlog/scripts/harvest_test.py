@@ -152,6 +152,22 @@ def ids_are_stable_and_the_backlog_is_remembered():
     assert [i["in_backlog"] for i in slug["items"]][:2] == [True, False]
 
 
+def merged_and_skipped_ids_are_remembered():
+    items = run(build())["items"]
+    cut, out, rest = items[0]["id"], items[2]["id"], [i["id"] for i in items[3:]]
+    backlog = f"- **Shared boards with guests** <!-- id:{cut} id:{out} -->\n\n<!-- skipped id:{' id:'.join(rest)} -->\n"
+    slug = run(build(backlog=backlog))
+    assert [i["id"] for i in slug["items"] if not i["in_backlog"]] == [items[1]["id"]], slug["items"]
+    assert all(a["kind"] != "near_duplicate" for a in slug["alerts"]), slug["alerts"]
+
+
+def a_stray_byte_in_the_backlog_does_not_stop_the_harvest():
+    root = build()
+    kept = run(root)["items"][0]["id"]
+    (root / ".bb" / "boards" / "backlog.md").write_bytes(b"- caf\xe9 <!-- id:" + kept.encode() + b" -->\n")
+    assert run(root)["items"][0]["in_backlog"]
+
+
 def the_walk_stops_at_the_repository():
     outer = pathlib.Path(tempfile.mkdtemp())
     (outer / ".bb" / "elsewhere").mkdir(parents=True)
@@ -169,6 +185,8 @@ case("out of scope and open are read, with the wave key", out_of_scope_and_open_
 case("the same idea in discovery and spec is flagged", the_same_idea_twice_is_flagged)
 case("a pending spec past the window is flagged", an_old_pending_spec_is_flagged)
 case("ids are stable and backlog.md marks what is kept", ids_are_stable_and_the_backlog_is_remembered)
+case("a merged entry and the skipped line keep their ids", merged_and_skipped_ids_are_remembered)
+case("a stray byte in backlog.md does not stop the harvest", a_stray_byte_in_the_backlog_does_not_stop_the_harvest)
 case("the root walk stops at the repository", the_walk_stops_at_the_repository)
 
 print()

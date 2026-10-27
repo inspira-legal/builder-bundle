@@ -43,7 +43,8 @@ The person's words decide it. Both modes can run in one session.
 5. **Confirm once.** Show the table of items and their sections, then one `AskUserQuestion`:
    **Write it as shown** (recommended), **Adjust items**, or **Stop**.
 6. **Write `backlog.md`** in the format the reference gives, adding to what is there. An item
-   with `in_backlog: true` is already written: leave it.
+   with `in_backlog: true` is already written or already skipped: leave it. An item that stays
+   out gets its id on the file's `<!-- skipped -->` line, so the next harvest skips it too.
 
 ## Capture from the conversation
 

@@ -44,7 +44,7 @@ plugins/bb/
 │   ├── gather_context.py               # ship (the PR body), review, gather-branch-context
 │   ├── preflight.py                    # ship (Prerequisites + Step 0), review (the fronts probe)
 │   ├── resolve_checks.py               # implement (step 4 + args.checks), ship (Step 2)
-│   ├── scan_specs.py                   # implement (selection); preflight.py imports its scan()
+│   ├── scan_specs.py                   # implement (selection); preflight.py imports its scan(); backlog's harvest.py imports find_bb_root and parse_frontmatter
 │   ├── check_events.py                 # spec (step 6), review (the instrumentation front): EVENTS.md checker
 │   ├── normalize_workflow.py           # the dispatch (references/build-tasks-workflow.md): the CR-free copy
 │   ├── inspect_pr_checks.py            # ship (CI failures), review (the ci front)
