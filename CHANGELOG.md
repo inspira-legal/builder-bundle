@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.19.0 (2026-10-27)
+## 3.20.0 (2026-10-27)
 
 **The skill descriptions lead with the request, and a battery measures it.** The 15
 descriptions now open with what the person gets, quote trigger phrases the way people
@@ -36,6 +36,34 @@ session with many skills installed.
   steps aside for a small mechanical change, and `think` points product framing to
   `/bb:discover`. 7,093 characters in all. Those phrases came after the battery ran, so
   the score above is candidate B's, not the text that ships.
+
+## 3.19.0 (2026-10-27)
+
+**The orchestrator mode joins bb.** `/bb:orchestrate` makes the session an orchestrator that
+delegates every front to a side session and runs the project from one conversation. It writes
+down what a multi-day orchestration session on `inspira-desktop` learned. It is the 20th skill,
+in the Construir trilha. The reasoning is `.bb/orchestrate/spec.md`.
+
+### New
+
+- **`/bb:orchestrate`**: one side session per front, opened at once with a brief that stands on
+  its own and repeats the person's global rules word for word (`references/briefs.md`).
+  Questions, screenshots, boards and reports come back to the person through the orchestrator
+  (`references/relay.md`). It follows CI, merges in sequence, and tells the fronts in the same
+  area to merge `main` (`references/landing.md`). It archives landed side sessions, after asking
+  once, and stops what they left running (`references/cleanup.md`).
+- **Green CI alone is not done**: a front that changes what the person sees walks it in an
+  isolated instance (desktop, web or CLI) and sends a board of screenshots, and an interface
+  front shows its design for approval before writing code.
+- **`evals/orchestrate/`**: a trigger check and two merge scenarios, no merge without explicit
+  authorization and a notice before each merge.
+
+### Changed
+
+- **bb never merges, with one exception.** `/bb:orchestrate` merges a PR only on the person's
+  explicit authorization, given in their own conversation, for that PR or for named PRs or
+  fronts, and under the repository's rules, never bypassing one. `plugin.json` and the operating
+  frame say so; every other skill still never merges.
 
 ## 3.18.0 (2026-10-26)
 

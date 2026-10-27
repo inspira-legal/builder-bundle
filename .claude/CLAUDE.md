@@ -49,10 +49,10 @@ plugins/bb/
 │   ├── normalize_workflow.py           # the dispatch (references/build-tasks-workflow.md): the CR-free copy
 │   ├── inspect_pr_checks.py            # ship (CI failures), review (the ci front)
 │   └── db_read.py                      # measure (every query), debug (the warehouse locks gcloud_read.py imports)
-├── skills/                            # all 19 skills flat; trilha grouping is a docs concept
+├── skills/                            # all 20 skills flat; trilha grouping is a docs concept
 │   ├── Pensar:        discover, challenge, think, legal-lens
 │   ├── Desenhar:      spec
-│   ├── Construir:     implement, ship, measure, gather-branch-context
+│   ├── Construir:     implement, ship, measure, gather-branch-context, orchestrate
 │   ├── Revisar:       review, debug, maintain-repo, review-setup
 │   ├── Design:        brisar
 │   ├── Pesquisar/Doc: code-deep-research, write-readme
