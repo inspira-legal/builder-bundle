@@ -15,8 +15,9 @@ first `/bb:profile` on.
 plugins/bb/
 ├── .claude-plugin/plugin.json
 ├── agents/                            # pipeline roles (auto-discovered, no plugin.json entry)
+│   ├── bb-debug-investigator.md        # debug: one hypothesis per brief, every read through the guard, narrowed by `tools:`, held by the guard and the prompt
 │   ├── bb-reuse-check.md               # build stage zero: one run, every reuse note, read-only by `tools:`
-│   ├── bb-review-finder.md             # review fan-out: finds candidates, read-only by `tools:`
+│   ├── bb-review-finder.md             # review fan-out: finds candidates, narrowed by `tools:`, held by the prompt
 │   ├── bb-review-verifier.md           # review fan-out: CONFIRMED / PLAUSIBLE / REFUTED
 │   └── bb-spec-reviewer.md             # spec's gate option: one pass, happy path, edge cases, coherence, attention points
 ├── hooks/                             # session infra (auto-active, no skill)
@@ -33,7 +34,7 @@ plugins/bb/
 │   ├── spec-state.md                   # the .bb/<slug>/ folder contract
 │   ├── bb-config.md                    # ~/.claude/bb.config.json: the schema and who reads it
 │   ├── consult-manifesto.md            # runtime stack decisions from inspira-legal/manifesto
-│   ├── company-definitions.md          # a company's data definitions, found by role tag: measure, spec
+│   ├── company-definitions.md          # a company's data definitions, found by role tag: measure, spec, debug
 │   ├── events-convention.md            # EVENTS.md's format: five parts, the template, closed payload types
 │   ├── build-tasks-workflow.md         # how the skills call workflows/build-tasks.js, and what it returns
 │   └── finding-levels.md               # Bloqueante / Sugestão, HIGH / LOW in a guide: review, review-setup
@@ -46,12 +47,13 @@ plugins/bb/
 │   ├── scan_specs.py                   # implement (selection); preflight.py imports its scan()
 │   ├── check_events.py                 # spec (step 6), review (the instrumentation front): EVENTS.md checker
 │   ├── normalize_workflow.py           # the dispatch (references/build-tasks-workflow.md): the CR-free copy
-│   └── inspect_pr_checks.py            # ship (CI failures), review (the ci front)
-├── skills/                            # all 18 skills flat; trilha grouping is a docs concept
+│   ├── inspect_pr_checks.py            # ship (CI failures), review (the ci front)
+│   └── db_read.py                      # measure (every query), debug (the warehouse locks gcloud_read.py imports)
+├── skills/                            # all 19 skills flat; trilha grouping is a docs concept
 │   ├── Pensar:        discover, challenge, think, legal-lens
 │   ├── Desenhar:      spec
 │   ├── Construir:     implement, ship, measure, gather-branch-context
-│   ├── Revisar:       review, maintain-repo, review-setup
+│   ├── Revisar:       review, debug, maintain-repo, review-setup
 │   ├── Design:        brisar
 │   ├── Pesquisar/Doc: code-deep-research, write-readme
 │   └── no trilha:     profile, reel (videos as code; its studio and bootstrap live in skills/reel/),
