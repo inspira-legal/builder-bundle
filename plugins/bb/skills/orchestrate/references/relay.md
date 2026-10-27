@@ -10,10 +10,11 @@ and what happens to sessions that existed before the run.
   to the person in plain product words, with a recommendation when it is a decision, and
   ask through `AskUserQuestion` with everything the decision takes inside the call.
 - **Send the answer back in the person's words**, quoted, through `SendMessage` to the
-  side session's `local_…` id. A paraphrase is a second decision the person did not make.
-- **A side session waiting on the person** shows as "needs the user" in `list_sessions`.
-  Read its question with `list_events` and bring it into the conversation; the person
-  never has to open that session to unblock it.
+  side session's `local_…` id or its name from `ListAgents`. A paraphrase is a second
+  decision the person did not make.
+- **A side session that stopped on a question for the person** shows as idle in
+  `list_sessions`, with no report sent. Read its question with `list_events` and bring it
+  into the conversation; the person never has to open that session to unblock it.
 - **A report is that session's claim, not proof.** Check the PR, the diff or the file
   before telling the person a front is done.
 

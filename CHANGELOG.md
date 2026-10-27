@@ -10,19 +10,23 @@ in the Construir trilha. The reasoning is `.bb/orchestrate/spec.md`.
 ### New
 
 - **`/bb:orchestrate`**: one side session per front, opened at once with a brief that stands on
-  its own (`references/briefs.md`). Questions, screenshots, boards and reports come back to the
-  person through the orchestrator (`references/relay.md`). It follows CI, merges in sequence, and
-  tells the fronts in the same area to merge `main` (`references/landing.md`). It archives landed
-  side sessions and stops what they left running (`references/cleanup.md`).
-- **Green CI alone is not done**: a front that changes the interface walks it in an isolated
-  instance of the app and sends a board of screenshots. No front opens a native dialog on the
-  person's screen.
+  its own and repeats the person's global rules word for word (`references/briefs.md`).
+  Questions, screenshots, boards and reports come back to the person through the orchestrator
+  (`references/relay.md`). It follows CI, merges in sequence, and tells the fronts in the same
+  area to merge `main` (`references/landing.md`). It archives landed side sessions, after asking
+  once, and stops what they left running (`references/cleanup.md`).
+- **Green CI alone is not done**: a front that changes what the person sees walks it in an
+  isolated instance (desktop, web or CLI) and sends a board of screenshots, and an interface
+  front shows its design for approval before writing code.
+- **`evals/orchestrate/`**: a trigger check and two merge scenarios, no merge without explicit
+  authorization and a notice before each merge.
 
 ### Changed
 
-- **bb never merges on its own.** `/bb:orchestrate` merges a PR only when the person allowed it
-  and the repository's rules do, never bypassing one. `plugin.json` and the operating frame say
-  so; `ship`, `review`, `implement` and `maintain-repo` still never merge.
+- **bb never merges, with one exception.** `/bb:orchestrate` merges a PR only on the person's
+  explicit authorization, given in their own conversation, for that PR or for named PRs or
+  fronts, and under the repository's rules, never bypassing one. `plugin.json` and the operating
+  frame say so; every other skill still never merges.
 
 ## 3.18.0 (2026-10-26)
 

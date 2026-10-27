@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 created: 2026-10-24
 slug: orchestrate
 ---
@@ -7,9 +7,9 @@ slug: orchestrate
 # /bb:orchestrate: the session that delegates everything
 
 `/bb:orchestrate` turns the current Claude Code session into an orchestrator. The session
-writes no code and reads no repository. It understands what the person asks, opens one
+explores no code and writes none. It understands what the person asks, opens one
 side session per front, and runs everything from there: it relays the side sessions'
-questions and artifacts, follows their PRs and CI, merges what the person allowed, and
+questions and artifacts, follows their PRs and CI, merges the PRs the person explicitly authorized, and
 cleans up after each front lands. The person talks only to the orchestrator and never
 has to open a side session.
 
@@ -26,7 +26,9 @@ to unblock it.
 The mode runs on the Claude Code desktop app's session tools: `start_session` to open a
 side session, `SendMessage` to reach one, `list_sessions` with `linked: true` and
 `list_events` to read their state, `archive_session` and `set_session_title` to tidy up,
-and `SendUserFile` to put a file in front of the person. In an agent without those tools
+and `SendUserFile` to put a file in front of the person. `wake_when_done` on
+`start_session` and `notify_when_idle` on `SendMessage` wake the orchestrator when a side
+session ends its turn, so it never polls. In an agent without those tools
 the mode has nothing to run on.
 
 ## The four moments of a run
@@ -34,8 +36,8 @@ the mode has nothing to run on.
 The skill's own material follows the moments a run goes through, each loaded when it
 happens:
 
-- **Opening a front**: what a brief carries, how a front proves its work, and the screen
-  rule.
+- **Opening a front**: what a brief carries, the rules every brief repeats, how a front
+  proves its work, and the isolated instance.
 - **While fronts run**: relaying messages and artifacts, conflicts between fronts, plan
   changes, sessions that existed before.
 - **Landing**: CI, the merge, the order of merges, and what a release-per-merge repo
@@ -44,42 +46,60 @@ happens:
 
 ## Decisions
 
-- **The orchestrator does no code work and explores no repository.** It opens a side
-  session for each front at once, with `initiation: "user_asked"` when the person asked
-  for the work, and its own worktree for every front that writes code. Reading the repo
-  is the side session's job.
+- **The orchestrator explores no code and writes none.** It reads what it needs to run the
+  fronts: PRs, CI, diffs and the repository's rules (`CLAUDE.md`, `CONTRIBUTING.md`, the
+  review guide). It opens a side session for each front at once, with
+  `initiation: "user_asked"` when the person asked for the work, and its own worktree for
+  every front that writes code.
 - **Every brief stands alone**, because a side session does not see the conversation. It
   carries the person's exact words in quotes, the goal and what done means, the files and
-  areas, the decisions already made, what not to do, the person's global rules, how to
-  validate, and how to report. A side session that opens a PR turns Auto-fix on.
+  areas, the decisions already made, what not to do, the standing rules, how to validate,
+  and how to report. With `context: "fresh"`, `start_session` also requires a
+  `background` of 80 characters or more.
+- **Every brief repeats the standing rules.** The person's global rules, copied word for
+  word from their global and project `CLAUDE.md`; no force push and no rebase on a shared
+  branch; Auto-fix turned on when the PR opens, which the person approves; the bb skill
+  the front runs; and, on an interface front, design before code: screenshots with two
+  variations wherever there is a choice, a question with the recommended pick first, and
+  code only after the person approves, with `/bb:brisar` for a larger design.
+- **The notes folder** is a folder outside the repository, created by the orchestrator
+  for the run and named in every brief, where side sessions leave screenshots, boards,
+  long reports and hand-over notes.
 - **Everything comes back to the orchestrator.** Questions, open decisions and reports
   arrive as messages between sessions; the orchestrator says them to the person in plain
   words and sends the answer back in the person's words. Screenshots, boards, videos and
   reports reach the person through `SendUserFile` or by opening the artifact. A side
-  session waiting on the person gets its question read with `list_events` and brought
-  into the conversation.
-- **The orchestrator merges only what the person allowed, and only inside the repo's
-  rules.** The person's permission can be per PR or standing for the run. The merge waits
-  for green CI and follows the repository's own rules: the merge method it uses, the
-  reviews it requires, its branch protection, and any rule its `CLAUDE.md` or contributing
-  guide sets. It never bypasses a rule (`--admin`, skipping a required check). The merge
-  pins the head it checked (`--match-head-commit`). Where the repo's own rules forbid an
-  agent merge, the orchestrator hands the person the command instead.
+  session that stopped on a question for the person gets its question read with
+  `list_events` and brought into the conversation.
+- **A merge is the person's action, so the person's session runs it.** The person
+  authorizes it in the orchestrator's conversation, for one PR or for the run with the PRs
+  or fronts it covers named. A PR the authorization does not name is reported green and
+  asked about. The orchestrator says "Merging #N at head X" before each merge.
+- **The merge follows the repository's rules.** It waits for green CI, uses the method the
+  repository uses (`--squash`, `--merge` or `--rebase`), respects the reviews it requires,
+  its branch protection and any rule its `CLAUDE.md` or contributing guide sets, and never
+  bypasses one (`--admin`, skipping a required check). It pins the head it checked
+  (`--match-head-commit`), and on a squash it sets `--subject` when the PR title lacks the
+  right commit type. Where the repo's own rules forbid an agent merge, the orchestrator
+  hands the person the command instead.
 - **Merges run one at a time.** The orchestrator waits for GitHub to recompute the next
   PR's state, says that PRs merged in sequence are only tested together by `main`'s CI,
   and after each merge tells the side sessions with an open PR in the same area to merge
   `main`. In a repo that releases on every merge (semantic-release), it checks the commit
   type, because `fix` cuts a patch and `feat` a minor.
-- **The orchestrator tidies up itself**, without asking a side session to: it archives a
-  side session once its PR lands, stops leftover processes and apps, closes abandoned PRs
+- **The orchestrator tidies up itself**, without asking a side session to. It asks the
+  person once per run whether to archive each side session after its PR merges, and
+  offers the app's `auto_archive_on_pr_close` setting as the alternative. It stops leftover processes and apps, closes abandoned PRs
   with a comment, renames a side session when its scope changes, and moves an app the
   person is using onto `main` before archiving the session whose folder runs it.
-- **Green CI alone is not done.** A side session that changes the interface runs the app
-  in an isolated instance (its own debug port and data folder), walks every behavior,
-  takes screenshots, fixes what diverges and sends a board to the person.
-- **A side session never takes over the person's screen.** It triggers no native dialog
-  (choose folder, save, print): it mocks the dialog from the main process and never uses
-  the person's real folders.
+- **Green CI alone is not done.** A side session that changes what the person sees runs
+  the project in an isolated instance, walks every behavior, takes screenshots, fixes what
+  diverges and sends a board to the person. The instance depends on the project: a desktop
+  app gets its own debug port and data folder, a web app its own dev-server port and an
+  isolated browser profile, a CLI a temporary home folder and test input.
+- **A side session never takes over the person's screen or files.** When the project is a
+  desktop app, it opens no native dialog (choose folder, save, print): in Electron it
+  mocks `dialog` from the main process. It never uses the person's real folders.
 - **Fronts that touch the same files are told so.** Both get a notice and a request for
   minimal changes. When the person spoke to a side session directly, what they said there
   stands: the orchestrator reads the end of that conversation before replacing the side
@@ -95,11 +115,12 @@ happens:
 - **The mode has no handoff gate.** It is resident: it runs until the person ends it, so
   it joins the list of skills that report and stop in `references/handoff-gate.md`.
 - **The orchestrator runs no other bb skill.** The side sessions use `/bb:spec`,
-  `/bb:implement`, `/bb:review` and `/bb:ship`; the orchestrator names the one a front
-  should run in its brief.
+  `/bb:brisar`, `/bb:implement`, `/bb:review` and `/bb:ship`; the orchestrator names the
+  one a front should run in its brief.
 - **It sits in the Construir trilha** in the README, beside `implement` and `ship`.
-- **The plugin's "never merges" line becomes "never merges on its own"**, in `plugin.json`
-  and in `hooks/operating-context.md`, so the frame and this skill say the same thing.
+- **The plugin's "never merges" line names its one exception**, in `plugin.json` and in
+  `hooks/operating-context.md`: `/bb:orchestrate` merges a PR only on the person's explicit
+  authorization, given in their own conversation, under the repository's rules.
 
 ## Behavior
 
@@ -115,9 +136,11 @@ Happy path:
 5. A side session finishes a UI change, validates it in an isolated instance, and sends a
    board; the orchestrator puts the board in front of the person.
 6. A side session opens a PR with Auto-fix on; the orchestrator follows its CI.
-7. The person allows the merge; CI is green; the orchestrator merges under the repo's
-   rules and tells the side sessions in the same area to merge `main`.
-8. The orchestrator archives the landed side session and stops what it left running.
+7. The person authorizes the merge of that PR; CI is green; the orchestrator says
+   "Merging #N at head X", merges under the repo's rules and tells the side sessions in
+   the same area to merge `main`.
+8. The orchestrator asks once whether to archive landed side sessions, archives this one
+   on a yes, and stops what it left running.
 
 | WHEN                                                                | THEN                                                                                  |
 | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
@@ -126,11 +149,12 @@ Happy path:
 | the app refuses to open a session (Remote Control)                  | a background agent runs the front, or the person types the request in the desktop app |
 | the turn began with another session's message                       | no session opens; the orchestrator brings the start to the person                     |
 | the repo was never opened in the app                                | the person is asked to trust the repository before the first side session             |
-| a side session sits in "needs the user"                             | the orchestrator reads its question with `list_events` and asks the person            |
+| a side session stopped on a question for the person                 | the orchestrator reads its question with `list_events` and asks the person            |
 | the person allowed a merge but CI is red                            | no merge; the orchestrator reports the failure and waits for the fix                  |
 | the repo requires a review the PR lacks                             | no merge; the orchestrator says what is missing                                       |
 | the repo's rules forbid an agent merge                              | the orchestrator hands the person the merge command                                   |
-| the person never allowed merging                                    | the orchestrator reports the PR green and asks                                        |
+| the person never authorized merging                                 | the orchestrator reports the PR green and asks                                        |
+| the authorization names other PRs, not this one                     | the orchestrator reports this PR green and asks                                       |
 | two PRs are ready together                                          | one merge, wait for GitHub's state, then the next                                     |
 | two fronts touch the same files                                     | both are told, with a request for minimal changes                                     |
 | the person spoke to a side session directly                         | its last turns are read first, and what the person said there stands                  |
@@ -151,8 +175,6 @@ from.
   install through `npx skills` carries a skill whose tools do not exist there.
 - `archive_session` and `set_monitor` ask the person to approve each call outside auto
   mode, so tidying up can stall on an approval nobody is watching.
-- The auto mode classifier tends to deny a merge run by a side session, which is the
-  reason the orchestrator merges.
 - `validate-frontmatter.ts` rejects a skill description above 1024 characters or with `<`
   or `>`.
 
@@ -160,25 +182,28 @@ from.
 
 ### The skill
 
-- [ ] **1. The router**: `plugins/bb/skills/orchestrate/SKILL.md` carries the role, when
+- [x] **1. The router**: `plugins/bb/skills/orchestrate/SKILL.md` carries the role, when
       to use it and when not, what it needs, the four moments with one pointer each, the
       honest limits and how it lives beside the other skills. · verify: `bun run validate`
-- [ ] **2. The references**: `references/briefs.md`, `references/relay.md`,
+- [x] **2. The references**: `references/briefs.md`, `references/relay.md`,
       `references/landing.md` and `references/cleanup.md` carry one moment each, every
       decision above in one of them. · verify: reading
 
 ### The repo catches up
 
-- [ ] **3. Counts, trees and docs**: `.claude/CLAUDE.md`'s tree and count, the README's
+- [x] **3. Counts, trees and docs**: `.claude/CLAUDE.md`'s tree and count, the README's
       count and Construir table, the CHANGELOG entry, the version bump in `plugin.json`
       and `marketplace.json`, the no-gate list in `references/handoff-gate.md`, and the
-      "never merges on its own" line. · verify: `bun run fmt:check`
+      "never merges" line with its one exception. · verify: `bun run fmt:check`
+- [x] **4. The eval**: `evals/orchestrate/` checks the trigger, that no merge runs
+      without explicit authorization, and that each merge is announced first. · verify:
+      reading
 
 ## Out of scope
 
 - A script that watches CI or merges: the orchestrator uses `gh` and the app's tools.
 - An agent definition for the orchestrator: the role is the session itself.
-- Evals for the skill under `evals/`. _revisit_
+- Running the eval in CI: it runs by hand, like `evals/animate-tour/`.
 
 ## Open
 
