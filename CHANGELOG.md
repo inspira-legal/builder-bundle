@@ -24,6 +24,21 @@ anywhere. It is the 21st skill, in the Desenhar trilha. The reasoning is `.bb/ba
 - **The `.bb/<slug>/` contract has five documents.** `references/spec-state.md` adds
   `backlog.md`, written only by `/bb:backlog`.
 
+## 3.19.1 (2026-10-27)
+
+**`/bb:animate-tour` declares the tour's events in the app's current catalog.** The app's
+`analytics.config.ts` moved to the `e` syntax of `@inspira-legal/analytics` 2.x with
+`legacyNames: true`, so a tour's events no longer write their `legacy` name.
+
+### Changed
+
+- **The `feature_tour` group in `e` calls**: `references/code-mode.md` shows the five events as
+  `e.impression` and `e.click`, copied from `projects_tour`, with no `legacy` written, because
+  the derived `<feature>_<code>_<name>` already matches.
+- **Why `src/lib/events/types.ts` still gets its lines**: `events.track` takes an id only when its
+  derived legacy name (`LegacyNameOf`) is a key of `CaptureEventMap`, and reads its properties
+  from there.
+
 ## 3.19.0 (2026-10-27)
 
 **The orchestrator mode joins bb.** `/bb:orchestrate` makes the session an orchestrator that
