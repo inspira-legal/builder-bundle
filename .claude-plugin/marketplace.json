@@ -9,7 +9,7 @@
     {
       "name": "bb",
       "source": "./plugins/bb",
-      "description": "Builder Bundle: 19 skills covering the builder's whole journey (pensar, desenhar, construir, revisar, design, pesquisar/doc) plus motion videos and first-steps tour animations as code, invoked as /bb:<skill>"
+      "description": "Builder Bundle: 20 skills covering the builder's whole journey (pensar, desenhar, construir, revisar, design, pesquisar/doc) plus motion videos and first-steps tour animations as code, invoked as /bb:<skill>"
     }
   ]
 }

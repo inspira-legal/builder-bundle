@@ -4,7 +4,7 @@
 
 [![github](https://img.shields.io/badge/github-inspira--legal%2Fbuilder--bundle-111111?style=flat-square&logo=github)](https://github.com/inspira-legal/builder-bundle)
 
-_Builder Bundle (`bb`): the unified skill set for Inspira builders, 19 skills, from the problem to the PR._
+_Builder Bundle (`bb`): the unified skill set for Inspira builders, 20 skills, from the problem to the PR._
 
 </div>
 
@@ -18,7 +18,7 @@ claude plugin install bb@inspira-legal
 or install across other coding agents (gemini cli, opencode, cursor, codex, t3 code) via vercel's skills manager:
 
 ```bash
-# install all 19 skills globally for every detected agent
+# install all 20 skills globally for every detected agent
 npx skills add inspira-legal/builder-bundle -g --all
 
 # or install for a specific agent
@@ -34,7 +34,7 @@ it writes its operating context into `~/.claude/BUILDER-BUNDLE.md`, imported by 
 
 ## what is inside
 
-one plugin, `bb`; 19 skills, 16 of them in 6 trilhas, with `/bb:profile`, `/bb:reel` and `/bb:animate-tour` beside them.
+one plugin, `bb`; 20 skills, 17 of them in 6 trilhas, with `/bb:profile`, `/bb:reel` and `/bb:animate-tour` beside them.
 
 ### configurar: who is on the other side
 
@@ -65,6 +65,7 @@ one plugin, `bb`; 19 skills, 16 of them in 6 trilhas, with `/bb:profile`, `/bb:r
 | `/bb:ship`                  | takes the branch to shipped, your way. it does not review: it greens the project's checks, commits, then pushes, preps main, opens a PR and tends it, or preps the LexFlow deploy                                                                                                                          |
 | `/bb:measure`               | reads a landed spec's metric and measures it against its target, or answers any usage question, through a read-only guard over the company's database. it fetches the company's definitions by role tag and reads the number as product, with the denominator, the window and what changes for the product |
 | `/bb:gather-branch-context` | summarizes every change on the branch against main                                                                                                                                                                                                                                                         |
+| `/bb:orchestrate`           | turns the session into an orchestrator: one side session per front, every question, screenshot and report relayed back to you, PRs and CI followed, merges only when you allow them and the repo's rules do, and cleanup after each front lands                                                            |
 
 ### revisar: quality and maintenance
 
@@ -128,6 +129,10 @@ the first run prepares `~/Motion` on its own: it copies the studio, installs its
 `/bb:animate-tour` makes the animation of a feature's first-steps modal in the pattern of the app's tours (análise em tabela, gestão de projetos, acompanhamento processual): 3 to 5 steps, one idea each, with the design system's palette, icons and motion vocabulary. it plans the steps from the feature's screenshots, gets the plan approved, and then delivers one of two things. for a dev in `frontend-projects`, the `<Feature>TourDialog` itself, wired into i18n, analytics and its spec. for anyone else, GIFs of the animated area: one per step and the full tour, `light` for email and slides or `high` (2x) for the help center, each opening on its settled frame so a client that does not animate still shows the scene, plus a still `.png` per step.
 
 inside Claude Code: `/bb:animate-tour GIF do acompanhamento processual para o e-mail`, or just ask for a first-steps animation. GIF mode records on the `/bb:reel` studio in `~/Motion` (the same Chromium and ffmpeg, no second install), and its scenes keep the studio's `seek(t)` contract, so `/bb:reel` can render one to MP4 as well.
+
+## orchestrate: one conversation, many sessions
+
+`/bb:orchestrate` turns the session you are in into an orchestrator. it writes no code: it opens one side session per front (design, QA, fixes, a release, copy), each with a brief that stands on its own, and brings everything back to you. questions arrive as questions with a recommendation, screenshots and boards arrive as files, and you never open a side session to unblock one. it follows each PR's CI, merges only what you allowed and only as the repository's rules allow, and archives each side session once its PR lands. it runs on the Claude Code desktop app's session tools, so in an agent without them it says so and works in the session as usual.
 
 ## migrating from ofc?
 
