@@ -1,5 +1,29 @@
 # Changelog
 
+## 3.20.0 (2026-10-27)
+
+**`/bb:backlog` gives a place to what the work left for later.** Every record already asks for
+the reason behind a cut, but once a spec ships or stops its leftovers stay in `.bb/<slug>/` and
+nobody opens the folder again. A manual harvest of two product specs found 15 leftovers: four
+already tracked under another name, five new pieces of work, and one spec never registered
+anywhere. It is the 21st skill, in the Desenhar trilha. The reasoning is `.bb/backlog/spec.md`.
+
+### Added
+
+- **`/bb:backlog`**: harvests the `## Cuts`, the `## Out of scope`, the _revisit_ items and the
+  unticked tasks of an ended spec, and writes them to `.bb/<slug>/backlog.md` in three sections,
+  `## Next version`, `## No trigger yet` and `## Discarded` (`references/destination.md`). It
+  also captures from the conversation, through two doors only: the person asked to keep the
+  item, or the item has evidence of value to the user (`references/capture.md`).
+- **`scripts/harvest.py`**: lists the items with their source line, trigger and id, flags a
+  pending spec older than 14 days and the same idea written twice, and writes nothing. The CI
+  runs `harvest_test.py`.
+
+### Changed
+
+- **The `.bb/<slug>/` contract has five documents.** `references/spec-state.md` adds
+  `backlog.md`, written only by `/bb:backlog`.
+
 ## 3.19.0 (2026-10-27)
 
 **The orchestrator mode joins bb.** `/bb:orchestrate` makes the session an orchestrator that

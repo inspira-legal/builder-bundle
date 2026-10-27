@@ -72,6 +72,11 @@ jobs:
       - name: Test the debug guard
         run: python3 plugins/bb/skills/debug/scripts/gcloud_read_test.py
 
+      # The harvest decides what counts as a leftover; a regex edit that starts taking kept
+      # work or a live spec's tasks must fail here.
+      - name: Test the backlog harvest
+        run: python3 plugins/bb/skills/backlog/scripts/harvest_test.py
+
       - name: Check formatting
         id: fmt
         run: bun run fmt:check
