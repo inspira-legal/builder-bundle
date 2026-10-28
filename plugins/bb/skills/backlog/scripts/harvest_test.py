@@ -168,6 +168,17 @@ def a_stray_byte_in_the_backlog_does_not_stop_the_harvest():
     assert run(root)["items"][0]["in_backlog"]
 
 
+def items_that_differ_in_a_short_word_keep_their_own_ids():
+    root = build("done")
+    spec_path = root / ".bb" / "boards" / "spec.md"
+    extra = "- Export a board as PDF.\n- Export a board as XLS.\n- SSO\n- iOS\n"
+    spec_path.write_text(spec_path.read_text(encoding="utf-8").replace("## Open", extra + "\n## Open"), encoding="utf-8")
+    slug = run(root)
+    ids = [i["id"] for i in by_kind(slug, "out_of_scope")]
+    assert len(ids) == len(set(ids)) == 6, ids
+    assert all(len(set(a["ids"])) == 2 for a in slug["alerts"] if a["kind"] == "near_duplicate"), slug["alerts"]
+
+
 def the_walk_stops_at_the_repository():
     outer = pathlib.Path(tempfile.mkdtemp())
     (outer / ".bb" / "elsewhere").mkdir(parents=True)
@@ -187,6 +198,7 @@ case("a pending spec past the window is flagged", an_old_pending_spec_is_flagged
 case("ids are stable and backlog.md marks what is kept", ids_are_stable_and_the_backlog_is_remembered)
 case("a merged entry and the skipped line keep their ids", merged_and_skipped_ids_are_remembered)
 case("a stray byte in backlog.md does not stop the harvest", a_stray_byte_in_the_backlog_does_not_stop_the_harvest)
+case("items that differ in a short word keep their own ids", items_that_differ_in_a_short_word_keep_their_own_ids)
 case("the root walk stops at the repository", the_walk_stops_at_the_repository)
 
 print()

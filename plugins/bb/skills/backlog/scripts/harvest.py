@@ -79,13 +79,18 @@ def trigger_of(text: str) -> str | None:
     return after or None
 
 
-def words(text: str) -> set[str]:
+def tokens(text: str) -> list[str]:
     plain = unicodedata.normalize("NFKD", text.lower()).encode("ascii", "ignore").decode()
-    return {w for w in re.findall(r"[a-z0-9]+", plain) if len(w) >= 4}
+    return re.findall(r"[a-z0-9]+", plain)
+
+
+def words(text: str) -> set[str]:
+    # Only the duplicate check drops short words; the id keeps them, or "PDF" and "XLS" collide.
+    return {w for w in tokens(text) if len(w) >= 4}
 
 
 def item(slug: str, kind: str, file: str, sec: str, line: int, text: str, **extra) -> dict:
-    normalized = " ".join(sorted(words(text)))
+    normalized = " ".join(tokens(text))
     digest = hashlib.sha1(f"{slug}#{file}#{sec}#{normalized}".encode()).hexdigest()[:8]
     ice = ICE.search(text)
     return {
