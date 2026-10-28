@@ -1,7 +1,7 @@
 {
   "name": "bb",
-  "description": "Builder Bundle (bb): the unified skill set for Inspira builders, 20 skills (Pensar, Desenhar, Construir, Revisar, Design, Pesquisar/Doc trilhas, plus /bb:profile, /bb:reel and /bb:animate-tour), invoked as /bb:<skill> (e.g. /bb:spec). It never merges, with one exception: /bb:orchestrate merges a PR only on the person's explicit authorization, given in their own conversation, and under the repository's rules. Every other landing on a protected branch stays with the human. Its operating context lives in ~/.claude/BUILDER-BUNDLE.md, imported by the person's CLAUDE.md and carrying the profile calibrated once by /bb:profile, which also deletes both when the person wants nothing from bb in their sessions.",
-  "version": "3.20.0",
+  "description": "Builder Bundle (bb): the unified skill set for Inspira builders, 21 skills (Pensar, Desenhar, Construir, Revisar, Design, Pesquisar/Doc trilhas, plus /bb:profile, /bb:reel and /bb:animate-tour), invoked as /bb:<skill> (e.g. /bb:spec). It never merges, with one exception: /bb:orchestrate merges a PR only on the person's explicit authorization, given in their own conversation, and under the repository's rules. Every other landing on a protected branch stays with the human. Its operating context lives in ~/.claude/BUILDER-BUNDLE.md, imported by the person's CLAUDE.md and carrying the profile calibrated once by /bb:profile, which also deletes both when the person wants nothing from bb in their sessions.",
+  "version": "3.21.0",
   "author": {
     "name": "Athena Briana",
     "email": "me@athenabriana.com"

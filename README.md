@@ -4,7 +4,7 @@
 
 [![github](https://img.shields.io/badge/github-inspira--legal%2Fbuilder--bundle-111111?style=flat-square&logo=github)](https://github.com/inspira-legal/builder-bundle)
 
-_Builder Bundle (`bb`): the unified skill set for Inspira builders, 20 skills, from the problem to the PR._
+_Builder Bundle (`bb`): the unified skill set for Inspira builders, 21 skills, from the problem to the PR._
 
 </div>
 
@@ -18,7 +18,7 @@ claude plugin install bb@inspira-legal
 or install across other coding agents (gemini cli, opencode, cursor, codex, t3 code) via vercel's skills manager:
 
 ```bash
-# install all 20 skills globally for every detected agent
+# install all 21 skills globally for every detected agent
 npx skills add inspira-legal/builder-bundle -g --all
 
 # or install for a specific agent
@@ -34,7 +34,7 @@ it writes its operating context into `~/.claude/BUILDER-BUNDLE.md`, imported by 
 
 ## what is inside
 
-one plugin, `bb`; 20 skills, 17 of them in 6 trilhas, with `/bb:profile`, `/bb:reel` and `/bb:animate-tour` beside them.
+one plugin, `bb`; 21 skills, 18 of them in 6 trilhas, with `/bb:profile`, `/bb:reel` and `/bb:animate-tour` beside them.
 
 ### configurar: who is on the other side
 
@@ -53,9 +53,10 @@ one plugin, `bb`; 20 skills, 17 of them in 6 trilhas, with `/bb:profile`, `/bb:r
 
 ### desenhar: agree on the shape of what gets built
 
-| skill      | description                                                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `/bb:spec` | align on the idea before the code: develops the draft, iterates the gray areas as questions, validates a spec at `.bb/<slug>/spec.md` |
+| skill         | description                                                                                                                                                                                                                                                                                       |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/bb:spec`    | align on the idea before the code: develops the draft, iterates the gray areas as questions, validates a spec at `.bb/<slug>/spec.md`                                                                                                                                                             |
+| `/bb:backlog` | gives a place to what the work left for later: harvests the cuts, the out of scope and the _revisit_ items of `.bb/<slug>/`, flags a spec that went stale, and captures from the conversation only what you asked to keep or what has evidence of value to the user, into `.bb/<slug>/backlog.md` |
 
 ### construir: write, ship and measure what you build
 
