@@ -3,7 +3,7 @@
 The single on-disk contract for a slug's durable artifacts. **Every skill writes its
 own document, and `spec.md` has exactly one writer.** `/bb:discover` writes
 `discovery.md`, `/bb:brisar` writes `design.md`, `/bb:spec` writes `spec.md`, `/bb:measure`
-writes `measure.md`, and `/bb:implement` and `/bb:ship` read the spec. Any skill that reads or
+writes `measure.md`, `/bb:backlog` writes `backlog.md`, and `/bb:implement` and `/bb:ship` read the spec. Any skill that reads or
 writes this state follows this file. The contract lives here and nowhere else.
 
 ## Location
@@ -18,17 +18,19 @@ and everything durable about that work lives inside it:
 ├── design.md      # the journey and the prototype record, /bb:brisar
 ├── measure.md     # the measurements after the landing, /bb:measure
 ├── measure-sql/   # the queries and outputs behind each measurement, /bb:measure
+├── backlog.md     # what the work left for later, and why, /bb:backlog
 └── prototype/     # the clickable artifact, /bb:brisar Develop
 ```
 
-- **Four documents, four writers, one each.** `discovery.md` answers _is this worth
+- **Five documents, five writers, one each.** `discovery.md` answers _is this worth
   building, and what did we cut?_; `design.md` answers _how should this be, and why,
   and what got built?_; `spec.md` answers _what exactly do we build?_; `measure.md`
-  answers _did it land where the spec said, and what do people do with it?_. They
+  answers _did it land where the spec said, and what do people do with it?_; `backlog.md`
+  answers _what did the work leave for later, and why?_. They
   coexist, and none of them replaces another. `measure.md` is read by the next
   measurement, which compares with the newest reading in it, and nothing else writes it.
-- **The records are read by path, never copied.** That is `discovery.md`, `design.md` and
-  `measure.md`. When the spec needs a fact that
+- **The records are read by path, never copied.** That is `discovery.md`, `design.md`,
+  `measure.md` and `backlog.md`. When the spec needs a fact that
   lives in a record, it cites the document and the section, and the reader opens it. A
   section quoted into the spec is a second copy that goes stale the next time its own
   skill runs. One exception: the spec's `## Metric` materializes the baseline and the
@@ -149,6 +151,17 @@ Those two `status` and `phase` values are their own document's, not the spec's.
 `/bb:implement` selects on `spec.md`'s block and neither reads nor writes the records'. A
 `design.md` with no frontmatter reads as `phase: brief`, `round: 1`,
 `status: in-progress`.
+
+**`backlog.md`** opens with its own block (the contract is
+`<plugin-root>/skills/backlog/references/destination.md`, which owns the sections and the
+line format):
+
+```yaml
+---
+slug: <kebab-slug>
+updated: <YYYY-MM-DD>
+---
+```
 
 **The sections inside a record replace, they do not accumulate.** `.bb/` is tracked in
 git, so the history of rounds is `git log`, and each document carries the current state.

@@ -74,6 +74,7 @@ options:
 - `spec` → implement, at the scope the gate's second question set / review the spec / stop
 - `implement` → ship / stop, only when the scope didn't already include it
 - `ship` → no gate; it reports what shipped and stops
+- `backlog` → no gate; it reports what it wrote to `backlog.md` and stops
 - `review` → apply more items / run the fronts that were skipped / audit the running UI / review-setup / ship (when there is no PR) · three at most, by priority, plus stop
 - `debug` → fix now (ends in the postmortem) / spec the fix / correct the service document / stop
 - `brisar` (on delivery) → review (accessibility or design audit) / spec / stop

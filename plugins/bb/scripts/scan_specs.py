@@ -6,7 +6,8 @@ smallest `created`, tie-break on the slug, sort a spec with no frontmatter last,
 report a `blocked` one with the line its `## Open` carries instead of dropping it.
 
 Consumed by /bb:implement (its step 1) and by /bb:review's availability probe through
-`preflight.py`, which imports `scan()` from here.
+`preflight.py`, which imports `scan()` from here. /bb:backlog's `harvest.py` imports
+`find_bb_root` and `parse_frontmatter`.
 
 Usage:
   python3 scan_specs.py
