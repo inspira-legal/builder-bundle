@@ -55,7 +55,7 @@ wave: PRJ-7
 ## Out of scope
 
 - Shared boards with guests. _revisit_ after the owners ask for it twice
-- Exporting a board to a spreadsheet.
+- Exporting a board to a spreadsheet. _discarded_ because nobody exports a board.
 
 ## Open
 
@@ -126,6 +126,7 @@ def out_of_scope_and_open_are_read():
     source = by_kind(slug, "open")[0]["source"]
     assert source == "spec.md#open:26", source
     assert slug["spec"]["wave"] == "PRJ-7"
+    assert [i["discarded"] for i in by_kind(slug, "out_of_scope")] == [False, True]
 
 
 def the_same_idea_twice_is_flagged():

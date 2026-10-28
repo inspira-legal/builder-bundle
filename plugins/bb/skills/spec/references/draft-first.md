@@ -164,6 +164,7 @@ Ask them through the **`AskUserQuestion` tool**: concrete options the user picks
   gets noted, so it's not silently assumed.
 - When a good idea surfaces that's **out of scope**, don't drop it and don't build
   it; park it in the spec's out-of-scope bucket as a plain bullet (never a
-  checkbox, which the task selector would mistake for work).
+  checkbox, which the task selector would mistake for work), marked _revisit_ with
+  its trigger or _discarded_ with its reason.
 - If a question can't be settled without facts, go check (codebase → docs → web) and
   come back with the options, rather than guessing.
