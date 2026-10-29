@@ -95,7 +95,7 @@ next round of the backlog.
 
 - [x] **4. The discarded flag**: `harvest.py` returns `discarded`, `destination.md` places it,
       and a test covers it. · verify: `harvest_test.py`
-- [x] **5. Release**: version, changelog, README. · verify: `bun run validate`
+- [x] **5. Release**: version, changelog. · verify: `bun run validate`
 
 ## Out of scope
 

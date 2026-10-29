@@ -100,8 +100,9 @@ CITED_NUMBER = re.compile(r"\d+")
 # not prose: silence there hides a broken trace, so it gets its own W008 message.
 CONNECTOR_CELL = re.compile(r"^[\d\s,;.–-]+(?:e|and|et|y|&|\+)[\d\s,;.–-]+$", re.IGNORECASE)
 # An `## Out of scope` bullet is born typed: _revisit_ with its trigger, or _discarded_ with
-# its reason. Only the emphasized word counts, so prose that mentions "revisit" stays a miss.
-SCOPE_MARK = re.compile(r"[_*](?:revisit|discarded)[_*]", re.IGNORECASE)
+# its reason. Only the emphasized word counts: prose that mentions "revisit", a snake_case
+# identifier and a `code span` that quotes the marker all stay a miss.
+SCOPE_MARK = re.compile(r"(?<![\w`])[_*]{1,2}(?:revisit|discarded)[_*]{1,2}(?![\w`])", re.IGNORECASE)
 SCOPE_BULLET = re.compile(r"^[-*+]\s")
 
 

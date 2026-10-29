@@ -25,8 +25,9 @@ Always required: reach alignment, **map the behavior, run the lint before every 
 
 ## Read the upstream records first
 
-Three siblings in `.bb/<slug>/` can already hold work this spec serves, and none is written
-here (plugin-level `references/spec-state.md`):
+Three records can already hold work this spec serves, and none is written here
+(plugin-level `references/spec-state.md`): two siblings in `.bb/<slug>/`, and the backlog,
+this slug's and the other slugs':
 
 - **`discovery.md`**, from `/bb:discover`: `## Problem` / `## Hypothesis` / `## Fit` / `## Cuts`.
   The problem and success signal anchor the `why`, the appetite bounds the scope, and `## Fit` /
