@@ -31,7 +31,9 @@ from scan_specs import find_bb_root, parse_frontmatter  # noqa: E402
 
 CUT_REASONS = ("no-market", "out-of-appetite", "depends-on-other", "low-confidence")
 ENDED = ("done", "blocked")
-REVISIT = re.compile(r"[_*]revisit[_*]", re.IGNORECASE)
+# The emphasized marker only: inside a snake_case identifier or a `code span` it is not one.
+REVISIT = re.compile(r"(?<![\w`])[_*]{1,2}revisit[_*]{1,2}(?![\w`])", re.IGNORECASE)
+DISCARDED = re.compile(r"(?<![\w`])[_*]{1,2}discarded[_*]{1,2}(?![\w`])", re.IGNORECASE)
 ICE = re.compile(r"\bICE\s*(\d+(?:[.,]\d+)?)", re.IGNORECASE)
 BACKLOG_ID = re.compile(r"id:([0-9a-f]{8})")
 UNTICKED = re.compile(r"^\s*-\s+\[ \]\s+(.*)$")
@@ -100,6 +102,7 @@ def item(slug: str, kind: str, file: str, sec: str, line: int, text: str, **extr
         "text": text,
         "revisit": bool(REVISIT.search(text)),
         "trigger": trigger_of(text),
+        "discarded": bool(DISCARDED.search(text)),
         "ice": ice.group(1).replace(",", ".") if ice else None,
         "source": f"{file}#{sec.lower().replace(' ', '-')}:{line}",
         **extra,

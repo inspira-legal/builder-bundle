@@ -1,5 +1,26 @@
 # Changelog
 
+## 3.21.0 (2026-10-28)
+
+**`/bb:spec` cuts the version and reads the backlog.** `/bb:backlog` read `## Out of scope` as
+free text and had to guess whether an item comes back, and nothing brought a parked item back to
+the next spec. Now every item a spec leaves out is born typed, and the next spec on the area
+sees what is waiting for it. The reasoning is `.bb/spec-moscow/spec.md`.
+
+### Added
+
+- **The cut that closes the phasing**: step 5 of `/bb:spec` sorts the work with MoSCoW against
+  the version being built. A Won't goes to `## Out of scope` marked _revisit_ with its trigger,
+  or _discarded_ with its reason, and the gate shows the cut beside the phases.
+- **`W009`**: `lint_spec.py` warns on an `## Out of scope` bullet with neither marker.
+- **`discarded`** in `harvest.py`'s items, which `/bb:backlog` places in `## Discarded`.
+
+### Changed
+
+- **`/bb:spec` reads `backlog.md` before drafting**: this slug's, and the `## Next version` of
+  the other slugs'. An item whose trigger fired is asked as a gray area, never drafted in on its
+  own.
+
 ## 3.20.0 (2026-10-27)
 
 **`/bb:backlog` gives a place to what the work left for later.** Every record already asks for

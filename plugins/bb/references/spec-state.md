@@ -174,5 +174,7 @@ git, so the history of rounds is `git log`, and each document carries the curren
 and drafts the spec on top; `## Cuts` is also read from there by `/bb:review`'s contract
 front, and `## Hypothesis` by spec's export mode. Those four names inside a `spec.md`
 are dead section names, and `scripts/lint_spec.py` fires `E003` on them pointing here.
+`/bb:spec` also reads `backlog.md`, this slug's and the `## Next version` of the others, for
+items whose trigger fired; it cites them and never writes the file.
 The spec's own format is
 `<plugin-root>/skills/spec/references/spec-format.md`.

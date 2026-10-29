@@ -4,7 +4,7 @@ description: Align on the idea before building. Develops a draft, iterates the g
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 3.2.0
+  version: 3.3.0
 ---
 
 # Spec
@@ -25,14 +25,19 @@ Always required: reach alignment, **map the behavior, run the lint before every 
 
 ## Read the upstream records first
 
-Two siblings in `.bb/<slug>/` can already hold work this spec serves, and neither is written
-here (plugin-level `references/spec-state.md`):
+Three records can already hold work this spec serves, and none is written here
+(plugin-level `references/spec-state.md`): two siblings in `.bb/<slug>/`, and the backlog,
+this slug's and the other slugs':
 
 - **`discovery.md`**, from `/bb:discover`: `## Problem` / `## Hypothesis` / `## Fit` / `## Cuts`.
   The problem and success signal anchor the `why`, the appetite bounds the scope, and `## Fit` /
   `## Cuts` already settle what's in and what was deliberately dropped.
 - **`design.md`**, from `/bb:brisar`: the journey. The chosen direction, the surfaces and the
   states each one built, and what the design review and the accessibility audit found.
+- **`backlog.md`**, from `/bb:backlog`: what earlier work left for later. Read this slug's, and
+  the `## Next version` of the other slugs' `backlog.md` for items that touch this idea. An
+  item whose trigger fired is a gray area the person decides in the loop; it never enters the
+  draft on its own, and an item whose trigger has not fired stays where it is.
 
 **Read them before drafting, and cite them instead of copying them.** A section quoted into
 the spec is a second copy that goes stale the next time its own skill runs; a path is a
@@ -61,6 +66,8 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
 4. **Loop.** Fold each answer into the draft, re-surface anything new it opens, ask again. Keep going until a round surfaces no new gray areas.
 
 5. **Order the work.** Break the build into tasks and group them in `###` phases by what depends on what (`references/spec-format.md`): a foundation runs alone, the tasks that only need it and change different parts of the code share the next phase, and a closing task that needs all of them is the last phase. Write the technical risks you saw into `## Attention points`, each one the risk and where it lives, with no solution.
+
+   **Close the phasing with the cut.** Sort the work with MoSCoW, against this version as the deadline: Must is the tasks the version cannot stand without; Should and Could stay in the last phases when they fit; what does not fit is Won't. A Won't goes to `## Out of scope` marked _revisit_ with the trigger that brings it back (a trigger, never a version number), or _discarded_ with the reason. The person confirms the cut in the same `AskUserQuestion` batch as the last gray areas. The MoSCoW words stay in the conversation; the spec carries the tasks and the two markers, which `/bb:backlog` reads.
 
 6. **Run the lint.** It catches dead section names, malformed tables and a missing required section. It runs before every gate, the first one and each one that reopens:
 
@@ -103,6 +110,7 @@ The gate is where the spec proposes the build. Don't gate blind: first **show wh
 
 - **What it does and why**: two or three lines, the spec's opening said again.
 - **The phases, in run order**: each `###` heading with its tasks under it, one line per task saying what it changes, and a mark on the phases whose tasks run together. A spec with no `###` heading lists its tasks flat, in document order, and says they run one at a time.
+- **The cut**: what went to `## Out of scope` in step 5, one line per item with its marker and its trigger or reason.
 - **The load-bearing edges**: only the `WHEN … THEN …` rows whose wrong outcome would contradict the `why` (the litmus in "Map the behavior"), then a pointer to `## Behavior` for the rest.
 - **The measure**: the `## Metric` section as written, the metric block or its skip line, so the measure gets signed off with the plan.
 - **The verdict line** (in "Review the spec" below).
