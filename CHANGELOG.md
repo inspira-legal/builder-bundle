@@ -1,5 +1,31 @@
 # Changelog
 
+## 3.21.0 (2026-11-03)
+
+**`/bb:takeover` acts on a PR somebody else opened, and `/bb:maintain-repo` suggests when.** The
+digest already said which PRs were blocked, but finishing a contributor's PR or reviving a stale
+one was left to whoever read it, with no rule for the author's credit or for an old branch that
+the base already covers. It is the 22nd skill, in the Revisar trilha.
+
+### Added
+
+- **`/bb:takeover`**, in two modes, one PR per run. **Adopt** (`references/takeover.md`) pushes
+  onto the author's branch when `maintainerCanModify` allows it, else opens a new PR that keeps
+  the author's commits and credits them, then hands threads and CI to `/bb:ship`'s PR path.
+  **Modernize** (`references/modernize.md`) asks Dependabot to rebase its own PR, closes a PR
+  whose problem the base already solved only on the person's yes, and otherwise rebases locally
+  and hands over a `--force-with-lease` push pinned to the head it read. Without a mode in the
+  request, it picks one from the PR's state. It never merges, approves or force-pushes.
+
+### Changed
+
+- **`/bb:maintain-repo` suggests an action per PR.** `scan_repo.py` adds `suggested_action`:
+  `modernize` for a Dependabot PR behind or in conflict, or a human PR untouched for 30 days and
+  behind; `takeover` for another person's PR with CI failing, changes requested or a conflict;
+  nothing for drafts, the person's own PRs and other bots. The digest shows it as
+  `suggest: <action> #N`, and maintain-repo never runs it. Nine action fixtures join the
+  self-test, which the CI now runs.
+
 ## 3.20.0 (2026-10-27)
 
 **`/bb:backlog` gives a place to what the work left for later.** Every record already asks for
