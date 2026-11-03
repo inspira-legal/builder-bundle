@@ -4,7 +4,7 @@ description: Gives a place to what the work left for later, so an idea someone a
 license: MIT
 metadata:
   author: Vinicius Salgueiro
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # Backlog
@@ -28,6 +28,8 @@ The person's words decide it. Both modes can run in one session.
 | "park this", "note this for later", in the middle of a task | capture | `references/capture.md`     |
 
 ## Harvest the records
+
+In a front (a session `/bb:orchestrate` opened), every question of this skill, the gate included, goes through `<plugin-root>/references/front-contract.md` instead of a local dialog.
 
 1. **Read the folder.** Run `python3 scripts/harvest.py`, with `--slug SLUG` when the person
    named one. It prints JSON: per slug, the spec's `status` and `wave` key, the discovery's

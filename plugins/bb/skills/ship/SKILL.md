@@ -4,7 +4,7 @@ description: Takes the current branch to shipped, your way. It does not review; 
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 4.1.0
+  version: 4.2.0
 ---
 
 # Ship
@@ -17,6 +17,8 @@ One call answers the whole ground this run stands on: `python3 <plugin-root>/scr
 
 - For the PR path: `gh_authenticated: false` means `gh auth status` came back non-zero, so either nobody is logged in or `gh` is not on the PATH at all; instruct the user to run `gh auth login`. Authenticated is not the same as sufficient: the PR path needs the `repo` and `workflow` scopes, and a login predating the `workflow` scope fails on the first push that touches `.github/workflows/`. `gh auth refresh -s repo,workflow` is the remedy for that one.
 - A non-null `pr` is the default destination ("finish the PR").
+
+In a front (a session `/bb:orchestrate` opened), a brief that states the destination settles Step 1, and any other question of this skill goes through `<plugin-root>/references/front-contract.md` instead of a local dialog.
 
 ## Step 0: Preflight, what kind of project is this
 
