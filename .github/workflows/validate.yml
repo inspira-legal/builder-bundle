@@ -77,6 +77,11 @@ jobs:
       - name: Test the backlog harvest
         run: python3 plugins/bb/skills/backlog/scripts/harvest_test.py
 
+      # The maintain-repo self-test holds the fail-closed merge verdict and the suggested
+      # action per PR; the skill refuses to scan when it fails, so a regression lands here first.
+      - name: Test the maintain-repo verdicts
+        run: python3 plugins/bb/skills/maintain-repo/scripts/scan_repo.py --self-test
+
       - name: Check formatting
         id: fmt
         run: bun run fmt:check

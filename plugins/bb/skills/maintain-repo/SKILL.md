@@ -1,15 +1,15 @@
 ---
 name: maintain-repo
-description: Triages a repository's open pull requests, Dependabot alerts and outdated dependencies, and tells you what is safe to merge without merging anything. Use when someone says "o que dá pra mergear", "faz a triagem dos PRs abertos", "olha os alertas do Dependabot", "as atualizações de dependência são seguras", "monta um resumo de manutenção", "what can I merge", "triage my PRs", "check Dependabot". Not for working on one specific PR (use /bb:review or /bb:ship).
+description: Triages a repository's open pull requests, Dependabot alerts and outdated dependencies, suggests an action per PR (take over or modernize, both run by /bb:takeover), and tells you what is safe to merge without merging anything. Use when someone says "o que dá pra mergear", "faz a triagem dos PRs abertos", "olha os alertas do Dependabot", "as atualizações de dependência são seguras", "monta um resumo de manutenção", "what can I merge", "triage my PRs", "check Dependabot". Not for acting on one PR somebody else opened (use /bb:takeover), working on your own branch or PR (use /bb:ship) or reviewing a diff (use /bb:review).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.3.0
+  version: 2.4.0
 ---
 
 # Repo maintenance
 
-Triage a repo's open PRs and dependency updates, then tell the user **what is safe to merge**: to Slack, as a sticky PR comment, or both. Merge is **never** performed by this skill; it is decision-support that ends with the human clicking merge.
+Triage a repo's open PRs and dependency updates, then tell the user **what is safe to merge** and what each blocked or stale PR needs: to Slack, as a sticky PR comment, or both. Merge is **never** performed by this skill; it is decision-support that ends with the human clicking merge. Acting on one PR is `/bb:takeover`'s: maintain-repo suggests it and never runs it.
 
 ## Prerequisites
 
@@ -26,11 +26,11 @@ Ensure `gh` is authenticated: `gh auth status` (read scopes on the target repo +
 
 ### Phase 1: Self-test (gate)
 
-Run `python scripts/scan_repo.py --self-test`. If it exits non-zero, STOP and report "maintenance triage disabled: verdict self-test failed"; do not scan or send anything. This guarantees the fail-closed verdict logic is intact before any output.
+Run `python3 scripts/scan_repo.py --self-test`. If it exits non-zero, STOP and report "maintenance triage disabled: verdict self-test failed"; do not scan or send anything. This guarantees the fail-closed verdict logic is intact before any output.
 
 ### Phase 2: Scan (read-only, deterministic)
 
-`python scripts/scan_repo.py --repo <owner/name>` → one JSON object: open PRs (with author, labels, changed files, CI state, async-resolved `mergeable`/`mergeable_state`, parsed semver, eligibility + reason codes, and a fail-closed `verdict`), open Dependabot alerts, and a best-effort `bun outdated` capture. The script is strictly read-only and carries **no merge field**.
+`python3 scripts/scan_repo.py --repo <owner/name>` → one JSON object: open PRs (with author, labels, changed files, CI state, async-resolved `mergeable`/`mergeable_state`, parsed semver, eligibility + reason codes, and a fail-closed `verdict`), open Dependabot alerts, and a best-effort `bun outdated` capture. The script is strictly read-only and carries **no merge field**.
 
 The verdict per PR is one of:
 
@@ -38,22 +38,30 @@ The verdict per PR is one of:
 - **`no`**: CI failing, merge conflict, or changes requested.
 - **`needs-human`** covers anything else: major bump, async-`UNKNOWN` mergeability, CI not settled, non-bot author, touches CI/workflows, or unparsed/grouped title. (Default; the verdict only relaxes when every check explicitly passes.)
 
+Each PR also carries a `suggested_action`, from the same structured fields, naming a mode of `/bb:takeover`:
+
+- **`modernize`**: a Dependabot PR behind or conflicting with its base, or another person's PR untouched for 30 days and behind or conflicting.
+- **`takeover`**: another person's PR with CI failing, changes requested or a merge conflict, when the modernize rule above did not match first.
+- **none**: drafts, the user's own PRs (the login `gh api user` returns), other bots, and everything else. When `gh api user` fails, no human PR gets a suggestion, since an own PR can no longer be told apart.
+
+The suggestion is text in the digest, `suggest: <action> #N` at the end of the PR's line. It never runs anything: the user picks one and runs `/bb:takeover <N>` on that PR.
+
 ### Phase 3: Render (de-duplicated digest)
 
-`python scripts/scan_repo.py --repo <owner/name> | python scripts/render_digest.py --state <state.json>` → `{slack_markdown, changed, new_state, comments}`. Only PRs whose settled state changed since `state.json` appear in the digest, so a recurring run never re-pings. Persist `new_state` for the next run.
+`python3 scripts/scan_repo.py --repo <owner/name> | python3 scripts/render_digest.py --state <state.json>` → `{slack_markdown, changed, new_state, comments}`. Only PRs whose settled state changed since `state.json` appear in the digest, so a recurring run never re-pings. Persist `new_state` for the next run.
 
 ### Phase 4: Deliver (the user reads; the user merges)
 
 - **Slack:** post `slack_markdown` to her maintenance channel/DM via the connected Slack MCP tools. Group is _prioritize & safe_ / _needs you_ / _blocked_.
 - **PR comment (Dependabot PRs only):** for each entry in `comments`, find an existing comment containing its `marker` and **edit it in place** (`gh api --method PATCH /repos/<slug>/issues/comments/<id>`); else create one (`gh pr comment <n> --body-file -`). One sticky comment per PR, never append a new one each run. Do NOT auto-comment on human/colleague PRs (every action carries the user's identity).
 
-Every delivery ends on the explicit line: **mergeable verdicts are decision-support; you merge.**
+Every delivery ends on the explicit line: **mergeable verdicts are decision-support; you merge.** When the digest carries a `suggest:` line, the delivery names the next step under it: `/bb:takeover <N>` runs the suggested mode on that PR, one PR per run, and only when the user starts it.
 
 ## Bundled resources
 
 ### scripts/scan_repo.py
 
-Read-only scan → schema-versioned JSON (PRs + alerts + outdated). Computes priority, eligibility deny-list, and the fail-closed mergeability verdict. `--self-test` runs the verdict fixtures and exits non-zero on mismatch.
+Read-only scan → schema-versioned JSON (PRs + alerts + outdated). Computes priority, eligibility deny-list, the fail-closed mergeability verdict and the suggested action. `--self-test` runs the verdict and action fixtures and exits non-zero on mismatch.
 
 ### scripts/render_digest.py
 

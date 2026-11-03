@@ -33,8 +33,8 @@ back to answer, which is the same stall as printing the question as text.
 - **One gate per skill, at the end.** Mid-skill questions are the skill's own
   business (gray areas, confirmations); the handoff gate is the last interaction.
 - **Skills without a natural next step have no gate**: they just report and stop:
-  `ship`, `legal-lens`, `maintain-repo`, `review-setup`, `write-readme`,
-  `code-deep-research`, `gather-branch-context`, and `orchestrate`, which stays
+  `ship`, `legal-lens`, `maintain-repo`, `takeover`, `review-setup`, `write-readme`,
+  `research`, `gather-branch-context`, and `orchestrate`, which stays
   resident until the person ends it.
 
 ## The format

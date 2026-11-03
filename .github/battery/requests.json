@@ -109,13 +109,13 @@
   },
   {
     "request": "acha repositórios open source que implementam rate limit com Redis e me diz como fazem",
-    "expect": "code-deep-research",
+    "expect": "research",
     "lang": "pt",
     "kind": "direct"
   },
   {
     "request": "clona o repo do Hono e explora como ele faz o roteamento por dentro",
-    "expect": "code-deep-research",
+    "expect": "research",
     "lang": "pt",
     "kind": "direct"
   },
