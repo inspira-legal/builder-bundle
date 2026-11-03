@@ -28,7 +28,7 @@ journey.
 - **Construir**: `implement`, `ship`, `delegate`, `gather-branch-context`
 - **Revisar**: `review`, `maintain-repo`, `review-setup`
 - **Design**: `brisar`, `ui-accessibility`
-- **Pesquisar/Doc**: `code-deep-research`, `write-readme`
+- **Pesquisar/Doc**: `research`, `write-readme`
 
 ## How the bundle is organized
 
@@ -95,14 +95,14 @@ journey.
   `AskUserQuestion` offering the next one; "stop here" is always an option; it **suggests,
   never auto-invokes** (the single exception: `delegate`, and the implement→ship auto-chain
   when ship was already authorized). One format, in `references/handoff-gate.md`. Without a
-  gate: legal-lens, maintain-repo, review-setup, write-readme, code-deep-research,
+  gate: legal-lens, maintain-repo, review-setup, write-readme, research,
   gather-branch-context, ui-accessibility.
 - **A review engine shared** between `ship` and `review` in `references/` + `scripts/` (2
   passes, a severity scale, CI/threads). The roles are distinct (automatic ship lands,
   interactive review reports), and the engine is single to avoid drift. The existing
   scripts (`fetch_comments.py`, `reply_resolve_thread.py`, `gather_context.py`) are reused.
 - **Reuse**: the ofc skills that come through almost intact, implement, ship, delegate,
-  gather-branch-context, legal-lens, maintain-repo, code-deep-research and write-readme
+  gather-branch-context, legal-lens, maintain-repo, research and write-readme
   (the adjustments: the `.bb/` paths, the shape→spec references, the manifesto, the gates,
   the bb identity). ofc's hooks (the SessionStart operating context and the rest) are kept
   with updated texts.
@@ -167,7 +167,7 @@ journey.
       (answer-yourself fused), `legal-lens` → behavior 2 · dep: 2 · verify: CI
 - [x] **7. The Design trilha**: `brisar` (tarsila/clarisse as phases, keeping
       `references/ds/`), `ui-accessibility` → behavior 7 · dep: 2 · verify: CI
-- [x] **8. Pesquisar/Doc + the final docs**: `code-deep-research`, `write-readme`; the
+- [x] **8. Pesquisar/Doc + the final docs**: `research`, `write-readme`; the
       CHANGELOG + the ofc→bb migration note with the 28→16 mapping
       → behavior 1 · dep: 3-7 · verify: CI
 - [x] **9. A single PR**: branch → PR → green CI; the content of the fusions validated

@@ -4,7 +4,7 @@ description: Gives a place to what the work left for later, so an idea someone a
 license: MIT
 metadata:
   author: Vinicius Salgueiro
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # Backlog

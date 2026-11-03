@@ -4,7 +4,7 @@ description: Structured reasoning partner. Analyzes problems, decisions, ideas, 
 license: MIT
 metadata:
   author: Matheus Morais; take mode by Athena Briana - github.com/athenabriana
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 # Think

@@ -118,7 +118,7 @@ Pick the skill from what the person asked for, and name it in the brief:
 | an idea that needs research first              | `/bb:research`, then `/bb:spec`  |
 | an error in DEV or PROD                        | `/bb:debug`                      |
 | someone else's PR to adopt or bring up to date | `/bb:takeover`                   |
-| a branch to read for bugs                      | `/bb:review`                     |
+| a branch to read for bugs                      | the loop of `/bb:review`         |
 | a built branch to land                         | `/bb:ship`                       |
 
 `/bb:maintain-repo` only reads the repo, so the orchestrator runs it in place, with no front.

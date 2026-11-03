@@ -4,7 +4,7 @@ description: End to end design trilha. The whole double diamond, from the raw id
 license: MIT
 metadata:
   author: Inspira
-  version: 2.8.0
+  version: 2.9.0
 ---
 
 # Brisar

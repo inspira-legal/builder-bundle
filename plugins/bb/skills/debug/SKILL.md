@@ -4,7 +4,7 @@ description: Investigates an error in a running environment, development or prod
 license: MIT
 metadata:
   author: Enzo Figueiredo
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # Debug

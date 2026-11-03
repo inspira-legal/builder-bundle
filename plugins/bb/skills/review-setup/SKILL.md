@@ -4,7 +4,7 @@ description: Generates or updates the repository's CODE_REVIEW_GUIDE.md. Runs au
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.4.0
+  version: 2.5.0
 ---
 
 # Review setup

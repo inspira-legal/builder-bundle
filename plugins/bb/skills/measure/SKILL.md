@@ -4,7 +4,7 @@ description: Product analysis over the company's own usage data, through a read-
 license: MIT
 metadata:
   author: Matheus Morais - github.com/matheusmorais-ux
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # Measure

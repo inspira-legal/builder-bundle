@@ -4,7 +4,7 @@ description: Structured devil's advocate. Stress tests positions, ideas, plans a
 license: MIT
 metadata:
   author: Matheus Morais; adapted for bb by Athena Briana - github.com/athenabriana
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 # Challenge

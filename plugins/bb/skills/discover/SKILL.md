@@ -4,7 +4,7 @@ description: Runs the whole first diamond before any design. Frames the problem 
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.4.0
+  version: 2.5.0
 ---
 
 # Discover

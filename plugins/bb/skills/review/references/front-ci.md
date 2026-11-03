@@ -59,3 +59,8 @@ Watch the affected workflow re-run: `gh pr checks <number> --watch` (or
 condition included; follow it there. Cap the loop at **3 diagnose→fix cycles per check**; after that,
 stop editing and report what's still red with the evidence. A check that
 survives three informed fixes needs a human decision, not a fourth guess.
+
+**In the review loop** CI enters round 1 only (`loop.md`): the fix comes from the logs
+the evidence step read, it rides the loop's single push, and the re-run is read once after
+that push. A check still red goes to the report with its evidence and opens no round; the
+three cycles above are the manual flow's.
