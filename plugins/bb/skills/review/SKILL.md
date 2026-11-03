@@ -157,7 +157,8 @@ In the loop, round 1 is steps 3 and 4's work, and then `references/loop.md` runs
 context decides every verified item, fix or refuse with a ground, with no curation
 question; rounds 2 and on send the reviewer only the delta, the open findings and the
 refusals; the loop stops on a round with no Bloqueante or when the budget is spent; then
-one push, the thread replies and one CI read. Step 6 runs as it does in the manual flow.
+one push, the thread replies and one CI read. Step 6 finds its `satisfied` threads as in
+the manual flow, and their replies go out after that push with the others.
 The report opens with the `Loop` block `loop.md` defines, and the gate (step 8) follows.
 
 ## Step 4: Report
