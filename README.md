@@ -86,10 +86,10 @@ one plugin, `bb`; 22 skills, 19 of them in 6 trilhas, with `/bb:profile`, `/bb:r
 
 ### pesquisar and document
 
-| skill                    | description                                                                               |
-| ------------------------ | ----------------------------------------------------------------------------------------- |
-| `/bb:code-deep-research` | finds, clones and explores repos, then verifies the findings adversarially against source |
-| `/bb:write-readme`       | generates a minimal centered-header README out of the repo's own facts                    |
+| skill              | description                                                                                                                                                        |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/bb:research`     | researches code, web content and real screens, verifies every load-bearing claim against its evidence and writes `.bb/<slug>/research.md`, with no questions asked |
+| `/bb:write-readme` | generates a minimal centered-header README out of the repo's own facts                                                                                             |
 
 plugin-level reference docs live in `plugins/bb/references/`, read across skills instead of owned by one: the doc-style rules every sentence follows, the handoff-gate contract, the `.bb/<slug>/` spec-state layout, the manifesto consult for stack decisions, the event convention format (`events-convention.md`) that `/bb:spec` and `/bb:review` read once a project ships its own `EVENTS.md`, and the company definitions (`company-definitions.md`) that `/bb:measure`, `/bb:spec`, `/bb:discover` and `/bb:debug` find by role tag in the company's documentation base.
 

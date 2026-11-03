@@ -1,5 +1,36 @@
 # Changelog
 
+## 3.22.0 (2026-11-03)
+
+**`/bb:research` takes the place of `/bb:code-deep-research`.** The old skill only read code and
+left the report in the conversation, so `/bb:spec` had no
+file to build a draft on. The new one covers code, web content and real screens, runs to the
+end without a question or a gate so an agent can call it, and writes its report beside the
+spec. `/bb:spec` calls it on its own when the draft depends on a fact the repo does not hold.
+The skill count does not change.
+
+### Added
+
+- **Three fronts in `/bb:research`**: code (clones read at `file:line`), content (a URL plus
+  the quoted passage) and visual (`scripts/fetch_images.py`, at most 6 images per page, 30
+  per run and 5 MB each). The verifier opens the code, the page and the image itself.
+- **A fixed cap**: at most 3 clones and 3 verify rounds, in the platform's temp folder,
+  outside the worktree. With no `Agent` tool the same steps run inline.
+- **`.bb/<slug>/research.md`**, with `## Question`, `## Fronts`, `## Findings`,
+  `## Comparison`, `## Recommendation`, `## Open` and `## Sources`. The research leaves it
+  uncommitted.
+
+### Changed
+
+- **`/bb:spec` runs `/bb:research` before the draft** when the draft needs an outside fact,
+  reads an existing `research.md` instead of rerunning it, and commits it with `spec.md`.
+- **The `.bb/<slug>/` contract has six documents.** `references/spec-state.md` adds
+  `research.md`, written only by `/bb:research`.
+
+### Removed
+
+- **`/bb:code-deep-research`** no longer exists, with no alias. Call `/bb:research`.
+
 ## 3.21.0 (2026-11-03)
 
 **`/bb:takeover` acts on a PR somebody else opened, and `/bb:maintain-repo` suggests when.** The
