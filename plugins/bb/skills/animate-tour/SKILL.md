@@ -53,6 +53,8 @@ another when that screen matters.
 
 ## 3. Plan the steps before drawing
 
+In a front (a session `/bb:orchestrate` opened), every question of this skill, the gate included, goes through `<plugin-root>/references/front-contract.md` instead of a local dialog.
+
 From the screenshots, the code or the walk, write the step plan and **get it approved through `AskUserQuestion`
 before producing anything**. Put the plan in the question itself, one line per step:
 

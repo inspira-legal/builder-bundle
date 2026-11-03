@@ -4,7 +4,7 @@ description: Thinks a problem or decision through with you and gives a direct op
 license: MIT
 metadata:
   author: Matheus Morais; take mode by Athena Briana - github.com/athenabriana
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 # Think
@@ -56,7 +56,9 @@ PIVOT) defined in the plugin-root `references/confidence-and-steelman.md`.
 
 Gate **only when the session converged** on something buildable, clarity about
 a feature, flow, or product problem (most common in Problem and Idea modes).
-Format per the plugin-level `references/handoff-gate.md`:
+Format per the plugin-level `references/handoff-gate.md`. In a front (a session
+`/bb:orchestrate` opened), the gate and every question before it go through
+`<plugin-root>/references/front-contract.md` instead of a local dialog:
 
 ```
 question: "The analysis converged on something buildable. Where do we go?"

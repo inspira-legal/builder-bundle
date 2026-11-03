@@ -4,7 +4,7 @@ description: Pushes back on a position you already hold. It states the strongest
 license: MIT
 metadata:
   author: Matheus Morais; adapted for bb by Athena Briana - github.com/athenabriana
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 # Challenge
@@ -25,6 +25,8 @@ Apply the steelman protocol from the plugin-root
 with the user before any challenge.
 
 ### Step 2: Select the mode
+
+In a front (a session `/bb:orchestrate` opened), every question of this skill, the gate included, goes through `<plugin-root>/references/front-contract.md` instead of a local dialog.
 
 Ask via `AskUserQuestion`:
 

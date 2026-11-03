@@ -4,7 +4,7 @@ description: Agrees on what to build before any code. It writes a spec with you,
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 3.2.0
+  version: 3.3.0
 ---
 
 # Spec
@@ -50,7 +50,7 @@ Deliver invokes this skill from its own gate. Spec from the one-liner as usual.
 
 ## The loop
 
-You bring the idea; Claude develops it, then loops with you through the **`AskUserQuestion` tool** until the picture is consistent and you sign off. Never interrogate from a blank page, and never decide silently; drive it through real questions.
+You bring the idea; Claude develops it, then loops with you through the **`AskUserQuestion` tool** until the picture is consistent and you sign off. Never interrogate from a blank page, and never decide silently; drive it through real questions. In a front, every one of them (the gate included) goes through `<plugin-root>/references/front-contract.md` instead of a local dialog, and a brief that states the scope answers the gate's second question.
 
 1. **Develop the draft (draft-first).** Read the one-liner, look at the codebase, and write a short draft spec with your best guesses filled in: what/why, the business rules, the scope edges, the behavior you expect. `## Metric` arrives filled too, seeded per the rule in `references/draft-first.md` (the discovery record's values with the record named in the provenance, a marked guess, or the honest skip); the shape is in `references/spec-format.md`. When the company classifies its events, each event row arrives with a proposed `level`, read from the company's `usage` document (`references/draft-first.md`). For Large work, also describe the pieces in the top half before breaking it into tasks. Bring something concrete to react to.
 
