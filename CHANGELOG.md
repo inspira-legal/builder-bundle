@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.23.0 (2026-11-03)
+## 3.24.0 (2026-11-03)
 
 **`/bb:spec` cuts the version and reads the backlog.** `/bb:backlog` read `## Out of scope` as
 free text and had to guess whether an item comes back, and nothing brought a parked item back to
@@ -20,6 +20,39 @@ sees what is waiting for it. The reasoning is `.bb/spec-moscow/spec.md`.
 - **`/bb:spec` reads `backlog.md` before drafting**: this slug's, and the `## Next version` of
   the other slugs'. An item whose trigger fired is asked as a gray area, never drafted in on its
   own.
+
+## 3.23.0 (2026-11-03)
+
+**`/bb:review` runs as a loop by default on the current branch.** The item by item curation
+asked the person to decide every finding, and a verifier from the same model that wrote the
+code tends to miss what that model misses. The loop gives the decision to the context that
+holds the code, which fixes or refuses each finding with a ground a reviewer can check, and
+seats a reviewer from another model when one is installed. Ported from the review loop of
+shipshape 4.2.0; the `instrumentation` front, the manifesto consult and the reading of
+`discovery.md` and `design.md` stay as they were.
+
+### Added
+
+- **The review loop** (`references/loop.md`): every available front runs in round 1 with no
+  fronts question, the main context fixes or refuses each verified finding, and rounds 2 and
+  on re-read only the delta, the open findings and the refusals. The budget is 3 rounds, 5
+  when a Bloqueante concerns security, permissions or data loss. The verdict is `clean`,
+  `disputed` or `open`, followed by one push, the thread replies with the sha and one CI
+  read. Commits and PR comments carry only the round and the verdict, never a reviewer or a
+  model.
+- **The loop's reviewer** (`references/loop-reviewer.md`, `scripts/loop_reviewer.py`): Codex
+  CLI when it is on `PATH`, run with the read-only sandbox and a timeout; without it, or when
+  a round fails, that round falls back to `bb-review-verifier`.
+
+### Changed
+
+- **`/bb:review manual`** keeps the previous flow: the fronts question and the curation item by
+  item. The external PR, the surface audit and a direct ask for one front also run it.
+- **`/bb:implement` runs the loop as its review step**, with no `threads` or `ci`, no push and
+  no gate. Every verdict goes on to the ship, and the verdict note goes into the PR
+  description.
+- **`verify.md`, `act-apply-fixes.md`, `act-comment-findings.md`, `front-threads.md` and
+  `front-ci.md`** say how each of them behaves inside the loop.
 
 ## 3.22.0 (2026-11-03)
 
