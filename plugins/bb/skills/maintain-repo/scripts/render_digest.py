@@ -19,13 +19,14 @@ JSON object to stdout:
   }
 
 The content hash deliberately EXCLUDES the raw async mergeable/UNKNOWN fields and
-keys on the settled signals (verdict, ci state, head sha, priority) so that
+keys on the settled signals (verdict, ci state, head sha, priority, and the
+suggested action when there is one) so that
 async-mergeability flapping cannot generate phantom "changed" rows. Merge is
 never invoked; every output ends on "you merge".
 
 Usage:
-  python scan_repo.py --repo owner/name | python render_digest.py --state state.json
-  python render_digest.py --scan scan.json --state state.json
+  python3 scan_repo.py --repo owner/name | python3 render_digest.py --state state.json
+  python3 render_digest.py --scan scan.json --state state.json
 """
 
 from __future__ import annotations
@@ -52,6 +53,10 @@ def content_hash(pr: dict[str, Any]) -> str:
         "priority": pr.get("priority_label"),
         "semver": (pr.get("semver") or {}).get("class"),
     }
+    # Only when set, so a PR with no suggestion keeps the hash it had before the field existed.
+    action = (pr.get("suggested_action") or {}).get("action")
+    if action:
+        key["suggest"] = action
     blob = json.dumps(key, sort_keys=True)
     return hashlib.sha256(blob.encode()).hexdigest()[:16]
 

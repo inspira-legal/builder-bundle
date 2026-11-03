@@ -41,8 +41,8 @@ The verdict per PR is one of:
 Each PR also carries a `suggested_action`, from the same structured fields, naming a mode of `/bb:takeover`:
 
 - **`modernize`**: a Dependabot PR behind or conflicting with its base, or another person's PR untouched for 30 days and behind or conflicting.
-- **`takeover`**: another person's PR with CI failing, changes requested or a merge conflict.
-- **none**: drafts, the user's own PRs (the login `gh api user` returns), other bots, and everything else.
+- **`takeover`**: another person's PR with CI failing, changes requested or a merge conflict, when the modernize rule above did not match first.
+- **none**: drafts, the user's own PRs (the login `gh api user` returns), other bots, and everything else. When `gh api user` fails, no human PR gets a suggestion, since an own PR can no longer be told apart.
 
 The suggestion is text in the digest, `suggest: <action> #N` at the end of the PR's line. It never runs anything: the user picks one and runs `/bb:takeover <N>` on that PR.
 

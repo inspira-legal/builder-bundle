@@ -11,11 +11,11 @@ package lifecycle script, never writes, and NEVER merges. It carries no merge
 field at all; merge is a human action.
 
 Usage:
-  python scan_repo.py                       # current repo (resolved via gh)
-  python scan_repo.py --repo owner/name     # explicit slug
-  python scan_repo.py --repo .              # repo at a local path
-  python scan_repo.py --max-prs 50 --json
-  python scan_repo.py --self-test           # run built-in fixtures, exit non-zero on mismatch
+  python3 scan_repo.py                       # current repo (resolved via gh)
+  python3 scan_repo.py --repo owner/name     # explicit slug
+  python3 scan_repo.py --repo .              # repo at a local path
+  python3 scan_repo.py --max-prs 50 --json
+  python3 scan_repo.py --self-test           # run built-in fixtures, exit non-zero on mismatch
 
 Design notes:
   - Dependabot is detected via the REST `user.login == "dependabot[bot]"`, NOT
@@ -363,7 +363,8 @@ def suggested_action(pr: dict[str, Any], now: datetime, viewer: str | None) -> d
         return {"action": None, "reasons": []}
     if pr["is_dependabot"]:
         return {"action": "modernize", "reasons": [f"merge-state-{state}"]} if behind else {"action": None, "reasons": []}
-    if pr["is_bot"]:
+    if pr["is_bot"] or not viewer:
+        # Without the viewer's login an own PR can't be told apart, so humans get none.
         return {"action": None, "reasons": []}
     reasons: list[str] = []
     updated = pr.get("updated_at")
