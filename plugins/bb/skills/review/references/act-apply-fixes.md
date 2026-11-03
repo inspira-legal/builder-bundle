@@ -64,7 +64,9 @@ improvement, and a "fix" that isn't justified against its finding is a guess.
 3. Match the surrounding naming, error envelopes, and patterns.
 4. Commit in logical units (conventional style, no AI attribution). With an open
    PR, push to the PR branch; thread replies happen after the push so the sha is
-   real.
+   real. In the review loop (`loop.md`) the owner commits each fix as it lands, the
+   body carries `Review round N.` and nothing that names a reviewer or a model, and
+   the push happens once, after the last round.
 5. At the end, re-run the project's checks in full (reuse the same check commands:
    CLAUDE.md / CI workflows / package scripts) and include the result in the
    re-report.

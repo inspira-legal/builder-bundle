@@ -69,6 +69,12 @@ A candidate the verifier rendered no verdict on (agent died, index omitted) is
 still gets its line in the report (§4): a candidate nobody judged is a different
 thing from one that was judged and refuted, and the reader has to be able to tell.
 
+**In the review loop the seat can change hands.** When `references/loop-reviewer.md`
+resolved an outside reviewer, it judges every file's candidates in one call instead of
+these agents, under the same rubric and the same addenda, and a call that fails falls back
+to the dispatch above for that round. Everything after the verdicts, §3 and §4, runs the
+same whoever judged.
+
 ## The addendum: rules, contract, a11y, design and instrumentation verify differently
 
 These fronts don't turn on a crash, so their verifiers get one extra paragraph in
