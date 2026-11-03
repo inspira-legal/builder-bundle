@@ -28,7 +28,7 @@ a draft, and `/bb:orchestrate` side sessions run `/bb:spec`. Four rules follow f
 - **No commit.** The research writes `research.md` and leaves it uncommitted. Called by
   `/bb:spec`, it is committed with `spec.md`. Called alone, the caller decides.
 - **No gate.** It ends by returning a short summary and the path, and stops. Called by
-  `/bb:spec`, the spec continues into the draft.
+  `/bb:spec`, the draft follows.
 
 ## The three fronts
 
@@ -61,7 +61,7 @@ script cannot read.
 
 A rerun on the same slug rewrites `research.md` whole. The previous version lives in git.
 A folder that holds only `research.md` is fine: the spec selection lists slugs by
-`.bb/*/spec.md` and pass over it.
+`.bb/*/spec.md` and passes over it.
 
 ### 2. Plan the research
 
