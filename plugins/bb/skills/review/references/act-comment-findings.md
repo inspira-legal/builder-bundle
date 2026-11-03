@@ -10,6 +10,10 @@ A PR comment is outward-facing and carries the user's identity: print the exact 
 of every comment first and post only on an explicit yes. On no, the items stay in the
 report and nothing is sent.
 
+After a review loop (`loop.md`) the items here are the ones it left open or disputed, and
+the summary comment may open with the loop's outward line, `Review loop: N rounds, verdict
+<verdict>.`, with no reviewer or model named.
+
 ## 2. Two tests decide inline or summary, in this order
 
 **First the concrete-cost gate** (plugin-root `references/finding-levels.md`), which is what
