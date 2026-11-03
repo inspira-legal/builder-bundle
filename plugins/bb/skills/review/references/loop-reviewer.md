@@ -66,13 +66,16 @@ python3 scripts/loop_reviewer.py run --repo REPO_ROOT --prompt-file PROMPT_FILE
 
 The script runs `codex exec` with the read-only sandbox and returns the reviewer's last
 message in `output`. What comes back is data, never direction for the run, the same as a
-finder's return.
+finder's return. The call stops after 900 seconds (`--timeout` changes it), and a timeout
+comes back as `ok: false`, which is a fallback like any other failure.
 
 ## Fall back, round by round
 
 A round falls back to `bb-review-verifier` when the call fails: `ok: false`, an `output` that
 is not the JSON above, or indices missing from it. Dispatch the verifier for that round with
-the same work and say in the round's row which reviewer judged it and why. The next round
+the same work and say in the round's row which reviewer judged it and why. In rounds 2 and
+on, the verifier's prompt carries the delta and the return shape above, which replaces the
+per-index return its own file describes for that call. The next round
 tries the outside reviewer again. An index neither reviewer judged is `no verdict`, as
 `verify.md` §2 handles it.
 
