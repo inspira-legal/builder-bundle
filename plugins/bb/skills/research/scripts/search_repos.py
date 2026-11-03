@@ -7,9 +7,9 @@ Requires:
   - `gh auth login` already set up
 
 Usage:
-  python search_repos.py "react state management" "redux alternatives"
-  python search_repos.py --topic state-management --topic react
-  python search_repos.py --limit 20 --language typescript --min-stars 500 "query"
+  python3 search_repos.py "react state management" "redux alternatives"
+  python3 search_repos.py --topic state-management --topic react
+  python3 search_repos.py --limit 20 --language typescript --min-stars 500 "query"
 """
 
 from __future__ import annotations

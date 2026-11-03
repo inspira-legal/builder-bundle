@@ -2,8 +2,8 @@
 
 ## 3.21.0 (2026-11-03)
 
-**`/bb:research` takes the place of `/bb:code-deep-research`.** The old skill only read code,
-asked nothing of anyone and still left the report in the conversation, so `/bb:spec` had no
+**`/bb:research` takes the place of `/bb:code-deep-research`.** The old skill only read code and
+left the report in the conversation, so `/bb:spec` had no
 file to build a draft on. The new one covers code, web content and real screens, runs to the
 end without a question or a gate so an agent can call it, and writes its report beside the
 spec. `/bb:spec` calls it on its own when the draft depends on a fact the repo does not hold.

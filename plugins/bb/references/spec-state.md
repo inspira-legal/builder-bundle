@@ -165,8 +165,8 @@ updated: <YYYY-MM-DD>
 ---
 ```
 
-**`research.md`** carries no frontmatter: its sections (the contract is
-`<plugin-root>/skills/research/SKILL.md`) are replaced whole on every run. `/bb:research`
+**`research.md`** carries no frontmatter, and its sections (listed in
+`<plugin-root>/skills/research/references/report.md`) are replaced whole on every run. `/bb:research`
 writes it and never commits it; `/bb:spec` reads it before the draft and commits it with
 `spec.md`. A folder holding only `research.md` is not a spec, since every selection globs
 `.bb/*/spec.md`.
