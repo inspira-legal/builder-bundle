@@ -54,6 +54,8 @@ You bring the idea; Claude develops it, then loops with you through the **`AskUs
 
 1. **Develop the draft (draft-first).** Read the one-liner, look at the codebase, and write a short draft spec with your best guesses filled in: what/why, the business rules, the scope edges, the behavior you expect. `## Metric` arrives filled too, seeded per the rule in `references/draft-first.md` (the discovery record's values with the record named in the provenance, a marked guess, or the honest skip); the shape is in `references/spec-format.md`. When the company classifies its events, each event row arrives with a proposed `level`, read from the company's `usage` document (`references/draft-first.md`). For Large work, also describe the pieces in the top half before breaking it into tasks. Bring something concrete to react to.
 
+   **Research first when the draft needs outside facts.** When the draft depends on facts the repo does not hold (how others build something, a library nobody here has used, a UI pattern), run `/bb:research` on the idea with the spec's slug before writing the draft. Decide it alone: say in one line that the research runs first, and ask nothing. An existing `.bb/<slug>/research.md` is read instead of rerun. The research writes that file, returns a short summary and the path, and stops; the draft is written on top of it, citing it, and its open section feeds the gray areas. An idea the repo already covers drafts as before.
+
 2. **Highest-stakes question first, ask before you anchor.** On the single call most expensive to get wrong about what gets built, ask the user how _they'd_ call it _before_ you reveal your own pick (an open `AskUserQuestion`). Anchoring is strongest on the choice that matters most. Don't pre-frame that one. One question only; everything else stays draft-first.
 
 3. **Surface the gray areas as questions.** Everything else about what gets built and how it behaves that genuinely could go more than one way → ask via `AskUserQuestion`, batched (the tool takes up to 4 at once), each as concrete options with your lean. Decide the obvious yourself; don't ask about what the codebase or goal already settles. A technical detail is the builder's and is not asked. The exception is a technical choice only the user can make, like a stack the company settled or a contract another team depends on: ask it, and when it is a **stack choice** (framework, package manager, tooling), consult the manifesto first (plugin-level `references/consult-manifesto.md`).
@@ -167,6 +169,8 @@ The on-disk contract (location, frontmatter schema, status lifecycle) is the plu
 
 On finalize, open the spec with the frontmatter block (`status: pending`, `created: <today>`, `slug: <slug>`). This skill is the file's only writer, so the block is there from the first write. A spec landed before that rule can be missing it; backfill it on finalize. Leave the lifecycle after this to implement; spec only seeds `pending`.
 
+A `.bb/<slug>/research.md` beside the spec is committed with it on finalize. The research never commits its own report, and spec is the caller that knows which branch it belongs to.
+
 The review's verdict is not part of the block: it belongs to this session, and it reaches the user at the gate, which is where a person can still act on it.
 
 **Large** work carries `## Behavior`, `## Attention points` and `## Tasks` as their own sections: the acceptance contract, the risks the builder handles and the phased tasks the build side consumes. **Medium** work can keep the behavior and the tasks inline in the decisions. `## Metric` is its own section at every size, between `## Behavior` and `## Attention points`: the measure with provenance and the events table, or one explicit `skipped: <reason>` line (shape in `references/spec-format.md`).
@@ -177,7 +181,7 @@ When the audience is beyond this session (a designer picking it up in Figma, a d
 
 ## Don't fabricate
 
-Before asserting how something works: check the codebase, then its docs, then the web; if you still don't know, **say so**. A wrong assumption here cascades into the build, and a draft full of confident guesses is worse than one that flags what it's unsure of. Uncertainty flagged beats confidence invented.
+Before asserting how something works: check the codebase, then its docs, then the web (the research report, when the idea needed one); if you still don't know, **say so**. A wrong assumption here cascades into the build, and a draft full of confident guesses is worse than one that flags what it's unsure of. Uncertainty flagged beats confidence invented.
 
 ## Hand off: the gate decides whether to roll on
 

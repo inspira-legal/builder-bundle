@@ -158,7 +158,7 @@ Happy path:
       templates and the fixed set `/bb:spec` writes
       → behaviors 5, 7, 12 · dep: 1 · verify: an empty grep
 - [x] **7. The em dash in the other 9 skills**: 220 across 15 files: `discover` 44, `challenge`
-      32, `code-deep-research` 27, `maintain-repo` 24, `implement` 23, `legal-lens` 23,
+      32, `research` 27, `maintain-repo` 24, `implement` 23, `legal-lens` 23,
       `delegate` 19, `think` 19, `gather-branch-context` 9; the 22 from `description:` live in
       those files → behaviors 7, 17 · dep: 1 · verify: an empty grep
 - [x] **8. The em dash in the plugin references, the hooks and the agents**: 127 across 12
