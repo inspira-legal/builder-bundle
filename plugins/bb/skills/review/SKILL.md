@@ -1,10 +1,10 @@
 ---
 name: review
-description: Reviews your changes or a pull request for bugs, project rules, accessibility, design system and analytics, confirms each finding with a second agent, then lets you fix it or comment on the PR. Use when someone says "revisa o que eu mudei", "revisa a PR", "tem bug aqui", "o CI quebrou", "responde os comentários da PR", "audita a acessibilidade", "isso segue o design system", "review my changes", "review PR 42", "are there bugs here". Not for opening or finishing a PR (use /bb:ship) or triaging every open PR (use /bb:maintain-repo).
+description: Reviews your changes or a pull request for bugs, project rules, accessibility, design system and analytics. On your branch it loops on its own, a reviewer from another model judging each finding, then fixes and reviews again up to 3 rounds; `/bb:review manual` lets you pick what to fix or comment on the PR. Use when someone says "revisa o que eu mudei", "revisa a PR", "tem bug aqui", "o CI quebrou", "responde os comentários da PR", "audita a acessibilidade", "isso segue o design system", "review my changes", "review PR 42", "are there bugs here". Not for opening or finishing a PR (use /bb:ship) or triaging every open PR (use /bb:maintain-repo).
 license: Apache-2.0
 metadata:
   author: Athena Briana - github.com/athenabriana; quality-pass material adapted from Claude Code's /simplify, angle/verify architecture adapted from Claude Code's /code-review (Anthropic, Apache-2.0), a11y front absorbed from rafael's ui-accessibility skill (loja inspira-skills, MIT)
-  version: 2.7.0
+  version: 2.8.0
 ---
 
 # Review
@@ -12,9 +12,11 @@ metadata:
 One review skill, nine **fronts** of findings. The skill detects which fronts can
 produce anything on this branch, asks which ones you want, runs them as a parallel
 fan-out of read-only agents, and puts every candidate through an independent
-verifier before it reaches the report. Then the flow is interactive (report → you
-pick → apply → reply/resolve → re-report), and repeats until you close it. It fixes
-what you approve; it never merges, never approves, never force-pushes.
+verifier before it reaches the report. On the current branch the default is the **review
+loop** (`references/loop.md`): the main context fixes or refuses each verified finding, and
+a reviewer re-reads only what changed, round after round, inside a budget. The manual flow
+is interactive (report → you pick → apply → reply/resolve → re-report), and repeats until
+you close it. Either way it never merges, never approves, never force-pushes.
 
 This SKILL.md is the router. Each front's method lives in its own reference and is
 loaded **only when that front was picked**; each action likewise.
@@ -68,7 +70,11 @@ scope is the one path that needs neither a repo nor a diff.
   `references/front-design.md` in surface scope (same shape, and it needs a design
   source to resolve). Both stop at their own gate. An ask naming both runs both,
   one after the other, each with its own report.
-- **Otherwise**: current branch, all fronts on the table.
+- **Otherwise**: current branch, all fronts on the table, and the **review loop** runs
+  (`references/loop.md`, which lists what sends a run to the manual flow instead:
+  `/bb:review manual`, "manual review", "let me pick", or uncommitted changes in the tree).
+  Resolve the loop's reviewer once here (`references/loop-reviewer.md`) and say it in one
+  line.
 
 **`.bb/` is never under review.** This skill reviews code and PRs, so subtract
 the whole folder from the resolved diff before anything else reads it: the
@@ -99,6 +105,10 @@ sizes the fan-out from it, and the report has to name which one ran.
 Load `references/fronts.md`: it carries the front catalog, the availability probe
 (one batch of cheap read-only calls), and the depth table that sizes the fan-out
 from the diff.
+
+**In the loop this question is not asked**: every available front runs, `threads` and `ci`
+included, at the depth step 1 resolved. Say the fronts and the depth in the line below and
+go to step 3.
 
 Step 0 already ran the probe, so read that payload here instead of probing again, and
 re-run `preflight.py` only when the tree moved since. Then ask with one `AskUserQuestion` (`multiSelect`),
@@ -138,7 +148,18 @@ judgment here.
 
 Then `references/verify.md`: pool everything at the barrier, group by `file:line`,
 one independent verifier per location (CONFIRMED / PLAUSIBLE / REFUTED), sweep on
-large diffs, then dedupe, rank and cap.
+large diffs, then dedupe, rank and cap. In the loop the reviewer step 1 resolved takes the
+verifier's seat.
+
+## The loop: rounds in place of steps 5 to 7
+
+In the loop, round 1 is steps 3 and 4's work, and then `references/loop.md` runs: the main
+context decides every verified item, fix or refuse with a ground, with no curation
+question; rounds 2 and on send the reviewer only the delta, the open findings and the
+refusals; the loop stops on a round with no Bloqueante or when the budget is spent; then
+one push, the thread replies and one CI read. Step 6 finds its `satisfied` threads as in
+the manual flow, and their replies go out after that push with the others.
+The report opens with the `Loop` block `loop.md` defines, and the gate (step 8) follows.
 
 ## Step 4: Report
 
@@ -234,7 +255,8 @@ Per the plugin-root `references/handoff-gate.md`, one question with **2–4
 options**. Five states can qualify, so take the first three that apply in this
 priority order. Unfinished work on this report outranks the next skill:
 
-1. items still open → **"Apply more"** (loops to step 5)
+1. items still open (after a loop: open or disputed ones) → **"Apply more"** (loops to
+   step 5, the manual curation)
 2. fronts left unrun → **"Run the fronts that were left out"** (loops to step 3)
 3. a11y or design findings that need a rendered page (runtime colors, real focus
    order, live regions, the value the cascade actually resolved) → **"Audit the
@@ -281,6 +303,10 @@ offered, which needs no row here. What this table covers is everything else:
 | a verifier dies or omits an index            | that candidate is `no verdict`, reported as its own line, never promoted                                              |
 | CI still red after 3 diagnose→fix cycles     | stop editing, report the remaining failure and the evidence                                                           |
 | deep asked for on a ≲2-file diff             | deep is honored; the full angle set with fan-out, sweep included; say the diff is small and that deep was asked for   |
+| no outside reviewer installed                | the loop's reviewer is `bb-review-verifier`, said in one line                                                         |
+| the outside reviewer fails in a round        | that round falls back to `bb-review-verifier`; the round's row says so                                                |
+| loop budget spent with a Bloqueante open     | stop; verdict `open`; the gate offers **Apply more**                                                                  |
+| a finding asks for work outside the branch   | refused as out of scope, listed with the refusals                                                                     |
 
 ## Bundled resources
 
@@ -289,6 +315,8 @@ Router support:
 - `references/intent-read.md`: step 0's probe, the PR body and conversation reads, and the intent block every finder carries.
 - `references/fronts.md`: the front catalog, the availability probe, the depth table and the fan-out shape.
 - `references/verify.md`: pool, group by location, 3-state verdict, sweep, rank and cap.
+- `references/loop.md`: the review loop, its rounds, budget, stop, the owner's fix or refuse, and the record.
+- `references/loop-reviewer.md`: who judges the loop's rounds, the outside reviewer's prompt and return shape, the fallback.
 
 Per-front method (loaded only when that front is picked):
 
@@ -305,6 +333,7 @@ Per-front method (loaded only when that front is picked):
 Skill-owned script:
 
 - `scripts/group_candidates.py`: canonicalizes finder paths against the scope file list and groups candidates by location for the verify pass. Reads/writes JSON.
+- `scripts/loop_reviewer.py`: `detect` finds the outside reviewer on `PATH`, `run` calls it read only with a prompt file. Writes JSON.
 
 Actions and modes:
 

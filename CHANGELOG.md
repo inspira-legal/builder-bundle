@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.23.0 (2026-11-03)
+## 3.25.0 (2026-11-03)
 
 **The skill descriptions lead with the request, and a battery measures it.** The 15
 descriptions now open with what the person gets, quote trigger phrases the way people
@@ -40,7 +40,58 @@ session with many skills installed.
 - **14 of the 15 land.** `/bb:research` replaced `code-deep-research` before this
   landed and brought its own description, so the battery's two research requests now
   expect `research`. `maintain-repo` keeps this shape and takes `/bb:takeover`'s
-  routing, at 627 characters.
+  routing, at 627 characters, and `review` says it loops by default since 3.24.0.
+
+## 3.24.0 (2026-11-03)
+
+**`/bb:implement` builds one agent per task even in a session without the `Workflow`
+tool.** Until now that session built every task in the main context, which pays each task's
+reads there and gives up the clean budget per task. The port comes from the shipshape fork,
+where the same step already runs.
+
+### Changed
+
+- **The fallback chain has four steps.** `references/build-tasks-workflow.md` adds step 3: no
+  `Workflow` tool, with the `Agent` tool present and the script readable, dispatches one
+  subagent per task, phase by phase, in a worktree of its own when the phase has several
+  tasks. The new `## The subagent fallback` section states how the main context proves the
+  ground, reads each return and lands the phase. The in-context build moves to step 4.
+- **The subagent step names what it does not have.** The `Agent` tool keeps no resume cache,
+  so `/bb:implement` says in one line that a re-run rebuilds every task the checklist on disk
+  does not show as ticked.
+
+## 3.23.0 (2026-11-03)
+
+**`/bb:review` runs as a loop by default on the current branch.** The item by item curation
+asked the person to decide every finding, and a verifier from the same model that wrote the
+code tends to miss what that model misses. The loop gives the decision to the context that
+holds the code, which fixes or refuses each finding with a ground a reviewer can check, and
+seats a reviewer from another model when one is installed. Ported from the review loop of
+shipshape 4.2.0; the `instrumentation` front, the manifesto consult and the reading of
+`discovery.md` and `design.md` stay as they were.
+
+### Added
+
+- **The review loop** (`references/loop.md`): every available front runs in round 1 with no
+  fronts question, the main context fixes or refuses each verified finding, and rounds 2 and
+  on re-read only the delta, the open findings and the refusals. The budget is 3 rounds, 5
+  when a Bloqueante concerns security, permissions or data loss. The verdict is `clean`,
+  `disputed` or `open`, followed by one push, the thread replies with the sha and one CI
+  read. Commits and PR comments carry only the round and the verdict, never a reviewer or a
+  model.
+- **The loop's reviewer** (`references/loop-reviewer.md`, `scripts/loop_reviewer.py`): Codex
+  CLI when it is on `PATH`, run with the read-only sandbox and a timeout; without it, or when
+  a round fails, that round falls back to `bb-review-verifier`.
+
+### Changed
+
+- **`/bb:review manual`** keeps the previous flow: the fronts question and the curation item by
+  item. The external PR, the surface audit and a direct ask for one front also run it.
+- **`/bb:implement` runs the loop as its review step**, with no `threads` or `ci`, no push and
+  no gate. Every verdict goes on to the ship, and the verdict note goes into the PR
+  description.
+- **`verify.md`, `act-apply-fixes.md`, `act-comment-findings.md`, `front-threads.md` and
+  `front-ci.md`** say how each of them behaves inside the loop.
 
 ## 3.22.0 (2026-11-03)
 
