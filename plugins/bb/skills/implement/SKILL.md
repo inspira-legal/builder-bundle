@@ -93,7 +93,7 @@ The hard line holds throughout: implement never merges, never approves, never fo
 | a task line still carries `dep:`                 | read and left out of the payload; phase order is the only dependency                                                   |
 | safety valve fires (underspecified)              | `status: blocked`, the blocker into the spec's `## Open`, point back to `/bb:spec`, stop; do not improvise             |
 | the build stops (stage zero or a task)           | `status: blocked`, the blocker into the spec's `## Open`, no review and no ship                                        |
-| no `Workflow` tool, `Agent` tool present         | one subagent per task, phase by phase, landed here; one line names the step and the missing resume cache               |
+| no `Workflow` tool, `Agent` tool present         | one subagent per task, landed here; the step and the missing resume cache named in one line and in step 14             |
 | the build falls back to this context             | it runs the same way; the reason names which step of the reference's fallback chain, in one line and again in step 14  |
 | the review finds nothing                         | say so in one line and go on to the ship                                                                               |
 | a CONFIRMED fix turns a check red                | fixed before the ship, through steps 7 to 9 like any other change                                                      |

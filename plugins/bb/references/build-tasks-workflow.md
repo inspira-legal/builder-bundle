@@ -103,8 +103,8 @@ else, so the skills point at it by name and carry no count of their own:
    readable at `<plugin-root>/workflows/build-tasks.js`: one subagent per task, phase by
    phase, as `## The subagent fallback` below states. The normalize call is skipped here,
    since no `scriptPath` is sent: the main context reads the source with `Read`.
-4. No `Workflow` tool and no `Agent` tool, or no `Workflow` tool and no readable script, or
-   the `Bash` call came back non-zero, whether because the session carries no published
+4. No `Workflow` tool and no `Agent` tool, or no `Workflow` tool and no readable script, or,
+   with the `Workflow` tool present, the `Bash` call came back non-zero, whether because the session carries no published
    root, because the source is not readable under it, or because the out dir could not be
    written: the in-context build, with the reason named. Those are different lines to say,
    so say which one it was.
@@ -122,8 +122,9 @@ covers this build and nothing beyond it.
 **A session that forbids workflows outright is a third way to end up here, and it is not a
 step of the chain.** An account or session level rule saying not to use workflows unless the
 user asked outranks the opt-in above, and the tool never runs. The build proceeds in the
-main context like step 4, and the line the skill owes says the session's own rules vetoed
-the dispatch, so the reason reads as a veto and not as a missing file.
+main context like step 4, and step 3 is not taken either, since it dispatches the same agents
+the workflow would. The line the skill owes says the session's own rules vetoed the dispatch,
+so the reason reads as a veto and not as a missing file.
 
 Two stops sit outside the chain, and neither is a step of it. A user who denies the
 permission dialog has declined this dispatch: report the denial and ask what they want
@@ -140,17 +141,22 @@ the main context still never writes a task's code. The script stays the definiti
 `<plugin-root>/workflows/build-tasks.js` once, and build every prompt from it.
 
 1. **Prove the ground the way stage zero does.** Send one `bb:bb-reuse-check` subagent with
-   every reuse note, numbered as `reusePrompt()` numbers them, when the spec carries any, and
+   every reuse note, numbered as `reusePrompt()` numbers them, when the spec carries any,
+   with one closing line asking for the `verdicts` shape of stage zero as one JSON object, and
    run the checks `args.checks` carries in the main context, under the same `runnable`
    rule. A `gone` note, a note left unanswered, a check refused and a tree already red are
    the same stops as in `## Stage zero: prove the ground before task 1`.
-2. **Walk the phases in order**, grouped the way `phaseGroups()` groups them.
-3. **A group with one unticked task**: one subagent on the shared tree, with no `isolation`,
-   and the prompt `taskPrompt()` builds with `together` false. Wait for its return before the
-   next task.
-4. **A group with several unticked tasks**: one subagent per task, all sent in one message,
-   each with `isolation: "worktree"` and the prompt `taskPrompt()` builds with `together`
-   true. Wait for every return.
+2. **Walk the phases in order**, grouped the way `phaseGroups()` groups them, its `together`
+   flag included.
+3. **A group with `together` false, or with one unticked task**: one subagent per task, one
+   at a time on the shared tree, with no `isolation`, and the prompt `taskPrompt()` builds with
+   `together` false. The tasks above the first `###` are such a group whatever their count.
+   Wait for each return before the next task: the first failure stops the run there, with its
+   blocker as `stopped`, as the in line rule of `## The phase loop` states.
+4. **A group with `together` true and several unticked tasks**: one subagent per task, all
+   sent in one message, each with `isolation: "worktree"` and the prompt `taskPrompt()` builds
+   with `together` true. Wait for every return. A dispatch refused for its `isolation` builds
+   the group the way item 3 does.
 5. **Read every return by `failureOf()`'s five exits.** The `Agent` tool takes no schema, so
    append one line to each prompt asking the subagent to end with the return shape of
    `## What the task agent is told to do` as one JSON object. A return with no such object
