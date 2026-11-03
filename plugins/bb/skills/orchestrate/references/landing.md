@@ -6,10 +6,16 @@ release on every merge.
 
 ## Follow CI
 
-Each side session opens its PR with Auto-fix on, so the app wakes it on CI failures,
-review comments and conflicts. The orchestrator follows each PR's checks with
-`gh pr checks` or `gh pr view`, tells the person when one turns green or stays red, and
-sends a stuck failure back to its side session.
+Each side session asks for Auto-fix when it opens its PR, so the app wakes it on CI
+failures, review comments and conflicts. The switch waits on the person's approval, and
+a front whose switch was declined is not woken: its failures reach it only from the
+orchestrator. The orchestrator follows each PR's checks with `gh pr checks` or
+`gh pr view`, tells the person when one turns green or stays red, and sends a stuck or
+unwatched failure back to its side session.
+
+A PR that merged, whoever merged it (the person on GitHub, a merge queue, the
+orchestrator), ends its front: run `references/cleanup.md`, "When a front ends", on the
+turn the orchestrator sees it merged.
 
 ## Merge only what the person authorized
 
