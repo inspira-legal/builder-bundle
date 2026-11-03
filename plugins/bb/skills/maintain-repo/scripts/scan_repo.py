@@ -38,6 +38,7 @@ import re
 import subprocess
 import sys
 import time
+from datetime import datetime, timedelta, timezone
 from shutil import which
 from typing import Any
 
@@ -77,6 +78,9 @@ DEPENDABOT_TITLE = re.compile(
 GROUPED_TITLE = re.compile(r"^bump\s+the\s+.+\s+group", re.IGNORECASE)
 
 MAX_UNTRUSTED = 2000
+
+# A human PR untouched this long and behind its base is suggested for modernize.
+STALE_DAYS = 30
 
 
 # --------------------------------------------------------------------------- #
@@ -351,6 +355,31 @@ def mergeability_verdict(pr: dict[str, Any]) -> dict[str, Any]:
     return {"merge_safe": "needs-human", "reasons": ["did-not-meet-all-criteria"], "risk_notes": []}
 
 
+def suggested_action(pr: dict[str, Any], now: datetime, viewer: str | None) -> dict[str, Any]:
+    # A suggestion is digest text only; takeover/modernize run when the user names the PR.
+    state = pr["merge_state"]
+    behind = state in {"behind", "dirty", "conflicting"}
+    if pr.get("draft") or (viewer and pr.get("author_login") == viewer):
+        return {"action": None, "reasons": []}
+    if pr["is_dependabot"]:
+        return {"action": "modernize", "reasons": [f"merge-state-{state}"]} if behind else {"action": None, "reasons": []}
+    if pr["is_bot"]:
+        return {"action": None, "reasons": []}
+    reasons: list[str] = []
+    updated = pr.get("updated_at")
+    if updated:
+        age = now - datetime.fromisoformat(updated.replace("Z", "+00:00"))
+        if age >= timedelta(days=STALE_DAYS) and behind:
+            return {"action": "modernize", "reasons": [f"stale-{age.days}d", f"merge-state-{state}"]}
+    if pr["ci"]["state"] == "failure":
+        reasons.append("ci-failing")
+    if pr["review_decision"] == "CHANGES_REQUESTED":
+        reasons.append("changes-requested")
+    if state in {"dirty", "conflicting"}:
+        reasons.append("merge-conflict")
+    return {"action": "takeover", "reasons": reasons} if reasons else {"action": None, "reasons": []}
+
+
 def correlate_alert(pr: dict[str, Any], alerts: list[dict[str, Any]]) -> dict[str, Any] | None:
     pkg = pr["semver"].get("package")
     if not pkg:
@@ -422,7 +451,9 @@ def build_pr_record(slug: str, raw: dict[str, Any], cwd: str | None) -> dict[str
 # --------------------------------------------------------------------------- #
 def _fixture(**over: Any) -> dict[str, Any]:
     base = {
-        "number": 1, "is_dependabot": True, "changed_files": ["bun.lock", "package.json"],
+        "number": 1, "is_dependabot": True, "is_bot": True, "draft": False,
+        "author_login": "dependabot[bot]", "updated_at": "2026-01-01T00:00:00Z",
+        "changed_files": ["bun.lock", "package.json"],
         "mergeable": True, "merge_state": "clean", "review_decision": None,
         "ci": {"state": "success", "failing": []},
         "semver": {"package": "zod", "from": "3.1.0", "to": "3.1.1", "class": "patch", "grouped": False},
@@ -447,6 +478,20 @@ def self_test() -> int:
         ("touches workflow -> needs-human", _fixture(changed_files=[".github/workflows/ci.yml", "bun.lock"]), "needs-human"),
         ("ci pending -> needs-human", _fixture(ci={"state": "pending", "failing": []}), "needs-human"),
     ]
+    now = datetime(2026, 1, 10, tzinfo=timezone.utc)
+    old = "2025-11-01T00:00:00Z"
+    human = {"is_dependabot": False, "is_bot": False, "author_login": "alice"}
+    action_cases = [
+        ("clean dependabot -> none", _fixture(), None),
+        ("dependabot behind -> modernize", _fixture(merge_state="behind"), "modernize"),
+        ("human ci red -> takeover", _fixture(**human, ci={"state": "failure", "failing": ["test"]}), "takeover"),
+        ("human changes requested -> takeover", _fixture(**human, review_decision="CHANGES_REQUESTED"), "takeover"),
+        ("human stale and behind -> modernize", _fixture(**human, updated_at=old, merge_state="behind"), "modernize"),
+        ("human stale but clean -> none", _fixture(**human, updated_at=old), None),
+        ("human recent conflict -> takeover", _fixture(**human, merge_state="dirty"), "takeover"),
+        ("own pr -> none", _fixture(**{**human, "author_login": "me"}, merge_state="dirty"), None),
+        ("draft -> none", _fixture(**human, draft=True, merge_state="dirty"), None),
+    ]
     failures = 0
     for label, pr, expected in cases:
         got = mergeability_verdict(pr)["merge_safe"]
@@ -454,7 +499,14 @@ def self_test() -> int:
         print(f"[{'PASS' if ok else 'FAIL'}] {label}: expected={expected} got={got}", file=sys.stderr)
         if not ok:
             failures += 1
-    print(f"--- self-test: {len(cases) - failures}/{len(cases)} passed", file=sys.stderr)
+    for label, pr, expected in action_cases:
+        got = suggested_action(pr, now, "me")["action"]
+        ok = got == expected
+        print(f"[{'PASS' if ok else 'FAIL'}] {label}: expected={expected} got={got}", file=sys.stderr)
+        if not ok:
+            failures += 1
+    total = len(cases) + len(action_cases)
+    print(f"--- self-test: {total - failures}/{total} passed", file=sys.stderr)
     return 1 if failures else 0
 
 
@@ -485,6 +537,10 @@ def main() -> int:
     alerts = list_dependabot_alerts(slug, cwd)
     prs_raw = list_open_prs(slug, cwd, args.max_prs)
 
+    code, out, _ = run(["gh", "api", "user", "--jq", ".login"], cwd=cwd)
+    viewer = out.strip() if code == 0 else None
+    now = datetime.now(timezone.utc)
+
     records: list[dict[str, Any]] = []
     for raw in prs_raw:
         try:
@@ -494,6 +550,7 @@ def main() -> int:
             continue
         pr["linked_alert"] = correlate_alert(pr, alerts)
         pr["verdict"] = mergeability_verdict(pr)
+        pr["suggested_action"] = suggested_action(pr, now, viewer)
         rank, label = priority(pr)
         pr["priority_rank"] = rank
         pr["priority_label"] = label

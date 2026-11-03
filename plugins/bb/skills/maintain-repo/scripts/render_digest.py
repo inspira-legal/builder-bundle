@@ -67,7 +67,9 @@ def pr_line(pr: dict[str, Any]) -> str:
     notes = "; ".join((verdict.get("risk_notes") or [])[:1])
     prio = pr.get("priority_label", "")
     tail = "; ".join(x for x in [why, notes] if x)
-    return f"• <{url}|#{n}> *{pkg}* {delta} · {prio}{(' · ' + tail) if tail else ''}"
+    action = (pr.get("suggested_action") or {}).get("action")
+    suggest = f" · suggest: {action} #{n}" if action else ""
+    return f"• <{url}|#{n}> *{pkg}* {delta} · {prio}{(' · ' + tail) if tail else ''}{suggest}"
 
 
 def render_slack(scan: dict[str, Any], changed: set[int]) -> str:
