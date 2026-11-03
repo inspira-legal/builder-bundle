@@ -1,15 +1,21 @@
 # Landing
 
 The orchestrator follows every PR the fronts open. This page covers following CI, when
-the orchestrator merges and how, the order of merges, and repos that release on every
-merge.
+the orchestrator merges and how, the order fronts open and land in, and repos that
+release on every merge.
 
 ## Follow CI
 
-Each side session opens its PR with Auto-fix on, so the app wakes it on CI failures,
-review comments and conflicts. The orchestrator follows each PR's checks with
-`gh pr checks` or `gh pr view`, tells the person when one turns green or stays red, and
-sends a stuck failure back to its side session.
+Each side session asks for Auto-fix when it opens its PR, so the app wakes it on CI
+failures, review comments and conflicts. The switch waits on the person's approval, and
+a front whose switch was declined is not woken: its failures reach it only from the
+orchestrator. The orchestrator follows each PR's checks with `gh pr checks` or
+`gh pr view`, tells the person when one turns green or stays red, and sends a stuck or
+unwatched failure back to its side session.
+
+A PR that merged, whoever merged it (the person on GitHub, a merge queue, the
+orchestrator), ends its front: run `references/cleanup.md`, "When a front ends", on the
+turn the orchestrator sees it merged.
 
 ## Merge only what the person authorized
 
@@ -44,15 +50,25 @@ On a squash, the commit title is the PR title unless `--subject` sets another. S
 `--subject` when the PR title does not carry the commit type the change deserves (the
 next section says why that matters).
 
+## Land in dependency order
+
+A front that needs another front's result opens after that front's PR lands. To open it
+earlier, tell the person why in one line, such as work that does not touch the code the
+other PR changes.
+
+When several PRs are green, merge the one the others depend on first. A PR that builds on
+another's code, schema or API waits for that PR, even when its own CI turned green first.
+
 ## Merge in sequence
 
-1. Merge one PR.
+1. Merge one PR, in dependency order.
 2. Wait for GitHub to recompute the next PR's mergeable state before merging it.
 3. Repeat for the next PR.
 
 Tell the person that PRs merged in sequence are tested together only by `main`'s CI, and
 follow that run. After each merge, tell every side session with an open PR in the same
-area to merge `main` into its branch.
+area to merge `main` into its branch, and clean up the merged PR's front by
+`references/cleanup.md`.
 
 ## Repos that release on every merge
 

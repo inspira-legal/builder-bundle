@@ -4,7 +4,7 @@ description: Reviews the change end to end. On the current branch it loops by de
 license: Apache-2.0
 metadata:
   author: Athena Briana - github.com/athenabriana; quality-pass material adapted from Claude Code's /simplify, angle/verify architecture adapted from Claude Code's /code-review (Anthropic, Apache-2.0), a11y front absorbed from rafael's ui-accessibility skill (loja inspira-skills, MIT)
-  version: 2.8.0
+  version: 2.9.0
 ---
 
 # Review
@@ -250,6 +250,8 @@ Re-report as a table: `# | item | action taken | commit/status`: `fixed`,
 `commented (link)`, `já dito (link)` and `left in the report` are all valid outcomes.
 
 ## Step 8: Gate
+
+In a front (a session `/bb:orchestrate` opened), every question of this skill (the fronts question, the items question and this gate) goes through `<plugin-root>/references/front-contract.md` instead of a local dialog.
 
 Per the plugin-root `references/handoff-gate.md`, one question with **2–4
 options**. Five states can qualify, so take the first three that apply in this

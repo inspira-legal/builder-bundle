@@ -30,6 +30,7 @@ plugins/bb/
 ├── references/                        # plugin-level docs (not skill-scoped)
 │   ├── doc-style.md                    # the style rules for every sentence bb writes
 │   ├── handoff-gate.md                 # the one convention for end-of-skill gates (+ AskUserQuestion rationale)
+│   ├── front-contract.md               # how every skill runs in a front of /bb:orchestrate: questions and pages go to the orchestrator
 │   ├── confidence-and-steelman.md      # shared reasoning protocols (think, challenge)
 │   ├── spec-state.md                   # the .bb/<slug>/ folder contract
 │   ├── bb-config.md                    # ~/.claude/bb.config.json: the schema and who reads it

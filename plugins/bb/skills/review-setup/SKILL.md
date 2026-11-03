@@ -4,7 +4,7 @@ description: Generates or updates the repository's CODE_REVIEW_GUIDE.md. Runs au
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.4.0
+  version: 2.5.0
 ---
 
 # Review setup
@@ -46,6 +46,8 @@ domain.
 2. **Interview** → `references/interview.md`: the maintainer validates via
    `AskUserQuestion`: confirmed rules in one batch, candidates one at a
    time. Every rule in the guide was accepted by a human, none slipped in.
+   In a front (a session `/bb:orchestrate` opened), the interview and the gate go through
+   `<plugin-root>/references/front-contract.md` instead of a local dialog.
 3. **Generate** → `references/guide-template.md`: write `CODE_REVIEW_GUIDE.md`
    at the repo root from the validated rules.
 
