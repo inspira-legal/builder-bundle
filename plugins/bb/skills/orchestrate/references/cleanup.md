@@ -13,8 +13,9 @@ The orchestrator archives each front as soon as it ends, without asking the pers
   open or a decision pending has not ended its front.
 - **A front whose PR is abandoned** ends when the PR closes with its comment.
 
-A written spec's build opens a new front with the same slug as its `name`. The spec front
-ends with its report, so archive it first, and open the build front only once that archive
+When a spec front stopped at the spec (its scope ended there, or the person picked Stop
+here at the gate), the build opens a new front with the same slug as its `name`. The spec
+front ends with its report, so archive it first, and open the build front only once that archive
 went through. While the archive waits on the person's approval, or after they declined it,
 the build front waits too: say so, since a live spec front still holds the `name`.
 
