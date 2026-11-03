@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.21.0 (2026-11-03)
+## 3.24.0 (2026-11-03)
 
 **`/bb:implement` builds one agent per task even in a session without the `Workflow`
 tool.** Until now that session built every task in the main context, which pays each task's
@@ -17,6 +17,96 @@ where the same step already runs.
 - **The subagent step names what it does not have.** The `Agent` tool keeps no resume cache,
   so `/bb:implement` says in one line that a re-run rebuilds every task the checklist on disk
   does not show as ticked.
+
+## 3.23.0 (2026-11-03)
+
+**`/bb:review` runs as a loop by default on the current branch.** The item by item curation
+asked the person to decide every finding, and a verifier from the same model that wrote the
+code tends to miss what that model misses. The loop gives the decision to the context that
+holds the code, which fixes or refuses each finding with a ground a reviewer can check, and
+seats a reviewer from another model when one is installed. Ported from the review loop of
+shipshape 4.2.0; the `instrumentation` front, the manifesto consult and the reading of
+`discovery.md` and `design.md` stay as they were.
+
+### Added
+
+- **The review loop** (`references/loop.md`): every available front runs in round 1 with no
+  fronts question, the main context fixes or refuses each verified finding, and rounds 2 and
+  on re-read only the delta, the open findings and the refusals. The budget is 3 rounds, 5
+  when a Bloqueante concerns security, permissions or data loss. The verdict is `clean`,
+  `disputed` or `open`, followed by one push, the thread replies with the sha and one CI
+  read. Commits and PR comments carry only the round and the verdict, never a reviewer or a
+  model.
+- **The loop's reviewer** (`references/loop-reviewer.md`, `scripts/loop_reviewer.py`): Codex
+  CLI when it is on `PATH`, run with the read-only sandbox and a timeout; without it, or when
+  a round fails, that round falls back to `bb-review-verifier`.
+
+### Changed
+
+- **`/bb:review manual`** keeps the previous flow: the fronts question and the curation item by
+  item. The external PR, the surface audit and a direct ask for one front also run it.
+- **`/bb:implement` runs the loop as its review step**, with no `threads` or `ci`, no push and
+  no gate. Every verdict goes on to the ship, and the verdict note goes into the PR
+  description.
+- **`verify.md`, `act-apply-fixes.md`, `act-comment-findings.md`, `front-threads.md` and
+  `front-ci.md`** say how each of them behaves inside the loop.
+
+## 3.22.0 (2026-11-03)
+
+**`/bb:research` takes the place of `/bb:code-deep-research`.** The old skill only read code and
+left the report in the conversation, so `/bb:spec` had no
+file to build a draft on. The new one covers code, web content and real screens, runs to the
+end without a question or a gate so an agent can call it, and writes its report beside the
+spec. `/bb:spec` calls it on its own when the draft depends on a fact the repo does not hold.
+The skill count does not change.
+
+### Added
+
+- **Three fronts in `/bb:research`**: code (clones read at `file:line`), content (a URL plus
+  the quoted passage) and visual (`scripts/fetch_images.py`, at most 6 images per page, 30
+  per run and 5 MB each). The verifier opens the code, the page and the image itself.
+- **A fixed cap**: at most 3 clones and 3 verify rounds, in the platform's temp folder,
+  outside the worktree. With no `Agent` tool the same steps run inline.
+- **`.bb/<slug>/research.md`**, with `## Question`, `## Fronts`, `## Findings`,
+  `## Comparison`, `## Recommendation`, `## Open` and `## Sources`. The research leaves it
+  uncommitted.
+
+### Changed
+
+- **`/bb:spec` runs `/bb:research` before the draft** when the draft needs an outside fact,
+  reads an existing `research.md` instead of rerunning it, and commits it with `spec.md`.
+- **The `.bb/<slug>/` contract has six documents.** `references/spec-state.md` adds
+  `research.md`, written only by `/bb:research`.
+
+### Removed
+
+- **`/bb:code-deep-research`** no longer exists, with no alias. Call `/bb:research`.
+
+## 3.21.0 (2026-11-03)
+
+**`/bb:takeover` acts on a PR somebody else opened, and `/bb:maintain-repo` suggests when.** The
+digest already said which PRs were blocked, but finishing a contributor's PR or reviving a stale
+one was left to whoever read it, with no rule for the author's credit or for an old branch that
+the base already covers. It is the 22nd skill, in the Revisar trilha.
+
+### Added
+
+- **`/bb:takeover`**, in two modes, one PR per run. **Adopt** (`references/takeover.md`) pushes
+  onto the author's branch when `maintainerCanModify` allows it, else opens a new PR that keeps
+  the author's commits and credits them, then hands threads and CI to `/bb:ship`'s PR path.
+  **Modernize** (`references/modernize.md`) asks Dependabot to rebase its own PR, closes a PR
+  whose problem the base already solved only on the person's yes, and otherwise rebases locally
+  and hands over a `--force-with-lease` push pinned to the head it read. Without a mode in the
+  request, it picks one from the PR's state. It never merges, approves or force-pushes.
+
+### Changed
+
+- **`/bb:maintain-repo` suggests an action per PR.** `scan_repo.py` adds `suggested_action`:
+  `modernize` for a Dependabot PR behind or in conflict, or a human PR untouched for 30 days and
+  behind; `takeover` for another person's PR with CI failing, changes requested or a conflict;
+  nothing for drafts, the person's own PRs and other bots. The digest shows it as
+  `suggest: <action> #N`, and maintain-repo never runs it. Nine action fixtures join the
+  self-test, which the CI now runs.
 
 ## 3.20.0 (2026-10-27)
 

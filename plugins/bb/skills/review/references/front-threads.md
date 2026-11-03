@@ -69,6 +69,11 @@ with every thread already resolved, there is nothing to judge and the line repor
 | answer  | `python3 <plugin-root>/scripts/reply_resolve_thread.py --thread-id <id> --body "..." --no-resolve`; the reviewer closes it                                                                   |
 | unclear | ask the user what the reply should be, then answer-flow with their wording                                                                                                                   |
 
+**In the review loop** the owner picks instead of the user (`loop.md`): threads enter
+round 1 only, a `fix` commits with the round's other fixes, and every reply waits for the
+loop's single push so the sha is real. A thread the owner refuses gets the `answer` row
+with the ground; an `unclear` one stays open and reaches the report.
+
 Replies match the language of the thread they answer. Pushing
 fixes to the PR branch is reversible, so it proceeds without pausing; merge,
 approve, and force-push stay the user's. This skill never runs them.
