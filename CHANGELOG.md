@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.24.0 (2026-11-03)
+## 3.25.0 (2026-11-03)
 
 **`/bb:spec` cuts the version and reads the backlog.** `/bb:backlog` read `## Out of scope` as
 free text and had to guess whether an item comes back, and nothing brought a parked item back to
@@ -20,6 +20,24 @@ sees what is waiting for it. The reasoning is `.bb/spec-moscow/spec.md`.
 - **`/bb:spec` reads `backlog.md` before drafting**: this slug's, and the `## Next version` of
   the other slugs'. An item whose trigger fired is asked as a gray area, never drafted in on its
   own.
+
+## 3.24.0 (2026-11-03)
+
+**`/bb:implement` builds one agent per task even in a session without the `Workflow`
+tool.** Until now that session built every task in the main context, which pays each task's
+reads there and gives up the clean budget per task. The port comes from the shipshape fork,
+where the same step already runs.
+
+### Changed
+
+- **The fallback chain has four steps.** `references/build-tasks-workflow.md` adds step 3: no
+  `Workflow` tool, with the `Agent` tool present and the script readable, dispatches one
+  subagent per task, phase by phase, in a worktree of its own when the phase has several
+  tasks. The new `## The subagent fallback` section states how the main context proves the
+  ground, reads each return and lands the phase. The in-context build moves to step 4.
+- **The subagent step names what it does not have.** The `Agent` tool keeps no resume cache,
+  so `/bb:implement` says in one line that a re-run rebuilds every task the checklist on disk
+  does not show as ticked.
 
 ## 3.23.0 (2026-11-03)
 

@@ -6,9 +6,9 @@ task as a dynamic workflow. The script that does it is fixed and versioned at
 agent's contract is the prompt string inside it, not a paraphrase kept here. This file
 documents what the skills need to know to call it and what its return means.
 
-There is no mode question. The in-context build survives as the last step of the
-fallback chain below, and the skills say in one line why the build ran in the main
-context.
+There is no mode question. A session without the `Workflow` tool dispatches the same
+agents through the `Agent` tool, and the in-context build survives as the last step of the
+fallback chain below. The skills say in one line which step the build ran on and why.
 
 ## Why the build runs here and not in the main context
 
@@ -99,15 +99,22 @@ else, so the skills point at it by name and carry no count of their own:
    text, read from the printed path. The normalize step only answers for CR, and a refusal
    has other causes, so the inline form is the attempt that does not depend on which one it
    was.
-3. No `Workflow` tool in the session, or the `Bash` call came back non-zero, whether
-   because the session carries no published root, because the source is not readable under
-   it, or because the out dir could not be written: the in-context build, with the reason
-   named. Those are different lines to say, so say which one it was.
+3. No `Workflow` tool in the session, with the `Agent` tool present and the script
+   readable at `<plugin-root>/workflows/build-tasks.js`: one subagent per task, phase by
+   phase, as `## The subagent fallback` below states. The normalize call is skipped here,
+   since no `scriptPath` is sent: the main context reads the source with `Read`.
+4. No `Workflow` tool and no `Agent` tool, or no `Workflow` tool and no readable script, or,
+   with the `Workflow` tool present, the `Bash` call came back non-zero, whether because the session carries no published
+   root, because the source is not readable under it, or because the out dir could not be
+   written: the in-context build, with the reason named. Those are different lines to say,
+   so say which one it was.
 
-Only step 3 builds in the main context, and only the conditions it names reach it. A first
-path that does not resolve is a step of the resolution rule and not a step of this chain,
-so a `Bash` call that comes back empty is step 3 only after the whole rule has been walked.
-A run that has tasks to build and meets none of these conditions dispatches at step 1.
+The `Workflow` dispatch stays the first choice whenever the tool exists: step 3 is for a
+session that lacks it, and a refused `Workflow` dispatch never drops to step 3. Only step 4
+builds in the main context, and only the conditions it names reach it. A first path that
+does not resolve is a step of the resolution rule and not a step of this chain, so a `Bash`
+call that comes back empty is step 4 only after the whole rule has been walked. A run that
+has tasks to build and meets none of these conditions dispatches at step 1.
 Invoking `/bb:implement`, by the command or by the phrases its `description` lists, is the
 request for this workflow, and that request is the opt-in the `Workflow` tool asks for. It
 covers this build and nothing beyond it.
@@ -115,8 +122,9 @@ covers this build and nothing beyond it.
 **A session that forbids workflows outright is a third way to end up here, and it is not a
 step of the chain.** An account or session level rule saying not to use workflows unless the
 user asked outranks the opt-in above, and the tool never runs. The build proceeds in the
-main context like step 3, and the line the skill owes says the session's own rules vetoed
-the dispatch, so the reason reads as a veto and not as a missing file.
+main context like step 4, and step 3 is not taken either, since it dispatches the same agents
+the workflow would. The line the skill owes says the session's own rules vetoed the dispatch,
+so the reason reads as a veto and not as a missing file.
 
 Two stops sit outside the chain, and neither is a step of it. A user who denies the
 permission dialog has declined this dispatch: report the denial and ask what they want
@@ -124,6 +132,49 @@ instead. A stage zero that resolves the project's checks and is then **refused p
 to run one stops the run before task 1: that is the `ran: false` case below. The policy
 case is not a stop at all, and the two are easy to confuse because both end with nothing
 having run.
+
+## The subagent fallback
+
+Step 3 of the chain runs the script's plan by hand. The main context plays the script's part
+and dispatches one `Agent` subagent per task, so each task still starts on a clean budget and
+the main context still never writes a task's code. The script stays the definition: read
+`<plugin-root>/workflows/build-tasks.js` once, and build every prompt from it.
+
+1. **Prove the ground the way stage zero does.** Send one `bb:bb-reuse-check` subagent with
+   every reuse note, numbered as `reusePrompt()` numbers them, when the spec carries any,
+   with one closing line asking for the `verdicts` shape of stage zero as one JSON object, and
+   run the checks `args.checks` carries in the main context, under the same `runnable`
+   rule. A `gone` note, a note left unanswered, a check refused and a tree already red are
+   the same stops as in `## Stage zero: prove the ground before task 1`.
+2. **Walk the phases in order**, grouped the way `phaseGroups()` groups them, its `together`
+   flag included.
+3. **A group with `together` false, or with one unticked task**: one subagent per task, one
+   at a time on the shared tree, with no `isolation`, and the prompt `taskPrompt()` builds with
+   `together` false. The tasks above the first `###` are such a group whatever their count.
+   Wait for each return before the next task: the first failure stops the run there, with its
+   blocker as `stopped`, as the in line rule of `## The phase loop` states.
+4. **A group with `together` true and several unticked tasks**: one subagent per task, all
+   sent in one message, each with `isolation: "worktree"` and the prompt `taskPrompt()` builds
+   with `together` true. Wait for every return. A dispatch refused for its `isolation` builds
+   the group the way item 3 does.
+5. **Read every return by `failureOf()`'s five exits.** The `Agent` tool takes no schema, so
+   append one line to each prompt asking the subagent to end with the return shape of
+   `## What the task agent is told to do` as one JSON object. A return with no such object
+   is the `null` case.
+6. **Land a group of several tasks in the main context**, doing the landing agent's six steps
+   of `## The phase loop` itself: cherry-pick the green commits in `n` order and remove each
+   landed worktree, abort and name a conflict, write one line per task that did not come back
+   green into `## Open`, run the checks over the landed tree, tick the landed tasks when they
+   are green, and join the notes. The stop rules of that section hold as written.
+
+A task's `model` goes to the `Agent` call's own `model`. The return the skill reads is the
+script's return shape, assembled by the main context from these results.
+
+**What this path does not have is the resume cache.** The `Workflow` runtime keys each agent's
+result on its `(prompt, opts)` and hands back what already ran; the `Agent` tool keeps no such
+cache. A re-run of the same spec skips only what the checklist on disk shows as ticked, so a
+task that ran green and did not land, or that stopped mid-build, runs again from scratch.
+The landing also runs in the main context, so its reads and fixes are paid there.
 
 ## `args`
 
