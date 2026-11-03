@@ -1,5 +1,23 @@
 # Changelog
 
+## 3.21.0 (2026-11-03)
+
+**`/bb:implement` builds one agent per task even in a session without the `Workflow`
+tool.** Until now that session built every task in the main context, which pays each task's
+reads there and gives up the clean budget per task. The port comes from the shipshape fork,
+where the same step already runs.
+
+### Changed
+
+- **The fallback chain has four steps.** `references/build-tasks-workflow.md` adds step 3: no
+  `Workflow` tool, with the `Agent` tool present and the script readable, dispatches one
+  subagent per task, phase by phase, in a worktree of its own when the phase has several
+  tasks. The new `## The subagent fallback` section states how the main context proves the
+  ground, reads each return and lands the phase. The in-context build moves to step 4.
+- **The subagent step names what it does not have.** The `Agent` tool keeps no resume cache,
+  so `/bb:implement` says in one line that a re-run rebuilds every task the checklist on disk
+  does not show as ticked.
+
 ## 3.20.0 (2026-10-27)
 
 **`/bb:backlog` gives a place to what the work left for later.** Every record already asks for
