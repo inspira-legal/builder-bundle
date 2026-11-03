@@ -26,6 +26,8 @@ with the user before any challenge.
 
 ### Step 2: Select the mode
 
+In a front (a session `/bb:orchestrate` opened), every question of this skill, the gate included, goes through `<plugin-root>/references/front-contract.md` instead of a local dialog.
+
 Ask via `AskUserQuestion`:
 
 ```

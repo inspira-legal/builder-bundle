@@ -29,6 +29,8 @@ The person's words decide it. Both modes can run in one session.
 
 ## Harvest the records
 
+In a front (a session `/bb:orchestrate` opened), every question of this skill, the gate included, goes through `<plugin-root>/references/front-contract.md` instead of a local dialog.
+
 1. **Read the folder.** Run `python3 scripts/harvest.py`, with `--slug SLUG` when the person
    named one. It prints JSON: per slug, the spec's `status` and `wave` key, the discovery's
    `verdict`, the items and the alerts. It writes nothing.

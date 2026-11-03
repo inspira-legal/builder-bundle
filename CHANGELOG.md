@@ -1,5 +1,45 @@
 # Changelog
 
+## 3.21.0 (2026-11-03)
+
+**`/bb:orchestrate` becomes the project's entry point.** The orchestrator answers questions,
+reads and triages in place, and every change to code, even one line, goes to a front. A single
+request is a run with one front. Inside a front, every bb skill sends its questions to the
+orchestrator instead of opening a dialog, so the person keeps talking to one conversation. Ported
+from the orchestrate of shipshape 2.0.0, without its fact wiki.
+
+### Added
+
+- **`references/front-contract.md`**: how a skill runs in a front. The brief's marker names the
+  orchestrator's session id; every question, the handoff gate included, goes there by
+  `SendMessage` in English, with its options and the recommended pick; pages go as Artifacts and
+  files through the notes folder; the final report carries the result, the PR and its CI.
+- **`skills/orchestrate/scripts/front_name.py`**: makes a front's `name` from its slug or title,
+  cut at the last hyphen within 24 characters, and flags a `name` a live session already holds.
+
+### Changed
+
+- **`/bb:orchestrate` 2.0.0.** "Start a run" renames the session to `Orchestrate <project>` and
+  rebuilds the state from `list_sessions` and the open PRs, adopting the fronts already running.
+  The brief carries ten things, the front marker and the scope among them; the default scope is
+  build, review and ship up to green CI, with no merge; a skill route picks `/bb:spec`,
+  `/bb:discover`, `/bb:brisar`, `/bb:debug`, `/bb:research`, `/bb:takeover`, `/bb:review` or
+  `/bb:ship`, and `/bb:maintain-repo` runs in the orchestrator itself. Briefs and the traffic
+  between sessions are English; what the person reads stays in their language. A front's title
+  is an English imperative under 60 characters, its slug is its `branch_name` and its spec
+  folder.
+- **Relay, landing and cleanup.** Questions from a front are relayed through `AskUserQuestion`
+  and answered back quoted; artifacts are opened for the person and republished to the same
+  URL; above four fronts at once the person hears it first; a usage limit is relayed once with
+  its reset time. PRs land in dependency order. Each front is archived as soon as it ends,
+  without asking, once its work is committed and pushed, and an archived front with no PR comes
+  back with `unarchive_session` for a follow-up. A code front with no worktree creates its own
+  with `git worktree add`.
+- **Front mode in the skills that ask**: spec, implement, review, ship, debug, discover, brisar,
+  think, challenge, measure, backlog, animate-tour and review-setup each send their questions
+  through the front contract in a front. `references/handoff-gate.md` and
+  `hooks/operating-context.md` carry the same routing.
+
 ## 3.20.0 (2026-10-27)
 
 **`/bb:backlog` gives a place to what the work left for later.** Every record already asks for

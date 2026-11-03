@@ -55,6 +55,8 @@ Run the steps in order. Each one reads its reference when it runs.
 5. **Reproduce**, only when the cause needs proof. `references/reproduce.md`.
 6. **The report and the gate.** `references/conclude.md`: the report, its personal data check,
    `close`, and one gate (fix now, spec the fix, correct a stale `service` document, stop).
+   In a front (a session `/bb:orchestrate` opened), this gate and every other question of
+   the run go through `<plugin-root>/references/front-contract.md` instead of a local dialog.
 7. **The postmortem**, inside the "fix now" path once the fix is committed, or with the fix
    marked pending when the fix goes to `/bb:spec`. `references/postmortem.md`.
 

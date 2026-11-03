@@ -22,6 +22,8 @@ depending on something you know and did not write down, the call is incomplete.
 Explaining the fork in prose and then asking "A or B" makes the person scroll
 back to answer, which is the same stall as printing the question as text.
 
+**In a front** (a session opened by `/bb:orchestrate`), the question does not open a dialog: it goes to the orchestrator as `<plugin-root>/references/front-contract.md` describes, with the same question, options and pick.
+
 ## The rule
 
 - **Suggest, never auto-invoke.** A gate offers; the user picks. The one exception

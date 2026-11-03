@@ -1,8 +1,8 @@
 # Landing
 
 The orchestrator follows every PR the fronts open. This page covers following CI, when
-the orchestrator merges and how, the order of merges, and repos that release on every
-merge.
+the orchestrator merges and how, the order fronts open and land in, and repos that
+release on every merge.
 
 ## Follow CI
 
@@ -44,15 +44,25 @@ On a squash, the commit title is the PR title unless `--subject` sets another. S
 `--subject` when the PR title does not carry the commit type the change deserves (the
 next section says why that matters).
 
+## Land in dependency order
+
+A front that needs another front's result opens after that front's PR lands. To open it
+earlier, tell the person why in one line, such as work that does not touch the code the
+other PR changes.
+
+When several PRs are green, merge the one the others depend on first. A PR that builds on
+another's code, schema or API waits for that PR, even when its own CI turned green first.
+
 ## Merge in sequence
 
-1. Merge one PR.
+1. Merge one PR, in dependency order.
 2. Wait for GitHub to recompute the next PR's mergeable state before merging it.
 3. Repeat for the next PR.
 
 Tell the person that PRs merged in sequence are tested together only by `main`'s CI, and
 follow that run. After each merge, tell every side session with an open PR in the same
-area to merge `main` into its branch.
+area to merge `main` into its branch, and clean up the merged PR's front by
+`references/cleanup.md`.
 
 ## Repos that release on every merge
 

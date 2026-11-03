@@ -43,7 +43,9 @@ Read the invocation and any existing `discovery.md` before asking anything:
 - **Anything expecting an answer goes through `AskUserQuestion`** (rationale in
   the plugin-root `references/handoff-gate.md`). **At most 2 questions per turn** (more turns it
   into a form, and forms get form-shaped answers), each with concrete options
-  and your lean. Decide the obvious yourself.
+  and your lean. Decide the obvious yourself. In a front (a session `/bb:orchestrate`
+  opened), every question, the gate included, goes through
+  `<plugin-root>/references/front-contract.md` instead of a local dialog.
 - **Echo before advancing.** One line after each turn ("Recebido. Problema: X,
   hypothesis is Y.") so a misread surfaces in seconds, not in sprint three.
 - **Confidence-tag everything** `[low | med | high]`; **skip with a reason,

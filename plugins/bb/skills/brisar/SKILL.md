@@ -40,7 +40,9 @@ the next silently.
 ## Execution principles
 
 1. **Every question via `AskUserQuestion`**: rationale in the plugin-root
-   `references/handoff-gate.md`.
+   `references/handoff-gate.md`. In a front (a session `/bb:orchestrate` opened), every
+   question, the gate included, goes through `<plugin-root>/references/front-contract.md`
+   instead of a local dialog.
 2. **The profile is already in the session.** `~/.claude/BUILDER-BUNDLE.md`
    carries it, written from `~/.claude/bb.config.json`; brisar never asks who is
    building. No profile block in the session means one of two things: read

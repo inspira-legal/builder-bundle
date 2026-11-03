@@ -81,7 +81,9 @@ before anything circulates.
 ## Handoff gate
 
 A chat answer offers the next level in one line and has no gate. A saved file or a document
-closes with one `AskUserQuestion` per the plugin-level `references/handoff-gate.md`:
+closes with one `AskUserQuestion` per the plugin-level `references/handoff-gate.md`. In a front
+(a session `/bb:orchestrate` opened), that gate and every question before it go through
+`<plugin-root>/references/front-contract.md` instead of a local dialog:
 
 ```
 question: "Measurement saved at <where>. Where do we go?"

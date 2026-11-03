@@ -230,6 +230,8 @@ Re-report as a table: `# | item | action taken | commit/status`: `fixed`,
 
 ## Step 8: Gate
 
+In a front (a session `/bb:orchestrate` opened), every question of this skill (the fronts question, the items question and this gate) goes through `<plugin-root>/references/front-contract.md` instead of a local dialog.
+
 Per the plugin-root `references/handoff-gate.md`, one question with **2–4
 options**. Five states can qualify, so take the first three that apply in this
 priority order. Unfinished work on this report outranks the next skill:
