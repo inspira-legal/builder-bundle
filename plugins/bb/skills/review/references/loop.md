@@ -15,6 +15,8 @@ instead when:
 
 - the user asked for it: `/bb:review manual`, "manual review", "let me pick";
 - the mode is an external PR, a surface audit, or a direct front ask;
+- the current branch is the repository's default branch. The loop commits its fixes, and
+  those commits belong on a feature branch;
 - the working tree has uncommitted changes. A fix commit would sweep in the user's own
   work, so say in one line why the manual flow runs.
 
@@ -87,7 +89,9 @@ round.
 
 ## When the loop stops
 
-- **A round brings no Bloqueante.** Its Sugestões (nits, comments, docs) are decided, and no
+- **A round brings no Bloqueante**: no new one, and none of the earlier ones still `open`
+  after the reviewer's pass. Round 1's Bloqueantes, fixed, still need round 2 to close them. That round's
+  Sugestões (nits, comments, docs) are decided, and no
   further round runs. Verdict `clean`, or `disputed` when a refusal stayed contested.
 - **The budget is spent.** Verdict `open` when a Bloqueante is still open.
 - **Round 1 has no verified finding.** The loop ends there, verdict `clean`, nothing
