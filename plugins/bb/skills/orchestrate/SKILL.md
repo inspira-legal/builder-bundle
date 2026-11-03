@@ -23,6 +23,7 @@ Run the whole project from this conversation while side sessions do the work. Th
 Before the first brief, title this session and gather what the briefs need:
 
 - **This session's title.** Rename this session with `set_session_title` and `"self"` to `Orchestrate <project>`, the project being what the run covers: "Orchestrate builder-bundle". When the run moves to another project, rename it again. When the title already reads that way, make no call. When the person set the title themselves, the app asks them to approve the new one: say that approval is waiting, and when they decline, keep the title and ask no second time. Each front's title and `name` follow `references/briefs.md`, "Naming a front".
+- **The notes folder.** Create one folder outside the repository for the run, and name its path in every brief (`references/briefs.md`, "The notes folder"). A run that already has one keeps it.
 - **The state of the project.** The orchestrator keeps no run log. Rebuild the state from `list_sessions` with `linked: true` and the open PRs: which fronts run, which wait, and which PRs are open and at what CI state. A new orchestrator on a project with fronts running does the same, and follows those fronts as its own from there: their PRs, their questions and their reports.
 
 ## What the mode needs

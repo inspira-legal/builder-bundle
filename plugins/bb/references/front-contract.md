@@ -4,7 +4,8 @@ A _front_ is a side session that `/bb:orchestrate` opened with a brief. The pers
 only to the orchestrator, so in a front every question, every page and every report
 reaches them through it. This page states what changes in a front: how a session knows it
 is one, how its questions travel, what it reports, and where its pages and files go.
-Every bb skill follows it.
+Every bb skill follows it, including one that never names it: the brief's marker is what
+puts a session under this page.
 
 ## Know you are a front
 

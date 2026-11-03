@@ -14,8 +14,9 @@ requires, 80 characters or more. A brief carries ten things:
 
 1. **The front marker**: a line that says the session is a front of `/bb:orchestrate`,
    names the orchestrator's session id (the `local_…` id `SendMessage` takes in `to`), and
-   points to `<plugin-root>/references/front-contract.md`. Every bb skill reads that line
-   and sends its questions to the orchestrator instead of asking a dialog.
+   points to `<plugin-root>/references/front-contract.md`. The line also says that every
+   question goes to the orchestrator through `SendMessage`, whatever the skill says, so a
+   skill with no front line of its own follows the contract too.
 2. **The person's exact words**, in quotes. A paraphrase loses the detail the side
    session needs to judge an edge case.
 3. **The goal and what done means**: the observable result, and the step it ends on (a
@@ -28,10 +29,11 @@ requires, 80 characters or more. A brief carries ten things:
    design), name its path so the front reads it.
 8. **What not to do**: the areas another front owns, and anything the person ruled out.
 9. **How to validate**: the commands, the app run, the behaviors to walk.
-10. **How to report**, as the last section of this page says, and the standing rules
-    below, every one of them.
+10. **How to report**, as "How to report" says, with the notes folder's path, and the
+    standing rules below, every one of them.
 
-Give each side session a title and a `name` as "Naming a front" says.
+Give each side session a title and a `name` as "Naming a front" says, and open it with
+`wake_when_done: true`, so a front that stops idle on a question wakes the orchestrator.
 
 Write the brief and its `background` in English. `<plugin-root>/references/doc-style.md`
 puts a string the person reads in their language; the traffic between sessions is read
@@ -139,7 +141,8 @@ Every brief repeats these, whatever the front:
 - **On an interface front, design comes before code.** The front shows screenshots
   first, two variations wherever there is a choice, and sends the choice to the
   orchestrator with the recommended pick first. It writes the code only after the person
-  approves.
+  approves. A front that runs `/bb:brisar` meets this rule through brisar's own phases
+  and gates.
 
 ## How to report
 
