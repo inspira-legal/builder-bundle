@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.21.0 (2026-10-28)
+## 3.23.0 (2026-11-03)
 
 **`/bb:spec` cuts the version and reads the backlog.** `/bb:backlog` read `## Out of scope` as
 free text and had to guess whether an item comes back, and nothing brought a parked item back to
@@ -20,6 +20,63 @@ sees what is waiting for it. The reasoning is `.bb/spec-moscow/spec.md`.
 - **`/bb:spec` reads `backlog.md` before drafting**: this slug's, and the `## Next version` of
   the other slugs'. An item whose trigger fired is asked as a gray area, never drafted in on its
   own.
+
+## 3.22.0 (2026-11-03)
+
+**`/bb:research` takes the place of `/bb:code-deep-research`.** The old skill only read code and
+left the report in the conversation, so `/bb:spec` had no
+file to build a draft on. The new one covers code, web content and real screens, runs to the
+end without a question or a gate so an agent can call it, and writes its report beside the
+spec. `/bb:spec` calls it on its own when the draft depends on a fact the repo does not hold.
+The skill count does not change.
+
+### Added
+
+- **Three fronts in `/bb:research`**: code (clones read at `file:line`), content (a URL plus
+  the quoted passage) and visual (`scripts/fetch_images.py`, at most 6 images per page, 30
+  per run and 5 MB each). The verifier opens the code, the page and the image itself.
+- **A fixed cap**: at most 3 clones and 3 verify rounds, in the platform's temp folder,
+  outside the worktree. With no `Agent` tool the same steps run inline.
+- **`.bb/<slug>/research.md`**, with `## Question`, `## Fronts`, `## Findings`,
+  `## Comparison`, `## Recommendation`, `## Open` and `## Sources`. The research leaves it
+  uncommitted.
+
+### Changed
+
+- **`/bb:spec` runs `/bb:research` before the draft** when the draft needs an outside fact,
+  reads an existing `research.md` instead of rerunning it, and commits it with `spec.md`.
+- **The `.bb/<slug>/` contract has six documents.** `references/spec-state.md` adds
+  `research.md`, written only by `/bb:research`.
+
+### Removed
+
+- **`/bb:code-deep-research`** no longer exists, with no alias. Call `/bb:research`.
+
+## 3.21.0 (2026-11-03)
+
+**`/bb:takeover` acts on a PR somebody else opened, and `/bb:maintain-repo` suggests when.** The
+digest already said which PRs were blocked, but finishing a contributor's PR or reviving a stale
+one was left to whoever read it, with no rule for the author's credit or for an old branch that
+the base already covers. It is the 22nd skill, in the Revisar trilha.
+
+### Added
+
+- **`/bb:takeover`**, in two modes, one PR per run. **Adopt** (`references/takeover.md`) pushes
+  onto the author's branch when `maintainerCanModify` allows it, else opens a new PR that keeps
+  the author's commits and credits them, then hands threads and CI to `/bb:ship`'s PR path.
+  **Modernize** (`references/modernize.md`) asks Dependabot to rebase its own PR, closes a PR
+  whose problem the base already solved only on the person's yes, and otherwise rebases locally
+  and hands over a `--force-with-lease` push pinned to the head it read. Without a mode in the
+  request, it picks one from the PR's state. It never merges, approves or force-pushes.
+
+### Changed
+
+- **`/bb:maintain-repo` suggests an action per PR.** `scan_repo.py` adds `suggested_action`:
+  `modernize` for a Dependabot PR behind or in conflict, or a human PR untouched for 30 days and
+  behind; `takeover` for another person's PR with CI failing, changes requested or a conflict;
+  nothing for drafts, the person's own PRs and other bots. The digest shows it as
+  `suggest: <action> #N`, and maintain-repo never runs it. Nine action fixtures join the
+  self-test, which the CI now runs.
 
 ## 3.20.0 (2026-10-27)
 

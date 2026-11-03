@@ -49,13 +49,13 @@ plugins/bb/
 │   ├── normalize_workflow.py           # the dispatch (references/build-tasks-workflow.md): the CR-free copy
 │   ├── inspect_pr_checks.py            # ship (CI failures), review (the ci front)
 │   └── db_read.py                      # measure (every query), debug (the warehouse locks gcloud_read.py imports)
-├── skills/                            # all 21 skills flat; trilha grouping is a docs concept
+├── skills/                            # all 22 skills flat; trilha grouping is a docs concept
 │   ├── Pensar:        discover, challenge, think, legal-lens
 │   ├── Desenhar:      spec, backlog
 │   ├── Construir:     implement, ship, measure, gather-branch-context, orchestrate
-│   ├── Revisar:       review, debug, maintain-repo, review-setup
+│   ├── Revisar:       review, debug, maintain-repo, takeover, review-setup
 │   ├── Design:        brisar
-│   ├── Pesquisar/Doc: code-deep-research, write-readme
+│   ├── Pesquisar/Doc: research, write-readme
 │   └── no trilha:     profile, reel (videos as code; its studio and bootstrap live in skills/reel/),
 │                      animate-tour (first-steps tour animations; GIF mode records on reel's studio)
 └── workflows/                         # dispatched by a skill, not read by one
@@ -194,13 +194,14 @@ TypeScript.
 ## Spec state
 
 The on-disk contract is `plugins/bb/references/spec-state.md`: `.bb/<slug>/` holds
-five documents and a prototype, and **every skill writes its own document, with
+six documents and a prototype, and **every skill writes its own document, with
 `spec.md` having exactly one writer**. `/bb:discover` writes `discovery.md` (the
 framing), `/bb:brisar` writes `design.md` (the journey) plus `prototype/` (the clickable
 artifact), `/bb:spec` writes `spec.md` (the contract, with its
 `status`/`created`/`slug` frontmatter and the status lifecycle owned by `/bb:implement`),
 `/bb:measure` writes `measure.md` (the readings after the landing) plus `measure-sql/`,
-and `/bb:backlog` writes `backlog.md` (what the work left for later).
+`/bb:backlog` writes `backlog.md` (what the work left for later), and `/bb:research`
+writes `research.md` (the verified research report, which `/bb:spec` commits with the spec).
 The spec reads the records by path and never copies their prose; where a record and
 the spec disagree the spec wins, and the record's own writer registers the reversal on
 its next round. Members are independent, and a folder can carry any one of them alone.
