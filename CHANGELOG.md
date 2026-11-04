@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.26.0 (2026-11-03)
+## 3.27.0 (2026-11-04)
 
 **The skill descriptions lead with the request, and a battery measures it.** The 15
 descriptions now open with what the person gets, quote trigger phrases the way people
@@ -41,6 +41,27 @@ session with many skills installed.
   landed and brought its own description, so the battery's two research requests now
   expect `research`. `maintain-repo` keeps this shape and takes `/bb:takeover`'s
   routing, at 627 characters, and `review` says it loops by default since 3.24.0.
+
+## 3.26.0 (2026-11-03)
+
+**`/bb:spec` cuts the version and reads the backlog.** `/bb:backlog` read `## Out of scope` as
+free text and had to guess whether an item comes back, and nothing brought a parked item back to
+the next spec. Now every item a spec leaves out is born typed, and the next spec on the area
+sees what is waiting for it. The reasoning is `.bb/spec-moscow/spec.md`.
+
+### Added
+
+- **The cut that closes the phasing**: step 5 of `/bb:spec` sorts the work with MoSCoW against
+  the version being built. A Won't goes to `## Out of scope` marked _revisit_ with its trigger,
+  or _discarded_ with its reason, and the gate shows the cut beside the phases.
+- **`W009`**: `lint_spec.py` warns on an `## Out of scope` bullet with neither marker.
+- **`discarded`** in `harvest.py`'s items, which `/bb:backlog` places in `## Discarded`.
+
+### Changed
+
+- **`/bb:spec` reads `backlog.md` before drafting**: this slug's, and the `## Next version` of
+  the other slugs'. An item whose trigger fired is asked as a gray area, never drafted in on its
+  own.
 
 ## 3.25.0 (2026-11-03)
 

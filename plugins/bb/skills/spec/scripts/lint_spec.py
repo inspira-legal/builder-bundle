@@ -5,8 +5,9 @@ Judgment (does it repeat itself, is it recounting the conversation) is the autho
 against `spec-format.md`; `bb-spec-reviewer` reads for content, not for how the prose repeats.
 This only catches what is decidable by reading the bytes: the required sections, dead names,
 frontmatter, malformed tables, the Metric section's shape (provenance notes and event-row
-citations), and a size (`W005`) past which one review pass cannot cover the spec. That
-ceiling measures the review surface, so its advice is to split, never to trim prose.
+citations), the `## Out of scope` markers, and a size (`W005`) past which one review pass
+cannot cover the spec. That ceiling measures the review surface, so its advice is to split,
+never to trim prose.
 
 Usage: lint_spec.py <path>...
 Output: `path:line CODE message` on stdout. Exit 1 when any E-code fired.
@@ -98,6 +99,11 @@ CITED_NUMBER = re.compile(r"\d+")
 # Numbers joined by a connector word (`1 e 2`, `1 and 3`) are a citation with a typo,
 # not prose: silence there hides a broken trace, so it gets its own W008 message.
 CONNECTOR_CELL = re.compile(r"^[\d\s,;.–-]+(?:e|and|et|y|&|\+)[\d\s,;.–-]+$", re.IGNORECASE)
+# An `## Out of scope` bullet is born typed: _revisit_ with its trigger, or _discarded_ with
+# its reason. Only the emphasized word counts: prose that mentions "revisit", a snake_case
+# identifier and a `code span` that quotes the marker all stay a miss.
+SCOPE_MARK = re.compile(r"(?<![\w`])[_*]{1,2}(?:revisit|discarded)[_*]{1,2}(?![\w`])", re.IGNORECASE)
+SCOPE_BULLET = re.compile(r"^[-*+]\s")
 
 
 def split_row(line):
@@ -256,6 +262,7 @@ def check_body(lines):
     metric_skipped = False
     metric_body = False  # whether `## Metric` has body content before the current line
     open_value = None  # index into metric_values of the bullet still accumulating
+    scope_bullets = []  # [line_no, text] of the top-level `## Out of scope` bullets
 
     def flush(rows):
         nonlocal behavior_rows
@@ -377,6 +384,12 @@ def check_body(lines):
                 metric_values[open_value][2] += " " + line.strip()
             else:
                 open_value = None
+        elif section == "out of scope":
+            if SCOPE_BULLET.match(line):
+                scope_bullets.append([i, line])
+            elif scope_bullets and line.strip() and line[:1] in " \t":
+                # A wrapped bullet: the marker may sit on its second line.
+                scope_bullets[-1][1] += " " + line.strip()
 
     if table:
         yield from drain_table()
@@ -395,6 +408,15 @@ def check_body(lines):
             f"{behavior_rows} rows in the `## Behavior` tables (ceiling {MAX_BEHAVIOR_ROWS}): "
             f"too large for one review pass; {SPLIT_ADVICE}",
         )
+
+    for line_no, text in scope_bullets:
+        if not SCOPE_MARK.search(text):
+            yield (
+                line_no,
+                "W009",
+                "out of scope item with no marker: _revisit_ and the trigger that brings it "
+                "back, or _discarded_ and the reason",
+            )
 
     for name, spelling in REQUIRED_SECTIONS:
         if spelling not in seen:

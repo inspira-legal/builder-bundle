@@ -55,7 +55,7 @@ wave: PRJ-7
 ## Out of scope
 
 - Shared boards with guests. _revisit_ after the owners ask for it twice
-- Exporting a board to a spreadsheet.
+- Exporting a board to a spreadsheet. _discarded_ because nobody exports a board.
 
 ## Open
 
@@ -126,6 +126,7 @@ def out_of_scope_and_open_are_read():
     source = by_kind(slug, "open")[0]["source"]
     assert source == "spec.md#open:26", source
     assert slug["spec"]["wave"] == "PRJ-7"
+    assert [i["discarded"] for i in by_kind(slug, "out_of_scope")] == [False, True]
 
 
 def the_same_idea_twice_is_flagged():
@@ -179,6 +180,19 @@ def items_that_differ_in_a_short_word_keep_their_own_ids():
     assert all(len(set(a["ids"])) == 2 for a in slug["alerts"] if a["kind"] == "near_duplicate"), slug["alerts"]
 
 
+def a_quoted_or_embedded_marker_is_not_a_marker():
+    root = build("done")
+    spec_path = root / ".bb" / "boards" / "spec.md"
+    extra = (
+        "- Drop the `needs_revisit_flag` column.\n"
+        "- Explain `_discarded_` in the docs.\n"
+        "- **Archive later.** __revisit__ next quarter\n"
+    )
+    spec_path.write_text(spec_path.read_text(encoding="utf-8").replace("## Open", extra + "\n## Open"), encoding="utf-8")
+    out = by_kind(run(root), "out_of_scope")[2:]
+    assert [(i["revisit"], i["discarded"]) for i in out] == [(False, False), (False, False), (True, False)], out
+
+
 def the_walk_stops_at_the_repository():
     outer = pathlib.Path(tempfile.mkdtemp())
     (outer / ".bb" / "elsewhere").mkdir(parents=True)
@@ -199,6 +213,7 @@ case("ids are stable and backlog.md marks what is kept", ids_are_stable_and_the_
 case("a merged entry and the skipped line keep their ids", merged_and_skipped_ids_are_remembered)
 case("a stray byte in backlog.md does not stop the harvest", a_stray_byte_in_the_backlog_does_not_stop_the_harvest)
 case("items that differ in a short word keep their own ids", items_that_differ_in_a_short_word_keep_their_own_ids)
+case("a marker in a code span or an identifier is not a marker", a_quoted_or_embedded_marker_is_not_a_marker)
 case("the root walk stops at the repository", the_walk_stops_at_the_repository)
 
 print()
