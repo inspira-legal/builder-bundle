@@ -70,8 +70,9 @@ Same light field: the dark logo; one idea in two big lines (the second in Cornfl
 
 ## Sound
 
-- No synthesized beat in an Inspira film. Leave `window.BPM` unset, so the render outputs a silent video, and keep the beat grid in a local constant (`const B = (n) => motion.beat(n, 112)`; 112 is the base scene's own grid, and with a track the constant takes the track's BPM). No UI click blips either.
-- The person chooses the track. With a track, it goes in the scene as `audio.wav` and the cuts land on its beat. The DNA asks for contained instrumental music, 70 to 95 BPM, with no marked electronic percussion, and for silence or ambient sound on sensitive topics.
+- The official track, `trilha_sax_soul.mp3` (soul sax, instrumental), is the sound of every Inspira film. It is the render's default: leave `window.BPM` and `window.SFX` unset and the studio mixes the track in, with a 0.5 s fade in and a 1.5 s fade out. `window.AUDIO_START` (seconds) picks where in the track the film starts; the default is 0.
+- No synthesized beat and no sound effects (UI click blips, typing, pops) in an Inspira film: never set `window.BPM`, `window.TICKS` or `window.SFX`. Keep the beat grid in a local constant (`const B = (n) => motion.beat(n, 112)`; 112 is the base scene's own grid; the track's own BPM has not been measured, so cuts are not tied to its beat unless someone measures it).
+- Another track: the person puts it in the scene as `audio.wav` and it replaces the official one. Silence, for sensitive topics: `window.AUDIO = "none"`.
 
 ## Formats
 
@@ -99,4 +100,4 @@ Before scoring a round, answer each one with yes or no:
 4. Are the captions titles at the top, with no box and no step label?
 5. Do the highlights have no final full stop, and does the copy have no em dash?
 6. Is the logo the right file for its background, at 120 px or more?
-7. Is the motion free of bounce, and is the sound either the person's track or silence?
+7. Is the motion free of bounce, and is the sound the official track (or the person's own, or deliberate silence), with no synthesized beat or effects?

@@ -38,9 +38,9 @@ jobs:
         env:
           MOTION_HOME: ${{ runner.temp }}/Motion
 
-      - name: Motion unit tests
+      - name: Studio unit tests
         working-directory: ${{ runner.temp }}/Motion
-        run: node lib/motion.test.mjs
+        run: npm test
 
       - name: Stills through the studio wrapper, and the rendered video
         working-directory: ${{ runner.temp }}/Motion

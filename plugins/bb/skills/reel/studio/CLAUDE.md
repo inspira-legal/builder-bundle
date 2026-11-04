@@ -21,7 +21,9 @@ The rules below are for `/bb:reel` films. A tour scene, `scenes/*-tour/` made by
 - `seek(t)` is pure: no setTimeout, requestAnimationFrame, Date.now, Math.random (use a seeded hash of an index). Same t → same pixels.
 - Motion = closed-form springs from `lib/motion.js` (`spring`, `track`). No easing curves. Presets: snappy (UI), default (cards/camera), heavy (big type/logos), playful (mascots). Tiny overshoot on UI, none on type.
 - A value with several targets uses `track()` (one spring per change), never restart a spring.
-- Cuts and hits land on the beat grid (`motion.beat(n, bpm)`). Sound: `lib/audio.mjs` synthesizes on the same timeline; a scene's own `audio.wav` overrides it.
+- Cuts and hits land on the beat grid (`motion.beat(n, bpm)`).
+- Sound, music: first match wins: the scene's own `audio.wav`; a synthesized beat when `window.BPM` is set; silence when `window.AUDIO = "none"`; otherwise the official track `assets/trilha_sax_soul.mp3`, starting at `window.AUDIO_START` (seconds, default 0) with fades.
+- Sound, effects: `window.SFX = [{ t, kind, dur? }]` with `kind` `click` (soft tap), `type` (key ticks over `dur` seconds) or `pop`; `lib/audio.mjs` synthesizes them on the picture's timeline and the render mixes them over the music. Inspira films declare none (see `marca-inspira.md`).
 - Layout from a function of (w, h), not fixed pixels, so 9:16, 1:1 and 16:9 all render. Reframe type and UI per format, don't crop.
 - No centered-text-on-gradient with everything fading in. Ask for or use a reference (frame, video, image folder) before designing; extract its palette, type and pacing.
 - Real data and real product assets, never lorem or invented logos.
