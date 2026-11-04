@@ -159,7 +159,19 @@ case(
     "no src/events.config.ts on main",
 )
 case("repo: a path that climbs out", Machine(), ACCESS + ["--repo", "orbit/app", "--path", "../x"], 1, "stop | catalog")
-case("repo: not an OWNER/REPO", Machine(), ACCESS + ["--repo", "orbit app"], 1, "stop | gh", "not an OWNER/REPO")
+case(
+    "repo: not an OWNER/REPO",
+    Machine(),
+    ACCESS + ["--repo", "orbit app", "--path", "src/events.config.ts"],
+    1,
+    "stop | gh",
+    "not an OWNER/REPO",
+)
+for name, half in (("--path without --repo", REPO[2:4]), ("--repo without --path", REPO[0:2])):
+    m = case(f"repo: {name} is refused before any command", Machine(), ACCESS + half, 1, "stop | catalog", "go together")
+    if m.calls:
+        print(f"FAILED | repo: {name} ran a command | " + repr(m.calls))
+        failures.append(f"{name} ran")
 case(
     "repo: the database stops first, and gh is never asked",
     Machine(answers={TOKEN: (1, "")}),

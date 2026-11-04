@@ -53,7 +53,7 @@ is the step to give the person.
 | the account cannot read the events table             | read the `access` document: which permission to ask for, and from whom      |
 | the `data` document names a database with no adapter | the guard speaks to one database today; say so and stop                     |
 | `gh` is not installed, or not logged in              | install it from cli.github.com, then run `gh auth login`                    |
-| the account cannot read the catalog's repository     | ask the repository's owners for read access                                 |
+| the account cannot read the catalog's repository     | check the name in the `usage` document, then ask the owners for access      |
 | the catalog file is not on the branch                | say the `usage` document points at a file that is not there                 |
 
 When the stop is on the database, read the `access` document (found by tag, as the plugin-level

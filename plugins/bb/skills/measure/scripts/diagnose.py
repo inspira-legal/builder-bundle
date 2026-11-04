@@ -54,9 +54,14 @@ GH_MISSING = (
     "terminal with: gh auth login"
 )
 GH_LOGGED_OUT = "gh is not logged in; log in from a terminal with: gh auth login"
+PAIR = (
+    "--repo and --path go together: the repository and the catalog file the usage document "
+    "names; pass both, or neither when the list does not live in code"
+)
 
 # A table id, an `owner/repo` and a file path go into a command or a query, so each is held
-# to the characters its kind uses. Anything else is refused before it reaches a command.
+# to the characters its kind uses. Anything else is refused before it reaches a command. A
+# table id keeps `:` for a domain-scoped project, such as `example.com:orbit.events.all`.
 TABLE = re.compile(r"^[A-Za-z0-9_.:-]+$")
 REPO = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
 PATH = re.compile(r"^[A-Za-z0-9_.@/-]+$")
@@ -155,12 +160,12 @@ def check_repo(repo, path, ref):
             (
                 "gh",
                 f"your GitHub account cannot read {repo}, where the usage document says the "
-                "activation list lives; ask the repository's owners for read access",
+                "activation list lives: the name is wrong, or the account has no read access. "
+                "Check the name against the usage document, then ask the repository's owners "
+                "for read access",
             )
         )
     report("gh", f"logged in, and {repo} is readable")
-    if not path:
-        return
     if not PATH.match(path) or ".." in path.split("/") or not REF.match(ref):
         raise Stop(("catalog", f"'{path}' on '{ref}' is not a file path and a branch"))
     code, _ = run(["gh", "api", f"repos/{repo}/contents/{path}?ref={ref}", "--silent"], keep_output=False)
@@ -191,6 +196,8 @@ def main(argv=None):
         if args.half == "docs":
             check_docs()
         else:
+            if bool(args.repo) != bool(args.path):
+                raise Stop(("catalog", PAIR))
             check_database(args.database, args.project, args.table)
             if args.repo:
                 check_repo(args.repo, args.path, args.ref)
