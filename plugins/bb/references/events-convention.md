@@ -155,6 +155,31 @@ paragraph) is what appends the name here, in the change that ships the event, wi
 empty `status` cell. The checker only reads this table; nothing here
 writes it.
 
+A project whose company decides which events count as usage adds one column to the
+catalog, `activation`, with `yes` on each activation event. The rule and the meaning are the
+company's (`<plugin-root>/references/company-definitions.md`, `## The activation rule and the
+list`), and the checker reads neither the column nor its values:
+
+| event               | status | activation |
+| ------------------- | ------ | ---------- |
+| `board_sub_shared`  |        | yes        |
+| `board_view_opened` |        |            |
+
+A row with an empty cell is not an activation event. The decision of each row is made once,
+in the change that adds it, from the spec row's `activation` cell.
+
+## Funnels, outside the five parts
+
+A spec's `Funnel:` line lands in an optional section of its own, `## Funnels`, one row per
+funnel, header row `funnel` and `steps`, the steps backticked and in order:
+
+| funnel        | steps                                                      |
+| ------------- | ---------------------------------------------------------- |
+| board sharing | `board_view_opened`, `board_clk_share`, `board_sub_shared` |
+
+It is not one of the five parts: the checker does not read it, and a file without it is
+whole. `/bb:measure` reads it to measure a funnel the same way the spec planned it.
+
 ## Readers
 
 | part            | read by                     |
@@ -164,6 +189,7 @@ writes it.
 | Dictionary      | the checker, the spec draft |
 | Exceptions      | the checker, the exit gate  |
 | Catalog         | the checker, landing        |
+| Funnels         | landing, the measurement    |
 
 ## A worked example
 

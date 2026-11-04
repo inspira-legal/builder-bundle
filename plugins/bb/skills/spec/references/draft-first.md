@@ -74,23 +74,46 @@ Two gaps the file can't close on its own, and the draft never guesses past them:
 Without `EVENTS.md`, the events table is proposed the way it always was, from the
 behavior rows alone; nothing here changes.
 
-## Propose each event's level
+## Propose each event's activation
 
-When the company classifies its events, the events table carries a `level` per row
-(`spec-format.md`, its events-table paragraph). The values and the rule that picks one live in
-the company's `usage` document, found by its tag the way
+When the company decides which events count as usage, the events table carries an
+`activation` cell per row (`spec-format.md`, its events-table paragraph). The rule that
+decides it lives in the company's `usage` document, found by its tag the way
 `<plugin-root>/references/company-definitions.md` states.
 
 - **Read the rule first.** List the `usage` role, read every document it returns, and take the
-  level values and the question the rule asks of an event.
-- **Propose one value per row**, by that rule, the same draft-first way as the name and the
-  payload. The task agent writes what the row says, so the row is the decision.
+  question the rule asks of an event and the border cases it already settled.
+- **Propose `yes` or `no` for every row**, by that rule, the same draft-first way as the name
+  and the payload. The task agent writes what the row says, so the row is the decision.
 - **A case the rule does not settle is a gray area**, asked through `AskUserQuestion` like any
   other, with your lean and the line of the rule it turns on.
-- **No `usage` document, or the `wave` CLI unavailable**: the table carries no `level` column,
-  as `<plugin-root>/references/company-definitions.md` states for this reader.
+- **No `usage` document, or the `wave` CLI unavailable**: the table carries no `activation`
+  column, as `<plugin-root>/references/company-definitions.md` states for this reader.
 
-At the gate, a value the rule does not list is an open item, fixed in its row.
+At the gate, a cell that is neither `yes` nor `no` is an open item, fixed in its row.
+
+## Propose the funnel
+
+When the metric is a conversion between steps (people who opened a board, then shared one),
+propose the `Funnel:` line from the events table: the steps in the order a person walks them,
+each an event of the table (`spec-format.md`, `## The Metric section`). A step the table does
+not carry yet is a row to add to the table first, never a name the funnel coins. When the metric
+counts one gesture, leave the line out.
+
+## Propose the `okr:` line
+
+When the company keeps its official metrics and active OKRs in a `metrics` document, propose the
+`okr:` line from it instead of leaving it for the person to remember.
+
+- **The discovery record wins when it carries one.** An `okr:` bullet in `discovery.md` was
+  already decided with the hypothesis; seed it as is, the record named beside it.
+- **Otherwise read the `metrics` role** and pick the OKR whose metric the spec's `Metric:` line
+  moves. Propose it with the document's key in the note (`okr: <the OKR> (KEY)`), so the gate
+  can open the text.
+- **Two OKRs fit, or none fits closely**: ask it as a gray area, with your lean. No OKR at all is
+  an honest answer, and the line is then left out.
+- **No `metrics` document, or the `wave` CLI unavailable**: keep what the discovery record
+  carries, or leave the line out, as `<plugin-root>/references/company-definitions.md` states.
 
 ## Surfacing the gray areas (the only thing you ask about)
 

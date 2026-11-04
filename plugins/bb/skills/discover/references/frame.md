@@ -28,9 +28,20 @@ what still needs validation before it becomes code:
 1. **Develop the draft.** Read the one-liner, look at the codebase/context, and
    fill the five fields with best-guess values, marking each as a guess. Bring
    a trio to react to, not blank prompts.
-2. **Ask only the genuine gaps**, through `AskUserQuestion`, per the interview
+2. **Propose the hypothesis, the OKR and the success signal together.** When the
+   company keeps its official metrics and active OKRs in a `metrics` document (found
+   by tag, per the plugin-level `references/company-definitions.md`), read it before
+   the first question and propose the three as one set: the OKR the problem serves,
+   the official metric of that OKR as the success signal when it measures this
+   problem, and a hypothesis that names how the change moves that metric. A signal
+   tied to an official metric already has a definition the company publishes, so the
+   spec and the measurement read the same number. When no official metric measures
+   this problem, say so in one line and frame the signal on its own, with the OKR
+   still named when one fits. Without a `metrics` document, or without the `wave`
+   CLI, propose no OKR and go on.
+3. **Ask only the genuine gaps**, through `AskUserQuestion`, per the interview
    discipline in SKILL.md (max 2/turn, your lean on each, echo after).
-3. **Offer a measurement when a number rests on a guess.** When the impact's size or
+4. **Offer a measurement when a number rests on a guess.** When the impact's size or
    the baseline is a `low` confidence guess, and the company has a `data` document
    (found by tag, per the plugin-level `references/company-definitions.md`), offer
    to measure that one question, through `AskUserQuestion`: the guess, the question
@@ -41,7 +52,7 @@ what still needs validation before it becomes code:
    document or the `wave` CLI is unavailable: the frame goes on as it is. A
    `skipped: not-instrumented` baseline is not measurable, because the events do not
    fire yet, so it gets no offer.
-4. Keep looping until a round surfaces no new gaps and the problem statement is
+5. Keep looping until a round surfaces no new gaps and the problem statement is
    one you'd defend.
 
 ## Capture
@@ -57,10 +68,14 @@ the spec-state contract), and set `phase: frame`:
 - success signal: <the one observable metric>  [confidence: med]
 - baseline: <the metric's current reading> (<provenance>)
 - target: <where it should land>, within <timeframe> (<provenance>)
+- okr: <the OKR this serves> (<the metrics document's key>)
 
 ## Hypothesis
 If <change>, the <success signal> moves, because <mechanism>.  [confidence: low]
 ```
+
+The `okr:` bullet is there only when step 2 found an OKR; with none, it is left out.
+`/bb:spec` seeds its own `okr:` line from it.
 
 The `baseline:` and `target:` bullets each carry their value's provenance as a
 parenthesized note on the same bullet, in the shape the spec's `## Metric` uses:
