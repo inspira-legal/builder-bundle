@@ -1,13 +1,16 @@
 // node render.mjs scenes/demo [--fps 60] [--w 1920] [--h 1080] [--subframes N]
-// Deterministic: headless browser calls seek(t) per frame, ffmpeg encodes. Audio: synthesized from window.BPM, or scene's audio.wav.
+// Deterministic: headless browser calls seek(t) per frame, ffmpeg encodes.
+// Music, first match wins: scene's audio.wav; synthesized beat if window.BPM; none if window.AUDIO === "none";
+// else the official track (assets/trilha_sax_soul.mp3) from window.AUDIO_START (s, default 0), with fades.
+// Effects: window.SFX = [{ t, kind: click|type|pop, dur? }] is synthesized and mixed over the music.
 // Runs from any folder: paths resolve against the studio, so the skill can call it by absolute path.
 import { chromium } from "playwright";
 import ffmpeg from "ffmpeg-static"; // bundled binary: no Homebrew needed
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { resolve, basename } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { synthBeat } from "./lib/audio.mjs";
+import { synthBeat, synthSfx } from "./lib/audio.mjs";
 
 process.chdir(fileURLToPath(new URL(".", import.meta.url)));
 const die = (msg) => {
@@ -42,10 +45,13 @@ const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: w, height: h } });
 await page.goto(pathToFileURL(resolve(dir, "index.html")).href);
 await page.evaluate(() => window.READY); // scene may expose a promise (fonts, images)
-const { duration, bpm, ticks } = await page.evaluate(() => ({
+const { duration, bpm, ticks, audioMode, audioStart, sfx } = await page.evaluate(() => ({
   duration: window.DURATION,
   bpm: window.BPM,
   ticks: window.TICKS || [],
+  audioMode: window.AUDIO,
+  audioStart: Number(window.AUDIO_START ?? 0),
+  sfx: window.SFX || [],
 }));
 const total = Math.round(duration * fps);
 if (!Number.isFinite(total) || total <= 0) {
@@ -53,11 +59,52 @@ if (!Number.isFinite(total) || total <= 0) {
   die(`window.DURATION must be a positive number of seconds (got ${duration})`);
 }
 
-let audio = resolve(dir, "audio.wav");
+const TRACK = "assets/trilha_sax_soul.mp3";
+let audio = resolve(dir, "audio.wav"),
+  fades = false;
 if (!existsSync(audio)) {
-  audio = bpm ? `out/${name}.wav` : null;
-  if (audio) synthBeat(audio, duration, bpm, ticks);
+  audio = bpm ? `out/${name}.wav` : audioMode === "none" ? null : TRACK;
+  if (audio === TRACK) {
+    fades = true;
+    if (!existsSync(TRACK)) {
+      await browser.close();
+      die(`the official track is missing: ${resolve(TRACK)}`);
+    }
+    // A track shorter than the film would leave the end silent: check before rendering.
+    const m = /Duration: (\d+):(\d+):(\d+\.\d+)/.exec(
+      spawnSync(ffmpeg, ["-i", TRACK], { encoding: "utf8" }).stderr,
+    );
+    const len = m ? +m[1] * 3600 + +m[2] * 60 + +m[3] : 0;
+    if (!(audioStart >= 0) || audioStart + duration > len) {
+      await browser.close();
+      die(
+        `the official track has ${len.toFixed(1)}s; AUDIO_START ${audioStart} + DURATION ${duration} does not fit (window.AUDIO = "none" renders without it)`,
+      );
+    }
+  } else if (audio) synthBeat(audio, duration, bpm, ticks);
 }
+const sfxFile = sfx.length ? `out/${name}-sfx.wav` : null;
+if (sfxFile) synthSfx(sfxFile, duration, sfx);
+// Music input, effects input, and the filter that joins them (music at 0.7 so effects stay audible; no ducking).
+const fade = `afade=t=in:d=0.5,afade=t=out:st=${Math.max(0, duration - 1.5)}:d=1.5`;
+const audioArgs = [
+  ...(audio ? [...(fades && audioStart ? ["-ss", String(audioStart)] : []), "-i", audio] : []),
+  ...(sfxFile ? ["-i", sfxFile] : []),
+];
+const audioFilter =
+  audio && sfxFile
+    ? [
+        "-filter_complex",
+        `[1:a]${fades ? fade + "," : ""}volume=0.7[m];[m][2:a]amix=inputs=2:normalize=0:duration=first[a]`,
+        "-map",
+        "0:v",
+        "-map",
+        "[a]",
+      ]
+    : fades
+      ? ["-af", fade]
+      : [];
+const hasAudio = audio || sfxFile;
 
 // Blur: 16-bit average of N subframes, keep the frame that holds all N.
 const vf =
@@ -81,7 +128,7 @@ const ff = spawn(
     String(fps * sub),
     "-i",
     "-",
-    ...(audio ? ["-i", audio] : []),
+    ...audioArgs,
     ...(vf ? ["-vf", vf, "-r", String(fps)] : []),
     "-c:v",
     "libx264",
@@ -89,7 +136,9 @@ const ff = spawn(
     "yuv420p",
     "-crf",
     "16",
-    ...(audio ? ["-c:a", "aac", "-shortest"] : []),
+    ...audioFilter,
+    // -shortest: audio shorter than the film (a scene's own audio.wav) ends the mp4 with it, as before.
+    ...(hasAudio ? ["-c:a", "aac", "-shortest", "-t", String(duration)] : []),
     mp4,
   ],
   { stdio: ["pipe", "inherit", "inherit"] },

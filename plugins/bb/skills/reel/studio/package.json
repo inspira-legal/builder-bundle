@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "render": "node render.mjs",
-    "test": "node lib/motion.test.mjs"
+    "test": "node lib/motion.test.mjs && node lib/audio.test.mjs"
   },
   "dependencies": {
     "@fontsource/jetbrains-mono": "^5.3.0",

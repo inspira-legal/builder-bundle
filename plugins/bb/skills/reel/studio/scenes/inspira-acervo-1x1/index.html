@@ -357,8 +357,8 @@
   const sc = (t, t0, p = "default") => clamp(sp(t, t0, p));
   const GLIDE = { w: 10, z: 1 };
 
-  // cuts land on a 112 BPM grid. No window.BPM on purpose: the render adds no synthesized beat,
-  // so the film is silent until the person brings a track as audio.wav (Inspira brand rule).
+  // cuts land on a 112 BPM grid. No window.BPM or window.SFX on purpose (Inspira brand rule):
+  // the render mixes in the official track by default; audio.wav replaces it, AUDIO = "none" mutes.
   const B = (n) => motion.beat(n, 112);
   window.DURATION = 20;
 
