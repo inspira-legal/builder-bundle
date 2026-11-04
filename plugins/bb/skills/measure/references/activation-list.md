@@ -27,6 +27,10 @@ version, name the version, and split any difference into list and behavior.
   the earlier names of a renamed event, all by the marks the `usage` document describes. Say how
   many events and activation events the snapshot holds; when the document gives a count, compare.
 
+  Write each event under the name the table the query reads stores, and its earlier names in the
+  same form. When the catalog gives an event more than one name, the company's documents say which
+  one each table keeps. A list in the other form matches no row, and the count drops with no error.
+
 - **A table in the database.** Read it through the guard like any query, and take the version
   from the column the document names.
 - **A frozen list.** Only to check a number published before the current list existed. Its version

@@ -42,7 +42,8 @@ counts with is read at a version, and every number names that version. The reaso
   reads a 403 `accessDenied` as a missing permission that the `access` document answers.
 - **`references/company-definitions.md`**: the `usage` role holds the activation rule and where the
   list lives; a missing `wave` points at `inspira-legal/builder-setup`; two stops cover the catalog
-  in code.
+  in code. A document that says another one replaced it is read only as a record, and when an
+  event has more than one name, the activation list uses the one the queried table stores.
 - **The README** lists what `/bb:measure` needs on the machine.
 
 ## 3.26.0 (2026-11-03)

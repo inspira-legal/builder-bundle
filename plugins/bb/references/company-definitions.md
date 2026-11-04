@@ -23,7 +23,9 @@ replaced keeps working once the tag moves with it.
 | `bb-measure:team`    | one team's official metric, beside the team's own tag    | someone asks for that team's metric         |
 
 A role can hold more than one document. A document that grows splits by subject, and every part
-keeps the tag, so a reader takes every document the tag returns.
+keeps the tag, so a reader takes every document the tag returns. A document that says another one
+replaced it stays as a record: read it only to explain a number published while it held, and take
+the rule from the document that replaced it.
 
 The `data` document can also name the company's dashboard: the page where the company's own
 charts show the same events. When it does, a measurement delivers the link beside its number, so a
@@ -42,8 +44,10 @@ carries two things.
   that creates the event.
 - **Where the list lives**: one of three places, and how to read it.
   - **A catalog in code**: the repository, the file and the branch, how the file marks an
-    activation event, how it declares a rename and how it declares a funnel. bb reads it on the
-    remote tip of that branch with `gh`, and the commit read is the list's version.
+    activation event, how it declares a rename and how it declares a funnel. When the file gives
+    an event more than one name (an id and an older name, for instance), the documents also say
+    which name each table stores. bb reads it on the remote tip of that branch with `gh`, and the
+    commit read is the list's version.
   - **A table in the database**: the table, and the column that holds the list's version.
   - **A frozen list**: a list kept for an earlier period, to check a number published before the
     current list existed.

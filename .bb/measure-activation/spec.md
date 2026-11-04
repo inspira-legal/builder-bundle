@@ -79,6 +79,8 @@ measurement.
 | the catalog declares a rename                                | both names count as one event                                        |
 | the table read receives only part of the catalog's events    | the answer says how many activation events it cannot see             |
 | the `data` document names the dashboard                      | the link goes beside the number                                      |
+| a document says another one replaced it                      | it is read only as a record, for a number published while it held    |
+| the catalog gives an event more than one name                | the list uses the name the queried table stores                      |
 
 ## Metric
 
