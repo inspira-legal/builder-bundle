@@ -22,6 +22,7 @@ session is already on a spec, take that one and say so in one line.
 | `Target:`   | where it should land and within which timeframe: the bar and the window      |
 | `okr:`      | the OKR it serves: read the `metrics` document for its official definition   |
 | `Events:`   | the table of events, or `none` and why: the inventory's first list           |
+| `Funnel:`   | the steps in order, when the metric is a conversion: the funnel to measure   |
 
 - **The `Metric:` line is prose.** Turn it into a definition before writing a query: who counts,
   what they do, over which window, against which denominator. Write that definition at the top of
@@ -47,9 +48,39 @@ table, and each row gets one of three readings:
   gap to number in the answer;
 - **does not fire**: a caveat that limits what the measurement can say, never a zero.
 
-When the table carries a `level` column, the company's `usage` document says what each level
-means for its metrics. Read the levels the spec planned against the ones the events actually
-carry, when the `usage` document says where the level lives in the data.
+When the table carries an `activation` column, read the decisions the spec planned against the
+activation list as the catalog has it today (`activation-list.md`). A row planned `yes` that the
+catalog does not mark, or the reverse, is a gap to number in the answer: the feature counts toward
+the company's active people differently from what the spec promised.
+
+## Measure the funnel
+
+When the block carries a `Funnel:` line, measure those steps in that order. When the project
+declares the same funnel where it declares its events (`EVENTS.md`'s `## Funnels`, or the catalog
+the `usage` document names), measure the declared one and say whether the two still match. Count
+the people at each step who also reached the step before it, in the window, and give each step's
+share of the first one. This shape takes each person's first time at each step:
+
+```sql
+WITH steps AS (
+  SELECT person_id,
+         MIN(IF(event_name = 'STEP_1', event_time, NULL)) AS s1,
+         MIN(IF(event_name = 'STEP_2', event_time, NULL)) AS s2,
+         MIN(IF(event_name = 'STEP_3', event_time, NULL)) AS s3
+  FROM `EVENTS_TABLE`
+  WHERE event_time >= TIMESTAMP('START')
+    -- the filters of the data document
+    AND event_name IN ('STEP_1', 'STEP_2', 'STEP_3')
+  GROUP BY 1
+)
+SELECT COUNT(s1) AS step_1,
+       COUNTIF(s2 >= s1) AS step_2,
+       COUNTIF(s3 >= s2 AND s2 >= s1) AS step_3
+FROM steps
+```
+
+When the `data` document names the company's dashboard, give its link beside the funnel: a
+funnel the catalog declares is often already drawn there.
 
 ## The answer
 
@@ -61,6 +92,8 @@ landing, against a target of 40%." Then:
    the events do not fire yet). Never a verdict the data does not carry.
 2. **How it moved**: from the baseline to now, and the week by week series when the window has
    five weeks or more.
-3. **The events table, read**: the rows that fire as planned, differently, or not at all.
+3. **The events table, read**: the rows that fire as planned, differently, or not at all, and the
+   funnel step by step when the block has one.
 4. **What changes for the product**, and the caveats, as `method.md` closes every answer.
-5. **The documents read**: the key and the title of each company document the answer used.
+5. **The documents read**: the key and the title of each company document the answer used, and
+   the version of the activation list when the answer counted it.

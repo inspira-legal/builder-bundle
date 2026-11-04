@@ -63,7 +63,9 @@ in its documents. Read the inventory before building any funnel, and answer thre
 - **Every number carries the window it came from.** A detail from a query with another window
   says that window beside it.
 - **Compare** with the baseline (`.bb/<slug>/measure.md`, or the spec's `Baseline:`) or with the
-  week before, when there is one.
+  last saved measurement, when there is one. When the number counts activation events and the
+  list changed between the two, split the difference into list and behavior
+  (`activation-list.md`). With no saved measurement, say there is nothing to compare with.
 - **The measurement gaps go into the answer**: an entry point that never sends, an id that belongs
   to the conversation and not to the object, an event that mixes giving up with failing. Each
   distorts the next reading if nobody knows about it, so number them for whoever keeps the events.

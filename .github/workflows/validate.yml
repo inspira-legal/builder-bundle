@@ -67,6 +67,16 @@ jobs:
       - name: Test the measure guard
         run: python3 plugins/bb/scripts/db_read_test.py
 
+      # The diagnosis decides whether a measurement starts and which step a person reads when it
+      # cannot; its tests also prove the login check never keeps a token. No network, no CLI.
+      - name: Test the measure diagnosis
+        run: python3 plugins/bb/skills/measure/scripts/diagnose_test.py
+
+      # The catalog comparison decides what a measurement reports as new or gone from the
+      # activation list, and the quoted list a query counts with.
+      - name: Test the catalog changes
+        run: python3 plugins/bb/skills/measure/scripts/catalog_changes_test.py
+
       # The same for /bb:debug's guard: every read it makes in a running environment passes
       # there, so its tests are the proof of the read-only promise. No network, no cloud CLI.
       - name: Test the debug guard
