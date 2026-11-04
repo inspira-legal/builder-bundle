@@ -25,7 +25,8 @@ Place an item by what its record says:
 - **An unticked task of an ended spec**: `## Next version` when the person still wants it,
   `## Discarded` with their reason when not. `harvest.py` lists these only once the spec is
   `done` or `blocked`, or the discovery shelved the idea.
-- **A cut or out of scope item with no _revisit_ and a reason to drop it**: `## Discarded`.
+- **An out of scope item marked _discarded_** (`discarded: true`), or a cut with no _revisit_
+  and a reason to drop it: `## Discarded`, with the reason as written.
 - **Anything else worth keeping**: `## No trigger yet`.
 
 An item that carries an `ice` value keeps it, with the date of the record it came from

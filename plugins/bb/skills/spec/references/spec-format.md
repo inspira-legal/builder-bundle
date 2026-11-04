@@ -57,8 +57,10 @@ and every member earns its slot.
 - `## Attention points`: the technical risks the author saw (below). `Nothing.` when
   there are none.
 - `## Tasks`: vertical tasks grouped in phases (below).
-- `## Out of scope`: the hard line, including ideas parked for later (mark them
-  _revisit_). Plain bullets, never checkboxes.
+- `## Out of scope`: the hard line, the Won't of the cut that closes the phasing. Every
+  bullet carries one marker: _revisit_ followed by the trigger that brings it back, or
+  _discarded_ followed by the reason. `/bb:backlog` reads the marker to place the item.
+  Plain bullets, never checkboxes.
 - `## Open`: genuinely unresolved load-bearing decisions. `Nothing.` when there are
   none.
 
@@ -308,6 +310,7 @@ python3 plugins/bb/skills/spec/scripts/lint_spec.py .bb/<slug>/spec.md
 | W006 | warning | no `## Metric`                                                        |
 | W007 | warning | a `Baseline:`/`Target:` bullet missing, or a value without provenance |
 | W008 | warning | an event row citing a numbered behavior row that does not exist       |
+| W009 | warning | an `## Out of scope` bullet with neither _revisit_ nor _discarded_    |
 
 Whether the document repeats itself, recounts the conversation, or carries a fix inside an
 attention point is not a lint check. That is the author's judgment, against the rules

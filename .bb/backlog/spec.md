@@ -124,7 +124,8 @@ Which item is worth keeping, and where it lands, is the skill's judgment, in
   agreed with the maintainer on 2026-10-27
 - A one line note from `/bb:ship` and `/bb:review` when they leave leftovers behind. _revisit_ with
   the tracker version
-- A numeric score at harvest time. The score is given when the next spec weighs the item.
+- A numeric score at harvest time. _discarded_ because the score is given when the next spec
+  weighs the item.
 
 ## Open
 
