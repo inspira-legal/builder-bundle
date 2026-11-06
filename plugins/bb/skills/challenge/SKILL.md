@@ -1,6 +1,6 @@
 ---
 name: challenge
-description: Structured devil's advocate. Stress tests positions, ideas, plans and decisions before you act, with a mandatory steelman. Five modes (Socratic, Falsification, Dialectic, Pre mortem and Red Team). Use when the user already holds a position and says "challenge me", "challenge this", "what could go wrong", "pre mortem", "red team", "question my assumptions", "what is wrong with this", "test my hypothesis". Don't use it when the position does not exist yet. To explore a raw idea, use /bb:think; to frame a product problem, /bb:discover.
+description: Pushes back on a position you already hold. It states the strongest version of your plan or decision, then attacks it so you see what breaks before you act. Use when someone says "me desafia", "o que pode dar errado", "faz um pre mortem", "questiona minhas premissas", "onde isso quebra", "faz o advogado do diabo", "challenge this", "what could go wrong", "red team this plan". Not for exploring an idea with no position yet (use /bb:think) or framing a product problem (use /bb:discover).
 license: MIT
 metadata:
   author: Matheus Morais; adapted for bb by Athena Briana - github.com/athenabriana

@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Runs a spec (the `spec.md` under `.bb/`) as far as this run is meant to go. Selects the spec, asks once what runs after the build (review the branch, ship, both or neither), builds every phase of tasks, tracks the spec's `status`, and chains into `/bb:review` and `/bb:ship` when the scope says so. `/bb:implement` followed by a slug targets that spec; bare `/bb:implement` takes the spec this session is on, or the oldest pending one. The single verb of the Construir trilha. Use when the user says "implement the spec", "build the tasks", "build it", "run the task", "build and ship the spec", "do it all", "run everything", or right after /bb:spec. Don't use it to align on an idea first (use /bb:spec) or to land a branch that is already built (use /bb:ship).
+description: Builds a written spec from the .bb folder task by task, and reviews and ships the result when you ask it to. Use when someone says "implementa a spec", "constrói as tarefas", "bora construir", "executa a spec", "constrói e já sobe", "faz tudo", "implement the spec", "build it", "run the tasks". Not for agreeing on the idea first (use /bb:spec) or landing a branch that is already built (use /bb:ship).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana

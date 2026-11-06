@@ -1,6 +1,6 @@
 ---
 name: discover
-description: Runs the whole first diamond before any design. Frames the problem (the problem, who feels it, the hypothesis, the success signal, the appetite) and pressure tests the fit (is it worth building, what to cut, in what order, which testable bet). Writes the framing into its own discovery.md, the record /bb:spec reads as intent. Use when the user says "what problem are we solving", "frame the problem", "is this worth building", "validate the market", "what do we cut to fit", "prioritize these features", "run the trio", "shape this idea", "pivot or persevere", or arrives with a diffuse pain instead of a finished feature. Don't use it to design the solution (use /bb:spec), to stress a thesis already formed (use /bb:challenge), or for a small mechanical change.
+description: Frames a product problem before anyone designs a solution. Who feels the pain, the hypothesis, how success shows, and whether it is worth building at all, written to a discovery.md for the spec. Use when someone says "qual problema a gente está resolvendo", "vale a pena construir isso", "enquadra esse problema", "o que a gente corta pra caber", "prioriza essas features", "tenho uma dor mas não sei a solução", "what problem are we solving", "is this worth building", "frame the problem". Not for designing the solution (use /bb:spec) or stressing a thesis already formed (use /bb:challenge).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
