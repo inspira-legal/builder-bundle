@@ -96,6 +96,10 @@ it and picks nothing has seen it (that is preference).
 - **By week:** people per week on the main steps, with the incomplete week marked.
 - **The return:** of who used it in a week, how many used it in the next one (the person and week
   table joined to itself, shifted 7 days). It says whether the feature turns into a habit.
+- **The declared funnel:** when the spec's `## Metric` or the project's catalog declares a funnel
+  for the feature, measure that one, step by step (`against-the-spec.md`, `## Measure the
+funnel`), instead of building another, and give the company's dashboard link when the `data`
+  document names it.
 
 ## 8. Quality and cost
 

@@ -4,7 +4,7 @@ description: Frames a product problem before anyone designs a solution. Who feel
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 2.5.0
+  version: 2.6.0
 ---
 
 # Discover
@@ -16,10 +16,10 @@ thing. This is the lowest-cost moment to catch that. The output is
 
 Two phases, each with its own reference, load only the one that's running:
 
-| Phase                      | What it settles                                                                                                | Reference             |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------- |
-| **1. Frame** (o problema)  | problem, who & impact, hypothesis, success signal with baseline and target, appetite; each confidence-tagged   | `references/frame.md` |
-| **2. Fit** (what survives) | worth building? what to cut, in what order, the hypothesis hardened from baseline to target within a timeframe | `references/fit.md`   |
+| Phase                      | What it settles                                                                                                       | Reference             |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| **1. Frame** (o problema)  | problem, who & impact, hypothesis, success signal with baseline and target, the OKR, appetite; each confidence-tagged | `references/frame.md` |
+| **2. Fit** (what survives) | worth building? what to cut, in what order, the hypothesis hardened from baseline to target within a timeframe        | `references/fit.md`   |
 
 ## Entry decision
 
@@ -117,3 +117,4 @@ record the verdict with its evidence and stop (a pivot points back to
 | fit asked with no framed problem                 | suggest Phase 1 once; if declined, proceed and note `ran without a framed problem` |
 | hypothesis closes with no frame capture          | draft baseline and target in the fit itself, or skip each with a reason (`fit.md`) |
 | a size or a baseline is a `low` confidence guess | offer `/bb:measure` on that question when a `data` document exists (`frame.md`)    |
+| the company has a `metrics` document             | propose the hypothesis, the OKR and the success signal together (`frame.md`)       |

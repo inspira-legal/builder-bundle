@@ -4,7 +4,7 @@ description: Agrees on what to build before any code. It writes a spec with you,
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
-  version: 3.3.0
+  version: 3.4.0
 ---
 
 # Spec
@@ -57,7 +57,7 @@ Deliver invokes this skill from its own gate. Spec from the one-liner as usual.
 
 You bring the idea; Claude develops it, then loops with you through the **`AskUserQuestion` tool** until the picture is consistent and you sign off. Never interrogate from a blank page, and never decide silently; drive it through real questions. In a front, every one of them (the gate included) goes through `<plugin-root>/references/front-contract.md` instead of a local dialog, and a brief that states the scope answers the gate's second question.
 
-1. **Develop the draft (draft-first).** Read the one-liner, look at the codebase, and write a short draft spec with your best guesses filled in: what/why, the business rules, the scope edges, the behavior you expect. `## Metric` arrives filled too, seeded per the rule in `references/draft-first.md` (the discovery record's values with the record named in the provenance, a marked guess, or the honest skip); the shape is in `references/spec-format.md`. When the company classifies its events, each event row arrives with a proposed `level`, read from the company's `usage` document (`references/draft-first.md`). For Large work, also describe the pieces in the top half before breaking it into tasks. Bring something concrete to react to.
+1. **Develop the draft (draft-first).** Read the one-liner, look at the codebase, and write a short draft spec with your best guesses filled in: what/why, the business rules, the scope edges, the behavior you expect. `## Metric` arrives filled too, seeded per the rule in `references/draft-first.md` (the discovery record's values with the record named in the provenance, a marked guess, or the honest skip); the shape is in `references/spec-format.md`. When the company decides which events count as usage, each event row arrives with a proposed `activation`, `yes` or `no` by the rule in the company's `usage` document; the `okr:` line arrives proposed from its `metrics` document, and a metric that is a conversion between steps arrives with its `Funnel:` line (all three in `references/draft-first.md`). For Large work, also describe the pieces in the top half before breaking it into tasks. Bring something concrete to react to.
 
    **Research first when the draft needs outside facts.** When the draft depends on facts the repo does not hold (how others build something, a library nobody here has used, a UI pattern), settle the spec's slug first, then run `/bb:research` on the idea with that slug before writing the draft. Decide it alone: say in one line that the research runs first, and ask nothing. An existing `.bb/<slug>/research.md` is read instead of rerun. The research writes that file, returns a short summary and the path, and stops; the draft is written on top of it, citing it, and its open section feeds the gray areas. An idea the repo already covers drafts as before.
 
