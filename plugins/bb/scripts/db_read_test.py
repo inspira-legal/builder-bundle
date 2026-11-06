@@ -290,6 +290,89 @@ def run_error_hides_the_value():
 
 case("a failed run shows the reason, never the row's value", run_error_hides_the_value, False)
 
+
+# ---- the credential: each way it fails names its own step ----------------------------------
+import json
+import subprocess
+
+
+def stops_with(fn, *expected):
+    out = io.StringIO()
+    try:
+        with contextlib.redirect_stdout(out):
+            fn()
+    except SystemExit:
+        pass
+    printed = out.getvalue()
+    missing = [text for text in expected if text not in printed]
+    if missing:
+        raise AssertionError(f"printed {printed!r}, without {missing!r}")
+
+
+def cli_missing(*_a, **_k):
+    raise FileNotFoundError("gcloud")
+
+
+def login_expired(*_a, **_k):
+    raise subprocess.CalledProcessError(1, "gcloud")
+
+
+cred = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(cred)
+cred.subprocess.check_output = cli_missing
+case(
+    "gcloud not installed says to install it",
+    lambda: stops_with(
+        lambda: cred.BigQuery("orbit-analytics").token(),
+        "not installed",
+        "https://cloud.google.com/sdk/docs/install",
+    ),
+    False,
+)
+cred.subprocess.check_output = login_expired
+case(
+    "gcloud login expired says to log in again",
+    lambda: stops_with(
+        lambda: cred.BigQuery("orbit-analytics").token(), "expired", "gcloud auth login --update-adc"
+    ),
+    False,
+)
+
+
+class Forbidden(urllib.error.HTTPError):
+    def __init__(self, reason):
+        super().__init__("https://x", 403, "Forbidden", {}, None)
+        self.body = json.dumps({"error": {"code": 403, "errors": [{"reason": reason}]}}).encode()
+
+    def read(self, *_a):
+        return self.body
+
+
+def forbidden(reason):
+    def raise_it(*_a, **_k):
+        raise Forbidden(reason)
+
+    return raise_it
+
+
+cred.BigQuery.token = lambda self: "t"
+cred.urllib.request.urlopen = forbidden("accessDenied")
+case(
+    "a missing permission points at the access document",
+    lambda: stops_with(lambda: cred.BigQuery("orbit-analytics").post("/jobs", {}), "access document"),
+    False,
+)
+
+
+def quota_is_not_denied():
+    cred.urllib.request.urlopen = forbidden("rateLimitExceeded")
+    answer = cred.BigQuery("orbit-analytics").post("/jobs", {})
+    if answer["error"]["errors"][0]["reason"] != "rateLimitExceeded":
+        raise AssertionError(f"returned {answer!r}")
+
+
+case("a 403 for a quota is returned, not read as a missing permission", quota_is_not_denied, False)
+
 print()
 print(f"{len(failures)} failure(s)" if failures else "every lock behaved as expected")
 sys.exit(1 if failures else 0)

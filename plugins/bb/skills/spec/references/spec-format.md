@@ -87,6 +87,7 @@ so a change here reaches that reading too.
 - Target: <where it should land>, within <timeframe> (<provenance>)
 - okr: <the connected OKR>
 - Events: <the table below, or `none` and why>
+- Funnel: <the steps in order, each an event of the table>
 ```
 
 The `Baseline:` and `Target:` bullets each carry their value's provenance as a
@@ -98,11 +99,24 @@ its own `baseline:`/`target:` bullets). The note is the shape the lint checks
 discover blesses): no provenance note, and the target and the events table stay while
 the skip flags the instrumentation as the first work. Internal work names an
 operational measure (error rate, runtime, adoption) where no product metric applies.
-The `okr:` line names the connected OKR when one exists, and is omitted when none does.
+The `okr:` line names the connected OKR when one exists, and is omitted when none does;
+`/bb:spec` proposes it from the company's `metrics` document (`draft-first.md`).
 The `Events:` line is part of the block, never omitted: the table when the work has
 user-triggered behavior, `none` and why when it has none. The review's instrumentation
 front resolves its plan from exactly that line, so a block without it leaves the front
 planless; the lint does not check it, and the gate holds it (`draft-first.md`).
+
+The `Funnel:` line is optional. It names the path a person walks through the feature, as
+the table's event names in order, backticked and joined by commas:
+
+```
+- Funnel: `board_view_opened`, `board_clk_share`, `board_sub_shared`
+```
+
+A step is an event of the table, never a new name, so the funnel adds no instrumentation of
+its own. Write it when the metric is a conversion between steps, and leave it out when the
+metric counts one gesture. `/bb:measure` measures the same steps against the target, and the
+instrumentation task declares the funnel where the project declares its events (below).
 
 **The skip**: one line, `skipped: <reason>`, when no honest measure exists. It replaces
 the whole section body.
@@ -130,19 +144,22 @@ vocabulary by one, a named `text` field recorded there as an exception with a st
 justification and a retention window; without a convention file, the four types above are
 the whole list.
 
-A company that classifies its events adds one optional column, `level`:
+A company that decides which events count as usage adds one optional column, `activation`:
 
-| event               | behaviors | payload                     | level     |
-| ------------------- | --------- | --------------------------- | --------- |
-| `board_sub_shared`  | 4         | `board_id`, `target` (enum) | `primary` |
-| `board_view_opened` | 1         | `board_id`                  | `support` |
+| event               | behaviors | payload                     | activation |
+| ------------------- | --------- | --------------------------- | ---------- |
+| `board_sub_shared`  | 4         | `board_id`, `target` (enum) | yes        |
+| `board_view_opened` | 1         | `board_id`                  | no         |
 
-Its values are the company's, declared in the document its `usage` role names
-(`<plugin-root>/references/company-definitions.md`), and bb defines none of them: the two above
-belong to an invented product. A cell holds one value, backticked, spelled as the document spells
-it. The column is documentary for the two programs that read this table, so `lint_spec.py` and
-`check_events.py` pass with it and without it. Its reader is the task agent, which writes the
-level in code beside the event it wires. A company with no `usage` document gets no column.
+A cell holds `yes` or `no`: whether the event is an _activation event_, one that counts as a
+person using the product. The rule that decides it is the company's, in the document its `usage`
+role names (`<plugin-root>/references/company-definitions.md`), and bb holds none of it: the two
+rows above belong to an invented product. Every row carries the decision, `no` included, so the
+person who reviews the spec sees that the question was asked of each event. The column is
+documentary for the two programs that read this table, so `lint_spec.py` and `check_events.py`
+pass with it and without it, and no program checks the value. Its reader is the task agent, which
+writes the decision where the project declares the event. A company with no `usage` document gets
+no column.
 
 Document content is the floor no exception reaches. The text of a contract, a petition, a
 decision or a clause never travels in a payload, in any project and under any status, and
@@ -155,10 +172,21 @@ on the legal-lens round.
 Instrumentation enters `## Tasks` as ordinary tasks, on the same line as any other task:
 the title, what it delivers, and its `verify:`. What it delivers names the event rows it
 wires, and those rows are the task's contract: the task agent reads them here, payload
-rule included, the way every task reads the `## Behavior` rows it touches. When the
-project has `EVENTS.md`, the same task appends each name it wires to the file's
-`## Catalog` in the change that lands it, an empty `status` cell, so the next spec's
-duplicate check sees it (`<plugin-root>/references/events-convention.md`).
+rule included, the way every task reads the `## Behavior` rows it touches. The same task
+declares each event where the project declares its events, in the change that lands it:
+the name, its `activation` decision when the table carries the column, and the `Funnel:`
+line when the block has one. The place is one of two.
+
+- **`EVENTS.md`**: the task appends each name to the file's `## Catalog`, an empty
+  `status` cell, so the next spec's duplicate check sees it, with the `activation` cell and
+  the funnel's row as `<plugin-root>/references/events-convention.md` shapes them.
+- **A catalog in code that the project's own instructions name** (its `CLAUDE.md` or
+  `AGENTS.md`, for instance): the task writes the event, the decision and the funnel in
+  that file's own form, the one its instructions describe. A `yes` row gets the mark the
+  catalog uses for an activation event; a `no` row gets what the company's `usage` document
+  says, which is often no mark at all.
+
+A project with neither declares its events in code alone, the way it always has.
 
 A Medium spec carries its behaviors inline, so an event row there has no numbered row to
 cite; its `behaviors` cell names the inline behavior in a short phrase instead. The

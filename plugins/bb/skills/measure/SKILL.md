@@ -1,10 +1,10 @@
 ---
 name: measure
-description: Product analysis over the company's own usage data, through a read-only guard. Answers "did the feature hit the target its spec wrote?" from the spec's Metric section, and any usage question about a live product, in four modes (explore an open question, measure a live feature, the official metric of a company or a team, hypotheses and actions after a measurement). Starts with the inventory of what actually fires, reads the number as product, and closes with what changes for the product. Use when the user says "did it hit the target", "measure this feature", "how many people use X", "are people using Y", "what is the retention this week", "pull the numbers", "what are the hypotheses", "what do we do first", or asks anything whose answer is a usage number. Don't use it to read what a person wrote (it refuses and offers the aggregate), to write to the database, for numbers outside the product's events such as revenue, to frame a new problem (use /bb:discover) or to write a spec (use /bb:spec).
+description: Product analysis over the company's own usage data, through a read-only guard. Answers "did the feature hit the target its spec wrote?" from the spec's Metric section, and any usage question about a live product, in four modes (explore an open question, measure a live feature, the official metric of a company or a team, hypotheses and actions after a measurement). Checks the machine first, starts with the inventory of what fires, reads the number as product, and closes with what changes for the product. Use when the user says "did it hit the target", "measure this feature", "how many people use X", "are people using Y", "what is the retention this week", "pull the numbers", "what are the hypotheses", "what do we do first", or asks anything whose answer is a usage number. Don't use it to read what a person wrote (it refuses and offers the aggregate), to write to the database, for numbers outside the product's events such as revenue, to frame a new problem (use /bb:discover) or to write a spec (use /bb:spec).
 license: MIT
 metadata:
   author: Matheus Morais - github.com/matheusmorais-ux
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 # Measure
@@ -17,6 +17,21 @@ it, and answers any other usage question the same way.
 Everything that belongs to the company (which database, which tables, the filters every query
 carries, what counts as usage, the official metrics) is fetched at run time by role tag, the way
 the plugin-level `references/company-definitions.md` states. Nothing of it is written here.
+
+## Step 0: the diagnosis, before anything else
+
+This skill runs on commands: the company's documents, the guard and the catalog are all read in
+a terminal. **When the session has no shell tool** (a chat, or an environment that cannot run
+commands), stop here, before reading any reference or document. Say where the measurement runs:
+Claude Code with a terminal, on a machine with what the plugin's README lists for
+`/bb:measure`. Then offer the one honest alternative: reviewing what the person brought (a file,
+a chart, a number someone sent), with every number in the answer marked as not checked, because
+nothing was queried.
+
+With a shell, run the diagnosis in `references/diagnosis.md` before any other step. Its first
+half runs now, before any company document is read; its second half runs right after the `data`
+and `usage` documents, before any query. A check that stops ends the run with the step the
+person takes, and the same honest alternative.
 
 ## The guard, before any query
 
@@ -32,8 +47,9 @@ The locks live in `<plugin-root>/scripts/db_read.py`, not in this text. The skil
 - **A request about content is refused**: what a person wrote or received in a conversation, a
   search, a document or a cell. Say the skill does not read content, and offer the aggregate that
   answers the same question (how many requests carry an instruction, which action was picked).
-- **Each person uses their own credential.** Never a key found in a repository's `.env`. When the
-  credential fails, stop, read the `access` document and give the person its renewal step.
+- **Each person uses their own credential, and logs in themselves, in a terminal.** Never a key
+  found in a repository's `.env`, and never a token asked for, read, copied or shown. When the
+  credential fails, stop, read the `access` document and give the person its step.
 - **Sources beyond the database follow the `data` document**, and only the ones it names.
 
 ## Step 1: the request and the mode
@@ -57,14 +73,19 @@ reading as product). Read it on every run.
 
 ## Step 2: the context
 
-- **Always:** the `data` and `usage` documents, by tag. Read them whole, every run.
+- **Always:** the `data` and `usage` documents, by tag. Read them whole, every run, then run the
+  second half of the diagnosis.
+- **When the question counts active people or activation events:** the activation list, where
+  the `usage` document says it lives, read as `references/activation-list.md` states. Every
+  answer names the list's version.
 - **Against a target, or a spec with an `okr:` line:** the `metrics` document.
 - **A team's official metric:** that team's `team` document.
 - **A feature:** its spec, when there is one, and the code where its events are born, on the
   default branch's remote tip, since a local checkout is often behind. The comment beside an
   event says what it measures and what it does not.
 - **The baseline:** `.bb/<slug>/measure.md`, the previous measurement of this feature, when it
-  exists. The answer compares with it.
+  exists. The answer compares with it, and with the catalog snapshot it saved
+  (`references/activation-list.md`).
 
 ## Steps 3 to 5: inventory, query, read
 
@@ -101,14 +122,20 @@ problem itself: that is `/bb:discover`'s.
 
 ## Edge cases
 
-| WHEN                                                 | THEN                                                                   |
-| ---------------------------------------------------- | ---------------------------------------------------------------------- |
-| a tag, a company document or the `wave` CLI fails    | stop as the plugin-level `references/company-definitions.md` states    |
-| the credential fails                                 | stop, read the `access` document and give its renewal step             |
-| the `data` document names a database with no adapter | the script refuses by name; stop and say so                            |
-| the request has no spec                              | measure anyway, in the modes that need no target                       |
-| the spec's baseline is `skipped`                     | measure the baseline first, as `references/against-the-spec.md` states |
-| the week asked for has not closed                    | say the number is partial, or use the last closed week                 |
-| the request asks for what a person wrote             | refuse and offer the aggregate                                         |
-| the premise of the request contradicts the code      | say so plainly, and treat the premise as one more hypothesis           |
-| the script prints `showing N of M rows`              | the output is not aggregated enough; aggregate further                 |
+| WHEN                                                  | THEN                                                                          |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------- |
+| the session has no shell tool                         | stop before any reference; offer only the review marked not checked           |
+| a check of the diagnosis stops                        | stop with its step (`references/diagnosis.md`)                                |
+| a tag, a company document or the `wave` CLI fails     | stop as the plugin-level `references/company-definitions.md` states           |
+| the credential fails                                  | stop, read the `access` document and give its step                            |
+| the activation list cannot be read where `usage` says | stop and name the source, never a copy (`references/activation-list.md`)      |
+| no measurement was saved before                       | say there is nothing to compare with, never an invented previous week         |
+| the list changed since the last measurement           | split the difference into list and behavior (`references/activation-list.md`) |
+| the `data` document names a database with no adapter  | the script refuses by name; stop and say so                                   |
+| the request has no spec                               | measure anyway, in the modes that need no target                              |
+| the spec's baseline is `skipped`                      | measure the baseline first, as `references/against-the-spec.md` states        |
+| the week asked for has not closed                     | say the number is partial, or use the last closed week                        |
+| the request asks for what a person wrote              | refuse and offer the aggregate                                                |
+| the premise of the request contradicts the code       | say so plainly, and treat the premise as one more hypothesis                  |
+| the script prints `showing N of M rows`               | the output is not aggregated enough; aggregate further                        |
+| the person asks to go on without the data             | review what they brought, every number marked as not checked                  |

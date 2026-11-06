@@ -1,5 +1,51 @@
 # Changelog
 
+## 3.27.0 (2026-11-04)
+
+**`/bb:measure` checks the machine before it measures, and bb speaks of activation events.** A
+person without the `wave` CLI, the `gcloud` CLI or a login could run the measure, and it went on
+with whatever file they brought. Now a diagnosis runs first and stops with the one step to take.
+At both ends of the cycle, the events table's `level` becomes `activation`, the list a measurement
+counts with is read at a version, and every number names that version. The reasoning is
+`.bb/measure-activation/spec.md`.
+
+### Added
+
+- **The diagnosis** (`skills/measure/scripts/diagnose.py`, `references/diagnosis.md`): `docs`
+  checks `wave` and `wave doctor` before any company document is read; `access` checks the
+  database's CLI and login, a dry run over the events table, and, when the list lives in code,
+  `gh`, its login, the repository and the catalog file. Each stop says the step the person takes
+  in a terminal. With no shell, the skill stops before reading any reference, and the one
+  alternative is a review of what the person brought, every number marked _not checked_. Its
+  tests run with no network and prove the login check keeps no token.
+- **The activation list at a version** (`references/activation-list.md`): read where the `usage`
+  document says, a catalog in code at the commit of the branch's remote tip, saved as
+  `catalog.csv` beside the queries and named in `measure.md`'s `catalog:` line. A difference
+  against the last saved measurement splits into list and behavior with three numbers.
+- **The funnel**: an optional `Funnel:` line in `## Metric`, proposed by `/bb:spec` from the events
+  table, declared by the instrumentation task, measured step by step by `/bb:measure`, with the
+  company's dashboard link when the `data` document names one.
+- **`okr:` from the `metrics` document**: `/bb:spec` proposes the line, and `/bb:discover` proposes
+  the hypothesis, the OKR and the success signal together.
+- **`## Funnels` and an `activation` column in `EVENTS.md`**, both outside what the checker reads.
+
+### Changed
+
+- **`level` becomes `activation`, `yes` or `no`**, in the spec's events table, in `draft-first.md`
+  and in the measure's reading of a spec. The rule stays in the company's `usage` document.
+- **The instrumentation task writes the event, its activation and the funnel where the project
+  declares events**: `EVENTS.md`, or the catalog in code the project's own instructions name.
+- **`unclassified.py` becomes `catalog_changes.py`**: what entered or left the activation list,
+  what left the catalog, every new event with its decision, the renames counted as one event, and
+  the list for a query's `IN (...)`. The series no longer marks an event's entry date.
+- **`db_read.py` tells a missing `gcloud` from an expired login**, each with its own step, and
+  reads a 403 `accessDenied` as a missing permission that the `access` document answers.
+- **`references/company-definitions.md`**: the `usage` role holds the activation rule and where the
+  list lives; a missing `wave` points at `inspira-legal/builder-setup`; two stops cover the catalog
+  in code. A document that says another one replaced it is read only as a record, and when an
+  event has more than one name, the activation list uses the one the queried table stores.
+- **The README** lists what `/bb:measure` needs on the machine.
+
 ## 3.26.0 (2026-11-03)
 
 **`/bb:spec` cuts the version and reads the backlog.** `/bb:backlog` read `## Out of scope` as

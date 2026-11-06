@@ -19,9 +19,9 @@ earlier reading.
 ## Running the official query
 
 1. Copy the document's `sql` block into the session's scratch space.
-2. **Fill each placeholder the document marks**, the way the document says. A list of events that
-   count as usage comes from where the `usage` document says the classification lives: a field in
-   each event, a frozen list for an earlier period, or both.
+2. **Fill each placeholder the document marks**, the way the document says. The list of activation
+   events comes from where the `usage` document says it lives, read at a version as
+   `activation-list.md` states. Every week the query shows is counted with that one list.
 3. **Set the dates** for the week asked, as the document explains.
 4. Run it through the guard:
 
@@ -33,27 +33,33 @@ earlier reading.
 its reference numbers. When they do not match, the query or the document broke: say that instead
 of giving the number.
 
-When the classification changed between two weeks, say so in the answer: a change of level moves
-the metric without anybody changing behavior.
+When the list changed since the last measurement, the answer splits the difference into list and
+behavior (`activation-list.md`): a change of list moves the metric without anybody changing
+behavior.
 
 ## What the answer carries
 
 1. **The week asked has to be closed.** When it has not ended, say the number is partial, or use
    the last closed week.
 2. **The metric and the secondary ones the document lists**, in total and by the splits it names,
-   compared with the week before.
+   compared with the last saved measurement, and the version of the list each was counted with.
 3. **What changed, at the feature level.** Cut who counted by feature, and say which feature moved
    the difference.
-4. **The events that fired with no level.** Run the week's inventory, save its output, and compare
-   it with the classification. When the classification is a list, the script does it:
+4. **What changed in the catalog since the last measurement.** Run the week's inventory, save its
+   output, and compare today's snapshot with the one the last measurement saved:
 
    ```bash
-   python3 scripts/unclassified.py INVENTORY.out CLASSIFIED.txt
+   python3 scripts/catalog_changes.py catalog.csv PREVIOUS_FOLDER/catalog.csv --inventory INVENTORY.out
    ```
 
-   It lists each event that fired and is not classified, with its number of people, largest first.
-   When one reaches many people, say the metric may be low, because a new event that should count
-   is not counted. When the level is a field in each event, the same check is a query: the events
-   whose field is empty.
+   It lists the events that entered or left the activation list, those that left the catalog, every
+   event new in the catalog with its decision, the renames, and the events that fired outside the
+   catalog, each with its people, most fired first. A new event that is not an activation event and
+   reaches many people is worth a line: if the company's rule says it should count, the metric is
+   low until the catalog changes. The series carries no date for an event's entry, because the list
+   applies to every week alike.
 
-5. **The events that started counting in the middle of the series.** Mark the date in the series.
+5. **Where the team's number and the company's dashboard differ.** When the `data` document names
+   the company's dashboard and its number for the same week is not the team's, point at the
+   difference of definition the team's document describes (who is left out, which days count), so
+   whoever sees both knows why. Give the dashboard's link beside the number.
