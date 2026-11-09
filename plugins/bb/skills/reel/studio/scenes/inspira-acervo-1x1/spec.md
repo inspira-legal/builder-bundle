@@ -4,7 +4,7 @@ Cena-base da marca Inspira para o `/bb:reel`. Aplica todas as regras de `referen
 
 **Filme em uma linha:** uma pergunta ao Acervo da Inspira e a resposta vem com o trecho e a página do parecer.
 
-Formato 1:1 (1080 × 1080), 20 s, grade de 112 BPM (batida a cada 0,536 s), **sem som**: a cena não define `window.BPM`, então o render não sintetiza batida. Com trilha escolhida pela pessoa, ela entra como `audio.wav`. Funciona sem som: toda ideia está escrita na tela.
+Format 1:1 (1080 × 1080), 20 s, 112 BPM grid (a beat every 0.536 s), **official track**: the scene sets neither `window.BPM` nor `window.SFX`, so the render synthesizes no beat and no effects, and mixes in the official Inspira track. Another track goes in as `audio.wav`. It works without sound: every idea is written on screen.
 
 ## Batidas
 

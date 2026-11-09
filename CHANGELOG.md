@@ -1,5 +1,29 @@
 # Changelog
 
+## 3.28.0 (2026-11-09)
+
+**`/bb:reel` renders with sound.** A render with no `window.BPM` and no `audio.wav` came out
+silent, which is how a film reached people with no sound at all. The studio now mixes in the
+official Inspira track by default, with a fade in and a fade out, and a scene opts out with
+`window.AUDIO = "none"`.
+
+### Added
+
+- **The official track**, `studio/assets/trilha_sax_soul.mp3`: the render's default sound.
+  `window.AUDIO_START` (seconds) picks where in the track the film starts, and the render stops
+  before encoding when the track is too short for the film or is missing.
+- **`window.SFX`**: `[{ t, kind, dur? }]` with `click`, `type` or `pop`, synthesized by
+  `synthSfx` in `lib/audio.mjs` and mixed over the music. An unknown `kind` is an error.
+- **`lib/audio.test.mjs`**, run by `npm test` and by the Motion workflow.
+
+### Changed
+
+- **Sound precedence**: the scene's `audio.wav`, then the synthesized beat when `window.BPM` is
+  set, then silence when `window.AUDIO = "none"`, then the official track. A scene made before
+  this version that set none of them now renders with the track.
+- **Inspira films** use the official track and declare no `BPM`, `TICKS` or `SFX`; silence is
+  for the person who asks for it. `marca-inspira.md`, the scene spec and the README say so.
+
 ## 3.27.0 (2026-11-04)
 
 **`/bb:measure` checks the machine before it measures, and bb speaks of activation events.** A

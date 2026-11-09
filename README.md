@@ -132,7 +132,7 @@ you always log in yourself, in a terminal: bb never asks for, reads, copies or s
 
 ## reel: videos as code
 
-`/bb:reel` builds motion-design videos (launch films, feature walkthroughs, reels), renders them to MP4 and critiques its own frames until they hold up. a film about Inspira follows the brand rules and comes out silent until you pick the track. it is meant for anyone with Claude Code, technical or not.
+`/bb:reel` builds motion-design videos (launch films, feature walkthroughs, reels), renders them to MP4 and critiques its own frames until they hold up. a film about Inspira follows the brand rules and comes out with the official Inspira track; bring your own track and it replaces it. it is meant for anyone with Claude Code, technical or not.
 
 inside Claude Code: `/bb:reel lançamento do Drive, 20s, vertical`, or just ask for a video.
 

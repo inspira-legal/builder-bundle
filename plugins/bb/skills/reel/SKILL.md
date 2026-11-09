@@ -26,7 +26,7 @@ Then read `<studio>/CLAUDE.md`: it holds the scene contract, the motion rules an
 
 ## 1. Parse the request
 
-Extract, ask only if missing and it changes the result: **subject** (URL / product / "showreel"), **length** (default 15s), **format** (16:9 default; 9:16, 1:1 on request), **reference** (frame, video, image folder), **audio** (the synthesized beat, or a music file the person provides as the scene's `audio.wav`; an Inspira film never uses the synthesized beat: the person's track or silence). Scene name = kebab-case slug.
+Extract, ask only if missing and it changes the result: **subject** (URL / product / "showreel"), **length** (default 15s), **format** (16:9 default; 9:16, 1:1 on request), **reference** (frame, video, image folder), **audio** (the official track by default; a synthesized beat with `window.BPM`, effects with `window.SFX`, or the person's own music as the scene's `audio.wav`; an Inspira film uses the official track, never the synthesized beat or effects, and silence only on request). Scene name = kebab-case slug.
 
 ## 2. Reference before design
 

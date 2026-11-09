@@ -38,15 +38,26 @@ jobs:
         env:
           MOTION_HOME: ${{ runner.temp }}/Motion
 
-      - name: Motion unit tests
+      - name: Studio unit tests
         working-directory: ${{ runner.temp }}/Motion
-        run: node lib/motion.test.mjs
+        run: npm test
 
       - name: Stills through the studio wrapper, and the rendered video
         working-directory: ${{ runner.temp }}/Motion
         run: |
           node "${{ github.workspace }}/plugins/bb/skills/reel/scripts/studio.mjs" stills scenes/demo 1
           node -e "const fs=require('fs'); for (const f of ['out/demo.mp4','out/demo-at-1.png']) if (!(fs.statSync(f).size>0)) process.exit(1)"
+        env:
+          MOTION_HOME: ${{ runner.temp }}/Motion
+
+      # scenes/demo sets window.BPM, so it never reaches the official-track branch of render.mjs
+      # (-ss, fades, the Duration probe), which is the default for every Inspira film. This scene sets none.
+      # The probe is the studio's own ffmpeg-static: the runners have no ffprobe in common.
+      - name: Render with the official track, and the mp4 carries audio
+        working-directory: ${{ runner.temp }}/Motion
+        run: |
+          node "${{ github.workspace }}/plugins/bb/skills/reel/scripts/studio.mjs" render scenes/inspira-acervo-1x1 --fps 2 --w 270 --h 270
+          node -e "const o=require('child_process').spawnSync(require('ffmpeg-static'),['-i','out/inspira-acervo-1x1.mp4'],{encoding:'utf8'}).stderr; if(!/Stream #.*Audio:/.test(o)) { console.log(o); process.exit(1) }"
         env:
           MOTION_HOME: ${{ runner.temp }}/Motion
 
