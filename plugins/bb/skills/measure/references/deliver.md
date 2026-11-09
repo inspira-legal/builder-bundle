@@ -11,6 +11,17 @@ The delivery follows what the request is for, read from its own words.
 When the intent is unclear, answer in chat and offer, in one line, to save it or to build the
 document.
 
+## What every delivery carries
+
+Whatever the level, three things travel with the number:
+
+- **The list's version**, when the number counts activation events: `list: OWNER/REPO@SHA, N
+activation events` (`activation-list.md`). A number without it cannot be compared next week.
+- **The dashboard link**, when the `data` document names the company's dashboard: the link beside
+  the number it belongs to, so a reader can open the chart.
+- **The mark _not checked_** on every number the skill did not query, from the first line to the
+  last: a number read off what the person brought, after the diagnosis stopped.
+
 ## The chat answer
 
 The answer to each question in one sentence with its number, a small table when it helps, and the
@@ -40,6 +51,7 @@ right under it:
 - mode: against the spec, measure a feature
 - window: 2026-09-07 to 2026-10-04 (the landing to the last closed week)
 - sources: the company documents read, by key and title
+- catalog: orbit/app@3f9c2a1, `src/events.config.ts`, 41 events, 12 activation events
 - queries: `measure-sql/2026-10-05/`
 
 <the answer, one sentence per question, the tables, what changes for the product, the caveats>
@@ -47,6 +59,9 @@ right under it:
 
 The queries and their outputs go to `.bb/<slug>/measure-sql/<date>/`, one `NN-name.sql` beside its
 `NN-name.out`. The outputs hold aggregate numbers only, because the guard lets nothing else out.
+When the measurement read the activation list, the snapshot `catalog.csv` goes in the same folder:
+it is what the next measurement compares with, and the `catalog:` line names its version. A
+measurement that read no list leaves the line out.
 
 ## The shareable document
 
@@ -62,7 +77,7 @@ It has two parts:
    question of the request: a chart when there are five values or more over time or across items,
    a table for the rest, a table by plan when there is a plan split. "What changes for the
    product" and "Caveats before it circulates" close the part.
-2. **How the analysis was built.** The window, the filters, and a table of each step with the
+2. **How the analysis was built.** The window, the filters, the list's version, and a table of each step with the
    event that measures it. The measurement gaps. What stayed out and why. The list of queries,
    with the main one in SQL and the path of the folder.
 

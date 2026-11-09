@@ -24,7 +24,9 @@ can be forgotten and code cannot. Five, in this order:
 
 Locks 1, 3, 4 and 5 are the same for every database. Lock 2, the dry run, the real run and
 the credential belong to an adapter, one per database. BigQuery is the first; a database with
-no adapter is refused by name.
+no adapter is refused by name. When the credential fails, the adapter says which step the
+person takes: install the CLI, log in again, or ask for the permission. The measure's
+diagnosis (skills/measure/scripts/diagnose.py) reads the same messages.
 
 Standard library only, so it runs on any machine with Python 3.
 """
@@ -175,9 +177,22 @@ def show(result: dict) -> None:
 class BigQuery:
     """BigQuery over its REST API, with the person's application default credentials."""
 
+    # A missing CLI and an expired login need different steps, so each has its own message.
+    # The person runs the step in a terminal; nothing here logs in for them.
+    CLI = "gcloud"
+    TOKEN = ["gcloud", "auth", "application-default", "print-access-token"]
+    INSTALL = (
+        "the gcloud CLI is not installed; install it with Google's official guide, "
+        "https://cloud.google.com/sdk/docs/install, then log in from a terminal with: "
+        "gcloud auth login --update-adc"
+    )
     RENEW = (
-        "the database credential expired or is missing; renew it with: "
+        "the gcloud login expired or was never made; log in again from a terminal with: "
         "gcloud auth login --update-adc (the company's access document has the rest)"
+    )
+    DENIED = (
+        "the account is logged in but cannot read what the query reads; the company's access "
+        "document says which permission to ask for, and from whom"
     )
     READ = "SELECT"  # the statement type BigQuery returns for a read
     PROJECT = re.compile(r"^(?:[a-z][a-z0-9.-]*:)?[a-z][a-z0-9-]{4,28}[a-z0-9]$")
@@ -189,12 +204,10 @@ class BigQuery:
 
     def token(self) -> str:
         try:
-            return subprocess.check_output(
-                ["gcloud", "auth", "application-default", "print-access-token"],
-                text=True,
-                stderr=subprocess.DEVNULL,
-            ).strip()
-        except (subprocess.CalledProcessError, FileNotFoundError):
+            return subprocess.check_output(self.TOKEN, text=True, stderr=subprocess.DEVNULL).strip()
+        except FileNotFoundError:
+            fail(self.INSTALL)
+        except subprocess.CalledProcessError:
             fail(self.RENEW)
 
     def post(self, path: str, body: dict) -> dict:
@@ -210,9 +223,15 @@ class BigQuery:
             if error.code == 401:
                 fail(self.RENEW)
             try:
-                return json.loads(error.read())
+                answer = json.loads(error.read())
             except ValueError:
                 fail(f"the database answered HTTP {error.code}, with no readable error; try again")
+            # BigQuery answers 403 for a quota too, so only the reason `accessDenied` is a
+            # missing permission.
+            errors = (answer.get("error") or {}).get("errors") or [{}]
+            if error.code == 403 and errors[0].get("reason") == "accessDenied":
+                fail(self.DENIED)
+            return answer
         except urllib.error.URLError as error:
             fail(f"the database could not be reached ({error.reason}); check the network and try again")
 

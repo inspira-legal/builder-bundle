@@ -118,6 +118,18 @@ install globally with `npx skills add inspira-legal/builder-bundle -g -a opencod
 }
 ```
 
+## measure: what the machine needs
+
+`/bb:measure` runs on commands, so it needs Claude Code with a terminal. in a chat it stops before reading anything, and the one thing it offers is a review of what you brought, with every number marked as not checked. before the first query it runs a diagnosis, and when a piece is missing it tells you the one step that fixes it:
+
+- **python 3**, which runs the guard and the diagnosis.
+- **the `wave` cli with a valid session**, which reads the company's definitions. [`inspira-legal/builder-setup`](https://github.com/inspira-legal/builder-setup) installs it, and `wave doctor` says how to log in again.
+- **the `gcloud` cli**, installed with [google's official guide](https://cloud.google.com/sdk/docs/install) and logged in with `gcloud auth login --update-adc`.
+- **read permission in the company's database.** the company's `access` document says which permission to ask for, and from whom.
+- **the `gh` cli, logged in with `gh auth login`**, with read access to the repository that holds the activation list, when the company's `usage` document says the list lives in code.
+
+you always log in yourself, in a terminal: bb never asks for, reads, copies or shows a token.
+
 ## reel: videos as code
 
 `/bb:reel` builds motion-design videos (launch films, feature walkthroughs, reels), renders them to MP4 and critiques its own frames until they hold up. a film about Inspira follows the brand rules and comes out with the official Inspira track; bring your own track and it replaces it. it is meant for anyone with Claude Code, technical or not.
