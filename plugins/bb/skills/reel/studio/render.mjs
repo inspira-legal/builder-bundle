@@ -84,7 +84,13 @@ if (!existsSync(audio)) {
   } else if (audio) synthBeat(audio, duration, bpm, ticks);
 }
 const sfxFile = sfx.length ? `out/${name}-sfx.wav` : null;
-if (sfxFile) synthSfx(sfxFile, duration, sfx);
+if (sfxFile)
+  try {
+    synthSfx(sfxFile, duration, sfx);
+  } catch (e) {
+    await browser.close();
+    die(e.message);
+  }
 // Music input, effects input, and the filter that joins them (music at 0.7 so effects stay audible; no ducking).
 const fade = `afade=t=in:d=0.5,afade=t=out:st=${Math.max(0, duration - 1.5)}:d=1.5`;
 const audioArgs = [
