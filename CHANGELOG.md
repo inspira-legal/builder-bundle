@@ -40,7 +40,7 @@ session with many skills installed.
 - **14 of the 15 land.** `/bb:research` replaced `code-deep-research` before this
   landed and brought its own description, so the battery's two research requests now
   expect `research`. `maintain-repo` keeps this shape and takes `/bb:takeover`'s
-  routing, at 627 characters, and `review` says it loops by default since 3.24.0.
+  routing, at 627 characters, and `review` says it loops by default since 3.24.0, at 652.
 
 ## 3.27.0 (2026-11-04)
 
