@@ -1,0 +1,14 @@
+[
+  {
+    "request": "revisa o que eu mudei nessa branch antes de eu abrir a PR",
+    "expect": "review",
+    "lang": "pt",
+    "kind": "direct"
+  },
+  {
+    "request": "what's the difference between map and forEach in JavaScript?",
+    "expect": "none",
+    "lang": "en",
+    "kind": "no bb skill"
+  }
+]

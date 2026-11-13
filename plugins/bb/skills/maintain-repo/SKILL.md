@@ -1,6 +1,6 @@
 ---
 name: maintain-repo
-description: Triages repo maintenance and reports what is safe to merge. Never merges. Scans open PRs, Dependabot security alerts and outdated dependencies, prioritizes them, suggests an action per PR (takeover or modernize, both run by /bb:takeover), and delivers a digest in Slack or as a sticky comment on the PR. The merge stays with a human. Use when the user says "what can I merge", "triage my PRs", "review the open PRs", "check Dependabot", "are the dependency updates safe", or "set up a maintenance digest". Don't use it to act on one PR somebody else opened (use /bb:takeover), on the user's own branch or PR (use /bb:ship), or to review a diff (use /bb:review).
+description: Triages a repository's open pull requests, Dependabot alerts and outdated dependencies, suggests an action per PR (take over or modernize, both run by /bb:takeover), and tells you what is safe to merge without merging anything. Use when someone says "o que dá pra mergear", "faz a triagem dos PRs abertos", "olha os alertas do Dependabot", "as atualizações de dependência são seguras", "monta um resumo de manutenção", "what can I merge", "triage my PRs", "check Dependabot". Not for acting on one PR somebody else opened (use /bb:takeover), working on your own branch or PR (use /bb:ship) or reviewing a diff (use /bb:review).
 license: MIT
 metadata:
   author: Athena Briana - github.com/athenabriana
