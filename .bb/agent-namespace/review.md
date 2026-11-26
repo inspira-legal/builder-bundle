@@ -29,7 +29,7 @@ reportar o PLAUSIBLE. Sem curadoria item a item.
    `plugins/bb/references/build-tasks-workflow.md:202-203`.** A exclusão da promessa falsa
    levou junto a cláusula verdadeira "plus one line of that protocol": o corpo de
    `reusePrompt()` ainda injeta `Confirm each one against the repo before you judge it, with
-\`Grep\` on the symbol it names.`, que duplica o protocolo do `bb-reuse-check.md`. O
+   \`Grep\` on the symbol it names.`, que duplica o protocolo do `bb-reuse-check.md`. O
    comentário atual é desmentido pelo código duas linhas abaixo. Uma causa, dois locais.
 
 4. **Sugestão. `plugins/bb/references/build-tasks-workflow.md:203`.** A frase ficou

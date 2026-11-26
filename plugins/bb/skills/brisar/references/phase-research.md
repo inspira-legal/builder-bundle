@@ -239,7 +239,7 @@ What this rung gets you and what it does not:
   `truncated: false`, the listing is complete, so a path that is absent from it **is** absent.
   Check that field before claiming either way.
 - **The component inventory with its traps**: no. Knowing a card component is really a `<button
-role=option>` means reading component source, and that is a sweep, not two file reads. This is
+  role=option>` means reading component source, and that is a sweep, not two file reads. This is
   the half that stays open, and it is the expensive half.
 - **"How many places use this"**: no. There is no grep here.
 
