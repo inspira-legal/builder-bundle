@@ -274,7 +274,7 @@ CI runs steps 1 to 3 on every pull request touching `plugins/**`, `.bb/**`, `**/
 - **Description**: markdown and JSON are formatted by `oxfmt` at the version `package.json`
   pins. Table alignment is the usual cause of a red run, because editing one cell shifts a whole
   column. `bun run fmt` writes the fix, and `lefthook.yml` runs it on staged files.
-- **Evidence**: `package.json` (`fmt`, `fmt:check`, `oxfmt` pinned at 0.43.0), the
+- **Evidence**: `package.json` (`fmt`, `fmt:check`, `oxfmt` pinned at 0.80.0), the
   `Check formatting` step of `.github/workflows/validate.yml`, `lefthook.yml`.
 - **Do**:
   ```bash
