@@ -8,6 +8,6 @@
     "no-browser": "node run.mjs scenario no-browser"
   },
   "dependencies": {
-    "@anthropic-ai/claude-agent-sdk": "0.3.303"
+    "@anthropic-ai/claude-agent-sdk": "0.3.332"
   }
 }

@@ -16,7 +16,7 @@ document.
 Whatever the level, three things travel with the number:
 
 - **The list's version**, when the number counts activation events: `list: OWNER/REPO@SHA, N
-activation events` (`activation-list.md`). A number without it cannot be compared next week.
+  activation events` (`activation-list.md`). A number without it cannot be compared next week.
 - **The dashboard link**, when the `data` document names the company's dashboard: the link beside
   the number it belongs to, so a reader can open the chart.
 - **The mark _not checked_** on every number the skill did not query, from the first line to the

@@ -57,7 +57,7 @@ The gate is where the spec proposes the build, and it asks two things in one cal
 - **What now**: `Build`, `Review the spec` or `Stop here`. `Review the spec` is offered
   only while the spec carries text no review has read.
 - **What comes after the build**, as two boxes the user ticks or leaves: `Review the
-branch` (`/bb:review`) and `Ship` (`/bb:ship`). Both empty is a build only.
+  branch` (`/bb:review`) and `Ship` (`/bb:ship`). Both empty is a build only.
 
 The review runs once over what it gets, its findings are resolved, and the gate opens
 again with the review option gone. What the user changes at that gate is new text, so

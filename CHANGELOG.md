@@ -780,7 +780,7 @@ phases into sibling specs. It is a warning: the exit code stays 0.
 ### Added
 
 - **`plugins/bb/skills/spec/scripts/review_pass.py`**, stdlib, `next|read|reset <spec>
-[--state <dir>]`. It keeps one JSON state per spec with the pass count and the last text
+  [--state <dir>]`. It keeps one JSON state per spec with the pass count and the last text
   the grounding lens read, prints the pass to run with the diff since that text, and
   names the tally file the gate reads back. Writes go through a temp file and a rename, so
   a run killed mid write keeps the old state.

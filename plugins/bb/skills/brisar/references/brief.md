@@ -287,7 +287,7 @@ Each hit gets replaced by what it means for the reader, never annotated.
 
 1. **An internal pointer carries its meaning on first use.** Never a bare `D7`, `P6`,
    "restriction 2", "axis 2", always `D7 (the decision that the value block carries the
-persuasion)`. The test: _a reader who has not opened the spec understands the
+   persuasion)`. The test: _a reader who has not opened the spec understands the
    sentence._
 2. **A design concept gets a 5-10 word gloss on first use.** "reactance (the defense a person
    raises when they feel they are being sold to)", "endowment effect (the same thing is worth
